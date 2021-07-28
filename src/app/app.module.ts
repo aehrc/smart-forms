@@ -3,10 +3,14 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { RedirectComponent } from './redirect/redirect.component';
+import { LaunchComponent } from './launch/launch.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RedirectComponent,
+    LaunchComponent,
   ],
   imports: [
     BrowserModule,
