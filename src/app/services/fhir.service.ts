@@ -1,10 +1,23 @@
 import { Injectable } from '@angular/core';
+import { Observable, from } from 'rxjs';
+
 
 import * as FHIR from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 import { fhirclient } from 'fhirclient/lib/types';
 
+//import * as fhirSettings from 'fhirclient/lib/settings';
+
+//export fhirTypes;
+
+//(window as any).FHIR = FHIR;
+//(window as any).fhirSettings = fhirSettings;
+//(window as any).fhirTypes = fhirclient;
+
 import { SMART_KEY } from "fhirclient/lib/settings";
+//import { fhirclient } from "./types";
+//export { SMART_KEY as KEY };
+//export { fhirclient as fhirTypes };
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +87,27 @@ export class FHIRService {
     this._isAuthorizing = false;
 
     return promise;
+
+    // Calling the SMART JS Client ready method to initialize the SMART Client
+    //FHIR.oauth2.ready(this.oauth2ReadyCallback, this.oauth2ReadyErrback);
   }
+
+  /*
+  oauth2ReadyErrback = (error: any) => {
+    console.error(error);
+  }
+  */
+
+  //private promise: Promise<FHIRService>;
+
+  /**
+   * Callback method once the SMART client has been initialized after the OAuth2.0 token workflow.
+   */
+  /*
+  oauth2ReadyCallback = (client: Client) => { //FHIR.SMART.SMARTClient) => {
+    this.fhirClient = client;
+  }
+  */
 
   public getClient() : Client {
     return this.fhirClient;
@@ -83,6 +116,8 @@ export class FHIRService {
   public logout() {
     sessionStorage.clear();
     this.fhirClient = null;
+    //this.loggedIn.next(false);
+    //this._router.navigate(['/index']);
   }
 
     /**
@@ -94,6 +129,8 @@ export class FHIRService {
         
     if (sessionStorage.getItem(SMART_KEY)) { // 'SMART_KEY')) {
       hasTokenResponse = true;
+      //this.loggedIn.next(true);
+    } else {
       //this.loggedIn.next(false);
 
       for(var i = 0; i< sessionStorage.length;i++) {
@@ -101,98 +138,18 @@ export class FHIRService {
         console.log(key +": " + sessionStorage.getItem(key));
       }
     }
+    //return this.loggedIn.asObservable();
     return hasTokenResponse
   }
   
-  public getPatient() :Promise<fhirclient.FHIR.Patient> {
-
-    if (this.fhirClient) {
-      var result = this.fhirClient.patient.read();
-      return result;
-    }
-
-    return new Promise<fhirclient.FHIR.Patient>(function(resolve, reject) { 
-      reject("FHIR client not initialised")
-    }); 
-  }
-
   /**
-   * Get the patient's display name
-   * @param patient optional, an FHIR Patient resource
-   * @returns {string} a formatted patient name
-   * @private
-   */
-  getPatientName = function (patient) {
-    var currentPatient = patient;
-
-    var name = "";
-    if (currentPatient && currentPatient.name && currentPatient.name.length > 0) {
-      if (currentPatient.name[0].given && currentPatient.name[0].family) {
-        name = currentPatient.name[0].given[0] + " " + currentPatient.name[0].family;
-      }
-      else if (currentPatient.name[0].family) {
-        name = currentPatient.name[0].family;
-      }
-      else if (currentPatient.name[0].given ) {
-        name = currentPatient.name[0].given[0]
-      }
-    }
-    return name;
-  };
-
-  /**
-   * Search patients by name
-   * @param searchText the search text for patient names
-   * @returns {*}
-   */
-  searchPatientByName(searchText: string) : Promise<Object[]> {
-    var self = this;
-
-    return new Promise<Object[]> (
-      function(resolve, reject) {
-
-        self.fhirSearch({
-          type: "Patient",
-          query: {name: searchText},
-          headers: {'Cache-Control': 'no-cache'}
-        })
-        .then(
-          function(response) {
-            // process data for md-autocomplete
-            var patientList = [];
-            if (response && response.entry) {
-              for (var i=0, iLen=response.entry.length; i<iLen; i++) {
-                var patient = response.entry[i].resource;
-                patientList.push({
-                  name: self.getPatientName(patient),
-                  gender: patient.gender,
-                  dob: patient.birthDate,
-                  //phone: this.getPatientPhoneNumber(patient),
-                  id: patient.id,
-                  resource: patient
-                })
-              }
-            }
-
-            resolve(patientList);
-          }, 
-          function( error) {
-            console.log(error);
-            reject(error);
-          }
-        );
-      }
-    );
-  };
-
-  /**
-   *  Build a FHIR search query and returns a promise with the result.
+   *  Build a FHIR search query and returns an Observable of type FHIR.Resource (normally a Bundle, but could be an OperationOutcome??).
    * @param searchConfig an object with the following sub-keys for configuring the search.
    *  type: (required) the Resource type to search for
    *  query: An object of key/value pairs for the query part of the URL to be constructed.
    *  headers: An object containing HTTP headers to be added to the request.
    */
-  fhirSearch(searchConfig) {
+  fhirSearch(searchConfig): Observable<fhirclient.FHIR.Resource> {
     var searchParams = new URLSearchParams();
     if (searchConfig.query) {
       var queryVars = searchConfig.query;
@@ -204,10 +161,18 @@ export class FHIRService {
       }
     }
 
-    return this.fhirClient.request({
+    let result = this.fhirClient.request({
       url: searchConfig.type + '?' + searchParams,
       headers: searchConfig.headers
     });
+
+    return from(result);
+  }
+
+  hasLaunchContext(): boolean {
+    var fhirClient = this.fhirClient;
+
+    return (fhirClient != null && fhirClient.patient != null && fhirClient.patient.id != null);
   }
 
   /**
@@ -215,23 +180,18 @@ export class FHIRService {
    * Data returned through an angular broadcast event.
    * @param patient the selected patient
    */
-  setCurrentPatient(patient: fhirclient.FHIR.Patient): fhirclient.FHIR.Patient {
-    if (!this.hasLaunchContext())
-    {
-      var baseUrl = this.fhirClient.state.serverUrl;
-      this.fhirClient = FHIR.client({serverUrl: baseUrl, tokenResponse: { patient: patient.id }});
-
-      return patient;
-    }
-    else {
-      // ignore since the current patient was loaded from a launch
-      return null;
-    }
-  };
-
-  hasLaunchContext(): boolean {
-    var fhirClient = this.fhirClient;
-
-    return (fhirClient != null && fhirClient.patient != null && fhirClient.patient.id != null);
-  }
+     setCurrentPatient(patient: fhirclient.FHIR.Patient): fhirclient.FHIR.Patient {
+      if (!this.hasLaunchContext())
+      {
+        var baseUrl = this.fhirClient.state.serverUrl;
+        this.fhirClient = FHIR.client({serverUrl: baseUrl, tokenResponse: { patient: patient.id }});
+  
+        return patient;
+      }
+      else {
+        // ignore since the current patient was loaded from a launch
+        return null;
+      }
+    };
+  
 }

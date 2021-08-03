@@ -3,12 +3,11 @@
     <span *ngIf="patient" class="p-name">{{getPatientName(patient)}}</span>
 
     <span *ngIf="patient" class="p-gender" style="text-transform: capitalize">{{patient.gender}}</span>
-    <span *ngIf="patient" class="p-dob" ng-if="$ctrl.patient">DoB: {{patient.birthDate | date : 'dd MMM yyyy'}}</span>
+    <span *ngIf="patient" class="p-dob">DoB: {{patient.birthDate | date : 'dd MMM yyyy'}}</span>
     
     <div *ngIf="!hasLaunchContext" class="search-container" >
-        <input #psearch type="text" id="psearch" placeholder="Patient Search.." (input)="searchPatient(psearch.value)" /> 
-        <!--ng-change="$ctrl.change()" ng-model="$ctrl.psearch" ng-model-options='{ debounce: 50 }'
-            ng-blur="$ctrl.hidePatientResults()" ng-hide="$ctrl.hideSearch"-->
+        <input type="text" placeholder="Patient Search.." [formControl]="searchCriteria" /> 
+        <!--ng-change="$ctrl.change()" ng-blur="$ctrl.hidePatientResults()" ng-hide="$ctrl.hideSearch"-->
 
         <button type="button" (click)="setShowPatientResults()"> <!-- ng-hide="$ctrl.noSearch" -->
             <i class="fa fa-search"></i>

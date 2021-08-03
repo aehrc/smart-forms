@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import * as FHIR from 'fhirclient'
 import { AppComponent } from '../app.component';
-import { FHIRService } from '../fhir.service';
+import { FHIRService } from '../services/fhir.service';
 
 @Component({
   selector: 'app-launch',

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import * as FHIR from 'fhirclient';
 import { fhirclient } from 'fhirclient/lib/types';
-import { FHIRService } from '../fhir.service';
+import { FHIRService } from '../services/fhir.service';
 
 @Component({
   selector: 'app-redirect',

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { FHIRService } from '../fhir.service';
 import { fhirclient } from 'fhirclient/lib/types';
+import { FHIRService } from '../services/fhir.service';
+import { PatientService } from '../services/patient.service';
 
 @Component({
   selector: 'app-qrender',
@@ -12,20 +13,20 @@ export class QRenderComponent implements OnInit {
 
   public patient: fhirclient.FHIR.Patient = null;
 
-  constructor(private fhir: FHIRService) { }
+  constructor(private patientService: PatientService, private fhirService: FHIRService ) { }
 
   ngOnInit(): void {
     //if (this.fhir.isAuthorizing()) {
-    var client = this.fhir.getClient();
+    var client = this.fhirService.getClient();
     if (!client) {  
 
-      this.fhir.authorizeReady()
+      this.fhirService.authorizeReady()
       .then(fhirService => { 
         client = fhirService.getClient()
         console.log("FHIR alient authorized"); 
         console.log(client);
 
-        this.fhir.getPatient()
+        this.patientService.getPatient()
         .then(patient => { 
           console.log("getPatient fulfilled");
           console.log(patient);
@@ -42,7 +43,7 @@ export class QRenderComponent implements OnInit {
         console.log("FHIR client Initialised");
         console.log(client);
 
-        this.fhir.getPatient()
+        this.patientService.getPatient()
         .then(patient => { 
           console.log("getPatient fulfilled");
           console.log(patient);
