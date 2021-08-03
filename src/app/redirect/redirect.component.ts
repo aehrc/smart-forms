@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import * as FHIR from 'fhirclient';
+import { fhirclient } from 'fhirclient/lib/types';
+import { FHIRService } from '../fhir.service';
 
 @Component({
   selector: 'app-redirect',
@@ -9,13 +12,16 @@ import * as FHIR from 'fhirclient';
 })
 export class RedirectComponent implements OnInit {
 
-  constructor() { }
+  constructor(private fhir: FHIRService, private router: Router) { }
 
   ngOnInit() {
-    FHIR.oauth2.ready()
-    .then(client => client.request("Patient"))
-    .then(console.log)
-    .catch(console.error);
+    this.fhir.authorizeReady()
+    .then( 
+      fhirclient => { 
+        console.log(fhirclient.getClient()); 
+        this.router.navigate(['/']);
+      }
+    )
+    .catch( reason => console.log("FHIRService.authorizeReady() rejected: " + reason));
   }
-
 }

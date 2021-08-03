@@ -5,12 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RedirectComponent } from './redirect/redirect.component';
 import { LaunchComponent } from './launch/launch.component';
+import { QRenderComponent } from './qrender/qrender.component';
+import { PatientBannerComponent } from './patient-banner/patient-banner.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RedirectComponent,
     LaunchComponent,
+    QRenderComponent,
+    PatientBannerComponent,
   ],
   imports: [
     BrowserModule,
