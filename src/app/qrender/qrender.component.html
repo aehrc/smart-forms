@@ -22,5 +22,6 @@
 </div>
 
 <div id="main" class="container">
-    <p>qrender works!</p>
+  <app-questionnaire *ngIf="questionnaire" [questionnaire]="questionnaire"></app-questionnaire>
+  <div *ngIf="!questionnaire" >Select questionnaire from search</div>
 </div>

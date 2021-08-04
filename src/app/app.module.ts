@@ -8,6 +8,8 @@ import { RedirectComponent } from './redirect/redirect.component';
 import { LaunchComponent } from './launch/launch.component';
 import { QRenderComponent } from './qrender/qrender.component';
 import { PatientBannerComponent } from './patient-banner/patient-banner.component';
+import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,11 +18,13 @@ import { PatientBannerComponent } from './patient-banner/patient-banner.componen
     LaunchComponent,
     QRenderComponent,
     PatientBannerComponent,
+    QuestionnaireComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
