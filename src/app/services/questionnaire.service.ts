@@ -4,7 +4,7 @@ import { of, Observable } from 'rxjs';
 
 import { fhirclient } from 'fhirclient/lib/types';
 
-export interface QuestionnaireItem {
+export interface QuestionnaireCandidate {
   name: string;
   title: string;
   url: string;
@@ -12,6 +12,26 @@ export interface QuestionnaireItem {
 
 export interface Questionnaire extends fhirclient.FHIR.Resource {
   resourceType: "Questionnaire";
+  item: QuestionnaireItem[];
+}
+
+export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
+  linkId: string;
+  text: string;
+  type: fhirclient.FHIR.code;
+  required: boolean;
+  repeats: boolean;
+  answerOption: AnswerOption[];
+  item: QuestionnaireItem[];  
+}
+
+export interface AnswerOption extends fhirclient.FHIR.BackboneElement {
+  valueInteger: number;
+  //valueDate: fhirclient.FHIR.date;
+  //valueTime: fhirclient.FHIR.time;
+  valueString: string;
+  valueCoding: fhirclient.FHIR.Coding;
+  //valueRefrence: Reference;
 }
 
 @Injectable({
@@ -19,7 +39,7 @@ export interface Questionnaire extends fhirclient.FHIR.Resource {
 })
 export class QuestionnaireService {
 
-  private localQuestionnaires: QuestionnaireItem[] = [
+  private localQuestionnaires: QuestionnaireCandidate[] = [
     /*    {
           "name": "AU-MBS-715",
           "title": "Aboriginal and Torres Strait Islander health check – Adults (25–49 years)",
@@ -35,11 +55,11 @@ export class QuestionnaireService {
 
   constructor(private http: HttpClient) { }
   
-  getAllLocal(): Observable<QuestionnaireItem[]> {
+  getAllLocal(): Observable<QuestionnaireCandidate[]> {
     return of(this.localQuestionnaires);
   }
 
-  searchLocal(name: string): Observable<QuestionnaireItem[]> {
+  searchLocal(name: string): Observable<QuestionnaireCandidate[]> {
     return of(this.localQuestionnaires.filter(item => item.name.includes(name)));
   }
 

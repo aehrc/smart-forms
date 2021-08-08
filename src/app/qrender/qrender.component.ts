@@ -9,7 +9,7 @@ import { PatientService } from '../services/patient.service';
 import { Questionnaire, QuestionnaireService } from '../services/questionnaire.service';
 
 @Component({
-  selector: 'app-qrender',
+  selector: 'questionnaire-render',
   templateUrl: './qrender.component.html',
   styleUrls: ['./qrender.component.css']
 })
@@ -93,6 +93,7 @@ export class QRenderComponent implements OnInit {
     }))
     .subscribe(q=> {
       this.questionnaire = q;
+      //console.log(q);      
     });    
   }
 

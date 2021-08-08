@@ -10,6 +10,22 @@ import { QRenderComponent } from './qrender/qrender.component';
 import { PatientBannerComponent } from './patient-banner/patient-banner.component';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { HttpClientModule } from '@angular/common/http';
+import { 
+  QuestionnaireItemComponent, 
+  QuestionnaireItemGroupComponent, 
+  QuestionnaireItemRepeatComponent,
+  QuestionnaireItemStringComponent,
+  QuestionnaireItemTextComponent,
+  QuestionnaireItemBooleanComponent,
+  QuestionnaireItemDateComponent,
+  QuestionnaireItemIntegerComponent,
+  QuestionnaireItemChoiceComponent,
+  QuestionnaireItemDateTimeComponent,
+  QuestionnaireItemDecimalComponent,
+  QuestionnaireItemDisplayComponent,
+  QuestionnaireItemOpenChoiceComponent,
+  QuestionnaireItemQuantityComponent
+} from './questionnaire-item/questionnaire-item.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +35,20 @@ import { HttpClientModule } from '@angular/common/http';
     QRenderComponent,
     PatientBannerComponent,
     QuestionnaireComponent,
+    QuestionnaireItemComponent, 
+    QuestionnaireItemGroupComponent, 
+    QuestionnaireItemRepeatComponent,
+    QuestionnaireItemStringComponent,
+    QuestionnaireItemTextComponent,
+    QuestionnaireItemIntegerComponent,
+    QuestionnaireItemBooleanComponent,
+    QuestionnaireItemDateComponent,
+    QuestionnaireItemChoiceComponent,
+    QuestionnaireItemDateTimeComponent,
+    QuestionnaireItemDecimalComponent,
+    QuestionnaireItemDisplayComponent,
+    QuestionnaireItemOpenChoiceComponent,
+    QuestionnaireItemQuantityComponent
   ],
   imports: [
     BrowserModule,

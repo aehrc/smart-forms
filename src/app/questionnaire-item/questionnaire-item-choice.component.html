@@ -1,0 +1,18 @@
+<div class="row mb-3" *ngIf="item.answerOption?.length > droplistOptionsCount">
+    <label class="col-sm-5 col-form-label" for="{{item.linkId}}">{{item.text}}</label>
+    <div class="col-sm-7">
+      <select class="form-select" class="form-control" id="{{item.linkId}}" [formControl]="formControl">
+        <option></option>
+        <option *ngFor="let o of item.answerOption" value="{{o.valueCoding.code}}">{{o.valueCoding.display}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="row mb-3" *ngIf="item.answerOption?.length <= droplistOptionsCount">
+    <label class="col-sm-5 col-form-label" for="{{item.linkId}}">{{item.text}}</label>
+    <div class="col-sm-7">
+      <div class="form-check form-check-inline" *ngFor="let o of item.answerOption">
+        <input class="form-check-input" type="checkbox" id="{{item.linkId}}-{{o.valueCoding.code}}" value="{{o.valueCoding.code}}" > 
+            <!--ng-true-value="'{{o.valueCoding.code}}'"-->
+        <label class="form-check-label" for="{{item.linkId}}-{{o.valueCoding.code}}">{{o.valueCoding.display}}</label>
+    </div>
+  </div>

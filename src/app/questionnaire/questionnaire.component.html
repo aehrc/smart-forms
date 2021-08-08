@@ -1,1 +1,31 @@
-<p>{{questionnaire.id}}</p>
+<div class="container p-3 mb-3">
+    <h3>{{questionnaire.title}}</h3>
+
+    <!--div *ngFor="let item of questionnaire.item" [ngSwitch]="item.repeats">
+        <qitem-repeat *ngSwitchCase="true" [item]="item" [parentGroup]="questionnaireModel"></qitem-repeat>
+        <qitem [item]="item" [parentGroup]="questionnaireModel" *ngSwitchDefault ></qitem-->
+    <div *ngFor="let item of questionnaire.item" >
+        <qitem-repeat *ngIf="item.repeats" [item]="item" [parentGroup]="questionnaireModel"></qitem-repeat>
+        <div *ngIf="!item.repeats" [ngSwitch]="item.type">
+            <qitem-group *ngSwitchCase="'group'" [item]="item" [parentGroup]="questionnaireModel" ></qitem-group>
+            <qitem-string *ngSwitchCase="'string'" [item]="item" [parentGroup]="questionnaireModel"></qitem-string>
+            <qitem-text *ngSwitchCase="'text'" [item]="item" [parentGroup]="questionnaireModel"></qitem-text>
+            <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
+            <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [parentGroup]="questionnaireModel"></qitem-boolean>
+            <qitem-integer *ngSwitchCase="'integer'" [item]="item" [parentGroup]="questionnaireModel"></qitem-integer>
+            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentGroup]="questionnaireModel"></qitem-decimal>
+            <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="questionnaireModel"></qitem-date>
+            <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="questionnaireModel"></qitem-datetime>
+            <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="questionnaireModel"></qitem-choice>
+            <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [parentGroup]="questionnaireModel"></qitem-openchoice>
+            <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentGroup]="questionnaireModel"></qitem-quantity>
+        
+            <div *ngSwitchDefault class="mb-3">
+                <label for="{{item.linkId}}">{{item.text}}</label>
+                <span><em>&lt;{{item.type}}&gt;</em></span>
+            </div>
+        </div>
+    </div>        
+</div> 
+<!--{{questionnaireModel.value | json }}-->
+{{getQuestionnaireResponse() | json}}

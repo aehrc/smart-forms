@@ -1,0 +1,31 @@
+<div class="container p-3 mb-3 border" id="{{item.linkId}}"  > 
+    <!--ng-show="$ctrl.enableWhen()"-->
+    <h5>{{item.text}}</h5>
+
+    <!--div *ngFor="let item of item.item" [ngSwitch]="item.repeats">
+        <qitem-repeat *ngSwitchCase="true" [item]="item" [parentGroup]="formGroup"></qitem-repeat>
+        <qitem [item]="item" *ngSwitchDefault [parentGroup]="formGroup" ></qitem-->
+    <div *ngFor="let item of item.item" >
+        <qitem-repeat *ngIf="item.repeats" [item]="item" [parentGroup]="formGroup"></qitem-repeat>
+        <div *ngIf="!item.repeats" [ngSwitch]="item.type">
+            <qitem-group *ngSwitchCase="'group'" [item]="item" [parentGroup]="formGroup" ></qitem-group>
+            <qitem-string *ngSwitchCase="'string'" [item]="item" [parentGroup]="formGroup"></qitem-string>
+            <qitem-text *ngSwitchCase="'text'" [item]="item" [parentGroup]="formGroup"></qitem-text>
+            <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
+            <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [parentGroup]="formGroup"></qitem-boolean>
+            <qitem-integer *ngSwitchCase="'integer'" [item]="item" [parentGroup]="formGroup"></qitem-integer>
+            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentGroup]="formGroup"></qitem-decimal>
+            <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="formGroup"></qitem-date>
+            <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="formGroup"></qitem-datetime>
+            <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="formGroup"></qitem-choice>
+            <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [parentGroup]="formGroup"></qitem-openchoice>
+            <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentGroup]="formGroup"></qitem-quantity>
+        
+            <div *ngSwitchDefault class="mb-3">
+                <label for="{{item.linkId}}">{{item.text}}</label>
+                <span><em>&lt;{{item.type}}&gt;</em></span>
+            </div>
+        </div>
+    </div>
+</div>
+
