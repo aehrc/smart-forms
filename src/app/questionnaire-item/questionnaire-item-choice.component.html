@@ -10,8 +10,8 @@
   <div class="row mb-3" *ngIf="item.answerOption?.length <= droplistOptionsCount">
     <label class="col-sm-5 col-form-label" for="{{item.linkId}}">{{item.text}}</label>
     <div class="col-sm-7">
-      <div class="form-check form-check-inline" *ngFor="let o of item.answerOption">
-        <input class="form-check-input" type="checkbox" id="{{item.linkId}}-{{o.valueCoding.code}}" value="{{o.valueCoding.code}}" > 
+      <div class="form-check" [class.form-check-inline]="isHorizontal" *ngFor="let o of item.answerOption; let i = index">
+        <input class="form-check-input" type="checkbox" id="{{item.linkId}}-{{o.valueCoding.code}}" value="{{o.valueCoding.code}}" [formControl]="checkboxes?.controls[i]" (change)="onCheckboxChange($event, i)"> 
             <!--ng-true-value="'{{o.valueCoding.code}}'"-->
         <label class="form-check-label" for="{{item.linkId}}-{{o.valueCoding.code}}">{{o.valueCoding.display}}</label>
     </div>

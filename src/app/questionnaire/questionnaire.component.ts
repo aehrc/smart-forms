@@ -1,6 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
+import { QuestionnaireResponse, QuestionnaireResponseService } from '../services/questionnaire-response.service';
 
 import { Questionnaire, QuestionnaireItem } from '../services/questionnaire.service';
 
@@ -12,6 +12,8 @@ import { Questionnaire, QuestionnaireItem } from '../services/questionnaire.serv
 export class QuestionnaireComponent implements OnInit {
 
   @Input() questionnaire: Questionnaire;
+
+  //@Output() responseChange = new EventEmitter<QuestionnaireResponse>();
 
   questionnaireModel: FormGroup = new FormGroup({});
 
@@ -26,20 +28,25 @@ export class QuestionnaireComponent implements OnInit {
     this.questionnaireModel = this.qresponseService.makeQuestionnaireModel(this.questionnaire);
     //this.questionnaireModel = new FormGroup({});
     console.log(this.questionnaireModel);
+
+    this.questionnaireModel.valueChanges.subscribe(selectedValue => this.OnValueChanges(this.qresponseService, selectedValue))
   }
 
-  /*
-  ngAfterViewInit() {
-    console.log(this.questionnaireModel);
+  OnValueChanges(qresponseService: QuestionnaireResponseService, selectedValue: any)
+  {
+    console.log('questionnaire response changed');
+    console.log(selectedValue);
+
+    this.qresponseService.setQuestionnaireResponse(this.questionnaire, this.questionnaireModel);
   }
-*/
+  
 /*
   getItemModel(item: QuestionnaireItem): AbstractControl {
     return this.questionnaireModel[item.linkId];
   }
 */  
-  getQuestionnaireResponse() {
+  /*getQuestionnaireResponse() {
     return this.qresponseService.makeResponse(this.questionnaire, this.questionnaireModel);
-  }
+  }*/
 
 }

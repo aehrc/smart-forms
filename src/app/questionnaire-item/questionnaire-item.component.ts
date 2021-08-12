@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/forms';
 
 import { QuestionnaireItem } from '../services/questionnaire.service';
@@ -7,13 +7,12 @@ export abstract class QuestionnaireItemBase implements OnInit {
   @Input() item: QuestionnaireItem;
 
   @Input() parentGroup: FormGroup;
-  //@Input() parentArray: FormArray;
   @Input() repeat: AbstractControl;
 
-  abstract init() : void;
+  abstract onInit() : void;
 
   ngOnInit(): void {
-    this.init();
+    this.onInit();
   }
 
 }
@@ -25,8 +24,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
 })
 export class QuestionnaireItemComponent extends QuestionnaireItemBase {
 
-  init() {
-
+  onInit() {
   }
 }
 
@@ -39,14 +37,13 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
 
   formGroup: FormGroup = new FormGroup({});
 
-  init() {
+  onInit() {
     if (this.parentGroup)
       this.formGroup = this.parentGroup.controls[this.item.linkId] as FormGroup;
 
     else if (this.repeat)
       this.formGroup = this.repeat as FormGroup;
 
-    console.log(this.formGroup);
   }
 }
 
@@ -58,10 +55,8 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
 export class QuestionnaireItemRepeatComponent extends QuestionnaireItemBase  {
   repeatArray: FormArray = new FormArray([]);
 
-  init() {
-    //this.parentGroup.addControl(this.item.linkId, this.repeatArray);
+  onInit() {
     this.repeatArray = this.parentGroup.controls[this.item.linkId] as FormArray;
-    console.log(this.repeatArray);
   }
 }
 
@@ -73,20 +68,13 @@ export class QuestionnaireItemRepeatComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemStringComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
 
     else if (this.repeat)
       this.formControl = this.repeat as FormControl;
 
-    console.log(this.formControl);
   }
 }
 
@@ -98,20 +86,12 @@ export class QuestionnaireItemStringComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemTextComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
     else if (this.repeat)
       this.formControl = this.repeat as FormControl;
 
-    console.log(this.formControl);
   }
 }
 
@@ -123,11 +103,10 @@ export class QuestionnaireItemTextComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemBooleanComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
+  onInit() {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
 
-    console.log(this.formControl);
   }
 }
 
@@ -139,18 +118,10 @@ export class QuestionnaireItemBooleanComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemDateComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
 
-    console.log(this.formControl);
   }
 }
 
@@ -162,18 +133,10 @@ export class QuestionnaireItemDateComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemIntegerComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
 
-    console.log(this.formControl);
   }
 }
 
@@ -188,18 +151,43 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase  {
 
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
+  checkboxes: FormArray =  new FormArray([]);
 
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  isHorizontal: boolean = true;  
+
+  onInit() {
+
+    if (this.item.answerOption?.length <= this.droplistOptionsCount)
+    {
+      this.item.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+    }
+
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
 
-    console.log(this.formControl);
+    var choiceOrentiation = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation");
+    switch (choiceOrentiation?.valueCode) {
+      case "vertical": 
+        this.isHorizontal = false;
+        break;
+      case "horizontal": 
+        this.isHorizontal = true;
+        break;
+    }    
+  }
+
+  onCheckboxChange(event, index) {
+    if (event.target.checked) {
+        this.formControl.setValue(event.target.value);
+        var i = 0;
+        this.checkboxes.controls.forEach(element => { 
+          if (i++ != index)
+            (element as FormControl).setValue(null);
+        });
+    }
+    else {
+      this.formControl.setValue(null);
+    }
   }
 }
 
@@ -211,18 +199,10 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemDateTimeComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
 
-    console.log(this.formControl);
   }
 }
 
@@ -234,18 +214,9 @@ export class QuestionnaireItemDateTimeComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemDecimalComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
-
-    console.log(this.formControl);
   }
 }
 
@@ -255,7 +226,7 @@ export class QuestionnaireItemDecimalComponent extends QuestionnaireItemBase  {
   styleUrls: ['./questionnaire-item.component.css']
 })
 export class QuestionnaireItemDisplayComponent extends QuestionnaireItemBase  {
-  init() {
+  onInit() {
     
   }
 }
@@ -268,14 +239,7 @@ export class QuestionnaireItemDisplayComponent extends QuestionnaireItemBase  {
 export class QuestionnaireItemOpenChoiceComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
   }
 }
 
@@ -287,13 +251,6 @@ export class QuestionnaireItemOpenChoiceComponent extends QuestionnaireItemBase 
 export class QuestionnaireItemQuantityComponent extends QuestionnaireItemBase  {
   formControl = new FormControl();
 
-  init() {
-    /*
-    if (this.parentGroup)
-      this.parentGroup.addControl(this.item.linkId, this.formControl);
-
-    if (this.parentArray)
-      this.parentArray.push(this.formControl);
-    */
+  onInit() {
   }
 }

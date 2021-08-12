@@ -26,6 +26,7 @@ import {
   QuestionnaireItemOpenChoiceComponent,
   QuestionnaireItemQuantityComponent
 } from './questionnaire-item/questionnaire-item.component';
+import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {
     QuestionnaireItemDecimalComponent,
     QuestionnaireItemDisplayComponent,
     QuestionnaireItemOpenChoiceComponent,
-    QuestionnaireItemQuantityComponent
+    QuestionnaireItemQuantityComponent,
+    QuestionnaireOffCanvasComponent
   ],
   imports: [
     BrowserModule,

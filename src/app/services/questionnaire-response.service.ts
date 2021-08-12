@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 
 import { fhirclient } from 'fhirclient/lib/types';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 
 import { Questionnaire, QuestionnaireItem } from '../services/questionnaire.service';
 
@@ -40,8 +41,33 @@ export interface QuestionnaireResponseItem extends fhirclient.FHIR.BackboneEleme
 })
 export class QuestionnaireResponseService {
 
+  private questionnaireResponseSubject: Subject<QuestionnaireResponse> = new ReplaySubject<QuestionnaireResponse>(1);
+
+  set questionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
+    this.questionnaireResponseSubject.next(questionnaireResponse);
+  }
+
+  getQuestionnaireResponse(): Observable<QuestionnaireResponse> {
+    return this.questionnaireResponseSubject.asObservable();
+  }
+
+  private questionnaireSubject: Subject<Questionnaire> = new ReplaySubject<Questionnaire>();
+
+  set questionnaire(questionnaire: Questionnaire) {
+    this.questionnaireSubject.next(questionnaire);
+  }
+
+  getQuestionnaire(): Observable<Questionnaire> {
+    return this.questionnaireSubject.asObservable();
+  }
+
   constructor() { }
 
+  /**
+   * Makes Questionnaire Reactive Form model (FormGroup) from Questionnaire
+   * @param questionnaire 
+   * @returns FormGroup
+   */
   makeQuestionnaireModel(questionnaire: Questionnaire) : FormGroup
   {
     var controls: { [key: string]: AbstractControl; } = {};
@@ -63,7 +89,7 @@ export class QuestionnaireResponseService {
     return new FormGroup(controls);
   }
 
-private   makeQuestionnaireGroup(group: QuestionnaireItem) : FormGroup
+  private makeQuestionnaireGroup(group: QuestionnaireItem) : FormGroup
   {
     var controls: { [key: string]: AbstractControl; } = {};
 
@@ -113,7 +139,25 @@ private   makeQuestionnaireGroup(group: QuestionnaireItem) : FormGroup
     return new FormArray(controls);
   }
 
-  makeResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup) {
+  /**
+   * Sets questionnaireResponse from Questionnaire and Questionnaire Reactive Form model (FormGroup)
+   * @param questionnaire 
+   * @param questionnaireModel 
+   */
+  setQuestionnaireResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup): void {
+    this.questionnaireResponse = this.makeResponse(questionnaire, questionnaireModel);
+
+    // temporarily set the questionnaire her as well
+    this.questionnaire = questionnaire;
+  }
+
+  /**
+   * makes QuestionnaireResponse from Questionnaire and associated Responsive Form model (FormGroup)
+   * @param questionnaire 
+   * @param questionnaireModel 
+   * @returns QuestionnaireResponse
+   */
+  makeResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup): QuestionnaireResponse {
 
     let response: QuestionnaireResponse = { 
       "resourceType": "QuestionnaireResponse",
@@ -146,7 +190,6 @@ private   makeQuestionnaireGroup(group: QuestionnaireItem) : FormGroup
       linkId: item.linkId,
       text: item.text,
       answer: [],
-      item: []                
     };
 
     //var itemData: QuestionnaireResponseItem ;
@@ -154,7 +197,7 @@ private   makeQuestionnaireGroup(group: QuestionnaireItem) : FormGroup
       if (itemModel instanceof FormGroup) {
         var itemData = this.getItemData(item, itemModel);
         if (itemData)
-          responseData.item.push(itemData);
+          responseData.answer.push(itemData);
       }
       else {
         var formControl = itemModel as FormControl;
@@ -164,11 +207,13 @@ private   makeQuestionnaireGroup(group: QuestionnaireItem) : FormGroup
       }
     });
 
-    if (responseData.answer.length == 0)
+    /*if (responseData.answer.length == 0)
       responseData.answer = null;
     if (responseData.item.length == 0)
       responseData.item = null;
     if (responseData.item || responseData.answer)
+    */
+    if (responseData.answer.length > 0)
       return responseData;
     else
       return null;
@@ -413,21 +458,19 @@ private   makeQuestionnaireGroup(group: QuestionnaireItem) : FormGroup
 
         case "choice":
           if (formControl.value != null)
-            //if (item.valueCoding && item.valueCoding.code && item.valueCoding.code.length > 0)
             {
                 var i=0;
                 var coding = null;
-                /*while (i < item.answerOption.length) { 
-                    if (item.answerOption[i].valueCoding.code == item.valueCoding.code ) {
+                while (i < item.answerOption.length) { 
+                    if (item.answerOption[i].valueCoding.code == formControl.value ) {
                         coding = item.answerOption[i];
                         break;
                     }
                     i++;
                 }
                 if (coding) {
-                    itemData.answer = coding;
-                    return itemData;
-                }*/
+                    return coding;
+                }
             }
             return null;
 
