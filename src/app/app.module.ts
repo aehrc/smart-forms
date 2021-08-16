@@ -12,7 +12,6 @@ import { QuestionnaireComponent } from './questionnaire/questionnaire.component'
 import { HttpClientModule } from '@angular/common/http';
 import { 
   QuestionnaireItemComponent, 
-  QuestionnaireItemGroupComponent, 
   QuestionnaireItemRepeatComponent,
   QuestionnaireItemStringComponent,
   QuestionnaireItemTextComponent,
@@ -26,7 +25,9 @@ import {
   QuestionnaireItemOpenChoiceComponent,
   QuestionnaireItemQuantityComponent
 } from './questionnaire-item/questionnaire-item.component';
+import { QuestionnaireItemGroupComponent, TabFilterPipe, NonTabItemFilterPipe } from './questionnaire-item/questionnaire-item-group.component';
 import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
+
 
 @NgModule({
   declarations: [
@@ -50,7 +51,9 @@ import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/ques
     QuestionnaireItemDisplayComponent,
     QuestionnaireItemOpenChoiceComponent,
     QuestionnaireItemQuantityComponent,
-    QuestionnaireOffCanvasComponent
+    QuestionnaireOffCanvasComponent,
+    TabFilterPipe,
+    NonTabItemFilterPipe
   ],
   imports: [
     BrowserModule,

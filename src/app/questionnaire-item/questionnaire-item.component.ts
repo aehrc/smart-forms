@@ -29,25 +29,6 @@ export class QuestionnaireItemComponent extends QuestionnaireItemBase {
 }
 
 @Component({
-  selector: 'qitem-group',
-  templateUrl: './questionnaire-item-group.component.html',
-  styleUrls: ['./questionnaire-item.component.css']
-})
-export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
-
-  formGroup: FormGroup = new FormGroup({});
-
-  onInit() {
-    if (this.parentGroup)
-      this.formGroup = this.parentGroup.controls[this.item.linkId] as FormGroup;
-
-    else if (this.repeat)
-      this.formGroup = this.repeat as FormGroup;
-
-  }
-}
-
-@Component({
   selector: 'qitem-repeat',
   templateUrl: './questionnaire-item-repeat.component.html',
   styleUrls: ['./questionnaire-item.component.css']
