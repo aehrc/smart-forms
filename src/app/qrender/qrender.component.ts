@@ -17,7 +17,6 @@ export class QRenderComponent implements OnInit {
 
   public patient: fhirclient.FHIR.Patient = null;
 
-  public questionnaire: Questionnaire = null;
 
   constructor(
     private patientService: PatientService, 
@@ -75,9 +74,6 @@ export class QRenderComponent implements OnInit {
   private initialise(questionnaireName: string): void {
     this.patientService.getPatient()
     .then(patient => { 
-      //console.log("getPatient fulfilled");
-      //console.log(patient);
-
       this.patient = patient;
     })
     .catch(reason => console.log("getPatient rejected: " + reason));
@@ -92,7 +88,7 @@ export class QRenderComponent implements OnInit {
       }      
     }))
     .subscribe(q=> {
-      this.questionnaire = q;
+      this.questionnaireService.questionnaire = q;
       //console.log(q);      
     });    
   }

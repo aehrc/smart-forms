@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 
 import { fhirclient } from 'fhirclient/lib/types';
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 
 import { Questionnaire, QuestionnaireItem } from '../services/questionnaire.service';
 
@@ -49,16 +49,6 @@ export class QuestionnaireResponseService {
 
   getQuestionnaireResponse(): Observable<QuestionnaireResponse> {
     return this.questionnaireResponseSubject.asObservable();
-  }
-
-  private questionnaireSubject: Subject<Questionnaire> = new ReplaySubject<Questionnaire>();
-
-  set questionnaire(questionnaire: Questionnaire) {
-    this.questionnaireSubject.next(questionnaire);
-  }
-
-  getQuestionnaire(): Observable<Questionnaire> {
-    return this.questionnaireSubject.asObservable();
   }
 
   constructor() { }
@@ -146,9 +136,6 @@ export class QuestionnaireResponseService {
    */
   setQuestionnaireResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup): void {
     this.questionnaireResponse = this.makeResponse(questionnaire, questionnaireModel);
-
-    // temporarily set the questionnaire her as well
-    this.questionnaire = questionnaire;
   }
 
   /**

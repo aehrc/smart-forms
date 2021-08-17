@@ -1,4 +1,5 @@
-<div class="container p-3 mb-3">
+
+<div class="container p-3 mb-3" *ngIf="questionnaire$ | async as questionnaire">
     <h3>{{questionnaire.title}}</h3>
 
     <!--div *ngFor="let item of questionnaire.item" [ngSwitch]="item.repeats">
@@ -27,3 +28,4 @@
         </div>
     </div>        
 </div> 
+<div *ngIf="!(questionnaire$ | async)" >Select questionnaire from search</div>

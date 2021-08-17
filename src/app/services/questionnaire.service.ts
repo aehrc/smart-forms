@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable } from 'rxjs';
+import { of, Observable, ReplaySubject, Subject } from 'rxjs';
 
 import { fhirclient } from 'fhirclient/lib/types';
 
@@ -52,6 +52,16 @@ export class QuestionnaireService {
         "url": "data/715.R4.json"
     }  
   ];
+
+  private questionnaireSubject: Subject<Questionnaire> = new ReplaySubject<Questionnaire>();
+
+  set questionnaire(questionnaire: Questionnaire) {
+    this.questionnaireSubject.next(questionnaire);
+  }
+
+  getQuestionnaire(): Observable<Questionnaire> {
+    return this.questionnaireSubject.asObservable();
+  }
 
   constructor(private http: HttpClient) { }
   
