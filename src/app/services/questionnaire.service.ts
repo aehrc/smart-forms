@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable, ReplaySubject, Subject } from 'rxjs';
+import { of, Observable, ReplaySubject, Subject, EMPTY } from 'rxjs';
 
 import { fhirclient } from 'fhirclient/lib/types';
+import { FHIRService, Parameters } from './fhir.service';
+
+import { QuestionnaireResponse } from './questionnaire-response.service';
+import { mergeMap } from 'rxjs/operators';
+import { PopulateService } from './populate.service';
+import { PatientService } from './patient.service';
 
 export interface QuestionnaireCandidate {
   name: string;
@@ -63,7 +69,11 @@ export class QuestionnaireService {
     return this.questionnaireSubject.asObservable();
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, 
+    private fhirService: FHIRService, 
+    private patientService: PatientService,
+    private populateService: PopulateService) {       
+  }
   
   getAllLocal(): Observable<QuestionnaireCandidate[]> {
     return of(this.localQuestionnaires);
@@ -75,5 +85,51 @@ export class QuestionnaireService {
 
   readLocal(url: string): Observable<Questionnaire> {
     return this.http.get<Questionnaire>(url);
+  }
+
+  populate(questionnaire: Questionnaire) : Observable<QuestionnaireResponse> {
+
+    if (questionnaire.contained && questionnaire.contained.length > 0) {
+
+      var query = questionnaire.contained[0];
+
+      return this.patientService.patient$
+      .pipe(mergeMap(patient => {
+
+        var patientId = patient.id;
+        query.entry.forEach(entry => {
+          // only first occurence will be replaced
+          entry.request.url = entry.request.url.replace("{{%LaunchPatient.id}}", patientId); 
+        });
+
+        return this.fhirService.batch(query)
+        .pipe(mergeMap(queryResponse => {
+
+          var parameters: Parameters = {
+            "resourceType": "Parameters",
+            "parameter": [
+              {
+                  "name": "subject",
+                  "valueReference": {
+                      "reference": "",
+                      "display": ""
+                  }
+              },
+              {
+                  "name": "LaunchPatient",
+                  "resource": patient
+              },
+              {
+                  "name": "PrePopQuery",
+                  "resource": queryResponse
+              }]                        
+          };
+
+          return this.populateService.populate(questionnaire.id, parameters);
+        }));
+      }));
+    }
+    else
+      return EMPTY;
   }
 }

@@ -19,6 +19,15 @@ import { SMART_KEY } from "fhirclient/lib/settings";
 //export { SMART_KEY as KEY };
 //export { fhirclient as fhirTypes };
 
+export interface Parameters extends fhirclient.FHIR.Resource {
+  resourceType: "Parameters";
+  parameter: {
+    name: string;
+    valueReference?: fhirclient.FHIR.Reference;
+    resource?: fhirclient.FHIR.Resource;  
+  } [];    
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -149,7 +158,7 @@ export class FHIRService {
    *  query: An object of key/value pairs for the query part of the URL to be constructed.
    *  headers: An object containing HTTP headers to be added to the request.
    */
-  fhirSearch(searchConfig): Observable<fhirclient.FHIR.Resource> {
+  search(searchConfig): Observable<fhirclient.FHIR.Resource> {
     var searchParams = new URLSearchParams();
     if (searchConfig.query) {
       var queryVars = searchConfig.query;
@@ -194,4 +203,52 @@ export class FHIRService {
       }
     };
   
+  batch(bundle): Observable<fhirclient.FHIR.Resource> {
+    var headers = {
+      "Cache-Control": "no-cache", 
+      "Content-Type": "application/json+fhir; charset=UTF-8"};
+
+    let result = this.fhirClient.request({
+      url: "",
+      method: "POST",
+      body: JSON.stringify(bundle),
+      headers: headers
+    });
+
+    return from(result);
+  }
+
+  execute(operation, parameters): Observable<fhirclient.FHIR.Resource> {
+    var headers = {
+      "Cache-Control": "no-cache", 
+      "Content-Type": "application/json+fhir; charset=UTF-8",
+      "Accept": "application/json+fhir; charset=utf-8"
+    };
+
+    let result = this.fhirClient.request({
+      url: operation,
+      method: "POST",
+      body: JSON.stringify(parameters),
+      headers: headers
+    });
+    return from(result);
+  }
+
+  create(resource): Observable<fhirclient.FHIR.Resource> {
+    let result = this.fhirClient.create(resource);
+
+    return from(result);
+  };
+
+  read(resourceType, id): Observable<fhirclient.FHIR.Resource> {
+    var headers = {'Cache-Control': 'no-cache'};
+
+    let result = this.fhirClient.request({
+      url: resourceType + '/' + id,
+      headers: headers
+    });
+
+    return from(result);
+  }
+
 }

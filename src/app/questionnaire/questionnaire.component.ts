@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { QuestionnaireResponse, QuestionnaireResponseService } from '../services/questionnaire-response.service';
-import { Questionnaire, QuestionnaireItem, QuestionnaireService } from '../services/questionnaire.service';
+import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
+import { Questionnaire, QuestionnaireService } from '../services/questionnaire.service';
 
 @Component({
   selector: 'questionnaire',
@@ -10,8 +10,6 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireService } from '../servi
   styleUrls: ['./questionnaire.component.css']
 })
 export class QuestionnaireComponent implements OnInit {
-
-  //@Input() questionnaire: Questionnaire;
 
   private questionnaire: Questionnaire;
 
@@ -24,25 +22,21 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("QuestionnaireComponent ngOnInit");
-    console.log(this.questionnaire);
-
     this.questionnaire$ = this.questionnaireService.getQuestionnaire();
     this.questionnaire$.subscribe(q=> {
       this.questionnaire = q;
+
+      this.questionnaireService.populate(q)
+      .subscribe(qr => 
+        //this.qresponseService.questionnaireResponse = qr
+        this.qresponseService.mergeQuestionnaireModel(qr, this.questionnaireModel)
+      );        
 
       this.questionnaireModel = this.qresponseService.makeQuestionnaireModel(q);
       console.log(this.questionnaireModel);
 
       this.questionnaireModel.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue))  
     });
-
-    /*
-    this.questionnaireModel = this.qresponseService.makeQuestionnaireModel(this.questionnaire);
-    console.log(this.questionnaireModel);
-
-    this.questionnaireModel.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue))
-    */
   }
 
   OnValueChanges(selectedValue: any)

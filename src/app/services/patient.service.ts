@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject, ReplaySubject, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import Client from 'fhirclient/lib/Client';
@@ -20,15 +20,30 @@ export interface PatientItem {
 })
 export class PatientService {
 
+  private patientSubject: Subject<fhirclient.FHIR.Patient>;
+
   constructor(private fhirService: FHIRService) { }
 
   private get fhirClient(): Client {    
     return this.fhirService.getClient();
   }
 
+  get patient$(): Observable<fhirclient.FHIR.Patient> {
+    if (!this.patientSubject)
+      this.getPatient();
+
+    return this.patientSubject.asObservable();
+  } 
+
   getPatient() :Promise<fhirclient.FHIR.Patient> {    
     if (this.fhirClient) {
       var result = this.fhirClient.patient.read();
+
+      if (!this.patientSubject)
+        this.patientSubject = new ReplaySubject<fhirclient.FHIR.Patient>(1);
+
+      from(result).subscribe(p=> this.patientSubject.next(p));      
+
       return result;
     }
 
@@ -67,7 +82,7 @@ export class PatientService {
    * @returns {*}
    */
   searchPatient(searchText: string) : Observable<PatientItem[]> {
-    return this.fhirService.fhirSearch({
+    return this.fhirService.search({
       type: "Patient",
       query: {name: searchText},
       headers: {'Cache-Control': 'no-cache'}

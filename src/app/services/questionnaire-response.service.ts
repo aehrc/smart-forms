@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
-
 import { fhirclient } from 'fhirclient/lib/types';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
-
 import { Questionnaire, QuestionnaireItem } from '../services/questionnaire.service';
 
 export interface QuestionnaireResponse extends fhirclient.FHIR.Resource {
@@ -19,7 +17,11 @@ export interface QuestionnaireResponseItem extends fhirclient.FHIR.BackboneEleme
   linkId: string;
   definition?: fhirclient.FHIR.uri;
   text?: string;
-  answer?: {
+  answer?: QuestionnaireResponseAnswer[];
+  item?: QuestionnaireResponseItem[];  
+}
+
+export interface QuestionnaireResponseAnswer extends fhirclient.FHIR.BackboneElement {
     valueBoolean?: boolean;
     valueDecimal?: number;
     valueInteger?: number;
@@ -31,10 +33,11 @@ export interface QuestionnaireResponseItem extends fhirclient.FHIR.BackboneEleme
     //valueQuantity?: ;
     valueReference?: fhirclient.FHIR.Reference;  
     item?: QuestionnaireResponseItem[];  
-  } [];
-  item?: QuestionnaireResponseItem[];  
 }
 
+export const isOfType = <T>(varToBeChecked: any, propertyToCheckFor: keyof T) 
+  : varToBeChecked is T => 
+  (varToBeChecked as T)[propertyToCheckFor] !== undefined;
 
 @Injectable({
   providedIn: 'root'
@@ -477,5 +480,105 @@ export class QuestionnaireResponseService {
             console.log(item.type + " not supported in getItemData!");
             break;
     };
+  }
+
+    /**
+   * Makes Questionnaire Reactive Form model (FormGroup) from Questionnaire
+   * @param questionnaire 
+   * @returns FormGroup
+   */
+  mergeQuestionnaireModel(qResponse: QuestionnaireResponse, questionnaireModel: FormGroup): void
+  {
+    qResponse.item.forEach(item => {
+      var itemControl = questionnaireModel.controls[item.linkId];
+      //var groupModel = itemControl as FormGroup;
+      var isFormArray = isOfType<FormArray>(itemControl, 'length');
+      var hasControls = isOfType<FormGroup>(itemControl, 'controls');
+      
+      if (isFormArray)
+           this.mergeRepeatData(item, itemControl as FormArray);
+
+      else if (hasControls) {
+        // FormGroup
+        this.mergeGroupData(item, itemControl as FormGroup);
+      }
+      else if (item.answer && item.answer.length > 0) {
+        // FormControl
+        this.mergeItemAnswer(item.answer[0], itemControl as FormControl)
+      }      
+    });
+  }
+
+  private mergeGroupData(item: QuestionnaireResponseItem, formGroup: FormGroup): void
+  {
+    item.item.forEach(item => {
+      var itemControl = formGroup.controls[item.linkId];
+      var isFormArray = isOfType<FormArray>(itemControl, 'length');
+      var hasControls = isOfType<FormGroup>(itemControl, 'controls');
+
+      if (isFormArray)
+        this.mergeRepeatData(item, itemControl as FormArray);
+
+        else if (hasControls) {
+        // FormGroup
+        this.mergeGroupData(item, itemControl as FormGroup);
+      }
+      else if (item.answer && item.answer.length > 0) {
+        // set FormControl with answer
+        this.mergeItemAnswer(item.answer[0], itemControl as FormControl)
+      }      
+    });   
+  }
+
+  private mergeRepeatData(item: QuestionnaireResponseItem, formArray: FormArray): void {
+    var isGroup = false;
+
+    item.answer?.forEach((ans, index) => {
+      if (index < 1) {
+        var itemModel = formArray.controls[index];
+        if (itemModel instanceof FormGroup) {
+          isGroup = true;
+          // TODO
+          //this.mergeGroupData(ans.item , itemModel as FormGroup);
+          console.log("TODO: Populate first repeating Group");
+        }
+        else {
+          this.mergeItemAnswer(ans, itemModel as FormControl)
+        }
+      }
+      else {
+        if (isGroup) {
+          // TODO: clone FormGroup
+          //var itemModel = new FormGroup();
+          //this.mergeGroupData(ans.item, itemModel as FormGroup);
+          //formArray.push(itemModel);
+          console.log("TODO: Populate subsequent repeating Group");
+        }
+        else {
+          var formControl = new FormControl();
+          this.mergeItemAnswer(ans, formControl);
+          formArray.push(formControl);
+        }
+      }
+    });
+  }
+
+  private mergeItemAnswer(answer: QuestionnaireResponseAnswer, formControl: FormControl) {
+    if (answer.valueInteger !== undefined) {
+      formControl.setValue(answer.valueInteger);
+    }
+    else if (answer.valueDate !== undefined) {
+      formControl.setValue(answer.valueDate);
+    }
+    else if (answer.valueString !== undefined) {
+      formControl.setValue(answer.valueString);
+    }
+    else if (answer.valueDecimal !== undefined) {
+      formControl.setValue(answer.valueDecimal);
+    }
+    else {
+      console.log ("Unsupported populate answer type");
+      console.log (answer);
+    }
   }
 }
