@@ -304,21 +304,28 @@ export class QuestionnaireFormItem extends FormControl {
 
         this.item = item;
 
-        this.valueChanges.subscribe(selectedValue => {
-            var answer : QuestionnaireResponseAnswer[] = [];
-            answer.push(this.getItemAnswer(this.item, selectedValue));
+        this.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue));  
+    }
+
+    private OnValueChanges(selectedValue: any) {
+        var answers : QuestionnaireResponseAnswer[] = [];
+
+        var answer = this.getItemAnswer(selectedValue);
+        if (answer) {
+            answers.push(answer);
 
             this.responseItem = { 
                 linkId: this.item.linkId,
                 text: this.item.text,
-                answer: answer
+                answer: answers
             };
-        
-        });  
+        }
+        else
+        this.responseItem = null;
     }
 
-    private getItemAnswer(item: QuestionnaireItem, selectedValue: any) {
-        switch (item.type) {
+    private getItemAnswer(selectedValue: any) {
+        switch (this.item.type) {
             case "integer":
               if (selectedValue != null) {
                 return { valueInteger: Number(selectedValue) };
@@ -375,9 +382,9 @@ export class QuestionnaireFormItem extends FormControl {
                 {
                     var i=0;
                     var coding = null;
-                    while (i < item.answerOption.length) { 
-                        if (item.answerOption[i].valueCoding.code == selectedValue ) {
-                            coding = item.answerOption[i];
+                    while (i < this.item.answerOption.length) { 
+                        if (this.item.answerOption[i].valueCoding.code == selectedValue ) {
+                            coding = this.item.answerOption[i];
                             break;
                         }
                         i++;
@@ -401,7 +408,7 @@ export class QuestionnaireFormItem extends FormControl {
             default:
                 //debugger;
                 //throw "Unhandled item type " + item.type;
-                console.log(item.type + " not supported in getItemData!");
+                console.log(this.item.type + " not supported in getItemData!");
                 break;
         };
     }
