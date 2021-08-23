@@ -5,7 +5,7 @@ import { of, Observable, ReplaySubject, Subject, EMPTY } from 'rxjs';
 import { fhirclient } from 'fhirclient/lib/types';
 import { FHIRService, Parameters } from './fhir.service';
 
-import { QuestionnaireResponse } from './questionnaire-response.service';
+import { QuestionnaireResponse, QuestionnaireResponseAnswer } from './questionnaire-response.service';
 import { mergeMap } from 'rxjs/operators';
 import { PopulateService } from './populate.service';
 import { PatientService } from './patient.service';
@@ -125,7 +125,19 @@ export class QuestionnaireService {
               }]                        
           };
 
-          return this.populateService.populate(questionnaire.id, parameters);
+          var questionnaireResponse$ = this.populateService.populate(questionnaire.id, parameters);
+
+          questionnaireResponse$.subscribe(qr => {
+            console.log("Prepopulated QuestionnaireResponse");
+            console.log(qr);
+
+            var s = qr.item[0].item.find(i=> i.text=="Medical history and current problems").item?.find(i=> i.linkId=="a5e9f87a-c561-4ffb-b200-9b93b8887a11").answer[0].valueString;
+            //console.log(s);
+            var a: QuestionnaireResponseAnswer[] = s.split("\r\n").map(s=> { return { valueString: s}});
+            qr.item[0].item.find(i=> i.text=="Medical history and current problems").item.find(i=> i.linkId=="a5e9f87a-c561-4ffb-b200-9b93b8887a11").answer = a;
+          });
+
+          return questionnaireResponse$;
         }));
       }));
     }
