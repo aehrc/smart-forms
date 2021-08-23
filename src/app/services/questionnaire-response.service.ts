@@ -3,6 +3,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/for
 import { fhirclient } from 'fhirclient/lib/types';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { Questionnaire, QuestionnaireItem } from '../services/questionnaire.service';
+import { QuestionnaireForm, QuestionnaireFormArray, QuestionnaireFormGroup, QuestionnaireFormItem } from './questionnaireResponse.model';
 
 export interface QuestionnaireResponse extends fhirclient.FHIR.Resource {
   resourceType: "QuestionnaireResponse";
@@ -46,7 +47,7 @@ export class QuestionnaireResponseService {
 
   private questionnaireResponseSubject: Subject<QuestionnaireResponse> = new ReplaySubject<QuestionnaireResponse>(1);
 
-  set questionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
+  private setQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
     this.questionnaireResponseSubject.next(questionnaireResponse);
   }
 
@@ -61,7 +62,7 @@ export class QuestionnaireResponseService {
    * @param questionnaire 
    * @returns FormGroup
    */
-  makeQuestionnaireModel(questionnaire: Questionnaire) : FormGroup
+/*  makeQuestionnaireForm(questionnaire: Questionnaire) : FormGroup
   {
     var controls: { [key: string]: AbstractControl; } = {};
 
@@ -131,14 +132,19 @@ export class QuestionnaireResponseService {
 
     return new FormArray(controls);
   }
+*/
 
   /**
    * Sets questionnaireResponse from Questionnaire and Questionnaire Reactive Form model (FormGroup)
    * @param questionnaire 
    * @param questionnaireModel 
    */
-  setQuestionnaireResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup): void {
-    this.questionnaireResponse = this.makeResponse(questionnaire, questionnaireModel);
+  /*setQuestionnaireResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup): void {
+    this.questionnaireResponse = this.makeQuestionnaireResponse(questionnaire, questionnaireModel);
+  }*/
+
+  onQuestionnaireResponseChanged(questionnaireResponse: QuestionnaireResponse): void {
+    this.setQuestionnaireResponse(questionnaireResponse);
   }
 
   /**
@@ -147,7 +153,8 @@ export class QuestionnaireResponseService {
    * @param questionnaireModel 
    * @returns QuestionnaireResponse
    */
-  makeResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup): QuestionnaireResponse {
+  /*
+  makeQuestionnaireResponse(questionnaire: Questionnaire, questionnaireModel: FormGroup): QuestionnaireResponse {
 
     let response: QuestionnaireResponse = { 
       "resourceType": "QuestionnaireResponse",
@@ -197,12 +204,6 @@ export class QuestionnaireResponseService {
       }
     });
 
-    /*if (responseData.answer.length == 0)
-      responseData.answer = null;
-    if (responseData.item.length == 0)
-      responseData.item = null;
-    if (responseData.item || responseData.answer)
-    */
     if (responseData.answer.length > 0)
       return responseData;
     else
@@ -250,103 +251,6 @@ export class QuestionnaireResponseService {
           }
           return null;
 
-/*        case "integer":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-          {
-            itemData.answer.push({ valueInteger: Number(formControl.value) });
-            return itemData;
-          }
-          return null;
-
-        case "decimal":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-          {
-              itemData.answer.push({ valueDecimal: Number(formControl.value) });
-              return itemData;
-          }
-          return null;
-*/
-        /*case "quantity":
-            if (item.valueQuantity != null)
-            {
-                itemData.answer = { "valueQuantity": item.valueQuantity };
-                return itemData;
-            }
-            return null;
-        */
-/*
-        case "string":
-        case "text":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-          {
-              itemData.answer.push({ "valueString": formControl.value });
-              return itemData;
-          }
-          return null;
-
-        case "date":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-          {
-              itemData.answer.push({ "valueDate": new Date(formControl.value).toISOString().split('T')[0]});
-              return itemData;
-          }
-          return null;
-
-        case "dateTime":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-          {
-              itemData.answer.push({ "valueDateTime": new Date(formControl.value).toISOString()});
-              return itemData;
-          }
-          return null;
-
-        case "boolean":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-          {
-              itemData.answer.push({ "valueBoolean": formControl.value });
-              return itemData;
-          }
-          return null;
-
-        case "choice":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-            //if (item.valueCoding && item.valueCoding.code && item.valueCoding.code.length > 0)
-            {
-                var i=0;
-                var coding = null;
-*/                /*while (i < item.answerOption.length) { 
-                    if (item.answerOption[i].valueCoding.code == item.valueCoding.code ) {
-                        coding = item.answerOption[i];
-                        break;
-                    }
-                    i++;
-                }
-                if (coding) {
-                    itemData.answer = coding;
-                    return itemData;
-                }*/
-/*            }
-            return null;
-
-        case "open-choice":
-          var formControl = model as FormControl;
-          if (formControl.value != null)
-          {
-              itemData.answer.push({ "valueString": formControl.value });
-              return itemData;
-          }
-          return null;
-
-        case "display":
-            return null;
-*/
         default:
 //            console.log(item.type + " not supported in getItemData!");
           var formControl = model as FormControl;
@@ -363,38 +267,6 @@ export class QuestionnaireResponseService {
     var answer: []                    
 
     switch (item.type) {
-/*        case "group":
-          var groupModel = model as FormGroup;
-          var groupData: QuestionnaireResponseItem[] = [];
-
-          item.item.forEach(item => {
-            var itemModel = groupModel.controls[item.linkId];
-            if (itemModel) {
-              if (itemModel instanceof FormArray)
-              {
-                var itemData = this.getRepeatData(item, itemModel);
-                if (itemData != null)
-                  groupData.push(itemData);
-              }
-              else {
-              var itemData = this.getItemData(item, itemModel);
-              if (itemData != null)
-                  groupData.push(itemData);
-              }
-            }
-            else {  
-              console.log("model for control not found: " + item.linkId);
-            }
-          });
-
-          if (groupData.length > 0)
-          {
-              itemData.item = groupData;
-              itemData.answer = null;
-              return itemData;
-          }
-          return null;
-*/
         case "integer":
           if (formControl.value != null) {
             return { valueInteger: Number(formControl.value) };
@@ -407,15 +279,6 @@ export class QuestionnaireResponseService {
               return { valueDecimal: Number(formControl.value) };
           }
           return null;
-
-        /*case "quantity":
-            if (item.valueQuantity != null)
-            {
-                itemData.answer = { "valueQuantity": item.valueQuantity };
-                return itemData;
-            }
-            return null;
-        */
 
         case "string":
         case "text":
@@ -481,104 +344,184 @@ export class QuestionnaireResponseService {
             break;
     };
   }
-
+*/
     /**
    * Makes Questionnaire Reactive Form model (FormGroup) from Questionnaire
    * @param questionnaire 
    * @returns FormGroup
    */
-  mergeQuestionnaireModel(qResponse: QuestionnaireResponse, questionnaireModel: FormGroup): void
+/*      
+
+  makeQuestionnaireFormModel(questionnaire: Questionnaire) : QuestionnaireForm
   {
-    qResponse.item.forEach(item => {
-      var itemControl = questionnaireModel.controls[item.linkId];
-      //var groupModel = itemControl as FormGroup;
-      var isFormArray = isOfType<FormArray>(itemControl, 'length');
-      var hasControls = isOfType<FormGroup>(itemControl, 'controls');
-      
-      if (isFormArray)
-           this.mergeRepeatData(item, itemControl as FormArray);
+    var controls: { [key: string]: AbstractControl; } = {};
 
-      else if (hasControls) {
-        // FormGroup
-        this.mergeGroupData(item, itemControl as FormGroup);
-      }
-      else if (item.answer && item.answer.length > 0) {
-        // FormControl
-        this.mergeItemAnswer(item.answer[0], itemControl as FormControl)
-      }      
-    });
-  }
+    questionnaire.item.forEach(item => {
 
-  private mergeGroupData(item: QuestionnaireResponseItem, formGroup: FormGroup): void
-  {
-    item.item.forEach(item => {
-      var itemControl = formGroup.controls[item.linkId];
-      var isFormArray = isOfType<FormArray>(itemControl, 'length');
-      var hasControls = isOfType<FormGroup>(itemControl, 'controls');
-
-      if (isFormArray)
-        this.mergeRepeatData(item, itemControl as FormArray);
-
-        else if (hasControls) {
-        // FormGroup
-        this.mergeGroupData(item, itemControl as FormGroup);
-      }
-      else if (item.answer && item.answer.length > 0) {
-        // set FormControl with answer
-        this.mergeItemAnswer(item.answer[0], itemControl as FormControl)
-      }      
-    });   
-  }
-
-  private mergeRepeatData(item: QuestionnaireResponseItem, formArray: FormArray): void {
-    var isGroup = false;
-
-    item.answer?.forEach((ans, index) => {
-      if (index < 1) {
-        var itemModel = formArray.controls[index];
-        if (itemModel instanceof FormGroup) {
-          isGroup = true;
-          // TODO
-          //this.mergeGroupData(ans.item , itemModel as FormGroup);
-          console.log("TODO: Populate first repeating Group");
-        }
-        else {
-          this.mergeItemAnswer(ans, itemModel as FormControl)
-        }
-      }
+      if (item.repeats)
+        controls[item.linkId] = this.makeQuestionnaireFormArray(item);
       else {
-        if (isGroup) {
-          // TODO: clone FormGroup
-          //var itemModel = new FormGroup();
-          //this.mergeGroupData(ans.item, itemModel as FormGroup);
-          //formArray.push(itemModel);
-          console.log("TODO: Populate subsequent repeating Group");
-        }
-        else {
-          var formControl = new FormControl();
-          this.mergeItemAnswer(ans, formControl);
-          formArray.push(formControl);
+        switch (item.type) {
+          case "group": 
+            controls[item.linkId] = this.makeQuestionnaireFormGroup(item);
+            break;
+          default:
+            controls[item.linkId] =  this.makeQuestionnaireFormItem(item);
         }
       }
     });
+
+    return new QuestionnaireForm(questionnaire, controls);
   }
 
-  private mergeItemAnswer(answer: QuestionnaireResponseAnswer, formControl: FormControl) {
-    if (answer.valueInteger !== undefined) {
-      formControl.setValue(answer.valueInteger);
+  private makeQuestionnaireFormArray(item: QuestionnaireItem) : QuestionnaireFormArray
+  {
+    var controls: AbstractControl[] = [];
+
+    switch (item.type) {
+      case "group": 
+        controls.push(this.makeQuestionnaireFormGroup(item));
+        break;
+
+      default:
+        controls.push(this.makeQuestionnaireFormItem(item));
     }
-    else if (answer.valueDate !== undefined) {
-      formControl.setValue(answer.valueDate);
-    }
-    else if (answer.valueString !== undefined) {
-      formControl.setValue(answer.valueString);
-    }
-    else if (answer.valueDecimal !== undefined) {
-      formControl.setValue(answer.valueDecimal);
-    }
-    else {
-      console.log ("Unsupported populate answer type");
-      console.log (answer);
-    }
+
+    var model = new QuestionnaireFormArray(controls);
+    model.item = item;
+
+    return model;
   }
+
+  private makeQuestionnaireFormGroup(group: QuestionnaireItem) : QuestionnaireFormGroup
+  {
+    var controls: { [key: string]: AbstractControl; } = {};
+
+    group.item.forEach(item => {
+
+      if (item.repeats)
+        controls[item.linkId] = this.makeQuestionnaireFormArray(item);
+      else {
+        switch (item.type) {
+          case "group": 
+            controls[item.linkId] = this.makeQuestionnaireFormGroup(item);
+            break;
+          default:
+            controls[item.linkId] =  this.makeQuestionnaireFormItem(item);
+        }
+      }
+    });
+
+    var model = new QuestionnaireFormGroup(controls);
+
+    model.item = group;
+
+    return model;
+  }
+  private makeQuestionnaireFormItem(item: QuestionnaireItem): QuestionnaireFormItem
+  {
+    var model = new QuestionnaireFormItem(item);
+
+    return model;
+  }
+*/
+
+  /**
+   * Makes Questionnaire Reactive Form model (FormGroup) from Questionnaire
+   * @param questionnaire 
+   * @returns FormGroup
+   */
+  /*makeQResponseFormModel(questionnaire: Questionnaire) : QuestionnaireGroup
+  {
+    var controls: { [key: string]: AbstractControl; } = {};
+
+    questionnaire.item.forEach(item => {
+      var childItem: QuestionnaireModelBase;
+
+      if (item.repeats)
+        childItem = this.makeQResponseRepeatModel(item);
+      else {
+        switch (item.type) {
+          case "group": 
+          childItem = this.makeQResponseGroupModel(item);
+            break;
+          default:
+            childItem = this.makeQResponseItemModel(item);
+        }
+      }
+      controls[item.linkId] = childItem.formModel;
+    });
+
+    var model: QuestionnaireGroup = {
+      questionnaireItem: null,
+      responseItem: null,
+      formModel: new FormGroup(controls)
+    };
+
+    return model;
+  }
+
+  private makeQResponseRepeatModel(item: QuestionnaireItem) : QuestionnaireArray
+  {
+    var controls: AbstractControl[] = [];
+
+    switch (item.type) {
+      case "group": 
+        controls.push(this.makeQuestionnaireGroup(item));
+        break;
+
+      default:
+        controls.push(this.makeQuestionnaireItem(item));
+    }
+
+    return null; 
+  }
+      
+  private makeQResponseGroupModel(group: QuestionnaireItem) : QuestionnaireGroup
+  {
+    var controls: { [key: string]: AbstractControl; } = {};
+
+    group.item.forEach(item => {
+      var childItem: QuestionnaireModelBase;
+
+      if (item.repeats)
+        childItem = this.makeQResponseRepeatModel(item);
+      else {
+        switch (item.type) {
+          case "group": 
+          childItem = this.makeQResponseGroupModel(item);
+            break;
+          default:
+            childItem = this.makeQResponseItemModel(item);
+        }
+      }
+      controls[item.linkId] = childItem.formModel;
+    });
+
+    var model: QuestionnaireGroup = {
+      questionnaireItem: group,
+      responseItem: null,
+      formModel: new FormGroup(controls)
+    };
+
+    return model;
+  }
+
+  private makeQResponseItemModel(item: QuestionnaireItem) :     QuestionnaireItemModel
+  {
+    var formControl: AbstractControl = null;
+
+    switch (item.type) {
+      default:
+        formControl = new FormControl();
+    }
+
+    var model: QuestionnaireItemModel = {
+      questionnaireItem: item,
+      formModel: formControl,
+      responseItem: null
+    };
+
+    return model;
+  }*/
 }

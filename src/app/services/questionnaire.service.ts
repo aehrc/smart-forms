@@ -128,8 +128,6 @@ export class QuestionnaireService {
           var questionnaireResponse$ = this.populateService.populate(questionnaire.id, parameters);
 
           questionnaireResponse$.subscribe(qr => {
-            console.log("Prepopulated QuestionnaireResponse");
-            console.log(qr);
 
             var s = qr.item[0].item.find(i=> i.text=="Medical history and current problems").item?.find(i=> i.linkId=="a5e9f87a-c561-4ffb-b200-9b93b8887a11").answer[0].valueString;
             //console.log(s);

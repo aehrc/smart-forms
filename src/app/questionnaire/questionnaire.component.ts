@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
 import { Questionnaire, QuestionnaireService } from '../services/questionnaire.service';
+import { QuestionnaireForm } from '../services/questionnaireResponse.model';
 
 @Component({
   selector: 'questionnaire',
@@ -11,11 +12,11 @@ import { Questionnaire, QuestionnaireService } from '../services/questionnaire.s
 })
 export class QuestionnaireComponent implements OnInit {
 
-  private questionnaire: Questionnaire;
+  //private questionnaire: Questionnaire;
 
   questionnaire$: Observable<Questionnaire>;
 
-  questionnaireModel: FormGroup = new FormGroup({});
+  questionnaireModel: QuestionnaireForm;
 
   constructor(private questionnaireService: QuestionnaireService, 
     private qresponseService: QuestionnaireResponseService) { 
@@ -24,26 +25,20 @@ export class QuestionnaireComponent implements OnInit {
   ngOnInit(): void {
     this.questionnaire$ = this.questionnaireService.getQuestionnaire();
     this.questionnaire$.subscribe(q=> {
-      this.questionnaire = q;
-
+      //this.questionnaire = q;
+     
       this.questionnaireService.populate(q)
       .subscribe(qr => 
-        //this.qresponseService.questionnaireResponse = qr
-        this.qresponseService.mergeQuestionnaireModel(qr, this.questionnaireModel)
+        this.questionnaireModel.merge(qr)
       );        
 
-      this.questionnaireModel = this.qresponseService.makeQuestionnaireModel(q);
-      console.log(this.questionnaireModel);
+      //this.questionnaireModel = this.qresponseService.makeQuestionnaireFormModel(q);
+      this.questionnaireModel = new QuestionnaireForm(q);
 
-      this.questionnaireModel.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue))  
+      //console.log(this.questionnaireModel);
+
+      this.questionnaireModel.questionnaireResponse$.subscribe( 
+        response => this.qresponseService.onQuestionnaireResponseChanged(response));
     });
   }
-
-  OnValueChanges(selectedValue: any)
-  {
-    console.log('questionnaire response changed');
-    console.log(selectedValue);
-
-    this.qresponseService.setQuestionnaireResponse(this.questionnaire, this.questionnaireModel);
-  }  
 }
