@@ -12,7 +12,7 @@ import { QuestionnaireForm } from '../services/questionnaireResponse.model';
 })
 export class QuestionnaireComponent implements OnInit {
 
-  //private questionnaire: Questionnaire;
+  showSpinner: boolean;
 
   questionnaire$: Observable<Questionnaire>;
 
@@ -23,19 +23,20 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.showSpinner = true;
+
     this.questionnaire$ = this.questionnaireService.getQuestionnaire();
     this.questionnaire$.subscribe(q=> {
-      //this.questionnaire = q;
-     
+      this.showSpinner = true;
+
       this.questionnaireService.populate(q)
-      .subscribe(qr => 
-        this.questionnaireModel.merge(qr)
-      );        
+      .subscribe(qr => {
+        this.questionnaireModel.merge(qr);
 
-      //this.questionnaireModel = this.qresponseService.makeQuestionnaireFormModel(q);
+        this.showSpinner = false;
+      });        
+
       this.questionnaireModel = new QuestionnaireForm(q);
-
-      //console.log(this.questionnaireModel);
 
       this.questionnaireModel.questionnaireResponse$.subscribe( 
         response => this.qresponseService.onQuestionnaireResponseChanged(response));

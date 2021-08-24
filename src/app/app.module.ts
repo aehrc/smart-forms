@@ -27,6 +27,7 @@ import {
 } from './questionnaire-item/questionnaire-item.component';
 import { QuestionnaireItemGroupComponent, TabFilterPipe, NonTabItemFilterPipe } from './questionnaire-item/questionnaire-item-group.component';
 import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/ques
     QuestionnaireItemQuantityComponent,
     QuestionnaireOffCanvasComponent,
     TabFilterPipe,
-    NonTabItemFilterPipe
+    NonTabItemFilterPipe,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
