@@ -12,7 +12,6 @@ import { QuestionnaireComponent } from './questionnaire/questionnaire.component'
 import { HttpClientModule } from '@angular/common/http';
 import { 
   QuestionnaireItemComponent, 
-  QuestionnaireItemRepeatComponent,
   QuestionnaireItemStringComponent,
   QuestionnaireItemTextComponent,
   QuestionnaireItemBooleanComponent,
@@ -26,6 +25,7 @@ import {
   QuestionnaireItemQuantityComponent
 } from './questionnaire-item/questionnaire-item.component';
 import { QuestionnaireItemGroupComponent, TabFilterPipe, NonTabItemFilterPipe } from './questionnaire-item/questionnaire-item-group.component';
+import { QuestionnaireItemRepeatComponent } from './questionnaire-item/questionnaire-item-repeat.component';
 import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 

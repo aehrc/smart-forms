@@ -29,19 +29,6 @@ export class QuestionnaireItemComponent extends QuestionnaireItemBase {
 }
 
 @Component({
-  selector: 'qitem-repeat',
-  templateUrl: './questionnaire-item-repeat.component.html',
-  styleUrls: ['./questionnaire-item.component.css']
-})
-export class QuestionnaireItemRepeatComponent extends QuestionnaireItemBase  {
-  repeatArray: FormArray = new FormArray([]);
-
-  onInit() {
-    this.repeatArray = this.parentGroup.controls[this.item.linkId] as FormArray;
-  }
-}
-
-@Component({
   selector: 'qitem-string',
   templateUrl: './questionnaire-item-string.component.html',
   styleUrls: ['./questionnaire-item.component.css']

@@ -1,0 +1,18 @@
+.flex {
+    display: flex;
+}
+
+.right {
+    margin-left: auto;
+}
+
+.repeat-text {
+    margin-bottom: 1em;
+}
+
+.border-bottom {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px;
+}
+

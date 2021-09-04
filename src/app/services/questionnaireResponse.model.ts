@@ -272,6 +272,9 @@ export class QuestionnaireFormArray extends FormArray {
             }
           }
         });
+
+        if (item.answer?.length > 0)
+          this.push(new QuestionnaireFormItem(this.item));
     }
     
     private static createControls(item: QuestionnaireItem) : AbstractControl[]

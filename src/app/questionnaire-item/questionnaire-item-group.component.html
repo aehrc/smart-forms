@@ -50,8 +50,9 @@
 </div>
 
 <ng-template #other_content>
-<div class="container p-3 mb-3 border" id="{{item.linkId}}"  > <!--ng-show="$ctrl.enableWhen()"-->
-    <h5>{{item.text}}</h5>
+    <!--ng-show="$ctrl.enableWhen()"-->
+    <div [ngClass]="{'container p-3 border mb-3': !repeat }" [ngClass]="{'row': repeat }" id="{{item.linkId}}">  
+    <h5 *ngIf="!repeat">{{item.text}}</h5>
 
     <div *ngFor="let item of item.item" >
         <qitem-repeat *ngIf="item.repeats" [item]="item" [parentGroup]="formGroup"></qitem-repeat>
@@ -75,7 +76,7 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 </ng-template>
 
 

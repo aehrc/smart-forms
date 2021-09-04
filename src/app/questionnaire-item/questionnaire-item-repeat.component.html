@@ -1,34 +1,52 @@
-
-<!--qitem [item]="item" [parentArray]="repeatArray"></qitem-->
-<div *ngFor="let repeat of repeatArray.controls; let i = index" [ngSwitch]="item.type">
-<div [ngSwitch]="item.type">
-    <!--qitem-group *ngSwitchCase="'group'" [item]="item" [parentArray]="repeatArray" ></qitem-group>
-    <qitem-string *ngSwitchCase="'string'" [item]="item" [parentArray]="repeatArray"></qitem-string>
-    <qitem-text *ngSwitchCase="'text'" [item]="item" [parentArray]="repeatArray"></qitem-text>
-    <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [parentArray]="repeatArray"></qitem-boolean>
-    <qitem-integer *ngSwitchCase="'integer'" [item]="item" [parentArray]="repeatArray"></qitem-integer>
-    <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentArray]="repeatArray"></qitem-decimal>
-    <qitem-date *ngSwitchCase="'date'" [item]="item" [parentArray]="repeatArray"></qitem-date>
-    <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentArray]="repeatArray"></qitem-datetime>
-    <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentArray]="repeatArray"></qitem-choice>
-    <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [parentArray]="repeatArray"></qitem-openchoice>
-    <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentArray]="repeatArray"></qitem-quantity-->
-
-    <qitem-group *ngSwitchCase="'group'" [item]="item" [repeat]="repeat" ></qitem-group>
-    <qitem-string *ngSwitchCase="'string'" [item]="item" [repeat]="repeat"></qitem-string>
-    <qitem-text *ngSwitchCase="'text'" [item]="item" [repeat]="repeat"></qitem-text>
-    <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [repeat]="repeat"></qitem-boolean>
-    <qitem-integer *ngSwitchCase="'integer'" [item]="item" [repeat]="repeat"></qitem-integer>
-    <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [repeat]="repeat"></qitem-decimal>
-    <qitem-date *ngSwitchCase="'date'" [item]="item" [repeat]="repeat"></qitem-date>
-    <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [repeat]="repeat"></qitem-datetime>
-    <qitem-choice *ngSwitchCase="'choice'" [item]="item" [repeat]="repeat"></qitem-choice>
-    <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [repeat]="repeat"></qitem-openchoice>
-    <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [repeat]="repeat"></qitem-quantity>
-
-    <div *ngSwitchDefault class="mb-3">
-        <label for="{{item.linkId}}">{{item.text}}</label>
-        <span><em>&lt;{{item.type}}&gt;</em></span>
+<div *ngIf="item.type == 'group'; else other_content" class="container p-3 mb-3 border-bottom">
+    <h5 *ngIf="!repeats">{{item.text}}</h5>
+    <div *ngFor="let repeat of repeatArray.controls; let i = index" [ngSwitch]="item.type" [ngClass]="{'border-bottom': i < repeatArray.controls.length -1 }">
+        <qitem-group *ngSwitchCase="'group'" [item]="item" [repeat]="repeat" ></qitem-group>
+        <div class="flex">
+            <button (click)="remove(i)" type="button" class="btn-sm btn-outline-danger right" [disabled]="!hasValue(i)">
+                <i class="fa fa-minus-circle fa-lg"></i>
+            </button>
+        </div>
     </div>
+    <div class="flex">
+        <button (click)="addNew()" type="button" class="btn-sm btn-outline-primary" [disabled]="!hasValue(repeatArray.controls.length-1)">
+            <i class="fa fa-plus-circle fa-lg"></i> Add {{ item.text.length > 16 ? (item.text | slice:0:16) + '..' : item.text }}
+        </button>
+    </div>    
 </div>
-<button>Add another</button>
+
+<ng-template #other_content>
+    <label for="{{item.linkId}}" class="col-sm-5 col-form-label">{{item.text}}</label>
+    <div *ngFor="let repeat of repeatArray.controls; let i = index" [ngSwitch]="item.type" class="row mb-3">
+        <div [ngSwitch]="item.type" class="col-sm-11">
+            <qitem-string *ngSwitchCase="'string'" [item]="item" [repeat]="repeat"></qitem-string>
+            <qitem-text *ngSwitchCase="'text'" [item]="item" [repeat]="repeat"></qitem-text>
+            <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [repeat]="repeat"></qitem-boolean>
+            <qitem-integer *ngSwitchCase="'integer'" [item]="item" [repeat]="repeat"></qitem-integer>
+            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [repeat]="repeat"></qitem-decimal>
+            <qitem-date *ngSwitchCase="'date'" [item]="item" [repeat]="repeat"></qitem-date>
+            <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [repeat]="repeat"></qitem-datetime>
+            <qitem-choice *ngSwitchCase="'choice'" [item]="item" [repeat]="repeat"></qitem-choice>
+            <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [repeat]="repeat"></qitem-openchoice>
+            <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [repeat]="repeat"></qitem-quantity>
+
+            <div *ngSwitchDefault class="mb-3">
+                <span><em>&lt;{{item.type}}&gt;</em></span>
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <button (click)="remove(i)" type="button" class="btn-sm btn-outline-danger" [disabled]="!hasValue(i)">
+                <i class="fa fa-minus-circle fa-lg"></i>
+            </button>
+            <!--button *ngIf="i==repeatArray.controls.length-1" (click)="addNew()" type="button" class="btn-sm btn-outline-primary" [disabled]="!hasValue(i)">
+                <i class="fa fa-plus-circle fa-lg"></i>
+            </button-->    
+        </div>
+    </div>
+    <div class="flex">
+        <button (click)="addNew()" type="button" class="btn-sm btn-outline-primary right" [disabled]="!hasValue(repeatArray.controls.length-1)">
+            <i class="fa fa-plus-circle fa-lg"></i> Add {{item.text}}
+        </button>
+    </div>
+</ng-template>
+
