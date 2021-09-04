@@ -11,7 +11,6 @@ import { PatientBannerComponent } from './patient-banner/patient-banner.componen
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { HttpClientModule } from '@angular/common/http';
 import { 
-  QuestionnaireItemComponent, 
   QuestionnaireItemStringComponent,
   QuestionnaireItemTextComponent,
   QuestionnaireItemBooleanComponent,
@@ -38,7 +37,6 @@ import { SpinnerComponent } from './spinner/spinner.component';
     QRenderComponent,
     PatientBannerComponent,
     QuestionnaireComponent,
-    QuestionnaireItemComponent, 
     QuestionnaireItemGroupComponent, 
     QuestionnaireItemRepeatComponent,
     QuestionnaireItemStringComponent,

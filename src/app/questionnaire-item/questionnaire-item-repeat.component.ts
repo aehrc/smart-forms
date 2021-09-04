@@ -1,10 +1,8 @@
-
 import { Component } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
-//import { QuestionnaireItem } from '../services/questionnaire.service';
 import { QuestionnaireFormGroup, QuestionnaireFormItem } from '../services/questionnaireResponse.model';
-import { QuestionnaireItemBase } from './questionnaire-item.component';
+import { QuestionnaireItemBase } from './questionnaire-item-base.component';
 
 @Component({
     selector: 'qitem-repeat',
@@ -42,13 +40,9 @@ import { QuestionnaireItemBase } from './questionnaire-item.component';
         if (this.item.type != "group")
             return item.value;
         else {
-            console.log(this.item.text, i, "valid:", item.valid,  "pristine", item.pristine, 
-            "touched", item.touched, "value:", item.value);
-
             var group = item as FormGroup;  
             for(let control of Object.keys(group.controls)) {
                 var c = group.controls[control];
-                console.log(c);
                 if (c.value)  
                     return true;
             }

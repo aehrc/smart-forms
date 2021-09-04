@@ -1,22 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormControl, FormArray, AbstractControl } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormArray } from '@angular/forms';
+import { QuestionnaireItemBase } from './questionnaire-item-base.component';
 
-import { QuestionnaireItem } from '../services/questionnaire.service';
-
-export abstract class QuestionnaireItemBase implements OnInit {
-  @Input() item: QuestionnaireItem;
-
-  @Input() parentGroup: FormGroup;
-  @Input() repeat: AbstractControl;
-
-  abstract onInit() : void;
-
-  ngOnInit(): void {
-    this.onInit();
-  }
-
-}
-
+/*
 @Component({
   selector: 'qitem',
   templateUrl: './questionnaire-item.component.html',
@@ -27,6 +13,7 @@ export class QuestionnaireItemComponent extends QuestionnaireItemBase {
   onInit() {
   }
 }
+*/
 
 @Component({
   selector: 'qitem-string',

@@ -3,7 +3,7 @@
     <div class="col-sm-7"> 
     <textarea id="{{item.linkId}}" class="form-control" rows="3" [formControl]="formControl"></textarea>
 
-    <!--span ng-if="hasQuestionnaireInstruction()" class="questionnaire-instruction">{{questionnaireInstruction()}}</span-->
+    <span *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</span>
     </div>
 </div>
 

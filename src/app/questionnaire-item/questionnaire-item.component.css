@@ -16,3 +16,19 @@
     border-bottom: 1px;
 }
 
+.questionnaire-instruction {
+    font-size: smaller;
+    font-style: italic;
+    color: gray;
+    white-space: pre-line;
+}
+  
+.form-control::placeholder {
+    color: lightgray;
+}
+  
+/* date placeholder */
+input[type=date].date-empty {
+    color: lightgray;
+}
+  
