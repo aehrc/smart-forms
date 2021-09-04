@@ -50,8 +50,7 @@
 </div>
 
 <ng-template #other_content>
-    <!--ng-show="$ctrl.enableWhen()"-->
-    <div [ngClass]="{'container p-3 border mb-3': !repeat }" [ngClass]="{'row': repeat }" id="{{item.linkId}}">  
+    <div [ngClass]="{'container p-3 border mb-3': !repeat }" [ngClass]="{'row': repeat }" id="{{item.linkId}}" [hidden]="!(enableWhen() | async)">  
     <h5 *ngIf="!repeat">{{item.text}}</h5>
 
     <div *ngFor="let item of item.item" >

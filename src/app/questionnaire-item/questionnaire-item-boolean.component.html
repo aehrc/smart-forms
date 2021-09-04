@@ -1,4 +1,4 @@
-<div class="row mb-3" ><!--ng-show="enableWhen()" -->
+<div class="row mb-3" [hidden]="!(enableWhen() | async)" >
     <label class="form-check-label col-sm-5" for="{{item.linkId}}">{{item.text}}</label>
     <div class="col-sm-7">
         <div class="form-check">

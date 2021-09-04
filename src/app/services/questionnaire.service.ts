@@ -25,6 +25,7 @@ export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
   linkId: string;
   text: string;
   type: fhirclient.FHIR.code;
+  enableWhen: EnableWhen[];
   required: boolean;
   repeats: boolean;
   answerOption: AnswerOption[];
@@ -38,6 +39,14 @@ export interface AnswerOption extends fhirclient.FHIR.BackboneElement {
   valueString: string;
   valueCoding: fhirclient.FHIR.Coding;
   //valueRefrence: Reference;
+}
+
+export interface EnableWhen extends fhirclient.FHIR.BackboneElement {
+  question: string, 
+  operator: fhirclient.FHIR.code, 
+  answerInteger?: number,
+  answerCoding?: fhirclient.FHIR.Coding,
+  answerBoolean?: boolean
 }
 
 @Injectable({

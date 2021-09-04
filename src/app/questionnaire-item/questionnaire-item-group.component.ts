@@ -5,6 +5,7 @@ import { QuestionnaireItem } from '../services/questionnaire.service';
 import { QuestionnaireItemBase } from './questionnaire-item-base.component';
 
 import { Pipe, PipeTransform } from '@angular/core';
+import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
 
 abstract class TabFilterPipeBase {
 
@@ -53,8 +54,8 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
 
   formGroup: FormGroup = new FormGroup({});
 
-  constructor(private tabFilter: TabFilterPipe) {
-      super();
+  constructor(private tabFilter: TabFilterPipe, qresponseService: QuestionnaireResponseService) {
+      super(qresponseService);
   }
 
   onInit() {

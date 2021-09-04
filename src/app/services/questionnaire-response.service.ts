@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fhirclient } from 'fhirclient/lib/types';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, ReplaySubject, Subject, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 export interface QuestionnaireResponse extends fhirclient.FHIR.Resource {
   resourceType: "QuestionnaireResponse";
@@ -56,5 +57,39 @@ export class QuestionnaireResponseService {
 
   onQuestionnaireResponseChanged(questionnaireResponse: QuestionnaireResponse): void {
     this.setQuestionnaireResponse(questionnaireResponse);
+  }
+
+  findItem(linkId: string) : Observable<QuestionnaireResponseItem> {
+    return this.getQuestionnaireResponse().pipe(switchMap( qr => { 
+
+      let qItem: QuestionnaireResponseItem = null;
+
+      for (let index = 0; index < qr.item.length; index++) {
+          qItem = this._findItem(qr.item[index], linkId);
+          if (qItem) {
+              break;
+          }
+      }
+      if (qItem)
+        return of(qItem);
+      else
+        return of<QuestionnaireResponseItem>();
+    }));
+  }
+
+  private _findItem(item: QuestionnaireResponseItem, linkId: string): QuestionnaireResponseItem {
+    if (item.linkId == linkId) {
+      return item;
+    }
+
+    if (item.item) {
+      for (let index = 0; index < item.item.length; index++) {
+        var i = this._findItem(item.item[index], linkId);
+        if (i) {
+          return i;
+        }
+      }                
+    }
+    return null;
   }
 }

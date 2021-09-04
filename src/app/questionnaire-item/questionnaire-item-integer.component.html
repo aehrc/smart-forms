@@ -1,4 +1,4 @@
-<div class="row mb-3" [hidden]="isHidden()">
+<div class="row mb-3" [hidden]="isHidden() || !(enableWhen() | async)">
     <label for="{{item.linkId}}" class="col-sm-5 col-form-label">{{item.text}}</label>
     <div class="col-sm-2"> 
     <input type="number" class="form-control" id="{{item.linkId}}" placeholder="0" [formControl]="formControl">

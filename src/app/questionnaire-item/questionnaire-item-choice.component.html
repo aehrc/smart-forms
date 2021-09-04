@@ -1,4 +1,4 @@
-<div class="row mb-3">
+<div class="row mb-3" [hidden]="!(enableWhen() | async)">
   <label *ngIf="!repeat" class="col-sm-5 col-form-label" for="{{item.linkId}}">{{item.text}}</label>
 
   <div [ngClass]="{'col-sm-7': !repeat}" *ngIf="item.answerOption?.length > droplistOptionsCount || item.answerOption?.length < 1; else checked_content">
