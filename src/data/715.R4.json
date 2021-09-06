@@ -351,7 +351,8 @@
                         {
                             "linkId": "6dcb36ba-8ce1-471a-bd5a-98c63791b4f3",
                             "text": "Date",
-                            "type": "date"
+                            "type": "date",
+                            "required": true
                         },
                         {
                             "linkId": "e51a2862-72a0-4640-b516-712b574210f1",

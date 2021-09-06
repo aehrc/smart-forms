@@ -1,5 +1,5 @@
-import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms"
-import { Questionnaire, QuestionnaireItem } from "./questionnaire.service";
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from "@angular/forms"
+import { Questionnaire, QuestionnaireItem } from "./questionnaire.model";
 import { QuestionnaireResponse, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from "./questionnaire-response.service";
 import { Observable, ReplaySubject, Subject } from "rxjs";
 
@@ -308,6 +308,11 @@ export class QuestionnaireFormItem extends FormControl {
         this.item = item;
 
         this.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue));  
+
+        if (item.required) {
+          //this.validator
+          this.setValidators(Validators.required);
+        }
     }
 
     private OnValueChanges(selectedValue: any) {

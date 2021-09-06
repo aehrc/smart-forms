@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, Observable, ReplaySubject, Subject, EMPTY } from 'rxjs';
 
-import { fhirclient } from 'fhirclient/lib/types';
 import { FHIRService, Parameters } from './fhir.service';
 
+import { Questionnaire } from './questionnaire.model';
 import { QuestionnaireResponse, QuestionnaireResponseAnswer } from './questionnaire-response.service';
 import { mergeMap } from 'rxjs/operators';
 import { PopulateService } from './populate.service';
@@ -14,39 +14,6 @@ export interface QuestionnaireCandidate {
   name: string;
   title: string;
   url: string;
-}
-
-export interface Questionnaire extends fhirclient.FHIR.Resource {
-  resourceType: "Questionnaire";
-  item: QuestionnaireItem[];
-}
-
-export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
-  linkId: string;
-  text: string;
-  type: fhirclient.FHIR.code;
-  enableWhen: EnableWhen[];
-  required: boolean;
-  repeats: boolean;
-  answerOption: AnswerOption[];
-  item: QuestionnaireItem[];  
-}
-
-export interface AnswerOption extends fhirclient.FHIR.BackboneElement {
-  valueInteger: number;
-  //valueDate: fhirclient.FHIR.date;
-  //valueTime: fhirclient.FHIR.time;
-  valueString: string;
-  valueCoding: fhirclient.FHIR.Coding;
-  //valueRefrence: Reference;
-}
-
-export interface EnableWhen extends fhirclient.FHIR.BackboneElement {
-  question: string, 
-  operator: fhirclient.FHIR.code, 
-  answerInteger?: number,
-  answerCoding?: fhirclient.FHIR.Coding,
-  answerBoolean?: boolean
 }
 
 @Injectable({

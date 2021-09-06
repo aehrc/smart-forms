@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
-import { Questionnaire, QuestionnaireService } from '../services/questionnaire.service';
+import { QuestionnaireService } from '../services/questionnaire.service';
+import { Questionnaire } from '../services/questionnaire.model';
 import { QuestionnaireForm } from '../services/questionnaireResponse.model';
 
 @Component({

@@ -2,7 +2,8 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QuestionnaireResponse, QuestionnaireResponseService } from '../services/questionnaire-response.service';
-import { Questionnaire, QuestionnaireService } from '../services/questionnaire.service';
+import { QuestionnaireService } from '../services/questionnaire.service';
+import { Questionnaire } from '../services/questionnaire.model';
 
 @Component({
   selector: 'questionnaire-off-canvas',

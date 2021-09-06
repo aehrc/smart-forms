@@ -6,7 +6,8 @@ import { EMPTY, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { FHIRService } from '../services/fhir.service';
 import { PatientService } from '../services/patient.service';
-import { Questionnaire, QuestionnaireService } from '../services/questionnaire.service';
+import { QuestionnaireService } from '../services/questionnaire.service';
+import { Questionnaire } from '../services/questionnaire.model';
 
 @Component({
   selector: 'questionnaire-render',

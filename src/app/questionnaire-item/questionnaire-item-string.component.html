@@ -1,6 +1,6 @@
 <div class="row mb-3" [hidden]="!(enableWhen() | async)">
     <label for="{{item.linkId}}" class="col-sm-5 col-form-label">{{item.text}}</label>
     <div class="col-sm-7"> 
-        <input type="text" class="form-control" id="{{item.linkId}}" [formControl]="formControl">
+        <input type="text" class="form-control" id="{{item.linkId}}" [formControl]="formControl" [ngClass]="{'required': item.required}" >
     </div>
 </div>
