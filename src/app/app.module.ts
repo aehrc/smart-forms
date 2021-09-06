@@ -10,13 +10,13 @@ import { QRenderComponent } from './qrender/qrender.component';
 import { PatientBannerComponent } from './patient-banner/patient-banner.component';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { HttpClientModule } from '@angular/common/http';
+
 import { 
   QuestionnaireItemStringComponent,
   QuestionnaireItemTextComponent,
   QuestionnaireItemBooleanComponent,
   QuestionnaireItemDateComponent,
   QuestionnaireItemIntegerComponent,
-  QuestionnaireItemChoiceComponent,
   QuestionnaireItemDateTimeComponent,
   QuestionnaireItemDecimalComponent,
   QuestionnaireItemDisplayComponent,
@@ -25,6 +25,8 @@ import {
 } from './questionnaire-item/questionnaire-item.component';
 import { QuestionnaireItemGroupComponent, TabFilterPipe, NonTabItemFilterPipe } from './questionnaire-item/questionnaire-item-group.component';
 import { QuestionnaireItemRepeatComponent } from './questionnaire-item/questionnaire-item-repeat.component';
+import { QuestionnaireItemChoiceComponent } from './questionnaire-item/questionnaire-item-choice.component';
+
 import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 

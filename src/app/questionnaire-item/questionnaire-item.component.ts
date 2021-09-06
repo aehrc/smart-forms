@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormArray } from '@angular/forms';
+import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
 import { QuestionnaireItemBase } from './questionnaire-item-base.component';
 
 /*
@@ -92,57 +93,6 @@ export class QuestionnaireItemIntegerComponent extends QuestionnaireItemBase  {
     if (this.parentGroup)
       this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
 
-  }
-}
-
-@Component({
-  selector: 'qitem-choice',
-  templateUrl: './questionnaire-item-choice.component.html',
-  styleUrls: ['./questionnaire-item.component.css']
-})
-export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase  {
-
-  readonly droplistOptionsCount = 6;
-
-  formControl = new FormControl();
-
-  checkboxes: FormArray =  new FormArray([]);
-
-  isHorizontal: boolean = true;  
-
-  onInit() {
-
-    if (this.item.answerOption?.length <= this.droplistOptionsCount)
-    {
-      this.item.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
-    }
-
-    if (this.parentGroup)
-      this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
-
-    var choiceOrentiation = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation");
-    switch (choiceOrentiation?.valueCode) {
-      case "vertical": 
-        this.isHorizontal = false;
-        break;
-      case "horizontal": 
-        this.isHorizontal = true;
-        break;
-    }    
-  }
-
-  onCheckboxChange(event, index) {
-    if (event.target.checked) {
-        this.formControl.setValue(event.target.value);
-        var i = 0;
-        this.checkboxes.controls.forEach(element => { 
-          if (i++ != index)
-            (element as FormControl).setValue(null);
-        });
-    }
-    else {
-      this.formControl.setValue(null);
-    }
   }
 }
 

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { Questionnaire } from '../services/questionnaire.model';
-import { QuestionnaireForm } from '../services/questionnaireResponse.model';
+import { QuestionnaireForm } from '../services/questionnaire-response.model';
 
 @Component({
   selector: 'questionnaire',

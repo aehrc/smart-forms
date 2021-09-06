@@ -5,7 +5,7 @@ import { first, mergeMap, switchMap } from 'rxjs/operators';
 import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
 
 import { QuestionnaireItem } from '../services/questionnaire.model';
-import { QuestionnaireFormGroup } from '../services/questionnaireResponse.model';
+import { QuestionnaireFormGroup } from '../services/questionnaire-response.model';
 
 export abstract class QuestionnaireItemBase implements OnInit {
     @Input() item: QuestionnaireItem;

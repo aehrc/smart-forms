@@ -1,5 +1,5 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from "@angular/forms"
-import { Questionnaire, QuestionnaireItem } from "./questionnaire.model";
+import { AnswerOption, Questionnaire, QuestionnaireItem } from "./questionnaire.model";
 import { QuestionnaireResponse, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from "./questionnaire-response.service";
 import { Observable, ReplaySubject, Subject } from "rxjs";
 
@@ -295,21 +295,23 @@ export class QuestionnaireFormArray extends FormArray {
 }
 
 export class QuestionnaireFormItem extends FormControl { 
-    item: QuestionnaireItem;
+    item?: QuestionnaireItem;
 
     private responseItem: QuestionnaireResponseItem;
     get response() : QuestionnaireResponseItem {
         return this.responseItem;    
     };
 
-    constructor(item: QuestionnaireItem) {
+    answerOption?: AnswerOption[];
+    
+    constructor(item?: QuestionnaireItem) {
         super();
 
         this.item = item;
 
         this.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue));  
 
-        if (item.required) {
+        if (item?.required) {
           //this.validator
           this.setValidators(Validators.required);
         }
@@ -329,7 +331,7 @@ export class QuestionnaireFormItem extends FormControl {
             };
         }
         else
-        this.responseItem = null;
+          this.responseItem = null;
     }
 
     private getItemAnswer(selectedValue: any) {
@@ -390,9 +392,9 @@ export class QuestionnaireFormItem extends FormControl {
                 {
                     var i=0;
                     var coding = null;
-                    while (i < this.item.answerOption.length) { 
-                        if (this.item.answerOption[i].valueCoding.code == selectedValue ) {
-                            coding = this.item.answerOption[i];
+                    while (i < this.answerOption?.length) { 
+                        if (this.answerOption[i].valueCoding.code == selectedValue ) {
+                            coding = this.answerOption[i];
                             break;
                         }
                         i++;

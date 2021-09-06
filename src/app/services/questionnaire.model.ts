@@ -7,12 +7,13 @@ export interface Questionnaire extends fhirclient.FHIR.Resource {
   
   export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
     linkId: string;
-    text: string;
+    text?: string;
     type: fhirclient.FHIR.code;
-    enableWhen: EnableWhen[];
-    required: boolean;
-    repeats: boolean;
-    answerOption: AnswerOption[];
+    enableWhen?: EnableWhen[];
+    required?: boolean;
+    repeats?: boolean;
+    answerValueSet?: string;
+    answerOption?: AnswerOption[];
     item: QuestionnaireItem[];  
   }
   
