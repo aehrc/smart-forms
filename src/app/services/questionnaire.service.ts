@@ -103,12 +103,14 @@ export class QuestionnaireService {
 
           var questionnaireResponse$ = this.populateService.populate(questionnaire.id, parameters);
 
+          // temporary workaround to repalce multiple medical history lines into repeat answers
           questionnaireResponse$.subscribe(qr => {
-
-            var s = qr.item[0].item.find(i=> i.text=="Medical history and current problems").item?.find(i=> i.linkId=="a5e9f87a-c561-4ffb-b200-9b93b8887a11").answer[0].valueString;
-            //console.log(s);
-            var a: QuestionnaireResponseAnswer[] = s.split("\r\n").map(s=> { return { valueString: s}});
-            qr.item[0].item.find(i=> i.text=="Medical history and current problems").item.find(i=> i.linkId=="a5e9f87a-c561-4ffb-b200-9b93b8887a11").answer = a;
+            var item = qr.item[0].item?.find(i=> i.text=="Medical history and current problems").item?.find(i=> i.linkId=="a5e9f87a-c561-4ffb-b200-9b93b8887a11");
+            if (item?.answer) {
+              var s = item.answer[0].valueString;
+              var newAnswer: QuestionnaireResponseAnswer[] = s.split("\r\n").map(s=> { return { valueString: s}});
+              item.answer = newAnswer;
+            }
           });
 
           return questionnaireResponse$;

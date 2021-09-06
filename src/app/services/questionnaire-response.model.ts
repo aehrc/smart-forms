@@ -153,17 +153,19 @@ export class QuestionnaireFormGroup extends FormGroup {
         var formGroup = this.controls[item.linkId] as QuestionnaireFormGroup;
         var formItem = this.controls[item.linkId] as QuestionnaireFormItem;
 
-        if (formArray.length !== undefined)
-            formArray.merge(item);
+        if (formItem) {
+          if (formArray.length !== undefined)
+              formArray.merge(item);
 
-        else if (formGroup.controls !== undefined) {
-            // FormGroup
-            formGroup.merge(item)
-        }
-        else if (item.answer && item.answer.length > 0) {
-            // FormControl
-            formItem.merge(item.answer[0]);
-        }      
+          else if (formGroup.controls !== undefined) {
+              // FormGroup
+              formGroup.merge(item)
+          }
+          else if (item.answer && item.answer.length > 0) {
+              // FormControl
+              formItem.merge(item.answer[0]);
+          }  
+        }    
       });   
     }
 
