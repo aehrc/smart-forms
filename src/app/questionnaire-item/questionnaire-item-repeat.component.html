@@ -1,6 +1,6 @@
-<div *ngIf="item.type == 'group'; else other_content" class="container p-3 mb-3 border-bottom">
+<div *ngIf="item.type == 'group'; else other_content" class="container p-3 mb-3 border">
     <h5 *ngIf="!repeats">{{item.text}}</h5>
-    <div *ngFor="let repeat of repeatArray.controls; let i = index" [ngSwitch]="item.type" [ngClass]="{'border-bottom': i < repeatArray.controls.length -1 }">
+    <div *ngFor="let repeat of repeatArray.controls; let i = index" [ngSwitch]="item.type" class="border-bottom" >
         <qitem-group *ngSwitchCase="'group'" [item]="item" [repeat]="repeat" ></qitem-group>
         <div class="flex">
             <button (click)="remove(i)" type="button" class="btn-sm btn-outline-danger right" [disabled]="!hasValue(i)">
