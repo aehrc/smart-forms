@@ -19,7 +19,7 @@ export class QuestionnaireOffCanvasComponent {
   constructor(private questionnaireService: QuestionnaireService, 
     private responseService: QuestionnaireResponseService) { 
 
-    this.questionnaire$ = this.questionnaireService.getQuestionnaire();
+    this.questionnaire$ = this.questionnaireService.questionnaire$;
     this.qresponse$ = this.responseService.getQuestionnaireResponse();
   }
 }

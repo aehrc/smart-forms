@@ -2,6 +2,9 @@ import { fhirclient } from 'fhirclient/lib/types';
 
 export interface Questionnaire extends fhirclient.FHIR.Resource {
     resourceType: "Questionnaire";
+    url: fhirclient.FHIR.uri;
+    name: string;
+    title: string;
     item: QuestionnaireItem[];
   }
   

@@ -26,7 +26,7 @@ export class QuestionnaireComponent implements OnInit {
   ngOnInit(): void {
     this.showSpinner = true;
 
-    this.questionnaire$ = this.questionnaireService.getQuestionnaire();
+    this.questionnaire$ = this.questionnaireService.questionnaire$;
     this.questionnaire$.subscribe(q=> {
       this.showSpinner = true;
 

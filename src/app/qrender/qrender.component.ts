@@ -79,6 +79,8 @@ export class QRenderComponent implements OnInit {
     })
     .catch(reason => console.log("getPatient rejected: " + reason));
 
+    if (!this.questionnaireService.isInitialised) {
+
     this.questionnaireService.searchLocal(questionnaireName)
     .pipe(switchMap(item=> { 
       if (item.length > 0) {
@@ -89,9 +91,11 @@ export class QRenderComponent implements OnInit {
       }      
     }))
     .subscribe(q=> {
-      this.questionnaireService.questionnaire = q;
+      this.questionnaireService.setQuestionnaire(q);
       //console.log(q);      
-    });    
+    }); 
+
+    }  
   }
 
 }

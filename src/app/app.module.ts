@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,6 +30,7 @@ import { QuestionnaireItemChoiceComponent } from './questionnaire-item/questionn
 
 import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { QuestionnaireListComponent } from './questionnaire-list/questionnaire-list.component';
 
 
 @NgModule({
@@ -55,12 +57,14 @@ import { SpinnerComponent } from './spinner/spinner.component';
     QuestionnaireOffCanvasComponent,
     TabFilterPipe,
     NonTabItemFilterPipe,
-    SpinnerComponent
+    SpinnerComponent,
+    QuestionnaireListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
     HttpClientModule
   ],
   providers: [],

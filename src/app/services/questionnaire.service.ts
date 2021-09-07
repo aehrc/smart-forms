@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable, ReplaySubject, Subject, EMPTY } from 'rxjs';
+import { of, Observable, ReplaySubject, Subject, EMPTY, from } from 'rxjs';
 
 import { FHIRService, Parameters } from './fhir.service';
 
@@ -9,17 +9,41 @@ import { QuestionnaireResponse, QuestionnaireResponseAnswer } from './questionna
 import { mergeMap } from 'rxjs/operators';
 import { PopulateService } from './populate.service';
 import { PatientService } from './patient.service';
+import Client from 'fhirclient/lib/Client';
+import * as FHIR from 'fhirclient';
+import { fhirclient as fhirTypes } from 'fhirclient/lib/types';
 
 export interface QuestionnaireCandidate {
   name: string;
   title: string;
-  url: string;
+  url?: string;
+  id?: string;
+  resource?: Questionnaire;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionnaireService {
+
+  servers = [ 
+    "https://lforms-fhir.nlm.nih.gov/baseR4", 
+    "https://sqlonfhir-r4.azurewebsites.net/fhir"
+  ];
+
+  private fhirClient: Client; 
+
+  get currentServer(): string {
+    if (!this.fhirClient)
+      return "local";
+    else
+      return this.fhirClient.state.serverUrl;
+  } 
+  set currentServer(serverUrl: string) {
+    this.fhirClient = FHIR.client({
+      serverUrl: serverUrl
+    });
+  }
 
   private localQuestionnaires: QuestionnaireCandidate[] = [
     /*    {
@@ -37,12 +61,24 @@ export class QuestionnaireService {
 
   private questionnaireSubject: Subject<Questionnaire> = new ReplaySubject<Questionnaire>();
 
-  set questionnaire(questionnaire: Questionnaire) {
-    this.questionnaireSubject.next(questionnaire);
+  private _questionnaire$ = this.questionnaireSubject.asObservable();
+
+  get questionnaire$() {
+    return this._questionnaire$;
   }
 
-  getQuestionnaire(): Observable<Questionnaire> {
-    return this.questionnaireSubject.asObservable();
+  setQuestionnaire(questionnaire: Questionnaire) {
+    this.questionnaireSubject.next(questionnaire);
+
+    this._questionnaire$ = this.questionnaireSubject.asObservable();
+
+    this.initialised = true;
+  }
+
+  private initialised: boolean;
+
+  get isInitialised() : boolean {
+    return this.initialised;
   }
 
   constructor(private http: HttpClient, 
@@ -56,7 +92,7 @@ export class QuestionnaireService {
   }
 
   searchLocal(name: string): Observable<QuestionnaireCandidate[]> {
-    return of(this.localQuestionnaires.filter(item => item.name.includes(name)));
+    return of(this.localQuestionnaires.filter(item => item.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())));
   }
 
   readLocal(url: string): Observable<Questionnaire> {
@@ -119,5 +155,73 @@ export class QuestionnaireService {
     }
     else
       return EMPTY;
+  }
+
+  search(title: string): Observable<fhirTypes.FHIR.Bundle> {
+    if (this.fhirClient) {
+      let result = this.searchFhir({
+          type: "Questionnaire",
+          query: {title: title},
+          headers: {'Cache-Control': 'no-cache'}
+      }) 
+      .catch(error => {
+      
+          console.log(error);
+      });
+      return from(result);
+    }
+    else
+      return of<fhirTypes.FHIR.Bundle>();
+  }
+
+  private searchFhir(searchConfig) {
+    var searchParams = new URLSearchParams();
+    if (searchConfig.query) {
+      var queryVars = searchConfig.query;
+      var queryVarKeys = Object.keys(queryVars);
+      var key;
+      for (var i=0, len=queryVarKeys.length; i<len; ++i) {
+        key = queryVarKeys[i];
+        searchParams.append(key, queryVars[key]);
+      }
+    }
+    return this.fhirClient.request({
+      url: searchConfig.type + '?' + searchParams,
+      headers: searchConfig.headers
+    });
+  }
+
+  searchCandidates(name: string) : Observable<QuestionnaireCandidate[]> {
+    if (!this.fhirClient)
+      return this.searchLocal(name);
+
+    else {
+      return this.search(name).pipe(mergeMap(response=> {
+
+        var qList: QuestionnaireCandidate[] = [];
+          if (response && response.entry) {
+              for (var i=0; i < response.entry.length; i++) {
+                  var q = response.entry[i].resource;
+                  let qc: QuestionnaireCandidate = {
+                    name: q.name,
+                    //url: string;
+                    title: q.title,
+//                      status: q.status,
+                      id: q.id,
+                      resource: q as Questionnaire
+                  };
+                  qList.push(qc);
+              }
+          }
+          return of(qList);// new QuestionnaireCandidate { items: qList, total: response.total} ;
+      }));
+    }
+  }
+
+  setQuestionnaireByLocalUrl(url: string) {
+    if (url && !this.fhirClient) {
+      this._questionnaire$ = this.readLocal(url);
+      this.initialised = true;
+    }
   }
 }
