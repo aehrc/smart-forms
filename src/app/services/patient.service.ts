@@ -29,7 +29,7 @@ export class PatientService {
   }
 
   get hasLaunchContext(): boolean {
-    return this.fhirService.hasLaunchContext();
+    return this.fhirService.isLoggedIn;
   }
 
   get patient$(): Observable<fhirclient.FHIR.Patient> {
@@ -57,12 +57,13 @@ export class PatientService {
   }
 
   setPatient(patient: fhirclient.FHIR.Patient) {
-    this.fhirService.setCurrentPatient(patient);
+    var patientContext = this.fhirService.setCurrentPatient(patient);
 
     if (!this.patientSubject)
       this.patientSubject = new ReplaySubject<fhirclient.FHIR.Patient>(1);
 
-      this.patientSubject.next(patient);
+    if (patientContext)
+      this.patientSubject.next(patientContext);
   }
 
   /**
