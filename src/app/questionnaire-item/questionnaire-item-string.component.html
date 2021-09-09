@@ -2,5 +2,6 @@
     <label for="{{item.linkId}}" class="col-sm-5 col-form-label">{{item.text}}</label>
     <div class="col-sm-7"> 
         <input type="text" class="form-control" id="{{item.linkId}}" [formControl]="formControl" [ngClass]="{'required': item.required}" >
+        <span *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</span>
     </div>
 </div>

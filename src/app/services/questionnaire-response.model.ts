@@ -416,7 +416,8 @@ export class QuestionnaireFormItem extends FormControl {
             case "open-choice":
               if (selectedValue != null)
               {
-                  //return { "valueString": selectedValue };
+                // TODO: support coding
+                  return { "valueString": selectedValue };
               }
               return null;
     

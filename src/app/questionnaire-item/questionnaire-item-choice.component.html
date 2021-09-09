@@ -6,6 +6,7 @@
       <option></option>
       <option *ngFor="let o of answerOption" value="{{o.valueCoding.code}}">{{o.valueCoding.display}}</option>
     </select>
+    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
   </div>
 
   <ng-template #checked_content>
@@ -15,6 +16,7 @@
             <!--ng-true-value="'{{o.valueCoding.code}}'"-->
         <label class="form-check-label" for="{{item.linkId}}-{{o.valueCoding.code}}">{{o.valueCoding.display}}</label>
     </div>
-  </div>
+    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
+  </div>  
   </ng-template>
 </div>

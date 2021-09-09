@@ -39,3 +39,7 @@ input[type=date].date-empty {
 .ng-invalid:not(form)  {
     border-left: 5px solid #a94442; /* red */
 }
+
+.form-check {
+    padding-top: 7px;
+}

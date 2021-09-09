@@ -25,7 +25,7 @@
                         <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="formGroup"></qitem-date>
                         <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="formGroup"></qitem-datetime>
                         <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="formGroup"></qitem-choice>
-                        <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [parentGroup]="formGroup"></qitem-openchoice>
+                        <qitem-openchoice *ngSwitchCase="'open-choice'" [item]="item" [parentGroup]="formGroup"></qitem-openchoice>
                         <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentGroup]="formGroup"></qitem-quantity>
                     
                         <div *ngSwitchDefault class="mb-3">
@@ -52,6 +52,7 @@
 <ng-template #other_content>
     <div [ngClass]="repeat ? 'row' : 'container p-3 border mb-3'" id="{{item.linkId}}" [hidden]="!(enableWhen() | async)">  
     <h5 *ngIf="!repeat">{{item.text}}</h5>
+    <span *ngIf="!repeat && questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</span>
 
     <div *ngFor="let item of item.item" >
         <qitem-repeat *ngIf="item.repeats" [item]="item" [parentGroup]="formGroup"></qitem-repeat>
@@ -66,7 +67,7 @@
             <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="formGroup"></qitem-date>
             <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="formGroup"></qitem-datetime>
             <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="formGroup"></qitem-choice>
-            <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [parentGroup]="formGroup"></qitem-openchoice>
+            <qitem-openchoice *ngSwitchCase="'open-choice'" [item]="item" [parentGroup]="formGroup"></qitem-openchoice>
             <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentGroup]="formGroup"></qitem-quantity>
         
             <div *ngSwitchDefault class="mb-3">

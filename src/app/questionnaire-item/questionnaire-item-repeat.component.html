@@ -1,5 +1,6 @@
 <div *ngIf="item.type == 'group'; else other_content" class="container p-3 mb-3 border">
     <h5 *ngIf="!repeats">{{item.text}}</h5>
+    <span *ngIf="!repeat && questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</span>
     <div *ngFor="let repeat of repeatArray.controls; let i = index" [ngSwitch]="item.type" class="border-bottom" >
         <qitem-group *ngSwitchCase="'group'" [item]="item" [repeat]="repeat" ></qitem-group>
         <div class="flex">
@@ -27,7 +28,7 @@
             <qitem-date *ngSwitchCase="'date'" [item]="item" [repeat]="repeat"></qitem-date>
             <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [repeat]="repeat"></qitem-datetime>
             <qitem-choice *ngSwitchCase="'choice'" [item]="item" [repeat]="repeat"></qitem-choice>
-            <qitem-openchoice *ngSwitchCase="'openchoice'" [item]="item" [repeat]="repeat"></qitem-openchoice>
+            <qitem-openchoice *ngSwitchCase="'open-choice'" [item]="item" [repeat]="repeat"></qitem-openchoice>
             <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [repeat]="repeat"></qitem-quantity>
 
             <div *ngSwitchDefault class="mb-3">
