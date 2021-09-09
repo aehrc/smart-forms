@@ -2,6 +2,8 @@ import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from "
 import { AnswerOption, Questionnaire, QuestionnaireItem } from "./questionnaire.model";
 import { QuestionnaireResponse, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from "./questionnaire-response.service";
 import { Observable, ReplaySubject, Subject } from "rxjs";
+import { fhirclient } from 'fhirclient/lib/types';
+import { parse } from "path";
 
 export class QuestionnaireForm extends FormGroup { 
     private _questionnaire: Questionnaire;
@@ -14,8 +16,12 @@ export class QuestionnaireForm extends FormGroup {
         return this._response;    
     };
 
-    constructor(questionnaire: Questionnaire) {
+    private patient: fhirclient.FHIR.Patient
+
+    constructor(questionnaire: Questionnaire, patient$: Observable<fhirclient.FHIR.Patient>) {
         super(QuestionnaireForm.createControls(questionnaire));
+
+        patient$.subscribe(p=> { this.patient = p });
 
         this._questionnaire = questionnaire;
 
@@ -43,7 +49,7 @@ export class QuestionnaireForm extends FormGroup {
             "resourceType": "QuestionnaireResponse",
             "questionnaire": "Questionnaire/" + this._questionnaire.id,
             "status": "in-progress",
-            "subject": { "reference": null },
+            "subject": { "reference": this.patient ? "patient/" + this.patient.id : null },
             "authored": new Date().toISOString(),
             "author": null,
             "item": items

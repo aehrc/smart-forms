@@ -5,6 +5,7 @@ import { QuestionnaireResponseService } from '../services/questionnaire-response
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { Questionnaire } from '../services/questionnaire.model';
 import { QuestionnaireForm } from '../services/questionnaire-response.model';
+import { PatientService } from '../services/patient.service';
 
 @Component({
   selector: 'questionnaire',
@@ -20,7 +21,8 @@ export class QuestionnaireComponent implements OnInit {
   questionnaireModel: QuestionnaireForm;
 
   constructor(private questionnaireService: QuestionnaireService, 
-    private qresponseService: QuestionnaireResponseService) { 
+    private qresponseService: QuestionnaireResponseService,
+    private patientService: PatientService) { 
   }
 
   ngOnInit(): void {
@@ -37,7 +39,7 @@ export class QuestionnaireComponent implements OnInit {
         //this.showSpinner = false;
       });        
 
-      this.questionnaireModel = new QuestionnaireForm(q);
+      this.questionnaireModel = new QuestionnaireForm(q, this.patientService.patient$);
 
       this.questionnaireModel.questionnaireResponse$.subscribe( 
         response => this.qresponseService.onQuestionnaireResponseChanged(response));

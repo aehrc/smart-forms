@@ -28,6 +28,10 @@ export class PatientService {
     return this.fhirService.getClient();
   }
 
+  get hasLaunchContext(): boolean {
+    return this.fhirService.hasLaunchContext();
+  }
+
   get patient$(): Observable<fhirclient.FHIR.Patient> {
     if (!this.patientSubject)
       this.getPatient();
@@ -50,6 +54,15 @@ export class PatientService {
     return new Promise<fhirclient.FHIR.Patient>(function(resolve, reject) { 
       reject("FHIR client not initialised")
     }); 
+  }
+
+  setPatient(patient: fhirclient.FHIR.Patient) {
+    this.fhirService.setCurrentPatient(patient);
+
+    if (!this.patientSubject)
+      this.patientSubject = new ReplaySubject<fhirclient.FHIR.Patient>(1);
+
+      this.patientSubject.next(patient);
   }
 
   /**
@@ -76,6 +89,7 @@ export class PatientService {
     return name;
   };
 
+
   /**
    * Search patients by name
    * @param searchText the search text for patient names
@@ -91,7 +105,7 @@ export class PatientService {
       // process data for md-autocomplete
       var patientList: PatientItem[] = [];
       if (response && response.entry) {
-        for (var i=0, iLen=response.entry.length; i<iLen; i++) {
+        for (var i=0; i < response.entry.length; i++) {
           var patient = response.entry[i].resource;
           patientList.push({
             name: this.getPatientName(patient),

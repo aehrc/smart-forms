@@ -2,10 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, debounceTime, switchMap } from 'rxjs/operators';
-import { FHIRService } from '../services/fhir.service';
-
+import { fhirclient } from 'fhirclient/lib/types';
 import { PatientService } from '../services/patient.service';
-//import * as FHIR from 'fhirclient'
 
 @Component({
   selector: 'app-patient-banner',
@@ -18,7 +16,7 @@ export class PatientBannerComponent implements OnInit {
 
   @Input() set patient(patient) {
     this._patient = patient
-    //this.hasLaunchContext = this.fhirService.hasLaunchContext();
+    this.hasLaunchContext = this.patientService.hasLaunchContext;
   }
 
   get patient() {    
@@ -32,7 +30,7 @@ export class PatientBannerComponent implements OnInit {
   // patient search criteria
   searchCriteria = new FormControl('');
 
-  constructor(private patientService: PatientService, private fhirService: FHIRService) { }
+  constructor(private patientService: PatientService) { }
 
   ngOnInit(): void {    
     this.searchCriteria.valueChanges
@@ -40,8 +38,8 @@ export class PatientBannerComponent implements OnInit {
       .subscribe(res => this.searchResults = res);
   }
 
-  private getPatientName(currentPatient: any) { //fhirclient.FHIR.Patient) {
-    return this.patientService.getPatientName(currentPatient);
+  get patientName() {
+    return this.patientService.getPatientName(this._patient);
   }
 
   setShowPatientResults() {
@@ -49,7 +47,8 @@ export class PatientBannerComponent implements OnInit {
   }
 
   loadPatient(selectedPatient) {
-    var patient = this.fhirService.setCurrentPatient(selectedPatient.resource);
+    var patient = selectedPatient.resource as fhirclient.FHIR.Patient;
+    this.patientService.setPatient(patient);
 
     if (patient)
       this.patient = patient;
@@ -72,5 +71,4 @@ export class PatientBannerComponent implements OnInit {
       return EMPTY;
     }
   }
-
 }

@@ -1,6 +1,6 @@
 
     <span *ngIf="!patient">No Patient</span>
-    <span *ngIf="patient" class="p-name">{{getPatientName(patient)}}</span>
+    <span *ngIf="patient" class="p-name">{{patientName}}</span>
 
     <span *ngIf="patient" class="p-gender" style="text-transform: capitalize">{{patient.gender}}</span>
     <span *ngIf="patient" class="p-dob">DoB: {{patient.birthDate | date : 'dd MMM yyyy'}}</span>
