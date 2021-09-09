@@ -12,6 +12,7 @@ import { PatientService } from './patient.service';
 import Client from 'fhirclient/lib/Client';
 import * as FHIR from 'fhirclient';
 import { fhirclient as fhirTypes } from 'fhirclient/lib/types';
+import { SpinnerService } from './spinner.service';
 
 export interface QuestionnaireCandidate {
   name: string;
@@ -84,7 +85,8 @@ export class QuestionnaireService {
   constructor(private http: HttpClient, 
     private fhirService: FHIRService, 
     private patientService: PatientService,
-    private populateService: PopulateService) {       
+    private populateService: PopulateService, 
+    private spinnerService: SpinnerService) {       
   }
   
   getAllLocal(): Observable<QuestionnaireCandidate[]> {
@@ -100,13 +102,15 @@ export class QuestionnaireService {
   }
 
   populate(questionnaire: Questionnaire) : Observable<QuestionnaireResponse> {
-
     if (questionnaire.contained && questionnaire.contained.length > 0) {
 
       var query = questionnaire.contained[0];
 
       return this.patientService.patient$
       .pipe(mergeMap(patient => {
+
+        // start spinner ...
+        this.spinnerService.show();
 
         var patientId = patient.id;
         query.entry.forEach(entry => {
@@ -149,6 +153,8 @@ export class QuestionnaireService {
             }
           });
 
+          this.spinnerService.hide();
+          
           return questionnaireResponse$;
         }));
       }));

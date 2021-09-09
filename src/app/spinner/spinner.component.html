@@ -1,4 +1,4 @@
-<div class="spinner">
+<div *ngIf="visible" class="spinner">
 <p class="spinner-message" *ngIf="message && message !== ''">
     {{message}}
 </p>
