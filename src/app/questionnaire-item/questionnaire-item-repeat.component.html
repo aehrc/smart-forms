@@ -3,8 +3,8 @@
     <div *ngFor="let repeat of repeatArray.controls; let i = index" [ngSwitch]="item.type" class="border-bottom" >
         <qitem-group *ngSwitchCase="'group'" [item]="item" [repeat]="repeat" ></qitem-group>
         <div class="flex">
-            <button (click)="remove(i)" type="button" class="btn-sm btn-outline-danger right" [disabled]="!hasValue(i)">
-                <i class="fa fa-minus-circle fa-lg"></i>
+            <button (click)="remove(i)" type="button" class="btn-sm btn-outline-secondary right" [disabled]="!hasValue(i)">
+                <i class="fa fa-trash-o fa-lg"></i>
             </button>
         </div>
     </div>
@@ -35,8 +35,8 @@
             </div>
         </div>
         <div class="col-sm-1">
-            <button (click)="remove(i)" type="button" class="btn-sm btn-outline-danger" [disabled]="!hasValue(i)">
-                <i class="fa fa-minus-circle fa-lg"></i>
+            <button (click)="remove(i)" type="button" class="btn-sm btn-outline-secondary" [disabled]="!hasValue(i)">
+                <i class="fa fa-trash-o fa-lg"></i>
             </button>
             <!--button *ngIf="i==repeatArray.controls.length-1" (click)="addNew()" type="button" class="btn-sm btn-outline-primary" [disabled]="!hasValue(i)">
                 <i class="fa fa-plus-circle fa-lg"></i>
