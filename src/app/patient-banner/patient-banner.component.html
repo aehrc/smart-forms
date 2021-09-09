@@ -1,10 +1,13 @@
+    <span *ngIf="!patient; else other_content">No Patient</span>
 
-    <span *ngIf="!patient">No Patient</span>
-    <span *ngIf="patient" class="p-name">{{patientName}}</span>
+    <ng-template #other_content>
+    <span class="p-name">{{patientName}}</span>
 
-    <span *ngIf="patient" class="p-gender" style="text-transform: capitalize">{{patient.gender}}</span>
-    <span *ngIf="patient" class="p-dob">DoB: {{patient.birthDate | date : 'dd MMM yyyy'}}</span>
-    
+    <span class="p-gender" style="text-transform: capitalize">{{patient.gender}}</span>
+    <span class="p-dob">DoB: {{patient.birthDate | date : 'dd MMM yyyy'}} ({{age}} yrs)</span>
+    <span class="p-age"></span>
+    </ng-template>
+
     <div *ngIf="!hasLaunchContext" class="search-container" >
         <input type="text" placeholder="Patient Search.." [formControl]="searchCriteria" /> 
         <!--ng-change="$ctrl.change()" ng-blur="$ctrl.hidePatientResults()" ng-hide="$ctrl.hideSearch"-->

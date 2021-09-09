@@ -12,7 +12,7 @@ import { PatientService } from '../services/patient.service';
 })
 export class PatientBannerComponent implements OnInit {
 
-  private _patient;
+  private _patient : fhirclient.FHIR.Patient;
 
   @Input() set patient(patient) {
     this._patient = patient
@@ -40,6 +40,17 @@ export class PatientBannerComponent implements OnInit {
 
   get patientName() {
     return this.patientService.getPatientName(this._patient);
+  }
+
+  get age() {
+    var birthDate = new Date(this._patient.birthDate);
+    var today = new Date();
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
   }
 
   setShowPatientResults() {
