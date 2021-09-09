@@ -253,7 +253,10 @@
                             ],
                             "linkId": "661dd4c2-3092-4eb0-92d6-a8b18865c4b4",
                             "text": "Eligible for health check",
-                            "type": "boolean"
+                            "type": "choice",
+                            "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
+                                { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}]
                         },
                         {
                             "linkId": "48d34fc9-f10e-4ddd-9aba-8948ce5bffb5",
@@ -283,8 +286,11 @@
                     "item": [
                         {
                             "linkId": "b7a9e23c-b875-4536-b72d-81d361c18e2c",
-                            "text": "Consent given after discussion of benefits and process of a health check",
-                            "type": "boolean",
+                            "text": "Consent given after discussion of process and benefits of a health check",
+                            "type": "choice",
+                            "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
+                                { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}],
                             "enableWhen": [
                                 {
                                     "question": "age",
@@ -308,7 +314,25 @@
                         {
                             "linkId": "8272b807-6751-489f-8f5c-f380e37edd30",
                             "text": "Consent given for sharing of information with relevant healthcare providers",
-                            "type": "boolean"
+                            "type": "choice",
+                            "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
+                                { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}]
+                        },
+                        {
+                            "linkId": "8272b807-6751-489f-8f5c-f380e37edd31",
+                            "text": "Who/details",
+                            "type": "string",
+                            "enableWhen": [
+                                {
+                                    "question": "8272b807-6751-489f-8f5c-f380e37edd30",
+                                    "operator": "=",
+                                    "answerCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+                                        "code": "Y"
+                                    }
+                                }
+                            ]
                         },
                         {
                             "linkId": "650e63e1-3b06-46e6-b2c9-41f67717cacd",
@@ -326,8 +350,8 @@
                                     "linkId": "ee2589d5-e1b0-400d-a2ae-48356e2d011d",
                                     "text": "Parent/primary carer present for health check",
                                     "type": "choice",
-                                    "answerOption": [ { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
-                                        { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}],
+                                    "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
+                                        { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}],
                                     "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnona&"
                                 },
                                 {
@@ -378,9 +402,10 @@
                             ],
                             "linkId": "7944e2ee-b3d7-4acc-a0c6-022c43e680b3",
                             "text": "Location of health check",
-                            "type": "open-choice",
+                            "type": "choice",
                             "answerOption": [ { "valueCoding": { "code": "257585005", "display": "Clinic", "system": "http://snomed.info/sct" }}, 
-                                { "valueCoding": { "code": "264362003", "display": "Home", "system": "http://snomed.info/sct" }}],
+                                { "valueCoding": { "code": "264362003", "display": "Home", "system": "http://snomed.info/sct" }},
+                                { "valueCoding": { "code": "74964007", "display": "Other", "system": "http://snomed.info/sct" }}],
                             "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://csiro.au/ValueSet/healthchecklocation&"
                         }
                     ],
@@ -445,6 +470,22 @@
                             "linkId": "cbd45ca3-4d0e-4dd1-a0e7-f9642701d05f",
                             "text": "Age",
                             "type": "integer"
+                        },
+                        {
+                            "extension": [
+                                {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                                    "valueExpression": {
+                                        "language": "text/fhirpath",
+                                        "expression": "%LaunchPatient.gender"
+                                    }
+                                }
+                            ],
+                            "linkId": "3a98ac7a-9313-4222-a853-edd0415bfc48",
+                            "text": "Gender",
+                            "type": "choice",
+                            "answerOption": [ { "valueCoding": { "code": "male", "display": "Male", "system": "http://hl7.org/fhir/administrative-gender" }}, 
+                                { "valueCoding": { "code": "female", "display": "Female", "system": "http://hl7.org/fhir/administrative-gender" }}]
                         },
                         {
                             "extension": [
@@ -520,52 +561,6 @@
                             "linkId": "39af9f0f-e3d5-46d1-aa73-349a07e24f69",
                             "text": "Mobile phone",
                             "type": "string"
-                        },
-                        {
-                            "extension": [
-                                {
-                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                                    "valueExpression": {
-                                        "language": "text/fhirpath",
-                                        "expression": "%LaunchPatient.identifier.where(type.coding.code='HC' or type.coding.code='PEN').value"
-                                    }
-                                }
-                            ],
-                            "linkId": "33313ddc-c726-4982-8a64-2171d4c68cd3",
-                            "text": "Pension/Health Care Card number",
-                            "type": "string"
-                        },
-                        {
-                            "linkId": "463b60d2-5ce6-4cd8-89df-9ee4d99551f4",
-                            "text": "Registered for Closing the Gap PBS Co-payment",
-                            "type": "choice",
-                            "repeats": false,
-                            "answerOption": [ { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
-                                { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
-                                { "valueCoding": { "code": "asked-unknown", "display": "Don't know", "system": "http://terminology.hl7.org/CodeSystem/data-absent-reason" }}],
-                            "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnodontknow&"
-                        },
-                        {
-                            "linkId": "b4172a40-3a20-41f8-a90f-afa7eb174b70",
-                            "text": "Do you have children?",
-                            "type": "boolean"
-                        },
-                        {
-                            "linkId": "3fbc6d2d-f217-4521-91a1-4da336dc1394",
-                            "text": "Number of children",
-                            "type": "integer",
-                            "enableWhen": [
-                                {
-                                    "question": "b4172a40-3a20-41f8-a90f-afa7eb174b70",
-                                    "operator": "=",
-                                    "answerBoolean": true
-                                }
-                            ]
-                        },
-                        {
-                            "linkId": "f9f5314b-f9a5-4a09-8b4b-b1ab42144f44",
-                            "text": "Number of children in your care",
-                            "type": "integer"
                         },
                         {
                             "linkId": "51dddacd-49c1-4fa9-b44f-3d3e42b1c4b2",
@@ -649,6 +644,29 @@
                             ]
                         },
                         {
+                            "extension": [
+                                {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                                    "valueExpression": {
+                                        "language": "text/fhirpath",
+                                        "expression": "%LaunchPatient.identifier.where(type.coding.code='HC' or type.coding.code='PEN').value"
+                                    }
+                                }
+                            ],
+                            "linkId": "33313ddc-c726-4982-8a64-2171d4c68cd3",
+                            "text": "Pension/Health Care Card number",
+                            "type": "string"
+                        },
+                        {
+                            "linkId": "463b60d2-5ce6-4cd8-89df-9ee4d99551f4",
+                            "text": "Registered for Closing the Gap PBS Co-payment measure (CTG)",
+                            "type": "choice",
+                            "repeats": false,
+                            "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}]
+                        },
+                        {
                             "linkId": "218fba3b-2fa1-404e-9583-0b1b38a7354a",
                             "text": "NDIS",
                             "type": "group",
@@ -659,9 +677,9 @@
                                     "text": "Registered for National Disability Insurance Scheme",
                                     "type": "choice",
                                     "repeats": false,
-                                    "answerOption": [ { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
-                                        { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
-                                        { "valueCoding": { "code": "asked-unknown", "display": "Don't know", "system": "http://terminology.hl7.org/CodeSystem/data-absent-reason" }}],
+                                    "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                        { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
+                                        { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}],
                                     "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnodontknow&"
                                 },
                                 {
@@ -678,6 +696,45 @@
                                             }
                                         }
                                     ]
+                                }
+                            ]
+                        },
+                        {
+                            "linkId": "b4172a40-3a20-41f8-a90f-afa7eb174b70",
+                            "text": "Do you have children?",
+                            "type": "choice",
+                            "repeats": false,
+                            "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}]
+                        },
+                        {
+                            "linkId": "3fbc6d2d-f217-4521-91a1-4da336dc1394",
+                            "text": "Number of children",
+                            "type": "integer",
+                            "enableWhen": [
+                                {
+                                    "question": "b4172a40-3a20-41f8-a90f-afa7eb174b70",
+                                    "operator": "=",
+                                    "answerCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+                                        "code": "Y"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "linkId": "f9f5314b-f9a5-4a09-8b4b-b1ab42144f44",
+                            "text": "Number of children in your care",
+                            "type": "integer",
+                            "enableWhen": [
+                                {
+                                    "question": "b4172a40-3a20-41f8-a90f-afa7eb174b70",
+                                    "operator": "=",
+                                    "answerCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+                                        "code": "Y"
+                                    }
                                 }
                             ]
                         },
@@ -707,12 +764,12 @@
                             "item": [
                                 {
                                     "linkId": "1a3e5e7f-aac6-4828-95c3-c4da24ae1351",
-                                    "text": "Name and contact details of other key providers (eg case workers, support services) up to date?",
+                                    "text": "Are Name and contact details of other key providers (eg case workers, support services) up to date?",
                                     "type": "choice",
                                     "repeats": false,
-                                    "answerOption": [ { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
-                                        { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
-                                        { "valueCoding": { "code": "asked-unknown", "display": "Don't know", "system": "http://terminology.hl7.org/CodeSystem/data-absent-reason" }}],
+                                    "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
+                                        { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
+                                        { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}],
                                     "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnodontknow&"
                                 },
                                 {
