@@ -469,8 +469,16 @@
                                 { "valueCoding": { "code": "2", "display": "Torres Strait Islander but not Aboriginal origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
                                 { "valueCoding": { "code": "3", "display": "Both Aboriginal and Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
                                 { "valueCoding": { "code": "4", "display": "Neither Aboriginal nor Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
-                                { "valueCoding": { "code": "9", "display": "Not stated/inadequately described", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }}]
+                                { "valueCoding": { "code": "9", "display": "Not stated/inadequately described", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }}],
+                            "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://healthterminologies.gov.au/fhir/ValueSet/australian-indigenous-status-1&"
                         },
+                        {
+                            "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc4f",
+                            "text": "Language Group",
+                            "type": "choice",
+                            "repeats": false,
+                            "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://csiro.au/valueset/1267/au-indigenous&"
+                            },
                         {
                             "extension": [
                                 {
