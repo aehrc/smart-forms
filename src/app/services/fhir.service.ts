@@ -118,6 +118,11 @@ export class FHIRService {
   }
   */
 
+  createClient(serverUrl: string) : Client {
+    this.fhirClient = FHIR.client({ serverUrl: serverUrl });
+    return this.fhirClient;
+  }
+
   public getClient() : Client {
     return this.fhirClient;
   }

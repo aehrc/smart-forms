@@ -1,26 +1,19 @@
-<div class="topnav" id="myTopnav">
-    <a routerLink="/" class="active">Home</a>
-    <a routerLink="/questionnaires">Questionnaires</a>
-    
-    <!--a href="javascript:void(0);" class="icon" --> <!--(click)="myFunction()"-->
-        <!--i class="fa fa-bars"></i>
-    </a-->
-    <app-patient-banner [patient]="patient" ></app-patient-banner>
+<nav class="navbar navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-    <!--
-    <script>
-        /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
-        function myFunction() {
-          var x = document.getElementById("myTopnav");
-          if (x.className === "topnav") {
-            x.className += " responsive";
-          } else {
-            x.className = "topnav";
-          }
-        }
-    </script>    
-    -->
-</div>
+  <app-patient-banner [patient]="patient" ></app-patient-banner>
+
+  <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
+    <a class="navbar-brand" routerLink="/">Q-Forms</a>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/questionnaires">Questionnaires</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
 <questionnaire-off-canvas></questionnaire-off-canvas>
 

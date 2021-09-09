@@ -24,7 +24,8 @@ export class LaunchComponent implements OnInit {
     private titleService:Title,
     private appComponent: AppComponent) { 
 
-      this.clientId = "ng-qforms";
+      //this.clientId = "ng-qforms";
+      this.clientId = "my_web_app";
       this.scope = "patient/*.read";
   }
 

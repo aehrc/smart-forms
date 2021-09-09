@@ -18,6 +18,7 @@ export class QRenderComponent implements OnInit {
 
   public patient: fhirclient.FHIR.Patient = null;
 
+  navbarOpen = false;
 
   constructor(
     private patientService: PatientService, 
@@ -26,6 +27,7 @@ export class QRenderComponent implements OnInit {
 
   ngOnInit(): void {
     var questionnaireName = "MBS715";
+    var fhirServerUrl = 'http://www.demo.oridashi.com.au:8109';  // oridashi public server
 
     //if (this.fhir.isAuthorizing()) {
     var client = this.fhirService.getClient();
@@ -34,7 +36,7 @@ export class QRenderComponent implements OnInit {
       this.fhirService.authorizeReady()
       .then(fhirService => { 
         client = fhirService.getClient()
-        console.log("FHIR alient authorized"); 
+        console.log("FHIR client authorized"); 
         //console.log(client);
         /*
         this.patientService.getPatient()
@@ -47,7 +49,11 @@ export class QRenderComponent implements OnInit {
         */
         this.initialise(questionnaireName);
       })
-      .catch( reason => console.log("FHIRService.authorizeReady() rejected: " + reason));
+      .catch( reason => { 
+        console.log("FHIRService.authorizeReady() rejected: " + reason);
+        this.fhirService.createClient(fhirServerUrl);
+        this.initialise(questionnaireName);
+      });
     }    
     else {
       
@@ -70,6 +76,10 @@ export class QRenderComponent implements OnInit {
     }*/
 
 
+  }
+
+  toggleNavbar() {
+    this.navbarOpen = !this.navbarOpen;
   }
 
   private initialise(questionnaireName: string): void {

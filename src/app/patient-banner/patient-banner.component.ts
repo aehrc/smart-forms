@@ -32,20 +32,11 @@ export class PatientBannerComponent implements OnInit {
   // patient search criteria
   searchCriteria = new FormControl('');
 
-  constructor(private patientService: PatientService, private fhirService: FHIRService) { 
-    /*
-    this.searchCriteria.valueChanges
-      .pipe(debounceTime(50))
-      .subscribe(criteria => this.searchPatient(criteria));
-    */
-  }
+  constructor(private patientService: PatientService, private fhirService: FHIRService) { }
 
   ngOnInit(): void {    
-    //var self = this;
-
     this.searchCriteria.valueChanges
-      //.pipe(debounceTime(300))
-      .pipe(switchMap(criteria => this.searchPatientAsync(criteria)))
+      .pipe(debounceTime(300), switchMap(criteria => this.searchPatientAsync(criteria)))
       .subscribe(res => this.searchResults = res);
   }
 
@@ -67,8 +58,6 @@ export class PatientBannerComponent implements OnInit {
   }
 
   searchPatientAsync(criteria: string) : Observable<Object[]> {
-    var self = this;
-
     if (criteria.length > 1) {
       console.log("Searching: " + criteria)
       return this.patientService.searchPatient(criteria)

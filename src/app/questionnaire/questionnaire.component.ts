@@ -24,17 +24,17 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.showSpinner = true;
+    //this.showSpinner = true;
 
     this.questionnaire$ = this.questionnaireService.questionnaire$;
     this.questionnaire$.subscribe(q=> {
-      this.showSpinner = true;
+      //this.showSpinner = true;
 
       this.questionnaireService.populate(q)
       .subscribe(qr => {
         this.questionnaireModel.merge(qr);
 
-        this.showSpinner = false;
+        //this.showSpinner = false;
       });        
 
       this.questionnaireModel = new QuestionnaireForm(q);

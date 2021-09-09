@@ -13,7 +13,7 @@
             <i class="fa fa-search"></i>
         </button>
         <div *ngIf="searchResults && searchResults.length > 0 " class="dropdown-content"> <!--ng-show="$ctrl.showPatientResults"-->
-            <a *ngFor="let p of searchResults" href (click)="loadPatient(p)" >{{p.name}} {{p.dob}}</a>
+            <a *ngFor="let p of searchResults" (click)="loadPatient(p)" >{{p.name}} {{p.dob}}</a>
         </div>
     </div>
 
