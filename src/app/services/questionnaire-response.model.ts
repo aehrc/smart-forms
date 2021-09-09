@@ -451,6 +451,9 @@ export class QuestionnaireFormItem extends FormControl {
         else if (answer.valueDecimal !== undefined) {
           this.setValue(answer.valueDecimal);
         }
+        else if (answer.valueCoding !== undefined) {
+          this.setValue(answer.valueCoding.code);
+        }
         else {
           console.log ("Unsupported populate answer type");
           console.log (answer);

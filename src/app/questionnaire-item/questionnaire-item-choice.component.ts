@@ -44,22 +44,32 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
 
           this.answerValueSet$.subscribe(vs => {
             console.log(vs.name, vs.url, vs.expansion?.contains);
+
             vs.expansion?.contains.forEach(c => {
               this.answerOption.push({ "valueCoding": { "system": c.system, "code": c.code, "display": c.display } } as AnswerOption);
             });
+
+            this.formControl.answerOption = this.answerOption;
+
+            if (this.answerOption?.length > 0 && this.answerOption?.length <= this.droplistOptionsCount)
+            {
+              this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+              this.formControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+            }      
           });
         }
       }
 
-      if (this.answerOption?.length <= this.droplistOptionsCount)
-      {
-        this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
-      }
-  
       if (this.parentGroup)
         this.formControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
 
       this.formControl.answerOption = this.answerOption;
+
+      if (this.answerOption?.length > 0 && this.answerOption?.length <= this.droplistOptionsCount)
+      {
+        this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+        this.formControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+      }
   
       var choiceOrentiation = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation");
       switch (choiceOrentiation?.valueCode) {
@@ -72,6 +82,16 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
       }    
     }
   
+    valueChanged(newValue) {
+      for (let index = 0; index < this.answerOption.length; index++) {
+        const option = this.answerOption[index];
+        if (option.valueCoding.code == newValue) { 
+          this.checkboxes.controls[index].setValue(true);
+          break;
+        }
+      } 
+    }
+
     onCheckboxChange(event, index) {
       if (event.target.checked) {
           this.formControl.setValue(event.target.value);
