@@ -5,9 +5,10 @@ import { Observable } from "rxjs";
 import { QuestionnaireFormItem } from "../services/questionnaire-response.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
 import { AnswerOption } from "../services/questionnaire.model";
-import { ValueSet } from "../services/value-set.model";
 import { ValueSetFactory, ValueSetService } from "../services/value-set.service";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
+
+type ItemControl = 'autocomplete' | 'drop-down' | 'check-box' | 'radio-button'
 
 @Component({
     selector: 'qitem-choice',
@@ -19,9 +20,9 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
       multi: true
   }]
 })
-  export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase implements ControlValueAccessor {
+export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase implements ControlValueAccessor {
   
-    readonly droplistOptionsCount = 6;
+    readonly droplistOptionsCount = 3;
   
     // select FormControl
     formControl = new FormControl();
@@ -31,10 +32,10 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
   
     checkboxes: FormArray =  new FormArray([]);
   
-    itemControl: string;
-    isHorizontal: boolean = true;  
+    
 
-    //answerValueSet$?: Observable<ValueSet>;
+    itemControl: ItemControl;
+    isHorizontal: boolean = true;  
 
     answerOption?: AnswerOption[];
 
@@ -49,6 +50,18 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
     onInit() {
       this.qformControl.item = this.item;
 
+
+      if (this.item.answerOption?.length > 0 && this.item.answerOption?.length <= this.droplistOptionsCount) 
+        this.itemControl = "check-box";
+      else {
+        this.itemControl = "drop-down";
+      }
+      
+      var itemControl = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl");
+      if (itemControl && itemControl.valueCodeableConcept?.coding.length > 0) {
+        this.itemControl = itemControl.valueCodeableConcept?.coding[0].code;
+      }
+    
       if (this.item.answerOption) {
         this.answerOption = this.item.answerOption;
       }
@@ -65,14 +78,12 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
               this.answerOption.push({ "valueCoding": { "system": c.system, "code": c.code, "display": c.display } } as AnswerOption);
             });
 
-            //this.qformControl.answerOption = this.answerOption;
-
             if (this.answerOption?.length > 0) {
-              if (this.answerOption?.length <= this.droplistOptionsCount) {
+              if (this.itemControl == "check-box") { //ItemControl["check-box"]) {
                 this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
                 this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
               }    
-              else {
+              else {  // drop-down
                 this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
               }        
             }
@@ -87,21 +98,14 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
         this.qformControl = this.repeat as QuestionnaireFormItem;
       }
 
-      //this.qformControl.answerOption = this.answerOption;
-
       if (this.answerOption?.length > 0) {
-        if (this.answerOption?.length <= this.droplistOptionsCount) {
+        if (this.itemControl == "check-box") { 
           this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
           this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
         }
         else {
           this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
         }
-      }
-
-      var itemControl = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl");
-      if (itemControl && itemControl.valueCodeableConcept?.coding.length > 0) {
-        this.itemControl = itemControl.valueCodeableConcept?.coding[0].code;
       }
 
       var choiceOrentiation = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation");
@@ -173,4 +177,3 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
   registerOnTouched(fn) { this.onTouched = fn; }
 
 }
-  
