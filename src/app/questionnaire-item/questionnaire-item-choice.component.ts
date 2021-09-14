@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
-import { FormArray, FormControl } from "@angular/forms";
+import { ControlValueAccessor, FormArray, FormControl, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { fhirclient } from "fhirclient/lib/types";
 import { Observable } from "rxjs";
 import { QuestionnaireFormItem } from "../services/questionnaire-response.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
@@ -11,21 +12,34 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
 @Component({
     selector: 'qitem-choice',
     templateUrl: './questionnaire-item-choice.component.html',
-    styleUrls: ['./questionnaire-item.component.css']
-  })
-  export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase  {
+    styleUrls: ['./questionnaire-item.component.css'],
+    providers: [{
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: QuestionnaireItemChoiceComponent,
+      multi: true
+  }]
+})
+  export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase implements ControlValueAccessor {
   
     readonly droplistOptionsCount = 6;
   
-    formControl: QuestionnaireFormItem = new QuestionnaireFormItem();
+    // select FormControl
+    formControl = new FormControl();
+
+    // component FormControl
+    private qformControl: QuestionnaireFormItem = new QuestionnaireFormItem();
   
     checkboxes: FormArray =  new FormArray([]);
   
+    itemControl: string;
     isHorizontal: boolean = true;  
 
-    answerValueSet$?: Observable<ValueSet>;
+    //answerValueSet$?: Observable<ValueSet>;
 
     answerOption?: AnswerOption[];
+
+    onChange;   // onChange callback
+    onTouched; // onChange callback
   
     constructor(qresponseService: QuestionnaireResponseService, private valueSetFactory: ValueSetFactory ) {
       super(qresponseService);
@@ -33,6 +47,8 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
     
   
     onInit() {
+      this.qformControl.item = this.item;
+
       if (this.item.answerOption) {
         this.answerOption = this.item.answerOption;
       }
@@ -40,37 +56,54 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
         this.answerOption = [];
 
         if (this.item.answerValueSet) {
-          this.answerValueSet$ = this.valueSetFactory.expand(this.item.answerValueSet);
+          var answerValueSet$ = this.valueSetFactory.expand(this.item.answerValueSet);
 
-          this.answerValueSet$.subscribe(vs => {
+          answerValueSet$.subscribe(vs => {
             console.log(vs.name, vs.url, vs.expansion?.contains);
 
             vs.expansion?.contains.forEach(c => {
               this.answerOption.push({ "valueCoding": { "system": c.system, "code": c.code, "display": c.display } } as AnswerOption);
             });
 
-            this.formControl.answerOption = this.answerOption;
+            //this.qformControl.answerOption = this.answerOption;
 
-            if (this.answerOption?.length > 0 && this.answerOption?.length <= this.droplistOptionsCount)
-            {
-              this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
-              this.formControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
-            }      
+            if (this.answerOption?.length > 0) {
+              if (this.answerOption?.length <= this.droplistOptionsCount) {
+                this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+                this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+              }    
+              else {
+                this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
+              }        
+            }
           });
         }
       }
 
-      if (this.parentGroup)
-        this.formControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
-
-      this.formControl.answerOption = this.answerOption;
-
-      if (this.answerOption?.length > 0 && this.answerOption?.length <= this.droplistOptionsCount)
-      {
-        this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
-        this.formControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+      if (this.parentGroup) {
+        this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
       }
-  
+      else if (this.repeat) {
+        this.qformControl = this.repeat as QuestionnaireFormItem;
+      }
+
+      //this.qformControl.answerOption = this.answerOption;
+
+      if (this.answerOption?.length > 0) {
+        if (this.answerOption?.length <= this.droplistOptionsCount) {
+          this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+          this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+        }
+        else {
+          this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
+        }
+      }
+
+      var itemControl = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl");
+      if (itemControl && itemControl.valueCodeableConcept?.coding.length > 0) {
+        this.itemControl = itemControl.valueCodeableConcept?.coding[0].code;
+      }
+
       var choiceOrentiation = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation");
       switch (choiceOrentiation?.valueCode) {
         case "vertical": 
@@ -82,10 +115,33 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
       }    
     }
   
+    private setValueCoding(newCode) {
+      var newAnswer = this.answerOption.find(o => o.valueCoding.code == newCode);
+      if (newAnswer) {
+            this.qformControl.setValue(newAnswer.valueCoding);
+      }
+      else {
+        this.qformControl.setValue(null);
+      }
+    }
+
+    selectChanged(newValue) {
+      this.setValueCoding(newValue);
+    }
+
     valueChanged(newValue) {
+      var newCoding = newValue as fhirclient.FHIR.Coding;
+      var newCode: string;
+      if (newCoding.code) {
+        newCode = newCoding.code;
+      }
+      else {
+        newCode = newValue;
+      }
+
       for (let index = 0; index < this.answerOption.length; index++) {
         const option = this.answerOption[index];
-        if (option.valueCoding.code == newValue) { 
+        if (option.valueCoding.code == newCode) { 
           this.checkboxes.controls[index].setValue(true);
           break;
         }
@@ -94,7 +150,7 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
 
     onCheckboxChange(event, index) {
       if (event.target.checked) {
-          this.formControl.setValue(event.target.value);
+          this.setValueCoding(event.target.value);
           var i = 0;
           this.checkboxes.controls.forEach(element => { 
             if (i++ != index)
@@ -102,8 +158,19 @@ import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
           });
       }
       else {
-        this.formControl.setValue(null);
+        this.qformControl.setValue(null);
       }
     }
-  }
+    
+    writeValue(value) {
+      if (this.qformControl && value) {
+        this.qformControl.setValue(value);
+      }
+    }
+
+  registerOnChange(fn) { this.onChange = fn;  }
+
+  registerOnTouched(fn) { this.onTouched = fn; }
+
+}
   

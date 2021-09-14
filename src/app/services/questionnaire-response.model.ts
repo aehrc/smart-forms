@@ -310,7 +310,6 @@ export class QuestionnaireFormItem extends FormControl {
         return this.responseItem;    
     };
 
-    answerOption?: AnswerOption[];
     
     constructor(item?: QuestionnaireItem) {
         super();
@@ -397,21 +396,13 @@ export class QuestionnaireFormItem extends FormControl {
     
             case "choice":
               if (selectedValue != null)
-                {
-                    var i=0;
-                    var coding = null;
-                    while (i < this.answerOption?.length) { 
-                        if (this.answerOption[i].valueCoding.code == selectedValue ) {
-                            coding = this.answerOption[i];
-                            break;
-                        }
-                        i++;
-                    }
-                    if (coding) {
-                        return coding;
-                    }
+              {
+                var valueCoding = selectedValue as fhirclient.FHIR.Coding;
+                if (valueCoding.code) {
+                  return { "valueCoding": valueCoding };
                 }
-                return null;
+              }
+              return null;
     
             case "open-choice":
               if (selectedValue != null)
@@ -456,7 +447,7 @@ export class QuestionnaireFormItem extends FormControl {
           this.setValue(answer.valueDecimal);
         }
         else if (answer.valueCoding !== undefined) {
-          this.setValue(answer.valueCoding.code);
+          this.setValue(answer.valueCoding);
         }
         else {
           console.log ("Unsupported populate answer type");
