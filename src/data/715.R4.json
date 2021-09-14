@@ -949,6 +949,10 @@
                               }
                             ]
                           }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+                            "valueString": "Regular medications"
                         }
                     ]
                 },
@@ -1011,6 +1015,10 @@
                               }
                             ]
                           }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+                            "valueString": "Relevant family history"
                         }
                     ]
                 },
@@ -1615,6 +1623,10 @@
                               }
                             ]
                           }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+                            "valueString": "Immunisation"
                         }
                     ]
                 },
@@ -2175,6 +2187,10 @@
                               }
                             ]
                           }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+                            "valueString": "Patient copy of health check"
                         }
                     ]
                 }

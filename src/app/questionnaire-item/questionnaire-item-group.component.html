@@ -6,7 +6,7 @@
             <div class="col-4">
                 <div class="nav flex-column nav-pills me-3 border" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link" id="tab-{{item.linkId}}" data-bs-toggle="pill" [attr.data-bs-target]="'#panel-' + item.linkId" type="button" role="tab" aria-controls="panel-{{item.linkId}}" aria-selected="false"
-                        *ngFor="let item of item.item | tabGroups; let first = first;" style="text-align: left;" [ngClass]="{'active': first}">{{item.text}}</button>          
+                        *ngFor="let item of item.item | tabGroups; let first = first;" style="text-align: left;" [ngClass]="{'active': first}">{{item | shortTextOrText}}</button>          
                 </div>
             </div>
   

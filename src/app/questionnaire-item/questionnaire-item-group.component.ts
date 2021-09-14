@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { QuestionnaireItem } from '../services/questionnaire.model';
-import { QuestionnaireItemBase } from './questionnaire-item-base.component';
+import { QuestionnaireItemBase, ShortTextOrTextFilterPipe } from './questionnaire-item-base.component';
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
+
 
 abstract class TabFilterPipeBase {
 
@@ -48,7 +49,7 @@ export class NonTabItemFilterPipe extends TabFilterPipeBase implements PipeTrans
   selector: 'qitem-group',
   templateUrl: './questionnaire-item-group.component.html',
   styleUrls: ['./questionnaire-item.component.css'],
-  providers: [TabFilterPipe]
+  providers: [TabFilterPipe, ShortTextOrTextFilterPipe]
 })
 export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
 

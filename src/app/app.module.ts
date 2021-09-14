@@ -23,6 +23,7 @@ import {
   QuestionnaireItemDisplayComponent,
   QuestionnaireItemQuantityComponent
 } from './questionnaire-item/questionnaire-item.component';
+import { ShortTextOrTextFilterPipe } from './questionnaire-item/questionnaire-item-base.component';
 import { QuestionnaireItemGroupComponent, TabFilterPipe, NonTabItemFilterPipe } from './questionnaire-item/questionnaire-item-group.component';
 import { QuestionnaireItemRepeatComponent } from './questionnaire-item/questionnaire-item-repeat.component';
 import { QuestionnaireItemChoiceComponent } from './questionnaire-item/questionnaire-item-choice.component';
@@ -56,6 +57,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     QuestionnaireItemOpenChoiceComponent,
     QuestionnaireItemQuantityComponent,
     QuestionnaireOffCanvasComponent,
+    ShortTextOrTextFilterPipe,
     TabFilterPipe,
     NonTabItemFilterPipe,
     SpinnerComponent,

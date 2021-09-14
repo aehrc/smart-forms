@@ -1,4 +1,4 @@
-import { OnInit, Input } from '@angular/core';
+import { OnInit, Input, Pipe, PipeTransform } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { from, Observable, of } from 'rxjs';
 import { first, mergeMap, switchMap } from 'rxjs/operators';
@@ -7,6 +7,26 @@ import { QuestionnaireResponseService } from '../services/questionnaire-response
 import { QuestionnaireItem } from '../services/questionnaire.model';
 import { QuestionnaireFormGroup } from '../services/questionnaire-response.model';
 
+@Pipe({
+    name: 'shortTextOrText'
+})
+export class ShortTextOrTextFilterPipe implements PipeTransform {
+  
+    // value - QuestionnaireItem
+    // return vaue of shortText extension if it exists, otherwise item text 
+    transform(value: QuestionnaireItem): string {
+        return this.shortText(value) || value.text;
+    }
+
+    private shortText(item: QuestionnaireItem) {
+        var extension = item.extension?.find(e=> e.url == "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText");
+        if (extension) {
+            return extension.valueString;
+        }
+        return null;
+    }  
+}
+  
 export abstract class QuestionnaireItemBase implements OnInit {
     @Input() item: QuestionnaireItem;
   
