@@ -416,7 +416,10 @@ export class QuestionnaireFormItem extends FormControl {
             case "open-choice":
               if (selectedValue != null)
               {
-                // TODO: support coding
+                var valueCoding = selectedValue as fhirclient.FHIR.Coding;
+                if (valueCoding.code)
+                  return { "valueCoding": valueCoding };
+                else if (selectedValue !== '')
                   return { "valueString": selectedValue };
               }
               return null;

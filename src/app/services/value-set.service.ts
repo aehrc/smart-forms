@@ -20,7 +20,7 @@ export class ValueSetFactory {
 
     if (!valueSet$) {
       console.log("Getting ", fullUrl);
-      var parsed = urlParse(fullUrl, true);
+      var parsed = urlParse(fullUrl, false);
 
       var pathParts = parsed.pathname?.split('/');
       pathParts.splice(pathParts.length-2, 2);
@@ -30,7 +30,7 @@ export class ValueSetFactory {
 
       //console.log("Server root", serverUrl, parsed.query['url']);
       const service = new ValueSetService(serverUrl);
-      valueSet$ = service.expand(parsed.query['url']);
+      valueSet$ = service.expand(parsed.query);
 
       this.cache[fullUrl] = valueSet$;      
     }
@@ -71,11 +71,11 @@ export class ValueSetService {
     return from(result);
   }
 
-  expand(url: string): Observable<ValueSet> {
+  expand(params: string): Observable<ValueSet> {
     var headers = {'Cache-Control': 'no-cache'};
 
     let result = this.fhirClient.request({
-      url: 'ValueSet/$expand?url=' + url,
+      url: 'ValueSet/$expand' + params,
       headers: headers
     });
 
@@ -84,4 +84,19 @@ export class ValueSetService {
     return from(result);
   }
 
+  static expand(fullUrl: string): Observable<ValueSet> {
+    console.log("Getting ", fullUrl);
+    var parsed = urlParse(fullUrl, false);
+
+    var pathParts = parsed.pathname?.split('/');
+    pathParts.splice(pathParts.length-2, 2);
+    var path = pathParts.join('/');
+
+    let serverUrl: string = parsed.origin + path;
+
+    const service = new ValueSetService(serverUrl);
+    var valueSet$ = service.expand(parsed.query);
+
+    return valueSet$;
+  }
 }

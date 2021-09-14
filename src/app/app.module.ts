@@ -21,12 +21,12 @@ import {
   QuestionnaireItemDateTimeComponent,
   QuestionnaireItemDecimalComponent,
   QuestionnaireItemDisplayComponent,
-  QuestionnaireItemOpenChoiceComponent,
   QuestionnaireItemQuantityComponent
 } from './questionnaire-item/questionnaire-item.component';
 import { QuestionnaireItemGroupComponent, TabFilterPipe, NonTabItemFilterPipe } from './questionnaire-item/questionnaire-item-group.component';
 import { QuestionnaireItemRepeatComponent } from './questionnaire-item/questionnaire-item-repeat.component';
 import { QuestionnaireItemChoiceComponent } from './questionnaire-item/questionnaire-item-choice.component';
+import { QuestionnaireItemOpenChoiceComponent } from './questionnaire-item/questionnaire-item-openchoice.component';
 
 import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
 import { SpinnerComponent } from './spinner/spinner.component';

@@ -137,20 +137,6 @@ export class QuestionnaireItemDisplayComponent extends QuestionnaireItemBase  {
 }
 
 @Component({
-  selector: 'qitem-openchoice',
-  templateUrl: './questionnaire-item-openchoice.component.html',
-  styleUrls: ['./questionnaire-item.component.css']
-})
-export class QuestionnaireItemOpenChoiceComponent extends QuestionnaireItemBase  {
-  formControl = new FormControl();
-
-  onInit() {
-    if (this.parentGroup)
-      this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
-  }
-}
-
-@Component({
   selector: 'qitem-quantity',
   templateUrl: './questionnaire-item-quantity.component.html',
   styleUrls: ['./questionnaire-item.component.css']
