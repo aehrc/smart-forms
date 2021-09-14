@@ -31,6 +31,7 @@ import { QuestionnaireItemOpenChoiceComponent } from './questionnaire-item/quest
 import { QuestionnaireOffCanvasComponent } from './questionnaire-off-canvas/questionnaire-off-canvas.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { QuestionnaireListComponent } from './questionnaire-list/questionnaire-list.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import { QuestionnaireListComponent } from './questionnaire-list/questionnaire-l
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

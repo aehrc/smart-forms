@@ -1,21 +1,28 @@
-<div class="row mb-3" [hidden]="!(enableWhen() | async)">
+<div class="row mb-3" [hidden]="!(enableWhen() | async)"  [ngSwitch]="itemControl" >
   <label *ngIf="!repeat" class="col-sm-5 col-form-label" for="{{item.linkId}}">{{item.text}}</label>
 
-  <div [ngClass]="{'col-sm-7': !repeat}" *ngIf="itemControl !== 'check-box'; else checked_content">
+  <!-- autocomplete -->
+  <div *ngSwitchCase="'autocomplete'" [ngClass]="{'col-sm-7': !repeat}">
+    <input id="{{item.linkId}}" type="text" class="form-control" [formControl]="formControl"  [ngbTypeahead]="search" [inputFormatter]="formatter" [resultFormatter]="formatter" [editable]="false" />
+    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
+  </div>
+
+  <!-- check-box -->
+  <div *ngSwitchCase="'check-box'" class="col-sm-7" >
+    <div class="form-check" [class.form-check-inline]="isHorizontal" *ngFor="let o of answerOption; let i = index">
+        <input class="form-check-input" type="checkbox" id="{{item.linkId}}-{{o.valueCoding.code}}" value="{{o.valueCoding.code}}" [formControl]="checkboxes?.controls[i]" (change)="onCheckboxChange($event, i)"> 
+      <label class="form-check-label" for="{{item.linkId}}-{{o.valueCoding.code}}">{{o.valueCoding.display}}</label>
+    </div>
+    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
+  </div>
+
+  <!-- deafult: drop-down -->
+  <div *ngSwitchDefault  [ngClass]="{'col-sm-7': !repeat}">
     <select class="form-select" class="form-control" id="{{item.linkId}}" [formControl]="formControl">
       <option></option>
       <option *ngFor="let o of answerOption" value="{{o.valueCoding.code}}">{{o.valueCoding.display}}</option>
     </select>
-    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
-  </div>
 
-  <ng-template #checked_content>
-  <div class="col-sm-7" >
-      <div class="form-check" [class.form-check-inline]="isHorizontal" *ngFor="let o of answerOption; let i = index">
-        <input class="form-check-input" type="checkbox" id="{{item.linkId}}-{{o.valueCoding.code}}" value="{{o.valueCoding.code}}" [formControl]="checkboxes?.controls[i]" (change)="onCheckboxChange($event, i)"> 
-        <label class="form-check-label" for="{{item.linkId}}-{{o.valueCoding.code}}">{{o.valueCoding.display}}</label>
-    </div>
     <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
   </div>  
-  </ng-template>
 </div>

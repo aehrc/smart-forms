@@ -1,7 +1,8 @@
 import { Component } from "@angular/core";
 import { ControlValueAccessor, FormArray, FormControl, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { fhirclient } from "fhirclient/lib/types";
-import { Observable } from "rxjs";
+import { Observable, of, OperatorFunction } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, switchMap } from "rxjs/operators";
 import { QuestionnaireFormItem } from "../services/questionnaire-response.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
 import { AnswerOption } from "../services/questionnaire.model";
@@ -65,7 +66,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
       if (this.item.answerOption) {
         this.answerOption = this.item.answerOption;
       }
-      else {
+      else if (this.itemControl !== "autocomplete") {
         this.answerOption = [];
 
         if (this.item.answerValueSet) {
@@ -79,7 +80,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
             });
 
             if (this.answerOption?.length > 0) {
-              if (this.itemControl == "check-box") { //ItemControl["check-box"]) {
+              if (this.itemControl == "check-box") { 
                 this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
                 this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
               }    
@@ -89,6 +90,9 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
             }
           });
         }
+      }
+      else if (this.item.answerValueSet) {  // autocomplete
+        this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
       }
 
       if (this.parentGroup) {
@@ -118,7 +122,49 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
           break;
       }    
     }
-  
+      
+    // uses https://ng-bootstrap.github.io/#/components/typeahead/examples
+    search: OperatorFunction<string, readonly fhirclient.FHIR.Coding[]> = (text$: Observable<string>) => {
+      var maxlist = 10;
+
+      return text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(term => {
+          if (term.length < 2) {
+            return of([]); 
+          }
+          else { 
+            if (this.item.answerValueSet) {
+              var fullUrl = this.item.answerValueSet + "filter=" + term + "&count=" + maxlist + "&includeDesignations=true";
+              return ValueSetService.expand(fullUrl)
+              .pipe(map(vs=> {
+                var coding : fhirclient.FHIR.Coding[] = [];
+                vs.expansion?.contains?.forEach(c => {
+                  coding.push({ "system": c.system, "code": c.code, "display": c.display } as fhirclient.FHIR.Coding);                  
+                });
+                return coding;
+              }));
+            }
+            else if (this.answerOption) {
+              return this.filterOptionsCoding(term, maxlist);
+            }
+            else {
+              return of([]); 
+            }
+          }
+        })
+      )    
+    }
+
+    formatter = (coding: fhirclient.FHIR.Coding) => coding.display;
+
+    private filterOptionsCoding(criteria: string, maxlist: number) : Observable<fhirclient.FHIR.Coding[]> {
+      return of(this.answerOption?.filter(option => option.valueCoding.display.toLocaleLowerCase().includes(criteria.toLocaleLowerCase()))
+        .slice(0, maxlist)
+        .map(o=> o.valueCoding));
+    }
+
     private setValueCoding(newCode) {
       var newAnswer = this.answerOption.find(o => o.valueCoding.code == newCode);
       if (newAnswer) {
@@ -130,7 +176,17 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
     }
 
     selectChanged(newValue) {
-      this.setValueCoding(newValue);
+      if (newValue === undefined) {
+        this.qformControl.setValue(null);
+      } else {     
+        var newCoding = newValue as fhirclient.FHIR.Coding;
+        if (newCoding.code) {
+          this.qformControl.setValue(newCoding);
+        } 
+        else {
+          this.setValueCoding(newValue);
+        }
+      }
     }
 
     valueChanged(newValue) {
