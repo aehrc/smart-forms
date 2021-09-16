@@ -8,6 +8,7 @@ import { FHIRService } from '../services/fhir.service';
 import { PatientService } from '../services/patient.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { Questionnaire } from '../services/questionnaire.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'questionnaire-render',
@@ -20,13 +21,18 @@ export class QRenderComponent implements OnInit {
 
   navbarOpen = false;
 
-  constructor(
+  constructor(private route: ActivatedRoute, 
     private patientService: PatientService, 
     private fhirService: FHIRService, 
     private questionnaireService: QuestionnaireService) { }
 
   ngOnInit(): void {
     var questionnaireName = "MBS715";
+    const fragment = this.route.snapshot.fragment;
+
+    if (fragment)
+      questionnaireName = fragment;
+
     var fhirServerUrl = 'http://www.demo.oridashi.com.au:8109';  // oridashi public server
 
     //if (this.fhir.isAuthorizing()) {

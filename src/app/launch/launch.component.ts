@@ -15,7 +15,6 @@ export class LaunchComponent implements OnInit {
 
   clientId: string;
   scope: string;
-
   launch: string;
   iss: string;
 
@@ -25,13 +24,15 @@ export class LaunchComponent implements OnInit {
     private appComponent: AppComponent) { 
 
       this.clientId = "my_web_app";
-      this.scope = "patient/*.read";
+      this.scope = "launch patient/*.read";
+      //this.scope = "launch patient/*.read openid fhirUser";
   }
 
   ngOnInit() {
     this.launch = this.route.snapshot.queryParamMap.get('launch');
     this.iss = this.route.snapshot.queryParamMap.get('iss');
 
+    const fragment = this.route.snapshot.fragment;    
     const baseUrl = window.location.origin;
 
     switch(this.iss) {
@@ -44,26 +45,19 @@ export class LaunchComponent implements OnInit {
         break;
     }
 
-    var localUrl = this.route.snapshot.queryParamMap.get('localUrl');
-    var serverUrl = this.route.snapshot.queryParamMap.get('serverUrl');
-    var name = this.route.snapshot.queryParamMap.get('q-name');
     
-    //const redirectUri = baseUrl + "/redirect?localUrl=data/715.R4.json";
-    //const redirectUri = baseUrl + "?localUrl=data/715.R4.json";
     var redirectUri: string; 
-    if (localUrl) {
-      redirectUri = baseUrl + "?localUrl=" + localUrl;
+    if (fragment) {
+      redirectUri = baseUrl + "/#" + fragment;
     }
     else
-      redirectUri = baseUrl + "/";// + "?localUrl=data/715.R4.json";
+      redirectUri = baseUrl + "/";
 
     console.log('redirect_uri: ' + redirectUri);
 
-    
-
     this.titleService.setTitle(this.appComponent.title + " launch - " + this.iss);
 
-    this.fhir.authorize(this.clientId, this.scope, redirectUri);  
+    this.fhir.authorize(this.clientId, this.scope, redirectUri, this.launch);
   }
 
 }

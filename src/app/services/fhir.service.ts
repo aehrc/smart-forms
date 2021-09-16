@@ -47,13 +47,14 @@ export class FHIRService {
   /** 
    * Initiate the Authorization flow with the clientId, scope and optional redirectUri 
    */
-  public authorize(clientId: string, scope: string, redirectUri?: string) : void {
+  public authorize(clientId: string, scope: string, redirectUri?: string, launch?: string) : void {
     
     this._isAuthorizing = true;
 
     FHIR.oauth2.authorize({
       "client_id": clientId,
       "scope": scope, 
+      "launch": launch,
       "redirect_uri": redirectUri
     });
 
