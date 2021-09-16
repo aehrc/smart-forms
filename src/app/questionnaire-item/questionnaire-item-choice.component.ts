@@ -49,8 +49,16 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
     
   
     onInit() {
-      this.qformControl.item = this.item;
+      //this.qformControl.item = this.item;
 
+      if (this.parentGroup) {
+        this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
+      }
+      else if (this.repeat) {
+        this.qformControl = this.repeat as QuestionnaireFormItem;
+      }
+
+      this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
 
       if (this.item.answerOption?.length > 0 && this.item.answerOption?.length <= this.droplistOptionsCount) 
         this.itemControl = "check-box";
@@ -82,9 +90,12 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
             if (this.answerOption?.length > 0) {
               if (this.itemControl == "check-box") { 
                 this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
-                this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+                //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
               }    
               else {  // drop-down
+                if (this.qformControl.value) {
+                  this.formControl.setValue(this.qformControl.value);
+                }
                 this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
               }        
             }
@@ -92,22 +103,21 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         }
       }
       else if (this.item.answerValueSet) {  // autocomplete
+        if (this.qformControl.value) {
+          this.formControl.setValue(this.qformControl.value);
+        }
         this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
-      }
-
-      if (this.parentGroup) {
-        this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
-      }
-      else if (this.repeat) {
-        this.qformControl = this.repeat as QuestionnaireFormItem;
       }
 
       if (this.answerOption?.length > 0) {
         if (this.itemControl == "check-box") { 
           this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
-          this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+          //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
         }
         else {
+          if (this.qformControl.value) {
+            this.formControl.setValue(this.qformControl.value);
+          }
           this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
         }
       }
@@ -136,7 +146,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
           }
           else { 
             if (this.item.answerValueSet) {
-              var fullUrl = this.item.answerValueSet + "filter=" + term + "&count=" + maxlist + "&includeDesignations=true";
+              var fullUrl = this.item.answerValueSet + "filter=" + term + "&count=" + maxlist; // + "&includeDesignations=true";
               return ValueSetService.expand(fullUrl)
               .pipe(map(vs=> {
                 var coding : fhirclient.FHIR.Coding[] = [];
@@ -180,11 +190,15 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         this.qformControl.setValue(null);
       } else {     
         var newCoding = newValue as fhirclient.FHIR.Coding;
-        if (newCoding.code) {
-          this.qformControl.setValue(newCoding);
+        if (newCoding.code) { 
+          if (newCoding.code != this.qformControl.value?.code) {          
+            this.qformControl.setValue(newCoding);
+          }
         } 
-        else {
-          this.setValueCoding(newValue);
+        else {  // code
+          if (newValue != this.qformControl.value) {          
+            this.setValueCoding(newValue);
+          }
         }
       }
     }
@@ -199,6 +213,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         newCode = newValue;
       }
 
+      if (this.itemControl == "check-box") {
       for (let index = 0; index < this.answerOption.length; index++) {
         const option = this.answerOption[index];
         if (option.valueCoding.code == newCode) { 
@@ -206,6 +221,13 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
           break;
         }
       } 
+      }
+      else if (this.itemControl == "autocomplete"){
+        this.formControl.setValue(newCoding);
+      }
+      else {
+        this.formControl.setValue(newCode);
+      }
     }
 
     onCheckboxChange(event, index) {

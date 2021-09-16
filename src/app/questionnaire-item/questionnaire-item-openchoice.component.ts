@@ -51,7 +51,7 @@ export class QuestionnaireItemOpenChoiceComponent extends QuestionnaireItemBase 
                 if (this.item.answerOption)
                     return this.filterOptions(newValue); 
                 else if (this.item.answerValueSet) {
-                    var fullUrl = this.item.answerValueSet + "filter=" + newValue + "&count=10" + "&includeDesignations=true";
+                    var fullUrl = this.item.answerValueSet + "filter=" + newValue + "&count=10";// + "&includeDesignations=true";
                     return ValueSetService.expand(fullUrl);
                 }
                 else
