@@ -351,8 +351,7 @@
                                     "text": "Parent/primary carer present for health check",
                                     "type": "choice",
                                     "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
-                                        { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}],
-                                    "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnona&"
+                                        { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}]
                                 },
                                 {
                                     "linkId": "f9aaa187-ef4d-4aff-a805-9ad2ebe56fe5",
@@ -405,8 +404,7 @@
                             "type": "choice",
                             "answerOption": [ { "valueCoding": { "code": "257585005", "display": "Clinic", "system": "http://snomed.info/sct" }}, 
                                 { "valueCoding": { "code": "264362003", "display": "Home", "system": "http://snomed.info/sct" }},
-                                { "valueCoding": { "code": "74964007", "display": "Other", "system": "http://snomed.info/sct" }}],
-                            "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://csiro.au/ValueSet/healthchecklocation&"
+                                { "valueCoding": { "code": "74964007", "display": "Other", "system": "http://snomed.info/sct" }}]
                         }
                     ],
                     "extension": [
@@ -514,15 +512,14 @@
                             ],
                             "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc4e",
                             "text": "Aboriginal and Torres Strait Islander status",
-                            "code": [{"coding": {"code": "291036", "display": "Indigenous status" }}],
+                            "code": [{"code": "291036", "display": "Indigenous status" }],
                             "type": "choice",
                             "repeats": false,
                             "answerOption": [ { "valueCoding": { "code": "1", "display": "Aboriginal but not Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }}, 
                                 { "valueCoding": { "code": "2", "display": "Torres Strait Islander but not Aboriginal origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
                                 { "valueCoding": { "code": "3", "display": "Both Aboriginal and Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
                                 { "valueCoding": { "code": "4", "display": "Neither Aboriginal nor Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
-                                { "valueCoding": { "code": "9", "display": "Not stated/inadequately described", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }}],
-                            "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://healthterminologies.gov.au/fhir/ValueSet/australian-indigenous-status-1&"
+                                { "valueCoding": { "code": "9", "display": "Not stated/inadequately described", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }}]
                         },
                         {
                             "extension": [
@@ -703,8 +700,7 @@
                                     "repeats": false,
                                     "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
                                         { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
-                                        { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}],
-                                    "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnodontknow&"
+                                        { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}]
                                 },
                                 {
                                     "linkId": "2b6ea01d-77f3-4fbc-8663-080222f196a6",
@@ -793,8 +789,7 @@
                                     "repeats": false,
                                     "answerOption": [ { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
                                         { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
-                                        { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}],
-                                    "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnodontknow&"
+                                        { "valueCoding": { "code": "NA", "display": "NA", "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor" }}]
                                 },
                                 {
                                     "linkId": "c4bca7d0-e3b3-4296-b231-668c02ecdaad",
@@ -862,7 +857,7 @@
                         {
                             "extension": [
                                 {
-                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialContext",
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                                     "valueExpression": {
                                         "language": "text/fhirpath",
                                         "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.text"
@@ -871,8 +866,8 @@
                             ],
                             "linkId": "a5e9f87a-c561-4ffb-b200-9b93b8887a11",
                             "text": "item",
-                            "code": [{"coding": {"code": "282291009", "display": "Diagnosis interpretation" }}],
                             "type": "text",
+                            "code": [{"code": "282291009", "display": "Diagnosis interpretation" }],
                             "repeats": true
                         }
                     ],
@@ -1126,8 +1121,7 @@
                                     "repeats": false,
                                     "answerOption": [ { "valueCoding": { "code": "N", "display": "No", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }}, 
                                         { "valueCoding": { "code": "Y", "display": "Yes", "system": "http://terminology.hl7.org/CodeSystem/v2-0136" }},
-                                        { "valueCoding": { "code": "asked-unknown", "display": "Don't know", "system": "http://terminology.hl7.org/CodeSystem/data-absent-reason" }}],
-                                    "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/yesnodontknow&"
+                                        { "valueCoding": { "code": "asked-unknown", "display": "Don't know", "system": "http://terminology.hl7.org/CodeSystem/data-absent-reason" }}]
                                 },
                                 {
                                     "linkId": "1de1d66f-baa1-411b-b957-f59cd91799dd",
@@ -1536,8 +1530,7 @@
                                     "answerOption": [ { "valueCoding": { "code": "736595007", "display": "Cervical cancer screening refused", "system": "http://snomed.info/sct" }}, 
                                         { "valueCoding": { "code": "410527000", "display": "Offered", "system": "http://snomed.info/sct" }},
                                         { "valueCoding": { "code": "165330008", "display": "Laboratory test not necessary", "system": "http://snomed.info/sct" }},
-                                        { "valueCoding": { "code": "15240007", "display": "Current", "system": "http://snomed.info/sct" }}],
-                                    "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://csiro.au/ValueSet/cervical-screening-715&"
+                                        { "valueCoding": { "code": "15240007", "display": "Current", "system": "http://snomed.info/sct" }}]
                                 },
                                 {
                                     "linkId": "8484a366-b2b5-45b8-a0ec-b1f8de095f98",
