@@ -46,6 +46,11 @@ export class QuestionnaireService {
     });
   }
 
+  private _batchQuery$: Observable<fhirTypes.FHIR.Resource> = EMPTY;
+  get batchQuery$(): Observable<fhirTypes.FHIR.Resource> {
+    return this._batchQuery$;
+  }
+
   private localQuestionnaires: QuestionnaireCandidate[] = [
     /*    {
           "name": "AU-MBS-715",
@@ -118,7 +123,9 @@ export class QuestionnaireService {
           entry.request.url = entry.request.url.replace("{{%LaunchPatient.id}}", patientId); 
         });
 
-        return this.fhirService.batch(query)
+        this._batchQuery$ = this.fhirService.batch(query);
+
+        return this._batchQuery$
         .pipe(mergeMap(queryResponse => {
 
           var parameters: Parameters = {

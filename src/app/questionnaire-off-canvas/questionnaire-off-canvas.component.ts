@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { QuestionnaireResponse, QuestionnaireResponseService } from '../services/questionnaire-response.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { Questionnaire } from '../services/questionnaire.model';
+import { fhirclient } from 'fhirclient/lib/types';
 
 @Component({
   selector: 'questionnaire-off-canvas',
@@ -15,6 +16,10 @@ export class QuestionnaireOffCanvasComponent {
   questionnaire$: Observable<Questionnaire>;
 
   qresponse$: Observable<QuestionnaireResponse>;
+
+  get query$() : Observable<fhirclient.FHIR.Resource> {
+    return this.questionnaireService.batchQuery$; 
+  }
 
   constructor(private questionnaireService: QuestionnaireService, 
     private responseService: QuestionnaireResponseService) { 
