@@ -8,6 +8,7 @@ import { AnswerOption } from "../services/questionnaire.model";
 import { ValueSet } from "../services/value-set.model";
 import { ValueSetService } from "../services/value-set.service";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
+import { fhirclient } from "fhirclient/lib/types";
 
 @Component({
     selector: 'qitem-openchoice',
@@ -36,9 +37,23 @@ export class QuestionnaireItemOpenChoiceComponent extends QuestionnaireItemBase 
     }
   
     onInit() {
-        this.qformControl.item = this.item;
+        if (this.parentGroup)
+            this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
+        else if (this.repeat)
+            this.qformControl = this.repeat as QuestionnaireFormItem;
 
-
+        this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+        
+        if (this.qformControl.value) {
+            var coding = this.qformControl.value as fhirclient.FHIR.Coding;
+            if (coding.code) { // valueCoding
+                this.formControl.setValue(coding.display);
+            }
+            else {  // valueString
+                this.formControl.setValue(this.qformControl.value);
+            }
+        }
+  
         this.formControl.valueChanges
         .pipe(tap(res => {                
             this.qformControl.setValue(res);
@@ -70,10 +85,6 @@ export class QuestionnaireItemOpenChoiceComponent extends QuestionnaireItemBase 
                 this.selectOptions = res as AnswerOption[];
         });
         
-        if (this.parentGroup)
-            this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
-        else if (this.repeat)
-            this.qformControl = this.repeat as QuestionnaireFormItem;
     }
 
     onFocusOut() {
@@ -99,6 +110,17 @@ export class QuestionnaireItemOpenChoiceComponent extends QuestionnaireItemBase 
             this.onChange(option.valueCoding);
 
         this.selectOptions = null;
+    }
+
+    valueChanged(newValue) {
+        var newCoding = newValue as fhirclient.FHIR.Coding;
+
+        if (newCoding.code) {
+            this.formControl.setValue(newCoding.display, { emitEvent: false });
+        }
+        else {
+          this.formControl.setValue(newValue, { emitEvent: false });
+        }
     }
 
     writeValue(value) {
