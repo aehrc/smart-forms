@@ -100,7 +100,7 @@ export class QRenderComponent implements OnInit {
     this.questionnaireService.searchLocal(questionnaireName)
     .pipe(switchMap(item=> { 
       if (item.length > 0) {
-        return this.questionnaireService.readLocal(item[0].url);
+        return this.questionnaireService.readLocal$(item[0].url);
       }
       else {
         return EMPTY;

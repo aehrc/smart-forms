@@ -1,3 +1,18 @@
+<nav class="navbar navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
+      <a class="navbar-brand" routerLink="/">Q-Forms</a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/questionnaires">Questionnaires</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+
 <!--div id="main" class="container"-->
 <div class="container p-3 mb-3">
     <div class="row mb-3">
@@ -13,7 +28,12 @@
                 <label class="form-check-label" for="{{s}}">{{s}}</label>
             </div>
 
-            <input type="text" id="qsearch" #srch placeholder="Search" (input)="search(srch.value)" [(ngModel)]="qsearch" > <!--ng-model-options='{ debounce: 50 }' ng-change="$ctrl.change()" -->
+            <input class="mt-1" type="text" id="qsearch" #srch placeholder="Search" (input)="search(srch.value)" [(ngModel)]="qsearch" > <!--ng-model-options='{ debounce: 50 }' ng-change="$ctrl.change()" -->
+
+            <div class="mt-2">
+                <button class="btn btn-primary" [disabled]="src=='local' || (questionnaire$ |async) == null" (click)="upload()">Upload</button>
+                <button class="btn btn-primary m-2" [disabled]="(questionnaire$ |async) == null" (click)="view()">View</button>
+            </div>
 
             <!--span id="count">{{pageCount}} of {{totalCount}}</span-->
 
@@ -25,8 +45,16 @@
             <hr>
         </div>
         <div class="col-sm-6 " >
-            <div style="height: 900px;overflow: auto;" > 
-            <pre style="overflow: initial">{{questionnaire$ |async | json}}</pre>
+            <div class="border p-1 mb-2" *ngIf="errors$">
+                <h3>Errors</h3>
+                <ul>
+                <li *ngFor="let e of errors$ | async">
+                    {{e.details.text}}
+                </li>
+                </ul>
+            </div>
+            <div class ="border" style="height: 900px;overflow: auto;" *ngIf="questionnaire$"> 
+                <pre style="overflow: initial">{{questionnaire$ |async | json}}</pre>
             </div>
         </div>
     </div>

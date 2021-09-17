@@ -5,7 +5,7 @@ import { of, Observable, ReplaySubject, Subject, EMPTY, from } from 'rxjs';
 import { FHIRService, Parameters } from './fhir.service';
 
 import { Questionnaire } from './questionnaire.model';
-import { QuestionnaireResponse, QuestionnaireResponseAnswer } from './questionnaire-response.service';
+import { QuestionnaireResponse } from './questionnaire-response.service';
 import { mergeMap } from 'rxjs/operators';
 import { PopulateService } from './populate.service';
 import { PatientService } from './patient.service';
@@ -41,9 +41,12 @@ export class QuestionnaireService {
       return this.fhirClient.state.serverUrl;
   } 
   set currentServer(serverUrl: string) {
-    this.fhirClient = FHIR.client({
-      serverUrl: serverUrl
-    });
+    if (serverUrl === 'local') {
+      this.fhirClient = null;
+    }
+    else {
+      this.fhirClient = FHIR.client({ serverUrl: serverUrl });
+    }
   }
 
   private _batchQuery$: Observable<fhirTypes.FHIR.Resource> = EMPTY;
@@ -76,7 +79,6 @@ export class QuestionnaireService {
   setQuestionnaire(questionnaire: Questionnaire) {
     this.questionnaireSubject.next(questionnaire);
 
-    this._questionnaire$ = this.questionnaireSubject.asObservable();
 
     this.initialised = true;
   }
@@ -102,7 +104,7 @@ export class QuestionnaireService {
     return of(this.localQuestionnaires.filter(item => item.name.toLocaleLowerCase().includes(name.toLocaleLowerCase())));
   }
 
-  readLocal(url: string): Observable<Questionnaire> {
+  readLocal$(url: string): Observable<Questionnaire> {
     return this.http.get<Questionnaire>(url);
   }
 
@@ -149,16 +151,6 @@ export class QuestionnaireService {
           };
 
           var questionnaireResponse$ = this.populateService.populate(questionnaire.id, parameters);
-
-          // temporary workaround to repalce multiple medical history lines into repeat answers
-          questionnaireResponse$.subscribe(qr => {
-            var item = qr.item[0].item?.find(i=> i.text=="Medical history and current problems").item?.find(i=> i.linkId=="a5e9f87a-c561-4ffb-b200-9b93b8887a11");
-            if (item?.answer) {
-              var s = item.answer[0].valueString;
-              var newAnswer: QuestionnaireResponseAnswer[] = s.split("\r\n").map(s=> { return { valueString: s}});
-              item.answer = newAnswer;
-            }
-          });
 
           this.spinnerService.hide();
           
@@ -232,9 +224,16 @@ export class QuestionnaireService {
   }
 
   setQuestionnaireByLocalUrl(url: string) {
-    if (url && !this.fhirClient) {
-      this._questionnaire$ = this.readLocal(url);
-      this.initialised = true;
+    if (url) {
+      this.readLocal$(url).subscribe( x=> { 
+        this.questionnaireSubject.next(x)
+        this.initialised = true;
+      });
     }
+  }
+
+  update(questionnaire: Questionnaire) : Observable<fhirTypes.FHIR.Resource> {
+    return from(this.fhirClient.update(questionnaire)
+      .catch(reason => JSON.parse(reason.message.substr(reason.message.indexOf('\n\n')+2))));
   }
 }

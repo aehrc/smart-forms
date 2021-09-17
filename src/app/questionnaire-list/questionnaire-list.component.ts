@@ -27,6 +27,8 @@ export class QuestionnaireListComponent implements OnInit {
 
   questionnaire$: Observable<Questionnaire>;
 
+  errors$;
+
   constructor(private router: Router, private questionnaireService: QuestionnaireService) { }
 
   ngOnInit(): void {
@@ -58,16 +60,24 @@ export class QuestionnaireListComponent implements OnInit {
         }
       })
     );
+
+    setTimeout(() => {
+      this.qsearch$.next(this.qsearch);
+    }, 300);
+  }
+
+  navbarOpen = false;
+
+  toggleNavbar() {
+    this.navbarOpen = !this.navbarOpen;
   }
 
   setQuestionnaire(resource: Questionnaire) {
     this.questionnaireService.setQuestionnaire(resource);
-    this.router.navigate(['/']);
   }
 
   setQuestionnaireByUrl(url: string) {
     this.questionnaireService.setQuestionnaireByLocalUrl(url);
-    this.router.navigate(['/']);
   }
 
   changeServer(src: string) {
@@ -78,5 +88,29 @@ export class QuestionnaireListComponent implements OnInit {
 
   search(qsearch: string) {
     this.qsearch$.next(qsearch);
+  }
+
+  upload() {
+    var questionnaire;
+    const s = this.questionnaire$.subscribe(q=> questionnaire = q)
+    s.unsubscribe();
+
+    this.questionnaireService.update(questionnaire)
+    .subscribe(r=> {
+      console.log(r);
+      const q = r as Questionnaire;
+      if (q.title) {
+        this.questionnaireService.setQuestionnaire(q);
+      }
+      else {
+        const operationOutcome = r;
+        var errors = operationOutcome.issue.filter(i=> i.severity == 'error');
+        this.errors$ = of(errors);
+      }
+    });    
+  }
+
+  view() {
+    this.router.navigate(['/']);
   }
 }
