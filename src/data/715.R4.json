@@ -860,7 +860,7 @@
                                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                                     "valueExpression": {
                                         "language": "text/fhirpath",
-                                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct')"
+                                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
                                     }
                                 },
                                 {
@@ -878,7 +878,7 @@
                             "linkId": "a5e9f87a-c561-4ffb-b200-9b93b8887a11",
                             "text": "item",
                             "code": [{"code": "282291009", "display": "Diagnosis interpretation" }],
-                            "type": "choice",
+                            "type": "open-choice",
                             "repeats": true,
                             "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs=ecl/(%5E%2032570071000036102%20OR%20%5E%2032570141000036105)&"
                         }
