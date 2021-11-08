@@ -1888,7 +1888,7 @@
                                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                                     "valueExpression": {
                                         "language": "text/fhirpath",
-                                        "expression": "%PrePopQuery.entry[3].resource.entry.resource.value.value"
+                                        "expression": "%PrePopQuery.entry[4].resource.entry.resource.value.value"
                                     }
                                 }
                             ],
@@ -1930,7 +1930,7 @@
                                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                                     "valueExpression": {
                                         "language": "text/fhirpath",
-                                        "expression": "%PrePopQuery.entry.resource.entry[8].resource.select(component[0].value.select(value.toString()) + '/' + component[1].value.select(value.toString()) )"
+                                        "expression": "%PrePopQuery.entry[7].resource.entry.resource.select(component[0].value.select(value.toString()) + '/' + component[1].value.select(value.toString()) )"
                                     }
                                 }
                             ],
