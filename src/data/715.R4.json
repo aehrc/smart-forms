@@ -515,11 +515,11 @@
                             "code": [{"code": "291036", "display": "Indigenous status" }],
                             "type": "choice",
                             "repeats": false,
-                            "answerOption": [ { "valueCoding": { "code": "1", "display": "Aboriginal but not Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }}, 
-                                { "valueCoding": { "code": "2", "display": "Torres Strait Islander but not Aboriginal origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
-                                { "valueCoding": { "code": "3", "display": "Both Aboriginal and Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
-                                { "valueCoding": { "code": "4", "display": "Neither Aboriginal nor Torres Strait Islander origin", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }},
-                                { "valueCoding": { "code": "9", "display": "Not stated/inadequately described", "system": "https://www.healthterminologies.gov.au/integration/R4/fhir/CodeSystem/australian-indigenous-status-1" }}]
+                            "answerOption": [ { "valueCoding": { "code": "1", "display": "Aboriginal but not Torres Strait Islander origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }}, 
+                                { "valueCoding": { "code": "2", "display": "Torres Strait Islander but not Aboriginal origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }},
+                                { "valueCoding": { "code": "3", "display": "Both Aboriginal and Torres Strait Islander origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }},
+                                { "valueCoding": { "code": "4", "display": "Neither Aboriginal nor Torres Strait Islander origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }},
+                                { "valueCoding": { "code": "9", "display": "Not stated/inadequately described", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }}]
                         },
                         {
                             "extension": [
