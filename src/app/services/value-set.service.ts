@@ -72,14 +72,9 @@ export class ValueSetService {
   }
 
   expand(params: string): Observable<ValueSet> {
-    var headers = {'Cache-Control': 'no-cache'};
-
     let result = this.fhirClient.request({
-      url: 'ValueSet/$expand' + params,
-      headers: headers
+      url: 'ValueSet/$expand' + params
     });
-
-    //result.catch(reason => console.log(reason));
 
     return from(result);
   }
