@@ -113,4 +113,17 @@ export class QuestionnaireListComponent implements OnInit {
   view() {
     this.router.navigate(['/']);
   }
+
+
+  handleFileInput(files: FileList) {
+    var fileToUpload = files.item(0);
+
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      var resource = JSON.parse(fileReader.result as string) as Questionnaire;
+      this.questionnaireService.setQuestionnaire(resource);
+    }
+
+    fileReader.readAsText(fileToUpload, "UTF-8");
+  }
 }
