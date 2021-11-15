@@ -64,6 +64,8 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
 
       if (this.parentGroup) {
         this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
+        if (this.qformControl === undefined) 
+          throw new Error("linkId '" + this.item.linkId + "' not found in parentGroup controls. Ensure linkId element exists in '" + this.parentGroup.item.text + "'.");
       }
       else if (this.repeat) {
         this.qformControl = this.repeat as QuestionnaireFormItem;
