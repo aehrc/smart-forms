@@ -1,7 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { ControlValueAccessor, FormArray, FormControl, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { fhirclient } from "fhirclient/lib/types";
-import { Observable, of, OperatorFunction } from "rxjs";
+import { Observable, of, OperatorFunction, Subscription } from "rxjs";
 import { debounceTime, distinctUntilChanged, map, switchMap } from "rxjs/operators";
 import { QuestionnaireFormItem } from "../services/questionnaire-response.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
@@ -21,7 +21,7 @@ type ItemControl = 'autocomplete' | 'drop-down' | 'check-box' | 'radio-button'
       multi: true
   }]
 })
-export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase implements ControlValueAccessor {
+export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase implements ControlValueAccessor, OnDestroy {
   
     readonly droplistOptionsCount = 3;
   
@@ -47,7 +47,18 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
       super(qresponseService);
     }
     
+    private subscriptions: Subscription[] = [];
+
+    private addSubscriptions(...subs: Subscription[]) {
+      this.subscriptions.push(...subs);
+    }
   
+    ngOnDestroy() {
+      for (const subscription of this.subscriptions) {
+        subscription.unsubscribe();
+      }
+    }
+
     onInit() {
       //this.qformControl.item = this.item;
 
@@ -58,7 +69,8 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         this.qformControl = this.repeat as QuestionnaireFormItem;
       }
 
-      this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+      this.addSubscriptions(this.qformControl.valueChanges.subscribe(newValue => 
+        this.valueChanged(newValue)));
 
       if (this.item.answerOption?.length > 0 && this.item.answerOption?.length <= this.droplistOptionsCount) 
         this.itemControl = "check-box";
@@ -80,7 +92,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         if (this.item.answerValueSet) {
           var answerValueSet$ = this.valueSetFactory.expand(this.item.answerValueSet);
 
-          answerValueSet$.subscribe(vs => {
+          this.addSubscriptions(answerValueSet$.subscribe(vs => {
             console.log(vs.name, vs.url, vs.expansion?.contains);
 
             vs.expansion?.contains.forEach(c => {
@@ -96,17 +108,19 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
                 if (this.qformControl.value) {
                   this.formControl.setValue(this.qformControl.value);
                 }
-                this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
+                this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue => 
+                  this.selectChanged(newValue)));
               }        
             }
-          });
+          }));
         }
       }
       else if (this.item.answerValueSet) {  // autocomplete
         if (this.qformControl.value) {
           this.formControl.setValue(this.qformControl.value);
         }
-        this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
+        this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue => 
+          this.selectChanged(newValue)));
       }
 
       if (this.answerOption?.length > 0) {
@@ -118,7 +132,8 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
           if (this.qformControl.value) {
             this.formControl.setValue(this.qformControl.value);
           }
-          this.formControl.valueChanges.subscribe(newValue => this.selectChanged(newValue));
+          this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue => 
+            this.selectChanged(newValue)));
         }
       }
 

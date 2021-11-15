@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable, ReplaySubject, Subject, EMPTY, from } from 'rxjs';
+import { of, Observable, ReplaySubject, Subject, EMPTY, from, Subscription } from 'rxjs';
 
 import { FHIRService, Parameters } from './fhir.service';
 
@@ -223,8 +223,14 @@ export class QuestionnaireService {
     }
   }
 
+  private readLocalSubscription: Subscription;
+
   setQuestionnaireByLocalUrl(url: string) {
     if (url) {
+      if (this.readLocalSubscription !== undefined)
+        this.readLocalSubscription.unsubscribe();
+      
+      this.readLocalSubscription = 
       this.readLocal$(url).subscribe( x=> { 
         this.questionnaireSubject.next(x)
         this.initialised = true;

@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { QuestionnaireResponse, QuestionnaireResponseService } from '../services/questionnaire-response.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { Questionnaire } from '../services/questionnaire.model';
@@ -11,7 +11,7 @@ import { fhirclient } from 'fhirclient/lib/types';
   templateUrl: './questionnaire-off-canvas.component.html',
   styleUrls: ['./questionnaire-off-canvas.component.css']
 })
-export class QuestionnaireOffCanvasComponent { 
+export class QuestionnaireOffCanvasComponent implements OnDestroy { 
 
   questionnaire$: Observable<Questionnaire>;
 
@@ -28,19 +28,29 @@ export class QuestionnaireOffCanvasComponent {
     this.qresponse$ = this.responseService.getQuestionnaireResponse();
   }
 
+  private subscriptions: Subscription[] = [];
+
+  ngOnDestroy() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+  }
+
   saveQResponse(qresponse: QuestionnaireResponse) {
+    this.subscriptions.push(
     this.responseService.create(qresponse)
     .subscribe(
       y=> console.log(y), 
       e=> console.log(e)
-    );
+    ));
   }
 
   validateQResponse(qresponse: QuestionnaireResponse) {
+    this.subscriptions.push(
     this.responseService.validate(qresponse)
     .subscribe(
       y=> console.log(y), 
       e=> console.log(e)
-    );
+    ));
   }
 }

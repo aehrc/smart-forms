@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, ReplaySubject, from } from 'rxjs';
+import { Observable, Subject, ReplaySubject, from, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import Client from 'fhirclient/lib/Client';
@@ -39,6 +39,8 @@ export class PatientService {
     return this.patientSubject.asObservable();
   } 
 
+  private patientSubscription: Subscription;
+
   getPatient() :Promise<fhirclient.FHIR.Patient> {    
     if (this.fhirClient) {
       var result = this.fhirClient.patient.read();
@@ -46,7 +48,10 @@ export class PatientService {
       if (!this.patientSubject)
         this.patientSubject = new ReplaySubject<fhirclient.FHIR.Patient>(1);
 
-      from(result).subscribe(p=> this.patientSubject.next(p));      
+      if (this.patientSubscription !== undefined)
+        this.patientSubscription.unsubscribe();
+
+      this.patientSubscription = from(result).subscribe(p=> this.patientSubject.next(p));      
 
       return result;
     }

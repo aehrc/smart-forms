@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { Questionnaire } from '../services/questionnaire.model';
@@ -25,24 +25,42 @@ export class QuestionnaireComponent implements OnInit {
     private patientService: PatientService) { 
   }
 
+  private subscriptions: Subscription[] = [];
+  
+  private addSubscriptions(...subs: Subscription[]) {
+    this.subscriptions.push(...subs);
+  }
+
   ngOnInit(): void {
     //this.showSpinner = true;
 
     this.questionnaire$ = this.questionnaireService.questionnaire$;
-    this.questionnaire$.subscribe(q=> {
-      //this.showSpinner = true;
 
-      this.questionnaireService.populate(q)
-      .subscribe(qr => {
-        this.questionnaireModel.merge(qr);
+    this.addSubscriptions(
+      this.questionnaire$.subscribe(q=> {
+        //this.showSpinner = true;
 
-        //this.showSpinner = false;
-      });        
+        this.addSubscriptions(
+          this.questionnaireService.populate(q)
+          .subscribe(qr => {
+            this.questionnaireModel.merge(qr);
 
-      this.questionnaireModel = new QuestionnaireForm(q, this.patientService.patient$);
+            //this.showSpinner = false;
+          })
+        );        
 
-      this.questionnaireModel.questionnaireResponse$.subscribe( 
-        response => this.qresponseService.onQuestionnaireResponseChanged(response));
-    });
+        this.questionnaireModel = new QuestionnaireForm(q, this.patientService.patient$);
+
+        this.addSubscriptions(
+          this.questionnaireModel.questionnaireResponse$.subscribe( 
+            response => this.qresponseService.onQuestionnaireResponseChanged(response)));
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 }

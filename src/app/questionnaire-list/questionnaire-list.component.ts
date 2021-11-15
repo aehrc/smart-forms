@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Questionnaire } from '../services/questionnaire.model';
 import { QuestionnaireCandidate, QuestionnaireService } from '../services/questionnaire.service';
@@ -11,7 +11,7 @@ import { QuestionnaireCandidate, QuestionnaireService } from '../services/questi
   templateUrl: './questionnaire-list.component.html',
   styleUrls: ['./questionnaire-list.component.css']
 })
-export class QuestionnaireListComponent implements OnInit {
+export class QuestionnaireListComponent implements OnInit, OnDestroy {
 
   src = "local";
 
@@ -66,6 +66,11 @@ export class QuestionnaireListComponent implements OnInit {
     }, 300);
   }
 
+  ngOnDestroy() {
+    if (this.uploadSubscription !== null)
+      this.uploadSubscription.unsubscribe();
+  }
+
   navbarOpen = false;
 
   toggleNavbar() {
@@ -90,12 +95,18 @@ export class QuestionnaireListComponent implements OnInit {
     this.qsearch$.next(qsearch);
   }
 
+  private uploadSubscription: Subscription = null;
+
   upload() {
     var questionnaire;
-    const s = this.questionnaire$.subscribe(q=> questionnaire = q)
-    s.unsubscribe();
+    this.questionnaire$.subscribe(q=> questionnaire = q)
+    .unsubscribe();
 
-    this.questionnaireService.update(questionnaire)
+
+    if (this.uploadSubscription !== null)
+      this.uploadSubscription.unsubscribe();
+
+      this.uploadSubscription = this.questionnaireService.update(questionnaire)
     .subscribe(r=> {
       console.log(r);
       const q = r as Questionnaire;

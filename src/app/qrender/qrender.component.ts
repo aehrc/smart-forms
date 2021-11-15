@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import Client from 'fhirclient/lib/Client';
 
 import { fhirclient } from 'fhirclient/lib/types';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { FHIRService } from '../services/fhir.service';
 import { PatientService } from '../services/patient.service';
@@ -15,7 +15,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './qrender.component.html',
   styleUrls: ['./qrender.component.css']
 })
-export class QRenderComponent implements OnInit {
+export class QRenderComponent implements OnInit, OnDestroy {
 
   public patient: fhirclient.FHIR.Patient = null;
 
@@ -25,6 +25,8 @@ export class QRenderComponent implements OnInit {
     private patientService: PatientService, 
     private fhirService: FHIRService, 
     private questionnaireService: QuestionnaireService) { }
+
+    private questionnaireSubscription : Subscription;
 
   ngOnInit(): void {
     var questionnaireName = "MBS715";
@@ -83,6 +85,10 @@ export class QRenderComponent implements OnInit {
 
 
   }
+    ngOnDestroy() {
+      if (this.questionnaireSubscription !== undefined)
+        this.questionnaireSubscription.unsubscribe();
+    }
 
   toggleNavbar() {
     this.navbarOpen = !this.navbarOpen;
@@ -97,7 +103,7 @@ export class QRenderComponent implements OnInit {
 
     if (!this.questionnaireService.isInitialised) {
 
-    this.questionnaireService.searchLocal(questionnaireName)
+    this.questionnaireSubscription = this.questionnaireService.searchLocal(questionnaireName)
     .pipe(switchMap(item=> { 
       if (item.length > 0) {
         return this.questionnaireService.readLocal$(item[0].url);
