@@ -213,7 +213,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
           }
         } 
         else {  // code
-          if (newValue != this.qformControl.value) {          
+          if (newValue !== this.qformControl.value) {          
             this.setValueCoding(newValue);
           }
         }
@@ -243,7 +243,8 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         this.formControl.setValue(newCoding);
       }
       else {
-        this.formControl.setValue(newCode);
+        if (this.formControl.value !== newCode)
+          this.formControl.setValue(newCode);
       }
     }
 
