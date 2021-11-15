@@ -68,7 +68,7 @@ export class QuestionnaireService {
     }  
   ];
 
-  private questionnaireSubject: Subject<Questionnaire> = new ReplaySubject<Questionnaire>();
+  private questionnaireSubject: Subject<Questionnaire> = new ReplaySubject<Questionnaire>(1);
 
   private _questionnaire$ = this.questionnaireSubject.asObservable();
 
