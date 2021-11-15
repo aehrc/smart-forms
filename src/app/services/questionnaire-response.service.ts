@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { fhirclient } from 'fhirclient/lib/types';
-import { Observable, ReplaySubject, Subject, of } from 'rxjs';
+import { Observable, ReplaySubject, Subject, of, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import Client from 'fhirclient/lib/Client';
+import * as FHIR from 'fhirclient';
+import { Parameters } from './fhir.service';
 
 export interface QuestionnaireResponse extends fhirclient.FHIR.Resource {
   resourceType: "QuestionnaireResponse";
@@ -34,10 +37,6 @@ export interface QuestionnaireResponseAnswer extends fhirclient.FHIR.BackboneEle
     item?: QuestionnaireResponseItem[];  
 }
 
-export const isOfType = <T>(varToBeChecked: any, propertyToCheckFor: keyof T) 
-  : varToBeChecked is T => 
-  (varToBeChecked as T)[propertyToCheckFor] !== undefined;
-
 @Injectable({
   providedIn: 'root'
 })
@@ -53,7 +52,13 @@ export class QuestionnaireResponseService {
     return this.questionnaireResponseSubject.asObservable();
   }
 
-  constructor() { }
+  private responseServerUrl = "https://sqlonfhir-r4.azurewebsites.net/fhir/";
+
+  private fhirClient: Client;
+
+  constructor() { 
+    this.fhirClient = FHIR.client({ serverUrl: this.responseServerUrl });
+  }
 
   onQuestionnaireResponseChanged(questionnaireResponse: QuestionnaireResponse): void {
     this.setQuestionnaireResponse(questionnaireResponse);
@@ -91,5 +96,38 @@ export class QuestionnaireResponseService {
       }                
     }
     return null;
+  
+  }
+
+  create(qr: QuestionnaireResponse) : Observable<fhirclient.FHIR.Resource> {
+    let result = this.fhirClient.create(qr);
+    return from(result)
+  }
+
+  validate(qr: QuestionnaireResponse) : Observable<fhirclient.FHIR.Resource> {
+    var parameters: Parameters = {
+      "resourceType": "Parameters",
+      "parameter": [
+        {
+            "name": "resource",
+            "resource": qr
+        }]                        
+    };
+
+    var headers = {
+      "Cache-Control": "no-cache", 
+      "Content-Type": "application/json+fhir; charset=UTF-8",
+      "Accept": "application/json+fhir; charset=utf-8"
+    };
+    var operation = "QuestionnaireResponse/$validate";
+
+    let result = this.fhirClient.request({
+      url: operation,
+      method: "POST",
+      body: JSON.stringify(parameters),
+      headers: headers
+    });
+    
+    return from(result);
   }
 }

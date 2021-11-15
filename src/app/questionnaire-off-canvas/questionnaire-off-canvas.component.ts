@@ -27,4 +27,20 @@ export class QuestionnaireOffCanvasComponent {
     this.questionnaire$ = this.questionnaireService.questionnaire$;
     this.qresponse$ = this.responseService.getQuestionnaireResponse();
   }
+
+  saveQResponse(qresponse: QuestionnaireResponse) {
+    this.responseService.create(qresponse)
+    .subscribe(
+      y=> console.log(y), 
+      e=> console.log(e)
+    );
+  }
+
+  validateQResponse(qresponse: QuestionnaireResponse) {
+    this.responseService.validate(qresponse)
+    .subscribe(
+      y=> console.log(y), 
+      e=> console.log(e)
+    );
+  }
 }
