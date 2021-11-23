@@ -1,0 +1,499 @@
+{
+    "resourceType": "Questionnaire",
+    "id": "cvd-risk",
+    "meta": {
+        "versionId": "158",
+        "lastUpdated": "2021-06-25T14:28:03.0850257+00:00"
+    },
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><b>CVD Risk Assessment</b></div>"
+    },
+    "contained": [
+        {
+            "resourceType": "Bundle",
+            "id": "PrePopQuery",
+            "type": "batch",
+            "entry": [
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52553",
+                    "request": {
+                        "method": "GET",
+                        "url": "FamilyMemberHistory?patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52554",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52555",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52556",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=8280-0&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52557",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52558",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52559",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=39156-5&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52560",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=85354-9&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52561",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52562",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=160625004&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52563",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=smoking-date-started&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52564",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=229819007&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52565",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52566",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=228308009&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52567",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=1373041000168105&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52568",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52569",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=60621009&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52570",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=absolute-cvd-risk&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52571",
+                    "request": {
+                        "method": "GET",
+                        "url": "Immunization?patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52572",
+                    "request": {
+                        "method": "GET",
+                        "url": "MedicationStatement?patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52573",
+                    "request": {
+                        "method": "GET",
+                        "url": "AllergyIntolerance?patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52575",
+                    "request": {
+                        "method": "GET",
+                        "url": "Condition?patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52574",
+                    "request": {
+                        "method": "GET",
+                        "url": "DiagnosticReport?patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52576",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52577",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                }
+            ]
+        }
+    ],
+    "extension": [
+        {
+            "extension": [
+                {
+                    "url": "name",
+                    "valueId": "LaunchPatient"
+                },
+                {
+                    "url": "type",
+                    "valueCode": "Patient"
+                },
+                {
+                    "url": "description",
+                    "valueString": "The patient that is to be used to pre-populate the form"
+                }
+            ],
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext"
+        },
+        {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries",
+            "valueReference": {
+                "reference": "#PrePopQuery"
+            }
+        }
+    ],
+    "url": "http://www.health.gov.au/assessments/mbs/715",
+    "name": "CVD Risk Assessment",
+    "title": "CVD Risk Assessment",
+    "status": "active",
+    "subjectType": [
+        "Patient"
+    ],
+    "date": "2020-02-25T07:14:23.125Z",
+    "publisher": "Frankel Info Systems",
+    "description": "CVD Risk Assessment",
+    "item": [
+    {
+        "linkId": "CVD-risk",
+        "text": "CVD Risk",
+        "type": "group",
+        "item": [
+            {
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                        "valueExpression": {
+                            "language": "text/fhirpath",
+                            "expression": "today().toString().substring(0,4).toInteger() - %LaunchPatient.birthDate.toString().substring(0,4).toInteger()"
+                        }
+                    }
+                ],
+                "linkId": "age",
+                "text": "Age of Patient",
+                "type": "integer"
+            },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%LaunchPatient.gender"
+                            }
+                        }
+                    ],
+                    "linkId": "3a98ac7a-9313-4222-a853-edd0415bfc48",
+                    "text": "Gender",
+                    "type": "choice",
+                    "answerOption": [ { "valueCoding": { "code": "male", "display": "Male", "system": "http://hl7.org/fhir/administrative-gender" }}, 
+                        { "valueCoding": { "code": "female", "display": "Female", "system": "http://hl7.org/fhir/administrative-gender" }}]
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%LaunchPatient.extension('http://hl7.org.au/fhir/StructureDefinition/indigenous-status').value"
+                            }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                            "valueCodeableConcept": {
+                                "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                                    "code": "check-box"
+                                }
+                                ]
+                            }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                            "valueCode": "vertical"
+                        }
+                    ],
+                    "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc4e",
+                    "text": "Aboriginal and Torres Strait Islander status",
+                    "code": [{"code": "291036", "display": "Indigenous status" }],
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [ { "valueCoding": { "code": "1", "display": "Aboriginal but not Torres Strait Islander origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }}, 
+                        { "valueCoding": { "code": "2", "display": "Torres Strait Islander but not Aboriginal origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }},
+                        { "valueCoding": { "code": "3", "display": "Both Aboriginal and Torres Strait Islander origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }},
+                        { "valueCoding": { "code": "4", "display": "Neither Aboriginal nor Torres Strait Islander origin", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }},
+                        { "valueCoding": { "code": "9", "display": "Not stated/inadequately described", "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1" }}]
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006')"
+                            }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                            "valueCodeableConcept": {
+                                "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                                    "code": "check-box"
+                                }
+                                ]
+                            }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                            "valueCode": "vertical"
+                        }
+                    ],
+                    "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc4f",
+                    "text": "Diabetes",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [ { "valueCoding": { "code": "44054006", "display": "Diabetes Mellitus, Type 2", "system": "http://snomed.info/sct" }}]
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006').exists()"
+                            }
+                        }
+                    ],
+                    "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc5f",
+                    "text": "Diabetes",
+                    "type": "boolean",
+                    "repeats": false
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[1].resource.entry.resource.valueCodeableConcept.coding"
+                            }
+                        }
+                    ],
+                    "linkId": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+                    "text": "Smoking",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "266919005",
+                                "display": "Never smoked"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "77176002",
+                                "display": "Smoker"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "8517006",
+                                "display": "Ex-Smoker"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[2].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "29644716-433e-45ec-a805-8043f35a85e1",
+                    "text": "Height (cm)",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[4].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "f5308669-d1f9-49a1-bedd-7420946e7288",
+                    "text": "Weight (kg)",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[6].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "d9306be3-fedf-45ca-8b91-71e6f7f6c6f5",
+                    "text": "Body mass index",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[3].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "aadc1e74-8523-41e4-beaf-a4487bf79606",
+                    "text": "Waist circumference (cm)",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[7].resource.entry.resource.component.where(code.coding.where(code='8459-0')).value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "8b2f93a9-564f-4229-9522-2a4e145badc6",
+                    "text": "Systolic Blood Pressure",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[23].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "8b2f93a9-564f-4229-9522-2a4e145badc7",
+                    "text": "Total Cholesterol",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[24].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "8b2f93a9-564f-4229-9522-2a4e145badc8",
+                    "text": "HDL Cholesterol",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
+                            "valueString": "auscvdrisk.com.au/risk-calculator/"
+                        }
+                    ],
+                    "linkId": "09c2de87-614f-4e5c-a496-387cab577ae5",
+                    "text": "Cardiovascular risk calculated, details",
+                    "type": "decimal"
+                }
+            ]
+        }
+    ]
+}

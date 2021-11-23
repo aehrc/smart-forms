@@ -65,6 +65,11 @@ export class QuestionnaireService {
         "name": "MBS715",
         "title": "Aboriginal and Torres Strait Islander health check – Adults (25–49 years)",
         "url": "data/715.R4.json"
+    },
+    {
+      "name": "cvd-risk",
+      "title": "CVD Risk Assessment",
+      "url": "data/CVD Risk.json"
     }  
   ];
 
