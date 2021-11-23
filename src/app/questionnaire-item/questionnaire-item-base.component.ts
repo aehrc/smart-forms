@@ -5,7 +5,7 @@ import { first, mergeMap, switchMap } from 'rxjs/operators';
 import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
 
 import { QuestionnaireItem } from '../services/questionnaire.model';
-import { QuestionnaireFormGroup } from '../services/questionnaire-response.model';
+import { QuestionnaireFormGroup } from '../services/questionnaire-form-group.model';
 
 @Pipe({
     name: 'shortTextOrText'

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
+import { QuestionnaireFormItem } from '../services/questionnaire-form-item.model';
 
-import { QuestionnaireFormGroup, QuestionnaireFormItem } from '../services/questionnaire-response.model';
+import { QuestionnaireFormGroup } from '../services/questionnaire-form-group.model';
 import { QuestionnaireItemBase } from './questionnaire-item-base.component';
 
 @Component({

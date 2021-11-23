@@ -3,7 +3,7 @@ import { ControlValueAccessor, FormArray, FormControl, NG_VALUE_ACCESSOR } from 
 import { fhirclient } from "fhirclient/lib/types";
 import { Observable, of, OperatorFunction, Subscription } from "rxjs";
 import { debounceTime, distinctUntilChanged, map, switchMap } from "rxjs/operators";
-import { QuestionnaireFormItem } from "../services/questionnaire-response.model";
+import { QuestionnaireFormItem } from "../services/questionnaire-form-item.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
 import { AnswerOption } from "../services/questionnaire.model";
 import { ValueSetFactory, ValueSetService } from "../services/value-set.service";

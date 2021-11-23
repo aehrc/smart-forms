@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { EMPTY, Observable, of } from "rxjs";
 import { debounceTime, distinctUntilChanged, switchMap, tap } from "rxjs/operators";
-import { QuestionnaireFormItem } from "../services/questionnaire-response.model";
+import { QuestionnaireFormItem } from "../services/questionnaire-form-item.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
 import { AnswerOption } from "../services/questionnaire.model";
 import { ValueSet } from "../services/value-set.model";
