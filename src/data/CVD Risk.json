@@ -231,7 +231,7 @@
     "item": [
     {
         "linkId": "CVD-risk",
-        "text": "CVD Risk",
+        "text": "Cardiovascular Disease Risk",
         "type": "group",
         "item": [
             {
@@ -258,7 +258,7 @@
                             }
                         }
                     ],
-                    "linkId": "3a98ac7a-9313-4222-a853-edd0415bfc48",
+                    "linkId": "gender",
                     "text": "Gender",
                     "type": "choice",
                     "answerOption": [ { "valueCoding": { "code": "male", "display": "Male", "system": "http://hl7.org/fhir/administrative-gender" }}, 
@@ -289,7 +289,7 @@
                             "valueCode": "vertical"
                         }
                     ],
-                    "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc4e",
+                    "linkId": "indigenous-status",
                     "text": "Aboriginal and Torres Strait Islander status",
                     "code": [{"code": "291036", "display": "Indigenous status" }],
                     "type": "choice",
@@ -310,7 +310,7 @@
                             }
                         }
                     ],
-                    "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc5f",
+                    "linkId": "has-diabetes",
                     "text": "Diabetes",
                     "type": "boolean",
                     "repeats": false
@@ -325,7 +325,7 @@
                             }
                         }
                     ],
-                    "linkId": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+                    "linkId": "smoking",
                     "text": "Smoking",
                     "type": "choice",
                     "repeats": false,
@@ -363,7 +363,7 @@
                             }
                         }
                     ],
-                    "linkId": "29644716-433e-45ec-a805-8043f35a85e1",
+                    "linkId": "height",
                     "text": "Height (cm)",
                     "type": "decimal"
                 },
@@ -377,7 +377,7 @@
                             }
                         }
                     ],
-                    "linkId": "f5308669-d1f9-49a1-bedd-7420946e7288",
+                    "linkId": "weight",
                     "text": "Weight (kg)",
                     "type": "decimal"
                 },
@@ -391,7 +391,7 @@
                             }
                         }
                     ],
-                    "linkId": "d9306be3-fedf-45ca-8b91-71e6f7f6c6f5",
+                    "linkId": "bmi",
                     "text": "Body mass index",
                     "type": "decimal"
                 },
@@ -405,7 +405,7 @@
                             }
                         }
                     ],
-                    "linkId": "aadc1e74-8523-41e4-beaf-a4487bf79606",
+                    "linkId": "waist-circumference",
                     "text": "Waist circumference (cm)",
                     "type": "decimal"
                 },
@@ -419,7 +419,7 @@
                             }
                         }
                     ],
-                    "linkId": "8b2f93a9-564f-4229-9522-2a4e145badc6",
+                    "linkId": "systolic-bp",
                     "text": "Systolic Blood Pressure",
                     "type": "decimal"
                 },
@@ -433,7 +433,7 @@
                             }
                         }
                     ],
-                    "linkId": "8b2f93a9-564f-4229-9522-2a4e145badc7",
+                    "linkId": "tot-chol",
                     "text": "Total Cholesterol",
                     "type": "decimal"
                 },
@@ -447,7 +447,7 @@
                             }
                         }
                     ],
-                    "linkId": "8b2f93a9-564f-4229-9522-2a4e145badc8",
+                    "linkId": "hdl-chol",
                     "text": "HDL Cholesterol",
                     "type": "decimal"
                 },
@@ -458,7 +458,7 @@
                             "valueString": "auscvdrisk.com.au/risk-calculator/"
                         }
                     ],
-                    "linkId": "09c2de87-614f-4e5c-a496-387cab577ae5",
+                    "linkId": "cvd-risk",
                     "text": "Cardiovascular risk calculated, details",
                     "type": "decimal"
                 }
