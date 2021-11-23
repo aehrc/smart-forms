@@ -306,37 +306,6 @@
                             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                             "valueExpression": {
                                 "language": "text/fhirpath",
-                                "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006')"
-                            }
-                        },
-                        {
-                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                            "valueCodeableConcept": {
-                                "coding": [
-                                {
-                                    "system": "http://hl7.org/fhir/questionnaire-item-control",
-                                    "code": "check-box"
-                                }
-                                ]
-                            }
-                        },
-                        {
-                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                            "valueCode": "vertical"
-                        }
-                    ],
-                    "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc4f",
-                    "text": "Diabetes",
-                    "type": "choice",
-                    "repeats": false,
-                    "answerOption": [ { "valueCoding": { "code": "44054006", "display": "Diabetes Mellitus, Type 2", "system": "http://snomed.info/sct" }}]
-                },
-                {
-                    "extension": [
-                        {
-                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                            "valueExpression": {
-                                "language": "text/fhirpath",
                                 "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006').exists()"
                             }
                         }
