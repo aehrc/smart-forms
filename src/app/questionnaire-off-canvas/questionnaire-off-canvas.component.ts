@@ -5,6 +5,7 @@ import { QuestionnaireResponse, QuestionnaireResponseService } from '../services
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { Questionnaire } from '../services/questionnaire.model';
 import { fhirclient } from 'fhirclient/lib/types';
+import { FHIRService } from '../services/fhir.service';
 
 @Component({
   selector: 'questionnaire-off-canvas',
@@ -22,7 +23,8 @@ export class QuestionnaireOffCanvasComponent implements OnDestroy {
   }
 
   constructor(private questionnaireService: QuestionnaireService, 
-    private responseService: QuestionnaireResponseService) { 
+    private responseService: QuestionnaireResponseService, 
+    private fhirService: FHIRService) { 
 
     this.questionnaire$ = this.questionnaireService.questionnaire$;
     this.qresponse$ = this.responseService.getQuestionnaireResponse();
@@ -39,8 +41,11 @@ export class QuestionnaireOffCanvasComponent implements OnDestroy {
   saveQResponse(qresponse: QuestionnaireResponse) {
     this.subscriptions.push(
     this.responseService.create(qresponse)
-    .subscribe(
-      y=> console.log(y), 
+    .subscribe(      
+      y=> { 
+      console.log(y);
+      this.responseService.id = y.id;
+      }, 
       e=> console.log(e)
     ));
   }
@@ -53,4 +58,43 @@ export class QuestionnaireOffCanvasComponent implements OnDestroy {
       e=> console.log(e)
     ));
   }
+
+  private bundle;
+
+  extractQResponse(qresponse: QuestionnaireResponse) {
+    this.subscriptions.push(
+    this.responseService.extract(qresponse)
+    .subscribe(
+      y=> { console.log(y); 
+        this.bundle = y;
+      }, 
+      e=> console.log(e)
+    ));
+  }
+
+  extractResponseInstance() {
+    this.subscriptions.push(
+    this.responseService.extractInstance(this.responseService.id)
+    .subscribe(
+      y=> { console.log(y); 
+        this.bundle = y;
+      }, 
+      e=> console.log(e)
+    ));
+  }
+
+  postObservation() {
+    var resource = this.bundle.entry[0].resource;    
+    console.log(resource); 
+
+    this.subscriptions.push(
+    this.fhirService.create(resource)
+    .subscribe(
+      y=> { 
+        console.log(y); 
+      }, 
+      e=> console.log(e)
+    ));
+  }
+
 }

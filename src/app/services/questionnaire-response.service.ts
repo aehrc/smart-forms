@@ -60,6 +60,8 @@ export class QuestionnaireResponseService {
     this.fhirClient = FHIR.client({ serverUrl: this.responseServerUrl });
   }
 
+  id: string;
+
   onQuestionnaireResponseChanged(questionnaireResponse: QuestionnaireResponse): void {
     this.setQuestionnaireResponse(questionnaireResponse);
   }
@@ -120,6 +122,58 @@ export class QuestionnaireResponseService {
       "Accept": "application/json+fhir; charset=utf-8"
     };
     var operation = "QuestionnaireResponse/$validate";
+
+    let result = this.fhirClient.request({
+      url: operation,
+      method: "POST",
+      body: JSON.stringify(parameters),
+      headers: headers
+    });
+    
+    return from(result);
+  }
+
+  extractInstance(id: string) {
+    var parameters: Parameters = {
+      "resourceType": "Parameters",
+      "parameter": [ ]                        
+    };
+
+    var headers = {
+      "Cache-Control": "no-cache", 
+      "Content-Type": "application/json+fhir; charset=UTF-8",
+      "Accept": "application/json+fhir; charset=utf-8"
+    };
+    var operation = "QuestionnaireResponse/" + id +"/$extract";
+    //var operation = "QuestionnaireResponse/$extract";
+
+    let result = this.fhirClient.request({
+      url: operation,
+      method: "POST",
+      body: JSON.stringify(parameters),
+      headers: headers
+    });
+    
+    return from(result);
+  }
+
+  extract(qr: QuestionnaireResponse) {
+    var parameters: Parameters = {
+      "resourceType": "Parameters",
+      "parameter": [
+        {
+            "name": "resource",
+            "resource": qr
+        }]                        
+    };
+
+    var headers = {
+      "Cache-Control": "no-cache", 
+      "Content-Type": "application/json+fhir; charset=UTF-8",
+      "Accept": "application/json+fhir; charset=utf-8"
+    };
+    
+    var operation = "QuestionnaireResponse/$extract";
 
     let result = this.fhirClient.request({
       url: operation,
