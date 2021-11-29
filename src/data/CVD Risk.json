@@ -427,10 +427,19 @@
                         {
                             "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
                             "valueString": "auscvdrisk.com.au/risk-calculator/"
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                            "valueCoding": { "system": "http://unitsofmeasure.org", "code": "%" }
+                        },
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract", 
+                            "valueBoolean": "true"
                         }
                     ],
                     "linkId": "cvd-risk",
                     "text": "Cardiovascular risk calculated, details",
+                    "code": [{"code": "827181004", "display": "Risk of cardiovascular disease", "system":"http://snomed.info/sct" }],
                     "type": "decimal"
                 }
             ]
