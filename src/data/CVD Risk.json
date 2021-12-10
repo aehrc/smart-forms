@@ -2,8 +2,11 @@
     "resourceType": "Questionnaire",
     "id": "cvd-risk",
     "meta": {
-        "versionId": "158",
-        "lastUpdated": "2021-06-25T14:28:03.0850257+00:00"
+        "profile": [
+            "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
+            "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-smap",
+            "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-obsn"
+        ]
     },
     "text": {
         "status": "generated",
