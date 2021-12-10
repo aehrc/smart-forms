@@ -1,17 +1,28 @@
-<nav class="navbar navbar-dark bg-dark">
-  <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+<nav class="navbar sticky-top navbar-dark bg-dark">
+  <div class="container justify-content-start">
+    <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
     <span class="navbar-toggler-icon"></span>
-  </button>
+    </button>
 
-  <app-patient-banner [patient]="patient" ></app-patient-banner>
+    <div class="d-flex flex-fill justify-content-between">
+        <div class="align-self-center">
+        <a class="navbar-brand ps-2" routerLink="/">Q-Forms</a>
+        </div>
+        <div>
+        <app-patient-banner [patient]="patient" ></app-patient-banner>
+        </div>
+        <div>
+          <!-- user details -->
+        </div>
+    </div>
 
-  <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
-    <a class="navbar-brand" routerLink="/">Q-Forms</a>
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/questionnaires">Questionnaires</a>
-      </li>
-    </ul>
+    <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/questionnaires">Questionnaires</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 
