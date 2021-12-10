@@ -162,7 +162,7 @@ export class QuestionnaireResponseService {
       "resourceType": "Parameters",
       "parameter": [
         {
-            "name": "resource",
+            "name": "questionnaire-response",
             "resource": qr
         }]                        
     };
