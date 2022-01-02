@@ -223,7 +223,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
     valueChanged(newValue) {
       var newCoding = newValue as fhirclient.FHIR.Coding;
       var newCode: string;
-      if (newCoding.code) {
+      if (newCoding?.code) {
         newCode = newCoding.code;
       }
       else {

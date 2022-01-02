@@ -233,6 +233,24 @@
     "description": "CVD Risk Assessment",
     "item": [
     {
+        "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "weight",
+                "language": "text/fhirpath",
+                "expression": "item.where(linkId='weight').answer.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "height",
+                "language": "text/fhirpath",
+                "expression": "item.where(linkId='height').answer.value"
+              }
+            }
+        ],
         "linkId": "CVD-risk",
         "text": "Cardiovascular Disease Risk",
         "type": "group",
@@ -343,11 +361,19 @@
                 {
                     "extension": [
                         {
-                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                            "valueExpression": {
-                                "language": "text/fhirpath",
-                                "expression": "%PrePopQuery.entry[6].resource.entry.resource.value.value"
-                            }
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                          "valueCoding": {
+                            "system": "http://unitsofmeasure.org",
+                            "code": "kg/m2"
+                          }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                          "valueExpression": {
+                            "description": "BMI calculation",
+                            "language": "text/fhirpath",
+                            "expression": "(%weight/((%height/100).power(2))).round(1)"
+                          }
                         }
                     ],
                     "linkId": "bmi",

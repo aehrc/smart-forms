@@ -36,6 +36,9 @@ import { QuestionnaireItemBase } from './questionnaire-item-base.component';
     }
 
     hasValue(i: number): boolean {
+        if (i < 0)
+            return false;
+
         var item = this.repeatArray.at(i);
 
         if (this.item.type != "group")

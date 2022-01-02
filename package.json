@@ -24,6 +24,7 @@
     "bootstrap": "^5.0.2",
     "core-js": "^2.5.4",
     "fhirclient": "^2.4.0",
+    "fhirpath": "^2.10.1",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
     "rxjs": "~6.6.7",

@@ -1,10 +1,12 @@
 import { AbstractControl, FormGroup } from "@angular/forms"
 import { Questionnaire } from "./questionnaire.model";
 import { QuestionnaireResponse, QuestionnaireResponseItem } from "./questionnaire-response.service";
-import { Observable, ReplaySubject, Subject } from "rxjs";
+import { Observable, ReplaySubject, Subject, Subscription } from "rxjs";
 import { fhirclient } from 'fhirclient/lib/types';
 import { QuestionnaireFormItem } from "./questionnaire-form-item.model";
 import { QuestionnaireFormArray, QuestionnaireFormGroup } from "./questionnaire-form-group.model";
+import * as fhirpath from 'fhirpath';
+import * as fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 export class QuestionnaireForm extends FormGroup { 
     private _questionnaire: Questionnaire;
@@ -14,6 +16,10 @@ export class QuestionnaireForm extends FormGroup {
     };
 
     private patient: fhirclient.FHIR.Patient
+    public variables = [];
+    private calculatedExpressions;
+
+    private responseSubscription : Subscription; 
 
     constructor(questionnaire: Questionnaire, patient$: Observable<fhirclient.FHIR.Patient>) {
         super(QuestionnaireForm.createControls(questionnaire));
@@ -21,9 +27,18 @@ export class QuestionnaireForm extends FormGroup {
         patient$.subscribe(p=> { this.patient = p });
 
         this._questionnaire = questionnaire;
-
-        this.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue));
+        this._questionnaire.item.forEach(item  => {
+          if (item.extension) {
+            item.extension.filter(e=> e.url === 'http://hl7.org/fhir/StructureDefinition/variable').forEach(v => {
+              this.variables.push(v.valueExpression);
+            });
+          }
+        });
         
+        this.calculatedExpressions = [];
+
+        this.valueChanges.subscribe(selectedValue => this.OnValueChanges(selectedValue));        
+
         this.OnValueChanges(null);
     }
 
@@ -55,9 +70,41 @@ export class QuestionnaireForm extends FormGroup {
         this.questionnaireResponse = qr;
     }
 
+    onResponseChange(form: QuestionnaireForm, qr: QuestionnaireResponse, calculatedExpressions) {
+      if (calculatedExpressions.length > 0) {
+        var context = {};
+        context["questionnaire"] = form.questionnaire;
+        context["resource"] = qr;
+
+        if (form.variables.length > 0 && qr.item?.length > 0) {
+          form.variables.forEach(v => {   
+            console.log("Evaluating " + v.expression);         
+            var result = fhirpath.evaluate(qr.item[0], { base: 'QuestionnaireResponse.item', expression: v.expression }, context, fhirpath_r4_model);
+            context[v.name] = result;
+            if (result.length>0) {
+              console.log(result[0]);
+            }
+          });
+      
+          calculatedExpressions.forEach(e => {
+            
+            console.log("Evaluating " + e.expression);
+            var result = fhirpath.evaluate(qr, e.expression, context, fhirpath_r4_model);
+
+            if (result.length > 0) {
+              console.log(result[0]);
+              if (e.item.value != result[0]) {
+                e.item.setValue(result[0]);
+              }
+            } 
+          });
+        }
+      }
+    }
+
     private questionnaireResponseSubject: Subject<QuestionnaireResponse> = new ReplaySubject<QuestionnaireResponse>(1);
 
-    private set questionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
+    private set questionnaireResponse(questionnaireResponse: QuestionnaireResponse) {    
       this.questionnaireResponseSubject.next(questionnaireResponse);
     }
   
@@ -87,22 +134,32 @@ export class QuestionnaireForm extends FormGroup {
     }
 
     merge(qResponse: QuestionnaireResponse) {
-        qResponse.item.forEach(item => {
-            var formArray = this.controls[item.linkId] as QuestionnaireFormArray;
-            var formGroup = this.controls[item.linkId] as QuestionnaireFormGroup;
-            var formItem = this.controls[item.linkId] as QuestionnaireFormItem;
+      qResponse.item.forEach(item => {
+          var formArray = this.controls[item.linkId] as QuestionnaireFormArray;
+          var formGroup = this.controls[item.linkId] as QuestionnaireFormGroup;
+          var formItem = this.controls[item.linkId] as QuestionnaireFormItem;
 
-            if (formArray.length !== undefined)
-                formArray.merge(item);
-      
-            else if (formGroup.controls !== undefined) {
-              // FormGroup
-              formGroup.merge(item)
-            }
-            else if (item.answer && item.answer.length > 0) {
-              // FormControl
-              formItem.merge(item.answer[0]);
-            }      
-        });
+          if (formArray.length !== undefined)
+              formArray.merge(item);
+    
+          else if (formGroup.controls !== undefined) {
+            // FormGroup
+            formGroup.merge(item)
+          }
+          else if (item.answer && item.answer.length > 0) {
+            // FormControl
+            formItem.merge(item.answer[0]);
+          }      
+      });
+
+      if (!this.responseSubscription) {
+        this.responseSubscription = this.questionnaireResponse$.subscribe(qr => this.onResponseChange(this, qr, this.calculatedExpressions));
+      }
+    }
+
+    addCalculatedExpression(item: QuestionnaireFormItem, expression): void {
+      if (!this.calculatedExpressions.find(i=> i.item == item)) {
+        this.calculatedExpressions.push({ item: item, expression: expression });
+      }
     }
 }

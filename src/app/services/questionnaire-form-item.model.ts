@@ -2,16 +2,20 @@ import { FormControl, Validators } from "@angular/forms"
 import { QuestionnaireItem } from "./questionnaire.model";
 import { QuestionnaireResponseAnswer, QuestionnaireResponseItem } from "./questionnaire-response.service";
 import { fhirclient } from 'fhirclient/lib/types';
+import { QuestionnaireForm } from "./questionnaire-form.model";
+import { Injector, OnInit } from "@angular/core";
 
 export class QuestionnaireFormItem extends FormControl { 
     item?: QuestionnaireItem;
 
     private responseItem: QuestionnaireResponseItem;
+
     get response() : QuestionnaireResponseItem {
         return this.responseItem;    
     };
-
     
+    private calculatedExpression;
+
     constructor(item?: QuestionnaireItem) {
         super();
 
@@ -22,6 +26,10 @@ export class QuestionnaireFormItem extends FormControl {
         if (item?.required) {
           //this.validator
           this.setValidators(Validators.required);
+        }
+
+        if (item?.extension) {
+            this.calculatedExpression = this.item.extension.find(e=> e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression')?.valueExpression;
         }
     }
 
@@ -157,6 +165,10 @@ export class QuestionnaireFormItem extends FormControl {
           console.log ("Unsupported populate answer type");
           console.log (answer);
         }
-      }
-    
+
+        if (this.calculatedExpression) {
+            var root = this.root as QuestionnaireForm;
+            root.addCalculatedExpression(this, this.calculatedExpression.expression);
+        }
+    }    
 }
