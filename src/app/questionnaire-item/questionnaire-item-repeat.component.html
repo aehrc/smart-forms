@@ -24,7 +24,7 @@
             <qitem-text *ngSwitchCase="'text'" [item]="item" [repeat]="repeat"></qitem-text>
             <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [repeat]="repeat"></qitem-boolean>
             <qitem-integer *ngSwitchCase="'integer'" [item]="item" [repeat]="repeat"></qitem-integer>
-            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [repeat]="repeat"></qitem-decimal>
+            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [repeat]="repeat" [formControl]="repeat"></qitem-decimal>
             <qitem-date *ngSwitchCase="'date'" [item]="item" [repeat]="repeat"></qitem-date>
             <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [repeat]="repeat"></qitem-datetime>
             <qitem-choice *ngSwitchCase="'choice'" [item]="item" [repeat]="repeat"></qitem-choice>

@@ -112,20 +112,6 @@ export class QuestionnaireItemDateTimeComponent extends QuestionnaireItemBase  {
 }
 
 @Component({
-  selector: 'qitem-decimal',
-  templateUrl: './questionnaire-item-decimal.component.html',
-  styleUrls: ['./questionnaire-item.component.css']
-})
-export class QuestionnaireItemDecimalComponent extends QuestionnaireItemBase  {
-  formControl = new FormControl();
-
-  onInit() {
-    if (this.parentGroup)
-      this.formControl = this.parentGroup.controls[this.item.linkId] as FormControl;
-  }
-}
-
-@Component({
   selector: 'qitem-display',
   templateUrl: './questionnaire-item-display.component.html',
   styleUrls: ['./questionnaire-item.component.css']

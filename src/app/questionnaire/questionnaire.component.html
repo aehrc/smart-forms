@@ -2,9 +2,6 @@
 <div class="container p-3 mb-3" *ngIf="questionnaire$ | async as questionnaire">
     <h3>{{questionnaire.title}}</h3>
 
-    <!--div *ngFor="let item of questionnaire.item" [ngSwitch]="item.repeats">
-        <qitem-repeat *ngSwitchCase="true" [item]="item" [parentGroup]="questionnaireModel"></qitem-repeat>
-        <qitem [item]="item" [parentGroup]="questionnaireModel" *ngSwitchDefault ></qitem-->
     <div *ngFor="let item of questionnaire.item" >
         <qitem-repeat *ngIf="item.repeats" [item]="item" [parentGroup]="questionnaireModel"></qitem-repeat>
         <div *ngIf="!item.repeats" [ngSwitch]="item.type">
@@ -14,7 +11,7 @@
             <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
             <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [parentGroup]="questionnaireModel"></qitem-boolean>
             <qitem-integer *ngSwitchCase="'integer'" [item]="item" [parentGroup]="questionnaireModel"></qitem-integer>
-            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentGroup]="questionnaireModel"></qitem-decimal>
+            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentGroup]="questionnaireModel" [formControl]="formGroup.controls[item.linkId]" ></qitem-decimal>
             <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="questionnaireModel"></qitem-date>
             <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="questionnaireModel"></qitem-datetime>
             <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="questionnaireModel"></qitem-choice>
