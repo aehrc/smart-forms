@@ -73,9 +73,14 @@ export class QuestionnaireService {
     },
     {
       "name": "cvd-check",
-      "title": "CVD Check",
+      "title": "Australian absolute cardiovascular disease risk calculator",
       "url": "data/CVD Check.json"
-    }  
+    },
+    {
+      "name": "HISO-10071:2019-cvd-risk",
+      "title": "NZ CVD Risk Assessment",
+      "url": "data/CVD Risk-HISO.json"
+    }
   ];
 
   private questionnaireSubject: Subject<Questionnaire> = new ReplaySubject<Questionnaire>(1);

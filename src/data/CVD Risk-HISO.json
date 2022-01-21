@@ -1,6 +1,6 @@
 {
     "resourceType": "Questionnaire",
-    "id": "cvd-check",
+    "id": "HISO-10071.2019-cvd-risk",
     "meta": {
         "profile": [
             "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
@@ -10,7 +10,7 @@
     },
     "text": {
         "status": "generated",
-        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><b>Australian absolute cardiovascular disease risk calculator</b></div>"
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><b>CVD Risk Assessment</b></div>"
     },
     "contained": [
         {
@@ -221,16 +221,15 @@
             }
         }
     ],
-    "url": "http://www.health.gov.au/assessments/cvd-risk",
-    "name": "CVD Check",
-    "title": "Australian absolute cardiovascular disease risk calculator",
+    "name": "HISO 10071:2019 CVD RISK ASSESSMENT",
+    "title": "NZ CVD Risk Assessment",
     "status": "active",
     "subjectType": [
         "Patient"
     ],
     "date": "2020-02-25T07:14:23.125Z",
     "publisher": "Frankel Info Systems",
-    "description": "Australian absolute cardiovascular disease risk calculator",
+    "description": "PREDICT CVD v.2019 primary prevention equation",
     "item": [
     {
         "extension": [
@@ -250,14 +249,7 @@
                 "expression": "item.where(linkId='height').answer.value"
               }
             },
-            {
-                "url": "http://hl7.org/fhir/StructureDefinition/variable",
-                "valueExpression": {
-                    "name": "female",
-                    "language": "text/fhirpath",
-                    "expression": "iif(item.where(linkId='gender').answer.value.code='female', 1, 0)"
-                }
-            },
+
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
@@ -271,7 +263,7 @@
                 "valueExpression": {
                     "name": "cvdAge",
                     "language": "text/fhirpath",
-                    "expression": "iif(%age > 74, 74, iif(%age < 35, 35, %age))"
+                    "expression": "iif(%age > 80, 80, iif(%age < 30, 30, %age))"
                 }
             },
             {
@@ -293,22 +285,6 @@
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "smoker",
-                    "language": "text/fhirpath",
-                    "expression": "iif(item.where(linkId='current-smoker').answer.value =  true, 1, 0)"
-                }
-            },
-            {
-                "url": "http://hl7.org/fhir/StructureDefinition/variable",
-                "valueExpression": {
-                    "name": "totalCh",
-                    "language": "text/fhirpath",
-                    "expression": "item.where(linkId='tot-chol').answer.value"
-                }
-            },
-            {
-                "url": "http://hl7.org/fhir/StructureDefinition/variable",
-                "valueExpression": {
                     "name": "hdl",
                     "language": "text/fhirpath",
                     "expression": "item.where(linkId='hdl-chol').answer.value"
@@ -325,25 +301,153 @@
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "ecgLvh",
+                    "name": "isMale",
                     "language": "text/fhirpath",
-                    "expression": "iif(item.where(linkId='ecg-lvh').answer.value = true,1,0)"
+                    "expression": "item.where(linkId='gender').answer.value.code='male'"
                 }
             },
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "cBase",
+                    "name": "isFemale",
                     "language": "text/fhirpath",
-                    "expression": "18.8144"
+                    "expression": "item.where(linkId='gender').answer.value.code='female'"
                 }
             },
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "cFemale",
+                    "name": "nzDep",
                     "language": "text/fhirpath",
-                    "expression": "%female * -1.2146"
+                    "expression": "iif(item.where(linkId='nzDep').answer.value > 0, item.where(linkId='nzDep').answer.value, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "exSmoker",
+                    "language": "text/fhirpath",
+                    "expression": "iif(item.where(linkId='smoking-status').answer.value.code='8517006', 1, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "smoker",
+                    "language": "text/fhirpath",
+                    "expression": "iif(item.where(linkId='smoking-status').answer.value.code='77176002', 1, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "familyHistoryCvd",
+                    "language": "text/fhirpath",
+                    "expression": "iif(item.where(linkId='family-history-cvd').answer.value = true, 1, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "atrialFibrillation",
+                    "language": "text/fhirpath",
+                    "expression": "iif(item.where(linkId='atrial-fibrillation').answer.value = true, 1, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "bpLoweringMed",
+                    "language": "text/fhirpath",
+                    "expression": "iif(item.where(linkId='bp-lowering-med').answer.value = true, 1, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "lipidsLoweringMed",
+                    "language": "text/fhirpath",
+                    "expression": "iif(item.where(linkId='lipids-lowering-med').answer.value = true, 1, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "anticoagulantMed",
+                    "language": "text/fhirpath",
+                    "expression": "iif(item.where(linkId='anticoagulant-med').answer.value = true, 1, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "baseSurvival",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 0.9712501, iif(%isFemale, 0.9845026))"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "ageMean",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 51.59444, iif(%isFemale, 56.05801))"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "nzdMean",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 2.975732, iif(%isFemale, 2.994877))"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "sbpMean",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 128.8637, iif(%isFemale, 128.6736))"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "hdlMean",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 4.385853, iif(%isFemale, 3.715383))"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "hdlOffset",
+                    "language": "text/fhirpath",
+                    "expression": "%hdl - %hdlMean"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "ageOffset",
+                    "language": "text/fhirpath",
+                    "expression": "%cvdAge - %ageMean"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "nzDepOffset",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%nzDep>0, %nzDep - %nzdMean, 0)"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "sbpOffset",
+                    "language": "text/fhirpath",
+                    "expression": "%systolicBP - %sbpMean"
                 }
             },
             {
@@ -351,23 +455,23 @@
                 "valueExpression": {
                     "name": "cAge",
                     "language": "text/fhirpath",
-                    "expression": "%cvdAge.ln() * -1.8443"
+                    "expression": "iif(%isMale, 0.0669484, iif(%isFemale, 0.0734393)) * %ageOffset"
                 }
             },
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "cAgeFemale",
+                    "name": "cNZDep",
                     "language": "text/fhirpath",
-                    "expression": "%female * %cvdAge.ln() * 0.3668"
+                    "expression": "iif(%isMale, 0.0631146, iif(%isFemale, 0.0957229)) * %nzDepOffset"
                 }
             },
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "cSBP",
+                    "name": "cExSmoker",
                     "language": "text/fhirpath",
-                    "expression": "%systolicBP.ln() * -1.4032"
+                    "expression": "iif(%isMale, 0.0748648, iif(%isFemale, 0.1444243)) * %exSmoker"
                 }
             },
             {
@@ -375,15 +479,23 @@
                 "valueExpression": {
                     "name": "cSmoker",
                     "language": "text/fhirpath",
-                    "expression": "%smoker * -0.3899"
+                    "expression": "iif(%isMale, 0.5317607, iif(%isFemale, 0.6768396)) * %smoker"
                 }
             },
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "cTcHdl",
+                    "name": "cFamilyHist",
                     "language": "text/fhirpath",
-                    "expression": "(%totalCh / %hdl).ln() * -0.539"
+                    "expression": "iif(%isMale, 0.1275721, iif(%isFemale, 0.0645588)) * %familyHistoryCvd"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "cAF",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 0.6250334, iif(%isFemale, 0.9293084)) * %atrialFibrillation"
                 }
             },
             {
@@ -391,23 +503,71 @@
                 "valueExpression": {
                     "name": "cDiabetes",
                     "language": "text/fhirpath",
-                    "expression": "%diabetes * -0.3036"
+                    "expression": "iif(%isMale, 0.4107586, iif(%isFemale, 0.4967444)) * %diabetes"
                 }
             },
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "cDiabetesFemale",
+                    "name": "cSBP",
                     "language": "text/fhirpath",
-                    "expression": "%female * %diabetes * -0.1697"
+                    "expression": "iif(%isMale, 0.0179827, iif(%isFemale, 0.0176523)) * %sbpOffset"
                 }
             },
             {
                 "url": "http://hl7.org/fhir/StructureDefinition/variable",
                 "valueExpression": {
-                    "name": "cEcgLvh",
+                    "name": "cHdl",
                     "language": "text/fhirpath",
-                    "expression": "%ecgLvh * -0.3362"
+                    "expression": "iif(%isMale, 0.1296756, iif(%isFemale, 0.1361335)) * %hdlOffset"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "cLowerBPMed",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 0.2847596, iif(%isFemale, 0.3487781)) * %bpLoweringMed"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "cLowerLipidsMed",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, -0.0256429, iif(%isFemale, -0.0568366)) * %lipidsLoweringMed"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "cLowerAnticoagulantMed",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, 0.0701999, iif(%isFemale, 0.1393368)) * %anticoagulantMed"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "cAgeDiabetes",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, -0.0124356, iif(%isFemale, -0.0189779)) * %diabetes * %ageOffset"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "cAgeSBP",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, -0.0004931, iif(%isFemale, -0.000471)) * %ageOffset * %sbpOffset"
+                }
+            },
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                "valueExpression": {
+                    "name": "cLowerBPMedSBP",
+                    "language": "text/fhirpath",
+                    "expression": "iif(%isMale, -0.0049226, iif(%isFemale, -0.0054002)) * %bpLoweringMed * %sbpOffset"
                 }
             },
             {
@@ -415,23 +575,7 @@
                 "valueExpression": {
                     "name": "sumOfCoeffs",
                     "language": "text/fhirpath",
-                    "expression": "%cBase + %cFemale + %cAge + %cAgeFemale + %cSBP + %cSmoker + %cTcHdl + %cDiabetes + %cDiabetesFemale + %cEcgLvh"
-                }
-            },
-            {
-                "url": "http://hl7.org/fhir/StructureDefinition/variable",
-                "valueExpression": {
-                    "name": "cvdScale",
-                    "language": "text/fhirpath",
-                    "expression": "(0.6536 + (%sumOfCoeffs * -0.2402)).exp()"
-                }
-            },
-            {
-                "url": "http://hl7.org/fhir/StructureDefinition/variable",
-                "valueExpression": {
-                    "name": "cvdU",
-                    "language": "text/fhirpath",
-                    "expression": "(5.ln()-%sumOfCoeffs)/%cvdScale"
+                    "expression": "%cAge + %cNZDep + %cExSmoker + %cSmoker + %cFamilyHist + %cAF + %cDiabetes + %cSBP + %cHdl + %cLowerBPMed + %cLowerLipidsMed + %cLowerAnticoagulantMed + %cAgeDiabetes + %cAgeSBP + %cLowerBPMedSBP"
                 }
             },
             {
@@ -439,7 +583,7 @@
                 "valueExpression": {
                     "name": "cvdScore",
                     "language": "text/fhirpath",
-                    "expression": "(1 - (%cvdU.exp()*-1).exp()) * 100"
+                    "expression": "(1 - %baseSurvival.power(%sumOfCoeffs.exp())) * 100"
                 }
             }
         ],
@@ -447,6 +591,24 @@
         "text": "Cardiovascular Disease Risk",
         "type": "group",
         "item": [
+            {
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
+                        "valueString": "Between 30 - 80"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                        "valueExpression": {
+                            "language": "text/fhirpath",
+                            "expression": "today().toString().substring(0,4).toInteger() - %LaunchPatient.birthDate.toString().substring(0,4).toInteger()"
+                        }
+                    }
+                ],
+                "linkId": "age",
+                "text": "Age",
+                "type": "decimal"
+            },
                 {
                     "extension": [
                         {
@@ -463,23 +625,65 @@
                     "answerOption": [ { "valueCoding": { "code": "male", "display": "Male", "system": "http://hl7.org/fhir/administrative-gender" }}, 
                         { "valueCoding": { "code": "female", "display": "Female", "system": "http://hl7.org/fhir/administrative-gender" }}]
                 },
+
                 {
                     "extension": [
-                        {
-                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
-                            "valueString": "Between 35 - 74"
-                        },
                         {
                             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                             "valueExpression": {
                                 "language": "text/fhirpath",
-                                "expression": "today().toString().substring(0,4).toInteger() - %LaunchPatient.birthDate.toString().substring(0,4).toInteger()"
+                                "expression": "%PrePopQuery.entry[1].resource.entry.resource.valueCodeableConcept.coding"
                             }
                         }
                     ],
-                    "linkId": "age",
-                    "text": "Age",
-                    "type": "integer"
+                    "linkId": "smoking-status",
+                    "text": "Smoking",
+                    "type": "choice",
+                    "repeats": false,
+                    "answerOption": [
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "266919005",
+                                "display": "Never smoked"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "77176002",
+                                "display": "Smoker"
+                            }
+                        },
+                        {
+                            "valueCoding": {
+                                "system": "http://snomed.info/sct",
+                                "code": "8517006",
+                                "display": "Ex-Smoker"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "linkId": "family-history-cvd",
+                    "text": "Family history of CVD",
+                    "type": "boolean",
+                    "repeats": false
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006').exists()"
+                            }
+                        }
+                    ],
+                    "linkId": "has-diabetes",
+                    "text": "Diabetes",
+                    "type": "boolean",
+                    "repeats": false
                 },
                 {
                     "extension": [
@@ -497,43 +701,6 @@
                     ],
                     "linkId": "systolic-bp",
                     "text": "Systolic Blood Pressure",
-                    "type": "decimal"
-                },
-                {
-                    "extension": [
-                        {
-                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
-                            "valueString": "Smoker is defined as currently smoking or quit within last year"
-                        },
-                        {
-                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                            "valueExpression": {
-                                "language": "text/fhirpath",
-                                "expression": "%PrePopQuery.entry[1].resource.entry.resource.valueCodeableConcept.coding.where(system='http://snomed.info/sct' and code='77176002').exists()"
-                            }
-                        }
-                    ],
-                    "linkId": "current-smoker",
-                    "text": "Smoking status",
-                    "type": "boolean",
-                    "repeats": false
-                },
-                {
-                    "extension": [
-                        {
-                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
-                            "valueString": "2 or more"
-                        },
-                        {
-                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                            "valueExpression": {
-                                "language": "text/fhirpath",
-                                "expression": "%PrePopQuery.entry[23].resource.entry.resource.value.value"
-                            }
-                        }
-                    ],
-                    "linkId": "tot-chol",
-                    "text": "Total Cholesterol",
                     "type": "decimal"
                 },
                 {
@@ -560,18 +727,12 @@
                             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                             "valueExpression": {
                                 "language": "text/fhirpath",
-                                "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006').exists()"
+                                "expression": "%PrePopQuery.entry[19].resource.entry.resource.contained[0].code.coding.where(system='http://www.whocc.no/atc' and code.startsWith('C02')).exists()"
                             }
                         }
                     ],
-                    "linkId": "has-diabetes",
-                    "text": "Diabetes",
-                    "type": "boolean",
-                    "repeats": false
-                },
-                {
-                    "linkId": "ecg-lvh",
-                    "text": "ECG LVH",
+                    "linkId": "bp-lowering-med",
+                    "text": "BP lowering medication",
                     "type": "boolean",
                     "repeats": false
                 },
@@ -579,7 +740,7 @@
                     "extension": [
                         {
                             "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
-                            "valueString": "http://www.cvdcheck.org.au/calculator"
+                            "valueString": "PREDICT CVD v.2019 primary prevention equation"
                         },
                         {
                             "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
@@ -599,8 +760,63 @@
                         }
                     ],
                     "linkId": "cvd-risk",
-                    "text": "Cardiovascular risk calculated, details",
+                    "text": "5-Year Cardiovascular Disease Risk (%)",
                     "code": [{"code": "827181004", "display": "Risk of cardiovascular disease", "system":"http://snomed.info/sct" }],
+                    "type": "decimal"
+                },
+                {
+                    "linkId": "other-factors",
+                    "text": "Other Factors",
+                    "type": "display"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[2].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "height",
+                    "text": "Height (cm)",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                            "valueExpression": {
+                                "language": "text/fhirpath",
+                                "expression": "%PrePopQuery.entry[4].resource.entry.resource.value.value"
+                            }
+                        }
+                    ],
+                    "linkId": "weight",
+                    "text": "Weight (kg)",
+                    "type": "decimal"
+                },
+                {
+                    "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                          "valueCoding": {
+                            "system": "http://unitsofmeasure.org",
+                            "code": "kg/m2"
+                          }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                          "valueExpression": {
+                            "description": "BMI calculation",
+                            "language": "text/fhirpath",
+                            "expression": "(%weight/((%height/100).power(2))).round(1)"
+                          }
+                        }
+                    ],
+                    "linkId": "bmi",
+                    "text": "Body mass index",
                     "type": "decimal"
                 }
             ]
