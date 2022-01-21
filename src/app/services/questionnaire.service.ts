@@ -70,6 +70,11 @@ export class QuestionnaireService {
       "name": "cvd-risk",
       "title": "CVD Risk Assessment",
       "url": "data/CVD Risk.json"
+    },
+    {
+      "name": "cvd-check",
+      "title": "CVD Check",
+      "url": "data/CVD Check.json"
     }  
   ];
 

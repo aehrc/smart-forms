@@ -78,7 +78,7 @@ export class QuestionnaireForm extends FormGroup {
 
         if (form.variables.length > 0 && qr.item?.length > 0) {
           form.variables.forEach(v => {   
-            console.log("Evaluating " + v.expression);         
+            console.log("Evaluating variable " + v.name + ": " + v.expression);         
             var result = fhirpath.evaluate(qr.item[0], { base: 'QuestionnaireResponse.item', expression: v.expression }, context, fhirpath_r4_model);
             context[v.name] = result;
             if (result.length>0) {
@@ -88,7 +88,7 @@ export class QuestionnaireForm extends FormGroup {
       
           calculatedExpressions.forEach(e => {
             
-            console.log("Evaluating " + e.expression);
+            console.log("Evaluating expression " + e.description + ": " + e.expression);
             var result = fhirpath.evaluate(qr, e.expression, context, fhirpath_r4_model);
 
             if (result.length > 0) {
