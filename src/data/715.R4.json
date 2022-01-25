@@ -175,6 +175,20 @@
                         "method": "GET",
                         "url": "DiagnosticReport?patient={{%LaunchPatient.id}}"
                     }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52576",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
+                },
+                {
+                    "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52577",
+                    "request": {
+                        "method": "GET",
+                        "url": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+                    }
                 }
             ]
         }
@@ -232,7 +246,191 @@
                       "language": "text/fhirpath",
                       "expression": "item.where(linkId='ac1559c8-f03a-43a6-818f-9b31892ec2a7').item.where(linkId='29644716-433e-45ec-a805-8043f35a85e1').answer.value"
                     }
-                  }  
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "female",
+                        "language": "text/fhirpath",
+                        "expression": "iif(item.where(linkId='0db82ad3-fd45-4c0c-a603-9fbe6bbb9aca').item.where(linkId='3a98ac7a-9313-4222-a853-edd0415bfc48').answer.value.code='female', 1, 0)"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "age",
+                        "language": "text/fhirpath",
+                        "expression": "item.where(linkId='age').answer.value"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cvdAge",
+                        "language": "text/fhirpath",
+                        "expression": "iif(%age > 74, 74, iif(%age < 35, 35, %age))"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "systolicBP",
+                        "language": "text/fhirpath",
+                        "expression": "item.where(linkId='7845504e-859d-4834-a264-127bcbee8759').item.where(linkId='systolic-bp').answer.value"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "smoker",
+                        "language": "text/fhirpath",
+                        "expression": "iif(item.where(linkId='14a9fb5f-5b0e-4862-b143-08a11cd3ebf0').item.where(linkId='b639a3a8-f476-4cc8-b5c7-f5d2abb23511').answer.value.code='77176002', 1, 0)"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "totalCh",
+                        "language": "text/fhirpath",
+                        "expression": "item.where(linkId='7845504e-859d-4834-a264-127bcbee8759').item.where(linkId='tot-chol').answer.value"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "hdl",
+                        "language": "text/fhirpath",
+                        "expression": "item.where(linkId='7845504e-859d-4834-a264-127bcbee8759').item.where(linkId='hdl-chol').answer.value"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "diabetes",
+                        "language": "text/fhirpath",
+                        "expression": "iif(item.where(linkId='7845504e-859d-4834-a264-127bcbee8759').item.where(linkId='has-diabetes').answer.value = true,1,0)"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "ecgLvh",
+                        "language": "text/fhirpath",
+                        "expression": "iif(item.where(linkId='7845504e-859d-4834-a264-127bcbee8759').item.where(linkId='ecg-lvh').answer.value = true,1,0)"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cBase",
+                        "language": "text/fhirpath",
+                        "expression": "18.8144"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cFemale",
+                        "language": "text/fhirpath",
+                        "expression": "%female * -1.2146"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cAge",
+                        "language": "text/fhirpath",
+                        "expression": "%cvdAge.ln() * -1.8443"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cAgeFemale",
+                        "language": "text/fhirpath",
+                        "expression": "%female * %cvdAge.ln() * 0.3668"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cSBP",
+                        "language": "text/fhirpath",
+                        "expression": "%systolicBP.ln() * -1.4032"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cSmoker",
+                        "language": "text/fhirpath",
+                        "expression": "%smoker * -0.3899"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cTcHdl",
+                        "language": "text/fhirpath",
+                        "expression": "(%totalCh / %hdl).ln() * -0.539"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cDiabetes",
+                        "language": "text/fhirpath",
+                        "expression": "%diabetes * -0.3036"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cDiabetesFemale",
+                        "language": "text/fhirpath",
+                        "expression": "%female * %diabetes * -0.1697"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cEcgLvh",
+                        "language": "text/fhirpath",
+                        "expression": "%ecgLvh * -0.3362"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "sumOfCoeffs",
+                        "language": "text/fhirpath",
+                        "expression": "%cBase + %cFemale + %cAge + %cAgeFemale + %cSBP + %cSmoker + %cTcHdl + %cDiabetes + %cDiabetesFemale + %cEcgLvh"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cvdScale",
+                        "language": "text/fhirpath",
+                        "expression": "(0.6536 + (%sumOfCoeffs * -0.2402)).exp()"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cvdU",
+                        "language": "text/fhirpath",
+                        "expression": "(5.ln()-%sumOfCoeffs)/%cvdScale"
+                    }
+                },
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                        "name": "cvdScore",
+                        "language": "text/fhirpath",
+                        "expression": "(1 - (%cvdU.exp()*-1).exp()) * 100"
+                    }
+                }
             ],
             "linkId": "715",
             "text": "MBS 715",
@@ -2031,11 +2229,103 @@
                             "extension": [
                                 {
                                     "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
+                                    "valueString": "75 or more"
+                                },
+                                {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                                    "valueExpression": {
+                                        "language": "text/fhirpath",
+                                        "expression": "%PrePopQuery.entry[7].resource.entry.resource.component.where(code.coding.where(code='8459-0')).value.value"
+                                    }
+                                }
+                            ],
+                            "linkId": "systolic-bp",
+                            "text": "Systolic Blood Pressure",
+                            "type": "decimal"
+                        },
+                        {
+                            "extension": [
+                                {
+                                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
+                                    "valueString": "2 or more"
+                                },
+                                {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                                    "valueExpression": {
+                                        "language": "text/fhirpath",
+                                        "expression": "%PrePopQuery.entry[23].resource.entry.resource.value.value"
+                                    }
+                                }
+                            ],
+                            "linkId": "tot-chol",
+                            "text": "Total Cholesterol",
+                            "type": "decimal"
+                        },
+                        {
+                            "extension": [
+                                {
+                                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
+                                    "valueString": "Between 0.2 - 5"
+                                },
+                                {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                                    "valueExpression": {
+                                        "language": "text/fhirpath",
+                                        "expression": "%PrePopQuery.entry[24].resource.entry.resource.value.value"
+                                    }
+                                }
+                            ],
+                            "linkId": "hdl-chol",
+                            "text": "HDL Cholesterol",
+                            "type": "decimal"
+                        },
+                        {
+                            "extension": [
+                                {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                                    "valueExpression": {
+                                        "language": "text/fhirpath",
+                                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006').exists()"
+                                    }
+                                }
+                            ],
+                            "linkId": "has-diabetes",
+                            "text": "Diabetes",
+                            "type": "boolean",
+                            "repeats": false
+                        },
+                        {
+                            "linkId": "ecg-lvh",
+                            "text": "ECG LVH",
+                            "type": "boolean",
+                            "repeats": false
+                        },
+                        {
+                            "extension": [
+                                {
+                                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction",
                                     "valueString": "auscvdrisk.com.au/risk-calculator/"
+                                },
+                                {
+                                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "%" }
+                                },
+                                {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract", 
+                                    "valueBoolean": "true"
+                                },
+                                {
+                                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                                  "valueExpression": {
+                                    "description": "CVD Risk Score",
+                                    "language": "text/fhirpath",
+                                    "expression": "%cvdScore.round(0)"
+                                  }
                                 }
                             ],
                             "linkId": "09c2de87-614f-4e5c-a496-387cab577ae5",
                             "text": "Cardiovascular risk calculated, details",
+                            "code": [{"code": "827181004", "display": "Risk of cardiovascular disease", "system":"http://snomed.info/sct" }],
                             "type": "decimal"
                         }
                     ],
