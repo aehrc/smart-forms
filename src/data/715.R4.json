@@ -216,6 +216,24 @@
     "description": "Professional attendance by a general practitioner at consulting rooms or in another place other than a hospital or residential aged care facility, for a health assessment of a patient who is of Aboriginal or Torres Strait Islander descent-not more than once in a 9 month period",
     "item": [
         {
+            "extension": [
+                {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                      "name": "weight",
+                      "language": "text/fhirpath",
+                      "expression": "item.where(linkId='ac1559c8-f03a-43a6-818f-9b31892ec2a7').item.where(linkId='f5308669-d1f9-49a1-bedd-7420946e7288').answer.value"
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/variable",
+                    "valueExpression": {
+                      "name": "height",
+                      "language": "text/fhirpath",
+                      "expression": "item.where(linkId='ac1559c8-f03a-43a6-818f-9b31892ec2a7').item.where(linkId='29644716-433e-45ec-a805-8043f35a85e1').answer.value"
+                    }
+                  }  
+            ],
             "linkId": "715",
             "text": "MBS 715",
             "type": "group",
@@ -1904,7 +1922,22 @@
                                         "language": "text/fhirpath",
                                         "expression": "%PrePopQuery.entry[6].resource.entry.resource.value.value"
                                     }
-                                }
+                                },
+                                {
+                                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                                    "valueCoding": {
+                                      "system": "http://unitsofmeasure.org",
+                                      "code": "kg/m2"
+                                    }
+                                  },
+                                  {
+                                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                                    "valueExpression": {
+                                      "description": "BMI calculation",
+                                      "language": "text/fhirpath",
+                                      "expression": "(%weight/((%height/100).power(2))).round(1)"
+                                    }
+                                  }
                             ],
                             "linkId": "d9306be3-fedf-45ca-8b91-71e6f7f6c6f5",
                             "text": "BMI (kg/^2)",
