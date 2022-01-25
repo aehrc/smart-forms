@@ -48,9 +48,8 @@ export class LaunchComponent implements OnInit {
     
     var redirectUri: string; 
     if (fragment) {
-      redirectUri = baseUrl + "/#" + fragment;
+      sessionStorage.setItem("QUESTIONNAIRE", fragment);
     }
-    else
       redirectUri = baseUrl + "/";
 
     console.log('redirect_uri: ' + redirectUri);

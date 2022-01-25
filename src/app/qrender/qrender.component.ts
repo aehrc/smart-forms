@@ -34,6 +34,13 @@ export class QRenderComponent implements OnInit, OnDestroy {
 
     if (fragment)
       questionnaireName = fragment;
+    else {
+      const questionnaire = sessionStorage.getItem("QUESTIONNAIRE");
+      if (questionnaire) {
+        questionnaireName = questionnaire;
+        //sessionStorage.setItem("QUESTIONNAIRE", null);
+      }
+    }
 
     var fhirServerUrl = 'http://www.demo.oridashi.com.au:8109';  // oridashi public server
 
