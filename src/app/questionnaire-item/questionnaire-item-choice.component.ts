@@ -30,10 +30,10 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
 
     // component FormControl
     private qformControl: QuestionnaireFormItem = new QuestionnaireFormItem();
+
+    radioButtons: FormArray =  new FormArray([]);
+
   
-    checkboxes: FormArray =  new FormArray([]);
-  
-    
 
     itemControl: ItemControl;
     isHorizontal: boolean = true;  
@@ -63,6 +63,8 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
       //this.qformControl.item = this.item;
 
       if (this.parentGroup) {
+
+        //item itself
         this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
         if (this.qformControl === undefined) 
           throw new Error("linkId '" + this.item.linkId + "' not found in parentGroup controls. Ensure linkId element exists in '" + this.parentGroup.item.text + "'.");
@@ -71,17 +73,17 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         this.qformControl = this.repeat as QuestionnaireFormItem;
       }
 
-      this.addSubscriptions(this.qformControl.valueChanges.subscribe(newValue => 
+      this.addSubscriptions(this.qformControl.valueChanges.subscribe(newValue =>
         this.valueChanged(newValue)));
 
       if (this.item.answerOption?.length > 0 && this.item.answerOption?.length <= this.droplistOptionsCount) 
-        this.itemControl = "check-box";
+        this.itemControl = "radio-button";
       else {
         this.itemControl = "drop-down";
       }
-      
+
       var itemControl = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl");
-      if (itemControl && itemControl.valueCodeableConcept?.coding.length > 0) {
+      if (itemControl && itemControl.valueCodeableConcept?.coding.length > 0) { 
         this.itemControl = itemControl.valueCodeableConcept?.coding[0].code;
       }
     
@@ -103,7 +105,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
 
             if (this.answerOption?.length > 0) {
               if (this.itemControl == "check-box") { 
-                this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+                this.answerOption.forEach(o=> this.radioButtons.push(new FormControl()));
                 //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
               }    
               else {  // drop-down
@@ -127,7 +129,7 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
 
       if (this.answerOption?.length > 0) {
         if (this.itemControl == "check-box") { 
-          this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+          this.answerOption.forEach(o=> this.radioButtons.push(new FormControl()));
           //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
         }
         else {
@@ -230,14 +232,8 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         newCode = newValue;
       }
 
-      if (this.itemControl == "check-box") {
-      for (let index = 0; index < this.answerOption.length; index++) {
-        const option = this.answerOption[index];
-        if (option.valueCoding.code == newCode) { 
-          this.checkboxes.controls[index].setValue(true);
-          break;
-        }
-      } 
+      if (this.itemControl == "radio-button") {
+        
       }
       else if (this.itemControl == "autocomplete"){
         this.formControl.setValue(newCoding);
@@ -248,14 +244,10 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
       }
     }
 
-    onCheckboxChange(event, index) {
+
+    onRadioChange(event, index) {
       if (event.target.checked) {
           this.setValueCoding(event.target.value);
-          var i = 0;
-          this.checkboxes.controls.forEach(element => { 
-            if (i++ != index)
-              (element as FormControl).setValue(null);
-          });
       }
       else {
         this.qformControl.setValue(null);
