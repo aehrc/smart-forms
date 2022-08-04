@@ -1,41 +1,43 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { EMPTY, Observable } from 'rxjs';
-import { catchError, debounceTime, switchMap } from 'rxjs/operators';
-import { fhirclient } from 'fhirclient/lib/types';
-import { PatientService } from '../services/patient.service';
+import { Component, OnInit, Input } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { EMPTY, Observable } from "rxjs";
+import { catchError, debounceTime, switchMap } from "rxjs/operators";
+import { fhirclient } from "fhirclient/lib/types";
+import { PatientService } from "../services/patient.service";
 
 @Component({
-  selector: 'app-patient-banner',
-  templateUrl: './patient-banner.component.html',
-  styleUrls: ['./patient-banner.component.css']
+  selector: "app-patient-banner",
+  templateUrl: "./patient-banner.component.html",
+  styleUrls: ["./patient-banner.component.css"],
 })
 export class PatientBannerComponent implements OnInit {
-
-  private _patient : fhirclient.FHIR.Patient;
+  private _patient: fhirclient.FHIR.Patient;
 
   @Input() set patient(patient) {
-    this._patient = patient
+    this._patient = patient;
     this.hasLaunchContext = this.patientService.hasLaunchContext;
   }
 
-  get patient() {    
+  get patient() {
     return this._patient;
   }
 
-  searchResults : Object[];
+  searchResults: Object[];
 
   hasLaunchContext = false;
 
   // patient search criteria
-  searchCriteria = new FormControl('');
+  searchCriteria = new FormControl("");
 
-  constructor(private patientService: PatientService) { }
+  constructor(private patientService: PatientService) {}
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.searchCriteria.valueChanges
-      .pipe(debounceTime(300), switchMap(criteria => this.searchPatientAsync(criteria)))
-      .subscribe(res => this.searchResults = res);
+      .pipe(
+        debounceTime(300),
+        switchMap((criteria) => this.searchPatientAsync(criteria))
+      )
+      .subscribe((res) => (this.searchResults = res));
   }
 
   get patientName() {
@@ -48,7 +50,7 @@ export class PatientBannerComponent implements OnInit {
     var age = today.getFullYear() - birthDate.getFullYear();
     var m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
+      age--;
     }
     return age;
   }
@@ -61,24 +63,24 @@ export class PatientBannerComponent implements OnInit {
     var patient = selectedPatient.resource as fhirclient.FHIR.Patient;
     this.patientService.setPatient(patient);
 
-    if (patient)
-      this.patient = patient;
+    if (patient) this.patient = patient;
 
     this.searchResults = null;
   }
 
-  searchPatientAsync(criteria: string) : Observable<Object[]> {
+  searchPatientAsync(criteria: string): Observable<Object[]> {
     if (criteria.length > 1) {
-      console.log("Searching: " + criteria)
-      return this.patientService.searchPatient(criteria)
-      .pipe(catchError(err => { 
-          console.log("Search error: " + err); 
+      console.log("Searching: " + criteria);
+      return this.patientService.searchPatient(criteria).pipe(
+        catchError((err) => {
+          console.log("Search error: " + err);
           return EMPTY;
         })
       );
-    }
-    else {
-      console.log("Not enough search criteria to initaite search: " + criteria.length); 
+    } else {
+      console.log(
+        "Not enough search criteria to initaite search: " + criteria.length
+      );
       return EMPTY;
     }
   }

@@ -1,76 +1,171 @@
-<button class="btn btn-light" type="button" title="Questionaire Response" 
-        style="float: right; position: sticky; top: 0; border-color: lightgray;"        
-        data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt-cutoff" viewBox="0 0 16 16">
-        <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"/>
-        <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z"/>
-    </svg>      
+<button
+  class="btn btn-light"
+  type="button"
+  title="Questionaire Response"
+  style="float: right; position: sticky; top: 0; border-color: lightgray"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#offcanvasRight"
+  aria-controls="offcanvasRight"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    fill="currentColor"
+    class="bi bi-receipt-cutoff"
+    viewBox="0 0 16 16"
+  >
+    <path
+      d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zM11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z"
+    />
+    <path
+      d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293 2.354.646zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118l.137-.274z"
+    />
+  </svg>
 </button>
 
-<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-    <div class="offcanvas-header">
-        <h5 id="offcanvasRightLabel">Questionnaire Response</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body" style="padding: 0;">
-        <div class="accordion" id="qrenderer" >
-
-            <div *ngIf="questionnaire$ | async as questionnaire" class="accordion-item">
-                <h3 class="accordion-header" id="flush-headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                    Questionnaire Resource
-                    </button>
-                </h3>
-                <div id="flush-collapseOne"  class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#qrenderer">
-                    <div class="accordion-body" style="height: 900px;overflow: auto;" >                
-                        <pre style="overflow: initial">{{questionnaire | json}}</pre>
-                    </div>
-                </div>
-            </div>
-    
-            <div *ngIf="qresponse$ | async as qresponse" class="accordion-item">
-                <h3 class="accordion-header" id="flush-headingTwo">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="true" aria-controls="flush-collapseTwo">
-                        Questionnaire Response
-                    </button>
-                </h3>
-                <div id="flush-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="flush-headingTwo" data-bs-parent="#qrenderer">
-                    <div class="accordion-body" style="height: 900px;overflow: auto;">
-                        <button type="button" class="btn btn-outline-secondary" (click)="saveQResponse(qresponse)" >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"></path>
-                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"></path>
-                            </svg>
-                            Save</button>
-                            <button type="button" class="btn btn-outline-secondary" (click)="validateQResponse(qresponse)" >
-                                Validate
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" (click)="extractQResponse(qresponse)" >
-                            <!--button type="button" class="btn btn-outline-secondary" (click)="extractResponseInstance()" -->
-                                Extract
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" (click)="postObservation()" >
-                                Post Observation
-                            </button>
-                            <p></p>
-                        <pre style="overflow: initial">{{qresponse | json}}</pre>                
-                    </div>
-                </div>
-            </div>
-    
-            <div *ngIf="query$ | async as query" class="accordion-item">
-                <h3 class="accordion-header" id="query-heading">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#query-collapse" aria-expanded="false" aria-controls="query-collapse">
-                    Questionnaire Query
-                    </button>
-                </h3>
-                <div id="query-collapse"  class="accordion-collapse collapse" aria-labelledby="query-heading" data-bs-parent="#qrenderer">
-                    <div class="accordion-body" style="height: 900px;overflow: auto;" >                
-                        <pre style="overflow: initial">{{query | json}}</pre>
-                    </div>
-                </div>
-            </div>
-    
+<div
+  class="offcanvas offcanvas-end"
+  data-bs-scroll="true"
+  data-bs-backdrop="false"
+  tabindex="-1"
+  id="offcanvasRight"
+  aria-labelledby="offcanvasRightLabel"
+>
+  <div class="offcanvas-header">
+    <h5 id="offcanvasRightLabel">Questionnaire Response</h5>
+    <button
+      type="button"
+      class="btn-close text-reset"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body" style="padding: 0">
+    <div class="accordion" id="qrenderer">
+      <div
+        *ngIf="questionnaire$ | async as questionnaire"
+        class="accordion-item"
+      >
+        <h3 class="accordion-header" id="flush-headingOne">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#flush-collapseOne"
+            aria-expanded="false"
+            aria-controls="flush-collapseOne"
+          >
+            Questionnaire Resource
+          </button>
+        </h3>
+        <div
+          id="flush-collapseOne"
+          class="accordion-collapse collapse"
+          aria-labelledby="flush-headingOne"
+          data-bs-parent="#qrenderer"
+        >
+          <div class="accordion-body" style="height: 900px; overflow: auto">
+            <pre style="overflow: initial">{{ questionnaire | json }}</pre>
+          </div>
         </div>
+      </div>
+
+      <div *ngIf="qresponse$ | async as qresponse" class="accordion-item">
+        <h3 class="accordion-header" id="flush-headingTwo">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#flush-collapseTwo"
+            aria-expanded="true"
+            aria-controls="flush-collapseTwo"
+          >
+            Questionnaire Response
+          </button>
+        </h3>
+        <div
+          id="flush-collapseTwo"
+          class="accordion-collapse collapse show"
+          aria-labelledby="flush-headingTwo"
+          data-bs-parent="#qrenderer"
+        >
+          <div class="accordion-body" style="height: 900px; overflow: auto">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="saveQResponse(qresponse)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-arrow-clockwise"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"
+                ></path>
+                <path
+                  d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
+                ></path>
+              </svg>
+              Save
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="validateQResponse(qresponse)"
+            >
+              Validate
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="extractQResponse(qresponse)"
+            >
+              <!--button type="button" class="btn btn-outline-secondary" (click)="extractResponseInstance()" -->
+              Extract
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="postObservation()"
+            >
+              Post Observation
+            </button>
+            <p></p>
+            <pre style="overflow: initial">{{ qresponse | json }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="query$ | async as query" class="accordion-item">
+        <h3 class="accordion-header" id="query-heading">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#query-collapse"
+            aria-expanded="false"
+            aria-controls="query-collapse"
+          >
+            Questionnaire Query
+          </button>
+        </h3>
+        <div
+          id="query-collapse"
+          class="accordion-collapse collapse"
+          aria-labelledby="query-heading"
+          data-bs-parent="#qrenderer"
+        >
+          <div class="accordion-body" style="height: 900px; overflow: auto">
+            <pre style="overflow: initial">{{ query | json }}</pre>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

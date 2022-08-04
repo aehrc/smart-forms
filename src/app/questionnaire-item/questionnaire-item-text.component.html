@@ -1,12 +1,28 @@
 <div class="row mb-3" *ngIf="!repeat; else repeat_content">
-    <label for="{{item.linkId}}" class="col-sm-5 col-form-label">{{item.text}}</label>
-    <div class="col-sm-7"> 
-    <textarea id="{{item.linkId}}" class="form-control" rows="3" [formControl]="formControl"></textarea>
+  <label for="{{ item.linkId }}" class="col-sm-5 col-form-label">{{
+    item.text
+  }}</label>
+  <div class="col-sm-7">
+    <textarea
+      id="{{ item.linkId }}"
+      class="form-control"
+      rows="3"
+      [formControl]="formControl"
+    ></textarea>
 
-    <span *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</span>
-    </div>
+    <span
+      *ngIf="questionnaireInstruction() as instruction"
+      class="questionnaire-instruction"
+      >{{ instruction }}</span
+    >
+  </div>
 </div>
 
 <ng-template #repeat_content>
-    <textarea id="{{item.linkId}}" class="form-control repeat-text" rows="3" [formControl]="formControl"></textarea>
+  <textarea
+    id="{{ item.linkId }}"
+    class="form-control repeat-text"
+    rows="3"
+    [formControl]="formControl"
+  ></textarea>
 </ng-template>

@@ -1,82 +1,223 @@
 <div *ngIf="containsTabs(); else other_content">
-    <div class="container p-3 mb-3" id="{{item.linkId}}" >
-        <h5>{{item.text}}</h5>
-        
-        <div class="row align-items-start">
-            <div class="col-4">
-                <div class="nav flex-column nav-pills me-3 border" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link" id="tab-{{item.linkId}}" data-bs-toggle="pill" [attr.data-bs-target]="'#panel-' + item.linkId" type="button" role="tab" aria-controls="panel-{{item.linkId}}" aria-selected="false"
-                        *ngFor="let item of item.item | tabGroups; let first = first;" style="text-align: left;" [ngClass]="{'active': first}">{{item | shortTextOrText}}</button>          
-                </div>
-            </div>
-  
-            <div class="col-8">
+  <div class="container p-3 mb-3" id="{{ item.linkId }}">
+    <h5>{{ item.text }}</h5>
 
-                <div *ngFor="let item of item.item | nonTabItems">
-                    <qitem-repeat *ngIf="item.repeats" [item]="item" [parentGroup]="formGroup"></qitem-repeat>
-                    <div *ngIf="!item.repeats" [ngSwitch]="item.type">
-                        <qitem-group *ngSwitchCase="'group'" [item]="item" [parentGroup]="formGroup" ></qitem-group>
-                        <qitem-string *ngSwitchCase="'string'" [item]="item" [parentGroup]="formGroup"></qitem-string>
-                        <qitem-text *ngSwitchCase="'text'" [item]="item" [parentGroup]="formGroup"></qitem-text>
-                        <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
-                        <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [parentGroup]="formGroup"></qitem-boolean>
-                        <qitem-integer *ngSwitchCase="'integer'" [item]="item" [parentGroup]="formGroup"></qitem-integer>
-                        <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentGroup]="formGroup" [formControl]="formGroup.controls[item.linkId]" ></qitem-decimal>
-                        <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="formGroup"></qitem-date>
-                        <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="formGroup"></qitem-datetime>
-                        <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="formGroup"></qitem-choice>
-                        <qitem-openchoice *ngSwitchCase="'open-choice'" [item]="item" [parentGroup]="formGroup"></qitem-openchoice>
-                        <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentGroup]="formGroup"></qitem-quantity>
-                    
-                        <div *ngSwitchDefault class="mb-3">
-                            <label for="{{item.linkId}}">{{item.text}}</label>
-                            <span><em>&lt;{{item.type}}&gt;</em></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="v-pills-tabContent">
-                    <div class="tab-pane fade" id="panel-{{item.linkId}}" role="tabpanel" aria-labelledby="tab-{{item.linkId}}" 
-                        *ngFor="let item of item.item | tabGroups; let first = first;" [ngClass]="{'show active': first}">                        
-                        <qitem-group *ngIf="!item.repeats;else repeatingGroup" [item]="item" [parentGroup]="formGroup" ></qitem-group>
-                        <ng-template #repeatingGroup>
-                            <qitem-repeat [item]="item" [parentGroup]="formGroup"></qitem-repeat>
-                        </ng-template>
-                    </div>
-                </div>
-            </div>
+    <div class="row align-items-start">
+      <div class="col-4">
+        <div
+          class="nav flex-column nav-pills me-3 border"
+          id="v-pills-tab"
+          role="tablist"
+          aria-orientation="vertical"
+        >
+          <button
+            class="nav-link"
+            id="tab-{{ item.linkId }}"
+            data-bs-toggle="pill"
+            [attr.data-bs-target]="'#panel-' + item.linkId"
+            type="button"
+            role="tab"
+            aria-controls="panel-{{ item.linkId }}"
+            aria-selected="false"
+            *ngFor="let item of item.item | tabGroups; let first = first"
+            style="text-align: left"
+            [ngClass]="{ active: first }"
+          >
+            {{ item | shortTextOrText }}
+          </button>
         </div>
+      </div>
+
+      <div class="col-8">
+        <div *ngFor="let item of item.item | nonTabItems">
+          <qitem-repeat
+            *ngIf="item.repeats"
+            [item]="item"
+            [parentGroup]="formGroup"
+          ></qitem-repeat>
+          <div *ngIf="!item.repeats" [ngSwitch]="item.type">
+            <qitem-group
+              *ngSwitchCase="'group'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-group>
+            <qitem-string
+              *ngSwitchCase="'string'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-string>
+            <qitem-text
+              *ngSwitchCase="'text'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-text>
+            <qitem-display
+              *ngSwitchCase="'display'"
+              [item]="item"
+            ></qitem-display>
+            <qitem-boolean
+              *ngSwitchCase="'boolean'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-boolean>
+            <qitem-integer
+              *ngSwitchCase="'integer'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-integer>
+            <qitem-decimal
+              *ngSwitchCase="'decimal'"
+              [item]="item"
+              [parentGroup]="formGroup"
+              [formControl]="formGroup.controls[item.linkId]"
+            ></qitem-decimal>
+            <qitem-date
+              *ngSwitchCase="'date'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-date>
+            <qitem-datetime
+              *ngSwitchCase="'datetime'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-datetime>
+            <qitem-choice
+              *ngSwitchCase="'choice'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-choice>
+            <qitem-openchoice
+              *ngSwitchCase="'open-choice'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-openchoice>
+            <qitem-quantity
+              *ngSwitchCase="'quantity'"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-quantity>
+
+            <div *ngSwitchDefault class="mb-3">
+              <label for="{{ item.linkId }}">{{ item.text }}</label>
+              <span
+                ><em>&lt;{{ item.type }}&gt;</em></span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="v-pills-tabContent">
+          <div
+            class="tab-pane fade"
+            id="panel-{{ item.linkId }}"
+            role="tabpanel"
+            aria-labelledby="tab-{{ item.linkId }}"
+            *ngFor="let item of item.item | tabGroups; let first = first"
+            [ngClass]="{ 'show active': first }"
+          >
+            <qitem-group
+              *ngIf="!item.repeats; else repeatingGroup"
+              [item]="item"
+              [parentGroup]="formGroup"
+            ></qitem-group>
+            <ng-template #repeatingGroup>
+              <qitem-repeat
+                [item]="item"
+                [parentGroup]="formGroup"
+              ></qitem-repeat>
+            </ng-template>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <ng-template #other_content>
-    <div [ngClass]="repeat ? 'row' : 'container p-3 border mb-3'" id="{{item.linkId}}" [hidden]="!(enableWhen() | async)">  
-    <h5 *ngIf="!repeat">{{item.text}}</h5>
-    <span *ngIf="!repeat && questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</span>
+  <div
+    [ngClass]="repeat ? 'row' : 'container p-3 border mb-3'"
+    id="{{ item.linkId }}"
+    [hidden]="!(enableWhen() | async)"
+  >
+    <h5 *ngIf="!repeat">{{ item.text }}</h5>
+    <span
+      *ngIf="!repeat && questionnaireInstruction() as instruction"
+      class="questionnaire-instruction"
+      >{{ instruction }}</span
+    >
 
-    <div *ngFor="let item of item.item" >
-        <qitem-repeat *ngIf="item.repeats" [item]="item" [parentGroup]="formGroup"></qitem-repeat>
-        <div *ngIf="!item.repeats" [ngSwitch]="item.type">
-            <qitem-group *ngSwitchCase="'group'" [item]="item" [parentGroup]="formGroup" ></qitem-group>
-            <qitem-string *ngSwitchCase="'string'" [item]="item" [parentGroup]="formGroup"></qitem-string>
-            <qitem-text *ngSwitchCase="'text'" [item]="item" [parentGroup]="formGroup"></qitem-text>
-            <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
-            <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [parentGroup]="formGroup"></qitem-boolean>
-            <qitem-integer *ngSwitchCase="'integer'" [item]="item" [parentGroup]="formGroup"></qitem-integer>
-            <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentGroup]="formGroup" [formControl]="formGroup.controls[item.linkId]" ></qitem-decimal>
-            <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="formGroup"></qitem-date>
-            <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="formGroup"></qitem-datetime>
-            <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="formGroup"></qitem-choice>
-            <qitem-openchoice *ngSwitchCase="'open-choice'" [item]="item" [parentGroup]="formGroup"></qitem-openchoice>
-            <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentGroup]="formGroup"></qitem-quantity>
-        
-            <div *ngSwitchDefault class="mb-3">
-                <label for="{{item.linkId}}">{{item.text}}</label>
-                <span><em>&lt;{{item.type}}&gt;</em></span>
-            </div>
+    <div *ngFor="let item of item.item">
+      <qitem-repeat
+        *ngIf="item.repeats"
+        [item]="item"
+        [parentGroup]="formGroup"
+      ></qitem-repeat>
+      <div *ngIf="!item.repeats" [ngSwitch]="item.type">
+        <qitem-group
+          *ngSwitchCase="'group'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-group>
+        <qitem-string
+          *ngSwitchCase="'string'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-string>
+        <qitem-text
+          *ngSwitchCase="'text'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-text>
+        <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
+        <qitem-boolean
+          *ngSwitchCase="'boolean'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-boolean>
+        <qitem-integer
+          *ngSwitchCase="'integer'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-integer>
+        <qitem-decimal
+          *ngSwitchCase="'decimal'"
+          [item]="item"
+          [parentGroup]="formGroup"
+          [formControl]="formGroup.controls[item.linkId]"
+        ></qitem-decimal>
+        <qitem-date
+          *ngSwitchCase="'date'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-date>
+        <qitem-datetime
+          *ngSwitchCase="'datetime'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-datetime>
+        <qitem-choice
+          *ngSwitchCase="'choice'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-choice>
+        <qitem-openchoice
+          *ngSwitchCase="'open-choice'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-openchoice>
+        <qitem-quantity
+          *ngSwitchCase="'quantity'"
+          [item]="item"
+          [parentGroup]="formGroup"
+        ></qitem-quantity>
+
+        <div *ngSwitchDefault class="mb-3">
+          <label for="{{ item.linkId }}">{{ item.text }}</label>
+          <span
+            ><em>&lt;{{ item.type }}&gt;</em></span
+          >
         </div>
+      </div>
     </div>
-    </div>
+  </div>
 </ng-template>
-
-

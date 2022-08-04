@@ -1,18 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { Observable, of, Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Questionnaire } from '../services/questionnaire.model';
-import { QuestionnaireCandidate, QuestionnaireService } from '../services/questionnaire.service';
+import { Observable, of, Subject, Subscription } from "rxjs";
+import { debounceTime, distinctUntilChanged, switchMap } from "rxjs/operators";
+import { Questionnaire } from "../services/questionnaire.model";
+import {
+  QuestionnaireCandidate,
+  QuestionnaireService,
+} from "../services/questionnaire.service";
 
 @Component({
-  selector: 'app-questionnaire-list',
-  templateUrl: './questionnaire-list.component.html',
-  styleUrls: ['./questionnaire-list.component.css']
+  selector: "app-questionnaire-list",
+  templateUrl: "./questionnaire-list.component.html",
+  styleUrls: ["./questionnaire-list.component.css"],
 })
 export class QuestionnaireListComponent implements OnInit, OnDestroy {
-
   src = "local";
 
   servers: string[];
@@ -29,7 +31,10 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
 
   errors$;
 
-  constructor(private router: Router, private questionnaireService: QuestionnaireService) { }
+  constructor(
+    private router: Router,
+    private questionnaireService: QuestionnaireService
+  ) {}
 
   ngOnInit(): void {
     this.servers = this.questionnaireService.servers;
@@ -46,17 +51,14 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
 
       // switch to new search observable each time the term changes
-      switchMap((name: string) => { 
+      switchMap((name: string) => {
         // search local
         if (this.src == "local") {
           return this.questionnaireService.searchLocal(name);
-        }
-        else {
-          if (name.length > 0 ) {
+        } else {
+          if (name.length > 0) {
             return this.questionnaireService.searchCandidates(name);
-          }
-          else 
-            return of<QuestionnaireCandidate[]>([]);
+          } else return of<QuestionnaireCandidate[]>([]);
         }
       })
     );
@@ -67,8 +69,7 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.uploadSubscription !== null)
-      this.uploadSubscription.unsubscribe();
+    if (this.uploadSubscription !== null) this.uploadSubscription.unsubscribe();
   }
 
   navbarOpen = false;
@@ -99,32 +100,30 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
 
   upload() {
     var questionnaire;
-    this.questionnaire$.subscribe(q=> questionnaire = q)
-    .unsubscribe();
+    this.questionnaire$.subscribe((q) => (questionnaire = q)).unsubscribe();
 
+    if (this.uploadSubscription !== null) this.uploadSubscription.unsubscribe();
 
-    if (this.uploadSubscription !== null)
-      this.uploadSubscription.unsubscribe();
-
-      this.uploadSubscription = this.questionnaireService.update(questionnaire)
-    .subscribe(r=> {
-      console.log(r);
-      const q = r as Questionnaire;
-      if (q.title) {
-        this.questionnaireService.setQuestionnaire(q);
-      }
-      else {
-        const operationOutcome = r;
-        var errors = operationOutcome.issue.filter(i=> i.severity == 'error');
-        this.errors$ = of(errors);
-      }
-    });    
+    this.uploadSubscription = this.questionnaireService
+      .update(questionnaire)
+      .subscribe((r) => {
+        console.log(r);
+        const q = r as Questionnaire;
+        if (q.title) {
+          this.questionnaireService.setQuestionnaire(q);
+        } else {
+          const operationOutcome = r;
+          var errors = operationOutcome.issue.filter(
+            (i) => i.severity == "error"
+          );
+          this.errors$ = of(errors);
+        }
+      });
   }
 
   view() {
-    this.router.navigate(['/']);
+    this.router.navigate(["/"]);
   }
-
 
   handleFileInput(files: FileList) {
     var fileToUpload = files.item(0);
@@ -133,7 +132,7 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
     fileReader.onload = (e) => {
       var resource = JSON.parse(fileReader.result as string) as Questionnaire;
       this.questionnaireService.setQuestionnaire(resource);
-    }
+    };
 
     fileReader.readAsText(fileToUpload, "UTF-8");
   }

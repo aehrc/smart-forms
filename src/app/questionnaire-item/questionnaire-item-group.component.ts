@@ -1,71 +1,77 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 
-import { QuestionnaireItem } from '../services/questionnaire.model';
-import { QuestionnaireItemBase, ShortTextOrTextFilterPipe } from './questionnaire-item-base.component';
+import { QuestionnaireItem } from "../services/questionnaire.model";
+import {
+  QuestionnaireItemBase,
+  ShortTextOrTextFilterPipe,
+} from "./questionnaire-item-base.component";
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { QuestionnaireResponseService } from '../services/questionnaire-response.service';
-
+import { Pipe, PipeTransform } from "@angular/core";
+import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
 
 abstract class TabFilterPipeBase {
-
-    isTab(item: QuestionnaireItem) {
-      var itemControl = item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl");
-      if (itemControl) {
-          var tabCoding = itemControl.valueCodeableConcept?.coding?.find(c=> c.code == "tab");
-          if (tabCoding)
-              return true;
-      }
-      return false;
-    }  
+  isTab(item: QuestionnaireItem) {
+    var itemControl = item.extension?.find(
+      (e) =>
+        e.url ==
+        "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl"
+    );
+    if (itemControl) {
+      var tabCoding = itemControl.valueCodeableConcept?.coding?.find(
+        (c) => c.code == "tab"
+      );
+      if (tabCoding) return true;
+    }
+    return false;
+  }
 }
-  
+
 @Pipe({
-  name: 'tabGroups'
+  name: "tabGroups",
 })
 export class TabFilterPipe extends TabFilterPipeBase implements PipeTransform {
-
   // value - array of QuestionnaireItem
   // return array of QuestionnaireItem that are tabs
   transform(value: QuestionnaireItem[]): QuestionnaireItem[] {
-       return value.filter(i=> this.isTab(i));
-    }
+    return value.filter((i) => this.isTab(i));
+  }
 }
 
 @Pipe({
-  name: 'nonTabItems'
+  name: "nonTabItems",
 })
-export class NonTabItemFilterPipe extends TabFilterPipeBase implements PipeTransform {
-
+export class NonTabItemFilterPipe
+  extends TabFilterPipeBase
+  implements PipeTransform
+{
   // value - array of QuestionnaireItem
   // return array of QuestionnaireItem that are not tabs
   transform(value: QuestionnaireItem[]): QuestionnaireItem[] {
-       return value.filter(i=> !this.isTab(i));
-    }
+    return value.filter((i) => !this.isTab(i));
+  }
 }
 
 @Component({
-  selector: 'qitem-group',
-  templateUrl: './questionnaire-item-group.component.html',
-  styleUrls: ['./questionnaire-item.component.css'],
-  providers: [TabFilterPipe, ShortTextOrTextFilterPipe]
+  selector: "qitem-group",
+  templateUrl: "./questionnaire-item-group.component.html",
+  styleUrls: ["./questionnaire-item.component.css"],
+  providers: [TabFilterPipe, ShortTextOrTextFilterPipe],
 })
 export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
-
   formGroup: FormGroup = new FormGroup({});
 
-  constructor(private tabFilter: TabFilterPipe, qresponseService: QuestionnaireResponseService) {
-      super(qresponseService);
+  constructor(
+    private tabFilter: TabFilterPipe,
+    qresponseService: QuestionnaireResponseService
+  ) {
+    super(qresponseService);
   }
 
   onInit() {
     if (this.parentGroup)
       this.formGroup = this.parentGroup.controls[this.item.linkId] as FormGroup;
-
-    else if (this.repeat)
-      this.formGroup = this.repeat as FormGroup;
-
+    else if (this.repeat) this.formGroup = this.repeat as FormGroup;
   }
 
   /*
@@ -85,11 +91,10 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
     var tabItems = this.tabFilter.transform(this.item.item);
 
     //if (firstTab)
-    if (tabItems.length > 0)
-        return true;
+    if (tabItems.length > 0) return true;
     return false;
   }
-/*
+  /*
   groupTabs(): QuestionnaireItem[] {
     var tabItems = this.item.item.filter(i=> this.isTab(i));
     return tabItems;
@@ -99,6 +104,5 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
     var tabItems = this.item.item.filter(i=> !this.isTab(i));
     return tabItems;
   }
-*/  
+*/
 }
-
