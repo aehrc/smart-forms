@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, Injector } from "@angular/core";
 import {
   ControlValueAccessor,
-  FormControl,
-  NgControl,
   NG_VALUE_ACCESSOR,
+  NgControl,
 } from "@angular/forms";
 import { QuestionnaireFormItem } from "../services/questionnaire-form-item.model";
 import { QuestionnaireForm } from "../services/questionnaire-form.model";
@@ -26,13 +25,13 @@ export class QuestionnaireItemDecimalComponent
   extends QuestionnaireItemBase
   implements ControlValueAccessor, AfterViewInit
 {
-
   constructor(
     qresponseService: QuestionnaireResponseService,
     private injector: Injector
   ) {
     super(qresponseService);
   }
+
   // @Output()
   private valueChange; // = new EventEmitter();
   value;

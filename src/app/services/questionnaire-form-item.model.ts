@@ -1,12 +1,11 @@
 import { FormControl, Validators } from "@angular/forms";
-import { QuestionnaireItem } from "./questionnaire.model";
+import { fhirclient } from "fhirclient/lib/types";
+import { QuestionnaireForm } from "./questionnaire-form.model";
 import {
   QuestionnaireResponseAnswer,
   QuestionnaireResponseItem,
 } from "./questionnaire-response.service";
-import { fhirclient } from "fhirclient/lib/types";
-import { QuestionnaireForm } from "./questionnaire-form.model";
-import { Injector, OnInit } from "@angular/core";
+import { QuestionnaireItem } from "./questionnaire.model";
 
 export class QuestionnaireFormItem extends FormControl {
   item?: QuestionnaireItem;
@@ -54,7 +53,9 @@ export class QuestionnaireFormItem extends FormControl {
         text: this.item.text,
         answer: answers,
       };
-    } else { this.responseItem = null; }
+    } else {
+      this.responseItem = null;
+    }
   }
 
   private getItemAnswer(selectedValue: any) {
@@ -119,8 +120,11 @@ export class QuestionnaireFormItem extends FormControl {
       case "open-choice":
         if (selectedValue != null) {
           const valueCoding = selectedValue as fhirclient.FHIR.Coding;
-          if (valueCoding.code) { return { valueCoding: valueCoding }; }
-          else if (selectedValue !== "") { return { valueString: selectedValue }; }
+          if (valueCoding.code) {
+            return { valueCoding: valueCoding };
+          } else if (selectedValue !== "") {
+            return { valueString: selectedValue };
+          }
         }
         return null;
 

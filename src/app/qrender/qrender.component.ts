@@ -1,14 +1,12 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import Client from "fhirclient/lib/Client";
+import { ActivatedRoute } from "@angular/router";
 
 import { fhirclient } from "fhirclient/lib/types";
-import { EMPTY, Observable, Subscription } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { EMPTY, Subscription } from "rxjs";
+import { switchMap } from "rxjs/operators";
 import { FHIRService } from "../services/fhir.service";
 import { PatientService } from "../services/patient.service";
 import { QuestionnaireService } from "../services/questionnaire.service";
-import { Questionnaire } from "../services/questionnaire.model";
-import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "questionnaire-render",
@@ -33,8 +31,9 @@ export class QRenderComponent implements OnInit, OnDestroy {
     let questionnaireName = "MBS715";
     const fragment = this.route.snapshot.fragment;
 
-    if (fragment) { questionnaireName = fragment; }
-    else {
+    if (fragment) {
+      questionnaireName = fragment;
+    } else {
       const questionnaire = sessionStorage.getItem("QUESTIONNAIRE");
       if (questionnaire) {
         questionnaireName = questionnaire;
@@ -54,14 +53,14 @@ export class QRenderComponent implements OnInit, OnDestroy {
           console.log("FHIR client authorized");
           // console.log(client);
           /*
-        this.patientService.getPatient()
-        .then(patient => { 
-          console.log("getPatient fulfilled");
-          console.log(patient);
-          this.patient = patient;
-        })
-        .catch( reason => console.log("getPatient rejected: " + reason));
-        */
+      this.patientService.getPatient()
+      .then(patient => {
+        console.log("getPatient fulfilled");
+        console.log(patient);
+        this.patient = patient;
+      })
+      .catch( reason => console.log("getPatient rejected: " + reason));
+      */
           this.initialise(questionnaireName);
         })
         .catch((reason) => {
@@ -74,7 +73,7 @@ export class QRenderComponent implements OnInit, OnDestroy {
       // console.log(client);
       /*
         this.patientService.getPatient()
-        .then(patient => { 
+        .then(patient => {
           console.log("getPatient fulfilled");
           console.log(patient);
           this.patient = patient;
@@ -88,6 +87,7 @@ export class QRenderComponent implements OnInit, OnDestroy {
       }
     }*/
   }
+
   ngOnDestroy() {
     if (this.questionnaireSubscription !== undefined) {
       this.questionnaireSubscription.unsubscribe();

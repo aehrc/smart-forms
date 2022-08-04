@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
 import { Observable, Subscription } from "rxjs";
-import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
-import { QuestionnaireService } from "../services/questionnaire.service";
-import { Questionnaire } from "../services/questionnaire.model";
-import { QuestionnaireForm } from "../services/questionnaire-form.model";
 import { PatientService } from "../services/patient.service";
+import { QuestionnaireForm } from "../services/questionnaire-form.model";
+import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
+import { Questionnaire } from "../services/questionnaire.model";
+import { QuestionnaireService } from "../services/questionnaire.service";
 
 @Component({
   selector: "questionnaire",

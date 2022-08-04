@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 
 import * as FHIR from "fhirclient";
 import Client from "fhirclient/lib/Client";
-import { from, Observable, of } from "rxjs";
-import { ValueSet } from "./value-set.model";
+import { from, Observable } from "rxjs";
 import * as urlParse from "url-parse";
+import { ValueSet } from "./value-set.model";
 
 interface ValueSetCache {
   [key: string]: Observable<ValueSet>;
@@ -46,12 +46,12 @@ export class ValueSetFactory {
   providedIn: "root",
 })
 export class ValueSetService {
-
   constructor(rootUrl: string) {
     this.fhirClient = FHIR.client({
       serverUrl: rootUrl,
     });
   }
+
   static readonly OntoserverURL: string = "https://r4.ontoserver.csiro.au/fhir";
 
   private fhirClient: Client;

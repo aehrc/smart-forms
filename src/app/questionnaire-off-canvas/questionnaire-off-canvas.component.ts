@@ -1,14 +1,13 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { Component, OnDestroy } from "@angular/core";
+import { fhirclient } from "fhirclient/lib/types";
 import { Observable, Subscription } from "rxjs";
+import { FHIRService } from "../services/fhir.service";
 import {
   QuestionnaireResponse,
   QuestionnaireResponseService,
 } from "../services/questionnaire-response.service";
-import { QuestionnaireService } from "../services/questionnaire.service";
 import { Questionnaire } from "../services/questionnaire.model";
-import { fhirclient } from "fhirclient/lib/types";
-import { FHIRService } from "../services/fhir.service";
+import { QuestionnaireService } from "../services/questionnaire.service";
 
 @Component({
   selector: "questionnaire-off-canvas",
@@ -16,7 +15,6 @@ import { FHIRService } from "../services/fhir.service";
   styleUrls: ["./questionnaire-off-canvas.component.css"],
 })
 export class QuestionnaireOffCanvasComponent implements OnDestroy {
-
   get query$(): Observable<fhirclient.FHIR.Resource> {
     return this.questionnaireService.batchQuery$;
   }
@@ -29,6 +27,7 @@ export class QuestionnaireOffCanvasComponent implements OnDestroy {
     this.questionnaire$ = this.questionnaireService.questionnaire$;
     this.qresponse$ = this.responseService.getQuestionnaireResponse();
   }
+
   questionnaire$: Observable<Questionnaire>;
 
   qresponse$: Observable<QuestionnaireResponse>;

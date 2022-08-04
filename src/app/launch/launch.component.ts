@@ -1,8 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
-
-import * as FHIR from "fhirclient";
 import { AppComponent } from "../app.component";
 import { FHIRService } from "../services/fhir.service";
 

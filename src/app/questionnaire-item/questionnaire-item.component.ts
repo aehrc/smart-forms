@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
-import { FormControl, FormArray } from "@angular/forms";
-import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
+import { FormControl } from "@angular/forms";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
 
 /*
@@ -29,8 +28,9 @@ export class QuestionnaireItemStringComponent extends QuestionnaireItemBase {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
+    } else if (this.repeat) {
+      this.formControl = this.repeat as FormControl;
     }
-    else if (this.repeat) { this.formControl = this.repeat as FormControl; }
   }
 }
 
@@ -47,8 +47,9 @@ export class QuestionnaireItemTextComponent extends QuestionnaireItemBase {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
+    } else if (this.repeat) {
+      this.formControl = this.repeat as FormControl;
     }
-    else if (this.repeat) { this.formControl = this.repeat as FormControl; }
   }
 }
 
