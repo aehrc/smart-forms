@@ -45,10 +45,10 @@ export class PatientBannerComponent implements OnInit {
   }
 
   get age() {
-    var birthDate = new Date(this._patient.birthDate);
-    var today = new Date();
-    var age = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
+    const birthDate = new Date(this._patient.birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
@@ -60,10 +60,12 @@ export class PatientBannerComponent implements OnInit {
   }
 
   loadPatient(selectedPatient) {
-    var patient = selectedPatient.resource as fhirclient.FHIR.Patient;
+    const patient = selectedPatient.resource as fhirclient.FHIR.Patient;
     this.patientService.setPatient(patient);
 
-    if (patient) this.patient = patient;
+    if (patient) {
+      this.patient = patient;
+    }
 
     this.searchResults = null;
   }

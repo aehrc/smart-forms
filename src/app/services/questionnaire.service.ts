@@ -34,16 +34,12 @@ export interface QuestionnaireCandidate {
   providedIn: "root",
 })
 export class QuestionnaireService {
-  servers = [
-    "https://lforms-fhir.nlm.nih.gov/baseR4",
-    "https://sqlonfhir-r4.azurewebsites.net/fhir",
-  ];
-
-  private fhirClient: Client;
-
   get currentServer(): string {
-    if (!this.fhirClient) return "local";
-    else return this.fhirClient.state.serverUrl;
+    if (!this.fhirClient) {
+      return "local";
+    } else {
+      return this.fhirClient.state.serverUrl;
+    }
   }
   set currentServer(serverUrl: string) {
     if (serverUrl === "local") {
@@ -52,11 +48,33 @@ export class QuestionnaireService {
       this.fhirClient = FHIR.client({ serverUrl: serverUrl });
     }
   }
-
-  private _batchQuery$: Observable<fhirTypes.FHIR.Resource> = EMPTY;
   get batchQuery$(): Observable<fhirTypes.FHIR.Resource> {
     return this._batchQuery$;
   }
+
+  get questionnaire$() {
+    return this._questionnaire$;
+  }
+
+  get isInitialised(): boolean {
+    return this.initialised;
+  }
+
+  constructor(
+    private http: HttpClient,
+    private fhirService: FHIRService,
+    private patientService: PatientService,
+    private populateService: PopulateService,
+    private spinnerService: SpinnerService
+  ) {}
+  servers = [
+    "https://lforms-fhir.nlm.nih.gov/baseR4",
+    "https://sqlonfhir-r4.azurewebsites.net/fhir",
+  ];
+
+  private fhirClient: Client;
+
+  private _batchQuery$: Observable<fhirTypes.FHIR.Resource> = EMPTY;
 
   private localQuestionnaires: QuestionnaireCandidate[] = [
     /*    {
@@ -93,29 +111,15 @@ export class QuestionnaireService {
 
   private _questionnaire$ = this.questionnaireSubject.asObservable();
 
-  get questionnaire$() {
-    return this._questionnaire$;
-  }
+  private initialised: boolean;
+
+  private readLocalSubscription: Subscription;
 
   setQuestionnaire(questionnaire: Questionnaire) {
     this.questionnaireSubject.next(questionnaire);
 
     this.initialised = true;
   }
-
-  private initialised: boolean;
-
-  get isInitialised(): boolean {
-    return this.initialised;
-  }
-
-  constructor(
-    private http: HttpClient,
-    private fhirService: FHIRService,
-    private patientService: PatientService,
-    private populateService: PopulateService,
-    private spinnerService: SpinnerService
-  ) {}
 
   getAllLocal(): Observable<QuestionnaireCandidate[]> {
     return of(this.localQuestionnaires);
@@ -135,14 +139,14 @@ export class QuestionnaireService {
 
   populate(questionnaire: Questionnaire): Observable<QuestionnaireResponse> {
     if (questionnaire.contained && questionnaire.contained.length > 0) {
-      var query = questionnaire.contained[0];
+      const query = questionnaire.contained[0];
 
       return this.patientService.patient$.pipe(
         mergeMap((patient) => {
           // start spinner ...
           this.spinnerService.show();
 
-          var patientId = patient.id;
+          const patientId = patient.id;
           query.entry.forEach((entry) => {
             // only first occurence will be replaced
             entry.request.url = entry.request.url.replace(
@@ -155,7 +159,7 @@ export class QuestionnaireService {
 
           return this._batchQuery$.pipe(
             mergeMap((queryResponse) => {
-              var parameters: Parameters = {
+              const parameters: Parameters = {
                 resourceType: "Parameters",
                 parameter: [
                   {
@@ -176,7 +180,7 @@ export class QuestionnaireService {
                 ],
               };
 
-              var questionnaireResponse$ = this.populateService.populate(
+              const questionnaireResponse$ = this.populateService.populate(
                 questionnaire.id,
                 parameters
               );
@@ -188,12 +192,14 @@ export class QuestionnaireService {
           );
         })
       );
-    } else return EMPTY;
+    } else {
+      return EMPTY;
+    }
   }
 
   search(title: string): Observable<fhirTypes.FHIR.Bundle> {
     if (this.fhirClient) {
-      let result = this.searchFhir({
+      const result = this.searchFhir({
         type: "Questionnaire",
         query: { title: title },
         headers: { "Cache-Control": "no-cache" },
@@ -201,16 +207,18 @@ export class QuestionnaireService {
         console.log(error);
       });
       return from(result);
-    } else return of<fhirTypes.FHIR.Bundle>();
+    } else {
+      return of<fhirTypes.FHIR.Bundle>();
+    }
   }
 
   private searchFhir(searchConfig) {
-    var searchParams = new URLSearchParams();
+    const searchParams = new URLSearchParams();
     if (searchConfig.query) {
-      var queryVars = searchConfig.query;
-      var queryVarKeys = Object.keys(queryVars);
-      var key;
-      for (var i = 0, len = queryVarKeys.length; i < len; ++i) {
+      const queryVars = searchConfig.query;
+      const queryVarKeys = Object.keys(queryVars);
+      let key;
+      for (let i = 0, len = queryVarKeys.length; i < len; ++i) {
         key = queryVarKeys[i];
         searchParams.append(key, queryVars[key]);
       }
@@ -222,17 +230,18 @@ export class QuestionnaireService {
   }
 
   searchCandidates(name: string): Observable<QuestionnaireCandidate[]> {
-    if (!this.fhirClient) return this.searchLocal(name);
-    else {
+    if (!this.fhirClient) {
+      return this.searchLocal(name);
+    } else {
       return this.search(name).pipe(
         mergeMap((response) => {
-          var qList: QuestionnaireCandidate[] = [];
+          const qList: QuestionnaireCandidate[] = [];
           if (response && response.entry) {
-            for (var i = 0; i < response.entry.length; i++) {
-              var q = response.entry[i].resource;
-              let qc: QuestionnaireCandidate = {
+            for (let i = 0; i < response.entry.length; i++) {
+              const q = response.entry[i].resource;
+              const qc: QuestionnaireCandidate = {
                 name: q.name,
-                //url: string;
+                // url: string;
                 title: q.title,
                 //                      status: q.status,
                 id: q.id,
@@ -247,12 +256,11 @@ export class QuestionnaireService {
     }
   }
 
-  private readLocalSubscription: Subscription;
-
   setQuestionnaireByLocalUrl(url: string) {
     if (url) {
-      if (this.readLocalSubscription !== undefined)
+      if (this.readLocalSubscription !== undefined) {
         this.readLocalSubscription.unsubscribe();
+      }
 
       this.readLocalSubscription = this.readLocal$(url).subscribe((x) => {
         this.questionnaireSubject.next(x);

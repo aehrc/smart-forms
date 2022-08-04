@@ -7,9 +7,6 @@ import {
 import { QuestionnaireFormItem } from "./questionnaire-form-item.model";
 
 export class QuestionnaireFormGroup extends FormGroup {
-  item: QuestionnaireItem;
-
-  responseItem: QuestionnaireResponseItem;
   get response(): QuestionnaireResponseItem {
     return this.responseItem;
   }
@@ -23,57 +20,19 @@ export class QuestionnaireFormGroup extends FormGroup {
       this.OnValueChanges(selectedValue)
     );
   }
+  item: QuestionnaireItem;
 
-  private OnValueChanges(selectedValue: any) {
-    var items: QuestionnaireResponseItem[] = [];
-
-    this.item.item.forEach((item) => {
-      var model = this.controls[item.linkId] as QuestionnaireFormItem; // this may also be QuestionnaireFormGroup or QuestionnaireFormArray
-      if (model) {
-        var itemData = model.response;
-        if (itemData != null) items.push(itemData);
-      } else {
-        console.log("model for control not found: " + item.linkId);
-      }
-    });
-
-    if (items.length > 0) {
-      this.responseItem = {
-        linkId: this.item.linkId,
-        text: this.item.text,
-        item: items,
-      };
-    } else this.responseItem = null;
-  }
-
-  merge(item: QuestionnaireResponseItem): void {
-    item.item.forEach((item) => {
-      var formArray = this.controls[item.linkId] as QuestionnaireFormArray;
-      var formGroup = this.controls[item.linkId] as QuestionnaireFormGroup;
-      var formItem = this.controls[item.linkId] as QuestionnaireFormItem;
-
-      if (formItem) {
-        if (formArray.length !== undefined) formArray.merge(item);
-        else if (formGroup.controls !== undefined) {
-          // FormGroup
-          formGroup.merge(item);
-        } else if (item.answer && item.answer.length > 0) {
-          // FormControl
-          formItem.merge(item.answer[0]);
-        }
-      }
-    });
-  }
+  responseItem: QuestionnaireResponseItem;
 
   private static createControls(group: QuestionnaireItem): {
     [key: string]: AbstractControl;
   } {
-    var controls: { [key: string]: AbstractControl } = {};
+    const controls: { [key: string]: AbstractControl } = {};
 
     group.item.forEach((item) => {
-      if (item.repeats)
+      if (item.repeats) {
         controls[item.linkId] = new QuestionnaireFormArray(item);
-      else {
+      } else {
         switch (item.type) {
           case "group":
             controls[item.linkId] = new QuestionnaireFormGroup(item);
@@ -86,15 +45,58 @@ export class QuestionnaireFormGroup extends FormGroup {
 
     return controls;
   }
+
+  private OnValueChanges(selectedValue: any) {
+    const items: QuestionnaireResponseItem[] = [];
+
+    this.item.item.forEach((item) => {
+      const model = this.controls[item.linkId] as QuestionnaireFormItem; // this may also be QuestionnaireFormGroup or QuestionnaireFormArray
+      if (model) {
+        const itemData = model.response;
+        if (itemData != null) {
+          items.push(itemData);
+        }
+      } else {
+        console.log("model for control not found: " + item.linkId);
+      }
+    });
+
+    if (items.length > 0) {
+      this.responseItem = {
+        linkId: this.item.linkId,
+        text: this.item.text,
+        item: items,
+      };
+    } else {
+      this.responseItem = null;
+    }
+  }
+
+  merge(responseItem: QuestionnaireResponseItem): void {
+    responseItem.item.forEach((item) => {
+      const formArray = this.controls[item.linkId] as QuestionnaireFormArray;
+      const formGroup = this.controls[item.linkId] as QuestionnaireFormGroup;
+      const formItem = this.controls[item.linkId] as QuestionnaireFormItem;
+
+      if (formItem) {
+        if (formArray.length !== undefined) {
+          formArray.merge(item);
+        } else if (formGroup.controls !== undefined) {
+          // FormGroup
+          formGroup.merge(item);
+        } else if (item.answer && item.answer.length > 0) {
+          // FormControl
+          formItem.merge(item.answer[0]);
+        }
+      }
+    });
+  }
 }
 
 export class QuestionnaireFormArray extends FormArray {
-  private _item: QuestionnaireItem;
   get item(): QuestionnaireItem {
     return this._item;
   }
-
-  private responseItem: QuestionnaireResponseItem;
   get response(): QuestionnaireResponseItem {
     return this.responseItem;
   }
@@ -108,9 +110,27 @@ export class QuestionnaireFormArray extends FormArray {
       this.OnValueChanges(selectedValue)
     );
   }
+  private _item: QuestionnaireItem;
+
+  private responseItem: QuestionnaireResponseItem;
+
+  private static createControls(item: QuestionnaireItem): AbstractControl[] {
+    const controls: AbstractControl[] = [];
+
+    switch (item.type) {
+      case "group":
+        controls.push(new QuestionnaireFormGroup(item));
+        break;
+
+      default:
+        controls.push(new QuestionnaireFormItem(item));
+    }
+
+    return controls;
+  }
 
   private OnValueChanges(selectedValue: any) {
-    var responseData: QuestionnaireResponseItem = {
+    const responseData: QuestionnaireResponseItem = {
       linkId: this.item.linkId,
       text: this.item.text,
       answer: [],
@@ -118,32 +138,37 @@ export class QuestionnaireFormArray extends FormArray {
 
     this.controls.forEach((itemModel) => {
       if (itemModel instanceof QuestionnaireFormGroup) {
-        var formGroup = itemModel as QuestionnaireFormGroup;
-        var groupResponse = formGroup.response;
+        const formGroup = itemModel as QuestionnaireFormGroup;
+        const groupResponse = formGroup.response;
         if (groupResponse) {
-          var answer: QuestionnaireResponseAnswer = {
+          const answer: QuestionnaireResponseAnswer = {
             item: groupResponse.item,
           };
           responseData.answer.push(answer);
         }
       } else {
-        var formControl = itemModel as QuestionnaireFormItem;
-        var answer = formControl.responseAnswer;
-        if (answer) responseData.answer.push(answer);
+        const formControl = itemModel as QuestionnaireFormItem;
+        const answer = formControl.responseAnswer;
+        if (answer) {
+          responseData.answer.push(answer);
+        }
       }
     });
 
-    if (responseData.answer.length > 0) this.responseItem = responseData;
-    else this.responseItem = null;
+    if (responseData.answer.length > 0) {
+      this.responseItem = responseData;
+    } else {
+      this.responseItem = null;
+    }
   }
 
   merge(item: QuestionnaireResponseItem): void {
-    var questionnaireFormItem: QuestionnaireFormItem;
-    var firstFormGroup: QuestionnaireFormGroup;
+    let questionnaireFormItem: QuestionnaireFormItem;
+    let firstFormGroup: QuestionnaireFormGroup;
 
     item.answer?.forEach((ans: QuestionnaireResponseAnswer, index) => {
       if (index < 1) {
-        var itemModel = this.controls[index];
+        const itemModel = this.controls[index];
 
         if (itemModel instanceof QuestionnaireFormGroup) {
           // Populate first repeating Group
@@ -157,11 +182,11 @@ export class QuestionnaireFormArray extends FormArray {
       } else {
         if (firstFormGroup) {
           console.log("Populate subsequent repeating group");
-          var newFormGroup = new QuestionnaireFormGroup(firstFormGroup.item);
+          const newFormGroup = new QuestionnaireFormGroup(firstFormGroup.item);
           newFormGroup.merge(ans.item[0]);
           this.push(newFormGroup);
         } else {
-          var newFormItem = new QuestionnaireFormItem(
+          const newFormItem = new QuestionnaireFormItem(
             questionnaireFormItem.item
           );
           newFormItem.merge(ans);
@@ -170,22 +195,8 @@ export class QuestionnaireFormArray extends FormArray {
       }
     });
 
-    if (item.answer?.length > 0)
+    if (item.answer?.length > 0) {
       this.push(new QuestionnaireFormItem(this.item));
-  }
-
-  private static createControls(item: QuestionnaireItem): AbstractControl[] {
-    var controls: AbstractControl[] = [];
-
-    switch (item.type) {
-      case "group":
-        controls.push(new QuestionnaireFormGroup(item));
-        break;
-
-      default:
-        controls.push(new QuestionnaireFormItem(item));
     }
-
-    return controls;
   }
 }

@@ -54,19 +54,20 @@ export class QuestionnaireItemOpenChoiceComponent
   }
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.qformControl = this.parentGroup.controls[
         this.item.linkId
       ] as QuestionnaireFormItem;
-    else if (this.repeat)
+    } else if (this.repeat) {
       this.qformControl = this.repeat as QuestionnaireFormItem;
+    }
 
     this.qformControl.valueChanges.subscribe((newValue) =>
       this.valueChanged(newValue)
     );
 
     if (this.qformControl.value) {
-      var coding = this.qformControl.value as fhirclient.FHIR.Coding;
+      const coding = this.qformControl.value as fhirclient.FHIR.Coding;
       if (coding.code) {
         // valueCoding
         this.formControl.setValue(coding.display);
@@ -80,31 +81,35 @@ export class QuestionnaireItemOpenChoiceComponent
       .pipe(
         tap((res) => {
           this.qformControl.setValue(res);
-          if (this.onChange) this.onChange(res);
+          if (this.onChange) {
+            this.onChange(res);
+          }
         }),
         debounceTime(300),
         distinctUntilChanged(),
         switchMap<any, ObservableInput<OpenChoiceContent>>((newValue) => {
-          if (this.item.answerOption)
+          if (this.item.answerOption) {
             return of(newValue).pipe(
               map((criteria) => ({
                 type: "ANSWER_OPTION",
                 content: this.filterOptions(criteria),
               }))
             );
-          else if (this.item.answerValueSet) {
-            var fullUrl =
+          } else if (this.item.answerValueSet) {
+            const fullUrl =
               this.item.answerValueSet + "filter=" + newValue + "&count=10"; // + "&includeDesignations=true";
             return of(fullUrl).pipe(
               map((url) => ValueSetService.expand(url)),
               map((result) => of({ type: "VALUE_SET", content: result }))
             );
-          } else return EMPTY;
+          } else {
+            return EMPTY;
+          }
         })
       )
       .subscribe((res) => {
         if (res.type === "VALUE_SET") {
-          var options: AnswerOption[] = [];
+          const options: AnswerOption[] = [];
           res.content.expansion?.contains.forEach((c) =>
             options.push({
               valueCoding: {
@@ -126,7 +131,9 @@ export class QuestionnaireItemOpenChoiceComponent
       this.selectOptions = null;
     }, 300);
 
-    if (this.onTouched) this.onTouched();
+    if (this.onTouched) {
+      this.onTouched();
+    }
   }
 
   filterOptions(criteria: string): Observable<AnswerOption[]> {
@@ -145,13 +152,15 @@ export class QuestionnaireItemOpenChoiceComponent
     this.formControl.setValue(option.valueCoding.display, { emitEvent: false });
     this.qformControl.setValue(option.valueCoding);
 
-    if (this.onChange) this.onChange(option.valueCoding);
+    if (this.onChange) {
+      this.onChange(option.valueCoding);
+    }
 
     this.selectOptions = null;
   }
 
   valueChanged(newValue) {
-    var newCoding = newValue as fhirclient.FHIR.Coding;
+    const newCoding = newValue as fhirclient.FHIR.Coding;
 
     if (newCoding.code) {
       this.formControl.setValue(newCoding.display, { emitEvent: false });

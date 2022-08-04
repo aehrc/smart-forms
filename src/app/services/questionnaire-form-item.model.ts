@@ -1,12 +1,11 @@
 import { FormControl, Validators } from "@angular/forms";
-import { QuestionnaireItem } from "./questionnaire.model";
+import { fhirclient } from "fhirclient/lib/types";
+import { QuestionnaireForm } from "./questionnaire-form.model";
 import {
   QuestionnaireResponseAnswer,
   QuestionnaireResponseItem,
 } from "./questionnaire-response.service";
-import { fhirclient } from "fhirclient/lib/types";
-import { QuestionnaireForm } from "./questionnaire-form.model";
-import { Injector, OnInit } from "@angular/core";
+import { QuestionnaireItem } from "./questionnaire.model";
 
 export class QuestionnaireFormItem extends FormControl {
   item?: QuestionnaireItem;
@@ -29,7 +28,7 @@ export class QuestionnaireFormItem extends FormControl {
     );
 
     if (item?.required) {
-      //this.validator
+      // this.validator
       this.setValidators(Validators.required);
     }
 
@@ -43,9 +42,9 @@ export class QuestionnaireFormItem extends FormControl {
   }
 
   private OnValueChanges(selectedValue: any) {
-    var answers: QuestionnaireResponseAnswer[] = [];
+    const answers: QuestionnaireResponseAnswer[] = [];
 
-    var answer = this.getItemAnswer(selectedValue);
+    const answer = this.getItemAnswer(selectedValue);
     if (answer) {
       answers.push(answer);
 
@@ -54,7 +53,9 @@ export class QuestionnaireFormItem extends FormControl {
         text: this.item.text,
         answer: answers,
       };
-    } else this.responseItem = null;
+    } else {
+      this.responseItem = null;
+    }
   }
 
   private getItemAnswer(selectedValue: any) {
@@ -109,7 +110,7 @@ export class QuestionnaireFormItem extends FormControl {
 
       case "choice":
         if (selectedValue != null) {
-          var valueCoding = selectedValue as fhirclient.FHIR.Coding;
+          const valueCoding = selectedValue as fhirclient.FHIR.Coding;
           if (valueCoding.code) {
             return { valueCoding: valueCoding };
           }
@@ -118,9 +119,12 @@ export class QuestionnaireFormItem extends FormControl {
 
       case "open-choice":
         if (selectedValue != null) {
-          var valueCoding = selectedValue as fhirclient.FHIR.Coding;
-          if (valueCoding.code) return { valueCoding: valueCoding };
-          else if (selectedValue !== "") return { valueString: selectedValue };
+          const valueCoding = selectedValue as fhirclient.FHIR.Coding;
+          if (valueCoding.code) {
+            return { valueCoding: valueCoding };
+          } else if (selectedValue !== "") {
+            return { valueString: selectedValue };
+          }
         }
         return null;
 
@@ -128,16 +132,17 @@ export class QuestionnaireFormItem extends FormControl {
         return null;
 
       default:
-        //debugger;
-        //throw "Unhandled item type " + item.type;
+        // debugger;
+        // throw "Unhandled item type " + item.type;
         console.log(this.item.type + " not supported in getItemData!");
         break;
     }
   }
 
   get responseAnswer(): QuestionnaireResponseAnswer {
-    if (this.responseItem != null && this.responseItem.answer?.length > 0)
+    if (this.responseItem != null && this.responseItem.answer?.length > 0) {
       return this.responseItem.answer[0];
+    }
 
     return null;
   }
@@ -161,7 +166,7 @@ export class QuestionnaireFormItem extends FormControl {
     }
 
     if (this.calculatedExpression) {
-      var root = this.root as QuestionnaireForm;
+      const root = this.root as QuestionnaireForm;
       root.addCalculatedExpression(this, this.calculatedExpression.expression);
     }
   }

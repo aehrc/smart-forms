@@ -12,16 +12,18 @@ import { QuestionnaireResponseService } from "../services/questionnaire-response
 
 abstract class TabFilterPipeBase {
   isTab(item: QuestionnaireItem) {
-    var itemControl = item.extension?.find(
+    const itemControl = item.extension?.find(
       (e) =>
-        e.url ==
+        e.url ===
         "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl"
     );
     if (itemControl) {
-      var tabCoding = itemControl.valueCodeableConcept?.coding?.find(
-        (c) => c.code == "tab"
+      const tabCoding = itemControl.valueCodeableConcept?.coding?.find(
+        (c) => c.code === "tab"
       );
-      if (tabCoding) return true;
+      if (tabCoding) {
+        return true;
+      }
     }
     return false;
   }
@@ -69,9 +71,11 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
   }
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.formGroup = this.parentGroup.controls[this.item.linkId] as FormGroup;
-    else if (this.repeat) this.formGroup = this.repeat as FormGroup;
+    } else if (this.repeat) {
+      this.formGroup = this.repeat as FormGroup;
+    }
   }
 
   /*
@@ -87,11 +91,13 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
   */
 
   containsTabs() {
-    //var firstTab = this.item.item.find(i=> this.isTab(i));
-    var tabItems = this.tabFilter.transform(this.item.item);
+    // var firstTab = this.item.item.find(i=> this.isTab(i));
+    const tabItems = this.tabFilter.transform(this.item.item);
 
-    //if (firstTab)
-    if (tabItems.length > 0) return true;
+    // if (firstTab)
+    if (tabItems.length > 0) {
+      return true;
+    }
     return false;
   }
   /*

@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 
 import * as FHIR from "fhirclient";
 import Client from "fhirclient/lib/Client";
-import { from, Observable, of } from "rxjs";
-import { ValueSet } from "./value-set.model";
+import { from, Observable } from "rxjs";
 import * as urlParse from "url-parse";
+import { ValueSet } from "./value-set.model";
 
 interface ValueSetCache {
   [key: string]: Observable<ValueSet>;
@@ -21,15 +21,15 @@ export class ValueSetFactory {
 
     if (!valueSet$) {
       console.log("Getting ", fullUrl);
-      var parsed = urlParse(fullUrl, false);
+      const parsed = urlParse(fullUrl, false);
 
-      var pathParts = parsed.pathname?.split("/");
+      const pathParts = parsed.pathname?.split("/");
       pathParts.splice(pathParts.length - 2, 2);
-      var path = pathParts.join("/");
+      const path = pathParts.join("/");
 
-      let serverUrl: string = parsed.origin + path;
+      const serverUrl: string = parsed.origin + path;
 
-      //console.log("Server root", serverUrl, parsed.query['url']);
+      // console.log("Server root", serverUrl, parsed.query['url']);
       const service = new ValueSetService(serverUrl);
       valueSet$ = service.expand(parsed.query);
 
@@ -46,20 +46,36 @@ export class ValueSetFactory {
   providedIn: "root",
 })
 export class ValueSetService {
-  static readonly OntoserverURL: string = "https://r4.ontoserver.csiro.au/fhir";
-
-  private fhirClient: Client;
-
   constructor(rootUrl: string) {
     this.fhirClient = FHIR.client({
       serverUrl: rootUrl,
     });
   }
 
-  read(id): Observable<ValueSet> {
-    var headers = { "Cache-Control": "no-cache" };
+  static readonly OntoserverURL: string = "https://r4.ontoserver.csiro.au/fhir";
 
-    let result = this.fhirClient.request({
+  private fhirClient: Client;
+
+  static expand(fullUrl: string): Observable<ValueSet> {
+    console.log("Getting ", fullUrl);
+    const parsed = urlParse(fullUrl, false);
+
+    const pathParts = parsed.pathname?.split("/");
+    pathParts.splice(pathParts.length - 2, 2);
+    const path = pathParts.join("/");
+
+    const serverUrl: string = parsed.origin + path;
+
+    const service = new ValueSetService(serverUrl);
+    const valueSet$ = service.expand(parsed.query);
+
+    return valueSet$;
+  }
+
+  read(id): Observable<ValueSet> {
+    const headers = { "Cache-Control": "no-cache" };
+
+    const result = this.fhirClient.request({
       url: "ValueSet/" + id,
       headers: headers,
     });
@@ -68,26 +84,10 @@ export class ValueSetService {
   }
 
   expand(params: string): Observable<ValueSet> {
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: "ValueSet/$expand" + params,
     });
 
     return from(result);
-  }
-
-  static expand(fullUrl: string): Observable<ValueSet> {
-    console.log("Getting ", fullUrl);
-    var parsed = urlParse(fullUrl, false);
-
-    var pathParts = parsed.pathname?.split("/");
-    pathParts.splice(pathParts.length - 2, 2);
-    var path = pathParts.join("/");
-
-    let serverUrl: string = parsed.origin + path;
-
-    const service = new ValueSetService(serverUrl);
-    var valueSet$ = service.expand(parsed.query);
-
-    return valueSet$;
   }
 }

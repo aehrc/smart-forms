@@ -15,14 +15,18 @@ import {
   styleUrls: ["./questionnaire-list.component.css"],
 })
 export class QuestionnaireListComponent implements OnInit, OnDestroy {
+  constructor(
+    private router: Router,
+    private questionnaireService: QuestionnaireService
+  ) {}
   src = "local";
 
   servers: string[];
 
-  //pageCount: number =0;
-  //totalCount: number =0;
+  // pageCount: number =0;
+  // totalCount: number =0;
 
-  qsearch: string = "";
+  qsearch = "";
   private qsearch$ = new Subject<string>();
 
   questionnaires$: Observable<QuestionnaireCandidate[]>;
@@ -31,15 +35,15 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
 
   errors$;
 
-  constructor(
-    private router: Router,
-    private questionnaireService: QuestionnaireService
-  ) {}
+  navbarOpen = false;
+
+  private uploadSubscription: Subscription = null;
 
   ngOnInit(): void {
     this.servers = this.questionnaireService.servers;
-    if (this.questionnaireService.currentServer)
+    if (this.questionnaireService.currentServer) {
       this.src = this.questionnaireService.currentServer;
+    }
 
     this.questionnaire$ = this.questionnaireService.questionnaire$;
 
@@ -53,12 +57,14 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
       // switch to new search observable each time the term changes
       switchMap((name: string) => {
         // search local
-        if (this.src == "local") {
+        if (this.src === "local") {
           return this.questionnaireService.searchLocal(name);
         } else {
           if (name.length > 0) {
             return this.questionnaireService.searchCandidates(name);
-          } else return of<QuestionnaireCandidate[]>([]);
+          } else {
+            return of<QuestionnaireCandidate[]>([]);
+          }
         }
       })
     );
@@ -69,10 +75,10 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.uploadSubscription !== null) this.uploadSubscription.unsubscribe();
+    if (this.uploadSubscription !== null) {
+      this.uploadSubscription.unsubscribe();
+    }
   }
-
-  navbarOpen = false;
 
   toggleNavbar() {
     this.navbarOpen = !this.navbarOpen;
@@ -96,13 +102,13 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
     this.qsearch$.next(qsearch);
   }
 
-  private uploadSubscription: Subscription = null;
-
   upload() {
-    var questionnaire;
+    let questionnaire;
     this.questionnaire$.subscribe((q) => (questionnaire = q)).unsubscribe();
 
-    if (this.uploadSubscription !== null) this.uploadSubscription.unsubscribe();
+    if (this.uploadSubscription !== null) {
+      this.uploadSubscription.unsubscribe();
+    }
 
     this.uploadSubscription = this.questionnaireService
       .update(questionnaire)
@@ -113,8 +119,8 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
           this.questionnaireService.setQuestionnaire(q);
         } else {
           const operationOutcome = r;
-          var errors = operationOutcome.issue.filter(
-            (i) => i.severity == "error"
+          const errors = operationOutcome.issue.filter(
+            (i) => i.severity === "error"
           );
           this.errors$ = of(errors);
         }
@@ -126,11 +132,11 @@ export class QuestionnaireListComponent implements OnInit, OnDestroy {
   }
 
   handleFileInput(files: FileList) {
-    var fileToUpload = files.item(0);
+    const fileToUpload = files.item(0);
 
-    let fileReader = new FileReader();
+    const fileReader = new FileReader();
     fileReader.onload = (e) => {
-      var resource = JSON.parse(fileReader.result as string) as Questionnaire;
+      const resource = JSON.parse(fileReader.result as string) as Questionnaire;
       this.questionnaireService.setQuestionnaire(resource);
     };
 

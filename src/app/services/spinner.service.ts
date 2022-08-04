@@ -4,7 +4,7 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class SpinnerService {
-  private _showSpinner: boolean = false;
+  private _showSpinner = false;
 
   get isSpinning(): boolean {
     return this._showSpinner;

@@ -1,18 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Observable, Subscription } from "rxjs";
-import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
-import { QuestionnaireService } from "../services/questionnaire.service";
-import { Questionnaire } from "../services/questionnaire.model";
-import { QuestionnaireForm } from "../services/questionnaire-form.model";
 import { PatientService } from "../services/patient.service";
+import { QuestionnaireForm } from "../services/questionnaire-form.model";
+import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
+import { Questionnaire } from "../services/questionnaire.model";
+import { QuestionnaireService } from "../services/questionnaire.service";
 
 @Component({
   selector: "questionnaire",
   templateUrl: "./questionnaire.component.html",
   styleUrls: ["./questionnaire.component.css"],
 })
-export class QuestionnaireComponent implements OnInit {
+export class QuestionnaireComponent implements OnInit, OnDestroy {
   showSpinner: boolean;
 
   questionnaire$: Observable<Questionnaire>;
@@ -32,19 +31,19 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.showSpinner = true;
+    // this.showSpinner = true;
 
     this.questionnaire$ = this.questionnaireService.questionnaire$;
 
     this.addSubscriptions(
       this.questionnaire$.subscribe((q) => {
-        //this.showSpinner = true;
+        // this.showSpinner = true;
 
         this.addSubscriptions(
           this.questionnaireService.populate(q).subscribe((qr) => {
             this.questionnaireModel.merge(qr);
 
-            //this.showSpinner = false;
+            // this.showSpinner = false;
           })
         );
 

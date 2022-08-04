@@ -1,8 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
-
-import * as FHIR from "fhirclient";
 import { AppComponent } from "../app.component";
 import { FHIRService } from "../services/fhir.service";
 
@@ -25,7 +23,7 @@ export class LaunchComponent implements OnInit {
   ) {
     this.clientId = "my_web_app";
     this.scope = "launch patient/*.read";
-    //this.scope = "launch patient/*.read openid fhirUser";
+    // this.scope = "launch patient/*.read openid fhirUser";
   }
 
   ngOnInit() {
@@ -40,12 +38,13 @@ export class LaunchComponent implements OnInit {
       //        break;
 
       case "https://www.demo.oridashi.com.au:8102":
-        if (baseUrl.startsWith("http://localhost:4200"))
+        if (baseUrl.startsWith("http://localhost:4200")) {
           this.clientId = "ng-qforms";
+        }
         break;
     }
 
-    var redirectUri: string;
+    let redirectUri: string;
     if (fragment) {
       sessionStorage.setItem("QUESTIONNAIRE", fragment);
     }
