@@ -63,7 +63,9 @@ export class PatientBannerComponent implements OnInit {
     const patient = selectedPatient.resource as fhirclient.FHIR.Patient;
     this.patientService.setPatient(patient);
 
-    if (patient) { this.patient = patient; }
+    if (patient) {
+      this.patient = patient;
+    }
 
     this.searchResults = null;
   }

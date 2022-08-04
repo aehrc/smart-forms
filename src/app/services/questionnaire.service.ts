@@ -34,10 +34,12 @@ export interface QuestionnaireCandidate {
   providedIn: "root",
 })
 export class QuestionnaireService {
-
   get currentServer(): string {
-    if (!this.fhirClient) { return "local"; }
-    else { return this.fhirClient.state.serverUrl; }
+    if (!this.fhirClient) {
+      return "local";
+    } else {
+      return this.fhirClient.state.serverUrl;
+    }
   }
   set currentServer(serverUrl: string) {
     if (serverUrl === "local") {
@@ -190,7 +192,9 @@ export class QuestionnaireService {
           );
         })
       );
-    } else { return EMPTY; }
+    } else {
+      return EMPTY;
+    }
   }
 
   search(title: string): Observable<fhirTypes.FHIR.Bundle> {
@@ -203,7 +207,9 @@ export class QuestionnaireService {
         console.log(error);
       });
       return from(result);
-    } else { return of<fhirTypes.FHIR.Bundle>(); }
+    } else {
+      return of<fhirTypes.FHIR.Bundle>();
+    }
   }
 
   private searchFhir(searchConfig) {
@@ -224,8 +230,9 @@ export class QuestionnaireService {
   }
 
   searchCandidates(name: string): Observable<QuestionnaireCandidate[]> {
-    if (!this.fhirClient) { return this.searchLocal(name); }
-    else {
+    if (!this.fhirClient) {
+      return this.searchLocal(name);
+    } else {
       return this.search(name).pipe(
         mergeMap((response) => {
           const qList: QuestionnaireCandidate[] = [];

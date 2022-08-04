@@ -9,6 +9,7 @@
     "test": "ng test",
     "test:ci": "ng test --browsers=ChromeHeadless --watch=false --code-coverage",
     "lint": "tslint --project .",
+    "check-formatting": "prettier --check .",
     "e2e": "ng e2e"
   },
   "private": true,

@@ -32,7 +32,9 @@ export class PatientService {
   }
 
   get patient$(): Observable<fhirclient.FHIR.Patient> {
-    if (!this.patientSubject) { this.getPatient(); }
+    if (!this.patientSubject) {
+      this.getPatient();
+    }
 
     return this.patientSubject.asObservable();
   }
@@ -70,7 +72,9 @@ export class PatientService {
       this.patientSubject = new ReplaySubject<fhirclient.FHIR.Patient>(1);
     }
 
-    if (patientContext) { this.patientSubject.next(patientContext); }
+    if (patientContext) {
+      this.patientSubject.next(patientContext);
+    }
   }
 
   /**
