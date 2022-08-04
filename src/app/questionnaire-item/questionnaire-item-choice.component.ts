@@ -48,7 +48,7 @@ export class QuestionnaireItemChoiceComponent
   // component FormControl
   private qformControl: QuestionnaireFormItem = new QuestionnaireFormItem();
 
-  checkboxes: FormArray = new FormArray([]);
+  radioButtons: FormArray = new FormArray([]);
 
   itemControl: ItemControl;
   isHorizontal: boolean = true;
@@ -81,10 +81,11 @@ export class QuestionnaireItemChoiceComponent
     //this.qformControl.item = this.item;
 
     if (this.parentGroup) {
+      //item itself
       this.qformControl = this.parentGroup.controls[
         this.item.linkId
       ] as QuestionnaireFormItem;
-      if (this.qformControl === undefined)
+      if (this.qformControl === undefined) {
         throw new Error(
           "linkId '" +
             this.item.linkId +
@@ -92,6 +93,7 @@ export class QuestionnaireItemChoiceComponent
             this.parentGroup.item.text +
             "'."
         );
+      }
     } else if (this.repeat) {
       this.qformControl = this.repeat as QuestionnaireFormItem;
     }
@@ -103,11 +105,12 @@ export class QuestionnaireItemChoiceComponent
     );
 
     if (
-      this.item.answerOption?.length > 0 &&
-      this.item.answerOption?.length <= this.droplistOptionsCount
-    )
-      this.itemControl = "check-box";
-    else {
+      this.item.answerOption &&
+      this.item.answerOption.length > 0 &&
+      this.item.answerOption.length <= this.droplistOptionsCount
+    ) {
+      this.itemControl = "radio-button";
+    } else {
       this.itemControl = "drop-down";
     }
 
@@ -141,13 +144,13 @@ export class QuestionnaireItemChoiceComponent
                   code: c.code,
                   display: c.display,
                 },
-              } as AnswerOption);
+              });
             });
 
             if (this.answerOption?.length > 0) {
               if (this.itemControl == "check-box") {
                 this.answerOption.forEach((o) =>
-                  this.checkboxes.push(new FormControl())
+                  this.radioButtons.push(new FormControl())
                 );
                 //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
               } else {
@@ -180,7 +183,7 @@ export class QuestionnaireItemChoiceComponent
     if (this.answerOption?.length > 0) {
       if (this.itemControl == "check-box") {
         this.answerOption.forEach((o) =>
-          this.checkboxes.push(new FormControl())
+          this.radioButtons.push(new FormControl())
         );
         //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
       } else {
@@ -305,29 +308,19 @@ export class QuestionnaireItemChoiceComponent
       newCode = newValue;
     }
 
-    if (this.itemControl == "check-box") {
-      for (let index = 0; index < this.answerOption.length; index++) {
-        const option = this.answerOption[index];
-        if (option.valueCoding.code == newCode) {
-          this.checkboxes.controls[index].setValue(true);
-          break;
-        }
-      }
+    if (this.itemControl == "radio-button") {
     } else if (this.itemControl == "autocomplete") {
       this.formControl.setValue(newCoding);
     } else {
-      if (this.formControl.value !== newCode)
+      if (this.formControl.value !== newCode) {
         this.formControl.setValue(newCode);
+      }
     }
   }
 
-  onCheckboxChange(event, index) {
+  onRadioChange(event, index) {
     if (event.target.checked) {
       this.setValueCoding(event.target.value);
-      var i = 0;
-      this.checkboxes.controls.forEach((element) => {
-        if (i++ != index) (element as FormControl).setValue(null);
-      });
     } else {
       this.qformControl.setValue(null);
     }

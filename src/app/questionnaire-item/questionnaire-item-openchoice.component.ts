@@ -4,20 +4,23 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR,
 } from "@angular/forms";
-import { EMPTY, Observable, of } from "rxjs";
+import { fhirclient } from "fhirclient/lib/types";
+import { EMPTY, Observable, ObservableInput, of } from "rxjs";
 import {
   debounceTime,
   distinctUntilChanged,
+  map,
   switchMap,
   tap,
 } from "rxjs/operators";
 import { QuestionnaireFormItem } from "../services/questionnaire-form-item.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
-import { AnswerOption } from "../services/questionnaire.model";
-import { ValueSet } from "../services/value-set.model";
+import {
+  AnswerOption,
+  OpenChoiceContent,
+} from "../services/questionnaire.model";
 import { ValueSetService } from "../services/value-set.service";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
-import { fhirclient } from "fhirclient/lib/types";
 
 @Component({
   selector: "qitem-openchoice",
@@ -81,30 +84,40 @@ export class QuestionnaireItemOpenChoiceComponent
         }),
         debounceTime(300),
         distinctUntilChanged(),
-        switchMap((newValue) => {
-          if (this.item.answerOption) return this.filterOptions(newValue);
+        switchMap<any, ObservableInput<OpenChoiceContent>>((newValue) => {
+          if (this.item.answerOption)
+            return of(newValue).pipe(
+              map((criteria) => ({
+                type: "ANSWER_OPTION",
+                content: this.filterOptions(criteria),
+              }))
+            );
           else if (this.item.answerValueSet) {
             var fullUrl =
               this.item.answerValueSet + "filter=" + newValue + "&count=10"; // + "&includeDesignations=true";
-            return ValueSetService.expand(fullUrl);
+            return of(fullUrl).pipe(
+              map((url) => ValueSetService.expand(url)),
+              map((result) => of({ type: "VALUE_SET", content: result }))
+            );
           } else return EMPTY;
         })
       )
       .subscribe((res) => {
-        var valueSet = res as ValueSet;
-        if (valueSet.resourceType) {
+        if (res.type === "VALUE_SET") {
           var options: AnswerOption[] = [];
-          valueSet.expansion?.contains.forEach((c) => {
+          res.content.expansion?.contains.forEach((c) =>
             options.push({
               valueCoding: {
                 system: c.system,
                 code: c.code,
                 display: c.display,
               },
-            } as AnswerOption);
-          });
+            })
+          );
           this.selectOptions = options;
-        } else this.selectOptions = res as AnswerOption[];
+        } else {
+          this.selectOptions = res.content;
+        }
       });
   }
 

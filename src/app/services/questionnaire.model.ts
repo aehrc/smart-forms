@@ -1,4 +1,5 @@
 import { fhirclient } from "fhirclient/lib/types";
+import { ValueSet } from "./value-set.model";
 
 export interface Questionnaire extends fhirclient.FHIR.Resource {
   resourceType: "Questionnaire";
@@ -21,12 +22,24 @@ export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
 }
 
 export interface AnswerOption extends fhirclient.FHIR.BackboneElement {
-  valueInteger: number;
+  valueInteger?: number;
   //valueDate: fhirclient.FHIR.date;
   //valueTime: fhirclient.FHIR.time;
-  valueString: string;
-  valueCoding: fhirclient.FHIR.Coding;
+  valueString?: string;
+  valueCoding?: fhirclient.FHIR.Coding;
   //valueRefrence: Reference;
+}
+
+export type OpenChoiceContent = OpenChoiceAnswerOption | OpenChoiceValueSet;
+
+export interface OpenChoiceAnswerOption {
+  type: "ANSWER_OPTION";
+  content: AnswerOption[];
+}
+
+export interface OpenChoiceValueSet {
+  type: "VALUE_SET";
+  content: ValueSet;
 }
 
 export interface EnableWhen extends fhirclient.FHIR.BackboneElement {

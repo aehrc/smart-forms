@@ -30,8 +30,8 @@
     </div>
   </div>
 
-  <!-- check-box -->
-  <div *ngSwitchCase="'check-box'" class="col-sm-7">
+  <!-- radio-button -->
+  <div *ngSwitchCase="'radio-button'" class="col-sm-7">
     <div
       class="form-check"
       [class.form-check-inline]="isHorizontal"
@@ -39,11 +39,11 @@
     >
       <input
         class="form-check-input"
-        type="checkbox"
+        type="radio"
         id="{{ item.linkId }}-{{ o.valueCoding.code }}"
+        name="{{ item.text }}"
         value="{{ o.valueCoding.code }}"
-        [formControl]="checkboxes?.controls[i]"
-        (change)="onCheckboxChange($event, i)"
+        (change)="onRadioChange($event, i)"
       />
       <label
         class="form-check-label"
