@@ -1,4 +1,4 @@
-//https://christianlydemann.com/four-ways-to-create-loading-spinners-in-an-angular-app/
+// https://christianlydemann.com/four-ways-to-create-loading-spinners-in-an-angular-app/
 
 import { Component, OnInit, Input } from "@angular/core";
 import { SpinnerService } from "../services/spinner.service";
@@ -9,7 +9,7 @@ import { SpinnerService } from "../services/spinner.service";
   styleUrls: ["./spinner.component.css"],
 })
 export class SpinnerComponent implements OnInit {
-  @Input() message: string = "";
+  @Input() message = "";
 
   get visible(): boolean {
     return this.spinnerService.isSpinning;

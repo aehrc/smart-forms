@@ -1,8 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-
-import * as FHIR from "fhirclient";
-import { fhirclient } from "fhirclient/lib/types";
 import { FHIRService } from "../services/fhir.service";
 
 @Component({

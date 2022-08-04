@@ -18,9 +18,9 @@ export class ShortTextOrTextFilterPipe implements PipeTransform {
   }
 
   private shortText(item: QuestionnaireItem) {
-    var extension = item.extension?.find(
+    const extension = item.extension?.find(
       (e) =>
-        e.url ==
+        e.url ===
         "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText"
     );
     if (extension) {
@@ -45,9 +45,9 @@ export abstract class QuestionnaireItemBase implements OnInit {
   }
 
   questionnaireInstruction(): string {
-    var extension = this.item.extension?.find(
+    const extension = this.item.extension?.find(
       (e) =>
-        e.url ==
+        e.url ===
         "http://hl7.org/fhir/StructureDefinition/questionnaire-instruction"
     );
     if (extension) {
@@ -57,9 +57,9 @@ export abstract class QuestionnaireItemBase implements OnInit {
   }
 
   isHidden(): boolean {
-    var extension = this.item.extension?.find(
+    const extension = this.item.extension?.find(
       (e) =>
-        e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden"
+        e.url === "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden"
     );
     if (extension) {
       return extension.valueBoolean;
@@ -78,7 +78,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
 
               // compare value with whenExpr.answer[x]
               if (qItem.answer?.length > 0) {
-                var ans = qItem.answer[0];
+                const ans = qItem.answer[0];
 
                 if (ans.valueInteger) {
                   if (!whenExpr.answerInteger) {
@@ -89,7 +89,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
                       whenExpr
                     );
                     result = true;
-                  } else
+                  } else {
                     switch (whenExpr.operator) {
                       case "<":
                         result = ans.valueInteger < whenExpr.answerInteger;
@@ -112,6 +112,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
                         );
                         result = true;
                     }
+                  }
                 } else if (ans.valueCoding) {
                   if (!whenExpr.answerCoding) {
                     console.log(
@@ -121,11 +122,11 @@ export abstract class QuestionnaireItemBase implements OnInit {
                       whenExpr
                     );
                     result = true;
-                  } else
+                  } else {
                     switch (whenExpr.operator) {
                       case "=":
                         result =
-                          ans.valueCoding.code == whenExpr.answerCoding.code;
+                          ans.valueCoding.code === whenExpr.answerCoding.code;
                         break;
 
                       default:
@@ -137,6 +138,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
                         );
                         result = true;
                     }
+                  }
                 } else if (ans.valueBoolean !== undefined) {
                   if (!whenExpr.answerBoolean) {
                     console.log(
@@ -146,10 +148,10 @@ export abstract class QuestionnaireItemBase implements OnInit {
                       whenExpr
                     );
                     result = true;
-                  } else
+                  } else {
                     switch (whenExpr.operator) {
                       case "=":
-                        result = ans.valueBoolean == whenExpr.answerBoolean;
+                        result = ans.valueBoolean === whenExpr.answerBoolean;
                         break;
 
                       default:
@@ -161,6 +163,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
                         );
                         result = true;
                     }
+                  }
                   console.log(
                     "answerBoolean",
                     qItem.text,
@@ -182,7 +185,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
             })
           )
         ),
-        first<boolean>((result) => result == true, false)
+        first<boolean>((result) => result === true, false)
       );
     }
     return of(true);

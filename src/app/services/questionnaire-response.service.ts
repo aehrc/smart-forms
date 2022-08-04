@@ -31,10 +31,10 @@ export interface QuestionnaireResponseAnswer
   valueInteger?: number;
   valueDate?: fhirclient.FHIR.dateTime;
   valueDateTime?: fhirclient.FHIR.dateTime;
-  //valueTime?: fhirclient.FHIR.time;
+  // valueTime?: fhirclient.FHIR.time;
   valueString?: string;
   valueCoding?: fhirclient.FHIR.Coding;
-  //valueQuantity?: ;
+  // valueQuantity?: ;
   valueReference?: fhirclient.FHIR.Reference;
   item?: QuestionnaireResponseItem[];
 }
@@ -43,8 +43,17 @@ export interface QuestionnaireResponseAnswer
   providedIn: "root",
 })
 export class QuestionnaireResponseService {
+  constructor() {
+    this.fhirClient = FHIR.client({ serverUrl: this.responseServerUrl });
+  }
   private questionnaireResponseSubject: Subject<QuestionnaireResponse> =
     new ReplaySubject<QuestionnaireResponse>(1);
+
+  private responseServerUrl = "https://sqlonfhir-r4.azurewebsites.net/fhir/";
+
+  private fhirClient: Client;
+
+  id: string;
 
   private setQuestionnaireResponse(
     questionnaireResponse: QuestionnaireResponse
@@ -55,16 +64,6 @@ export class QuestionnaireResponseService {
   getQuestionnaireResponse(): Observable<QuestionnaireResponse> {
     return this.questionnaireResponseSubject.asObservable();
   }
-
-  private responseServerUrl = "https://sqlonfhir-r4.azurewebsites.net/fhir/";
-
-  private fhirClient: Client;
-
-  constructor() {
-    this.fhirClient = FHIR.client({ serverUrl: this.responseServerUrl });
-  }
-
-  id: string;
 
   onQuestionnaireResponseChanged(
     questionnaireResponse: QuestionnaireResponse
@@ -83,8 +82,11 @@ export class QuestionnaireResponseService {
             break;
           }
         }
-        if (qItem) return of(qItem);
-        else return of<QuestionnaireResponseItem>();
+        if (qItem) {
+          return of(qItem);
+        } else {
+          return of<QuestionnaireResponseItem>();
+        }
       })
     );
   }
@@ -93,13 +95,13 @@ export class QuestionnaireResponseService {
     item: QuestionnaireResponseItem,
     linkId: string
   ): QuestionnaireResponseItem {
-    if (item.linkId == linkId) {
+    if (item.linkId === linkId) {
       return item;
     }
 
     if (item.item) {
       for (let index = 0; index < item.item.length; index++) {
-        var i = this._findItem(item.item[index], linkId);
+        const i = this._findItem(item.item[index], linkId);
         if (i) {
           return i;
         }
@@ -109,12 +111,12 @@ export class QuestionnaireResponseService {
   }
 
   create(qr: QuestionnaireResponse): Observable<fhirclient.FHIR.Resource> {
-    let result = this.fhirClient.create(qr);
+    const result = this.fhirClient.create(qr);
     return from(result);
   }
 
   validate(qr: QuestionnaireResponse): Observable<fhirclient.FHIR.Resource> {
-    var parameters: Parameters = {
+    const parameters: Parameters = {
       resourceType: "Parameters",
       parameter: [
         {
@@ -124,14 +126,14 @@ export class QuestionnaireResponseService {
       ],
     };
 
-    var headers = {
+    const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json+fhir; charset=UTF-8",
       Accept: "application/json+fhir; charset=utf-8",
     };
-    var operation = "QuestionnaireResponse/$validate";
+    const operation = "QuestionnaireResponse/$validate";
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: operation,
       method: "POST",
       body: JSON.stringify(parameters),
@@ -142,20 +144,20 @@ export class QuestionnaireResponseService {
   }
 
   extractInstance(id: string) {
-    var parameters: Parameters = {
+    const parameters: Parameters = {
       resourceType: "Parameters",
       parameter: [],
     };
 
-    var headers = {
+    const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json+fhir; charset=UTF-8",
       Accept: "application/json+fhir; charset=utf-8",
     };
-    var operation = "QuestionnaireResponse/" + id + "/$extract";
-    //var operation = "QuestionnaireResponse/$extract";
+    const operation = "QuestionnaireResponse/" + id + "/$extract";
+    // var operation = "QuestionnaireResponse/$extract";
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: operation,
       method: "POST",
       body: JSON.stringify(parameters),
@@ -166,7 +168,7 @@ export class QuestionnaireResponseService {
   }
 
   extract(qr: QuestionnaireResponse) {
-    var parameters: Parameters = {
+    const parameters: Parameters = {
       resourceType: "Parameters",
       parameter: [
         {
@@ -176,15 +178,15 @@ export class QuestionnaireResponseService {
       ],
     };
 
-    var headers = {
+    const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json+fhir; charset=UTF-8",
       Accept: "application/json+fhir; charset=utf-8",
     };
 
-    var operation = "QuestionnaireResponse/$extract";
+    const operation = "QuestionnaireResponse/$extract";
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: operation,
       method: "POST",
       body: JSON.stringify(parameters),

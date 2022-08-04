@@ -6,7 +6,7 @@ describe("FHIRService", () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it("should be created", () => {
-    const service: FHIRService = TestBed.get(FHIRService);
+    const service: FHIRService = TestBed.inject(FHIRService);
     expect(service).toBeTruthy();
   });
 });

@@ -5,18 +5,18 @@ import * as FHIR from "fhirclient";
 import Client from "fhirclient/lib/Client";
 import { fhirclient } from "fhirclient/lib/types";
 
-//import * as fhirSettings from 'fhirclient/lib/settings';
+// import * as fhirSettings from 'fhirclient/lib/settings';
 
-//export fhirTypes;
+// export fhirTypes;
 
-//(window as any).FHIR = FHIR;
-//(window as any).fhirSettings = fhirSettings;
-//(window as any).fhirTypes = fhirclient;
+// (window as any).FHIR = FHIR;
+// (window as any).fhirSettings = fhirSettings;
+// (window as any).fhirTypes = fhirclient;
 
 import { SMART_KEY } from "fhirclient/lib/settings";
-//import { fhirclient } from "./types";
-//export { SMART_KEY as KEY };
-//export { fhirclient as fhirTypes };
+// import { fhirclient } from "./types";
+// export { SMART_KEY as KEY };
+// export { fhirclient as fhirTypes };
 
 export interface Parameters extends fhirclient.FHIR.Resource {
   resourceType: "Parameters";
@@ -71,9 +71,9 @@ export class FHIRService {
   public authorizeReady(): Promise<FHIRService> {
     console.log("isLoggedIn: " + this.isLoggedIn);
 
-    var fhirService = this;
+    const fhirService = this;
 
-    var promise = new Promise<FHIRService>(function (resolve, reject) {
+    const promise = new Promise<FHIRService>(function (resolve, reject) {
       FHIR.oauth2
         .ready()
         .then((client) => {
@@ -96,7 +96,7 @@ export class FHIRService {
     return promise;
 
     // Calling the SMART JS Client ready method to initialize the SMART Client
-    //FHIR.oauth2.ready(this.oauth2ReadyCallback, this.oauth2ReadyErrback);
+    // FHIR.oauth2.ready(this.oauth2ReadyCallback, this.oauth2ReadyErrback);
   }
 
   /*
@@ -105,7 +105,7 @@ export class FHIRService {
   }
   */
 
-  //private promise: Promise<FHIRService>;
+  // private promise: Promise<FHIRService>;
 
   /**
    * Callback method once the SMART client has been initialized after the OAuth2.0 token workflow.
@@ -128,8 +128,8 @@ export class FHIRService {
   public logout() {
     sessionStorage.clear();
     this.fhirClient = null;
-    //this.loggedIn.next(false);
-    //this._router.navigate(['/index']);
+    // this.loggedIn.next(false);
+    // this._router.navigate(['/index']);
   }
 
   /**
@@ -137,21 +137,21 @@ export class FHIRService {
    * @returns {Observable<boolean>} Subscribers get notified when the state changes.
    */
   get isLoggedIn(): boolean {
-    var hasTokenResponse = false;
+    let hasTokenResponse = false;
 
     if (sessionStorage.getItem(SMART_KEY)) {
       // 'SMART_KEY')) {
       hasTokenResponse = true;
-      //this.loggedIn.next(true);
+      // this.loggedIn.next(true);
     } else {
-      //this.loggedIn.next(false);
+      // this.loggedIn.next(false);
 
-      for (var i = 0; i < sessionStorage.length; i++) {
-        var key = sessionStorage.key(i);
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
         console.log(key + ": " + sessionStorage.getItem(key));
       }
     }
-    //return this.loggedIn.asObservable();
+    // return this.loggedIn.asObservable();
     return hasTokenResponse;
   }
 
@@ -163,18 +163,18 @@ export class FHIRService {
    *  headers: An object containing HTTP headers to be added to the request.
    */
   search(searchConfig): Observable<fhirclient.FHIR.Resource> {
-    var searchParams = new URLSearchParams();
+    const searchParams = new URLSearchParams();
     if (searchConfig.query) {
-      var queryVars = searchConfig.query;
-      var queryVarKeys = Object.keys(queryVars);
+      const queryVars = searchConfig.query;
+      const queryVarKeys = Object.keys(queryVars);
 
-      for (var i = 0, len = queryVarKeys.length; i < len; ++i) {
-        var key = queryVarKeys[i];
+      for (let i = 0, len = queryVarKeys.length; i < len; ++i) {
+        const key = queryVarKeys[i];
         searchParams.append(key, queryVars[key]);
       }
     }
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: searchConfig.type + "?" + searchParams,
       headers: searchConfig.headers,
     });
@@ -183,7 +183,7 @@ export class FHIRService {
   }
 
   hasLaunchContext(): boolean {
-    var fhirClient = this.fhirClient;
+    const fhirClient = this.fhirClient;
 
     return (
       fhirClient != null &&
@@ -199,7 +199,7 @@ export class FHIRService {
    */
   setCurrentPatient(patient: fhirclient.FHIR.Patient): fhirclient.FHIR.Patient {
     if (!this.hasLaunchContext()) {
-      var baseUrl = this.fhirClient.state.serverUrl;
+      const baseUrl = this.fhirClient.state.serverUrl;
       this.fhirClient = FHIR.client({
         serverUrl: baseUrl,
         tokenResponse: { patient: patient.id },
@@ -213,12 +213,12 @@ export class FHIRService {
   }
 
   batch(bundle): Observable<fhirclient.FHIR.Resource> {
-    var headers = {
+    const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json+fhir; charset=UTF-8",
     };
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: "",
       method: "POST",
       body: JSON.stringify(bundle),
@@ -229,13 +229,13 @@ export class FHIRService {
   }
 
   execute(operation, parameters): Observable<fhirclient.FHIR.Resource> {
-    var headers = {
+    const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json+fhir; charset=UTF-8",
       Accept: "application/json+fhir; charset=utf-8",
     };
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: operation,
       method: "POST",
       body: JSON.stringify(parameters),
@@ -245,15 +245,15 @@ export class FHIRService {
   }
 
   create(resource): Observable<fhirclient.FHIR.Resource> {
-    let result = this.fhirClient.create(resource);
+    const result = this.fhirClient.create(resource);
 
     return from(result);
   }
 
   read(resourceType, id): Observable<fhirclient.FHIR.Resource> {
-    var headers = { "Cache-Control": "no-cache" };
+    const headers = { "Cache-Control": "no-cache" };
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: resourceType + "/" + id,
       headers: headers,
     });

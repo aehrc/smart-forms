@@ -4,6 +4,7 @@
     "tslint-config-prettier"
   ],
   "rules": {
-    "max-classes-per-file": false
+    "max-classes-per-file": false,
+    "template-no-negated-async": false
   }
 }

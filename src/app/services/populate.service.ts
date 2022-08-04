@@ -23,14 +23,14 @@ export class PopulateService {
     questionnaireId: string,
     parameters: Parameters
   ): Observable<QuestionnaireResponse> {
-    var headers = {
+    const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json+fhir; charset=UTF-8",
       Accept: "application/json+fhir; charset=utf-8",
     };
-    var operation = "Questionnaire/" + questionnaireId + "/$populate";
+    const operation = "Questionnaire/" + questionnaireId + "/$populate";
 
-    let result = this.fhirClient.request({
+    const result = this.fhirClient.request({
       url: operation,
       method: "POST",
       body: JSON.stringify(parameters),

@@ -25,11 +25,12 @@ export class QuestionnaireItemStringComponent extends QuestionnaireItemBase {
   formControl = new FormControl();
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
-    else if (this.repeat) this.formControl = this.repeat as FormControl;
+    }
+    else if (this.repeat) { this.formControl = this.repeat as FormControl; }
   }
 }
 
@@ -42,11 +43,12 @@ export class QuestionnaireItemTextComponent extends QuestionnaireItemBase {
   formControl = new FormControl();
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
-    else if (this.repeat) this.formControl = this.repeat as FormControl;
+    }
+    else if (this.repeat) { this.formControl = this.repeat as FormControl; }
   }
 }
 
@@ -59,10 +61,11 @@ export class QuestionnaireItemBooleanComponent extends QuestionnaireItemBase {
   formControl = new FormControl();
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
+    }
   }
 }
 
@@ -75,10 +78,11 @@ export class QuestionnaireItemDateComponent extends QuestionnaireItemBase {
   formControl = new FormControl();
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
+    }
   }
 }
 
@@ -91,10 +95,11 @@ export class QuestionnaireItemIntegerComponent extends QuestionnaireItemBase {
   formControl = new FormControl();
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
+    }
   }
 }
 
@@ -107,10 +112,11 @@ export class QuestionnaireItemDateTimeComponent extends QuestionnaireItemBase {
   formControl = new FormControl();
 
   onInit() {
-    if (this.parentGroup)
+    if (this.parentGroup) {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
+    }
   }
 }
 

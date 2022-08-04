@@ -26,9 +26,6 @@ export class QuestionnaireItemDecimalComponent
   extends QuestionnaireItemBase
   implements ControlValueAccessor, AfterViewInit
 {
-  //@Output()
-  private valueChange; //= new EventEmitter();
-  value;
 
   constructor(
     qresponseService: QuestionnaireResponseService,
@@ -36,12 +33,15 @@ export class QuestionnaireItemDecimalComponent
   ) {
     super(qresponseService);
   }
-
-  ngAfterViewInit(): void {
-    //throw new Error('Method not implemented.');
-  }
+  // @Output()
+  private valueChange; // = new EventEmitter();
+  value;
 
   private formControl: QuestionnaireFormItem; // = new FormControl();
+
+  ngAfterViewInit(): void {
+    // throw new Error('Method not implemented.');
+  }
 
   onInit() {
     /*      if (this.parentGroup)
@@ -60,7 +60,7 @@ export class QuestionnaireItemDecimalComponent
         )?.valueExpression;
 
         if (calculatedExpression) {
-          var root = this.formControl.root as QuestionnaireForm;
+          const root = this.formControl.root as QuestionnaireForm;
           root.addCalculatedExpression(
             this.formControl,
             calculatedExpression.expression
@@ -75,7 +75,7 @@ export class QuestionnaireItemDecimalComponent
 
   writeValue(obj: any): void {
     this.value = obj;
-    //if (obj)
+    // if (obj)
   }
 
   registerOnChange(fn: any): void {
@@ -87,7 +87,7 @@ export class QuestionnaireItemDecimalComponent
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    //throw new Error('Method not implemented.');
+    // throw new Error('Method not implemented.');
   }
 
   onChangeEvent(event: any) {

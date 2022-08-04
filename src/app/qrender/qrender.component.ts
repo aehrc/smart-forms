@@ -30,29 +30,29 @@ export class QRenderComponent implements OnInit, OnDestroy {
   private questionnaireSubscription: Subscription;
 
   ngOnInit(): void {
-    var questionnaireName = "MBS715";
+    let questionnaireName = "MBS715";
     const fragment = this.route.snapshot.fragment;
 
-    if (fragment) questionnaireName = fragment;
+    if (fragment) { questionnaireName = fragment; }
     else {
       const questionnaire = sessionStorage.getItem("QUESTIONNAIRE");
       if (questionnaire) {
         questionnaireName = questionnaire;
-        //sessionStorage.setItem("QUESTIONNAIRE", null);
+        // sessionStorage.setItem("QUESTIONNAIRE", null);
       }
     }
 
-    var fhirServerUrl = "http://www.demo.oridashi.com.au:8109"; // oridashi public server
+    const fhirServerUrl = "http://www.demo.oridashi.com.au:8109"; // oridashi public server
 
-    //if (this.fhir.isAuthorizing()) {
-    var client = this.fhirService.getClient();
+    // if (this.fhir.isAuthorizing()) {
+    let client = this.fhirService.getClient();
     if (!client) {
       this.fhirService
         .authorizeReady()
         .then((fhirService) => {
           client = fhirService.getClient();
           console.log("FHIR client authorized");
-          //console.log(client);
+          // console.log(client);
           /*
         this.patientService.getPatient()
         .then(patient => { 
@@ -71,7 +71,7 @@ export class QRenderComponent implements OnInit, OnDestroy {
         });
     } else {
       console.log("FHIR client Initialised");
-      //console.log(client);
+      // console.log(client);
       /*
         this.patientService.getPatient()
         .then(patient => { 
@@ -89,8 +89,9 @@ export class QRenderComponent implements OnInit, OnDestroy {
     }*/
   }
   ngOnDestroy() {
-    if (this.questionnaireSubscription !== undefined)
+    if (this.questionnaireSubscription !== undefined) {
       this.questionnaireSubscription.unsubscribe();
+    }
   }
 
   toggleNavbar() {
@@ -119,7 +120,7 @@ export class QRenderComponent implements OnInit, OnDestroy {
         )
         .subscribe((q) => {
           this.questionnaireService.setQuestionnaire(q);
-          //console.log(q);
+          // console.log(q);
         });
     }
   }

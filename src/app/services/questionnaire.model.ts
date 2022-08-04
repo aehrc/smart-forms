@@ -23,11 +23,11 @@ export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
 
 export interface AnswerOption extends fhirclient.FHIR.BackboneElement {
   valueInteger?: number;
-  //valueDate: fhirclient.FHIR.date;
-  //valueTime: fhirclient.FHIR.time;
+  // valueDate: fhirclient.FHIR.date;
+  // valueTime: fhirclient.FHIR.time;
   valueString?: string;
   valueCoding?: fhirclient.FHIR.Coding;
-  //valueRefrence: Reference;
+  // valueRefrence: Reference;
 }
 
 export type OpenChoiceContent = OpenChoiceAnswerOption | OpenChoiceValueSet;

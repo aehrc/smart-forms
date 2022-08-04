@@ -51,7 +51,7 @@ export class QuestionnaireItemChoiceComponent
   radioButtons: FormArray = new FormArray([]);
 
   itemControl: ItemControl;
-  isHorizontal: boolean = true;
+  isHorizontal = true;
 
   answerOption?: AnswerOption[];
 
@@ -78,10 +78,10 @@ export class QuestionnaireItemChoiceComponent
   }
 
   onInit() {
-    //this.qformControl.item = this.item;
+    // this.qformControl.item = this.item;
 
     if (this.parentGroup) {
-      //item itself
+      // item itself
       this.qformControl = this.parentGroup.controls[
         this.item.linkId
       ] as QuestionnaireFormItem;
@@ -114,9 +114,9 @@ export class QuestionnaireItemChoiceComponent
       this.itemControl = "drop-down";
     }
 
-    var itemControl = this.item.extension?.find(
+    const itemControl = this.item.extension?.find(
       (e) =>
-        e.url ==
+        e.url ===
         "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl"
     );
     if (itemControl && itemControl.valueCodeableConcept?.coding.length > 0) {
@@ -129,7 +129,7 @@ export class QuestionnaireItemChoiceComponent
       this.answerOption = [];
 
       if (this.item.answerValueSet) {
-        var answerValueSet$ = this.valueSetFactory.expand(
+        const answerValueSet$ = this.valueSetFactory.expand(
           this.item.answerValueSet
         );
 
@@ -148,11 +148,11 @@ export class QuestionnaireItemChoiceComponent
             });
 
             if (this.answerOption?.length > 0) {
-              if (this.itemControl == "check-box") {
+              if (this.itemControl === "check-box") {
                 this.answerOption.forEach((o) =>
                   this.radioButtons.push(new FormControl())
                 );
-                //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+                // this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
               } else {
                 // drop-down
                 if (this.qformControl.value) {
@@ -181,11 +181,11 @@ export class QuestionnaireItemChoiceComponent
     }
 
     if (this.answerOption?.length > 0) {
-      if (this.itemControl == "check-box") {
+      if (this.itemControl === "check-box") {
         this.answerOption.forEach((o) =>
           this.radioButtons.push(new FormControl())
         );
-        //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
+        // this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
       } else {
         if (this.qformControl.value) {
           this.formControl.setValue(this.qformControl.value);
@@ -198,9 +198,9 @@ export class QuestionnaireItemChoiceComponent
       }
     }
 
-    var choiceOrentiation = this.item.extension?.find(
+    const choiceOrentiation = this.item.extension?.find(
       (e) =>
-        e.url ==
+        e.url ===
         "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation"
     );
     switch (choiceOrentiation?.valueCode) {
@@ -217,7 +217,7 @@ export class QuestionnaireItemChoiceComponent
   search: OperatorFunction<string, readonly fhirclient.FHIR.Coding[]> = (
     text$: Observable<string>
   ) => {
-    var maxlist = 10;
+    const maxlist = 10;
 
     return text$.pipe(
       debounceTime(200),
@@ -227,11 +227,11 @@ export class QuestionnaireItemChoiceComponent
           return of([]);
         } else {
           if (this.item.answerValueSet) {
-            var fullUrl =
+            const fullUrl =
               this.item.answerValueSet + "filter=" + term + "&count=" + maxlist; // + "&includeDesignations=true";
             return ValueSetService.expand(fullUrl).pipe(
               map((vs) => {
-                var coding: fhirclient.FHIR.Coding[] = [];
+                const coding: fhirclient.FHIR.Coding[] = [];
                 vs.expansion?.contains?.forEach((c) => {
                   coding.push({
                     system: c.system,
@@ -271,8 +271,8 @@ export class QuestionnaireItemChoiceComponent
   }
 
   private setValueCoding(newCode) {
-    var newAnswer = this.answerOption.find(
-      (o) => o.valueCoding.code == newCode
+    const newAnswer = this.answerOption.find(
+      (o) => o.valueCoding.code === newCode
     );
     if (newAnswer) {
       this.qformControl.setValue(newAnswer.valueCoding);
@@ -285,9 +285,9 @@ export class QuestionnaireItemChoiceComponent
     if (newValue === undefined) {
       this.qformControl.setValue(null);
     } else {
-      var newCoding = newValue as fhirclient.FHIR.Coding;
+      const newCoding = newValue as fhirclient.FHIR.Coding;
       if (newCoding.code) {
-        if (newCoding.code != this.qformControl.value?.code) {
+        if (newCoding.code !== this.qformControl.value?.code) {
           this.qformControl.setValue(newCoding);
         }
       } else {
@@ -300,16 +300,16 @@ export class QuestionnaireItemChoiceComponent
   }
 
   valueChanged(newValue) {
-    var newCoding = newValue as fhirclient.FHIR.Coding;
-    var newCode: string;
+    const newCoding = newValue as fhirclient.FHIR.Coding;
+    let newCode: string;
     if (newCoding?.code) {
       newCode = newCoding.code;
     } else {
       newCode = newValue;
     }
 
-    if (this.itemControl == "radio-button") {
-    } else if (this.itemControl == "autocomplete") {
+    if (this.itemControl === "radio-button") {
+    } else if (this.itemControl === "autocomplete") {
       this.formControl.setValue(newCoding);
     } else {
       if (this.formControl.value !== newCode) {

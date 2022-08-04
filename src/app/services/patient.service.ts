@@ -32,7 +32,7 @@ export class PatientService {
   }
 
   get patient$(): Observable<fhirclient.FHIR.Patient> {
-    if (!this.patientSubject) this.getPatient();
+    if (!this.patientSubject) { this.getPatient(); }
 
     return this.patientSubject.asObservable();
   }
@@ -41,13 +41,15 @@ export class PatientService {
 
   getPatient(): Promise<fhirclient.FHIR.Patient> {
     if (this.fhirClient) {
-      var result = this.fhirClient.patient.read();
+      const result = this.fhirClient.patient.read();
 
-      if (!this.patientSubject)
+      if (!this.patientSubject) {
         this.patientSubject = new ReplaySubject<fhirclient.FHIR.Patient>(1);
+      }
 
-      if (this.patientSubscription !== undefined)
+      if (this.patientSubscription !== undefined) {
         this.patientSubscription.unsubscribe();
+      }
 
       this.patientSubscription = from(result).subscribe((p) =>
         this.patientSubject.next(p)
@@ -62,12 +64,13 @@ export class PatientService {
   }
 
   setPatient(patient: fhirclient.FHIR.Patient) {
-    var patientContext = this.fhirService.setCurrentPatient(patient);
+    const patientContext = this.fhirService.setCurrentPatient(patient);
 
-    if (!this.patientSubject)
+    if (!this.patientSubject) {
       this.patientSubject = new ReplaySubject<fhirclient.FHIR.Patient>(1);
+    }
 
-    if (patientContext) this.patientSubject.next(patientContext);
+    if (patientContext) { this.patientSubject.next(patientContext); }
   }
 
   /**
@@ -77,9 +80,9 @@ export class PatientService {
    * @private
    */
   getPatientName(patient) {
-    var currentPatient = patient;
+    const currentPatient = patient;
 
-    var name = "";
+    let name = "";
     if (
       currentPatient &&
       currentPatient.name &&
@@ -112,15 +115,15 @@ export class PatientService {
       .pipe(
         map((response) => {
           // process data for md-autocomplete
-          var patientList: PatientItem[] = [];
+          const patientList: PatientItem[] = [];
           if (response && response.entry) {
-            for (var i = 0; i < response.entry.length; i++) {
-              var patient = response.entry[i].resource;
+            for (let i = 0; i < response.entry.length; i++) {
+              const patient = response.entry[i].resource;
               patientList.push({
                 name: this.getPatientName(patient),
                 gender: patient.gender,
                 dob: patient.birthDate,
-                //phone: this.getPatientPhoneNumber(patient),
+                // phone: this.getPatientPhoneNumber(patient),
                 id: patient.id,
                 resource: patient,
               });

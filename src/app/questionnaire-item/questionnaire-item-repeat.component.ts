@@ -19,7 +19,7 @@ export class QuestionnaireItemRepeatComponent extends QuestionnaireItemBase {
   }
 
   addNew() {
-    if (this.item.type == "group") {
+    if (this.item.type === "group") {
       this.repeatArray.push(new QuestionnaireFormGroup(this.item));
     } else {
       this.repeatArray.push(new QuestionnaireFormItem(this.item));
@@ -27,23 +27,30 @@ export class QuestionnaireItemRepeatComponent extends QuestionnaireItemBase {
   }
 
   remove(i: number) {
-    var removedItem = this.repeatArray.at(i);
+    const removedItem = this.repeatArray.at(i);
     this.repeatArray.removeAt(i);
 
-    if (this.repeatArray.length < 1) this.addNew();
+    if (this.repeatArray.length < 1) {
+      this.addNew();
+    }
   }
 
   hasValue(i: number): boolean {
-    if (i < 0) return false;
+    if (i < 0) {
+      return false;
+    }
 
-    var item = this.repeatArray.at(i);
+    const item = this.repeatArray.at(i);
 
-    if (this.item.type != "group") return item.value;
-    else {
-      var group = item as FormGroup;
-      for (let control of Object.keys(group.controls)) {
-        var c = group.controls[control];
-        if (c.value) return true;
+    if (this.item.type !== "group") {
+      return item.value;
+    } else {
+      const group = item as FormGroup;
+      for (const control of Object.keys(group.controls)) {
+        const c = group.controls[control];
+        if (c.value) {
+          return true;
+        }
       }
       return false;
     }

@@ -16,9 +16,6 @@ import { FHIRService } from "../services/fhir.service";
   styleUrls: ["./questionnaire-off-canvas.component.css"],
 })
 export class QuestionnaireOffCanvasComponent implements OnDestroy {
-  questionnaire$: Observable<Questionnaire>;
-
-  qresponse$: Observable<QuestionnaireResponse>;
 
   get query$(): Observable<fhirclient.FHIR.Resource> {
     return this.questionnaireService.batchQuery$;
@@ -32,8 +29,13 @@ export class QuestionnaireOffCanvasComponent implements OnDestroy {
     this.questionnaire$ = this.questionnaireService.questionnaire$;
     this.qresponse$ = this.responseService.getQuestionnaireResponse();
   }
+  questionnaire$: Observable<Questionnaire>;
+
+  qresponse$: Observable<QuestionnaireResponse>;
 
   private subscriptions: Subscription[] = [];
+
+  private bundle;
 
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
@@ -62,8 +64,6 @@ export class QuestionnaireOffCanvasComponent implements OnDestroy {
     );
   }
 
-  private bundle;
-
   extractQResponse(qresponse: QuestionnaireResponse) {
     this.subscriptions.push(
       this.responseService.extract(qresponse).subscribe(
@@ -89,7 +89,7 @@ export class QuestionnaireOffCanvasComponent implements OnDestroy {
   }
 
   postObservation() {
-    var resource = this.bundle.entry[0].resource;
+    const resource = this.bundle.entry[0].resource;
     console.log(resource);
 
     this.subscriptions.push(
