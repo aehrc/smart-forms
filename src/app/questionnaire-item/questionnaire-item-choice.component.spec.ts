@@ -1,7 +1,5 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { AnswerOption } from '../services/questionnaire.model';
 
 import { QuestionnaireItemChoiceComponent } from './questionnaire-item-choice.component';
 
@@ -20,15 +18,20 @@ describe('QuestionnaireItemChoiceComponent', () => {
   });
 
   it('should be displayed as a radio button question', () => {
-    component.answerOption = [
-      {
-        "valueCoding": {
-          "system": "266919005", "code": "Never smoked", "display": "http://snomed.info/sct"
-        }
-      }];
+    component.item = {
+      linkId: '1',
+      type: 'choice',
+      item: [],
+      answerOption: [
+        {
+          "valueCoding": {
+            "system": "266919005", "code": "Never smoked", "display": "http://snomed.info/sct"
+          }
+        }]
+    };
     component.itemControl = "radio-button"
-    
-    
+
+
     fixture.detectChanges();
 
     const radioDe: DebugElement = fixture.debugElement;
