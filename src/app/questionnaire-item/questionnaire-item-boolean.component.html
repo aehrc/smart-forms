@@ -1,8 +1,21 @@
-<div class="row mb-3" [hidden]="!(enableWhen() | async)" >
-    <label class="form-check-label col-sm-5" for="{{item.linkId}}">{{item.text}}</label>
-    <div class="col-sm-7">
-        <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="{{item.linkId}}" [formControl]="formControl">
-        <span *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</span>
+<div class="row mb-3" [hidden]="!(enableWhen() | async)">
+  <label class="form-check-label col-sm-5" for="{{ item.linkId }}">{{
+    item.text
+  }}</label>
+  <div class="col-sm-7">
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        value=""
+        id="{{ item.linkId }}"
+        [formControl]="formControl"
+      />
+      <span
+        *ngIf="questionnaireInstruction() as instruction"
+        class="questionnaire-instruction"
+        >{{ instruction }}</span
+      >
     </div>
+  </div>
 </div>

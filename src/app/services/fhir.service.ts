@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Observable, from } from "rxjs";
 
-
-import * as FHIR from 'fhirclient';
-import Client from 'fhirclient/lib/Client';
-import { fhirclient } from 'fhirclient/lib/types';
+import * as FHIR from "fhirclient";
+import Client from "fhirclient/lib/Client";
+import { fhirclient } from "fhirclient/lib/types";
 
 //import * as fhirSettings from 'fhirclient/lib/settings';
 
@@ -24,74 +23,72 @@ export interface Parameters extends fhirclient.FHIR.Resource {
   parameter: {
     name: string;
     valueReference?: fhirclient.FHIR.Reference;
-    resource?: fhirclient.FHIR.Resource;  
-  } [];    
+    resource?: fhirclient.FHIR.Resource;
+  }[];
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class FHIRService {
+  private fhirClient: Client;
 
-  private fhirClient: Client; 
+  private _isAuthorizing: boolean;
 
-  private _isAuthorizing: boolean 
-
-  constructor() { 
+  constructor() {
     this.fhirClient = null;
 
     this._isAuthorizing = false;
   }
 
-
-  /** 
-   * Initiate the Authorization flow with the clientId, scope and optional redirectUri 
+  /**
+   * Initiate the Authorization flow with the clientId, scope and optional redirectUri
    */
-  public authorize(clientId: string, scope: string, redirectUri?: string, launch?: string) : void {
-    
+  public authorize(
+    clientId: string,
+    scope: string,
+    redirectUri?: string,
+    launch?: string
+  ): void {
     this._isAuthorizing = true;
 
     FHIR.oauth2.authorize({
-      "client_id": clientId,
-      "scope": scope, 
-      "launch": launch,
-      "redirect_uri": redirectUri
+      client_id: clientId,
+      scope: scope,
+      launch: launch,
+      redirect_uri: redirectUri,
     });
-
   }
 
   public isAuthorizing(): boolean {
     return this._isAuthorizing;
   }
 
-  /** 
+  /**
    * Authorization flow ready to completed after being returned to redirect page
-   * Returns Promise containing this object 
+   * Returns Promise containing this object
    */
-  public authorizeReady(): Promise<FHIRService> {    
+  public authorizeReady(): Promise<FHIRService> {
     console.log("isLoggedIn: " + this.isLoggedIn);
 
     var fhirService = this;
 
-    var promise = new Promise<FHIRService>(function(resolve, reject) {
-
-      FHIR.oauth2.ready()
-      .then(
-        client => { 
-          fhirService.fhirClient = client; 
+    var promise = new Promise<FHIRService>(function (resolve, reject) {
+      FHIR.oauth2
+        .ready()
+        .then((client) => {
+          fhirService.fhirClient = client;
 
           resolve(fhirService);
-        }
-      )
-      /*.then( reason => {
+        })
+        /*.then( reason => {
         console.log("oath2.ready() onrejected: " + reason);
         //reject(reason);
       })*/
-      .catch(reason => { 
-        console.error(reason);
-        reject(reason);
-      });
-
+        .catch((reason) => {
+          console.error(reason);
+          reject(reason);
+        });
     });
 
     this._isAuthorizing = false;
@@ -119,12 +116,12 @@ export class FHIRService {
   }
   */
 
-  createClient(serverUrl: string) : Client {
+  createClient(serverUrl: string): Client {
     this.fhirClient = FHIR.client({ serverUrl: serverUrl });
     return this.fhirClient;
   }
 
-  public getClient() : Client {
+  public getClient(): Client {
     return this.fhirClient;
   }
 
@@ -135,28 +132,29 @@ export class FHIRService {
     //this._router.navigate(['/index']);
   }
 
-    /**
+  /**
    * Method called to check if there is an active user logged in to the application.
    * @returns {Observable<boolean>} Subscribers get notified when the state changes.
    */
-  get isLoggedIn() : boolean {
+  get isLoggedIn(): boolean {
     var hasTokenResponse = false;
-        
-    if (sessionStorage.getItem(SMART_KEY)) { // 'SMART_KEY')) {
+
+    if (sessionStorage.getItem(SMART_KEY)) {
+      // 'SMART_KEY')) {
       hasTokenResponse = true;
       //this.loggedIn.next(true);
     } else {
       //this.loggedIn.next(false);
 
-      for(var i = 0; i< sessionStorage.length;i++) {
+      for (var i = 0; i < sessionStorage.length; i++) {
         var key = sessionStorage.key(i);
-        console.log(key +": " + sessionStorage.getItem(key));
+        console.log(key + ": " + sessionStorage.getItem(key));
       }
     }
     //return this.loggedIn.asObservable();
-    return hasTokenResponse
+    return hasTokenResponse;
   }
-  
+
   /**
    *  Build a FHIR search query and returns an Observable of type FHIR.Resource (normally a Bundle, but could be an OperationOutcome??).
    * @param searchConfig an object with the following sub-keys for configuring the search.
@@ -170,15 +168,15 @@ export class FHIRService {
       var queryVars = searchConfig.query;
       var queryVarKeys = Object.keys(queryVars);
 
-      for (var i=0, len=queryVarKeys.length; i<len; ++i) {
+      for (var i = 0, len = queryVarKeys.length; i < len; ++i) {
         var key = queryVarKeys[i];
         searchParams.append(key, queryVars[key]);
       }
     }
 
     let result = this.fhirClient.request({
-      url: searchConfig.type + '?' + searchParams,
-      headers: searchConfig.headers
+      url: searchConfig.type + "?" + searchParams,
+      headers: searchConfig.headers,
     });
 
     return from(result);
@@ -187,7 +185,11 @@ export class FHIRService {
   hasLaunchContext(): boolean {
     var fhirClient = this.fhirClient;
 
-    return (fhirClient != null && fhirClient.patient != null && fhirClient.patient.id != null);
+    return (
+      fhirClient != null &&
+      fhirClient.patient != null &&
+      fhirClient.patient.id != null
+    );
   }
 
   /**
@@ -195,30 +197,32 @@ export class FHIRService {
    * Data returned through an angular broadcast event.
    * @param patient the selected patient
    */
-     setCurrentPatient(patient: fhirclient.FHIR.Patient): fhirclient.FHIR.Patient {
-      if (!this.hasLaunchContext())
-      {
-        var baseUrl = this.fhirClient.state.serverUrl;
-        this.fhirClient = FHIR.client({serverUrl: baseUrl, tokenResponse: { patient: patient.id }});
-  
-        return patient;
-      }
-      else {
-        // ignore since the current patient was loaded from a launch
-        return null;
-      }
-    };
-  
+  setCurrentPatient(patient: fhirclient.FHIR.Patient): fhirclient.FHIR.Patient {
+    if (!this.hasLaunchContext()) {
+      var baseUrl = this.fhirClient.state.serverUrl;
+      this.fhirClient = FHIR.client({
+        serverUrl: baseUrl,
+        tokenResponse: { patient: patient.id },
+      });
+
+      return patient;
+    } else {
+      // ignore since the current patient was loaded from a launch
+      return null;
+    }
+  }
+
   batch(bundle): Observable<fhirclient.FHIR.Resource> {
     var headers = {
-      "Cache-Control": "no-cache", 
-      "Content-Type": "application/json+fhir; charset=UTF-8"};
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json+fhir; charset=UTF-8",
+    };
 
     let result = this.fhirClient.request({
       url: "",
       method: "POST",
       body: JSON.stringify(bundle),
-      headers: headers
+      headers: headers,
     });
 
     return from(result);
@@ -226,16 +230,16 @@ export class FHIRService {
 
   execute(operation, parameters): Observable<fhirclient.FHIR.Resource> {
     var headers = {
-      "Cache-Control": "no-cache", 
+      "Cache-Control": "no-cache",
       "Content-Type": "application/json+fhir; charset=UTF-8",
-      "Accept": "application/json+fhir; charset=utf-8"
+      Accept: "application/json+fhir; charset=utf-8",
     };
 
     let result = this.fhirClient.request({
       url: operation,
       method: "POST",
       body: JSON.stringify(parameters),
-      headers: headers
+      headers: headers,
     });
     return from(result);
   }
@@ -244,17 +248,16 @@ export class FHIRService {
     let result = this.fhirClient.create(resource);
 
     return from(result);
-  };
+  }
 
   read(resourceType, id): Observable<fhirclient.FHIR.Resource> {
-    var headers = {'Cache-Control': 'no-cache'};
+    var headers = { "Cache-Control": "no-cache" };
 
     let result = this.fhirClient.request({
-      url: resourceType + '/' + id,
-      headers: headers
+      url: resourceType + "/" + id,
+      headers: headers,
     });
 
     return from(result);
   }
-
 }

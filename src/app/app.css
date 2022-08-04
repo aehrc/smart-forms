@@ -1,7 +1,7 @@
 /* app css stylesheet */
 
 .accordion-button {
-    font-size: inherit;
+  font-size: inherit;
 }
 
 .form-control::placeholder {
@@ -9,7 +9,7 @@
 }
 
 /* date placeholder */
-input[type=date].ng-empty {
+input[type="date"].ng-empty {
   color: lightgray;
 }
 
@@ -21,38 +21,41 @@ input[type=date].ng-empty {
 
 /* Spinner from http://tobiasahlin.com/spinkit/ */
 .spinner {
-    position: fixed;
-    top: 30%;
-    left: 45%;
+  position: fixed;
+  top: 30%;
+  left: 45%;
 
-    width: 40px;
-    height: 40px;
-    margin: 100px auto;
-    background-color: #458ac5;
-  
-    border-radius: 100%;  
-    -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
-    animation: sk-scaleout 1.0s infinite ease-in-out;
+  width: 40px;
+  height: 40px;
+  margin: 100px auto;
+  background-color: #458ac5;
+
+  border-radius: 100%;
+  -webkit-animation: sk-scaleout 1s infinite ease-in-out;
+  animation: sk-scaleout 1s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-scaleout {
+  0% {
+    -webkit-transform: scale(0);
   }
-  
-  @-webkit-keyframes sk-scaleout {
-    0% { -webkit-transform: scale(0) }
-    100% {
-      -webkit-transform: scale(1.0);
-      opacity: 0;
-    }
+  100% {
+    -webkit-transform: scale(1);
+    opacity: 0;
   }
-  
-  @keyframes sk-scaleout {
-    0% { 
-      -webkit-transform: scale(0);
-      transform: scale(0);
-    } 100% {
-      -webkit-transform: scale(1.0);
-      transform: scale(1.0);
-      opacity: 0.7;
-    }
+}
+
+@keyframes sk-scaleout {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
   }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
 
 /* The side navigation menu */
 .sidenav {
@@ -60,7 +63,7 @@ input[type=date].ng-empty {
   /*margin-top: 53px;*/
   margin-top: 0;
   width: 0; /* 0 width - change this with JavaScript */
-  /*position: fixed; *//* Stay in place */
+  /*position: fixed; */ /* Stay in place */
   position: sticky;
   float: left;
   z-index: 1; /* Stay on top */
@@ -106,13 +109,11 @@ input[type=date].ng-empty {
   transition: 0.3s;
 }
 
-
 /* When you mouse over the navigation links, change their color */
 
 .sidenav a:hover {
   color: #f1f1f1;
 }
-
 
 /* Position and style the close button (top right corner) */
 .sidenav .closebtn {
@@ -125,16 +126,17 @@ input[type=date].ng-empty {
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
-  transition: margin-left .5s;
-/*  padding: 20px; */
+  transition: margin-left 0.5s;
+  /*  padding: 20px; */
   margin-left: 30px;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
-}  
-
-
-
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+}

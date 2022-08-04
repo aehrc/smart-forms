@@ -1,66 +1,117 @@
 <nav class="navbar navbar-dark bg-dark">
-    <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
-    <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }">
-      <a class="navbar-brand" routerLink="/">Q-Forms</a>
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/questionnaires">Questionnaires</a>
-        </li>
-      </ul>
-    </div>
+  <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" [ngClass]="{ show: navbarOpen }">
+    <a class="navbar-brand" routerLink="/">Q-Forms</a>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/questionnaires">Questionnaires</a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 <!--div id="main" class="container"-->
 <div class="container p-3 mb-3">
-    <div class="row mb-3">
-        <div class="col-sm-6 ">
-            <h3>Search Questionnaires</h3>
+  <div class="row mb-3">
+    <div class="col-sm-6">
+      <h3>Search Questionnaires</h3>
 
-            <div class="form-check">
-                <input class="form-check-input" type="radio" value="local" id="local" [(ngModel)]="src" (change)="changeServer('local')" name="server">
-                <label class="form-check-label" for="local">Local</label>
-            </div>
-            <div *ngFor="let s of servers" class="form-check">
-                <input class="form-check-input" type="radio" value="{{s}}" id="{{s}}" [(ngModel)]="src" (change)="changeServer(s)" name="server" > 
-                <label class="form-check-label" for="{{s}}">{{s}}</label>
-            </div>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          value="local"
+          id="local"
+          [(ngModel)]="src"
+          (change)="changeServer('local')"
+          name="server"
+        />
+        <label class="form-check-label" for="local">Local</label>
+      </div>
+      <div *ngFor="let s of servers" class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          value="{{ s }}"
+          id="{{ s }}"
+          [(ngModel)]="src"
+          (change)="changeServer(s)"
+          name="server"
+        />
+        <label class="form-check-label" for="{{ s }}">{{ s }}</label>
+      </div>
 
-            <div class="mt-2">
-                <label for="formFile" class="form-label">Select local Questionnaire file</label>
-                <input class="form-control" type="file" id="formFile" (change)="handleFileInput($event.target.files)" accept="application/json">
-            </div>
+      <div class="mt-2">
+        <label for="formFile" class="form-label"
+          >Select local Questionnaire file</label
+        >
+        <input
+          class="form-control"
+          type="file"
+          id="formFile"
+          (change)="handleFileInput($event.target.files)"
+          accept="application/json"
+        />
+      </div>
 
-            <div class="mb-3">
-                <button class="btn btn-primary" [disabled]="src=='local' || (questionnaire$ |async) == null" (click)="upload()">Upload</button>
-                <button class="btn btn-primary m-2" [disabled]="(questionnaire$ |async) == null" (click)="view()">View</button>
-            </div>
+      <div class="mb-3">
+        <button
+          class="btn btn-primary"
+          [disabled]="src == 'local' || (questionnaire$ | async) == null"
+          (click)="upload()"
+        >
+          Upload
+        </button>
+        <button
+          class="btn btn-primary m-2"
+          [disabled]="(questionnaire$ | async) == null"
+          (click)="view()"
+        >
+          View
+        </button>
+      </div>
 
-            <input class="mt-1" type="text" id="qsearch" #srch placeholder="Search" (input)="search(srch.value)" [(ngModel)]="qsearch" > <!--ng-model-options='{ debounce: 50 }' ng-change="$ctrl.change()" -->
-            <!--span id="count">{{pageCount}} of {{totalCount}}</span-->
+      <input
+        class="mt-1"
+        type="text"
+        id="qsearch"
+        #srch
+        placeholder="Search"
+        (input)="search(srch.value)"
+        [(ngModel)]="qsearch"
+      />
+      <!--ng-model-options='{ debounce: 50 }' ng-change="$ctrl.change()" -->
+      <!--span id="count">{{pageCount}} of {{totalCount}}</span-->
 
-            <div *ngFor="let q of questionnaires$ | async">
-                <hr>
-                <a *ngIf="q.id" (click)="setQuestionnaire(q.resource)" >{{q.title}}</a>
-                <a *ngIf="!q.id" (click)="setQuestionnaireByUrl(q.url)" >{{q.title}}</a>    
-            </div>
-            <hr>
-        </div>
-        <div class="col-sm-6 " >
-            <div class="border p-1 mb-2" *ngIf="errors$">
-                <h3>Errors</h3>
-                <ul>
-                <li *ngFor="let e of errors$ | async">
-                    {{e.details.text}}
-                </li>
-                </ul>
-            </div>
-            <div class ="border" style="height: 900px;overflow: auto;" *ngIf="questionnaire$"> 
-                <pre style="overflow: initial">{{questionnaire$ |async | json}}</pre>
-            </div>
-        </div>
+      <div *ngFor="let q of questionnaires$ | async">
+        <hr />
+        <a *ngIf="q.id" (click)="setQuestionnaire(q.resource)">{{ q.title }}</a>
+        <a *ngIf="!q.id" (click)="setQuestionnaireByUrl(q.url)">{{
+          q.title
+        }}</a>
+      </div>
+      <hr />
     </div>
+    <div class="col-sm-6">
+      <div class="border p-1 mb-2" *ngIf="errors$">
+        <h3>Errors</h3>
+        <ul>
+          <li *ngFor="let e of errors$ | async">
+            {{ e.details.text }}
+          </li>
+        </ul>
+      </div>
+      <div
+        class="border"
+        style="height: 900px; overflow: auto"
+        *ngIf="questionnaire$"
+      >
+        <pre style="overflow: initial">{{ questionnaire$ | async | json }}</pre>
+      </div>
+    </div>
+  </div>
 </div>
 <!--/div-->

@@ -1,17 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class SpinnerService {
-
   private _showSpinner: boolean = false;
 
-  get isSpinning() : boolean {
+  get isSpinning(): boolean {
     return this._showSpinner;
   }
 
-  constructor() { }
+  constructor() {}
 
   show() {
     this._showSpinner = true;

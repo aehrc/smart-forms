@@ -1,6 +1,13 @@
 <div class="row mb-3">
-    <label for="{{item.linkId}}" class="col-sm-5 col-form-label">{{item.text}}</label>
-    <div class="col-sm-6"> 
-    <input type="datetime-local" class="form-control" id="{{item.linkId}}" [formControl]="formControl">
-    </div>
+  <label for="{{ item.linkId }}" class="col-sm-5 col-form-label">{{
+    item.text
+  }}</label>
+  <div class="col-sm-6">
+    <input
+      type="datetime-local"
+      class="form-control"
+      id="{{ item.linkId }}"
+      [formControl]="formControl"
+    />
+  </div>
 </div>

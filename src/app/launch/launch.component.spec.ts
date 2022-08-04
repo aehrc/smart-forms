@@ -1,20 +1,19 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {AppComponent} from '../app.component';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { AppComponent } from "../app.component";
 
-import { LaunchComponent } from './launch.component';
+import { LaunchComponent } from "./launch.component";
 
-describe('LaunchComponent', () => {
+describe("LaunchComponent", () => {
   let component: LaunchComponent;
   let fixture: ComponentFixture<LaunchComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [ AppComponent ],
-      declarations: [ LaunchComponent ],
-      imports: [ RouterTestingModule ]
-    })
-    .compileComponents();
+      providers: [AppComponent],
+      declarations: [LaunchComponent],
+      imports: [RouterTestingModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -23,7 +22,7 @@ describe('LaunchComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

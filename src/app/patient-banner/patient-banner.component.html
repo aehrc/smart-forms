@@ -1,22 +1,36 @@
-    <span *ngIf="!patient; else other_content">No Patient</span>
+<span *ngIf="!patient; else other_content">No Patient</span>
 
-    <ng-template #other_content>
-    <span class="p-name">{{patientName}}</span>
+<ng-template #other_content>
+  <span class="p-name">{{ patientName }}</span>
 
-    <span class="p-gender" style="text-transform: capitalize">{{patient.gender}}</span>
-    <span class="p-dob">DoB: {{patient.birthDate | date : 'dd MMM yyyy'}} ({{age}} yrs)</span>
-    <span class="p-age"></span>
-    </ng-template>
+  <span class="p-gender" style="text-transform: capitalize">{{
+    patient.gender
+  }}</span>
+  <span class="p-dob"
+    >DoB: {{ patient.birthDate | date: "dd MMM yyyy" }} ({{ age }} yrs)</span
+  >
+  <span class="p-age"></span>
+</ng-template>
 
-    <div *ngIf="!hasLaunchContext" class="search-container" >
-        <input type="text" placeholder="Patient Search.." [formControl]="searchCriteria" /> 
-        <!--ng-change="$ctrl.change()" ng-blur="$ctrl.hidePatientResults()" ng-hide="$ctrl.hideSearch"-->
+<div *ngIf="!hasLaunchContext" class="search-container">
+  <input
+    type="text"
+    placeholder="Patient Search.."
+    [formControl]="searchCriteria"
+  />
+  <!--ng-change="$ctrl.change()" ng-blur="$ctrl.hidePatientResults()" ng-hide="$ctrl.hideSearch"-->
 
-        <button type="button" (click)="setShowPatientResults()"> <!-- ng-hide="$ctrl.noSearch" -->
-            <i class="fa fa-search"></i>
-        </button>
-        <div *ngIf="searchResults && searchResults.length > 0 " class="dropdown-content"> <!--ng-show="$ctrl.showPatientResults"-->
-            <a *ngFor="let p of searchResults" (click)="loadPatient(p)" >{{p.name}} {{p.dob}}</a>
-        </div>
-    </div>
-
+  <button type="button" (click)="setShowPatientResults()">
+    <!-- ng-hide="$ctrl.noSearch" -->
+    <i class="fa fa-search"></i>
+  </button>
+  <div
+    *ngIf="searchResults && searchResults.length > 0"
+    class="dropdown-content"
+  >
+    <!--ng-show="$ctrl.showPatientResults"-->
+    <a *ngFor="let p of searchResults" (click)="loadPatient(p)"
+      >{{ p.name }} {{ p.dob }}</a
+    >
+  </div>
+</div>

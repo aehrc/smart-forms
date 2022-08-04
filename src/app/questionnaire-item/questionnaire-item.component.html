@@ -1,19 +1,66 @@
 <div [ngSwitch]="item.type">
-    <qitem-group *ngSwitchCase="'group'" [item]="item" [parentGroup]="parentGroup" ></qitem-group>
-    <qitem-string *ngSwitchCase="'string'" [item]="item" [parentGroup]="parentGroup"></qitem-string>
-    <qitem-text *ngSwitchCase="'text'" [item]="item" [parentGroup]="parentGroup"></qitem-text>
-    <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
-    <qitem-boolean *ngSwitchCase="'boolean'" [item]="item" [parentGroup]="parentGroup"></qitem-boolean>
-    <qitem-integer *ngSwitchCase="'integer'" [item]="item" [parentGroup]="parentGroup"></qitem-integer>
-    <qitem-decimal *ngSwitchCase="'decimal'" [item]="item" [parentGroup]="parentGroup" [formControl]="parentGroup.controls[item.linkId]" ></qitem-decimal>
-    <qitem-date *ngSwitchCase="'date'" [item]="item" [parentGroup]="parentGroup"></qitem-date>
-    <qitem-datetime *ngSwitchCase="'datetime'" [item]="item" [parentGroup]="parentGroup"></qitem-datetime>
-    <qitem-choice *ngSwitchCase="'choice'" [item]="item" [parentGroup]="parentGroup"></qitem-choice>
-    <qitem-openchoice *ngSwitchCase="'open-choice'" [item]="item" [parentGroup]="parentGroup"></qitem-openchoice>
-    <qitem-quantity *ngSwitchCase="'quantity'" [item]="item" [parentGroup]="parentGroup"></qitem-quantity>
+  <qitem-group
+    *ngSwitchCase="'group'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-group>
+  <qitem-string
+    *ngSwitchCase="'string'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-string>
+  <qitem-text
+    *ngSwitchCase="'text'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-text>
+  <qitem-display *ngSwitchCase="'display'" [item]="item"></qitem-display>
+  <qitem-boolean
+    *ngSwitchCase="'boolean'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-boolean>
+  <qitem-integer
+    *ngSwitchCase="'integer'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-integer>
+  <qitem-decimal
+    *ngSwitchCase="'decimal'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+    [formControl]="parentGroup.controls[item.linkId]"
+  ></qitem-decimal>
+  <qitem-date
+    *ngSwitchCase="'date'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-date>
+  <qitem-datetime
+    *ngSwitchCase="'datetime'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-datetime>
+  <qitem-choice
+    *ngSwitchCase="'choice'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-choice>
+  <qitem-openchoice
+    *ngSwitchCase="'open-choice'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-openchoice>
+  <qitem-quantity
+    *ngSwitchCase="'quantity'"
+    [item]="item"
+    [parentGroup]="parentGroup"
+  ></qitem-quantity>
 
-    <div *ngSwitchDefault class="mb-3">
-        <label for="{{item.linkId}}">{{item.text}}</label>
-        <span><em>&lt;{{item.type}}&gt;</em></span>
-    </div>
+  <div *ngSwitchDefault class="mb-3">
+    <label for="{{ item.linkId }}">{{ item.text }}</label>
+    <span
+      ><em>&lt;{{ item.type }}&gt;</em></span
+    >
+  </div>
 </div>

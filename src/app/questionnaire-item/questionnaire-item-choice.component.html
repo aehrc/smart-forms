@@ -1,28 +1,83 @@
-<div class="row mb-3" [hidden]="!(enableWhen() | async)"  [ngSwitch]="itemControl" >
-  <label *ngIf="!repeat" class="col-sm-5 col-form-label" for="{{item.linkId}}">{{item.text}}</label>
+<div
+  class="row mb-3"
+  [hidden]="!(enableWhen() | async)"
+  [ngSwitch]="itemControl"
+>
+  <label
+    *ngIf="!repeat"
+    class="col-sm-5 col-form-label"
+    for="{{ item.linkId }}"
+    >{{ item.text }}</label
+  >
 
   <!-- autocomplete -->
-  <div *ngSwitchCase="'autocomplete'" [ngClass]="{'col-sm-7': !repeat}">
-    <input id="{{item.linkId}}" type="text" class="form-control" [formControl]="formControl"  [ngbTypeahead]="search" [inputFormatter]="formatter" [resultFormatter]="formatter" [editable]="false" />
-    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
+  <div *ngSwitchCase="'autocomplete'" [ngClass]="{ 'col-sm-7': !repeat }">
+    <input
+      id="{{ item.linkId }}"
+      type="text"
+      class="form-control"
+      [formControl]="formControl"
+      [ngbTypeahead]="search"
+      [inputFormatter]="formatter"
+      [resultFormatter]="formatter"
+      [editable]="false"
+    />
+    <div
+      *ngIf="questionnaireInstruction() as instruction"
+      class="questionnaire-instruction"
+    >
+      {{ instruction }}
+    </div>
   </div>
 
   <!-- radio-button -->
-  <div *ngSwitchCase="'radio-button'" class="col-sm-7" >
-    <div class="form-check" [class.form-check-inline]="isHorizontal" *ngFor="let o of answerOption; let i = index">
-      <input class="form-check-input" type="radio" id="{{item.linkId}}-{{o.valueCoding.code}}" name="{{ item.text }}" value="{{o.valueCoding.code}}" (change)="onRadioChange($event, i)"> 
-      <label class="form-check-label" for="{{item.linkId}}-{{o.valueCoding.code}}">{{o.valueCoding.display}}</label>
+  <div *ngSwitchCase="'radio-button'" class="col-sm-7">
+    <div
+      class="form-check"
+      [class.form-check-inline]="isHorizontal"
+      *ngFor="let o of answerOption; let i = index"
+    >
+      <input
+        class="form-check-input"
+        type="radio"
+        id="{{ item.linkId }}-{{ o.valueCoding.code }}"
+        name="{{ item.text }}"
+        value="{{ o.valueCoding.code }}"
+        (change)="onRadioChange($event, i)"
+      />
+      <label
+        class="form-check-label"
+        for="{{ item.linkId }}-{{ o.valueCoding.code }}"
+        >{{ o.valueCoding.display }}</label
+      >
     </div>
-    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
+    <div
+      *ngIf="questionnaireInstruction() as instruction"
+      class="questionnaire-instruction"
+    >
+      {{ instruction }}
+    </div>
   </div>
 
   <!-- deafult: drop-down -->
-  <div *ngSwitchDefault  [ngClass]="{'col-sm-7': !repeat}">
-    <select class="form-select" class="form-control" id="{{item.linkId}}" [formControl]="formControl">
+  <div *ngSwitchDefault [ngClass]="{ 'col-sm-7': !repeat }">
+    <select
+      class="form-select"
+      class="form-control"
+      id="{{ item.linkId }}"
+      [formControl]="formControl"
+    >
       <option></option>
-      <option *ngFor="let o of answerOption" value="{{o.valueCoding.code}}">{{o.valueCoding.display}}</option>
+      <option *ngFor="let o of answerOption" value="{{ o.valueCoding.code }}">
+        {{ o.valueCoding.display }}
+      </option>
     </select>
 
-    <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
-  </div>  
+    <div
+      *ngIf="questionnaireInstruction() as instruction"
+      class="questionnaire-instruction"
+    >
+      {{ instruction }}
+    </div>
+  </div>
 </div>
