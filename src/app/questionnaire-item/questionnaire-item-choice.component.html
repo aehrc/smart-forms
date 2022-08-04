@@ -7,10 +7,10 @@
     <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>
   </div>
 
-  <!-- check-box -->
-  <div *ngSwitchCase="'check-box'" class="col-sm-7" >
+  <!-- radio-button -->
+  <div *ngSwitchCase="'radio-button'" class="col-sm-7" >
     <div class="form-check" [class.form-check-inline]="isHorizontal" *ngFor="let o of answerOption; let i = index">
-        <input class="form-check-input" type="checkbox" id="{{item.linkId}}-{{o.valueCoding.code}}" value="{{o.valueCoding.code}}" [formControl]="checkboxes?.controls[i]" (change)="onCheckboxChange($event, i)"> 
+      <input class="form-check-input" type="radio" id="{{item.linkId}}-{{o.valueCoding.code}}" name="{{ item.text }}" value="{{o.valueCoding.code}}" (change)="onRadioChange($event, i)"> 
       <label class="form-check-label" for="{{item.linkId}}-{{o.valueCoding.code}}">{{o.valueCoding.display}}</label>
     </div>
     <div *ngIf="questionnaireInstruction() as instruction" class="questionnaire-instruction">{{instruction}}</div>

@@ -22,37 +22,37 @@ type ItemControl = 'autocomplete' | 'drop-down' | 'check-box' | 'radio-button'
   }]
 })
 export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase implements ControlValueAccessor, OnDestroy {
-  
+
     readonly droplistOptionsCount = 3;
-  
+
     // select FormControl
     formControl = new FormControl();
 
     // component FormControl
     private qformControl: QuestionnaireFormItem = new QuestionnaireFormItem();
-  
-    checkboxes: FormArray =  new FormArray([]);
-  
-    
+
+    radioButtons: FormArray =  new FormArray([]);
+
+
 
     itemControl: ItemControl;
-    isHorizontal: boolean = true;  
+    isHorizontal: boolean = true;
 
     answerOption?: AnswerOption[];
 
     onChange;   // onChange callback
     onTouched; // onChange callback
-  
+
     constructor(qresponseService: QuestionnaireResponseService, private valueSetFactory: ValueSetFactory ) {
       super(qresponseService);
     }
-    
+
     private subscriptions: Subscription[] = [];
 
     private addSubscriptions(...subs: Subscription[]) {
       this.subscriptions.push(...subs);
     }
-  
+
     ngOnDestroy() {
       for (const subscription of this.subscriptions) {
         subscription.unsubscribe();
@@ -63,28 +63,30 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
       //this.qformControl.item = this.item;
 
       if (this.parentGroup) {
+
+        //item itself
         this.qformControl = this.parentGroup.controls[this.item.linkId] as QuestionnaireFormItem;
-        if (this.qformControl === undefined) 
+        if (this.qformControl === undefined)
           throw new Error("linkId '" + this.item.linkId + "' not found in parentGroup controls. Ensure linkId element exists in '" + this.parentGroup.item.text + "'.");
       }
       else if (this.repeat) {
         this.qformControl = this.repeat as QuestionnaireFormItem;
       }
 
-      this.addSubscriptions(this.qformControl.valueChanges.subscribe(newValue => 
+      this.addSubscriptions(this.qformControl.valueChanges.subscribe(newValue =>
         this.valueChanged(newValue)));
 
-      if (this.item.answerOption?.length > 0 && this.item.answerOption?.length <= this.droplistOptionsCount) 
-        this.itemControl = "check-box";
+      if (this.item.answerOption && this.item.answerOption.length > 0 && this.item.answerOption.length <= this.droplistOptionsCount)
+        this.itemControl = "radio-button";
       else {
         this.itemControl = "drop-down";
       }
-      
+
       var itemControl = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl");
       if (itemControl && itemControl.valueCodeableConcept?.coding.length > 0) {
         this.itemControl = itemControl.valueCodeableConcept?.coding[0].code;
       }
-    
+
       if (this.item.answerOption) {
         this.answerOption = this.item.answerOption;
       }
@@ -98,21 +100,21 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
             console.log(vs.name, vs.url, vs.expansion?.contains);
 
             vs.expansion?.contains.forEach(c => {
-              this.answerOption.push({ "valueCoding": { "system": c.system, "code": c.code, "display": c.display } } as AnswerOption);
+              this.answerOption.push({ "valueCoding": { "system": c.system, "code": c.code, "display": c.display } });
             });
 
             if (this.answerOption?.length > 0) {
-              if (this.itemControl == "check-box") { 
-                this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+              if (this.itemControl == "check-box") {
+                this.answerOption.forEach(o=> this.radioButtons.push(new FormControl()));
                 //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
-              }    
+              }
               else {  // drop-down
                 if (this.qformControl.value) {
                   this.formControl.setValue(this.qformControl.value);
                 }
-                this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue => 
+                this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue =>
                   this.selectChanged(newValue)));
-              }        
+              }
             }
           }));
         }
@@ -121,35 +123,35 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         if (this.qformControl.value) {
           this.formControl.setValue(this.qformControl.value);
         }
-        this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue => 
+        this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue =>
           this.selectChanged(newValue)));
       }
 
       if (this.answerOption?.length > 0) {
-        if (this.itemControl == "check-box") { 
-          this.answerOption.forEach(o=> this.checkboxes.push(new FormControl()));
+        if (this.itemControl == "check-box") {
+          this.answerOption.forEach(o=> this.radioButtons.push(new FormControl()));
           //this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
         }
         else {
           if (this.qformControl.value) {
             this.formControl.setValue(this.qformControl.value);
           }
-          this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue => 
+          this.addSubscriptions(this.formControl.valueChanges.subscribe(newValue =>
             this.selectChanged(newValue)));
         }
       }
 
       var choiceOrentiation = this.item.extension?.find(e=> e.url == "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation");
       switch (choiceOrentiation?.valueCode) {
-        case "vertical": 
+        case "vertical":
           this.isHorizontal = false;
           break;
-        case "horizontal": 
+        case "horizontal":
           this.isHorizontal = true;
           break;
-      }    
+      }
     }
-      
+
     // uses https://ng-bootstrap.github.io/#/components/typeahead/examples
     search: OperatorFunction<string, readonly fhirclient.FHIR.Coding[]> = (text$: Observable<string>) => {
       var maxlist = 10;
@@ -159,16 +161,16 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         distinctUntilChanged(),
         switchMap(term => {
           if (term.length < 2) {
-            return of([]); 
+            return of([]);
           }
-          else { 
+          else {
             if (this.item.answerValueSet) {
               var fullUrl = this.item.answerValueSet + "filter=" + term + "&count=" + maxlist; // + "&includeDesignations=true";
               return ValueSetService.expand(fullUrl)
               .pipe(map(vs=> {
                 var coding : fhirclient.FHIR.Coding[] = [];
                 vs.expansion?.contains?.forEach(c => {
-                  coding.push({ "system": c.system, "code": c.code, "display": c.display } as fhirclient.FHIR.Coding);                  
+                  coding.push({ "system": c.system, "code": c.code, "display": c.display } as fhirclient.FHIR.Coding);
                 });
                 return coding;
               }));
@@ -177,11 +179,11 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
               return this.filterOptionsCoding(term, maxlist);
             }
             else {
-              return of([]); 
+              return of([]);
             }
           }
         })
-      )    
+      )
     }
 
     formatter = (coding: fhirclient.FHIR.Coding) => coding.display;
@@ -205,15 +207,15 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
     selectChanged(newValue) {
       if (newValue === undefined) {
         this.qformControl.setValue(null);
-      } else {     
+      } else {
         var newCoding = newValue as fhirclient.FHIR.Coding;
-        if (newCoding.code) { 
-          if (newCoding.code != this.qformControl.value?.code) {          
+        if (newCoding.code) {
+          if (newCoding.code != this.qformControl.value?.code) {
             this.qformControl.setValue(newCoding);
           }
-        } 
+        }
         else {  // code
-          if (newValue !== this.qformControl.value) {          
+          if (newValue !== this.qformControl.value) {
             this.setValueCoding(newValue);
           }
         }
@@ -230,14 +232,8 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
         newCode = newValue;
       }
 
-      if (this.itemControl == "check-box") {
-      for (let index = 0; index < this.answerOption.length; index++) {
-        const option = this.answerOption[index];
-        if (option.valueCoding.code == newCode) { 
-          this.checkboxes.controls[index].setValue(true);
-          break;
-        }
-      } 
+      if (this.itemControl == "radio-button") {
+
       }
       else if (this.itemControl == "autocomplete"){
         this.formControl.setValue(newCoding);
@@ -248,20 +244,16 @@ export class QuestionnaireItemChoiceComponent extends QuestionnaireItemBase impl
       }
     }
 
-    onCheckboxChange(event, index) {
+
+    onRadioChange(event, index) {
       if (event.target.checked) {
           this.setValueCoding(event.target.value);
-          var i = 0;
-          this.checkboxes.controls.forEach(element => { 
-            if (i++ != index)
-              (element as FormControl).setValue(null);
-          });
       }
       else {
         this.qformControl.setValue(null);
       }
     }
-    
+
     writeValue(value) {
       if (this.qformControl && value) {
         this.qformControl.setValue(value);
