@@ -57,7 +57,6 @@ describe("QuestionnaireItemChoiceComponent", () => {
     const radioEl: HTMLElement = radioDe.nativeElement;
     const inputEl = radioDe.query(By.css("input"));
     expect(inputEl.attributes.type).toBe("radio");
-    console.log(radioEl);
   });
 
   it("should be displayed as a dropdown", () => {

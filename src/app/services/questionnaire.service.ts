@@ -87,6 +87,12 @@ export class QuestionnaireService {
         },
     */
     {
+      name: "MBS715-AnswerValueSetOnlyUrl",
+      title:
+        "Aboriginal and Torres Strait Islander health check – Adults (25–49 years) - AVS only url for testing",
+      url: "data/715.R4-AnswerValueSetOnlyUrl.json",
+    },
+    {
       name: "MBS715",
       title:
         "Aboriginal and Torres Strait Islander health check – Adults (25–49 years)",
@@ -106,12 +112,6 @@ export class QuestionnaireService {
       name: "HISO-10071:2019-cvd-risk",
       title: "NZ CVD Risk Assessment",
       url: "data/CVD Risk-HISO.json",
-    },
-    {
-      name: "MBS715-AnswerValueSetOnlyUrl",
-      title:
-        "Aboriginal and Torres Strait Islander health check – Adults (25–49 years) - AVS only url for testing",
-      url: "data/715.R4-AnswerValueSetOnlyUrl.json",
     },
   ];
 
