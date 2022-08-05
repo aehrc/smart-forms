@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  ontoserverUrl: "https://r4.ontoserver.csiro.au/fhir",
 };
 
 /*

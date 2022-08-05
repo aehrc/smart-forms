@@ -41,6 +41,7 @@ export class QuestionnaireService {
       return this.fhirClient.state.serverUrl;
     }
   }
+
   set currentServer(serverUrl: string) {
     if (serverUrl === "local") {
       this.fhirClient = null;
@@ -48,6 +49,7 @@ export class QuestionnaireService {
       this.fhirClient = FHIR.client({ serverUrl: serverUrl });
     }
   }
+
   get batchQuery$(): Observable<fhirTypes.FHIR.Resource> {
     return this._batchQuery$;
   }
@@ -67,6 +69,7 @@ export class QuestionnaireService {
     private populateService: PopulateService,
     private spinnerService: SpinnerService
   ) {}
+
   servers = [
     "https://lforms-fhir.nlm.nih.gov/baseR4",
     "https://sqlonfhir-r4.azurewebsites.net/fhir",
@@ -103,6 +106,12 @@ export class QuestionnaireService {
       name: "HISO-10071:2019-cvd-risk",
       title: "NZ CVD Risk Assessment",
       url: "data/CVD Risk-HISO.json",
+    },
+    {
+      name: "MBS715-AnswerValueSetOnlyUrl",
+      title:
+        "Aboriginal and Torres Strait Islander health check – Adults (25–49 years) - AVS only url for testing",
+      url: "data/715.R4-AnswerValueSetOnlyUrl.json",
     },
   ];
 

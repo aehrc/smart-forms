@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import * as FHIR from "fhirclient";
 import Client from "fhirclient/lib/Client";
 import { from, Observable } from "rxjs";
-import * as urlParse from "url-parse";
 import { ValueSet } from "./value-set.model";
+import { environment } from "../../environments/environment";
 
 interface ValueSetCache {
   [key: string]: Observable<ValueSet>;
@@ -16,26 +16,18 @@ interface ValueSetCache {
 export class ValueSetFactory {
   private cache: ValueSetCache[] = [];
 
-  expand(fullUrl: string): Observable<ValueSet> {
-    let valueSet$: Observable<ValueSet> = this.cache[fullUrl];
+  expand(url: string): Observable<ValueSet> {
+    let valueSet$: Observable<ValueSet> = this.cache[url];
 
     if (!valueSet$) {
-      console.log("Getting ", fullUrl);
-      const parsed = urlParse(fullUrl, false);
+      console.log("Getting ", url);
 
-      const pathParts = parsed.pathname?.split("/");
-      pathParts.splice(pathParts.length - 2, 2);
-      const path = pathParts.join("/");
+      const service = new ValueSetService();
+      valueSet$ = service.expand(url);
 
-      const serverUrl: string = parsed.origin + path;
-
-      // console.log("Server root", serverUrl, parsed.query['url']);
-      const service = new ValueSetService(serverUrl);
-      valueSet$ = service.expand(parsed.query);
-
-      this.cache[fullUrl] = valueSet$;
+      this.cache[url] = valueSet$;
     } else {
-      console.log("Returning cached ", fullUrl);
+      console.log("Returning cached ", url);
     }
 
     return valueSet$;
@@ -46,28 +38,18 @@ export class ValueSetFactory {
   providedIn: "root",
 })
 export class ValueSetService {
-  constructor(rootUrl: string) {
+  constructor() {
     this.fhirClient = FHIR.client({
-      serverUrl: rootUrl,
+      serverUrl: environment.ontoserverUrl,
     });
   }
 
-  static readonly OntoserverURL: string = "https://r4.ontoserver.csiro.au/fhir";
-
   private fhirClient: Client;
 
-  static expand(fullUrl: string): Observable<ValueSet> {
-    console.log("Getting ", fullUrl);
-    const parsed = urlParse(fullUrl, false);
-
-    const pathParts = parsed.pathname?.split("/");
-    pathParts.splice(pathParts.length - 2, 2);
-    const path = pathParts.join("/");
-
-    const serverUrl: string = parsed.origin + path;
-
-    const service = new ValueSetService(serverUrl);
-    const valueSet$ = service.expand(parsed.query);
+  static expand(url: string): Observable<ValueSet> {
+    console.log("Getting ", url);
+    const service = new ValueSetService();
+    const valueSet$ = service.expand(url);
 
     return valueSet$;
   }
@@ -85,7 +67,7 @@ export class ValueSetService {
 
   expand(params: string): Observable<ValueSet> {
     const result = this.fhirClient.request({
-      url: "ValueSet/$expand" + params,
+      url: "ValueSet/$expand?url=" + params,
     });
 
     return from(result);
