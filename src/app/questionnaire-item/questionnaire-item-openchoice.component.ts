@@ -89,18 +89,20 @@ export class QuestionnaireItemOpenChoiceComponent
         distinctUntilChanged(),
         switchMap<any, ObservableInput<OpenChoiceContent>>((newValue) => {
           if (this.item.answerOption) {
-            return of(newValue).pipe(
-              map((criteria) => ({
+            return this.filterOptions(newValue).pipe(
+              map((answerOption) => ({
                 type: "ANSWER_OPTION",
-                content: this.filterOptions(criteria),
+                content: answerOption,
               }))
             );
           } else if (this.item.answerValueSet) {
             const fullUrl =
               this.item.answerValueSet + "filter=" + newValue + "&count=10"; // + "&includeDesignations=true";
-            return of(fullUrl).pipe(
-              map((url) => ValueSetService.expand(url)),
-              map((result) => of({ type: "VALUE_SET", content: result }))
+            return ValueSetService.expand(fullUrl).pipe(
+              map((valueSet) => ({
+                type: "VALUE_SET",
+                content: valueSet,
+              }))
             );
           } else {
             return EMPTY;
