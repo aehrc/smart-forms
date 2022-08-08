@@ -41,7 +41,7 @@ export class QuestionnaireItemOpenChoiceComponent
   // inner FormControl
   formControl: FormControl = new FormControl();
 
-  selectOptions?: AnswerOption[];
+  selectOptions: AnswerOption[];
 
   onChange; // onChange callback
   onTouched; // onChange callback
