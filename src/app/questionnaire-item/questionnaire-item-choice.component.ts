@@ -215,7 +215,7 @@ export class QuestionnaireItemChoiceComponent
         break;
     }
 
-    function addAnswerOption(option: AnswerOption) {
+    function addAnswerOption(option: AnswerOption): AnswerOption {
       if (option["valueString"]) {
         return {
           valueCoding: {
@@ -227,8 +227,8 @@ export class QuestionnaireItemChoiceComponent
       } else if (option["valueInteger"]) {
         return {
           valueCoding: {
-            code: option["valueInteger"],
-            display: option["valueInteger"],
+            code: option["valueInteger"] as string,
+            display: option["valueInteger"] as string,
             system: "",
           },
         };
