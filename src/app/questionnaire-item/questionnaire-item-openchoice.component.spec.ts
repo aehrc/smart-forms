@@ -4,16 +4,31 @@ import { By } from "@angular/platform-browser";
 
 import { QuestionnaireItemOpenChoiceComponent } from "./questionnaire-item-openchoice.component";
 
+class MockedQuestionnaireItemOpenChoiceComponent extends QuestionnaireItemOpenChoiceComponent {
+  item = {
+    linkId: "a5e9f87a-c561-4ffb-b200-9b93b8887a11",
+    text: "Diagnosis interpretation",
+    type: "open-choice",
+    repeats: true,
+    item: [],
+    answerValueSet:
+      "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs=ecl/(%5E%2032570071000036102%20OR%20%5E%2032570141000036105)&",
+  };
+}
+
 describe("QuestionnaireItemOpenChoiceComponent", () => {
-  let component: QuestionnaireItemOpenChoiceComponent;
-  let fixture: ComponentFixture<QuestionnaireItemOpenChoiceComponent>;
+  let component: MockedQuestionnaireItemOpenChoiceComponent;
+  let fixture: ComponentFixture<MockedQuestionnaireItemOpenChoiceComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [QuestionnaireItemOpenChoiceComponent],
+      declarations: [MockedQuestionnaireItemOpenChoiceComponent],
     });
-    fixture = TestBed.createComponent(QuestionnaireItemOpenChoiceComponent);
+    fixture = TestBed.createComponent(
+      MockedQuestionnaireItemOpenChoiceComponent
+    );
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it("should create", () => {
@@ -21,34 +36,12 @@ describe("QuestionnaireItemOpenChoiceComponent", () => {
   });
 
   it("should be displayed as a text box", () => {
-    component.item = {
-      linkId: "a5e9f87a-c561-4ffb-b200-9b93b8887a11",
-      text: "Diagnosis interpretation",
-      type: "open-choice",
-      repeats: true,
-      item: [],
-      answerValueSet:
-        "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs=ecl/(%5E%2032570071000036102%20OR%20%5E%2032570141000036105)&",
-    };
-
-    fixture.detectChanges();
-
     const componentDe: DebugElement = fixture.debugElement;
     const dropdownEl = componentDe.query(By.css("input"));
     expect(dropdownEl.attributes.type).toBe("text");
   });
 
   it("should show dropdown content when ", () => {
-    component.item = {
-      linkId: "a5e9f87a-c561-4ffb-b200-9b93b8887a11",
-      text: "Diagnosis interpretation",
-      type: "open-choice",
-      repeats: true,
-      item: [],
-      answerValueSet:
-        "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs=ecl/(%5E%2032570071000036102%20OR%20%5E%2032570141000036105)&",
-    };
-
     component.selectOptions = [
       {
         valueCoding: {
