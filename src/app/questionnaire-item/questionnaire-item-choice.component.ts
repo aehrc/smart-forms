@@ -227,8 +227,8 @@ export class QuestionnaireItemChoiceComponent
       } else if (option["valueInteger"]) {
         return {
           valueCoding: {
-            code: option["valueInteger"] as string,
-            display: option["valueInteger"] as string,
+            code: option["valueInteger"] as unknown as string,
+            display: option["valueInteger"] as unknown as string,
             system: "",
           },
         };
