@@ -53,7 +53,7 @@ export class QuestionnaireItemChoiceComponent
   itemControl: ItemControl;
   isHorizontal = true;
 
-  answerOption?: AnswerOption[];
+  answerOption: AnswerOption[];
 
   onChange; // onChange callback
   onTouched; // onChange callback
@@ -63,6 +63,7 @@ export class QuestionnaireItemChoiceComponent
     private valueSetFactory: ValueSetFactory
   ) {
     super(qresponseService);
+    this.answerOption = [];
   }
 
   private subscriptions: Subscription[] = [];
@@ -124,7 +125,9 @@ export class QuestionnaireItemChoiceComponent
     }
 
     if (this.item.answerOption) {
-      this.answerOption = this.item.answerOption;
+      this.item.answerOption.forEach((option) =>
+        this.answerOption.push(addAnswerOption(option))
+      );
     } else if (this.itemControl !== "autocomplete") {
       this.answerOption = [];
 
@@ -211,6 +214,29 @@ export class QuestionnaireItemChoiceComponent
         this.isHorizontal = true;
         break;
     }
+
+    function addAnswerOption(option: AnswerOption) {
+      if (option["valueString"]) {
+        return {
+          valueCoding: {
+            code: option["valueString"],
+            display: option["valueString"],
+            system: "",
+          },
+        };
+      } else if (option["valueInteger"]) {
+        return {
+          valueCoding: {
+            code: option["valueInteger"],
+            display: option["valueInteger"],
+            system: "",
+          },
+        };
+      } else {
+        // if option is valueCoding
+        return option;
+      }
+    }
   }
 
   // uses https://ng-bootstrap.github.io/#/components/typeahead/examples
@@ -237,7 +263,7 @@ export class QuestionnaireItemChoiceComponent
                     system: c.system,
                     code: c.code,
                     display: c.display,
-                  } as fhirclient.FHIR.Coding);
+                  });
                 });
                 return coding;
               })
