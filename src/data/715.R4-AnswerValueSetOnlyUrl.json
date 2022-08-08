@@ -222,9 +222,7 @@
   "name": "MBS715-avsonlyurl",
   "title": "Aboriginal and Torres Strait Islander health check – Adults (25–49 years) avsonlyurl",
   "status": "active",
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2020-02-25T07:14:23.125Z",
   "publisher": "aehrc",
   "description": "Professional attendance by a general practitioner at consulting rooms or in another place other than a hospital or residential aged care facility, for a health assessment of a patient who is of Aboriginal or Torres Strait Islander descent-not more than once in a 9 month period",
