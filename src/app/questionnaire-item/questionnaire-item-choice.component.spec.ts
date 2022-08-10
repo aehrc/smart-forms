@@ -102,4 +102,19 @@ describe("QuestionnaireItemChoiceComponent", () => {
     expect(inputDe.attributes.type).toBe("radio");
     expect(inputDe.nativeElement.value).toBe("testValue");
   });
+
+  it("should be displaying a dropdown value from a valueInteger as intended", () => {
+    component.item.answerOption[0] = {
+      valueInteger: 100,
+    };
+
+    component.answerOption = [];
+    component.onInit();
+    fixture.detectChanges();
+
+    const radioDe: DebugElement = fixture.debugElement;
+    const inputDe: DebugElement = radioDe.query(By.css("input"));
+    expect(inputDe.attributes.type).toBe("radio");
+    expect(inputDe.nativeElement.value).toBe("100");
+  });
 });
