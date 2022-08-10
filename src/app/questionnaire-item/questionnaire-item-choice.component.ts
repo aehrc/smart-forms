@@ -21,6 +21,7 @@ import {
   ValueSetService,
 } from "../services/value-set.service";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
+import { AnswerOptionService } from "../services/answer-option.service";
 
 type ItemControl = "autocomplete" | "drop-down" | "check-box" | "radio-button";
 
@@ -42,10 +43,8 @@ export class QuestionnaireItemChoiceComponent
 {
   readonly droplistOptionsCount = 3;
 
-  // select FormControl
   formControl = new FormControl();
 
-  // component FormControl
   private qformControl: QuestionnaireFormItem = new QuestionnaireFormItem();
 
   radioButtons: FormArray = new FormArray([]);
@@ -60,6 +59,7 @@ export class QuestionnaireItemChoiceComponent
 
   constructor(
     qresponseService: QuestionnaireResponseService,
+    private answerOptionService: AnswerOptionService,
     private valueSetFactory: ValueSetFactory
   ) {
     super(qresponseService);
@@ -79,10 +79,7 @@ export class QuestionnaireItemChoiceComponent
   }
 
   onInit() {
-    // this.qformControl.item = this.item;
-
     if (this.parentGroup) {
-      // item itself
       this.qformControl = this.parentGroup.controls[
         this.item.linkId
       ] as QuestionnaireFormItem;
@@ -126,7 +123,7 @@ export class QuestionnaireItemChoiceComponent
 
     if (this.item.answerOption) {
       this.item.answerOption.forEach((option) =>
-        this.answerOption.push(addAnswerOption(option))
+        this.answerOption.push(this.answerOptionService.addAnswerOption(option))
       );
     } else if (this.itemControl !== "autocomplete") {
       this.answerOption = [];
@@ -155,7 +152,6 @@ export class QuestionnaireItemChoiceComponent
                 this.answerOption.forEach((o) =>
                   this.radioButtons.push(new FormControl())
                 );
-                // this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
               } else {
                 // drop-down
                 if (this.qformControl.value) {
@@ -188,7 +184,6 @@ export class QuestionnaireItemChoiceComponent
         this.answerOption.forEach((o) =>
           this.radioButtons.push(new FormControl())
         );
-        // this.qformControl.valueChanges.subscribe(newValue => this.valueChanged(newValue));
       } else {
         if (this.qformControl.value) {
           this.formControl.setValue(this.qformControl.value);
@@ -213,29 +208,6 @@ export class QuestionnaireItemChoiceComponent
       case "horizontal":
         this.isHorizontal = true;
         break;
-    }
-
-    function addAnswerOption(option: AnswerOption): AnswerOption {
-      if (option["valueString"]) {
-        return {
-          valueCoding: {
-            code: option["valueString"],
-            display: option["valueString"],
-            system: "",
-          },
-        };
-      } else if (option["valueInteger"]) {
-        return {
-          valueCoding: {
-            code: option["valueInteger"] as unknown as string,
-            display: option["valueInteger"] as unknown as string,
-            system: "",
-          },
-        };
-      } else {
-        // if option is valueCoding
-        return option;
-      }
     }
   }
 
@@ -317,7 +289,6 @@ export class QuestionnaireItemChoiceComponent
           this.qformControl.setValue(newCoding);
         }
       } else {
-        // code
         if (newValue !== this.qformControl.value) {
           this.setValueCoding(newValue);
         }
