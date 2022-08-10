@@ -15,7 +15,6 @@ import { HttpClientModule } from "@angular/common/http";
 import {
   QuestionnaireItemStringComponent,
   QuestionnaireItemTextComponent,
-  QuestionnaireItemBooleanComponent,
   QuestionnaireItemDateComponent,
   QuestionnaireItemIntegerComponent,
   QuestionnaireItemDateTimeComponent,
@@ -28,6 +27,7 @@ import {
   TabFilterPipe,
   NonTabItemFilterPipe,
 } from "./questionnaire-item/questionnaire-item-group.component";
+import { QuestionnaireItemBooleanComponent } from "./questionnaire-item/questionnaire-item-boolean.component";
 import { QuestionnaireItemRepeatComponent } from "./questionnaire-item/questionnaire-item-repeat.component";
 import { QuestionnaireItemChoiceComponent } from "./questionnaire-item/questionnaire-item-choice.component";
 import { QuestionnaireItemOpenChoiceComponent } from "./questionnaire-item/questionnaire-item-openchoice.component";
