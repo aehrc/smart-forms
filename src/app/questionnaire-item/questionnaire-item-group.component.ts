@@ -9,6 +9,7 @@ import {
 
 import { Pipe, PipeTransform } from "@angular/core";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
+import { EnableWhenService } from "../services/enable-when.service";
 
 abstract class TabFilterPipeBase {
   isTab(item: QuestionnaireItem) {
@@ -65,9 +66,10 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
 
   constructor(
     private tabFilter: TabFilterPipe,
-    qresponseService: QuestionnaireResponseService
+    qresponseService: QuestionnaireResponseService,
+    enableWhenService: EnableWhenService
   ) {
-    super(qresponseService);
+    super(qresponseService, enableWhenService);
   }
 
   onInit() {
@@ -100,6 +102,7 @@ export class QuestionnaireItemGroupComponent extends QuestionnaireItemBase {
     }
     return false;
   }
+
   /*
   groupTabs(): QuestionnaireItem[] {
     var tabItems = this.item.item.filter(i=> this.isTab(i));

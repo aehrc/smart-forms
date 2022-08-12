@@ -21,6 +21,7 @@ import {
 } from "../services/questionnaire.model";
 import { ValueSetService } from "../services/value-set.service";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
+import { EnableWhenService } from "../services/enable-when.service";
 
 @Component({
   selector: "qitem-openchoice",
@@ -49,8 +50,11 @@ export class QuestionnaireItemOpenChoiceComponent
   // component FormControl
   private qformControl: QuestionnaireFormItem = new QuestionnaireFormItem();
 
-  constructor(qresponseService: QuestionnaireResponseService) {
-    super(qresponseService);
+  constructor(
+    qresponseService: QuestionnaireResponseService,
+    enableWhenService: EnableWhenService
+  ) {
+    super(qresponseService, enableWhenService);
   }
 
   onInit() {

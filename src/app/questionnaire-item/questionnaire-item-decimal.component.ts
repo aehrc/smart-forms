@@ -8,6 +8,7 @@ import { QuestionnaireFormItem } from "../services/questionnaire-form-item.model
 import { QuestionnaireForm } from "../services/questionnaire-form.model";
 import { QuestionnaireResponseService } from "../services/questionnaire-response.service";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
+import { EnableWhenService } from "../services/enable-when.service";
 
 @Component({
   selector: "qitem-decimal",
@@ -27,9 +28,10 @@ export class QuestionnaireItemDecimalComponent
 {
   constructor(
     qresponseService: QuestionnaireResponseService,
+    enableWhenService: EnableWhenService,
     private injector: Injector
   ) {
-    super(qresponseService);
+    super(qresponseService, enableWhenService);
   }
 
   // @Output()

@@ -21,6 +21,7 @@ import {
   ValueSetService,
 } from "../services/value-set.service";
 import { QuestionnaireItemBase } from "./questionnaire-item-base.component";
+import { EnableWhenService } from "../services/enable-when.service";
 
 type ItemControl = "autocomplete" | "drop-down" | "check-box" | "radio-button";
 
@@ -60,9 +61,10 @@ export class QuestionnaireItemChoiceComponent
 
   constructor(
     qresponseService: QuestionnaireResponseService,
+    enableWhenService: EnableWhenService,
     private valueSetFactory: ValueSetFactory
   ) {
-    super(qresponseService);
+    super(qresponseService, enableWhenService);
   }
 
   private subscriptions: Subscription[] = [];
