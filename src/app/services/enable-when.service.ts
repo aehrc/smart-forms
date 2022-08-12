@@ -33,7 +33,7 @@ export class EnableWhenService {
     itemAnswer: QuestionnaireResponseAnswer,
     enableWhenExpression: EnableWhen
   ): boolean {
-    if (!enableWhenExpression.answerCoding ) {
+    if (!enableWhenExpression.answerCoding) {
       return true;
     } else {
       switch (enableWhenExpression.operator) {
