@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { QuestionnaireResponseItem } from "./questionnaire-response.service";
+import { QuestionnaireResponseAnswer } from "./questionnaire-response.service";
 import { EnableWhen } from "./questionnaire.model";
 
 @Injectable({
@@ -7,23 +7,21 @@ import { EnableWhen } from "./questionnaire.model";
 })
 export class EnableWhenService {
   compareWhenExprAnswerInteger(
-    qItem: QuestionnaireResponseItem,
-    whenExpr: EnableWhen
+    itemAnswer: QuestionnaireResponseAnswer,
+    enableWhenExpression: EnableWhen
   ): boolean {
-    const itemAnswer = qItem.answer[0];
-
-    if (!whenExpr.answerInteger) {
+    if (!enableWhenExpression.answerInteger) {
       return true;
     } else {
-      switch (whenExpr.operator) {
+      switch (enableWhenExpression.operator) {
         case "<":
-          return itemAnswer.valueInteger < whenExpr.answerInteger;
+          return itemAnswer.valueInteger < enableWhenExpression.answerInteger;
 
         case "<=":
-          return itemAnswer.valueInteger <= whenExpr.answerInteger;
+          return itemAnswer.valueInteger <= enableWhenExpression.answerInteger;
 
         case ">":
-          return itemAnswer.valueInteger > whenExpr.answerInteger;
+          return itemAnswer.valueInteger > enableWhenExpression.answerInteger;
 
         default:
           return true;
@@ -32,17 +30,18 @@ export class EnableWhenService {
   }
 
   compareWhenExprAnswerCoding(
-    qItem: QuestionnaireResponseItem,
-    whenExpr: EnableWhen
+    itemAnswer: QuestionnaireResponseAnswer,
+    enableWhenExpression: EnableWhen
   ): boolean {
-    const itemAnswer = qItem.answer[0];
-
-    if (!whenExpr.answerCoding) {
+    if (!enableWhenExpression.answerCoding ) {
       return true;
     } else {
-      switch (whenExpr.operator) {
+      switch (enableWhenExpression.operator) {
         case "=":
-          return itemAnswer.valueCoding.code === whenExpr.answerCoding.code;
+          return (
+            itemAnswer.valueCoding.code ===
+            enableWhenExpression.answerCoding.code
+          );
 
         default:
           return true;
@@ -51,13 +50,17 @@ export class EnableWhenService {
   }
 
   compareWhenExprAnswerBoolean(
-    qItem: QuestionnaireResponseItem,
-    whenExpr: EnableWhen
+    itemAnswer: QuestionnaireResponseAnswer,
+    enableWhenExpression: EnableWhen
   ): boolean {
-    const itemAnswer = qItem.answer[0];
-
-    // enable when true
-    if (whenExpr.answerBoolean) {
+    // check if expr is of invalid type
+    if (
+      enableWhenExpression.answerInteger ||
+      enableWhenExpression.answerCoding
+    ) {
+      return true;
+    } else if (enableWhenExpression.answerBoolean) {
+      // enable when true
       return itemAnswer.valueBoolean;
     } else {
       // enable when false
