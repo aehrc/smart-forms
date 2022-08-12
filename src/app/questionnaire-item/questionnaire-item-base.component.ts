@@ -81,22 +81,21 @@ export abstract class QuestionnaireItemBase implements OnInit {
             switchMap((qItem) => {
               let result: boolean;
 
-              const itemAnswer = qItem.answer[0];
               // compare value with whenExpr.answer[x]
               if (qItem.answer?.length > 0) {
-                const ans = qItem.answer[0];
+                const itemAnswer = qItem.answer[0];
 
-                if (ans.valueInteger) {
+                if (itemAnswer.valueInteger) {
                   result = this.enableWhenService.compareWhenExprAnswerInteger(
                     itemAnswer,
                     whenExpr
                   );
-                } else if (ans.valueCoding) {
+                } else if (itemAnswer.valueCoding) {
                   result = this.enableWhenService.compareWhenExprAnswerCoding(
                     itemAnswer,
                     whenExpr
                   );
-                } else if (ans.valueBoolean !== undefined) {
+                } else if (itemAnswer.valueBoolean !== undefined) {
                   result = this.enableWhenService.compareWhenExprAnswerBoolean(
                     itemAnswer,
                     whenExpr
