@@ -6,6 +6,7 @@ import { QuestionnaireResponseService } from "../services/questionnaire-response
 
 import { QuestionnaireItem } from "../services/questionnaire.model";
 import { QuestionnaireFormGroup } from "../services/questionnaire-form-group.model";
+import { EnableWhenService } from "../services/enable-when.service";
 
 @Pipe({
   name: "shortTextOrText",
@@ -36,7 +37,10 @@ export abstract class QuestionnaireItemBase implements OnInit {
   @Input() parentGroup: QuestionnaireFormGroup;
   @Input() repeat: AbstractControl;
 
-  constructor(private qresponseService: QuestionnaireResponseService) {}
+  constructor(
+    private qresponseService: QuestionnaireResponseService,
+    private enableWhenService: EnableWhenService
+  ) {}
 
   abstract onInit(): void;
 
@@ -67,6 +71,7 @@ export abstract class QuestionnaireItemBase implements OnInit {
     return false;
   }
 
+  // TODO run this function onInit too
   enableWhen(): Observable<boolean> {
     if (this.item.enableWhen?.length > 0) {
       return from(this.item.enableWhen).pipe(
@@ -81,103 +86,21 @@ export abstract class QuestionnaireItemBase implements OnInit {
                 const ans = qItem.answer[0];
 
                 if (ans.valueInteger) {
-                  if (!whenExpr.answerInteger) {
-                    console.log(
-                      qItem.text,
-                      whenExpr.operator,
-                      this.item.text,
-                      whenExpr
-                    );
-                    result = true;
-                  } else {
-                    switch (whenExpr.operator) {
-                      case "<":
-                        result = ans.valueInteger < whenExpr.answerInteger;
-                        break;
-
-                      case "<=":
-                        result = ans.valueInteger <= whenExpr.answerInteger;
-                        break;
-
-                      case ">":
-                        result = ans.valueInteger > whenExpr.answerInteger;
-                        break;
-
-                      default:
-                        console.log(
-                          qItem.text,
-                          whenExpr.operator,
-                          this.item.text,
-                          whenExpr
-                        );
-                        result = true;
-                    }
-                  }
+                  result = this.enableWhenService.compareWhenExprAnswerInteger(
+                    qItem,
+                    whenExpr
+                  );
                 } else if (ans.valueCoding) {
-                  if (!whenExpr.answerCoding) {
-                    console.log(
-                      qItem.text,
-                      whenExpr.operator,
-                      this.item.text,
-                      whenExpr
-                    );
-                    result = true;
-                  } else {
-                    switch (whenExpr.operator) {
-                      case "=":
-                        result =
-                          ans.valueCoding.code === whenExpr.answerCoding.code;
-                        break;
-
-                      default:
-                        console.log(
-                          qItem.text,
-                          whenExpr.operator,
-                          this.item.text,
-                          whenExpr
-                        );
-                        result = true;
-                    }
-                  }
+                  result = this.enableWhenService.compareWhenExprAnswerCoding(
+                    qItem,
+                    whenExpr
+                  );
                 } else if (ans.valueBoolean !== undefined) {
-                  if (!whenExpr.answerBoolean) {
-                    console.log(
-                      qItem.text,
-                      whenExpr.operator,
-                      this.item.text,
-                      whenExpr
-                    );
-                    result = true;
-                  } else {
-                    switch (whenExpr.operator) {
-                      case "=":
-                        result = ans.valueBoolean === whenExpr.answerBoolean;
-                        break;
-
-                      default:
-                        console.log(
-                          qItem.text,
-                          whenExpr.operator,
-                          this.item.text,
-                          whenExpr
-                        );
-                        result = true;
-                    }
-                  }
-                  console.log(
-                    "answerBoolean",
-                    qItem.text,
-                    whenExpr.operator,
-                    this.item.text,
-                    result
+                  result = this.enableWhenService.compareWhenExprAnswerBoolean(
+                    qItem,
+                    whenExpr
                   );
                 } else {
-                  console.log(
-                    qItem.text,
-                    whenExpr.operator,
-                    this.item.text,
-                    ans
-                  );
                   result = true;
                 }
               }
