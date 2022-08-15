@@ -3,6 +3,7 @@ import { ValueSet } from "./value-set.model";
 
 export interface Questionnaire extends fhirclient.FHIR.Resource {
   resourceType: "Questionnaire";
+  contained?: PrepopulationQuery[];
   url: fhirclient.FHIR.uri;
   name: string;
   title: string;
@@ -48,4 +49,21 @@ export interface EnableWhen extends fhirclient.FHIR.BackboneElement {
   answerInteger?: number;
   answerCoding?: fhirclient.FHIR.Coding;
   answerBoolean?: boolean;
+}
+
+export interface PrepopulationQuery extends fhirclient.FHIR.Resource {
+  resourceType: "Bundle";
+  id: fhirclient.FHIR.id;
+  type: fhirclient.FHIR.code;
+  entry: QueryEntry[];
+}
+
+export interface QueryEntry extends fhirclient.FHIR.BackboneElement {
+  fullUrl: fhirclient.FHIR.uri;
+  request: QueryEntryRequest;
+}
+
+export interface QueryEntryRequest {
+  method: fhirclient.FHIR.code;
+  url: fhirclient.FHIR.uri;
 }

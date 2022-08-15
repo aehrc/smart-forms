@@ -36,7 +36,7 @@ export class QuestionnaireComponent implements OnInit, OnDestroy {
     this.questionnaire$ = this.questionnaireService.questionnaire$;
 
     this.addSubscriptions(
-      this.questionnaire$.subscribe((q) => {
+      this.questionnaire$.subscribe((q: Questionnaire) => {
         // this.showSpinner = true;
 
         this.addSubscriptions(
