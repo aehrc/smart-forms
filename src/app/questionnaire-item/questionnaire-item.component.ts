@@ -66,6 +66,7 @@ export class QuestionnaireItemBooleanComponent extends QuestionnaireItemBase {
       this.formControl = this.parentGroup.controls[
         this.item.linkId
       ] as FormControl;
+      this.formControl.setValue(false);
     }
   }
 }

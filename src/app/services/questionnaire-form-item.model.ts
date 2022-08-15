@@ -12,10 +12,6 @@ export class QuestionnaireFormItem extends FormControl {
 
   private responseItem: QuestionnaireResponseItem;
 
-  get response(): QuestionnaireResponseItem {
-    return this.responseItem;
-  }
-
   private calculatedExpression;
 
   constructor(item?: QuestionnaireItem) {
@@ -42,16 +38,13 @@ export class QuestionnaireFormItem extends FormControl {
   }
 
   private OnValueChanges(selectedValue: any) {
-    const answers: QuestionnaireResponseAnswer[] = [];
 
     const answer = this.getItemAnswer(selectedValue);
     if (answer) {
-      answers.push(answer);
-
       this.responseItem = {
         linkId: this.item.linkId,
         text: this.item.text,
-        answer: answers,
+        answer: [answer],
       };
     } else {
       this.responseItem = null;
@@ -137,6 +130,10 @@ export class QuestionnaireFormItem extends FormControl {
         console.log(this.item.type + " not supported in getItemData!");
         break;
     }
+  }
+
+  get response(): QuestionnaireResponseItem {
+    return this.responseItem;
   }
 
   get responseAnswer(): QuestionnaireResponseAnswer {
