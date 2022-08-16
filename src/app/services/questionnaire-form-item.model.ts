@@ -38,7 +38,6 @@ export class QuestionnaireFormItem extends FormControl {
   }
 
   private OnValueChanges(selectedValue: any) {
-
     const answer = this.getItemAnswer(selectedValue);
     if (answer) {
       this.responseItem = {
