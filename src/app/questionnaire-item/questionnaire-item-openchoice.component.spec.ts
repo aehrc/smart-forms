@@ -119,19 +119,7 @@ describe("QuestionnaireItemOpenChoiceAnswerOption", () => {
     const testInput = "smoker";
     let options: AnswerOption[];
 
-    expect(component.item.answerOption).toBeDefined();
-    component
-      .filterOptions(testInput)
-      .pipe(
-        map((answerOption) => ({
-          type: "ANSWER_OPTION",
-          content: answerOption,
-        }))
-      )
-      .subscribe((res) => {
-        options = res.content;
-      });
-
+    component.filterOptions(testInput).subscribe((res) => (options = res));
     expect(options[0].valueCoding.display).toBe("Smoker");
     expect(options[1].valueCoding.display).toBe("Ex-Smoker");
   });
