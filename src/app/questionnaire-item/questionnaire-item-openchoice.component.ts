@@ -87,9 +87,9 @@ export class QuestionnaireItemOpenChoiceComponent
         }),
         debounceTime(300),
         distinctUntilChanged(),
-        switchMap<any, ObservableInput<OpenChoiceContent>>((newValue) => {
+        switchMap<any, ObservableInput<OpenChoiceContent>>((input: string) => {
           if (this.item.answerOption) {
-            return this.filterOptions(newValue).pipe(
+            return this.filterOptions(input).pipe(
               map((answerOption) => ({
                 type: "ANSWER_OPTION",
                 content: answerOption,
@@ -97,7 +97,7 @@ export class QuestionnaireItemOpenChoiceComponent
             );
           } else if (this.item.answerValueSet) {
             const fullUrl =
-              this.item.answerValueSet + "filter=" + newValue + "&count=10"; // + "&includeDesignations=true";
+              this.item.answerValueSet + "filter=" + input + "&count=10"; // + "&includeDesignations=true";
             return ValueSetService.expand(fullUrl).pipe(
               map((valueSet) => ({
                 type: "VALUE_SET",
