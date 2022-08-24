@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import Qrender from './components/qrender/Qrender';
+import QRender from './components/qrender/QRender';
 
 function App() {
   return (
     <div className="App">
-      <Qrender></Qrender>
+      <QRender></QRender>
     </div>
   );
 }

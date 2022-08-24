@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Fix components linting">
-      <change afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
+    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Add Questionnaire resources">
+      <change afterPath="$PROJECT_DIR$/src/components/qform/QForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/QItem.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/QItems.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemBoolean.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoice.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemGroup.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemString.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/questionnaire/QuestionnaireModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/questionnaire/QuestionnaireReader.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/theme.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/resources/715.R4.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/715.R4.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/resources/CVD Check.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/CVD Check.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/resources/CVD Risk-HISO.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/CVD Risk-HISO.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/resources/CVD Risk.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/CVD Risk.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/qrender/Qrender.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qrender/Qrender.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qrender/Qrender.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qrender/QRender.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/reportWebVitals.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/reportWebVitals.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +53,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/fon026/IdeaProjects/smart-forms-react",
+    "last_opened_file_path": "/Users/fon026/IdeaProjects/smart-forms-react/src/components/qform/qform-items",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_interpreter_path": "node",
@@ -52,6 +66,17 @@
     "ts.external.directory.path": "/Users/fon026/IdeaProjects/smart-forms-react/node_modules/typescript/lib"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/qform/qform-items" />
+      <recent name="$PROJECT_DIR$/src/components/questionnaire" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/qform" />
+      <recent name="$PROJECT_DIR$/src/data" />
+      <recent name="$PROJECT_DIR$/src/components" />
+    </key>
+  </component>
   <component name="RunManager" selected="npm.npm start">
     <configuration name="Debug Application" type="JavascriptDebugType" uri="http://localhost:3000">
       <method v="2" />
@@ -109,7 +134,21 @@
       <option name="project" value="LOCAL" />
       <updated>1661315705338</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fix components linting">
+      <created>1661316564050</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1661316564050</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Add Questionnaire resources">
+      <created>1661316599346</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1661316599346</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -132,7 +171,8 @@
     <MESSAGE value="Add MUI dependency" />
     <MESSAGE value="Configure eslint and prettier" />
     <MESSAGE value="Fix components linting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix components linting" />
+    <MESSAGE value="Add Questionnaire resources" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Questionnaire resources" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

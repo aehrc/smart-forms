@@ -834,7 +834,12 @@
               ],
               "linkId": "3d46c42b-a10f-4805-ad9f-ae9510bdbc4e",
               "text": "Aboriginal and Torres Strait Islander status",
-              "code": [{ "code": "291036", "display": "Indigenous status" }],
+              "code": [
+                {
+                  "code": "291036",
+                  "display": "Indigenous status"
+                }
+              ],
               "type": "choice",
               "repeats": false,
               "answerOption": [
@@ -1312,7 +1317,10 @@
               "linkId": "a5e9f87a-c561-4ffb-b200-9b93b8887a11",
               "text": "item",
               "code": [
-                { "code": "282291009", "display": "Diagnosis interpretation" }
+                {
+                  "code": "282291009",
+                  "display": "Diagnosis interpretation"
+                }
               ],
               "type": "open-choice",
               "repeats": true,
