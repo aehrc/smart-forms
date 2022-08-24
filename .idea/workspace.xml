@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Add Questionnaire resources">
+    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Add boilerplate code">
       <change afterPath="$PROJECT_DIR$/src/components/qform/QForm.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/components/qform/QItem.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/components/qform/QItems.tsx" afterDir="false" />
@@ -11,17 +11,8 @@
       <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemString.tsx" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/components/questionnaire/QuestionnaireModel.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/components/questionnaire/QuestionnaireReader.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/theme.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/resources/715.R4.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/715.R4.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/resources/CVD Check.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/CVD Check.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/resources/CVD Risk-HISO.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/CVD Risk-HISO.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/resources/CVD Risk.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/CVD Risk.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/qrender/Qrender.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qrender/QRender.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +139,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661316599346</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add boilerplate code">
+      <created>1661327410708</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1661327410708</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,7 +170,8 @@
     <MESSAGE value="Configure eslint and prettier" />
     <MESSAGE value="Fix components linting" />
     <MESSAGE value="Add Questionnaire resources" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Questionnaire resources" />
+    <MESSAGE value="Add boilerplate code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add boilerplate code" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
