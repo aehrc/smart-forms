@@ -8,16 +8,13 @@ interface Props {
   item: QuestionnaireItem;
 }
 
-// A generic form item
 function QItemGroup(props: Props) {
   const { item } = props;
   return (
     <div>
-      <Container sx={{ border: 0.5, mb: 2, p: 3, borderRadius: 5, borderColor: grey.A400 }}>
+      <Container sx={{ border: 0.5, mb: 2, p: 3, borderColor: grey.A400 }}>
+        <Typography variant="h6">{item.text}</Typography>
         {item.item && <QItems items={item.item}></QItems>}
-        <Typography>{item.text}</Typography>
-        <Typography>{item.type}</Typography>
-        <Typography>{item.id}</Typography>
       </Container>
     </div>
   );

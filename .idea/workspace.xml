@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Add boilerplate code">
-      <change afterPath="$PROJECT_DIR$/src/components/qform/QForm.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/qform/QItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/qform/QItems.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemBoolean.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoice.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemGroup.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemString.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/questionnaire/QuestionnaireModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/questionnaire/QuestionnaireReader.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/qrender/Qrender.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qrender/QRender.tsx" afterDir="false" />
+    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Render form and basic form components">
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDate.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDateTime.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDecimal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDisplay.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemInteger.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemOpenChoice.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemQuantity.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemText.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/QForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/QForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/QItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemNonGroup.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/QItems.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/QItems.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemBoolean.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemBoolean.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoice.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoice.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemGroup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemGroup.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemString.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemString.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qrender/Qrender.tsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +38,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2DmpS0KLn6QlBpMKMvqAbycTzgb" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -53,7 +61,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "Errors",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "ts.external.directory.path": "/Users/fon026/IdeaProjects/smart-forms-react/node_modules/typescript/lib"
   }
 }]]></component>
@@ -63,6 +71,7 @@
       <recent name="$PROJECT_DIR$/src/components/questionnaire" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/qform/qform-items" />
       <recent name="$PROJECT_DIR$/src/components/qform" />
       <recent name="$PROJECT_DIR$/src/data" />
       <recent name="$PROJECT_DIR$/src/components" />
@@ -96,6 +105,8 @@
       <workItem from="1661315735196" duration="69000" />
       <workItem from="1661315811483" duration="135000" />
       <workItem from="1661315954742" duration="82000" />
+      <workItem from="1661382878467" duration="880000" />
+      <workItem from="1661384272846" duration="6146000" />
     </task>
     <task id="LOCAL-00001" summary="mui">
       <created>1661314618855</created>
@@ -146,7 +157,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661327410708</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Render form and basic form components">
+      <created>1661327590998</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1661327590998</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -171,7 +189,8 @@
     <MESSAGE value="Fix components linting" />
     <MESSAGE value="Add Questionnaire resources" />
     <MESSAGE value="Add boilerplate code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add boilerplate code" />
+    <MESSAGE value="Render form and basic form components" />
+    <option name="LAST_COMMIT_MESSAGE" value="Render form and basic form components" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -1,20 +1,20 @@
 import React from 'react';
-import { Checkbox } from '@mui/material';
+import { TextField } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 
 interface Props {
   item: QuestionnaireItem;
 }
 
-function QItemGroup(props: Props) {
+function QItemInteger(props: Props) {
   const { item } = props;
   return (
     <div>
-      <Checkbox id={item.linkId} />
-      <Checkbox id={item.linkId} />
-      <Checkbox id={item.linkId} />
+      <TextField type="number" id={item.linkId}>
+        {item.text}
+      </TextField>
     </div>
   );
 }
 
-export default QItemGroup;
+export default QItemInteger;
