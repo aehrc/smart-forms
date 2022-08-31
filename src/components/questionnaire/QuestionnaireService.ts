@@ -10,7 +10,7 @@ export class QuestionnaireService {
       resourceType: questionnaireData.resourceType,
       title: questionnaireData.title,
       url: questionnaireData.url,
-      items: questionnaireData.item[0].item
+      item: questionnaireData.item[0].item
     };
   }
 }
