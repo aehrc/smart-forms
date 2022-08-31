@@ -1,7 +1,7 @@
 import questionnaireData from '../../data/resources/715.R4.json';
 import { Questionnaire } from './QuestionnaireModel';
 
-export class QuestionnaireReader {
+export class QuestionnaireService {
   questionnaire: Questionnaire;
 
   constructor() {
@@ -12,9 +12,5 @@ export class QuestionnaireReader {
       url: questionnaireData.url,
       items: questionnaireData.item[0].item
     };
-  }
-
-  printJson() {
-    console.log(this.questionnaire);
   }
 }
