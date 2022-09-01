@@ -2,6 +2,7 @@ import React from 'react';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import { QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
+import IndexLinker from './IndexLinker';
 import { QuestionnaireResponseItem } from '../questionnaireResponse/QuestionnaireResponseModel';
 
 interface Props {
@@ -16,6 +17,8 @@ function QFormBody(props: Props) {
   const qrFormItems = qrForm.item;
 
   if (qFormItems && qrFormItems) {
+    const qrFormItemsByIndex = IndexLinker(qFormItems, qrFormItems);
+
     return (
       <div>
         <Container>
