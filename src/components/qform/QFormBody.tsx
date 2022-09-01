@@ -5,22 +5,24 @@ import { QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
 import IndexLinker from './IndexLinker';
 import { QuestionnaireResponseItem } from '../questionnaireResponse/QuestionnaireResponseModel';
 import QItemGroup from './qform-items/QItemGroup';
-import { QItemType } from './FormModel';
+import { PropsWithQrItemChangeHandler, QItemType } from './FormModel';
+import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
 
-interface Props {
+interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
 }
 
 function QFormBody(props: Props) {
-  const { qForm, qrForm } = props;
+  const { qForm, qrForm, onQrItemChange } = props;
+
+  function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
+    QuestionnaireResponseService.updateLinkedItem(qrItem, qrForm);
+    onQrItemChange(qrForm);
+  }
 
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
-
-  function handleQrChange(qrItem: QuestionnaireResponseItem) {
-    console.log('Change qr');
-  }
 
   if (qFormItems && qrFormItems) {
     const qrFormItemsByIndex = IndexLinker(qFormItems, qrFormItems);
@@ -39,7 +41,7 @@ function QFormBody(props: Props) {
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
-                  onQrItemChange={handleQrChange}></QItemGroup>
+                  onQrItemChange={handleQrGroupChange}></QItemGroup>
               );
             } else {
               return null;

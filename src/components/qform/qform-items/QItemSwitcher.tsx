@@ -15,7 +15,13 @@ function QItemSwitcher(props: Props) {
 
   switch (qItem.type) {
     case QItemType.String:
-      return <QItemString qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemString
+          qItem={qItem}
+          qrItem={qrItem}
+          onQrItemChange={(newQrItem) => onQrItemChange(newQrItem)}
+        />
+      );
     default:
       return <QItemBoolean qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
   }

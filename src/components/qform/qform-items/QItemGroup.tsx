@@ -20,13 +20,13 @@ function QItemGroup(props: Props) {
   const qrGroup = qrItem ? qrItem : QuestionnaireResponseService.createQrGroup(qItem);
   const qrItems = qrGroup.item;
 
-  function handleQrChange(qrItem: QuestionnaireResponseItem) {
-    console.log('Change qr');
+  function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+    QuestionnaireResponseService.updateLinkedItem(newQrItem, qrGroup);
+    onQrItemChange(qrGroup);
   }
 
   if (qItems && qrItems) {
     const qrItemsByIndex = IndexLinker(qItems, qrItems);
-    // console.log(qrItemsByIndex);
 
     return (
       <div>
@@ -42,7 +42,7 @@ function QItemGroup(props: Props) {
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
-                  onQrItemChange={handleQrChange}></QItemGroup>
+                  onQrItemChange={handleQrItemChange}></QItemGroup>
               );
             } else {
               return (
@@ -50,7 +50,7 @@ function QItemGroup(props: Props) {
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
-                  onQrItemChange={handleQrChange}></QItemSwitcher>
+                  onQrItemChange={handleQrItemChange}></QItemSwitcher>
               );
             }
           })}

@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Container from '@mui/material/Container';
 import { Grid, Stack, Typography } from '@mui/material';
 import { QuestionnaireService } from '../questionnaire/QuestionnaireService';
 import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
 import QFormBody from './QFormBody';
+import { QuestionnaireResponse } from '../questionnaireResponse/QuestionnaireResponseModel';
+
 function QForm() {
   const questionnaire = new QuestionnaireService();
   const questionnaireResponse = new QuestionnaireResponseService(questionnaire);
+
+  // State strictly used for showing visual updates
+  const [qrState, setQrState] = useState<QuestionnaireResponse>({
+    resourceType: questionnaireResponse.resourceType,
+    status: questionnaireResponse.status,
+    subject: questionnaireResponse.subject,
+    authored: questionnaireResponse.authored,
+    author: questionnaireResponse.author,
+    item: questionnaireResponse.item
+  });
 
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
@@ -21,7 +33,13 @@ function QForm() {
                 <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
                   {questionnaire.title}
                 </Typography>
-                <QFormBody qForm={qForm} qrForm={qrForm}></QFormBody>
+                <QFormBody
+                  qForm={qForm}
+                  qrForm={qrForm}
+                  onQrItemChange={(newQrForm) => {
+                    setQrState({ ...qrState, item: [newQrForm] });
+                    questionnaireResponse.updateForm(newQrForm);
+                  }}></QFormBody>
               </Stack>
             </Grid>
             <Grid item xs={4}>

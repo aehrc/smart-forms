@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
@@ -13,7 +13,16 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemString(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  const qrString = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  let qrString = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+
+  const answerValue = qrString['answer'] ? qrString['answer'][0].valueString : '';
+  const [value, setValue] = useState(answerValue);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setValue(e.target.value);
+    qrString = { ...qrString, answer: [{ valueString: e.target.value }] };
+    onQrItemChange(qrString);
+  }
 
   return (
     <FormControl fullWidth sx={{ m: 1, p: 1 }}>
@@ -23,7 +32,7 @@ function QItemString(props: Props) {
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <TextField id={qItem.linkId} />
+            <TextField id={qItem.linkId} value={value} onChange={handleChange} />
           </Container>
         </Grid>
       </Grid>

@@ -31,6 +31,11 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
     }
   }
 
+  updateForm(newQrForm: QuestionnaireResponseItem) {
+    this.item = [newQrForm];
+    console.log('updated');
+  }
+
   static createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {
     return {
       linkId: qItem.linkId,
@@ -42,5 +47,18 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
     return {
       linkId: qItem.linkId
     };
+  }
+
+  static updateLinkedItem(
+    newQrItem: QuestionnaireResponseItem,
+    qrGroup: QuestionnaireResponseItem
+  ) {
+    qrGroup.item?.forEach((item, i) => {
+      if (item.linkId === newQrItem.linkId) {
+        if (qrGroup.item) {
+          qrGroup.item[i] = newQrItem;
+        }
+      }
+    });
   }
 }
