@@ -1,16 +1,19 @@
 import questionnaireData from '../../data/resources/715.R4.json';
-import { Questionnaire } from './QuestionnaireModel';
+import { Questionnaire, QuestionnaireItem } from './QuestionnaireModel';
+import { fhirclient } from 'fhirclient/lib/types';
 
-export class QuestionnaireService {
-  questionnaire: Questionnaire;
+export class QuestionnaireService implements Questionnaire {
+  resourceType: fhirclient.FHIR.code;
+  url: fhirclient.FHIR.uri;
+  name: string;
+  title: string;
+  item: QuestionnaireItem[];
 
   constructor() {
-    this.questionnaire = {
-      name: questionnaireData.name,
-      resourceType: questionnaireData.resourceType,
-      title: questionnaireData.title,
-      url: questionnaireData.url,
-      item: questionnaireData.item[0].item
-    };
+    this.resourceType = questionnaireData.resourceType;
+    this.url = questionnaireData.url;
+    this.name = questionnaireData.name;
+    this.title = questionnaireData.title;
+    this.item = questionnaireData.item;
   }
 }

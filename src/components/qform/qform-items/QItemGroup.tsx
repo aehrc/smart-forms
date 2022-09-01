@@ -3,7 +3,7 @@ import { Typography, Container } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { grey } from '@mui/material/colors';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
-import { PropsWithQrItemChangeHandler } from '../QFormModel';
+import { PropsWithQrItemChangeHandler } from '../FormModel';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;

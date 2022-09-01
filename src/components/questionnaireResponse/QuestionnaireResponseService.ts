@@ -1,17 +1,33 @@
 import questionnaireResponseData from '../../data/resources/715.R4.response.json';
-import { QuestionnaireResponse } from './QuestionnaireResponseModel';
+import { QuestionnaireResponse, QuestionnaireResponseItem } from './QuestionnaireResponseModel';
+import { Questionnaire } from '../questionnaire/QuestionnaireModel';
+import { fhirclient } from 'fhirclient/lib/types';
 
-export class QuestionnaireResponseService {
-  questionnaireResponse: QuestionnaireResponse;
+export class QuestionnaireResponseService implements QuestionnaireResponse {
+  resourceType: 'QuestionnaireResponse';
+  status: fhirclient.FHIR.code;
+  subject?: fhirclient.FHIR.Reference;
+  authored?: fhirclient.FHIR.dateTime;
+  author?: fhirclient.FHIR.Reference;
+  item: QuestionnaireResponseItem[];
 
-  constructor() {
-    this.questionnaireResponse = {
-      resourceType: 'QuestionnaireResponse',
-      status: questionnaireResponseData.status,
-      subject: { reference: questionnaireResponseData.subject.reference },
-      authored: questionnaireResponseData.authored,
-      author: undefined,
-      item: questionnaireResponseData.item
-    };
+  constructor(questionnaire: Questionnaire) {
+    this.resourceType = 'QuestionnaireResponse';
+    this.status = questionnaireResponseData.status;
+    this.subject = { reference: questionnaireResponseData.subject.reference };
+    this.authored = questionnaireResponseData.authored;
+    this.author = undefined;
+    this.item = questionnaireResponseData.item;
+    this.initializeFormItem(questionnaire);
+  }
+
+  initializeFormItem(questionnaire: Questionnaire): void {
+    if (this.item === []) {
+      this.item[0] = {
+        linkId: questionnaire.item[0].linkId,
+        text: questionnaire.item[0].text,
+        item: []
+      };
+    }
   }
 }
