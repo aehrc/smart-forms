@@ -5,7 +5,7 @@ export interface Questionnaire extends fhirclient.FHIR.Resource {
   url: fhirclient.FHIR.uri;
   name: string;
   title: string;
-  items: QuestionnaireItem[];
+  item: QuestionnaireItem[];
 }
 
 export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
