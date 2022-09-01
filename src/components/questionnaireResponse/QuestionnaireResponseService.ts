@@ -1,6 +1,6 @@
 import questionnaireResponseData from '../../data/resources/715.R4.response.json';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from './QuestionnaireResponseModel';
-import { Questionnaire } from '../questionnaire/QuestionnaireModel';
+import { Questionnaire, QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
 import { fhirclient } from 'fhirclient/lib/types';
 
 export class QuestionnaireResponseService implements QuestionnaireResponse {
@@ -29,5 +29,12 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
         item: []
       };
     }
+  }
+
+  static createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+    return {
+      linkId: qItem.linkId,
+      item: []
+    };
   }
 }
