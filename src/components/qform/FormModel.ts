@@ -3,5 +3,7 @@ export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
 }
 
 export enum QItemType {
-  Group = 'group'
+  Group = 'group',
+  String = 'string',
+  Boolean = 'boolean'
 }

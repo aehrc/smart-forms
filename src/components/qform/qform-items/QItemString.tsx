@@ -1,17 +1,33 @@
 import React from 'react';
-import { TextField } from '@mui/material';
+import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
+import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
+import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 
-interface Props {
-  item: QuestionnaireItem;
+interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
 }
 
 function QItemString(props: Props) {
-  const { item } = props;
+  const { qItem, qrItem, onQrItemChange } = props;
+
+  const qrString = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+
   return (
-    <div>
-      <TextField id={item.linkId} />
-    </div>
+    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={5}>
+          <Typography>{qItem.text}</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Container>
+            <TextField id={qItem.linkId} />
+          </Container>
+        </Grid>
+      </Grid>
+    </FormControl>
   );
 }
 

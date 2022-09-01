@@ -6,6 +6,7 @@ import { QuestionnaireResponseItem } from '../../questionnaireResponse/Questionn
 import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
 import IndexLinker from '../IndexLinker';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import QItemSwitcher from './QItemSwitcher';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -16,7 +17,7 @@ function QItemGroup(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   const qItems = qItem.item;
-  const qrGroup = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrGroup = qrItem ? qrItem : QuestionnaireResponseService.createQrGroup(qItem);
   const qrItems = qrGroup.item;
 
   function handleQrChange(qrItem: QuestionnaireResponseItem) {
@@ -44,7 +45,13 @@ function QItemGroup(props: Props) {
                   onQrItemChange={handleQrChange}></QItemGroup>
               );
             } else {
-              return <div key={qItem.linkId}>Non-group</div>;
+              return (
+                <QItemSwitcher
+                  key={qItem.linkId}
+                  qItem={qItem}
+                  qrItem={qrItem}
+                  onQrItemChange={handleQrChange}></QItemSwitcher>
+              );
             }
           })}
         </Container>

@@ -31,10 +31,16 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
     }
   }
 
-  static createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+  static createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {
     return {
       linkId: qItem.linkId,
       item: []
+    };
+  }
+
+  static createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+    return {
+      linkId: qItem.linkId
     };
   }
 }
