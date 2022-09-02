@@ -48,6 +48,11 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
     };
   }
 
+  /**
+   * Updates the QuestionnaireResponseItem group by slotting in a new/modified child QuestionnaireResponseItem
+   *
+   * @author Sean Fong
+   */
   static updateLinkedItem(
     newQrItem: QuestionnaireResponseItem,
     qrGroup: QuestionnaireResponseItem,

@@ -1,7 +1,12 @@
 import { QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
 import { QuestionnaireResponseItem } from '../questionnaireResponse/QuestionnaireResponseModel';
 
-// get supposed indexes of qrItems based on qItems
+/**
+ * Stores indexes of QuestionnaireResponseItems relative to its QuestionnaireItem in an array.
+ * Indexes with no QuestionnaireResponseItems are set to undefined.
+ *
+ * @author Sean Fong
+ */
 export function getQrItemsIndex(
   qItems: QuestionnaireItem[],
   qrItems: QuestionnaireResponseItem[]
@@ -17,7 +22,11 @@ export function getQrItemsIndex(
   }, []);
 }
 
-// create am index map of qItems linkIds
+/**
+ * Creates a mapping of QuestionnaireItems linkIds to their respective array indexes
+ *
+ * @author Sean Fong
+ */
 export function mapQItemsIndex(qGroup: QuestionnaireItem): Record<string, number> {
   if (qGroup.item) {
     return qGroup.item.reduce((mapping: Record<string, number>, item, i) => {
