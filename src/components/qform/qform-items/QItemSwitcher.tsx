@@ -6,6 +6,7 @@ import React from 'react';
 import QItemBoolean from './QItemBoolean';
 import QItemDate from './QItemDate';
 import QItemText from './QItemText';
+import QItemDisplay from './QItemDisplay';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -29,6 +30,8 @@ function QItemSwitcher(props: Props) {
       return <QItemDate qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     case QItemType.Text:
       return <QItemText qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemType.Display:
+      return <QItemDisplay qItem={qItem} />;
     default:
       return <div>Default</div>;
   }
