@@ -14,7 +14,6 @@ function QItemString(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   let qrString = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-
   const answerValue = qrString['answer'] ? qrString['answer'][0].valueString : '';
   const [value, setValue] = useState(answerValue);
 

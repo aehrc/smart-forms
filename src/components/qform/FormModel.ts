@@ -6,5 +6,6 @@ export enum QItemType {
   Group = 'group',
   String = 'string',
   Boolean = 'boolean',
-  Date = 'date'
+  Date = 'date',
+  Text = 'text'
 }
