@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Checkbox, Container, FormControl, Grid, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
@@ -13,7 +13,15 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemBoolean(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  const qrBoolean = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  let qrBoolean = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const answerValue = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
+  const [value, setValue] = useState(answerValue);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setValue(e.target.checked);
+    qrBoolean = { ...qrBoolean, text: qItem.text, answer: [{ valueBoolean: e.target.checked }] };
+    onQrItemChange(qrBoolean);
+  }
 
   return (
     <FormControl fullWidth sx={{ m: 1, p: 1 }}>
@@ -23,7 +31,7 @@ function QItemBoolean(props: Props) {
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <Checkbox id={qItem.linkId} />
+            <Checkbox id={qItem.linkId} checked={value} onChange={handleChange} />
           </Container>
         </Grid>
       </Grid>

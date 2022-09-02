@@ -1,7 +1,11 @@
 import { QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
 import { QuestionnaireResponseItem } from '../questionnaireResponse/QuestionnaireResponseModel';
 
-function IndexLinker(qItems: QuestionnaireItem[], qrItems: QuestionnaireResponseItem[]) {
+// get supposed indexes of qrItems based on qItems
+export function getQrItemsIndex(
+  qItems: QuestionnaireItem[],
+  qrItems: QuestionnaireResponseItem[]
+): any[] {
   const qrItemsDict = qrItems.reduce((mapping: Record<string, QuestionnaireResponseItem>, item) => {
     mapping[item.linkId] = { ...item };
     return mapping;
@@ -13,4 +17,14 @@ function IndexLinker(qItems: QuestionnaireItem[], qrItems: QuestionnaireResponse
   }, []);
 }
 
-export default IndexLinker;
+// create am index map of qItems linkIds
+export function mapQItemsIndex(qGroup: QuestionnaireItem): Record<string, number> {
+  if (qGroup.item) {
+    return qGroup.item.reduce((mapping: Record<string, number>, item, i) => {
+      mapping[item.linkId] = i;
+      return mapping;
+    }, {});
+  } else {
+    return {};
+  }
+}

@@ -22,8 +22,10 @@ function QItemSwitcher(props: Props) {
           onQrItemChange={(newQrItem) => onQrItemChange(newQrItem)}
         />
       );
-    default:
+    case QItemType.Boolean:
       return <QItemBoolean qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    default:
+      return <div>Default</div>;
   }
 }
 
