@@ -4,9 +4,9 @@ import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { grey } from '@mui/material/colors';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
-import IndexLinker from '../IndexLinker';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
+import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -15,18 +15,19 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 
 function QItemGroup(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
+  const qItemsIndexMap: Record<string, number> = mapQItemsIndex(qItem);
 
   const qItems = qItem.item;
   const qrGroup = qrItem ? qrItem : QuestionnaireResponseService.createQrGroup(qItem);
   const qrItems = qrGroup.item;
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
-    QuestionnaireResponseService.updateLinkedItem(newQrItem, qrGroup);
+    QuestionnaireResponseService.updateLinkedItem(newQrItem, qrGroup, qItemsIndexMap);
     onQrItemChange(qrGroup);
   }
 
   if (qItems && qrItems) {
-    const qrItemsByIndex = IndexLinker(qItems, qrItems);
+    const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
 
     return (
       <div>

@@ -10,6 +10,11 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   qrItem: QuestionnaireResponseItem;
 }
 
+/**
+ * Performs switching for non-group item components based on their item types.
+ *
+ * @author Sean Fong
+ */
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
@@ -22,8 +27,10 @@ function QItemSwitcher(props: Props) {
           onQrItemChange={(newQrItem) => onQrItemChange(newQrItem)}
         />
       );
-    default:
+    case QItemType.Boolean:
       return <QItemBoolean qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    default:
+      return <div>Default</div>;
   }
 }
 

@@ -20,7 +20,7 @@ function QItemString(props: Props) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
-    qrString = { ...qrString, answer: [{ valueString: e.target.value }] };
+    qrString = { ...qrString, text: qItem.text, answer: [{ valueString: e.target.value }] };
     onQrItemChange(qrString);
   }
 
