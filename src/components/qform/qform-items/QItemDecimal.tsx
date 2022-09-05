@@ -1,17 +1,42 @@
-import React from 'react';
-import { TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
+import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
+import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 
-interface Props {
-  item: QuestionnaireItem;
+interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDecimal(props: Props) {
-  const { item } = props;
+  const { qItem, qrItem, onQrItemChange } = props;
+
+  let qrDecimal = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const answerValue = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : '';
+  const [value, setValue] = useState(answerValue);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const decimalValue = parseFloat(e.target.value);
+    setValue(decimalValue);
+    qrDecimal = { ...qrDecimal, text: qItem.text, answer: [{ valueDecimal: decimalValue }] };
+    onQrItemChange(qrDecimal);
+  }
+
   return (
-    <div>
-      <TextField type="number" id={item.linkId} />
-    </div>
+    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={5}>
+          <Typography>{qItem.text}</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Container>
+            <TextField type="number" id={qItem.linkId} value={value} onChange={handleChange} />
+          </Container>
+        </Grid>
+      </Grid>
+    </FormControl>
   );
 }
 

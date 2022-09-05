@@ -7,6 +7,9 @@ export enum QItemType {
   String = 'string',
   Boolean = 'boolean',
   Date = 'date',
+  Datetime = 'datetime',
   Text = 'text',
-  Display = 'display'
+  Display = 'display',
+  Integer = 'integer',
+  Decimal = 'decimal'
 }

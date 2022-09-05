@@ -7,6 +7,9 @@ import QItemBoolean from './QItemBoolean';
 import QItemDate from './QItemDate';
 import QItemText from './QItemText';
 import QItemDisplay from './QItemDisplay';
+import QItemInteger from './QItemInteger';
+import QItemDateTime from './QItemDateTime';
+import QItemDecimal from './QItemDecimal';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -28,10 +31,16 @@ function QItemSwitcher(props: Props) {
       return <QItemBoolean qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     case QItemType.Date:
       return <QItemDate qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemType.Datetime:
+      return <QItemDateTime qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     case QItemType.Text:
       return <QItemText qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     case QItemType.Display:
       return <QItemDisplay qItem={qItem} />;
+    case QItemType.Integer:
+      return <QItemInteger qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemType.Decimal:
+      return <QItemDecimal qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     default:
       return <div>Default</div>;
   }
