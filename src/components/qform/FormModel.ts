@@ -7,9 +7,12 @@ export enum QItemType {
   String = 'string',
   Boolean = 'boolean',
   Date = 'date',
-  Datetime = 'datetime',
+  DateTime = 'datetime',
   Text = 'text',
   Display = 'display',
   Integer = 'integer',
-  Decimal = 'decimal'
+  Decimal = 'decimal',
+  Quantity = 'quantity',
+  Choice = 'choice',
+  OpenChoice = 'open-choice'
 }

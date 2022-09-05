@@ -1,17 +1,78 @@
-import React from 'react';
-import { TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
+import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
+import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 
-interface Props {
-  item: QuestionnaireItem;
+interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
 }
 
 function QItemQuantity(props: Props) {
-  const { item } = props;
+  const { qItem, qrItem, onQrItemChange } = props;
+
+  let qrQuantity = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  let answerValue = 0.0;
+  let answerUnit = '';
+
+  if (qrQuantity['answer']) {
+    const answer = qrQuantity['answer'][0];
+    answerValue = answer.valueQuantity ? answer.valueQuantity.value : 0.0;
+    answerUnit = answer.valueQuantity ? answer.valueQuantity.unit : '';
+  }
+
+  const [value, setValue] = useState(answerValue);
+  const [unit, setUnit] = useState(answerUnit);
+
+  function handleValueChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setValue(parseFloat(e.target.value));
+    updateQrItem();
+  }
+
+  function handleUnitChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setUnit(e.target.value);
+    updateQrItem();
+  }
+
+  function updateQrItem() {
+    qrQuantity = {
+      ...qrQuantity,
+      text: qItem.text,
+      answer: [{ valueQuantity: { value: value, unit: unit } }]
+    };
+    onQrItemChange(qrQuantity);
+  }
+
   return (
-    <div>
-      <TextField type="number" id={item.linkId} />
-    </div>
+    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={5}>
+          <Typography>{qItem.text}</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Grid container spacing={1}>
+            <Grid item xs={8}>
+              <Container>
+                <TextField
+                  type="number"
+                  id={qItem.linkId}
+                  value={value}
+                  onChange={handleValueChange}
+                />
+              </Container>
+            </Grid>
+
+            <Grid item xs={8}>
+              <Container>
+                <TextField id={qItem.linkId + '_unit'} value={unit} onChange={handleUnitChange} />
+              </Container>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </FormControl>
   );
 }
 

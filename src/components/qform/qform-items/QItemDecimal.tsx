@@ -14,7 +14,7 @@ function QItemDecimal(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   let qrDecimal = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const answerValue = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : '';
+  const answerValue = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
   const [value, setValue] = useState(answerValue);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

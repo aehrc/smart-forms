@@ -14,7 +14,7 @@ function QItemInteger(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   let qrInteger = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const answerValue = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : '';
+  const answerValue = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
   const [value, setValue] = useState(answerValue);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
