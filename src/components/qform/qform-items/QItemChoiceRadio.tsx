@@ -24,7 +24,7 @@ function QItemChoiceRadio(props: Props) {
 
   let qrChoiceRadio = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
-  let answerValue: string | number | undefined = undefined;
+  let answerValue: string | number | undefined = '';
   if (qrChoiceRadio['answer']) {
     const answer = qrChoiceRadio['answer'][0];
     if (answer['valueCoding']) {
@@ -52,7 +52,6 @@ function QItemChoiceRadio(props: Props) {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   return (
     <FormControl fullWidth sx={{ m: 1, p: 1 }}>
       <Grid container spacing={2}>
@@ -61,11 +60,7 @@ function QItemChoiceRadio(props: Props) {
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <RadioGroup
-              name={qItem.text}
-              id={qItem.id}
-              onChange={handleChange}
-              defaultValue={value}>
+            <RadioGroup name={qItem.text} id={qItem.id} onChange={handleChange} value={value}>
               {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
