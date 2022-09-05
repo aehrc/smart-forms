@@ -7,6 +7,8 @@ import {
 } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import QItemChoiceSelect from './QItemChoiceSelect';
 import QItemChoiceRadio from './QItemChoiceRadio';
+import { isSpecificItemControl } from './QItemFunctions';
+import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -16,22 +18,30 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemChoice(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  if (qItem['answerOption']) {
-    switch (getChoiceControlType(qItem.answerOption)) {
-      case QItemChoiceControl.Radio:
-        return <QItemChoiceRadio qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
-      case QItemChoiceControl.Select:
-        return <QItemChoiceSelect qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
-    }
+  switch (getChoiceControlType(qItem)) {
+    case QItemChoiceControl.Radio:
+      return <QItemChoiceRadio qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemChoiceControl.Select:
+      return <QItemChoiceSelect qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemChoiceControl.Autocomplete:
+      return (
+        <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
+      );
   }
   return null;
 }
 
-function getChoiceControlType(answerOptions: AnswerOption[]) {
+function getChoiceControlType(qItem: QuestionnaireItem) {
   const dropdownOptionsCount = 5;
-  return answerOptions.length > 0 && answerOptions.length < dropdownOptionsCount
-    ? QItemChoiceControl.Radio
-    : QItemChoiceControl.Select;
+  if (isSpecificItemControl(qItem, QItemChoiceControl.Autocomplete)) {
+    return QItemChoiceControl.Autocomplete;
+  } else {
+    if (qItem.answerOption) {
+      return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
+        ? QItemChoiceControl.Radio
+        : QItemChoiceControl.Select;
+    }
+  }
 }
 
 export function findInAnswerOptions(

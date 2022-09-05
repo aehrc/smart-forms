@@ -17,6 +17,7 @@ export interface QuestionnaireItem extends fhirclient.FHIR.BackboneElement {
   repeats?: boolean;
   answerValueSet?: string;
   answerOption?: AnswerOption[];
+  extension?: ItemExtension[];
   item?: QuestionnaireItem[];
 }
 
@@ -48,4 +49,9 @@ export interface EnableWhen extends fhirclient.FHIR.BackboneElement {
   answerInteger?: number;
   answerCoding?: fhirclient.FHIR.Coding;
   answerBoolean?: boolean;
+}
+
+export interface ItemExtension extends fhirclient.FHIR.Extension {
+  url: fhirclient.FHIR.uri;
+  valueCodeableConcept?: fhirclient.FHIR.CodeableConcept;
 }

@@ -18,7 +18,7 @@ export enum QItemType {
 }
 
 export enum QItemChoiceControl {
-  Radio,
-  Select,
-  Autocomplete
+  Radio = 'radio',
+  Select = 'select',
+  Autocomplete = 'autocomplete'
 }
