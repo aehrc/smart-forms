@@ -40,8 +40,16 @@ export function findInAnswerOptions(
 ): QuestionnaireResponseAnswer | undefined {
   for (const option of answerOptions) {
     if (option['valueCoding']) {
-      if (selected === option.valueCoding?.code) {
-        return option.valueCoding;
+      if (selected === option.valueCoding.code) {
+        return option;
+      }
+    } else if (option['valueString']) {
+      if (selected === option.valueString) {
+        return option;
+      }
+    } else if (option['valueInteger']) {
+      if (selected === option.valueInteger.toString()) {
+        return option;
       }
     }
   }
