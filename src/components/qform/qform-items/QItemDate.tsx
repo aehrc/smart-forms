@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
@@ -16,6 +16,10 @@ function QItemDate(props: Props) {
   let qrDate = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
   const answerValue = qrDate['answer'] ? qrDate['answer'][0].valueDate : '';
   const [value, setValue] = useState(answerValue);
+
+  useEffect(() => {
+    setValue(answerValue);
+  }, [answerValue]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);

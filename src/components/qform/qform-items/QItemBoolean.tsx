@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Checkbox, Container, FormControl, Grid, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
@@ -16,6 +16,10 @@ function QItemBoolean(props: Props) {
   let qrBoolean = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
   const answerValue = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
   const [value, setValue] = useState(answerValue);
+
+  useEffect(() => {
+    setValue(answerValue);
+  }, [answerValue]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.checked);

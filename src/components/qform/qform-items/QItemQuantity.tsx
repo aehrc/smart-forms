@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
@@ -25,6 +25,14 @@ function QItemQuantity(props: Props) {
 
   const [value, setValue] = useState(answerValue);
   const [unit, setUnit] = useState(answerUnit);
+
+  useEffect(() => {
+    setValue(answerValue);
+  }, [answerValue]);
+
+  useEffect(() => {
+    setUnit(answerUnit);
+  }, [answerUnit]);
 
   function handleValueChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(parseFloat(e.target.value));

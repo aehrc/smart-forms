@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import Container from '@mui/material/Container';
-import { Grid, Stack, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import { QuestionnaireService } from '../questionnaire/QuestionnaireService';
 import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
+import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
-import { QuestionnaireResponse } from '../questionnaireResponse/QuestionnaireResponseModel';
+import {
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from '../questionnaireResponse/QuestionnaireResponseModel';
 
 function QForm() {
   const questionnaire = new QuestionnaireService();
   const questionnaireResponse = new QuestionnaireResponseService(questionnaire);
 
-  // State strictly used for showing visual updates
   const [qrState, setQrState] = useState<QuestionnaireResponse>({
     resourceType: questionnaireResponse.resourceType,
     status: questionnaireResponse.status,
@@ -23,19 +26,34 @@ function QForm() {
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
 
+  function clearQuestionnaireResponseButton() {
+    const clearQrForm: QuestionnaireResponseItem = {
+      linkId: '715-clear',
+      text: 'MBS 715 Cleared',
+      item: []
+    };
+    setQrState({ ...qrState, item: [clearQrForm] });
+    questionnaireResponse.updateForm(clearQrForm);
+  }
+
   if (qForm.item && qrForm.item) {
     return (
       <div>
         <Container>
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <Stack spacing={4} sx={{ my: 4 }}>
+              <Stack spacing={1} sx={{ my: 4 }}>
                 <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
                   {questionnaire.title}
                 </Typography>
+
+                <Button onClick={clearQuestionnaireResponseButton}>
+                  Clear Responses
+                  <ClearIcon sx={{ ml: 2 }} />
+                </Button>
                 <QFormBody
                   qForm={qForm}
-                  qrForm={qrForm}
+                  qrForm={qrState.item[0]}
                   onQrItemChange={(newQrForm) => {
                     setQrState({ ...qrState, item: [newQrForm] });
                     questionnaireResponse.updateForm(newQrForm);
@@ -43,7 +61,7 @@ function QForm() {
               </Stack>
             </Grid>
             <Grid item xs={4}>
-              {<pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>}
+              {<pre>{JSON.stringify(qrState, null, 2)}</pre>}
             </Grid>
           </Grid>
         </Container>
