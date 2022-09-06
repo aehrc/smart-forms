@@ -18,7 +18,7 @@ function QItemAutocomplete(props: Props) {
 
   let qrChoiceAutocomplete = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
-  let answerValueCoding: fhirclient.FHIR.Coding | undefined | null;
+  let answerValueCoding: fhirclient.FHIR.Coding | undefined | null = null;
   if (qrChoiceAutocomplete['answer']) {
     answerValueCoding = qrChoiceAutocomplete['answer'][0].valueCoding;
   }
