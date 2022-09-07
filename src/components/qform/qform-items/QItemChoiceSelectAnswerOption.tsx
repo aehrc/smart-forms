@@ -19,7 +19,7 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemChoice(props: Props) {
+function QItemChoiceSelectAnswerOption(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   let qrChoiceSelect = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
@@ -99,4 +99,4 @@ function QItemChoice(props: Props) {
   );
 }
 
-export default QItemChoice;
+export default QItemChoiceSelectAnswerOption;
