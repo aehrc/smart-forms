@@ -1,4 +1,4 @@
-import questionnaireResponseData from '../../data/resources/715.R4.response.json';
+import questionnaireResponseData from '../../data/resources/715.R4.patient.json';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from './QuestionnaireResponseModel';
 import { Questionnaire, QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
 import { fhirclient } from 'fhirclient/lib/types';
