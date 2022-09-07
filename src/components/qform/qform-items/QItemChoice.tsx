@@ -5,10 +5,12 @@ import {
   QuestionnaireResponseAnswer,
   QuestionnaireResponseItem
 } from '../../questionnaireResponse/QuestionnaireResponseModel';
-import QItemChoiceSelect from './QItemChoiceSelect';
 import QItemChoiceRadio from './QItemChoiceRadio';
 import { isSpecificItemControl } from './QItemFunctions';
+import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
+import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
+import QItemChoiceCheckbox from './QItemChoiceCheckbox';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -21,8 +23,26 @@ function QItemChoice(props: Props) {
   switch (getChoiceControlType(qItem)) {
     case QItemChoiceControl.Radio:
       return <QItemChoiceRadio qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemChoiceControl.Checkbox:
+      return <QItemChoiceCheckbox qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     case QItemChoiceControl.Select:
-      return <QItemChoiceSelect qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      if (qItem.answerValueSet) {
+        return (
+          <QItemSelectAnswerValueSet
+            qItem={qItem}
+            qrItem={qrItem}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      } else {
+        return (
+          <QItemChoiceSelectAnswerOption
+            qItem={qItem}
+            qrItem={qrItem}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      }
     case QItemChoiceControl.Autocomplete:
       return (
         <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
@@ -33,8 +53,10 @@ function QItemChoice(props: Props) {
 
 function getChoiceControlType(qItem: QuestionnaireItem) {
   const dropdownOptionsCount = 5;
-  if (isSpecificItemControl(qItem, QItemChoiceControl.Autocomplete)) {
+  if (isSpecificItemControl(qItem, 'autocomplete')) {
     return QItemChoiceControl.Autocomplete;
+  } else if (isSpecificItemControl(qItem, 'check-box')) {
+    return QItemChoiceControl.Checkbox;
   } else {
     if (qItem.answerOption) {
       return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
