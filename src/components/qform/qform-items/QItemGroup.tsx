@@ -7,6 +7,7 @@ import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
+import QItemRepeats from '../qform-advanced-rendering/QItemRepeats';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -37,6 +38,18 @@ function QItemGroup(props: Props) {
           </Typography>
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItem = qrItemsByIndex[i];
+            if (qItem['repeats']) {
+              if (qItem.repeats) {
+                return (
+                  <QItemRepeats
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    onQrItemChange={handleQrItemChange}></QItemRepeats>
+                );
+              }
+            }
+
             if (qItem.type === QItemType.Group) {
               return (
                 <QItemGroup
