@@ -33,8 +33,11 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
 
       if (qrChoiceCheckbox['answer']) {
         let qrAnswers = qrChoiceCheckbox.answer;
-        if (qrChoiceCheckbox.answer.includes(qrAnswer)) {
-          qrAnswers = qrAnswers.filter((item) => item !== qrAnswer);
+        const changedValueInAnswers = findInAnswerOptions(qrChoiceCheckbox.answer, changedValue);
+        if (changedValueInAnswers) {
+          qrAnswers = qrAnswers.filter(
+            (item) => JSON.stringify(item) !== JSON.stringify(changedValueInAnswers)
+          );
         } else {
           qrAnswers.push(qrAnswer);
         }
@@ -60,14 +63,15 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 qItem.answerOption.map((option: AnswerOption) => {
-                  const isChecked: boolean = answers.includes(option);
                   if (option['valueCoding']) {
                     return (
                       <QItemSingleCheckbox
                         key={option.valueCoding.code}
                         value={option.valueCoding.code}
                         label={option.valueCoding.display}
-                        isChecked={isChecked}
+                        isChecked={answers.some(
+                          (answer) => JSON.stringify(answer) === JSON.stringify(option)
+                        )}
                         onCheckedChange={handleCheckedChange}
                       />
                     );
@@ -77,7 +81,9 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
                         key={option.valueString}
                         value={option.valueString}
                         label={option.valueString}
-                        isChecked={isChecked}
+                        isChecked={answers.some(
+                          (answer) => answer.valueString === option.valueString
+                        )}
                         onCheckedChange={handleCheckedChange}
                       />
                     );
@@ -87,14 +93,15 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
                         key={option.valueInteger}
                         value={option.valueInteger}
                         label={option.valueInteger}
-                        isChecked={isChecked}
+                        isChecked={answers.some(
+                          (answer) => answer.valueInteger === option.valueInteger
+                        )}
                         onCheckedChange={handleCheckedChange}
                       />
                     );
                   }
                 })
               }
-              <div>Checkbox placeholder</div>
             </FormGroup>
           </Container>
         </Grid>
