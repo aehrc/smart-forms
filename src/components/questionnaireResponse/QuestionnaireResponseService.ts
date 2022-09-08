@@ -38,13 +38,15 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
   static createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {
     return {
       linkId: qItem.linkId,
+      text: qItem.text,
       item: []
     };
   }
 
   static createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
     return {
-      linkId: qItem.linkId
+      linkId: qItem.linkId,
+      text: qItem.text
     };
   }
 

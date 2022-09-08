@@ -46,7 +46,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
       const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
       if (qrAnswer) {
         setValue(e.target.value);
-        qrChoiceSelect = { ...qrChoiceSelect, text: qItem.text, answer: [qrAnswer] };
+        qrChoiceSelect = { ...qrChoiceSelect, answer: [qrAnswer] };
         onQrItemChange(qrChoiceSelect);
       }
     }

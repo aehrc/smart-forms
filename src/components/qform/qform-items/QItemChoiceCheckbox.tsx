@@ -42,9 +42,9 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
           qrAnswers.push(qrAnswer);
         }
 
-        qrChoiceCheckbox = { ...qrChoiceCheckbox, text: qItem.text, answer: qrAnswers };
+        qrChoiceCheckbox = { ...qrChoiceCheckbox, answer: qrAnswers };
       } else {
-        qrChoiceCheckbox = { ...qrChoiceCheckbox, text: qItem.text, answer: [qrAnswer] };
+        qrChoiceCheckbox = { ...qrChoiceCheckbox, answer: [qrAnswer] };
       }
       onQrItemChange(qrChoiceCheckbox);
     }

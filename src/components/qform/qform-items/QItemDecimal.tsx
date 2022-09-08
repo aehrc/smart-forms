@@ -24,7 +24,7 @@ function QItemDecimal(props: Props) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const decimalValue = parseFloat(e.target.value);
     setValue(decimalValue);
-    qrDecimal = { ...qrDecimal, text: qItem.text, answer: [{ valueDecimal: decimalValue }] };
+    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: decimalValue }] };
     onQrItemChange(qrDecimal);
   }
 

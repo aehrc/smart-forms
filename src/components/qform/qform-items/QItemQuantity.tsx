@@ -47,7 +47,6 @@ function QItemQuantity(props: Props) {
   function updateQrItem() {
     qrQuantity = {
       ...qrQuantity,
-      text: qItem.text,
       answer: [{ valueQuantity: { value: value, unit: unit } }]
     };
     onQrItemChange(qrQuantity);

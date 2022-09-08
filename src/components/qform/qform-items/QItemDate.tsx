@@ -23,7 +23,7 @@ function QItemDate(props: Props) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
-    qrDate = { ...qrDate, text: qItem.text, answer: [{ valueDate: e.target.value }] };
+    qrDate = { ...qrDate, answer: [{ valueDate: e.target.value }] };
     onQrItemChange(qrDate);
   }
 

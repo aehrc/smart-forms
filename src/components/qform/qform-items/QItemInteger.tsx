@@ -24,7 +24,7 @@ function QItemInteger(props: Props) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const integerValue = parseInt(e.target.value);
     setValue(integerValue);
-    qrInteger = { ...qrInteger, text: qItem.text, answer: [{ valueInteger: integerValue }] };
+    qrInteger = { ...qrInteger, answer: [{ valueInteger: integerValue }] };
     onQrItemChange(qrInteger);
   }
 

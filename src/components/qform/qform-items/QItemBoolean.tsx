@@ -23,7 +23,7 @@ function QItemBoolean(props: Props) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.checked);
-    qrBoolean = { ...qrBoolean, text: qItem.text, answer: [{ valueBoolean: e.target.checked }] };
+    qrBoolean = { ...qrBoolean, answer: [{ valueBoolean: e.target.checked }] };
     onQrItemChange(qrBoolean);
   }
 

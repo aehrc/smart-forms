@@ -50,7 +50,6 @@ function QItemSelectAnswerValueSet(props: Props) {
     setValue(newValue);
     qrChoiceSelect = {
       ...qrChoiceSelect,
-      text: qItem.text,
       answer: [{ valueCoding: newValue }]
     };
     onQrItemChange(qrChoiceSelect);

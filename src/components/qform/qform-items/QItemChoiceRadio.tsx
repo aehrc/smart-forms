@@ -46,7 +46,7 @@ function QItemChoiceRadio(props: Props) {
       const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
       if (qrAnswer) {
         setValue(e.target.value);
-        qrChoiceRadio = { ...qrChoiceRadio, text: qItem.text, answer: [qrAnswer] };
+        qrChoiceRadio = { ...qrChoiceRadio, answer: [qrAnswer] };
         onQrItemChange(qrChoiceRadio);
       }
     }
