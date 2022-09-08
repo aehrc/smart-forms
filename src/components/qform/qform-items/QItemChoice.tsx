@@ -1,22 +1,90 @@
 import React from 'react';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
+import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
+import { PropsWithQrItemChangeHandler, QItemChoiceControl } from '../FormModel';
+import {
+  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItem
+} from '../../questionnaireResponse/QuestionnaireResponseModel';
+import QItemChoiceRadio from './QItemChoiceRadio';
+import { isSpecificItemControl } from './QItemFunctions';
+import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
+import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
+import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
+import QItemChoiceCheckbox from './QItemChoiceCheckbox';
 
-interface Props {
-  item: QuestionnaireItem;
+interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
 }
 
-function QItemGroup(props: Props) {
-  const { item } = props;
-  return (
-    <div>
-      <RadioGroup name={item.text}>
-        <FormControlLabel value="female" control={<Radio />} label="Female" />
-        <FormControlLabel value="male" control={<Radio />} label="Male" />
-        <FormControlLabel value="other" control={<Radio />} label="Other" />
-      </RadioGroup>
-    </div>
-  );
+function QItemChoice(props: Props) {
+  const { qItem, qrItem, onQrItemChange } = props;
+
+  switch (getChoiceControlType(qItem)) {
+    case QItemChoiceControl.Radio:
+      return <QItemChoiceRadio qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemChoiceControl.Checkbox:
+      return <QItemChoiceCheckbox qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    case QItemChoiceControl.Select:
+      if (qItem.answerValueSet) {
+        return (
+          <QItemSelectAnswerValueSet
+            qItem={qItem}
+            qrItem={qrItem}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      } else {
+        return (
+          <QItemChoiceSelectAnswerOption
+            qItem={qItem}
+            qrItem={qrItem}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      }
+    case QItemChoiceControl.Autocomplete:
+      return (
+        <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
+      );
+  }
+  return null;
 }
 
-export default QItemGroup;
+function getChoiceControlType(qItem: QuestionnaireItem) {
+  const dropdownOptionsCount = 5;
+  if (isSpecificItemControl(qItem, 'autocomplete')) {
+    return QItemChoiceControl.Autocomplete;
+  } else if (isSpecificItemControl(qItem, 'check-box')) {
+    return QItemChoiceControl.Checkbox;
+  } else {
+    if (qItem.answerOption) {
+      return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
+        ? QItemChoiceControl.Radio
+        : QItemChoiceControl.Select;
+    }
+  }
+}
+
+export function findInAnswerOptions(
+  answerOptions: AnswerOption[],
+  selected: string
+): QuestionnaireResponseAnswer | undefined {
+  for (const option of answerOptions) {
+    if (option['valueCoding']) {
+      if (selected === option.valueCoding.code) {
+        return option;
+      }
+    } else if (option['valueString']) {
+      if (selected === option.valueString) {
+        return option;
+      }
+    } else if (option['valueInteger']) {
+      if (selected === option.valueInteger.toString()) {
+        return option;
+      }
+    }
+  }
+}
+
+export default QItemChoice;

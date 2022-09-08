@@ -1,17 +1,18 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 
 interface Props {
-  item: QuestionnaireItem;
+  qItem: QuestionnaireItem;
 }
 
 function QItemDisplay(props: Props) {
-  const { item } = props;
+  const { qItem } = props;
+
   return (
-    <div>
-      <Typography id={item.linkId}>{item.text}</Typography>
-    </div>
+    <Container sx={{ m: 1, p: 1 }}>
+      <Typography>{qItem.text}</Typography>
+    </Container>
   );
 }
 

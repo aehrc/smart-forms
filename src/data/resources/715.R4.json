@@ -655,7 +655,7 @@
                       }
                     }
                   ],
-                  "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs=refset/32570591000036107&"
+                  "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570591000036107&"
                 }
               ]
             },
@@ -898,7 +898,7 @@
               "text": "Language Group",
               "type": "choice",
               "repeats": true,
-              "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://csiro.au/valueset/1267/au-indigenous&"
+              "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570591000036107&"
             },
             {
               "extension": [
@@ -964,7 +964,7 @@
                   "text": "Relationship to patient",
                   "type": "open-choice",
                   "repeats": false,
-                  "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs=refset/32570591000036107&"
+                  "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570591000036107&"
                 },
                 {
                   "linkId": "006af4cd-744c-4764-96bb-477d8a590c85",
@@ -1324,7 +1324,7 @@
               ],
               "type": "open-choice",
               "repeats": true,
-              "answerValueSet": "https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs=ecl/(%5E%2032570071000036102%20OR%20%5E%2032570141000036105)&"
+              "answerValueSet": "http://snomed.info/sct?fhir_vs=ecl/(%5E%2032570071000036102%20OR%20%5E%2032570141000036105)&"
             }
           ],
           "extension": [

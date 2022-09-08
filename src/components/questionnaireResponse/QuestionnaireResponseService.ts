@@ -1,4 +1,4 @@
-import questionnaireResponseData from '../../data/resources/715.R4.response.json';
+import questionnaireResponseData from '../../data/resources/715.R4.patient.json';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from './QuestionnaireResponseModel';
 import { Questionnaire, QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
 import { fhirclient } from 'fhirclient/lib/types';
@@ -38,13 +38,15 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
   static createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {
     return {
       linkId: qItem.linkId,
+      text: qItem.text,
       item: []
     };
   }
 
   static createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
     return {
-      linkId: qItem.linkId
+      linkId: qItem.linkId,
+      text: qItem.text
     };
   }
 

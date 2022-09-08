@@ -25,6 +25,12 @@ export interface QuestionnaireResponseAnswer extends fhirclient.FHIR.BackboneEle
   valueDateTime?: fhirclient.FHIR.dateTime;
   valueString?: string;
   valueCoding?: fhirclient.FHIR.Coding;
+  valueQuantity?: QuestionnaireResponseAnswerValueQuantity;
   valueReference?: fhirclient.FHIR.Reference;
   item?: QuestionnaireResponseItem[];
+}
+
+export interface QuestionnaireResponseAnswerValueQuantity extends fhirclient.FHIR.Element {
+  value: number;
+  unit: string;
 }

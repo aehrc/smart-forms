@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
@@ -14,13 +14,16 @@ function QItemString(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   let qrString = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-
   const answerValue = qrString['answer'] ? qrString['answer'][0].valueString : '';
   const [value, setValue] = useState(answerValue);
 
+  useEffect(() => {
+    setValue(answerValue);
+  }, [answerValue]);
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
-    qrString = { ...qrString, text: qItem.text, answer: [{ valueString: e.target.value }] };
+    qrString = { ...qrString, answer: [{ valueString: e.target.value }] };
     onQrItemChange(qrString);
   }
 
