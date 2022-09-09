@@ -39,8 +39,18 @@ function QItemRepeats(props: Props) {
     // onQrItemChange(qrRepeats);
   }
 
-  // TODO disable add button if answer is undefined
-  // TODO disable delete button if only a single answer left
+  function deleteAnswer(index: number) {
+    const answersTemp = [...repeatAnswers];
+    if (answersTemp.length === 1) {
+      answersTemp[0] = undefined;
+    } else {
+      answersTemp.splice(index, 1);
+    }
+    setRepeatAnswers(answersTemp);
+    const answersWithoutUndefined = answersTemp.flatMap((answer) => (answer ? [answer] : []));
+    qrRepeats = { ...qrRepeats, answer: answersWithoutUndefined };
+  }
+
   return (
     <div>
       <FormControl fullWidth sx={{ m: 1, p: 1 }}>
@@ -71,7 +81,7 @@ function QItemRepeats(props: Props) {
                         handleAnswersChange(newQrItem, index)
                       }></QItemSwitcher>
                   )}
-                  <Button>
+                  <Button disabled={!answer} onClick={() => deleteAnswer(index)}>
                     <Delete />
                   </Button>
                 </Stack>
@@ -82,6 +92,7 @@ function QItemRepeats(props: Props) {
       </FormControl>
       <Stack direction="row" justifyContent="end">
         <Button
+          disabled={!repeatAnswers[repeatAnswers.length - 1]}
           onClick={() => {
             setRepeatAnswers([...repeatAnswers, undefined]);
           }}>
