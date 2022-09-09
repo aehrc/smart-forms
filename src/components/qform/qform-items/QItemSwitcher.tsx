@@ -1,6 +1,6 @@
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
-import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
 import QItemString from './QItemString';
 import React from 'react';
 import QItemBoolean from './QItemBoolean';
@@ -13,7 +13,9 @@ import QItemDecimal from './QItemDecimal';
 import QItemQuantity from './QItemQuantity';
 import QItemChoice from './QItemChoice';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
@@ -24,29 +26,92 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
  * @author Sean Fong
  */
 function QItemSwitcher(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   switch (qItem.type) {
     case QItemType.String:
-      return <QItemString qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemString
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.Boolean:
-      return <QItemBoolean qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemBoolean
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.Date:
-      return <QItemDate qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemDate
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.DateTime:
-      return <QItemDateTime qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemDateTime
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.Text:
-      return <QItemText qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemText
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.Display:
       return <QItemDisplay qItem={qItem} />;
     case QItemType.Integer:
-      return <QItemInteger qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemInteger
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.Decimal:
-      return <QItemDecimal qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemDecimal
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.Quantity:
-      return <QItemQuantity qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemQuantity
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case QItemType.Choice:
-      return <QItemChoice qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemChoice
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     // case QItemType.OpenChoice:
     //   return <QItemOpenChoice qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     default:

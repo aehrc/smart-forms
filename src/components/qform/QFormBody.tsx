@@ -42,6 +42,7 @@ function QFormBody(props: Props) {
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
+                  repeats={false}
                   onQrItemChange={handleQrGroupChange}></QItemGroup>
               );
             } else {

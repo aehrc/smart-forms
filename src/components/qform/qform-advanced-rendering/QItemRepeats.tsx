@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { Button, Container, FormControl, Grid, Stack, Typography } from '@mui/material';
+import { Button, FormControl, Grid, Stack, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
-import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
+import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
+import {
+  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItem
+} from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
-import AddIcon from '@mui/icons-material/Add';
+import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from '../qform-items/QItemSwitcher';
+import QItemGroup from '../qform-items/QItemGroup';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -14,15 +18,29 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 
 function QItemRepeats(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
+  const cleanQrItem = QuestionnaireResponseService.createQrItem(qItem);
 
-  const qrRepeats = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const [components, setComponents] = useState([
-    {
-      QItem: qItem,
-      QRItem: qrRepeats
+  let qrRepeats = qrItem ? qrItem : cleanQrItem;
+  const qrRepeatAnswers: (QuestionnaireResponseAnswer | undefined)[] = qrRepeats['answer']
+    ? qrRepeats['answer']
+    : [undefined];
+
+  const [repeatAnswers, setRepeatAnswers] = useState(qrRepeatAnswers);
+
+  function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
+    const answersTemp = [...repeatAnswers];
+    if (newQrItem.answer) {
+      answersTemp[index] = newQrItem.answer[0];
     }
-  ]);
+    setRepeatAnswers(answersTemp);
 
+    const answersWithoutUndefined = answersTemp.flatMap((answer) => (answer ? [answer] : []));
+    qrRepeats = { ...qrRepeats, answer: answersWithoutUndefined };
+    // onQrItemChange(qrRepeats);
+  }
+
+  // TODO disable add button if answer is undefined
+  // TODO disable delete button if only a single answer left
   return (
     <div>
       <FormControl fullWidth sx={{ m: 1, p: 1 }}>
@@ -31,34 +49,43 @@ function QItemRepeats(props: Props) {
             <Typography>{qItem.text}</Typography>
           </Grid>
           <Grid item xs={7}>
-            Repeats
-            <Container>
-              {components.map((item, index) => {
-                const QItem = item.QItem;
-                const QRItem = item.QRItem;
-                return (
-                  <QItemSwitcher
-                    key={index}
-                    qItem={QItem}
-                    qrItem={QRItem}
-                    onQrItemChange={onQrItemChange}
-                  />
-                );
-              })}
-            </Container>
+            {repeatAnswers.map((answer, index) => {
+              const singleQrItem = answer ? { ...qrRepeats, answer: [answer] } : { ...qrRepeats };
+
+              return (
+                <Stack key={index} direction="row" sx={{ pb: 2 }}>
+                  {qItem.type === QItemType.Group ? (
+                    <QItemGroup
+                      qItem={qItem}
+                      qrItem={singleQrItem}
+                      repeats={true}
+                      onQrItemChange={(newQrItem) =>
+                        handleAnswersChange(newQrItem, index)
+                      }></QItemGroup>
+                  ) : (
+                    <QItemSwitcher
+                      qItem={qItem}
+                      qrItem={singleQrItem}
+                      repeats={true}
+                      onQrItemChange={(newQrItem) =>
+                        handleAnswersChange(newQrItem, index)
+                      }></QItemSwitcher>
+                  )}
+                  <Button>
+                    <Delete />
+                  </Button>
+                </Stack>
+              );
+            })}
           </Grid>
         </Grid>
       </FormControl>
       <Stack direction="row" justifyContent="end">
         <Button
           onClick={() => {
-            const newItem = {
-              QItem: qItem,
-              QRItem: QuestionnaireResponseService.createQrItem(qItem)
-            };
-            setComponents([...components, newItem]);
+            setRepeatAnswers([...repeatAnswers, undefined]);
           }}>
-          <AddIcon sx={{ mr: 1 }} />
+          <Add sx={{ mr: 1 }} />
           Add Item
         </Button>
       </Stack>
