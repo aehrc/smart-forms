@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemInteger(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrInteger = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
   const answerValue = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
@@ -28,7 +30,11 @@ function QItemInteger(props: Props) {
     onQrItemChange(qrInteger);
   }
 
-  return (
+  const renderQItemInteger = repeats ? (
+    <Container>
+      <TextField type="number" id={qItem.linkId} value={value} onChange={handleChange} />
+    </Container>
+  ) : (
     <FormControl fullWidth sx={{ m: 1, p: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={5}>
@@ -42,6 +48,8 @@ function QItemInteger(props: Props) {
       </Grid>
     </FormControl>
   );
+
+  return <div>{renderQItemInteger}</div>;
 }
 
 export default QItemInteger;

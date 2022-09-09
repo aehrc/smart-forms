@@ -3,12 +3,15 @@ import { Typography, Container } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { grey } from '@mui/material/colors';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
-import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
+import QItemRepeats from '../qform-advanced-rendering/QItemRepeat';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
@@ -37,12 +40,25 @@ function QItemGroup(props: Props) {
           </Typography>
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItem = qrItemsByIndex[i];
+            if (qItem['repeats']) {
+              if (qItem.repeats) {
+                return (
+                  <QItemRepeats
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    onQrItemChange={handleQrItemChange}></QItemRepeats>
+                );
+              }
+            }
+
             if (qItem.type === QItemType.Group) {
               return (
                 <QItemGroup
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
+                  repeats={false}
                   onQrItemChange={handleQrItemChange}></QItemGroup>
               );
             } else {
@@ -51,6 +67,7 @@ function QItemGroup(props: Props) {
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
+                  repeats={false}
                   onQrItemChange={handleQrItemChange}></QItemSwitcher>
               );
             }

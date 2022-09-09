@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemQuantity(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrQuantity = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
   let answerValue = 0.0;
@@ -52,35 +54,38 @@ function QItemQuantity(props: Props) {
     onQrItemChange(qrQuantity);
   }
 
-  return (
-    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
-        </Grid>
-        <Grid item xs={7}>
-          <Grid container spacing={1}>
-            <Grid item xs={8}>
-              <Container>
-                <TextField
-                  type="number"
-                  id={qItem.linkId}
-                  value={value}
-                  onChange={handleValueChange}
-                />
-              </Container>
-            </Grid>
+  const QItemQuantityFields = (
+    <Grid container spacing={1}>
+      <Grid item xs={8}>
+        <Container>
+          <TextField type="number" id={qItem.linkId} value={value} onChange={handleValueChange} />
+        </Container>
+      </Grid>
 
-            <Grid item xs={8}>
-              <Container>
-                <TextField id={qItem.linkId + '_unit'} value={unit} onChange={handleUnitChange} />
-              </Container>
-            </Grid>
+      <Grid item xs={8}>
+        <Container>
+          <TextField id={qItem.linkId + '_unit'} value={unit} onChange={handleUnitChange} />
+        </Container>
+      </Grid>
+    </Grid>
+  );
+
+  if (repeats) {
+    return <div>{QItemQuantityFields}</div>;
+  } else {
+    return (
+      <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={5}>
+            <Typography>{qItem.text}</Typography>
+          </Grid>
+          <Grid item xs={7}>
+            {QItemQuantityFields}
           </Grid>
         </Grid>
-      </Grid>
-    </FormControl>
-  );
+      </FormControl>
+    );
+  }
 }
 
 export default QItemQuantity;

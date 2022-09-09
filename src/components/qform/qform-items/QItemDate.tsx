@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDate(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrDate = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
   const answerValue = qrDate['answer'] ? qrDate['answer'][0].valueDate : '';
@@ -27,7 +29,11 @@ function QItemDate(props: Props) {
     onQrItemChange(qrDate);
   }
 
-  return (
+  const renderQItemDate = repeats ? (
+    <Container>
+      <TextField id={qItem.linkId} type="date" value={value} onChange={handleChange} />
+    </Container>
+  ) : (
     <FormControl fullWidth sx={{ m: 1, p: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={5}>
@@ -41,6 +47,7 @@ function QItemDate(props: Props) {
       </Grid>
     </FormControl>
   );
+  return <div>{renderQItemDate}</div>;
 }
 
 export default QItemDate;

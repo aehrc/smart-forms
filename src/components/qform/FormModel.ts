@@ -2,6 +2,10 @@ export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
 }
 
+export interface PropsWithRepeatsAttribute {
+  repeats: boolean;
+}
+
 export enum QItemType {
   Group = 'group',
   String = 'string',
