@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, FormControl, Grid, Stack, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
@@ -16,27 +16,27 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemRepeats(props: Props) {
+function QItemRepeat(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
-  const cleanQrItem = QuestionnaireResponseService.createQrItem(qItem);
 
-  let qrRepeats = qrItem ? qrItem : cleanQrItem;
-  const qrRepeatAnswers: (QuestionnaireResponseAnswer | undefined)[] = qrRepeats['answer']
-    ? qrRepeats['answer']
+  const cleanQrItem = QuestionnaireResponseService.createQrItem(qItem);
+  const qrRepeat = qrItem ? qrItem : cleanQrItem;
+  const qrRepeatAnswers: (QuestionnaireResponseAnswer | undefined)[] = qrRepeat['answer']
+    ? qrRepeat.answer
     : [undefined];
 
   const [repeatAnswers, setRepeatAnswers] = useState(qrRepeatAnswers);
+
+  useEffect(() => {
+    setRepeatAnswers(qrRepeatAnswers);
+  }, [qrItem]);
 
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const answersTemp = [...repeatAnswers];
     if (newQrItem.answer) {
       answersTemp[index] = newQrItem.answer[0];
     }
-    setRepeatAnswers(answersTemp);
-
-    const answersWithoutUndefined = answersTemp.flatMap((answer) => (answer ? [answer] : []));
-    qrRepeats = { ...qrRepeats, answer: answersWithoutUndefined };
-    // onQrItemChange(qrRepeats);
+    updateAnswers(answersTemp);
   }
 
   function deleteAnswer(index: number) {
@@ -46,9 +46,14 @@ function QItemRepeats(props: Props) {
     } else {
       answersTemp.splice(index, 1);
     }
-    setRepeatAnswers(answersTemp);
-    const answersWithoutUndefined = answersTemp.flatMap((answer) => (answer ? [answer] : []));
-    qrRepeats = { ...qrRepeats, answer: answersWithoutUndefined };
+    updateAnswers(answersTemp);
+  }
+
+  function updateAnswers(updatedAnswers: (QuestionnaireResponseAnswer | undefined)[]) {
+    setRepeatAnswers(updatedAnswers);
+
+    const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));
+    onQrItemChange({ ...qrRepeat, answer: answersWithValues });
   }
 
   return (
@@ -60,7 +65,9 @@ function QItemRepeats(props: Props) {
           </Grid>
           <Grid item xs={7}>
             {repeatAnswers.map((answer, index) => {
-              const singleQrItem = answer ? { ...qrRepeats, answer: [answer] } : { ...qrRepeats };
+              const singleQrItem = answer
+                ? { ...cleanQrItem, answer: [answer] }
+                : { ...cleanQrItem };
 
               return (
                 <Stack key={index} direction="row" sx={{ pb: 2 }}>
@@ -93,9 +100,7 @@ function QItemRepeats(props: Props) {
       <Stack direction="row" justifyContent="end">
         <Button
           disabled={!repeatAnswers[repeatAnswers.length - 1]}
-          onClick={() => {
-            setRepeatAnswers([...repeatAnswers, undefined]);
-          }}>
+          onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}>
           <Add sx={{ mr: 1 }} />
           Add Item
         </Button>
@@ -104,4 +109,4 @@ function QItemRepeats(props: Props) {
   );
 }
 
-export default QItemRepeats;
+export default QItemRepeat;
