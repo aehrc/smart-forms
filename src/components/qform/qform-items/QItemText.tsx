@@ -31,7 +31,14 @@ function QItemText(props: Props) {
 
   const renderQItemText = repeats ? (
     <Container>
-      <TextField id={qItem.linkId} value={value} onChange={handleChange} multiline />
+      <TextField
+        id={qItem.linkId}
+        value={value}
+        onChange={handleChange}
+        rows={10}
+        fullWidth
+        multiline
+      />
     </Container>
   ) : (
     <FormControl fullWidth sx={{ m: 1, p: 1 }}>
@@ -41,7 +48,14 @@ function QItemText(props: Props) {
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <TextField id={qItem.linkId} value={value} onChange={handleChange} multiline />
+            <TextField
+              id={qItem.linkId}
+              value={value}
+              onChange={handleChange}
+              rows={10}
+              fullWidth
+              multiline
+            />
           </Container>
         </Grid>
       </Grid>
