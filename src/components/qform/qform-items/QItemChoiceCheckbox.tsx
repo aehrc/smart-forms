@@ -9,7 +9,7 @@ import {
   Typography
 } from '@mui/material';
 import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { PropsWithQrItemChangeHandler, QItemChoiceOrientation } from '../FormModel';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { findInAnswerOptions } from './QItemChoice';
@@ -17,10 +17,11 @@ import { findInAnswerOptions } from './QItemChoice';
 interface QItemChoiceCheckboxProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  orientation: QItemChoiceOrientation;
 }
 
 function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, onQrItemChange, orientation } = props;
 
   let qrChoiceCheckbox = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
@@ -58,7 +59,7 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <FormGroup>
+            <FormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
               {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
@@ -135,6 +136,7 @@ function QItemSingleCheckbox(props: QItemSingleCheckboxProps) {
     <FormControlLabel
       control={<Checkbox checked={checked} onChange={handleChange} />}
       label={label}
+      sx={{ mr: 3 }}
     />
   );
 }

@@ -54,4 +54,5 @@ export interface EnableWhen extends fhirclient.FHIR.BackboneElement {
 export interface ItemExtension extends fhirclient.FHIR.Extension {
   url: fhirclient.FHIR.uri;
   valueCodeableConcept?: fhirclient.FHIR.CodeableConcept;
+  valueCode?: fhirclient.FHIR.code;
 }
