@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography, Container } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Container, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { grey } from '@mui/material/colors';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
@@ -7,8 +7,8 @@ import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } fr
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
-import QItemRepeats from '../qform-advanced-rendering/QItemRepeat';
-import { isHidden } from './QItemFunctions';
+import QItemRepeatGroup from '../qform-advanced-rendering/QItemRepeatGroup';
+import QItemRepeat from '../qform-advanced-rendering/QItemRepeat';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -18,20 +18,26 @@ interface Props
 }
 
 function QItemGroup(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
   const qItemsIndexMap: Record<string, number> = mapQItemsIndex(qItem);
 
   const qItems = qItem.item;
-  const qrGroup =
+  const groupFromProps =
     qrItem && qrItem.item ? qrItem : QuestionnaireResponseService.createQrGroup(qItem);
-  const qrItems = qrGroup.item;
+  const qrItems = groupFromProps.item;
+
+  const [group, setGroup] = useState(groupFromProps);
+
+  useEffect(() => {
+    setGroup(groupFromProps);
+  }, [qrItem]);
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+    const qrGroup = group;
     QuestionnaireResponseService.updateLinkedItem(newQrItem, qrGroup, qItemsIndexMap);
+    setGroup(qrGroup);
     onQrItemChange(qrGroup);
   }
-
-  if (isHidden(qItem)) return null;
 
   if (qItems && qrItems) {
     const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
@@ -39,23 +45,37 @@ function QItemGroup(props: Props) {
     return (
       <div>
         <Container sx={{ border: 0.5, mb: 2, p: 3, borderColor: grey.A400 }}>
-          <Typography variant="h6" sx={{ mb: 1 }}>
-            {qItem.text}
-          </Typography>
+          {repeats ? null : (
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              {qItem.text}
+            </Typography>
+          )}
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItem = qrItemsByIndex[i];
             if (qItem['repeats']) {
               if (qItem.repeats) {
-                return (
-                  <QItemRepeats
-                    key={qItem.linkId}
-                    qItem={qItem}
-                    qrItem={qrItem}
-                    onQrItemChange={handleQrItemChange}></QItemRepeats>
-                );
+                if (qItem.type === QItemType.Group) {
+                  return (
+                    <QItemRepeatGroup
+                      key={qItem.linkId}
+                      qItem={qItem}
+                      qrItem={qrItem}
+                      repeats={true}
+                      onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
+                  );
+                } else {
+                  return (
+                    <QItemRepeat
+                      key={qItem.linkId}
+                      qItem={qItem}
+                      qrItem={qrItem}
+                      onQrItemChange={handleQrItemChange}></QItemRepeat>
+                  );
+                }
               }
             }
 
+            // if qItem is not a repeating question
             if (qItem.type === QItemType.Group) {
               return (
                 <QItemGroup

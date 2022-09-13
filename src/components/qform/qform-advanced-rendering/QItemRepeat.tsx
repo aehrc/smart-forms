@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, FormControl, Grid, Stack, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler, QItemType } from '../FormModel';
+import { PropsWithQrItemChangeHandler } from '../FormModel';
 import {
   QuestionnaireResponseAnswer,
   QuestionnaireResponseItem
@@ -9,7 +9,6 @@ import {
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from '../qform-items/QItemSwitcher';
-import QItemGroup from '../qform-items/QItemGroup';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -71,23 +70,14 @@ function QItemRepeat(props: Props) {
 
               return (
                 <Stack key={index} direction="row" sx={{ pb: 2 }}>
-                  {qItem.type === QItemType.Group ? (
-                    <QItemGroup
-                      qItem={qItem}
-                      qrItem={singleQrItem}
-                      repeats={true}
-                      onQrItemChange={(newQrItem) =>
-                        handleAnswersChange(newQrItem, index)
-                      }></QItemGroup>
-                  ) : (
-                    <QItemSwitcher
-                      qItem={qItem}
-                      qrItem={singleQrItem}
-                      repeats={true}
-                      onQrItemChange={(newQrItem) =>
-                        handleAnswersChange(newQrItem, index)
-                      }></QItemSwitcher>
-                  )}
+                  <QItemSwitcher
+                    qItem={qItem}
+                    qrItem={singleQrItem}
+                    repeats={qItem.repeats ?? false}
+                    onQrItemChange={(newQrItem) =>
+                      handleAnswersChange(newQrItem, index)
+                    }></QItemSwitcher>
+
                   <Button disabled={!answer} onClick={() => deleteAnswer(index)}>
                     <Delete />
                   </Button>

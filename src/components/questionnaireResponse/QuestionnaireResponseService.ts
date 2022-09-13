@@ -77,7 +77,13 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
             }
 
             if (newQrItemIndex === qrItemsRealIndexArr[i]) {
-              qrGroup.item[i] = newQrItem;
+              // // newQrItem has answer value
+              if (newQrItem.item?.length || newQrItem.answer?.length) {
+                qrGroup.item[i] = newQrItem;
+              } else {
+                // newQrItem has no answer value
+                qrGroup.item.splice(i, 1);
+              }
               break;
             }
             if (newQrItemIndex < qrItemsRealIndexArr[i]) {

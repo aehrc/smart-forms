@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FormControl, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import {
   QuestionnaireResponseAnswer,
   QuestionnaireResponseItem
@@ -9,8 +9,11 @@ import {
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
 import QItemGroup from '../qform-items/QItemGroup';
+import { grey } from '@mui/material/colors';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
@@ -27,15 +30,14 @@ function QItemRepeatGroup(props: Props) {
   const [repeatAnswerItems, setRepeatAnswerItems] = useState(qrRepeatAnswerItems);
 
   useEffect(() => {
-    setRepeatAnswerItems(qrRepeatAnswerItems);
+    setRepeatAnswerItems(repeatAnswerItems);
   }, [qrItem]);
 
-  function handleAnswerItemsChange(newQrItem: QuestionnaireResponseItem, index: number) {
-    // TODO only one answer is registered
-    // TODO handle disappearing field
+  function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
     const answerItemsTemp = [...repeatAnswerItems];
-    if (newQrItem.item) {
-      answerItemsTemp[index] = { item: [...newQrItem.item] };
+
+    if (newQrGroup.item) {
+      answerItemsTemp[index] = { item: newQrGroup.item };
     }
     updateAnswerItems(answerItemsTemp);
   }
@@ -51,57 +53,53 @@ function QItemRepeatGroup(props: Props) {
   }
 
   function updateAnswerItems(updatedAnswerItems: (QuestionnaireResponseAnswer | undefined)[]) {
-    setRepeatAnswerItems(updatedAnswerItems);
+    setRepeatAnswerItems([...updatedAnswerItems]);
 
-    const answerItemsWithValues = updatedAnswerItems.flatMap((answerItem) =>
-      answerItem ? [answerItem] : []
+    const answersWithValues = updatedAnswerItems.flatMap((answerItems) =>
+      answerItems ? [answerItems] : []
     );
-    onQrItemChange({ ...qrRepeat, answer: answerItemsWithValues });
+    onQrItemChange({ ...qrRepeat, answer: answersWithValues });
   }
 
   return (
     <div>
-      <FormControl fullWidth sx={{ m: 1, p: 1 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={5}>
-            <Typography>{qItem.text}</Typography>
-          </Grid>
-          <Grid item xs={7}>
-            {repeatAnswerItems.map((answerItem, index) => {
-              const singleQrItem: QuestionnaireResponseItem = answerItem
-                ? {
-                    ...cleanQrItem,
-                    answer: [answerItem]
-                  }
-                : { ...cleanQrItem };
+      <Container sx={{ border: 0.5, mb: 2, p: 3, borderColor: grey.A400 }}>
+        <Typography variant="h6" sx={{ mb: 4 }}>
+          {qItem.text}
+        </Typography>
+        {repeatAnswerItems.map((answerItem, index) => {
+          const singleQrItem: QuestionnaireResponseItem = answerItem
+            ? { ...cleanQrItem, item: answerItem.item }
+            : { ...cleanQrItem };
 
-              return (
-                <Stack key={index} direction="row" sx={{ pb: 2 }}>
-                  something
-                  <QItemGroup
-                    qItem={qItem}
-                    qrItem={singleQrItem}
-                    repeats={true}
-                    onQrItemChange={(newQrItem) =>
-                      handleAnswerItemsChange(newQrItem, index)
-                    }></QItemGroup>
-                  <Button disabled={!answerItem} onClick={() => deleteAnswerItem(index)}>
-                    <Delete />
-                  </Button>
-                </Stack>
-              );
-            })}
-          </Grid>
-        </Grid>
-      </FormControl>
-      <Stack direction="row" justifyContent="end">
-        <Button
-          disabled={!repeatAnswerItems[repeatAnswerItems.length - 1]}
-          onClick={() => setRepeatAnswerItems([...repeatAnswerItems, undefined])}>
-          <Add sx={{ mr: 1 }} />
-          Add Item
-        </Button>
-      </Stack>
+          return (
+            <Stack key={index} direction="row" justifyContent="end" sx={{ pb: 2 }}>
+              <Box sx={{ width: 1 }}>
+                <QItemGroup
+                  qItem={qItem}
+                  qrItem={singleQrItem}
+                  repeats={true}
+                  onQrItemChange={(newQrGroup) =>
+                    handleAnswerItemsChange(newQrGroup, index)
+                  }></QItemGroup>
+              </Box>
+
+              <Button disabled={!answerItem} onClick={() => deleteAnswerItem(index)}>
+                <Delete />
+              </Button>
+            </Stack>
+          );
+        })}
+
+        <Stack direction="row" justifyContent="end">
+          <Button
+            disabled={!repeatAnswerItems[repeatAnswerItems.length - 1]}
+            onClick={() => setRepeatAnswerItems([...repeatAnswerItems, undefined])}>
+            <Add sx={{ mr: 1 }} />
+            Add Item
+          </Button>
+        </Stack>
+      </Container>
     </div>
   );
 }
