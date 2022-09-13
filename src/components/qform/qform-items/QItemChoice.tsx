@@ -1,6 +1,10 @@
 import React from 'react';
 import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler, QItemChoiceControl } from '../FormModel';
+import {
+  PropsWithQrItemChangeHandler,
+  PropsWithRepeatsAttribute,
+  QItemChoiceControl
+} from '../FormModel';
 import {
   QuestionnaireResponseAnswer,
   QuestionnaireResponseItem
@@ -9,10 +13,11 @@ import QItemChoiceRadio from './QItemChoiceRadio';
 import { isSpecificItemControl } from './QItemFunctions';
 import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
-import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
@@ -44,9 +49,8 @@ function QItemChoice(props: Props) {
         );
       }
     case QItemChoiceControl.Autocomplete:
-      return (
-        <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
-      );
+      // TODO choice autocomplete placeholder
+      return null;
   }
   return null;
 }

@@ -16,3 +16,11 @@ export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode:
   }
   return false;
 }
+
+export function isHidden(qItem: QuestionnaireItem): boolean {
+  const itemControl = qItem.extension?.find(
+    (extension: ItemExtension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
+  );
+  return !!itemControl;
+}

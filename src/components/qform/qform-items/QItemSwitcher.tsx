@@ -12,6 +12,7 @@ import QItemDateTime from './QItemDateTime';
 import QItemDecimal from './QItemDecimal';
 import QItemQuantity from './QItemQuantity';
 import QItemChoice from './QItemChoice';
+import { isHidden } from './QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -27,6 +28,8 @@ interface Props
  */
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
+
+  if (isHidden(qItem)) return null;
 
   switch (qItem.type) {
     case QItemType.String:
