@@ -13,7 +13,6 @@ import QItemChoiceRadio from './QItemChoiceRadio';
 import { isSpecificItemControl } from './QItemFunctions';
 import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
-import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
 
 interface Props
@@ -50,9 +49,8 @@ function QItemChoice(props: Props) {
         );
       }
     case QItemChoiceControl.Autocomplete:
-      return (
-        <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
-      );
+      // TODO choice autocomplete placeholder
+      return null;
   }
   return null;
 }
