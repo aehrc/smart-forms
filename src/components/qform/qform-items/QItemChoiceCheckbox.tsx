@@ -8,11 +8,14 @@ import {
   Grid,
   Typography
 } from '@mui/material';
-import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler, QItemChoiceOrientation } from '../FormModel';
-import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { findInAnswerOptions } from './QItemChoice';
+import {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItem
+} from 'fhir/r5';
 
 interface QItemChoiceCheckboxProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -25,7 +28,9 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
 
   let qrChoiceCheckbox = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
-  const answers: AnswerOption[] = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
+  const answers: QuestionnaireItemAnswerOption[] = qrChoiceCheckbox['answer']
+    ? qrChoiceCheckbox['answer']
+    : [];
 
   function handleCheckedChange(changedValue: any) {
     if (qItem.answerOption) {

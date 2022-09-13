@@ -1,5 +1,4 @@
-import { QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
-import { QuestionnaireResponseItem } from '../questionnaireResponse/QuestionnaireResponseModel';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 /**
  * Stores indexes of QuestionnaireResponseItems relative to its QuestionnaireItem in an array.

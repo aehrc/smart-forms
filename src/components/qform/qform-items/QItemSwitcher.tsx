@@ -1,5 +1,3 @@
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
 import QItemString from './QItemString';
 import React from 'react';
@@ -13,6 +11,7 @@ import QItemDecimal from './QItemDecimal';
 import QItemQuantity from './QItemQuantity';
 import QItemChoice from './QItemChoice';
 import { isHidden } from './QItemFunctions';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -106,7 +105,7 @@ function QItemSwitcher(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Choice:
+    case QItemType.Coding:
       return (
         <QItemChoice
           qItem={qItem}

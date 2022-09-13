@@ -1,13 +1,12 @@
 import React from 'react';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
-import { QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
-import { QuestionnaireResponseItem } from '../questionnaireResponse/QuestionnaireResponseModel';
 import QItemGroup from './qform-items/QItemGroup';
 import { PropsWithQrItemChangeHandler, QItemType } from './FormModel';
 import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
 import { getQrItemsIndex, mapQItemsIndex } from './IndexFunctions';
 import QItemSwitcher from './qform-items/QItemSwitcher';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;

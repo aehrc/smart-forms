@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography } from '@mui/material';
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { grey } from '@mui/material/colors';
-import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
 import QItemRepeatGroup from '../qform-advanced-rendering/QItemRepeatGroup';
 import QItemRepeat from '../qform-advanced-rendering/QItemRepeat';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

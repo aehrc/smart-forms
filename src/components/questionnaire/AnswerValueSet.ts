@@ -1,9 +1,8 @@
 import * as FHIR from 'fhirclient';
-import { ValueSet, ValueSetExpansionContains } from 'fhir/r5';
-import { fhirclient } from 'fhirclient/lib/types';
+import { Coding, ValueSet, ValueSetExpansionContains } from 'fhir/r5';
 
 export class AnswerValueSet {
-  static cache: Record<string, fhirclient.FHIR.Coding[]> = {};
+  static cache: Record<string, Coding[]> = {};
 
   static expand(
     valueSetUrl: string,
@@ -20,7 +19,7 @@ export class AnswerValueSet {
   }
 
   static getValueCodings(valueSetExpansionContains: ValueSetExpansionContains[]) {
-    const valueCodings: fhirclient.FHIR.Coding[] = [];
+    const valueCodings: Coding[] = [];
     valueSetExpansionContains.forEach((item) => {
       valueCodings.push({
         system: item.system,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Checkbox } from '@mui/material';
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
+import { QuestionnaireItem } from 'fhir/r5';
 
 interface Props {
   item: QuestionnaireItem;

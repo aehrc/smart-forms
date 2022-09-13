@@ -1,19 +1,23 @@
 import questionnaireResponseData from '../../data/resources/715.R4.patient.json';
-import { QuestionnaireResponse, QuestionnaireResponseItem } from './QuestionnaireResponseModel';
-import { Questionnaire, QuestionnaireItem } from '../questionnaire/QuestionnaireModel';
-import { fhirclient } from 'fhirclient/lib/types';
+import {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  Reference
+} from 'fhir/r5';
 
 export class QuestionnaireResponseService implements QuestionnaireResponse {
   resourceType: 'QuestionnaireResponse';
-  status: fhirclient.FHIR.code;
-  subject?: fhirclient.FHIR.Reference;
-  authored?: fhirclient.FHIR.dateTime;
-  author?: fhirclient.FHIR.Reference;
+  status: QuestionnaireResponse['status'];
+  subject?: Reference;
+  authored?: string;
+  author?: Reference;
   item: QuestionnaireResponseItem[];
 
   constructor(questionnaire: Questionnaire) {
     this.resourceType = 'QuestionnaireResponse';
-    this.status = questionnaireResponseData.status;
+    this.status = 'in-progress';
     this.subject = { reference: questionnaireResponseData.subject.reference };
     this.authored = questionnaireResponseData.authored;
     this.author = undefined;
@@ -22,7 +26,7 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
   }
 
   initializeFormItem(questionnaire: Questionnaire): void {
-    if (this.item === []) {
+    if (this.item === [] && questionnaire.item) {
       this.item[0] = {
         linkId: questionnaire.item[0].linkId,
         text: questionnaire.item[0].text,

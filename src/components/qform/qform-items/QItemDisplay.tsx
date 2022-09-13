@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography } from '@mui/material';
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
+import { QuestionnaireItem } from 'fhir/r5';
 
 interface Props {
   qItem: QuestionnaireItem;

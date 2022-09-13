@@ -1,14 +1,15 @@
 import React from 'react';
-import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute,
   QItemChoiceControl
 } from '../FormModel';
 import {
-  QuestionnaireResponseAnswer,
-  QuestionnaireResponseItem
-} from '../../questionnaireResponse/QuestionnaireResponseModel';
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r5';
 import QItemChoiceRadio from './QItemChoiceRadio';
 import { getChoiceOrientation, isSpecificItemControl } from './QItemFunctions';
 import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
@@ -86,9 +87,9 @@ function getChoiceControlType(qItem: QuestionnaireItem) {
 }
 
 export function findInAnswerOptions(
-  answerOptions: AnswerOption[],
+  answerOptions: QuestionnaireItemAnswerOption[],
   selected: string
-): QuestionnaireResponseAnswer | undefined {
+): QuestionnaireResponseItemAnswer | undefined {
   for (const option of answerOptions) {
     if (option['valueCoding']) {
       if (selected === option.valueCoding.code) {

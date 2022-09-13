@@ -11,14 +11,13 @@ export enum QItemType {
   String = 'string',
   Boolean = 'boolean',
   Date = 'date',
-  DateTime = 'datetime',
+  DateTime = 'dateTime',
   Text = 'text',
   Display = 'display',
   Integer = 'integer',
   Decimal = 'decimal',
   Quantity = 'quantity',
-  Choice = 'choice',
-  OpenChoice = 'open-choice'
+  Coding = 'coding'
 }
 
 export enum QItemChoiceControl {
