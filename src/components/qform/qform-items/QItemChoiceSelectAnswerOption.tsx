@@ -8,11 +8,10 @@ import {
   SelectChangeEvent,
   Typography
 } from '@mui/material';
-import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
-import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { findInAnswerOptions } from './QItemChoice';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;

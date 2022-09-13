@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Button, FormControl, Grid, Stack, Typography } from '@mui/material';
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
-import {
-  QuestionnaireResponseAnswer,
-  QuestionnaireResponseItem
-} from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from '../qform-items/QItemSwitcher';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r5';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -20,7 +20,7 @@ function QItemRepeat(props: Props) {
 
   const cleanQrItem = QuestionnaireResponseService.createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
-  const qrRepeatAnswers: (QuestionnaireResponseAnswer | undefined)[] = qrRepeat['answer']
+  const qrRepeatAnswers: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
     ? qrRepeat.answer
     : [undefined];
 
@@ -48,7 +48,7 @@ function QItemRepeat(props: Props) {
     updateAnswers(answersTemp);
   }
 
-  function updateAnswers(updatedAnswers: (QuestionnaireResponseAnswer | undefined)[]) {
+  function updateAnswers(updatedAnswers: (QuestionnaireResponseItemAnswer | undefined)[]) {
     setRepeatAnswers(updatedAnswers);
 
     const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));

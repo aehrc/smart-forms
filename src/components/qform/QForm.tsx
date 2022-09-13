@@ -5,10 +5,7 @@ import { QuestionnaireService } from '../questionnaire/QuestionnaireService';
 import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
-import {
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from '../questionnaireResponse/QuestionnaireResponseModel';
+import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 
 function QForm() {
   const questionnaire = new QuestionnaireService();
@@ -36,7 +33,7 @@ function QForm() {
     questionnaireResponse.updateForm(clearQrForm);
   }
 
-  if (qForm.item && qrForm.item) {
+  if (qForm.item && qrForm.item && qrState.item) {
     return (
       <div>
         <Container maxWidth="xl">

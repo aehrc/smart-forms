@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

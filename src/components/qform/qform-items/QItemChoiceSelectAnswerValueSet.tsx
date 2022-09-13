@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Autocomplete, Container, FormControl, Grid, TextField, Typography } from '@mui/material';
-import { QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
-import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { AnswerValueSet } from '../../questionnaire/AnswerValueSet';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
-import { ValueSet } from 'fhir/r5';
-import { fhirclient } from 'fhirclient/lib/types';
+import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -18,12 +15,12 @@ function QItemSelectAnswerValueSet(props: Props) {
 
   let qrChoiceSelect = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
-  let answerValueCoding: fhirclient.FHIR.Coding | undefined | null = null;
+  let answerValueCoding: Coding | undefined | null = null;
   if (qrChoiceSelect['answer']) {
     answerValueCoding = qrChoiceSelect['answer'][0].valueCoding;
   }
   const [value, setValue] = useState(answerValueCoding);
-  const [options, setOptions] = useState<fhirclient.FHIR.Coding[]>([]);
+  const [options, setOptions] = useState<Coding[]>([]);
 
   useEffect(() => {
     const answerValueSet = qItem.answerValueSet;
@@ -44,7 +41,7 @@ function QItemSelectAnswerValueSet(props: Props) {
     }
   }, [qItem]);
 
-  function handleChange(e: any, newValue: fhirclient.FHIR.Coding | null) {
+  function handleChange(e: any, newValue: Coding | null) {
     if (!newValue) return;
 
     setValue(newValue);

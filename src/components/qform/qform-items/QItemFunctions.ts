@@ -1,15 +1,14 @@
-import { fhirclient } from 'fhirclient/lib/types';
-import { QuestionnaireItem, ItemExtension } from '../../questionnaire/QuestionnaireModel';
 import { QItemChoiceOrientation } from '../FormModel';
+import { Coding, Extension, QuestionnaireItem } from 'fhir/r5';
 
 export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode: string): boolean {
   const itemControl = qItem.extension?.find(
-    (extension: ItemExtension) =>
+    (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
   );
   if (itemControl) {
     const code = itemControl.valueCodeableConcept?.coding?.find(
-      (coding: fhirclient.FHIR.Coding) => coding.code === itemControlCode
+      (coding: Coding) => coding.code === itemControlCode
     );
     if (code) {
       return true;
@@ -20,7 +19,7 @@ export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode:
 
 export function isHidden(qItem: QuestionnaireItem): boolean {
   const itemControl = qItem.extension?.find(
-    (extension: ItemExtension) =>
+    (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
   );
   return !!itemControl;
@@ -28,7 +27,7 @@ export function isHidden(qItem: QuestionnaireItem): boolean {
 
 export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrientation {
   const itemControl = qItem.extension?.find(
-    (extension: ItemExtension) =>
+    (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation'
   );
   if (itemControl) {
