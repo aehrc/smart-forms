@@ -1,6 +1,10 @@
 import React from 'react';
 import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler, QItemChoiceControl } from '../FormModel';
+import {
+  PropsWithQrItemChangeHandler,
+  PropsWithRepeatsAttribute,
+  QItemChoiceControl
+} from '../FormModel';
 import {
   QuestionnaireResponseAnswer,
   QuestionnaireResponseItem
@@ -12,7 +16,9 @@ import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
