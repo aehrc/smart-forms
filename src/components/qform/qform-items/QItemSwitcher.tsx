@@ -12,6 +12,7 @@ import QItemQuantity from './QItemQuantity';
 import QItemChoice from './QItemChoice';
 import { isHidden } from './QItemFunctions';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import QItemTime from './QItemTime';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,6 +44,15 @@ function QItemSwitcher(props: Props) {
     case QItemType.Boolean:
       return (
         <QItemBoolean
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    case QItemType.Time:
+      return (
+        <QItemTime
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
