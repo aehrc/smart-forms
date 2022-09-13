@@ -39,9 +39,9 @@ function QForm() {
   if (qForm.item && qrForm.item) {
     return (
       <div>
-        <Container>
+        <Container maxWidth="xl">
           <Grid container spacing={2}>
-            <Grid item xs={8}>
+            <Grid item xs={9}>
               <Stack spacing={1} sx={{ my: 4 }}>
                 <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
                   {questionnaire.title}
@@ -60,7 +60,7 @@ function QForm() {
                   }}></QFormBody>
               </Stack>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               {<pre>{JSON.stringify(qrState, null, 2)}</pre>}
             </Grid>
           </Grid>
