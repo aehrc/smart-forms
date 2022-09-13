@@ -9,7 +9,7 @@ import {
   Typography
 } from '@mui/material';
 import { AnswerOption, QuestionnaireItem } from '../../questionnaire/QuestionnaireModel';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { PropsWithQrItemChangeHandler, QItemChoiceOrientation } from '../FormModel';
 import { QuestionnaireResponseItem } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { findInAnswerOptions } from './QItemChoice';
@@ -17,10 +17,11 @@ import { findInAnswerOptions } from './QItemChoice';
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  orientation: QItemChoiceOrientation;
 }
 
 function QItemChoiceRadio(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, onQrItemChange, orientation } = props;
 
   let qrChoiceRadio = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
@@ -60,7 +61,12 @@ function QItemChoiceRadio(props: Props) {
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <RadioGroup name={qItem.text} id={qItem.id} onChange={handleChange} value={value}>
+            <RadioGroup
+              row={orientation === QItemChoiceOrientation.Horizontal}
+              name={qItem.text}
+              id={qItem.id}
+              onChange={handleChange}
+              value={value}>
               {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
@@ -72,6 +78,7 @@ function QItemChoiceRadio(props: Props) {
                         value={option.valueCoding.code}
                         control={<Radio />}
                         label={option.valueCoding.display}
+                        sx={{ mr: 3 }}
                       />
                     );
                   } else if (option['valueString']) {
@@ -81,6 +88,7 @@ function QItemChoiceRadio(props: Props) {
                         value={option.valueString}
                         control={<Radio />}
                         label={option.valueString}
+                        sx={{ mr: 3 }}
                       />
                     );
                   } else if (option['valueInteger']) {
@@ -90,6 +98,7 @@ function QItemChoiceRadio(props: Props) {
                         value={option.valueInteger}
                         control={<Radio />}
                         label={option.valueInteger}
+                        sx={{ mr: 3 }}
                       />
                     );
                   }
