@@ -10,7 +10,7 @@ import {
   QuestionnaireResponseItem
 } from '../../questionnaireResponse/QuestionnaireResponseModel';
 import QItemChoiceRadio from './QItemChoiceRadio';
-import { isSpecificItemControl } from './QItemFunctions';
+import { getChoiceOrientation, isSpecificItemControl } from './QItemFunctions';
 import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
@@ -24,12 +24,27 @@ interface Props
 
 function QItemChoice(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
+  const orientation = getChoiceOrientation(qItem);
 
   switch (getChoiceControlType(qItem)) {
     case QItemChoiceControl.Radio:
-      return <QItemChoiceRadio qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemChoiceRadio
+          qItem={qItem}
+          qrItem={qrItem}
+          onQrItemChange={onQrItemChange}
+          orientation={orientation}
+        />
+      );
     case QItemChoiceControl.Checkbox:
-      return <QItemChoiceCheckbox qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+      return (
+        <QItemChoiceCheckbox
+          qItem={qItem}
+          qrItem={qrItem}
+          onQrItemChange={onQrItemChange}
+          orientation={orientation}
+        />
+      );
     case QItemChoiceControl.Select:
       if (qItem.answerValueSet) {
         return (
