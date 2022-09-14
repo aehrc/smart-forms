@@ -6,6 +6,8 @@ import { QuestionnaireResponseService } from '../questionnaireResponse/Questionn
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import QItemBodyTabbed from './QFormBodyTabs';
+import { containsTabs } from './TabFunctions';
 
 function QForm() {
   const questionnaire = new QuestionnaireService();
@@ -36,9 +38,9 @@ function QForm() {
   if (qForm.item && qrForm.item && qrState.item) {
     return (
       <div>
-        <Container maxWidth="xl">
+        <Container maxWidth="lg">
           <Grid container spacing={2}>
-            <Grid item xs={9}>
+            <Grid item xs={12}>
               <Stack spacing={1} sx={{ my: 4 }}>
                 <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
                   {questionnaire.title}
@@ -48,16 +50,28 @@ function QForm() {
                   Clear Responses
                   <ClearIcon sx={{ ml: 2 }} />
                 </Button>
-                <QFormBody
-                  qForm={qForm}
-                  qrForm={qrState.item[0]}
-                  onQrItemChange={(newQrForm) => {
-                    setQrState({ ...qrState, item: [newQrForm] });
-                    questionnaireResponse.updateForm(newQrForm);
-                  }}></QFormBody>
+
+                {containsTabs(qForm.item) ? (
+                  <QItemBodyTabbed
+                    qForm={qForm}
+                    qrForm={qrState.item[0]}
+                    onQrItemChange={(newQrForm) => {
+                      setQrState({ ...qrState, item: [newQrForm] });
+                      questionnaireResponse.updateForm(newQrForm);
+                    }}
+                  />
+                ) : (
+                  <QFormBody
+                    qForm={qForm}
+                    qrForm={qrState.item[0]}
+                    onQrItemChange={(newQrForm) => {
+                      setQrState({ ...qrState, item: [newQrForm] });
+                      questionnaireResponse.updateForm(newQrForm);
+                    }}></QFormBody>
+                )}
               </Stack>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={0}>
               {<pre>{JSON.stringify(qrState, null, 2)}</pre>}
             </Grid>
           </Grid>
