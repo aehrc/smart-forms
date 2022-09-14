@@ -124,9 +124,27 @@ function QItemSwitcher(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    // case QItemType.OpenChoice:
-    //   return <QItemOpenChoice qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
     default:
+      // TODO temporary fix for choice and open-choice types
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (qItem.type === QItemType.Choice) {
+        return (
+          <QItemChoice
+            qItem={qItem}
+            qrItem={qrItem}
+            repeats={repeats}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (qItem.type === QItemType.OpenChoice) {
+        return <div>Open Choice Placeholder</div>;
+      }
+
       return <div>Default</div>;
   }
 }
