@@ -7,7 +7,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemBodyTabbed from './QFormBodyTabs';
-import { containsTabs } from './TabFunctions';
+import { containsTabs, getIndexOfFirstTab } from './TabFunctions';
 
 function QForm() {
   const questionnaire = new QuestionnaireService();
@@ -55,6 +55,7 @@ function QForm() {
                   <QItemBodyTabbed
                     qForm={qForm}
                     qrForm={qrState.item[0]}
+                    indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
                     onQrItemChange={(newQrForm) => {
                       setQrState({ ...qrState, item: [newQrForm] });
                       questionnaireResponse.updateForm(newQrForm);

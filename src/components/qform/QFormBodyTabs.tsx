@@ -11,20 +11,22 @@ import { isTab } from './TabFunctions';
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
+  indexOfFirstTab: number;
 }
 
 function QItemBodyTabbed(props: Props) {
-  const { qForm, qrForm, onQrItemChange } = props;
+  const { qForm, qrForm, indexOfFirstTab, onQrItemChange } = props;
+
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
-  const [tabIndex, setTabIndex] = useState('1');
+  const qFormItems = qForm.item;
+  const qrFormItems = qrForm.item;
+
+  const [tabIndex, setTabIndex] = useState(indexOfFirstTab.toString());
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
     QuestionnaireResponseService.updateLinkedItem(qrItem, qrForm, indexMap);
     onQrItemChange(qrForm);
   }
-
-  const qFormItems = qForm.item;
-  const qrFormItems = qrForm.item;
 
   if (qFormItems && qrFormItems) {
     const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems);
