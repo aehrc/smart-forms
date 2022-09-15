@@ -33,10 +33,10 @@ function QItemBodyTabbed(props: Props) {
 
     return (
       <div>
+        <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
+          {qForm.text}
+        </Typography>
         <Container sx={{ p: 3, border: 1 }}>
-          <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
-            {qForm.text}
-          </Typography>
           <TabContext value={tabIndex}>
             <Box
               sx={{
