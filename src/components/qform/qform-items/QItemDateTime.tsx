@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
@@ -15,22 +15,21 @@ function QItemDateTime(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrDateTime = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const answerValue = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDate : '';
-  const [value, setValue] = useState(answerValue);
+  const valueDateTime = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDate : '';
 
-  useEffect(() => {
-    setValue(answerValue);
-  }, [answerValue]);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
-    qrDateTime = { ...qrDateTime, answer: [{ valueDateTime: e.target.value }] };
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    qrDateTime = { ...qrDateTime, answer: [{ valueDateTime: event.target.value }] };
     onQrItemChange(qrDateTime);
   }
 
   const renderQItemDateTime = repeats ? (
     <Container>
-      <TextField id={qItem.linkId} type="datetime-local" value={value} onChange={handleChange} />
+      <TextField
+        id={qItem.linkId}
+        type="datetime-local"
+        value={valueDateTime}
+        onChange={handleChange}
+      />
     </Container>
   ) : (
     <FormControl fullWidth sx={{ m: 1, p: 1 }}>
@@ -43,7 +42,7 @@ function QItemDateTime(props: Props) {
             <TextField
               id={qItem.linkId}
               type="datetime-local"
-              value={value}
+              value={valueDateTime}
               onChange={handleChange}
             />
           </Container>
@@ -51,6 +50,7 @@ function QItemDateTime(props: Props) {
       </Grid>
     </FormControl>
   );
+
   return <div>{renderQItemDateTime}</div>;
 }
 
