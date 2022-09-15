@@ -13,13 +13,13 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemSelectAnswerValueSet(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  let qrChoiceSelect = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrChoiceSelect = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
   let answerValueCoding: Coding | undefined | null = null;
   if (qrChoiceSelect['answer']) {
     answerValueCoding = qrChoiceSelect['answer'][0].valueCoding;
   }
-  const [value, setValue] = useState(answerValueCoding);
+
   const [options, setOptions] = useState<Coding[]>([]);
 
   useEffect(() => {
@@ -27,7 +27,11 @@ function QItemSelectAnswerValueSet(props: Props) {
     if (!answerValueSet) return;
 
     const cachedAnswerOptions = AnswerValueSet.cache[answerValueSet];
-    if (!cachedAnswerOptions) {
+    if (cachedAnswerOptions) {
+      // set options from cached answer options
+      setOptions(cachedAnswerOptions);
+    } else {
+      // expanding valueSet then set and cache answer options
       AnswerValueSet.expand(answerValueSet, (newOptions: ValueSet) => {
         const contains = newOptions.expansion?.contains;
         if (contains) {
@@ -36,20 +40,16 @@ function QItemSelectAnswerValueSet(props: Props) {
           setOptions(answerOptions);
         }
       });
-    } else {
-      setOptions(cachedAnswerOptions);
     }
   }, [qItem]);
 
-  function handleChange(e: any, newValue: Coding | null) {
-    if (!newValue) return;
-
-    setValue(newValue);
-    qrChoiceSelect = {
-      ...qrChoiceSelect,
-      answer: [{ valueCoding: newValue }]
-    };
-    onQrItemChange(qrChoiceSelect);
+  function handleChange(event: any, newValue: Coding | null) {
+    if (newValue) {
+      onQrItemChange({
+        ...qrChoiceSelect,
+        answer: [{ valueCoding: newValue }]
+      });
+    }
   }
 
   return (
@@ -62,11 +62,9 @@ function QItemSelectAnswerValueSet(props: Props) {
           <Container>
             <Autocomplete
               id={qItem.id}
-              autoComplete
-              includeInputInList
               options={options}
               getOptionLabel={(option) => option.display ?? ''}
-              value={value}
+              value={answerValueCoding}
               onChange={handleChange}
               renderInput={(params) => <TextField {...params} />}
             />
