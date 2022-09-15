@@ -30,7 +30,7 @@ function QItemRepeatGroup(props: Props) {
   const [repeatAnswerItems, setRepeatAnswerItems] = useState(qrRepeatAnswerItems);
 
   useEffect(() => {
-    setRepeatAnswerItems(repeatAnswerItems);
+    setRepeatAnswerItems(qrRepeatAnswerItems);
   }, [qrItem]);
 
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
