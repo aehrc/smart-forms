@@ -1,9 +1,8 @@
 import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import TextField from '@mui/material/TextField';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { Container, FormControl, Grid, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
@@ -20,9 +19,9 @@ interface Props
 function QItemTime(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrTime = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrTime = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
   const answerValue = qrTime['answer'] ? qrTime['answer'][0].valueTime : null;
-  const answerValueDayJs: Dayjs | null = answerValue ? dayjs(answerValue) : null;
+  const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 
   const [value, setValue] = React.useState<Dayjs | null>(answerValueDayJs);
 
@@ -33,8 +32,7 @@ function QItemTime(props: Props) {
   function handleChange(newValue: Dayjs | null | undefined) {
     if (newValue) {
       setValue(newValue);
-      qrTime = { ...qrTime, answer: [{ valueTime: newValue.format() }] };
-      onQrItemChange(qrTime);
+      onQrItemChange({ ...qrTime, answer: [{ valueTime: newValue.format() }] });
     }
   }
 
@@ -68,8 +66,9 @@ function QItemDatePicker(props: QItemDatePickerProps) {
   const { value, onTimeChange } = props;
 
   return (
-    <LocalizationProvider dateAdapter={AdapterMoment}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimePicker
+        showToolbar
         value={value}
         onChange={onTimeChange}
         renderInput={(params) => <TextField {...params} />}
