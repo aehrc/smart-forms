@@ -8,6 +8,7 @@ import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
 import QItemRepeatGroup from '../qform-advanced-rendering/QItemRepeatGroup';
 import QItemRepeat from '../qform-advanced-rendering/QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import { isHidden } from './QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -19,6 +20,8 @@ interface Props
 function QItemGroup(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
   const qItemsIndexMap: Record<string, number> = mapQItemsIndex(qItem);
+
+  if (isHidden(qItem)) return null;
 
   const qItems = qItem.item;
   const groupFromProps =

@@ -22,7 +22,13 @@ export function isHidden(qItem: QuestionnaireItem): boolean {
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
   );
-  return !!itemControl;
+
+  if (itemControl) {
+    if (itemControl.valueBoolean) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrientation {

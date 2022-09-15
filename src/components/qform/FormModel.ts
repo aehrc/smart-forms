@@ -18,7 +18,9 @@ export enum QItemType {
   Integer = 'integer',
   Decimal = 'decimal',
   Quantity = 'quantity',
-  Coding = 'coding'
+  Coding = 'coding',
+  Choice = 'choice',
+  OpenChoice = 'open-choice'
 }
 
 export enum QItemChoiceControl {
