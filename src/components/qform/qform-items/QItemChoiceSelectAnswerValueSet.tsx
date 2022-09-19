@@ -15,28 +15,28 @@ function QItemSelectAnswerValueSet(props: Props) {
 
   const qrChoiceSelect = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
-  let answerValueCoding: Coding | undefined | null = null;
+  let valueCoding: Coding | undefined | null = null;
   if (qrChoiceSelect['answer']) {
-    answerValueCoding = qrChoiceSelect['answer'][0].valueCoding;
+    valueCoding = qrChoiceSelect['answer'][0].valueCoding;
   }
 
   const [options, setOptions] = useState<Coding[]>([]);
 
   useEffect(() => {
-    const answerValueSet = qItem.answerValueSet;
-    if (!answerValueSet) return;
+    const answerValueSetUrl = qItem.answerValueSet;
+    if (!answerValueSetUrl) return;
 
-    const cachedAnswerOptions = AnswerValueSet.cache[answerValueSet];
+    const cachedAnswerOptions = AnswerValueSet.cache[answerValueSetUrl];
     if (cachedAnswerOptions) {
       // set options from cached answer options
       setOptions(cachedAnswerOptions);
     } else {
-      // expanding valueSet then set and cache answer options
-      AnswerValueSet.expand(answerValueSet, (newOptions: ValueSet) => {
+      // expand valueSet, then set and cache answer options
+      AnswerValueSet.expand(answerValueSetUrl, (newOptions: ValueSet) => {
         const contains = newOptions.expansion?.contains;
         if (contains) {
           const answerOptions = AnswerValueSet.getValueCodings(contains);
-          AnswerValueSet.cache[answerValueSet] = answerOptions;
+          AnswerValueSet.cache[answerValueSetUrl] = answerOptions;
           setOptions(answerOptions);
         }
       });
@@ -64,7 +64,7 @@ function QItemSelectAnswerValueSet(props: Props) {
               id={qItem.id}
               options={options}
               getOptionLabel={(option) => option.display ?? ''}
-              value={answerValueCoding}
+              value={valueCoding}
               onChange={handleChange}
               renderInput={(params) => <TextField {...params} />}
             />
