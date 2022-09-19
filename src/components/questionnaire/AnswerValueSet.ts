@@ -4,16 +4,13 @@ import { Coding, ValueSet, ValueSetExpansionContains } from 'fhir/r5';
 export class AnswerValueSet {
   static cache: Record<string, Coding[]> = {};
 
-  static expand(
-    valueSetUrl: string,
-    callback: { (newOptions: ValueSet): void; (arg0: ValueSet): void }
-  ) {
+  static expand(valueSetUrl: string, setAnswerOptions: { (newOptions: ValueSet): void }) {
     const ontoserver = 'https://r4.ontoserver.csiro.au/fhir';
 
     FHIR.client({ serverUrl: ontoserver })
       .request({ url: 'ValueSet/$expand?url=' + valueSetUrl })
-      .then((res) => {
-        callback(res);
+      .then((response) => {
+        setAnswerOptions(response);
       })
       .catch((error) => console.log(error));
   }

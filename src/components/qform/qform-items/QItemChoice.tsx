@@ -4,17 +4,13 @@ import {
   PropsWithRepeatsAttribute,
   QItemChoiceControl
 } from '../FormModel';
-import {
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemChoiceRadio from './QItemChoiceRadio';
 import { getChoiceOrientation, isSpecificItemControl } from './QItemFunctions';
 import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
+import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -65,10 +61,12 @@ function QItemChoice(props: Props) {
         );
       }
     case QItemChoiceControl.Autocomplete:
-      // TODO choice autocomplete placeholder
+      return (
+        <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
+      );
+    default:
       return null;
   }
-  return null;
 }
 
 function getChoiceControlType(qItem: QuestionnaireItem) {
@@ -82,27 +80,8 @@ function getChoiceControlType(qItem: QuestionnaireItem) {
       return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
         ? QItemChoiceControl.Radio
         : QItemChoiceControl.Select;
-    }
-  }
-}
-
-export function findInAnswerOptions(
-  answerOptions: QuestionnaireItemAnswerOption[],
-  selected: string
-): QuestionnaireResponseItemAnswer | undefined {
-  for (const option of answerOptions) {
-    if (option['valueCoding']) {
-      if (selected === option.valueCoding.code) {
-        return option;
-      }
-    } else if (option['valueString']) {
-      if (selected === option.valueString) {
-        return option;
-      }
-    } else if (option['valueInteger']) {
-      if (selected === option.valueInteger.toString()) {
-        return option;
-      }
+    } else {
+      return QItemChoiceControl.Select;
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
@@ -14,56 +14,48 @@ interface Props
 function QItemQuantity(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrQuantity = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  let answerValue: number | undefined = 0.0;
-  let answerUnit: string | undefined = '';
+  const qrQuantity = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  let valueQuantity: number | undefined = 0.0;
+  let unitQuantity: string | undefined = '';
 
   if (qrQuantity['answer']) {
     const answer = qrQuantity['answer'][0];
-    answerValue = answer.valueQuantity ? answer.valueQuantity.value : 0.0;
-    answerUnit = answer.valueQuantity ? answer.valueQuantity.unit : '';
-  }
-
-  const [value, setValue] = useState(answerValue);
-  const [unit, setUnit] = useState(answerUnit);
-
-  useEffect(() => {
-    setValue(answerValue);
-  }, [answerValue]);
-
-  useEffect(() => {
-    setUnit(answerUnit);
-  }, [answerUnit]);
-
-  function handleValueChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(parseFloat(e.target.value));
-    updateQrItem();
-  }
-
-  function handleUnitChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setUnit(e.target.value);
-    updateQrItem();
-  }
-
-  function updateQrItem() {
-    qrQuantity = {
-      ...qrQuantity,
-      answer: [{ valueQuantity: { value: value, unit: unit } }]
-    };
-    onQrItemChange(qrQuantity);
+    valueQuantity = answer.valueQuantity ? answer.valueQuantity.value : 0.0;
+    unitQuantity = answer.valueQuantity ? answer.valueQuantity.unit : '';
   }
 
   const QItemQuantityFields = (
     <Grid container spacing={1}>
-      <Grid item xs={8}>
+      <Grid item xs={6}>
         <Container>
-          <TextField type="number" id={qItem.linkId} value={value} onChange={handleValueChange} />
+          <TextField
+            type="number"
+            id={qItem.linkId}
+            value={valueQuantity}
+            onChange={(event) =>
+              onQrItemChange({
+                ...qrQuantity,
+                answer: [
+                  { valueQuantity: { value: parseFloat(event.target.value), unit: unitQuantity } }
+                ]
+              })
+            }
+          />
         </Container>
       </Grid>
 
-      <Grid item xs={8}>
+      <Grid item xs={6}>
         <Container>
-          <TextField id={qItem.linkId + '_unit'} value={unit} onChange={handleUnitChange} />
+          <TextField
+            id={qItem.linkId + '_unit'}
+            value={unitQuantity}
+            onChange={(event) =>
+              onQrItemChange({
+                ...qrQuantity,
+                answer: [{ valueQuantity: { value: valueQuantity, unit: event.target.value } }]
+              })
+            }
+          />
         </Container>
       </Grid>
     </Grid>
@@ -73,7 +65,7 @@ function QItemQuantity(props: Props) {
     return <div>{QItemQuantityFields}</div>;
   } else {
     return (
-      <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+      <FormControl>
         <Grid container spacing={2}>
           <Grid item xs={5}>
             <Typography>{qItem.text}</Typography>

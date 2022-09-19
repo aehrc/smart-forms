@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
@@ -15,33 +15,31 @@ function QItemDecimal(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrDecimal = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const answerValue = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
-  const [value, setValue] = useState(answerValue);
+  const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
 
-  useEffect(() => {
-    setValue(answerValue);
-  }, [answerValue]);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const decimalValue = parseFloat(e.target.value);
-    setValue(decimalValue);
-    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: decimalValue }] };
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(event.target.value) }] };
     onQrItemChange(qrDecimal);
   }
 
   const renderQItemDecimal = repeats ? (
     <Container>
-      <TextField type="number" id={qItem.linkId} value={value} onChange={handleChange} />
+      <TextField type="number" id={qItem.linkId} value={valueDecimal} onChange={handleChange} />
     </Container>
   ) : (
-    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+    <FormControl>
       <Grid container spacing={2}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <TextField type="number" id={qItem.linkId} value={value} onChange={handleChange} />
+            <TextField
+              type="number"
+              id={qItem.linkId}
+              value={valueDecimal}
+              onChange={handleChange}
+            />
           </Container>
         </Grid>
       </Grid>

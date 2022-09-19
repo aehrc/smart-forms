@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { Box, Card, Divider, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
@@ -19,7 +18,7 @@ interface Props
 
 function QItemGroup(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
-  const qItemsIndexMap: Record<string, number> = mapQItemsIndex(qItem);
+  const qItemsIndexMap = mapQItemsIndex(qItem);
 
   if (isHidden(qItem)) return null;
 
@@ -45,61 +44,64 @@ function QItemGroup(props: Props) {
     const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
 
     return (
-      <div>
-        <Container sx={{ border: 0.5, mb: 2, p: 3, borderColor: grey.A400 }}>
-          {repeats ? null : (
+      <Card sx={{ p: 5, py: 4 }}>
+        {repeats ? null : (
+          <div>
             <Typography variant="h6" sx={{ mb: 1 }}>
               {qItem.text}
             </Typography>
-          )}
-          {qItems.map((qItem: QuestionnaireItem, i) => {
-            const qrItem = qrItemsByIndex[i];
-            if (qItem['repeats']) {
-              if (qItem.repeats) {
-                if (qItem.type === QItemType.Group) {
-                  return (
+            <Divider sx={{ mt: 2, mb: 4 }} light />
+          </div>
+        )}
+        {qItems.map((qItem: QuestionnaireItem, i) => {
+          const qrItem = qrItemsByIndex[i];
+          if (qItem['repeats']) {
+            if (qItem.repeats) {
+              if (qItem.type === QItemType.Group) {
+                return (
+                  <Box key={qItem.linkId} sx={{ my: 3 }}>
                     <QItemRepeatGroup
-                      key={qItem.linkId}
                       qItem={qItem}
                       qrItem={qrItem}
                       repeats={true}
                       onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
-                  );
-                } else {
-                  return (
-                    <QItemRepeat
-                      key={qItem.linkId}
-                      qItem={qItem}
-                      qrItem={qrItem}
-                      onQrItemChange={handleQrItemChange}></QItemRepeat>
-                  );
-                }
+                  </Box>
+                );
+              } else {
+                return (
+                  <QItemRepeat
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    onQrItemChange={handleQrItemChange}></QItemRepeat>
+                );
               }
             }
+          }
 
-            // if qItem is not a repeating question
-            if (qItem.type === QItemType.Group) {
-              return (
+          // if qItem is not a repeating question
+          if (qItem.type === QItemType.Group) {
+            return (
+              <Box key={qItem.linkId} sx={{ my: 4 }}>
                 <QItemGroup
-                  key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={false}
                   onQrItemChange={handleQrItemChange}></QItemGroup>
-              );
-            } else {
-              return (
-                <QItemSwitcher
-                  key={qItem.linkId}
-                  qItem={qItem}
-                  qrItem={qrItem}
-                  repeats={false}
-                  onQrItemChange={handleQrItemChange}></QItemSwitcher>
-              );
-            }
-          })}
-        </Container>
-      </div>
+              </Box>
+            );
+          } else {
+            return (
+              <QItemSwitcher
+                key={qItem.linkId}
+                qItem={qItem}
+                qrItem={qrItem}
+                repeats={false}
+                onQrItemChange={handleQrItemChange}></QItemSwitcher>
+            );
+          }
+        })}
+      </Card>
     );
   } else {
     return <div>Unable to load group</div>;

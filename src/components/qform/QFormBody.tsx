@@ -1,6 +1,5 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import { Typography } from '@mui/material';
+import { Card, Typography } from '@mui/material';
 import QItemGroup from './qform-items/QItemGroup';
 import { PropsWithQrItemChangeHandler, QItemType } from './FormModel';
 import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
@@ -30,7 +29,7 @@ function QFormBody(props: Props) {
 
     return (
       <div>
-        <Container>
+        <Card>
           <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
             {qForm.text}
           </Typography>
@@ -56,7 +55,7 @@ function QFormBody(props: Props) {
               );
             }
           })}
-        </Container>
+        </Card>
       </div>
     );
   } else {

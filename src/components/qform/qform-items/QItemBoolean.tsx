@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Checkbox,
   Container,
@@ -22,25 +22,22 @@ function QItemBoolean(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrBoolean = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const answerValue = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
-  const [value, setValue] = useState(answerValue);
+  const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
 
-  useEffect(() => {
-    setValue(answerValue);
-  }, [answerValue]);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.checked);
-    qrBoolean = { ...qrBoolean, answer: [{ valueBoolean: e.target.checked }] };
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    qrBoolean = { ...qrBoolean, answer: [{ valueBoolean: event.target.checked }] };
     onQrItemChange(qrBoolean);
   }
 
   const renderQItemBoolean = repeats ? (
     <Container>
-      <FormControlLabel control={<Checkbox checked={value} onChange={handleChange} />} label="" />
+      <FormControlLabel
+        control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
+        label=""
+      />
     </Container>
   ) : (
-    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+    <FormControl>
       <Grid container spacing={2}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
@@ -48,7 +45,7 @@ function QItemBoolean(props: Props) {
         <Grid item xs={7}>
           <Container>
             <FormControlLabel
-              control={<Checkbox checked={value} onChange={handleChange} />}
+              control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
               label=""
             />
           </Container>

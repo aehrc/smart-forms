@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
@@ -15,37 +15,32 @@ function QItemDate(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrDate = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const answerValue = qrDate['answer'] ? qrDate['answer'][0].valueDate : '';
-  const [value, setValue] = useState(answerValue);
+  const valueDate = qrDate['answer'] ? qrDate['answer'][0].valueDate : '';
 
-  useEffect(() => {
-    setValue(answerValue);
-  }, [answerValue]);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
-    qrDate = { ...qrDate, answer: [{ valueDate: e.target.value }] };
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    qrDate = { ...qrDate, answer: [{ valueDate: event.target.value }] };
     onQrItemChange(qrDate);
   }
 
   const renderQItemDate = repeats ? (
     <Container>
-      <TextField id={qItem.linkId} type="date" value={value} onChange={handleChange} />
+      <TextField id={qItem.linkId} type="date" value={valueDate} onChange={handleChange} />
     </Container>
   ) : (
-    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+    <FormControl>
       <Grid container spacing={2}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
           <Container>
-            <TextField id={qItem.linkId} type="date" value={value} onChange={handleChange} />
+            <TextField id={qItem.linkId} type="date" value={valueDate} onChange={handleChange} />
           </Container>
         </Grid>
       </Grid>
     </FormControl>
   );
+
   return <div>{renderQItemDate}</div>;
 }
 

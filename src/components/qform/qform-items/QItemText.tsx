@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
@@ -15,25 +15,19 @@ function QItemText(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   let qrText = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const answerValue = qrText['answer'] ? qrText['answer'][0].valueString : '';
-  const [value, setValue] = useState(answerValue);
-
-  useEffect(() => {
-    setValue(answerValue);
-  }, [answerValue]);
+  const valueText = qrText['answer'] ? qrText['answer'][0].valueString : '';
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
     qrText = { ...qrText, answer: [{ valueString: e.target.value }] };
     onQrItemChange(qrText);
   }
 
   const renderQItemText = repeats ? (
     <Container>
-      <TextField id={qItem.linkId} value={value} onChange={handleChange} fullWidth multiline />
+      <TextField id={qItem.linkId} value={valueText} onChange={handleChange} fullWidth multiline />
     </Container>
   ) : (
-    <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+    <FormControl>
       <Grid container spacing={2}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
@@ -42,7 +36,7 @@ function QItemText(props: Props) {
           <Container>
             <TextField
               id={qItem.linkId}
-              value={value}
+              value={valueText}
               onChange={handleChange}
               fullWidth
               multiline
