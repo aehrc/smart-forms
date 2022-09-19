@@ -10,6 +10,7 @@ import { getChoiceOrientation, isSpecificItemControl } from './QItemFunctions';
 import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
+import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -60,8 +61,9 @@ function QItemChoice(props: Props) {
         );
       }
     case QItemChoiceControl.Autocomplete:
-      // TODO choice autocomplete placeholder
-      return null;
+      return (
+        <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
+      );
     default:
       return null;
   }
