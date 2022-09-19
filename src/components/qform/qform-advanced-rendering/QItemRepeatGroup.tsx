@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
 import QItemGroup from '../qform-items/QItemGroup';
-import { grey } from '@mui/material/colors';
+
 import {
   QuestionnaireItem,
   QuestionnaireResponseItem,
@@ -63,7 +63,7 @@ function QItemRepeatGroup(props: Props) {
 
   return (
     <div>
-      <Container sx={{ border: 0.5, mb: 2, p: 3, borderColor: grey.A400 }}>
+      <Card sx={{ mb: 2, p: 3 }}>
         <Typography variant="h6" sx={{ mb: 4 }}>
           {qItem.text}
         </Typography>
@@ -99,7 +99,7 @@ function QItemRepeatGroup(props: Props) {
             Add Item
           </Button>
         </Stack>
-      </Container>
+      </Card>
     </div>
   );
 }

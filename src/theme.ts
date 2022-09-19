@@ -13,6 +13,26 @@ const theme = createTheme({
     error: {
       main: red.A400
     }
+  },
+  components: {
+    MuiFormControl: {
+      defaultProps: {
+        fullWidth: true
+      },
+      styleOverrides: {
+        root: {
+          marginBottom: 32
+        }
+      }
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          padding: 16,
+          textTransform: 'capitalize'
+        }
+      }
+    }
   }
 });
 

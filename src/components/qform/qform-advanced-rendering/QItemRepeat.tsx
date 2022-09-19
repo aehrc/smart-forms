@@ -57,7 +57,7 @@ function QItemRepeat(props: Props) {
 
   return (
     <div>
-      <FormControl fullWidth sx={{ m: 1, p: 1 }}>
+      <FormControl>
         <Grid container spacing={2}>
           <Grid item xs={5}>
             <Typography>{qItem.text}</Typography>

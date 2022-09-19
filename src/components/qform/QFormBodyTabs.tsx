@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Container, Grid, Tab, Typography } from '@mui/material';
+import { Box, Card, Grid, Tab, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from './FormModel';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -36,7 +36,7 @@ function QItemBodyTabbed(props: Props) {
         <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
           {qForm.text}
         </Typography>
-        <Container sx={{ p: 3, border: 1 }}>
+        <Card sx={{ p: 2 }}>
           <TabContext value={tabIndex}>
             <Box
               sx={{
@@ -44,35 +44,35 @@ function QItemBodyTabbed(props: Props) {
                 display: 'flex'
               }}>
               <Grid container spacing={2}>
-                <Grid item xs={3}>
-                  <TabList
-                    orientation="vertical"
-                    onChange={(event, newTabIndex) => setTabIndex(newTabIndex)}>
-                    {qFormItems.map((qItem, i) => {
-                      if (isTab(qItem)) {
-                        return (
-                          <Tab key={qItem.linkId} label={qItem.text} value={(i + 1).toString()} />
-                        );
-                      }
-                    })}
-                  </TabList>
+                <Grid item xs={3.5}>
+                  <Card>
+                    <TabList
+                      orientation="vertical"
+                      onChange={(event, newTabIndex) => setTabIndex(newTabIndex)}>
+                      {qFormItems.map((qItem, i) => {
+                        if (isTab(qItem)) {
+                          return (
+                            <Tab key={qItem.linkId} label={qItem.text} value={(i + 1).toString()} />
+                          );
+                        }
+                      })}
+                    </TabList>
+                  </Card>
                 </Grid>
 
-                <Grid item xs={9}>
+                <Grid item xs={8.5}>
                   {qFormItems.map((qItem, i) => {
                     const qrItem = qrFormItemsByIndex[i];
 
                     if (isTab(qItem)) {
                       return (
-                        <TabPanel key={qItem.linkId} value={(i + 1).toString()}>
-                          <Container>
-                            <QItemGroup
-                              key={qItem.linkId}
-                              qItem={qItem}
-                              qrItem={qrItem}
-                              repeats={qItem.repeats ?? false}
-                              onQrItemChange={handleQrGroupChange}></QItemGroup>
-                          </Container>
+                        <TabPanel key={qItem.linkId} sx={{ p: 0 }} value={(i + 1).toString()}>
+                          <QItemGroup
+                            key={qItem.linkId}
+                            qItem={qItem}
+                            qrItem={qrItem}
+                            repeats={qItem.repeats ?? false}
+                            onQrItemChange={handleQrGroupChange}></QItemGroup>
                         </TabPanel>
                       );
                     }
@@ -81,7 +81,7 @@ function QItemBodyTabbed(props: Props) {
               </Grid>
             </Box>
           </TabContext>
-        </Container>
+        </Card>
       </div>
     );
   } else {
