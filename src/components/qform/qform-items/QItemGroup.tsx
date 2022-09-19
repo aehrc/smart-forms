@@ -59,9 +59,8 @@ function QItemGroup(props: Props) {
             if (qItem.repeats) {
               if (qItem.type === QItemType.Group) {
                 return (
-                  <Box sx={{ my: 3 }}>
+                  <Box key={qItem.linkId} sx={{ my: 3 }}>
                     <QItemRepeatGroup
-                      key={qItem.linkId}
                       qItem={qItem}
                       qrItem={qrItem}
                       repeats={true}
@@ -83,9 +82,8 @@ function QItemGroup(props: Props) {
           // if qItem is not a repeating question
           if (qItem.type === QItemType.Group) {
             return (
-              <Box sx={{ my: 4 }}>
+              <Box key={qItem.linkId} sx={{ my: 4 }}>
                 <QItemGroup
-                  key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={false}

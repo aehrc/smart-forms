@@ -81,8 +81,8 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
             }
 
             if (newQrItemIndex === qrItemsRealIndexArr[i]) {
-              // // newQrItem has answer value
               if (newQrItem.item?.length || newQrItem.answer?.length) {
+                // newQrItem has answer value
                 qrGroup.item[i] = newQrItem;
               } else {
                 // newQrItem has no answer value

@@ -68,7 +68,6 @@ function QItemBodyTabbed(props: Props) {
                       return (
                         <TabPanel key={qItem.linkId} sx={{ p: 0 }} value={(i + 1).toString()}>
                           <QItemGroup
-                            key={qItem.linkId}
                             qItem={qItem}
                             qrItem={qrItem}
                             repeats={qItem.repeats ?? false}
