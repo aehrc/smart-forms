@@ -33,7 +33,7 @@ function QItemDateTime(props: Props) {
     </Container>
   ) : (
     <FormControl>
-      <Grid container spacing={2}>
+      <Grid container spacing={4}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>

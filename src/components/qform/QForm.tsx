@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Container from '@mui/material/Container';
-import { Button, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Stack, Typography } from '@mui/material';
 import { QuestionnaireService } from '../questionnaire/QuestionnaireService';
 import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -39,43 +39,44 @@ function QForm() {
     return (
       <div>
         <Container maxWidth="lg">
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Stack spacing={1} sx={{ my: 4 }}>
-                <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
-                  {questionnaire.title}
-                </Typography>
+          <Stack spacing={2.5} sx={{ my: 4 }}>
+            <Typography variant="h4">{questionnaire.title}</Typography>
+            <Divider />
 
-                <Button onClick={clearQuestionnaireResponseButton}>
+            {containsTabs(qForm.item) ? (
+              <QItemBodyTabbed
+                qForm={qForm}
+                qrForm={qrState.item[0]}
+                indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
+                onQrItemChange={(newQrForm) => {
+                  setQrState({ ...qrState, item: [newQrForm] });
+                  questionnaireResponse.updateForm(newQrForm);
+                }}
+              />
+            ) : (
+              <QFormBody
+                qForm={qForm}
+                qrForm={qrState.item[0]}
+                onQrItemChange={(newQrForm) => {
+                  setQrState({ ...qrState, item: [newQrForm] });
+                  questionnaireResponse.updateForm(newQrForm);
+                }}></QFormBody>
+            )}
+
+            <Box sx={{ pt: 6 }}>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="h5">Questionnaire Response</Typography>
+                <Button
+                  variant="outlined"
+                  onClick={clearQuestionnaireResponseButton}
+                  sx={{ borderRadius: 20 }}>
                   Clear Responses
-                  <ClearIcon sx={{ ml: 2 }} />
+                  <ClearIcon sx={{ ml: 1 }} />
                 </Button>
-
-                {containsTabs(qForm.item) ? (
-                  <QItemBodyTabbed
-                    qForm={qForm}
-                    qrForm={qrState.item[0]}
-                    indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
-                    onQrItemChange={(newQrForm) => {
-                      setQrState({ ...qrState, item: [newQrForm] });
-                      questionnaireResponse.updateForm(newQrForm);
-                    }}
-                  />
-                ) : (
-                  <QFormBody
-                    qForm={qForm}
-                    qrForm={qrState.item[0]}
-                    onQrItemChange={(newQrForm) => {
-                      setQrState({ ...qrState, item: [newQrForm] });
-                      questionnaireResponse.updateForm(newQrForm);
-                    }}></QFormBody>
-                )}
               </Stack>
-            </Grid>
-            <Grid item xs={0}>
               {<pre>{JSON.stringify(qrState, null, 2)}</pre>}
-            </Grid>
-          </Grid>
+            </Box>
+          </Stack>
         </Container>
       </div>
     );
