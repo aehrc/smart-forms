@@ -14,10 +14,11 @@ interface Props
     PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  groupCardElevation: number;
 }
 
 function QItemGroup(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, groupCardElevation, onQrItemChange } = props;
   const qItemsIndexMap = mapQItemsIndex(qItem);
 
   if (isHidden(qItem)) return null;
@@ -44,7 +45,7 @@ function QItemGroup(props: Props) {
     const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
 
     return (
-      <Card elevation={3} sx={{ p: 5, py: 4 }}>
+      <Card elevation={groupCardElevation} sx={{ p: 5, py: 4 }}>
         {repeats ? null : (
           <div>
             <Typography variant="h6" sx={{ mb: 1 }}>
@@ -64,6 +65,7 @@ function QItemGroup(props: Props) {
                       qItem={qItem}
                       qrItem={qrItem}
                       repeats={true}
+                      groupCardElevation={groupCardElevation + 2}
                       onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
                   </Box>
                 );
@@ -87,6 +89,7 @@ function QItemGroup(props: Props) {
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={false}
+                  groupCardElevation={groupCardElevation + 2}
                   onQrItemChange={handleQrItemChange}></QItemGroup>
               </Box>
             );

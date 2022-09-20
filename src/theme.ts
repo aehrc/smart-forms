@@ -22,7 +22,7 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
           root: {
             padding: 16,
             textTransform: 'capitalize',
-            transition: '0.1s',
+            transition: '0.15s',
             '&:hover': {
               background: prefersDarkMode ? '#1B1B1B' : '#F8F8F8'
             }

@@ -42,6 +42,7 @@ function QFormBody(props: Props) {
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={qItem.repeats ?? false}
+                  groupCardElevation={1}
                   onQrItemChange={handleQrGroupChange}></QItemGroup>
               );
             } else {

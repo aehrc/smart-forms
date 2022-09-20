@@ -44,7 +44,7 @@ function QItemBodyTabbed(props: Props) {
             }}>
             <Grid container columnSpacing={2.5}>
               <Grid item xs={3.5}>
-                <Card elevation={3} sx={{ py: 1 }}>
+                <Card sx={{ py: 1 }}>
                   <TabList
                     orientation="vertical"
                     onChange={(event, newTabIndex) => setTabIndex(newTabIndex)}>
@@ -70,6 +70,7 @@ function QItemBodyTabbed(props: Props) {
                           qItem={qItem}
                           qrItem={qrItem}
                           repeats={qItem.repeats ?? false}
+                          groupCardElevation={2}
                           onQrItemChange={handleQrGroupChange}></QItemGroup>
                       </TabPanel>
                     );
