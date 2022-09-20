@@ -1,4 +1,4 @@
-import questionnaireData from '../../data/resources/715.R4.json';
+import questionnaireData from '../../data/resources/715.R4-modified.json';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r5';
 
 export class QuestionnaireService implements Questionnaire {

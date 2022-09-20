@@ -20,7 +20,7 @@ interface Props
 }
 
 function QItemChoice(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
 
   switch (getChoiceControlType(qItem)) {
@@ -29,6 +29,7 @@ function QItemChoice(props: Props) {
         <QItemChoiceRadio
           qItem={qItem}
           qrItem={qrItem}
+          repeats={repeats}
           onQrItemChange={onQrItemChange}
           orientation={orientation}
         />
@@ -38,8 +39,18 @@ function QItemChoice(props: Props) {
         <QItemChoiceCheckbox
           qItem={qItem}
           qrItem={qrItem}
+          repeats={repeats}
           onQrItemChange={onQrItemChange}
           orientation={orientation}
+        />
+      );
+    case QItemChoiceControl.Autocomplete:
+      return (
+        <QItemChoiceAutocomplete
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemChoiceControl.Select:
@@ -48,6 +59,7 @@ function QItemChoice(props: Props) {
           <QItemSelectAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
+            repeats={repeats}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -56,14 +68,11 @@ function QItemChoice(props: Props) {
           <QItemChoiceSelectAnswerOption
             qItem={qItem}
             qrItem={qrItem}
+            repeats={repeats}
             onQrItemChange={onQrItemChange}
           />
         );
       }
-    case QItemChoiceControl.Autocomplete:
-      return (
-        <QItemChoiceAutocomplete qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />
-      );
     default:
       return null;
   }

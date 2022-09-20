@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Autocomplete, Container, FormControl, Grid, TextField, Typography } from '@mui/material';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { AnswerValueSet } from '../../questionnaire/AnswerValueSet';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemSelectAnswerValueSet(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   const qrChoiceSelect = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
@@ -52,27 +54,32 @@ function QItemSelectAnswerValueSet(props: Props) {
     }
   }
 
-  return (
+  const choiceSelectAnswerValueSet = (
+    <Autocomplete
+      id={qItem.id}
+      options={options}
+      getOptionLabel={(option) => option.display ?? ''}
+      value={valueCoding}
+      onChange={handleChange}
+      renderInput={(params) => <TextField {...params} />}
+    />
+  );
+
+  const renderQItemChoiceSelectAnswerValueSet = repeats ? (
+    <Container>{choiceSelectAnswerValueSet}</Container>
+  ) : (
     <FormControl>
       <Grid container spacing={4}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>
-            <Autocomplete
-              id={qItem.id}
-              options={options}
-              getOptionLabel={(option) => option.display ?? ''}
-              value={valueCoding}
-              onChange={handleChange}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </Container>
+          <Container>{choiceSelectAnswerValueSet}</Container>
         </Grid>
       </Grid>
     </FormControl>
   );
+  return <div>{renderQItemChoiceSelectAnswerValueSet}</div>;
 }
 
 export default QItemSelectAnswerValueSet;

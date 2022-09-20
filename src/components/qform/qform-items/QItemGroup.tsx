@@ -4,8 +4,8 @@ import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } fr
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
-import QItemRepeatGroup from '../qform-advanced-rendering/QItemRepeatGroup';
-import QItemRepeat from '../qform-advanced-rendering/QItemRepeat';
+import QItemRepeatGroup from './QItemRepeatGroup';
+import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { isHidden } from './QItemFunctions';
 

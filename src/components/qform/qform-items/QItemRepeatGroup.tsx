@@ -3,7 +3,7 @@ import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
-import QItemGroup from '../qform-items/QItemGroup';
+import QItemGroup from './QItemGroup';
 
 import {
   QuestionnaireItem,

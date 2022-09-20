@@ -3,7 +3,7 @@ import { Button, FormControl, Grid, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
-import QItemSwitcher from '../qform-items/QItemSwitcher';
+import QItemSwitcher from './QItemSwitcher';
 import {
   QuestionnaireItem,
   QuestionnaireResponseItem,
