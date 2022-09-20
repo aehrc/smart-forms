@@ -1,5 +1,5 @@
 import React from 'react';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import {
@@ -17,7 +17,7 @@ interface Props
 }
 
 function QItemOpenChoiceSelectAnswerOption(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
 
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
@@ -51,7 +51,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
     onQrItemChange(QuestionnaireResponseService.createQrItem(qItem));
   }
 
-  const openChoiceSelectAnswerOption = (
+  const openOpenChoiceSelectAnswerOption = (
     <Autocomplete
       id={qItem.id}
       freeSolo
@@ -62,8 +62,21 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       renderInput={(params) => <TextField {...params} />}
     />
   );
-
-  return <div>{openChoiceSelectAnswerOption}</div>;
+  const renderQItemOpenChoiceAutocomplete = repeats ? (
+    <div>{openOpenChoiceSelectAnswerOption}</div>
+  ) : (
+    <FormControl>
+      <Grid container columnSpacing={6}>
+        <Grid item xs={5}>
+          <Typography>{qItem.text}</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          {openOpenChoiceSelectAnswerOption}
+        </Grid>
+      </Grid>
+    </FormControl>
+  );
+  return <div>{renderQItemOpenChoiceAutocomplete}</div>;
 }
 
 export default QItemOpenChoiceSelectAnswerOption;

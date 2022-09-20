@@ -59,7 +59,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     onQrItemChange(QuestionnaireResponseService.createQrItem(qItem));
   }
 
-  const choiceSelectAnswerValueSet = (
+  const openChoiceSelectAnswerValueSet = (
     <Autocomplete
       id={qItem.id}
       freeSolo
@@ -72,8 +72,8 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     />
   );
 
-  const renderQItemChoiceSelectAnswerValueSet = repeats ? (
-    <div>{choiceSelectAnswerValueSet}</div>
+  const renderQItemOpenChoiceSelectAnswerValueSet = repeats ? (
+    <div>{openChoiceSelectAnswerValueSet}</div>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -81,12 +81,12 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          {choiceSelectAnswerValueSet}
+          {openChoiceSelectAnswerValueSet}
         </Grid>
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemChoiceSelectAnswerValueSet}</div>;
+  return <div>{renderQItemOpenChoiceSelectAnswerValueSet}</div>;
 }
 
 export default QItemOpenChoiceSelectAnswerValueSet;

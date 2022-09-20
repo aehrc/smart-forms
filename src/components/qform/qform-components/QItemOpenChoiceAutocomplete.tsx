@@ -79,7 +79,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     handleValueChange(event, newInput);
   }
 
-  const choiceAutocomplete = (
+  const openChoiceAutocomplete = (
     <Autocomplete
       id={qItem.id}
       freeSolo
@@ -108,8 +108,8 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     />
   );
 
-  const renderQItemChoiceAutocomplete = repeats ? (
-    <div>{choiceAutocomplete}</div>
+  const renderQItemOpenChoiceAutocomplete = repeats ? (
+    <div>{openChoiceAutocomplete}</div>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -117,12 +117,12 @@ function QItemOpenChoiceAutocomplete(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          {choiceAutocomplete}
+          {openChoiceAutocomplete}
         </Grid>
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemChoiceAutocomplete}</div>;
+  return <div>{renderQItemOpenChoiceAutocomplete}</div>;
 }
 
 export default QItemOpenChoiceAutocomplete;
