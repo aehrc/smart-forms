@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Add and various modifications to form components">
+    <list default="true" id="6654e372-735b-4e25-acdf-7fd8680a7354" name="Changes" comment="Add modified Questionnaire 715 for testing">
+      <change afterPath="$PROJECT_DIR$/src/components/smartlaunch/smart-launch.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoice.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoice.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/QForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/QForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/QFormBodyTabs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/QFormBodyTabs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemBoolean.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemBoolean.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceAutocomplete.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceAutocomplete.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceCheckbox.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceCheckbox.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceRadio.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceRadio.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceSelectAnswerOption.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceSelectAnswerOption.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceSelectAnswerValueSet.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemChoiceSelectAnswerValueSet.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDate.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDate.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDateTime.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDateTime.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDecimal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDecimal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDisplay.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemDisplay.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemInteger.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemInteger.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemQuantity.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemQuantity.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemRepeat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemRepeat.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemRepeatGroup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemRepeatGroup.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemString.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemString.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemText.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemText.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/qform/qform-items/QItemTime.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/qform/qform-items/QItemTime.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/resources/715.R4-modified.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/resources/715.R4-modified.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/theme.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/theme.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,25 +50,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/fon026/IdeaProjects/smart-forms-react/src/components/qform/qform-items",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_interpreter_path": "node",
-    "nodejs_package_manager_path": "npm",
-    "prettierjs.PrettierConfiguration.Package": "/usr/local/lib/node_modules/prettier",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "/Users/fon026/IdeaProjects/smart-forms-react/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/fon026/IdeaProjects/smart-forms-react/src/components/qform/qform-items&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/usr/local/lib/node_modules/prettier&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/fon026/IdeaProjects/smart-forms-react/node_modules/typescript/lib&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/components/qform/qform-items" />
@@ -90,6 +111,7 @@
       <workItem from="1661315954742" duration="82000" />
       <workItem from="1661382878467" duration="880000" />
       <workItem from="1661384272846" duration="7695000" />
+      <workItem from="1663629917553" duration="13833000" />
     </task>
     <task id="LOCAL-00001" summary="mui">
       <created>1661314618855</created>
@@ -154,7 +176,28 @@
       <option name="project" value="LOCAL" />
       <updated>1661390550132</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="UI and design tweaks including dark mode based on system preference">
+      <created>1663639055561</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1663639055561</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Add repeats compatibility to choice components">
+      <created>1663641416504</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1663641416504</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Add modified Questionnaire 715 for testing">
+      <created>1663641439604</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1663641439604</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,7 +208,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="refactor-form-components" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -181,7 +236,10 @@
     <MESSAGE value="Add boilerplate code" />
     <MESSAGE value="Render form and basic form components" />
     <MESSAGE value="Add and various modifications to form components" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add and various modifications to form components" />
+    <MESSAGE value="UI and design tweaks including dark mode based on system preference" />
+    <MESSAGE value="Add repeats compatibility to choice components" />
+    <MESSAGE value="Add modified Questionnaire 715 for testing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add modified Questionnaire 715 for testing" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

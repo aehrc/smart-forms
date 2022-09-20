@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { QuestionnaireItem } from 'fhir/r5';
 
 interface Props {
@@ -9,11 +9,7 @@ interface Props {
 function QItemDisplay(props: Props) {
   const { qItem } = props;
 
-  return (
-    <Container sx={{ m: 1, p: 1 }}>
-      <Typography>{qItem.text}</Typography>
-    </Container>
-  );
+  return <Typography>{qItem.text}</Typography>;
 }
 
 export default QItemDisplay;

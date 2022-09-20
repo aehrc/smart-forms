@@ -13,6 +13,7 @@ import QItemChoice from './QItemChoice';
 import { isHidden } from './QItemFunctions';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemTime';
+import QItemOpenChoice from './QItemOpenChoice';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -116,14 +117,7 @@ function QItemSwitcher(props: Props) {
         />
       );
     case QItemType.Coding:
-      return (
-        <QItemChoice
-          qItem={qItem}
-          qrItem={qrItem}
-          repeats={repeats}
-          onQrItemChange={onQrItemChange}
-        />
-      );
+      return <div>Coding Placeholder</div>;
     default:
       // TODO temporary fix for choice and open-choice types
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -142,7 +136,14 @@ function QItemSwitcher(props: Props) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       if (qItem.type === QItemType.OpenChoice) {
-        return <div>Open Choice Placeholder</div>;
+        return (
+          <QItemOpenChoice
+            qItem={qItem}
+            qrItem={qrItem}
+            repeats={repeats}
+            onQrItemChange={onQrItemChange}
+          />
+        );
       }
 
       return <div>Default</div>;

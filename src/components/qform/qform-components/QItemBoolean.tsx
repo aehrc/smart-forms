@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-  Checkbox,
-  Container,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  Typography
-} from '@mui/material';
+import { Checkbox, FormControl, FormControlLabel, Grid, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
@@ -30,25 +23,21 @@ function QItemBoolean(props: Props) {
   }
 
   const renderQItemBoolean = repeats ? (
-    <Container>
-      <FormControlLabel
-        control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
-        label=""
-      />
-    </Container>
+    <FormControlLabel
+      control={<Checkbox checked={valueBoolean} onChange={handleChange} sx={{ mb: 0 }} />}
+      label=""
+    />
   ) : (
     <FormControl>
-      <Grid container spacing={2}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>
-            <FormControlLabel
-              control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
-              label=""
-            />
-          </Container>
+          <FormControlLabel
+            control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
+            label=""
+          />
         </Grid>
       </Grid>
     </FormControl>

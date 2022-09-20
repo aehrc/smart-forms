@@ -1,8 +1,29 @@
 import {
+  Extension,
+  QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
+import { isSpecificItemControl } from '../qform-components/QItemFunctions';
+import { QItemChoiceControl, QItemChoiceOrientation } from '../FormModel';
+
+export function getChoiceControlType(qItem: QuestionnaireItem) {
+  const dropdownOptionsCount = 5;
+  if (isSpecificItemControl(qItem, 'autocomplete')) {
+    return QItemChoiceControl.Autocomplete;
+  } else if (isSpecificItemControl(qItem, 'check-box')) {
+    return QItemChoiceControl.Checkbox;
+  } else {
+    if (qItem.answerOption) {
+      return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
+        ? QItemChoiceControl.Radio
+        : QItemChoiceControl.Select;
+    } else {
+      return QItemChoiceControl.Select;
+    }
+  }
+}
 
 export function findInAnswerOptions(
   answerOptions: QuestionnaireItemAnswerOption[],
@@ -69,4 +90,22 @@ export function updateQrChoiceCheckboxAnswers(
     // add new value as first answer
     return { ...qrChoiceCheckbox, answer: [newAnswer] };
   }
+}
+
+export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrientation {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation'
+  );
+  if (itemControl) {
+    const code = itemControl.valueCode;
+    if (code) {
+      if (code === 'horizontal') {
+        return QItemChoiceOrientation.Horizontal;
+      } else if (code === 'vertical') {
+        return QItemChoiceOrientation.Vertical;
+      }
+    }
+  }
+  return QItemChoiceOrientation.Vertical;
 }

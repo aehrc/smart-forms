@@ -1,39 +1,43 @@
-import { red } from '@mui/material/colors';
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 
-// A custom theme for this app
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#556cd6'
+const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
+  return createTheme({
+    palette: {
+      mode: prefersDarkMode ? 'dark' : 'light'
     },
-    secondary: {
-      main: '#19857b'
-    },
-    error: {
-      main: red.A400
-    }
-  },
-  components: {
-    MuiFormControl: {
-      defaultProps: {
-        fullWidth: true
+    components: {
+      MuiFormControl: {
+        defaultProps: {
+          fullWidth: true
+        },
+        styleOverrides: {
+          root: {
+            marginTop: 4,
+            marginBottom: 32
+          }
+        }
       },
-      styleOverrides: {
-        root: {
-          marginBottom: 32
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            padding: 16,
+            textTransform: 'capitalize',
+            transition: '0.15s',
+            '&:hover': {
+              background: prefersDarkMode ? '#1B1B1B' : '#F8F8F8'
+            }
+          }
         }
-      }
-    },
-    MuiTab: {
-      styleOverrides: {
-        root: {
-          padding: 16,
-          textTransform: 'capitalize'
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: 10
+          }
         }
       }
     }
-  }
-});
+  });
+};
 
-export default theme;
+export default getTheme;

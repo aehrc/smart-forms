@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, Typography } from '@mui/material';
-import QItemGroup from './qform-items/QItemGroup';
+import QItemGroup from './qform-components/QItemGroup';
 import { PropsWithQrItemChangeHandler, QItemType } from './FormModel';
-import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
-import { getQrItemsIndex, mapQItemsIndex } from './IndexFunctions';
-import QItemSwitcher from './qform-items/QItemSwitcher';
+import { QuestionnaireResponseService } from './QuestionnaireResponseService';
+import { getQrItemsIndex, mapQItemsIndex } from './functions/IndexFunctions';
+import QItemSwitcher from './qform-components/QItemSwitcher';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
@@ -42,6 +42,7 @@ function QFormBody(props: Props) {
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={qItem.repeats ?? false}
+                  groupCardElevation={1}
                   onQrItemChange={handleQrGroupChange}></QItemGroup>
               );
             } else {

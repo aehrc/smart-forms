@@ -30,6 +30,11 @@ export enum QItemChoiceControl {
   Checkbox = 'check-box'
 }
 
+export enum QItemOpenChoiceControl {
+  Select = 'select',
+  Autocomplete = 'autocomplete'
+}
+
 export enum QItemChoiceOrientation {
   Horizontal = 'horizontal',
   Vertical = 'vertical'

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
@@ -24,24 +24,21 @@ function QItemInteger(props: Props) {
   }
 
   const renderQItemInteger = repeats ? (
-    <Container>
-      <TextField type="number" id={qItem.linkId} value={valueInteger} onChange={handleChange} />
-    </Container>
+    <TextField
+      type="number"
+      id={qItem.linkId}
+      value={valueInteger}
+      onChange={handleChange}
+      sx={{ mb: 0 }}
+    />
   ) : (
     <FormControl>
-      <Grid container spacing={2}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>
-            <TextField
-              type="number"
-              id={qItem.linkId}
-              value={valueInteger}
-              onChange={handleChange}
-            />
-          </Container>
+          <TextField type="number" id={qItem.linkId} value={valueInteger} onChange={handleChange} />
         </Grid>
       </Grid>
     </FormControl>

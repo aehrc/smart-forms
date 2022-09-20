@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Autocomplete,
   CircularProgress,
@@ -8,18 +8,19 @@ import {
   Typography
 } from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
-import { PropsWithQrItemChangeHandler } from '../FormModel';
-import { AnswerValueSet } from '../../questionnaire/AnswerValueSet';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
+import { AnswerValueSet } from '../AnswerValueSet';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoiceAutocomplete(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
-
+  const { qItem, qrItem, repeats, onQrItemChange } = props;
   const qrOpenChoice = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
 
   let valueCoding: Coding | undefined;
@@ -27,29 +28,20 @@ function QItemChoiceAutocomplete(props: Props) {
     valueCoding = qrOpenChoice['answer'][0].valueCoding;
   }
 
-  const [value, setValue] = useState<Coding | null>(null);
   const [options, setOptions] = useState<Coding[]>([]);
   const [loading, setLoading] = useState(false);
   const answerValueSetUrl = qItem.answerValueSet;
   const maxlist = 10;
 
-  useEffect(() => {
-    if (valueCoding) {
-      setValue(valueCoding);
-    } else {
-      setValue(null);
-    }
-  }, [qrItem]);
-
   function handleValueChange(event: any, newValue: Coding | null) {
-    setValue(newValue);
-    const newQrItem = newValue
-      ? {
-          ...qrOpenChoice,
-          answer: [{ valueCoding: newValue }]
-        }
-      : QuestionnaireResponseService.createQrItem(qItem);
-    onQrItemChange(newQrItem);
+    if (newValue) {
+      onQrItemChange({
+        ...qrOpenChoice,
+        answer: [{ valueCoding: newValue }]
+      });
+      return;
+    }
+    onQrItemChange(QuestionnaireResponseService.createQrItem(qItem));
   }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -83,42 +75,50 @@ function QItemChoiceAutocomplete(props: Props) {
     }
   }
 
-  return (
+  const choiceAutocomplete = (
+    <Autocomplete
+      id={qItem.id}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      value={valueCoding ?? null}
+      options={options}
+      getOptionLabel={(option) => `${option.display}`}
+      onChange={handleValueChange}
+      filterOptions={(x) => x}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={'Search ' + qItem.text?.toLowerCase() + '...'}
+          onChange={handleInputChange}
+          sx={{ ...(repeats && { mb: 0 }) }}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <React.Fragment>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </React.Fragment>
+            )
+          }}
+        />
+      )}
+    />
+  );
+
+  const renderQItemChoiceAutocomplete = repeats ? (
+    <div>{choiceAutocomplete}</div>
+  ) : (
     <FormControl>
-      <Grid container spacing={2}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>Autocomplete</Typography>
+          <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Autocomplete
-            id={qItem.id}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            value={value}
-            options={options}
-            getOptionLabel={(option) => option.display ?? ''}
-            onChange={handleValueChange}
-            filterOptions={(x) => x}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={'Search ' + qItem.text?.toLowerCase()}
-                onChange={handleInputChange}
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <React.Fragment>
-                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                      {params.InputProps.endAdornment}
-                    </React.Fragment>
-                  )
-                }}
-              />
-            )}
-          />
+          {choiceAutocomplete}
         </Grid>
       </Grid>
     </FormControl>
   );
+  return <div>{renderQItemChoiceAutocomplete}</div>;
 }
 
 export default QItemChoiceAutocomplete;

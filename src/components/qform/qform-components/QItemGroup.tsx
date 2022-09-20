@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Divider, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
-import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
-import QItemRepeatGroup from '../qform-advanced-rendering/QItemRepeatGroup';
-import QItemRepeat from '../qform-advanced-rendering/QItemRepeat';
+import { getQrItemsIndex, mapQItemsIndex } from '../functions/IndexFunctions';
+import QItemRepeatGroup from './QItemRepeatGroup';
+import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { isHidden } from './QItemFunctions';
 
@@ -14,10 +14,11 @@ interface Props
     PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  groupCardElevation: number;
 }
 
 function QItemGroup(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, repeats, groupCardElevation, onQrItemChange } = props;
   const qItemsIndexMap = mapQItemsIndex(qItem);
 
   if (isHidden(qItem)) return null;
@@ -34,7 +35,7 @@ function QItemGroup(props: Props) {
   }, [qrItem]);
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
-    const qrGroup = group;
+    const qrGroup = { ...group };
     QuestionnaireResponseService.updateLinkedItem(newQrItem, qrGroup, qItemsIndexMap);
     setGroup(qrGroup);
     onQrItemChange(qrGroup);
@@ -44,7 +45,7 @@ function QItemGroup(props: Props) {
     const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
 
     return (
-      <Card sx={{ p: 5, py: 4 }}>
+      <Card elevation={groupCardElevation} sx={{ p: 5, py: 4 }}>
         {repeats ? null : (
           <div>
             <Typography variant="h6" sx={{ mb: 1 }}>
@@ -64,6 +65,7 @@ function QItemGroup(props: Props) {
                       qItem={qItem}
                       qrItem={qrItem}
                       repeats={true}
+                      groupCardElevation={groupCardElevation + 2}
                       onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
                   </Box>
                 );
@@ -87,6 +89,7 @@ function QItemGroup(props: Props) {
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={false}
+                  groupCardElevation={groupCardElevation + 2}
                   onQrItemChange={handleQrItemChange}></QItemGroup>
               </Box>
             );

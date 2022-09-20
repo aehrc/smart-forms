@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
-import QItemGroup from '../qform-items/QItemGroup';
+import QItemGroup from './QItemGroup';
 
 import {
   QuestionnaireItem,
@@ -16,10 +16,11 @@ interface Props
     PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  groupCardElevation: number;
 }
 
 function QItemRepeatGroup(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
 
   const cleanQrItem = QuestionnaireResponseService.createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
@@ -62,45 +63,45 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <div>
-      <Card sx={{ mb: 2, p: 3 }}>
-        <Typography variant="h6" sx={{ mb: 4 }}>
-          {qItem.text}
-        </Typography>
-        {repeatAnswerItems.map((answerItem, index) => {
-          const singleQrItem: QuestionnaireResponseItem = answerItem
-            ? { ...cleanQrItem, item: answerItem.item }
-            : { ...cleanQrItem };
+    <Card elevation={groupCardElevation} sx={{ mb: 6, p: 4 }}>
+      <Typography variant="h6" sx={{ mb: 4 }}>
+        {qItem.text}
+      </Typography>
+      {repeatAnswerItems.map((answerItem, index) => {
+        const singleQrItem: QuestionnaireResponseItem = answerItem
+          ? { ...cleanQrItem, item: answerItem.item }
+          : { ...cleanQrItem };
 
-          return (
-            <Stack key={index} direction="row" justifyContent="end" sx={{ pb: 2 }}>
-              <Box sx={{ width: 1 }}>
-                <QItemGroup
-                  qItem={qItem}
-                  qrItem={singleQrItem}
-                  repeats={true}
-                  onQrItemChange={(newQrGroup) =>
-                    handleAnswerItemsChange(newQrGroup, index)
-                  }></QItemGroup>
-              </Box>
+        return (
+          <Stack key={index} direction="row" justifyContent="end" sx={{ pb: 2 }}>
+            <Box sx={{ flexGrow: 1 }}>
+              <QItemGroup
+                qItem={qItem}
+                qrItem={singleQrItem}
+                repeats={true}
+                groupCardElevation={groupCardElevation + 2}
+                onQrItemChange={(newQrGroup) =>
+                  handleAnswerItemsChange(newQrGroup, index)
+                }></QItemGroup>
+            </Box>
 
-              <Button disabled={!answerItem} onClick={() => deleteAnswerItem(index)}>
-                <Delete />
-              </Button>
-            </Stack>
-          );
-        })}
+            <Button disabled={!answerItem} onClick={() => deleteAnswerItem(index)}>
+              <Delete />
+            </Button>
+          </Stack>
+        );
+      })}
 
-        <Stack direction="row" justifyContent="end">
-          <Button
-            disabled={!repeatAnswerItems[repeatAnswerItems.length - 1]}
-            onClick={() => setRepeatAnswerItems([...repeatAnswerItems, undefined])}>
-            <Add sx={{ mr: 1 }} />
-            Add Item
-          </Button>
-        </Stack>
-      </Card>
-    </div>
+      <Stack direction="row" justifyContent="end" sx={{ my: 2 }}>
+        <Button
+          variant="contained"
+          disabled={!repeatAnswerItems[repeatAnswerItems.length - 1]}
+          onClick={() => setRepeatAnswerItems([...repeatAnswerItems, undefined])}>
+          <Add sx={{ mr: 1 }} />
+          Add Item
+        </Button>
+      </Stack>
+    </Card>
   );
 }
 

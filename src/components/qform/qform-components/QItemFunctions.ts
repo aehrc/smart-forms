@@ -1,4 +1,3 @@
-import { QItemChoiceOrientation } from '../FormModel';
 import { Coding, Extension, QuestionnaireItem } from 'fhir/r5';
 
 export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode: string): boolean {
@@ -29,22 +28,4 @@ export function isHidden(qItem: QuestionnaireItem): boolean {
     }
   }
   return false;
-}
-
-export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrientation {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation'
-  );
-  if (itemControl) {
-    const code = itemControl.valueCode;
-    if (code) {
-      if (code === 'horizontal') {
-        return QItemChoiceOrientation.Horizontal;
-      } else if (code === 'vertical') {
-        return QItemChoiceOrientation.Vertical;
-      }
-    }
-  }
-  return QItemChoiceOrientation.Vertical;
 }

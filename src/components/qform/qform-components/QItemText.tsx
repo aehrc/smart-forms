@@ -1,7 +1,7 @@
 import React from 'react';
-import { Container, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
@@ -23,25 +23,28 @@ function QItemText(props: Props) {
   }
 
   const renderQItemText = repeats ? (
-    <Container>
-      <TextField id={qItem.linkId} value={valueText} onChange={handleChange} fullWidth multiline />
-    </Container>
+    <TextField
+      id={qItem.linkId}
+      value={valueText}
+      onChange={handleChange}
+      sx={{ mb: 0 }}
+      fullWidth
+      multiline
+    />
   ) : (
     <FormControl>
-      <Grid container spacing={2}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>
-            <TextField
-              id={qItem.linkId}
-              value={valueText}
-              onChange={handleChange}
-              fullWidth
-              multiline
-            />
-          </Container>
+          <TextField
+            id={qItem.linkId}
+            value={valueText}
+            onChange={handleChange}
+            fullWidth
+            multiline
+          />
         </Grid>
       </Grid>
     </FormControl>

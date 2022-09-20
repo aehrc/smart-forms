@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FormControl, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
-import QItemSwitcher from '../qform-items/QItemSwitcher';
+import QItemSwitcher from './QItemSwitcher';
 import {
   QuestionnaireItem,
   QuestionnaireResponseItem,
@@ -32,9 +32,7 @@ function QItemRepeat(props: Props) {
 
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const answersTemp = [...repeatAnswers];
-    if (newQrItem.answer) {
-      answersTemp[index] = newQrItem.answer[0];
-    }
+    answersTemp[index] = newQrItem.answer ? newQrItem.answer[0] : undefined;
     updateAnswers(answersTemp);
   }
 
@@ -57,19 +55,17 @@ function QItemRepeat(props: Props) {
 
   return (
     <div>
-      <FormControl>
-        <Grid container spacing={2}>
-          <Grid item xs={5}>
-            <Typography>{qItem.text}</Typography>
-          </Grid>
-          <Grid item xs={7}>
-            {repeatAnswers.map((answer, index) => {
-              const singleQrItem = answer
-                ? { ...cleanQrItem, answer: [answer] }
-                : { ...cleanQrItem };
+      <Grid container columnSpacing={6}>
+        <Grid item xs={5}>
+          <Typography>{qItem.text}</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          {repeatAnswers.map((answer, index) => {
+            const singleQrItem = answer ? { ...cleanQrItem, answer: [answer] } : { ...cleanQrItem };
 
-              return (
-                <Stack key={index} direction="row" sx={{ pb: 2 }}>
+            return (
+              <Stack key={index} direction="row" sx={{ pb: 2 }}>
+                <Box sx={{ flexGrow: 1 }}>
                   <QItemSwitcher
                     qItem={qItem}
                     qrItem={singleQrItem}
@@ -77,18 +73,19 @@ function QItemRepeat(props: Props) {
                     onQrItemChange={(newQrItem) =>
                       handleAnswersChange(newQrItem, index)
                     }></QItemSwitcher>
-
-                  <Button disabled={!answer} onClick={() => deleteAnswer(index)}>
-                    <Delete />
-                  </Button>
-                </Stack>
-              );
-            })}
-          </Grid>
+                </Box>
+                <Button disabled={!answer} onClick={() => deleteAnswer(index)}>
+                  <Delete />
+                </Button>
+              </Stack>
+            );
+          })}
         </Grid>
-      </FormControl>
-      <Stack direction="row" justifyContent="end">
+      </Grid>
+
+      <Stack direction="row" justifyContent="end" sx={{ mt: 2, mb: 5 }}>
         <Button
+          variant="outlined"
           disabled={!repeatAnswers[repeatAnswers.length - 1]}
           onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}>
           <Add sx={{ mr: 1 }} />
