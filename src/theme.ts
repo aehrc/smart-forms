@@ -12,8 +12,8 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
         },
         styleOverrides: {
           root: {
-            marginBottom: 32,
-            padding: 4
+            marginTop: 4,
+            marginBottom: 32
           }
         }
       },

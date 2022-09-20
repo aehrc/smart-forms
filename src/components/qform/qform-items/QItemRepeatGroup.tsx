@@ -74,7 +74,7 @@ function QItemRepeatGroup(props: Props) {
 
           return (
             <Stack key={index} direction="row" justifyContent="end" sx={{ pb: 2 }}>
-              <Box sx={{ width: 1 }}>
+              <Box sx={{ flexGrow: 1 }}>
                 <QItemGroup
                   qItem={qItem}
                   qrItem={singleQrItem}
@@ -91,8 +91,9 @@ function QItemRepeatGroup(props: Props) {
           );
         })}
 
-        <Stack direction="row" justifyContent="end">
+        <Stack direction="row" justifyContent="end" sx={{ mb: 2 }}>
           <Button
+            variant="contained"
             disabled={!repeatAnswerItems[repeatAnswerItems.length - 1]}
             onClick={() => setRepeatAnswerItems([...repeatAnswerItems, undefined])}>
             <Add sx={{ mr: 1 }} />

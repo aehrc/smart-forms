@@ -42,7 +42,7 @@ function QItemBodyTabbed(props: Props) {
               flexGrow: 1,
               display: 'flex'
             }}>
-            <Grid container spacing={2.5}>
+            <Grid container columnSpacing={2.5}>
               <Grid item xs={3.5}>
                 <Card elevation={3} sx={{ py: 1 }}>
                   <TabList

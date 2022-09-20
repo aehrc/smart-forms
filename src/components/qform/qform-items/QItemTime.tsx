@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { Container, FormControl, Grid, Typography } from '@mui/material';
+import { FormControl, Grid, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -36,33 +36,29 @@ function QItemTime(props: Props) {
     }
   }
 
-  const renderQItemDate = repeats ? (
-    <Container>
-      <QItemDatePicker value={value} onTimeChange={handleChange} />
-    </Container>
+  const renderQItemTime = repeats ? (
+    <QItemTimePicker value={value} onTimeChange={handleChange} />
   ) : (
     <FormControl>
-      <Grid container spacing={4}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>
-            <QItemDatePicker value={value} onTimeChange={handleChange} />
-          </Container>
+          <QItemTimePicker value={value} onTimeChange={handleChange} />
         </Grid>
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemDate}</div>;
+  return <div>{renderQItemTime}</div>;
 }
 
-interface QItemDatePickerProps {
+interface QItemTimePickerProps {
   value: Dayjs | null;
   onTimeChange: (newValue: Dayjs | null) => unknown;
 }
 
-function QItemDatePicker(props: QItemDatePickerProps) {
+function QItemTimePicker(props: QItemTimePickerProps) {
   const { value, onTimeChange } = props;
 
   return (

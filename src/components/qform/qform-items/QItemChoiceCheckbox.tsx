@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, FormControl, FormGroup, Grid, Typography } from '@mui/material';
+import { FormControl, FormGroup, Grid, Typography } from '@mui/material';
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute,
@@ -81,15 +81,15 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
   );
 
   const renderQItemChoiceCheckbox = repeats ? (
-    <Container>{choiceCheckbox}</Container>
+    <div>{choiceCheckbox}</div>
   ) : (
     <FormControl>
-      <Grid container spacing={4}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>{choiceCheckbox}</Container>
+          {choiceCheckbox}
         </Grid>
       </Grid>
     </FormControl>

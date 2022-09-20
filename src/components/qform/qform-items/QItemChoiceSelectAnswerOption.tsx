@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Container,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography
-} from '@mui/material';
+import { FormControl, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -62,15 +54,15 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   );
 
   const renderQItemChoiceSelectAnswerOption = repeats ? (
-    <Container>{choiceSelectAnswerOption}</Container>
+    <div>{choiceSelectAnswerOption}</div>
   ) : (
     <FormControl>
-      <Grid container spacing={4}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>{choiceSelectAnswerOption}</Container>
+          {choiceSelectAnswerOption}
         </Grid>
       </Grid>
     </FormControl>

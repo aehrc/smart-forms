@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Autocomplete,
   CircularProgress,
-  Container,
   FormControl,
   Grid,
   TextField,
@@ -100,6 +99,7 @@ function QItemChoiceAutocomplete(props: Props) {
           {...params}
           label={'Search ' + qItem.text?.toLowerCase()}
           onChange={handleInputChange}
+          sx={{ ...(repeats && { mb: 0 }) }}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -115,15 +115,15 @@ function QItemChoiceAutocomplete(props: Props) {
   );
 
   const renderQItemChoiceAutocomplete = repeats ? (
-    <Container>{choiceAutocomplete}</Container>
+    <div>{choiceAutocomplete}</div>
   ) : (
     <FormControl>
-      <Grid container spacing={4}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>{choiceAutocomplete}</Container>
+          {choiceAutocomplete}
         </Grid>
       </Grid>
     </FormControl>

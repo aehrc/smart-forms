@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import Container from '@mui/material/Container';
-import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { Container, Box, Button, Divider, Stack, Typography } from '@mui/material';
 import { QuestionnaireService } from '../questionnaire/QuestionnaireService';
 import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
 import ClearIcon from '@mui/icons-material/Clear';

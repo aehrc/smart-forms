@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, FormControl, Grid, RadioGroup, Typography } from '@mui/material';
+import { FormControl, Grid, RadioGroup, Typography } from '@mui/material';
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute,
@@ -71,15 +71,15 @@ function QItemChoiceRadio(props: Props) {
   );
 
   const renderQItemChoiceRadio = repeats ? (
-    <Container>{choiceRadio}</Container>
+    <div>{choiceRadio}</div>
   ) : (
     <FormControl>
-      <Grid container spacing={4}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>{choiceRadio}</Container>
+          {choiceRadio}
         </Grid>
       </Grid>
     </FormControl>

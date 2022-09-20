@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete, Container, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { AnswerValueSet } from '../../questionnaire/AnswerValueSet';
 import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
@@ -61,20 +61,20 @@ function QItemSelectAnswerValueSet(props: Props) {
       getOptionLabel={(option) => option.display ?? ''}
       value={valueCoding}
       onChange={handleChange}
-      renderInput={(params) => <TextField {...params} />}
+      renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
     />
   );
 
   const renderQItemChoiceSelectAnswerValueSet = repeats ? (
-    <Container>{choiceSelectAnswerValueSet}</Container>
+    <div>{choiceSelectAnswerValueSet}</div>
   ) : (
     <FormControl>
-      <Grid container spacing={4}>
+      <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <Container>{choiceSelectAnswerValueSet}</Container>
+          {choiceSelectAnswerValueSet}
         </Grid>
       </Grid>
     </FormControl>
