@@ -5,9 +5,9 @@ import {
   PropsWithRepeatsAttribute,
   QItemChoiceOrientation
 } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { findInAnswerOptions, getQrChoiceValue } from './QItemChoiceFunctions';
+import { findInAnswerOptions, getQrChoiceValue } from '../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 
 interface Props
@@ -44,7 +44,7 @@ function QItemChoiceRadio(props: Props) {
         if (option['valueCoding']) {
           return (
             <QItemChoiceRadioSingle
-              key={option.valueCoding.code}
+              key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? ''}
             />

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Divider, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
-import { getQrItemsIndex, mapQItemsIndex } from '../IndexFunctions';
+import { getQrItemsIndex, mapQItemsIndex } from '../functions/IndexFunctions';
 import QItemRepeatGroup from './QItemRepeatGroup';
 import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -35,7 +35,7 @@ function QItemGroup(props: Props) {
   }, [qrItem]);
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
-    const qrGroup = group;
+    const qrGroup = { ...group };
     QuestionnaireResponseService.updateLinkedItem(newQrItem, qrGroup, qItemsIndexMap);
     setGroup(qrGroup);
     onQrItemChange(qrGroup);

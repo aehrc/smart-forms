@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
@@ -11,23 +11,22 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemInteger(props: Props) {
+function QItemDate(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrInteger = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
+  let qrDate = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const valueDate = qrDate['answer'] ? qrDate['answer'][0].valueDate : '';
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const integerValue = parseInt(e.target.value);
-    qrInteger = { ...qrInteger, answer: [{ valueInteger: integerValue }] };
-    onQrItemChange(qrInteger);
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    qrDate = { ...qrDate, answer: [{ valueDate: event.target.value }] };
+    onQrItemChange(qrDate);
   }
 
-  const renderQItemInteger = repeats ? (
+  const renderQItemDate = repeats ? (
     <TextField
-      type="number"
       id={qItem.linkId}
-      value={valueInteger}
+      type="date"
+      value={valueDate}
       onChange={handleChange}
       sx={{ mb: 0 }}
     />
@@ -38,13 +37,13 @@ function QItemInteger(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <TextField type="number" id={qItem.linkId} value={valueInteger} onChange={handleChange} />
+          <TextField id={qItem.linkId} type="date" value={valueDate} onChange={handleChange} />
         </Grid>
       </Grid>
     </FormControl>
   );
 
-  return <div>{renderQItemInteger}</div>;
+  return <div>{renderQItemDate}</div>;
 }
 
-export default QItemInteger;
+export default QItemDate;

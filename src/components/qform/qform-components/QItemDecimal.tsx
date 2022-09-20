@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
@@ -11,22 +11,22 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemDate(props: Props) {
+function QItemDecimal(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrDate = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const valueDate = qrDate['answer'] ? qrDate['answer'][0].valueDate : '';
+  let qrDecimal = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    qrDate = { ...qrDate, answer: [{ valueDate: event.target.value }] };
-    onQrItemChange(qrDate);
+    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(event.target.value) }] };
+    onQrItemChange(qrDecimal);
   }
 
-  const renderQItemDate = repeats ? (
+  const renderQItemDecimal = repeats ? (
     <TextField
+      type="number"
       id={qItem.linkId}
-      type="date"
-      value={valueDate}
+      value={valueDecimal}
       onChange={handleChange}
       sx={{ mb: 0 }}
     />
@@ -37,13 +37,12 @@ function QItemDate(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <TextField id={qItem.linkId} type="date" value={valueDate} onChange={handleChange} />
+          <TextField type="number" id={qItem.linkId} value={valueDecimal} onChange={handleChange} />
         </Grid>
       </Grid>
     </FormControl>
   );
-
-  return <div>{renderQItemDate}</div>;
+  return <div>{renderQItemDecimal}</div>;
 }
 
-export default QItemDate;
+export default QItemDecimal;

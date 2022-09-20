@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props

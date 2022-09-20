@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 interface Props
@@ -11,22 +11,22 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemDecimal(props: Props) {
+function QItemDateTime(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrDecimal = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
-  const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
+  let qrDateTime = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const valueDateTime = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDate : '';
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(event.target.value) }] };
-    onQrItemChange(qrDecimal);
+    qrDateTime = { ...qrDateTime, answer: [{ valueDateTime: event.target.value }] };
+    onQrItemChange(qrDateTime);
   }
 
-  const renderQItemDecimal = repeats ? (
+  const renderQItemDateTime = repeats ? (
     <TextField
-      type="number"
       id={qItem.linkId}
-      value={valueDecimal}
+      type="datetime-local"
+      value={valueDateTime}
       onChange={handleChange}
       sx={{ mb: 0 }}
     />
@@ -37,12 +37,18 @@ function QItemDecimal(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <TextField type="number" id={qItem.linkId} value={valueDecimal} onChange={handleChange} />
+          <TextField
+            id={qItem.linkId}
+            type="datetime-local"
+            value={valueDateTime}
+            onChange={handleChange}
+          />
         </Grid>
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemDecimal}</div>;
+
+  return <div>{renderQItemDateTime}</div>;
 }
 
-export default QItemDecimal;
+export default QItemDateTime;

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Container, Box, Button, Divider, Stack, Typography } from '@mui/material';
-import { QuestionnaireService } from '../questionnaire/QuestionnaireService';
-import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireService } from './QuestionnaireService';
+import { QuestionnaireResponseService } from './QuestionnaireResponseService';
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemBodyTabbed from './QFormBodyTabs';
-import { containsTabs, getIndexOfFirstTab } from './TabFunctions';
+import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 
 function QForm() {
   const questionnaire = new QuestionnaireService();

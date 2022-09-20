@@ -3,10 +3,10 @@ import { Box, Card, Grid, Tab, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from './FormModel';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { QuestionnaireResponseService } from '../questionnaireResponse/QuestionnaireResponseService';
-import { getQrItemsIndex, mapQItemsIndex } from './IndexFunctions';
-import QItemGroup from './qform-items/QItemGroup';
-import { isTab } from './TabFunctions';
+import { QuestionnaireResponseService } from './QuestionnaireResponseService';
+import { getQrItemsIndex, mapQItemsIndex } from './functions/IndexFunctions';
+import QItemGroup from './qform-components/QItemGroup';
+import { isTab } from './functions/TabFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;

@@ -5,9 +5,9 @@ import {
   PropsWithRepeatsAttribute,
   QItemChoiceOrientation
 } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { updateQrChoiceCheckboxAnswers } from './QItemChoiceFunctions';
+import { updateQrChoiceCheckboxAnswers } from '../functions/ChoiceFunctions';
 import QItemChoiceCheckboxSingle from './QItemChoiceCheckboxSingle';
 
 interface QItemChoiceCheckboxProps

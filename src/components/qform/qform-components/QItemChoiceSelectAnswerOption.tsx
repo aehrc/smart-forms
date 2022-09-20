@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormControl, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../../questionnaireResponse/QuestionnaireResponseService';
+import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { findInAnswerOptions, getQrChoiceValue } from './QItemChoiceFunctions';
+import { findInAnswerOptions, getQrChoiceValue } from '../functions/ChoiceFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -23,8 +23,10 @@ function QItemChoiceSelectAnswerOption(props: Props) {
       const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
       if (qrAnswer) {
         onQrItemChange({ ...qrChoiceSelect, answer: [qrAnswer] });
+        return;
       }
     }
+    onQrItemChange(QuestionnaireResponseService.createQrItem(qItem));
   }
 
   const choiceSelectAnswerOption = (

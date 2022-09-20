@@ -6,11 +6,11 @@ import {
 } from '../FormModel';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemChoiceRadio from './QItemChoiceRadio';
-import { getChoiceOrientation, isSpecificItemControl } from './QItemFunctions';
-import QItemSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
 import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
+import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
+import { getChoiceControlType, getChoiceOrientation } from '../functions/ChoiceFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -56,7 +56,7 @@ function QItemChoice(props: Props) {
     case QItemChoiceControl.Select:
       if (qItem.answerValueSet) {
         return (
-          <QItemSelectAnswerValueSet
+          <QItemChoiceSelectAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
             repeats={repeats}
@@ -75,23 +75,6 @@ function QItemChoice(props: Props) {
       }
     default:
       return null;
-  }
-}
-
-function getChoiceControlType(qItem: QuestionnaireItem) {
-  const dropdownOptionsCount = 5;
-  if (isSpecificItemControl(qItem, 'autocomplete')) {
-    return QItemChoiceControl.Autocomplete;
-  } else if (isSpecificItemControl(qItem, 'check-box')) {
-    return QItemChoiceControl.Checkbox;
-  } else {
-    if (qItem.answerOption) {
-      return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
-        ? QItemChoiceControl.Radio
-        : QItemChoiceControl.Select;
-    } else {
-      return QItemChoiceControl.Select;
-    }
   }
 }
 
