@@ -6,6 +6,7 @@ import getTheme from './theme';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import QForm from './components/qform/QForm';
+import NavBar from './components/NavBar';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -14,6 +15,7 @@ function App() {
     <ThemeProvider theme={getTheme(prefersDarkMode)}>
       <CssBaseline />
       <BrowserRouter>
+        <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/form" element={<QForm />} />
