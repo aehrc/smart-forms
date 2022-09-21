@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Card, Container, Grid, Typography } from '@mui/material';
+import ResourcePicker from './ResourcePicker';
 
 function Home() {
   return (
@@ -20,13 +21,15 @@ function Home() {
           </Grid>
 
           <Grid item xs={6}>
-            <Card elevation={2} sx={{ my: 15, mx: 6 }}>
+            <Card elevation={1} sx={{ my: 15, mx: 6 }}>
               <Box
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
                 minHeight="65vh"
-                sx={{ p: 8 }}></Box>
+                sx={{ p: 8 }}>
+                <ResourcePicker></ResourcePicker>
+              </Box>
             </Card>
           </Grid>
         </Grid>
