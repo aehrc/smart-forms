@@ -3,25 +3,20 @@ import './App.css';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import getTheme from './theme';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import QForm from './components/qform/QForm';
 import NavBar from './components/NavBar';
+import Client from 'fhirclient/lib/Client';
+import QPage from './components/qform/QPage';
 
-function App() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+function App(props: { client: Client }) {
+  const { client } = props;
+
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: light)');
 
   return (
     <ThemeProvider theme={getTheme(prefersDarkMode)}>
       <CssBaseline />
-      <BrowserRouter>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/form" element={<QForm />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </BrowserRouter>
+      <NavBar />
+      <QPage client={client} />
     </ThemeProvider>
   );
 }

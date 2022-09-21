@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppBar, Box, Toolbar, Typography, Container, Stack, Link } from '@mui/material';
+import { AppBar, Box, Toolbar, Typography, Container, Stack } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import FemaleIcon from '@mui/icons-material/Female';
 import EventIcon from '@mui/icons-material/Event';
@@ -14,12 +14,7 @@ function NavBar() {
       <AppBar position="static">
         <Container maxWidth="lg">
           <Toolbar disableGutters>
-            <Link href={`/`} typography="h6">
-              Smart Health Checks
-            </Link>
-            <Box sx={{ flexGrow: 1, mx: 4 }}>
-              <Link href={`/form`}>Questionnaires</Link>
-            </Box>
+            <Typography variant="h6">Smart Health Checks</Typography>
 
             <Box sx={{ flexGrow: 0 }}>
               <Stack direction={'row'} spacing={4}>
