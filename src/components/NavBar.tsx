@@ -1,24 +1,30 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import dayjs from 'dayjs';
-import { AppBar, Box, Toolbar, Typography, Container, Stack } from '@mui/material';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import EventIcon from '@mui/icons-material/Event';
-import { PatientContext } from '../App';
-import NavBarGenderIcon from './NavBarGenderIcon';
+import { AppBar, Box, Toolbar, Typography, Container } from '@mui/material';
+import { PatientData } from './Interfaces';
+import NavBarPatientData from './NavBarPatientData';
+import { Patient } from 'fhir/r5';
 
-function NavBar() {
-  let patientName = 'Patient Name';
-  let gender = 'Gender';
-  let dateOfBirth = 'Date of Birth';
+interface Props {
+  patient: Patient | null;
+}
 
-  const patient = useContext(PatientContext);
+function NavBar(props: Props) {
+  const { patient } = props;
+
+  const patientData: PatientData = {
+    patientName: '',
+    gender: '',
+    dateOfBirth: ''
+  };
+
   if (patient) {
     const dateOfBirthDayJs = dayjs(patient.birthDate);
     const age = dayjs().diff(dateOfBirthDayJs, 'year');
 
-    patientName = `${patient.name?.[0].given?.[0]}`;
-    gender = `${patient.gender}`;
-    dateOfBirth = `${dateOfBirthDayJs.format('LL')} (${age} years)`;
+    patientData.patientName = `${patient.name?.[0].given?.[0]}`;
+    patientData.gender = `${patient.gender}`;
+    patientData.dateOfBirth = `${dateOfBirthDayJs.format('LL')} (${age} years)`;
   }
 
   return (
@@ -29,20 +35,7 @@ function NavBar() {
             <Typography variant="h6">Smart Health Checks</Typography>
             <Box sx={{ flexGrow: 1, mx: 4 }}></Box>
             <Box sx={{ flexGrow: 0 }}>
-              <Stack direction={'row'} spacing={4}>
-                <Stack direction={'row'} spacing={1}>
-                  <AccountCircleIcon />
-                  <Typography>{patientName}</Typography>
-                </Stack>
-                <Stack direction={'row'} spacing={1}>
-                  <NavBarGenderIcon gender={gender} />
-                  <Typography sx={{ textTransform: 'capitalize' }}>{gender}</Typography>
-                </Stack>
-                <Stack direction={'row'} spacing={1}>
-                  <EventIcon />
-                  <Typography>{dateOfBirth}</Typography>
-                </Stack>
-              </Stack>
+              <NavBarPatientData patientData={patientData} />
             </Box>
           </Toolbar>
         </Container>
