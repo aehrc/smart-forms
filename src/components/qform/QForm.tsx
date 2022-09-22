@@ -8,8 +8,13 @@ import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemBodyTabbed from './QFormBodyTabs';
 import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 
-function QForm() {
-  const questionnaire = new QuestionnaireService();
+interface Props {
+  questionnaire: QuestionnaireService;
+}
+
+function QForm(props: Props) {
+  const { questionnaire } = props;
+
   const questionnaireResponse = new QuestionnaireResponseService(questionnaire);
 
   const [qrState, setQrState] = useState<QuestionnaireResponse>({

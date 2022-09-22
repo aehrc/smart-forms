@@ -5,8 +5,12 @@ import NavBar from '../NavBar';
 import { oauth2 } from 'fhirclient';
 import { getPatient } from './functions/LaunchFunctions';
 import { Patient } from 'fhir/r5';
+import FhirClient from './functions/FhirClient';
+import { QuestionnaireService } from './QuestionnaireService';
 
 function QPage() {
+  const questionnaire = new QuestionnaireService();
+
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -14,9 +18,13 @@ function QPage() {
     oauth2
       .ready()
       .then((client) => {
+        const fhirClient = new FhirClient(client);
         getPatient(client).then((patient) => {
+          fhirClient.populate(questionnaire, patient, (qResponse) => {
+            console.log(qResponse);
+            setLoading(false);
+          });
           setPatient(patient);
-          setLoading(false);
         });
       })
       .catch((error) => {
@@ -28,7 +36,7 @@ function QPage() {
   const renderQPage = loading ? (
     <ProgressSpinner message={'Loading questionnaire form'} />
   ) : (
-    <QForm />
+    <QForm questionnaire={questionnaire} />
   );
 
   return (
