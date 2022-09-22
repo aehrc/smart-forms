@@ -12,7 +12,7 @@ function ResourcePicker() {
 
   return (
     <React.Fragment>
-      <Typography variant="h1" fontWeight="bold" fontSize={36} color="#8fc9f9">
+      <Typography variant="h1" fontWeight="bold" fontSize={36} color="inherit">
         Select a Questionnaire
       </Typography>
       <Divider sx={{ mt: 2, mb: 4 }} />
@@ -21,6 +21,7 @@ function ResourcePicker() {
           name="Resource Picker"
           value={resource}
           sx={{ borderRadius: 2 }}
+          disabled
           onChange={(event) => setResource(event.target.value)}>
           {resourceList.map((resource) => (
             <MenuItem key={resource.questionnaire} value={resource.questionnaire}>
