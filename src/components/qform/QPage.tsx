@@ -23,7 +23,10 @@ function QPage() {
     ]
   });
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [spinner, setSpinner] = useState({
+    isLoading: true,
+    message: 'Retrieving patient'
+  });
 
   useEffect(() => {
     oauth2
@@ -33,28 +36,29 @@ function QPage() {
         getPatient(client)
           .then((patient) => {
             setPatient(patient);
+            setSpinner({ ...spinner, message: 'Loading questionnaire form' });
 
             // obtain questionnaireResponse for prepopulation
             fhirClient.populate(questionnaire, patient, (qResponse) => {
               setQuestionnaireResponse(qResponse);
-              setLoading(false);
+              setSpinner({ ...spinner, isLoading: false });
             });
 
             // TODO do calculations and enablewhen
           })
           .catch((error) => {
             console.error(error);
-            setLoading(false);
+            setSpinner({ ...spinner, isLoading: false });
           });
       })
       .catch((error) => {
         console.error(error);
-        setLoading(false);
+        setSpinner({ ...spinner, isLoading: false });
       });
   }, []);
 
-  const renderQPage = loading ? (
-    <ProgressSpinner message={'Loading questionnaire form'} />
+  const renderQPage = spinner.isLoading ? (
+    <ProgressSpinner message={spinner.message} />
   ) : (
     <QForm questionnaire={questionnaire} qrResponse={questionnaireResponse} />
   );
