@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Box, Button, Divider, Stack, Typography } from '@mui/material';
 import { QuestionnaireService } from './QuestionnaireService';
 import { QuestionnaireResponseService } from './QuestionnaireResponseService';
@@ -10,10 +10,11 @@ import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 
 interface Props {
   questionnaire: QuestionnaireService;
+  qrResponse: QuestionnaireResponse;
 }
 
 function QForm(props: Props) {
-  const { questionnaire } = props;
+  const { questionnaire, qrResponse } = props;
 
   const questionnaireResponse = new QuestionnaireResponseService(questionnaire);
 
@@ -29,6 +30,14 @@ function QForm(props: Props) {
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
 
+  useEffect(() => {
+    if (qrResponse.item) {
+      setQrState({ ...qrResponse });
+      questionnaireResponse.updateForm(qrResponse.item[0]);
+    }
+  }, [qrResponse]);
+
+  // only for testing
   function clearQuestionnaireResponseButton() {
     const clearQrForm: QuestionnaireResponseItem = {
       linkId: '715-clear',
