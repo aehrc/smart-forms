@@ -1,5 +1,5 @@
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r5';
-import { isSpecificItemControl } from '../qform-components/QItemFunctions';
+import { isSpecificItemControl } from './QItemFunctions';
 import { QItemOpenChoiceControl } from '../FormModel';
 
 export function getOpenChoiceControlType(qItem: QuestionnaireItem) {
