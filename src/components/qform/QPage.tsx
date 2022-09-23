@@ -10,7 +10,8 @@ import { QuestionnaireService } from './QuestionnaireService';
 
 function QPage() {
   const questionnaire = new QuestionnaireService();
-  let questionnaireResponse: QuestionnaireResponse = {
+
+  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>({
     resourceType: 'QuestionnaireResponse',
     status: 'in-progress',
     item: [
@@ -20,8 +21,7 @@ function QPage() {
         item: []
       }
     ]
-  };
-
+  });
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,32 +30,28 @@ function QPage() {
       .ready()
       .then((client) => {
         const fhirClient = new FhirClient(client);
-        getPatient(client).then((patient) => {
-          fhirClient.populate(questionnaire, patient, (qResponse) => {
-            console.log(qResponse);
-            questionnaireResponse = qResponse;
-            // mergeQRintoForm(qResponse);
-            // setQuestionnaireResponse(qResponse);
+        getPatient(client)
+          .then((patient) => {
+            setPatient(patient);
+
+            // obtain questionnaireResponse for prepopulation
+            fhirClient.populate(questionnaire, patient, (qResponse) => {
+              setQuestionnaireResponse(qResponse);
+              setLoading(false);
+            });
+
+            // TODO do calculations and enablewhen
+          })
+          .catch((error) => {
+            console.error(error);
             setLoading(false);
           });
-          setPatient(patient);
-        });
       })
       .catch((error) => {
         console.error(error);
         setLoading(false);
       });
   }, []);
-
-  // function set() {
-  //   const clearQrForm: QuestionnaireResponseItem = {
-  //     linkId: '715-clear',
-  //     text: 'MBS 715 Cleared',
-  //     item: []
-  //   };
-  //   setQrState({ ...qrState, item: [clearQrForm] });
-  //   questionnaireResponse.updateForm(clearQrForm);
-  // }
 
   const renderQPage = loading ? (
     <ProgressSpinner message={'Loading questionnaire form'} />

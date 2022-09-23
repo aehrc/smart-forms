@@ -31,9 +31,12 @@ function QForm(props: Props) {
   const qrForm = questionnaireResponse.item[0];
 
   useEffect(() => {
-    if (qrResponse.item) {
-      setQrState({ ...qrResponse });
-      questionnaireResponse.updateForm(qrResponse.item[0]);
+    if (!qrResponse.item) return;
+
+    const qrFormClean = questionnaireResponse.cleanQrItem(qrResponse.item[0]);
+    if (qrFormClean) {
+      setQrState({ ...qrResponse, item: [qrFormClean] });
+      questionnaireResponse.updateForm(qrFormClean);
     }
   }, [qrResponse]);
 
