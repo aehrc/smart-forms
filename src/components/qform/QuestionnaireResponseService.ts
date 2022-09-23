@@ -21,12 +21,12 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
     this.subject = { reference: questionnaireResponseData.subject.reference };
     this.authored = questionnaireResponseData.authored;
     this.author = undefined;
-    this.item = questionnaireResponseData.item;
+    this.item = [];
     this.initializeFormItem(questionnaire);
   }
 
   initializeFormItem(questionnaire: Questionnaire): void {
-    if (this.item === [] && questionnaire.item) {
+    if (this.item.length === 0 && questionnaire.item) {
       this.item[0] = {
         linkId: questionnaire.item[0].linkId,
         text: questionnaire.item[0].text,
@@ -37,6 +37,27 @@ export class QuestionnaireResponseService implements QuestionnaireResponse {
 
   updateForm(newQrForm: QuestionnaireResponseItem) {
     this.item = [newQrForm];
+  }
+
+  // recursively remove items without answers from QuestionnaireResponseItem
+  cleanQrItem(qrItem: QuestionnaireResponseItem): QuestionnaireResponseItem | undefined {
+    const items = qrItem.item;
+    if (items && items.length > 0) {
+      const cleanedItems: QuestionnaireResponseItem[] = [];
+
+      // only get items with answers
+      items.forEach((item) => {
+        const cleanedQrItem = this.cleanQrItem(item);
+        if (cleanedQrItem) {
+          cleanedItems.push(cleanedQrItem);
+        }
+      });
+
+      return cleanedItems.length > 0 ? { ...qrItem, item: cleanedItems } : undefined;
+    }
+
+    // check answer when qrItem is a single question
+    return qrItem['answer'] ? qrItem : undefined;
   }
 
   static createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {

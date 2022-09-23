@@ -7,7 +7,7 @@ import { getQrItemsIndex, mapQItemsIndex } from '../functions/IndexFunctions';
 import QItemRepeatGroup from './QItemRepeatGroup';
 import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { isHidden } from './QItemFunctions';
+import { isHidden } from '../functions/QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

@@ -10,7 +10,7 @@ import QItemDateTime from './QItemDateTime';
 import QItemDecimal from './QItemDecimal';
 import QItemQuantity from './QItemQuantity';
 import QItemChoice from './QItemChoice';
-import { isHidden } from './QItemFunctions';
+import { isHidden } from '../functions/QItemFunctions';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemTime';
 import QItemOpenChoice from './QItemOpenChoice';

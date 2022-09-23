@@ -5,7 +5,7 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
-import { isSpecificItemControl } from '../qform-components/QItemFunctions';
+import { isSpecificItemControl } from './QItemFunctions';
 import { QItemChoiceControl, QItemChoiceOrientation } from '../FormModel';
 
 export function getChoiceControlType(qItem: QuestionnaireItem) {

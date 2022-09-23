@@ -1,0 +1,21 @@
+{
+  "resourceList": [
+    {
+      "questionnaire": "715.R4",
+      "questionnaireResource": "715.R4.patient"
+    },
+    {
+      "questionnaire": "715.R4.modified",
+      "questionnaireResource": "715.R4.patient"
+    },
+    {
+      "questionnaire": "CVD Check"
+    },
+    {
+      "questionnaire": "CVD Risk"
+    },
+    {
+      "questionnaire": "CVD Risk-HISO"
+    }
+  ]
+}
