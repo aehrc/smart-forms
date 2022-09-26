@@ -1,8 +1,8 @@
 import React from 'react';
 import { Checkbox, FormControl, FormControlLabel, Grid, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -14,7 +14,7 @@ interface Props
 function QItemBoolean(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrBoolean = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  let qrBoolean = qrItem ? qrItem : createQrItem(qItem);
   const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

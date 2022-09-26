@@ -10,7 +10,7 @@ import {
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { AnswerValueSet } from '../AnswerValueSet';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -22,7 +22,7 @@ interface Props
 function QItemOpenChoiceAutocomplete(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  const qrOpenChoice = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
   let valueAutocomplete: Coding | string | undefined;
   if (qrOpenChoice['answer']) {
@@ -44,7 +44,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
       }
       return;
     }
-    onQrItemChange(QuestionnaireResponseService.createQrItem(qItem));
+    onQrItemChange(createQrItem(qItem));
   }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {

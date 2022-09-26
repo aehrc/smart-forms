@@ -5,10 +5,10 @@ import {
   PropsWithRepeatsAttribute,
   QItemChoiceOrientation
 } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { updateQrChoiceCheckboxAnswers } from '../functions/ChoiceFunctions';
 import QItemChoiceCheckboxSingle from './QItemChoiceCheckboxSingle';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface QItemChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -21,7 +21,7 @@ interface QItemChoiceCheckboxProps
 function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
   const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
 
-  const qrChoiceCheckbox = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
 
   function handleCheckedChange(changedValue: string) {

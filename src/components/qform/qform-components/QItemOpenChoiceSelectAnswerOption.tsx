@@ -1,13 +1,13 @@
 import React from 'react';
 import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem
 } from 'fhir/r5';
 import { getAnswerOptionLabel } from '../functions/OpenChoiceFunctions';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -22,7 +22,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
-  const qrOpenChoice = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
   let valueSelect: QuestionnaireItemAnswerOption | undefined = undefined;
   if (qrOpenChoice['answer']) {
@@ -48,7 +48,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       }
       return;
     }
-    onQrItemChange(QuestionnaireResponseService.createQrItem(qItem));
+    onQrItemChange(createQrItem(qItem));
   }
 
   const openOpenChoiceSelectAnswerOption = (

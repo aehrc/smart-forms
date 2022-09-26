@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Divider, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../functions/IndexFunctions';
 import QItemRepeatGroup from './QItemRepeatGroup';
 import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { isHidden } from '../functions/QItemFunctions';
+import { createQrGroup, updateLinkedItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -24,8 +24,7 @@ function QItemGroup(props: Props) {
   if (isHidden(qItem)) return null;
 
   const qItems = qItem.item;
-  const groupFromProps =
-    qrItem && qrItem.item ? qrItem : QuestionnaireResponseService.createQrGroup(qItem);
+  const groupFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
   const qrItems = groupFromProps.item;
 
   const [group, setGroup] = useState(groupFromProps);
@@ -36,7 +35,7 @@ function QItemGroup(props: Props) {
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     const qrGroup = { ...group };
-    QuestionnaireResponseService.updateLinkedItem(newQrItem, qrGroup, qItemsIndexMap);
+    updateLinkedItem(newQrItem, qrGroup, qItemsIndexMap);
     setGroup(qrGroup);
     onQrItemChange(qrGroup);
   }

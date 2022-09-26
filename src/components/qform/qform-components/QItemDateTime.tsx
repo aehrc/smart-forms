@@ -1,8 +1,8 @@
 import React from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -14,7 +14,7 @@ interface Props
 function QItemDateTime(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrDateTime = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  let qrDateTime = qrItem ? qrItem : createQrItem(qItem);
   const valueDateTime = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDate : '';
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

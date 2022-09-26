@@ -29,3 +29,13 @@ export function isHidden(qItem: QuestionnaireItem): boolean {
   }
   return false;
 }
+
+export function isCalculatedExpression(qItem: QuestionnaireItem): boolean {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression'
+  );
+
+  return !!itemControl;
+}

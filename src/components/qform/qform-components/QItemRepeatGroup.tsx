@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
 import QItemGroup from './QItemGroup';
 
@@ -10,6 +9,7 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -22,7 +22,7 @@ interface Props
 function QItemRepeatGroup(props: Props) {
   const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
 
-  const cleanQrItem = QuestionnaireResponseService.createQrItem(qItem);
+  const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
   const qrRepeatAnswerItems: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
     ? qrRepeat.answer

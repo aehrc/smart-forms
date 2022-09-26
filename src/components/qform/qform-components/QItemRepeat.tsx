@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from './QItemSwitcher';
 import {
@@ -9,6 +8,7 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -18,7 +18,7 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemRepeat(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  const cleanQrItem = QuestionnaireResponseService.createQrItem(qItem);
+  const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
   const qrRepeatAnswers: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
     ? qrRepeat.answer

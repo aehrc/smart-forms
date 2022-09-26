@@ -5,9 +5,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { FormControl, Grid, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { useEffect } from 'react';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -19,7 +19,7 @@ interface Props
 function QItemTime(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  const qrTime = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrTime = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrTime['answer'] ? qrTime['answer'][0].valueTime : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 

@@ -2,10 +2,10 @@ import React from 'react';
 import { Card, Typography } from '@mui/material';
 import QItemGroup from './qform-components/QItemGroup';
 import { PropsWithQrItemChangeHandler, QItemType } from './FormModel';
-import { QuestionnaireResponseService } from './QuestionnaireResponseService';
 import { getQrItemsIndex, mapQItemsIndex } from './functions/IndexFunctions';
 import QItemSwitcher from './qform-components/QItemSwitcher';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import { updateLinkedItem } from './functions/QrItemFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
@@ -17,7 +17,7 @@ function QFormBody(props: Props) {
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    QuestionnaireResponseService.updateLinkedItem(qrItem, qrForm, indexMap);
+    updateLinkedItem(qrItem, qrForm, indexMap);
     onQrItemChange(qrForm);
   }
 

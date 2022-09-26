@@ -1,8 +1,8 @@
 import React from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -14,7 +14,7 @@ interface Props
 function QItemQuantity(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  const qrQuantity = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrQuantity = qrItem ? qrItem : createQrItem(qItem);
   let valueQuantity: number | undefined = 0.0;
   let unitQuantity: string | undefined = '';
 
