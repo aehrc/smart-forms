@@ -5,10 +5,8 @@ import QFormBody from './QFormBody';
 import { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemBodyTabbed from './QFormBodyTabs';
 import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
-import { cleanQrItem } from './functions/QrItemFunctions';
+import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFunctions';
 import { CalculatedExpressionsContext, VariablesContext } from './QPage';
-import * as fhirpath from 'fhirpath';
-import * as fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 interface Props {
   questionnaire: Questionnaire;
@@ -19,7 +17,7 @@ function QForm(props: Props) {
   const { questionnaire, qrResponse } = props;
 
   const variables = useContext(VariablesContext);
-  const calculatedExpressions = useContext(CalculatedExpressionsContext);
+  let calculatedExpressions = useContext(CalculatedExpressionsContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] =
     useState<QuestionnaireResponse>(qrResponse);
@@ -38,42 +36,16 @@ function QForm(props: Props) {
     }
   }, [qrResponse]);
 
-  function onResponseChange(newQrForm: QuestionnaireResponseItem) {
-    console.log(variables);
-    console.log(calculatedExpressions);
-    console.log('-------------------');
+  function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
     const newQuestionnaireResponse = { ...questionnaireResponse, item: [newQrForm] };
-    if (Object.keys(calculatedExpressions).length > 0) {
-      const context: any = { questionnaire: questionnaire, resource: newQuestionnaireResponse };
-
-      if (variables.length > 0 && newQrForm) {
-        variables.forEach((variable) => {
-          context[`${variable.name}`] = fhirpath.evaluate(
-            newQuestionnaireResponse.item[0],
-            {
-              base: 'QuestionnaireResponse.item',
-              expression: `${variable.expression}`
-            },
-            context,
-            fhirpath_r4_model
-          );
-        });
-
-        for (const linkId in calculatedExpressions) {
-          const result = fhirpath.evaluate(
-            newQuestionnaireResponse,
-            calculatedExpressions[linkId].expression,
-            context,
-            fhirpath_r4_model
-          );
-
-          if (result.length > 0) {
-            calculatedExpressions[linkId].value = result[0];
-          }
-        }
-      }
-    }
-
+    calculatedExpressions = {
+      ...evaluateCalculatedExpressions(
+        questionnaire,
+        questionnaireResponse,
+        variables,
+        calculatedExpressions
+      )
+    };
     setQuestionnaireResponse(newQuestionnaireResponse);
   }
 
@@ -100,14 +72,14 @@ function QForm(props: Props) {
                 qForm={qForm}
                 qrForm={qrForm}
                 indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
-                onQrItemChange={(newQrForm) => onResponseChange(newQrForm)}
+                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
               />
             ) : (
               <QFormBody
                 qForm={qForm}
                 qrForm={qrForm}
                 onQrItemChange={(newQrForm) => {
-                  onResponseChange(newQrForm);
+                  onQrFormChange(newQrForm);
                 }}></QFormBody>
             )}
 

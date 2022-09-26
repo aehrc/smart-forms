@@ -9,14 +9,14 @@ import FhirClient from '../FhirClient';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
 
-const questionnaireProvider = new QuestionnaireProvider();
-questionnaireProvider.readCalculatedExpressions();
-questionnaireProvider.readVariables();
-
 export const CalculatedExpressionsContext = React.createContext<
   Record<string, { expression: string; value?: any }>
 >({});
 export const VariablesContext = React.createContext<Expression[]>([]);
+
+const questionnaireProvider = new QuestionnaireProvider();
+questionnaireProvider.readCalculatedExpressions();
+questionnaireProvider.readVariables();
 
 function QPage() {
   const questionnaire = questionnaireProvider.questionnaire;

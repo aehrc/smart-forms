@@ -1,4 +1,12 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import {
+  Expression,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r5';
+import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 export function createQuestionnaireResponse(
   questionnaireFormItem: QuestionnaireItem
@@ -97,4 +105,44 @@ export function updateLinkedItem(
       }
     }
   }
+}
+
+export function evaluateCalculatedExpressions(
+  questionnaire: Questionnaire,
+  questionnaireResponse: QuestionnaireResponse,
+  variables: Expression[],
+  calculatedExpressions: Record<string, { expression: string; value?: any }>
+): Record<string, { expression: string; value?: any }> {
+  if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
+    const context: any = { questionnaire: questionnaire, resource: questionnaireResponse };
+    const qrForm = questionnaireResponse.item[0];
+
+    if (variables.length > 0 && qrForm) {
+      variables.forEach((variable) => {
+        context[`${variable.name}`] = fhirpath.evaluate(
+          qrForm,
+          {
+            base: 'QuestionnaireResponse.item',
+            expression: `${variable.expression}`
+          },
+          context,
+          fhirpath_r4_model
+        );
+      });
+
+      for (const linkId in calculatedExpressions) {
+        const result = fhirpath.evaluate(
+          questionnaireResponse,
+          calculatedExpressions[linkId].expression,
+          context,
+          fhirpath_r4_model
+        );
+
+        if (result.length > 0) {
+          calculatedExpressions[linkId].value = result[0];
+        }
+      }
+    }
+  }
+  return calculatedExpressions;
 }
