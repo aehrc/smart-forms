@@ -29,17 +29,23 @@ function QItemDecimal(props: Props) {
   }, [calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(event.target.value) }] };
+    let input = event.target.value;
+
+    const hasNumber = /\d/;
+    if (!hasNumber.test(input)) {
+      input = '0';
+    }
+    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] };
     onQrItemChange(qrDecimal);
   }
 
   const renderQItemDecimal = repeats ? (
     <TextField
-      type="number"
       id={qItem.linkId}
       value={valueDecimal}
       onChange={handleChange}
       sx={{ mb: 0 }}
+      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
     />
   ) : (
     <FormControl>
@@ -48,7 +54,12 @@ function QItemDecimal(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <TextField type="number" id={qItem.linkId} value={valueDecimal} onChange={handleChange} />
+          <TextField
+            id={qItem.linkId}
+            value={valueDecimal}
+            onChange={handleChange}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+          />
         </Grid>
       </Grid>
     </FormControl>
