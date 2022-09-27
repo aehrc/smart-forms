@@ -5,10 +5,10 @@ import {
   PropsWithRepeatsAttribute,
   QItemChoiceOrientation
 } from '../FormModel';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -21,7 +21,7 @@ interface Props
 function QItemChoiceRadio(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
 
-  const qrChoiceRadio = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrChoiceRadio = qrItem ? qrItem : createQrItem(qItem);
   const valueRadio = getQrChoiceValue(qrChoiceRadio);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

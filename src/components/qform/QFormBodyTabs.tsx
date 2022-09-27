@@ -3,10 +3,10 @@ import { Box, Card, Grid, Tab, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from './FormModel';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { QuestionnaireResponseService } from './QuestionnaireResponseService';
 import { getQrItemsIndex, mapQItemsIndex } from './functions/IndexFunctions';
 import QItemGroup from './qform-components/QItemGroup';
 import { isTab } from './functions/TabFunctions';
+import { updateLinkedItem } from './functions/QrItemFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
@@ -24,7 +24,7 @@ function QItemBodyTabbed(props: Props) {
   const [tabIndex, setTabIndex] = useState(indexOfFirstTab.toString());
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    QuestionnaireResponseService.updateLinkedItem(qrItem, qrForm, indexMap);
+    updateLinkedItem(qrItem, qrForm, indexMap);
     onQrItemChange(qrForm);
   }
 

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { AnswerValueSet } from '../AnswerValueSet';
-import { QuestionnaireResponseService } from '../QuestionnaireResponseService';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
+import { createQrItem } from '../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -15,7 +15,7 @@ interface Props
 function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  const qrOpenChoice = qrItem ? qrItem : QuestionnaireResponseService.createQrItem(qItem);
+  const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
   let valueSelect: Coding | undefined = undefined;
   if (qrOpenChoice['answer']) {
@@ -56,7 +56,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
       }
       return;
     }
-    onQrItemChange(QuestionnaireResponseService.createQrItem(qItem));
+    onQrItemChange(createQrItem(qItem));
   }
 
   const openChoiceSelectAnswerValueSet = (
