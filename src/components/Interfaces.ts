@@ -15,7 +15,7 @@ export interface CalculatedExpression {
   value?: number;
 }
 
-export interface EnableWhenProperties {
+export interface EnableWhenItemProperties {
   linked: EnableWhenLinkedItem[];
   enableBehavior?: QuestionnaireItem['enableBehavior'];
 }
