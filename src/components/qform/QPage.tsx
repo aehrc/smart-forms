@@ -10,8 +10,9 @@ import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
 
 const questionnaireProvider = new QuestionnaireProvider();
-questionnaireProvider.readCalculatedExpressions();
+questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
 questionnaireProvider.readVariables();
+console.log(questionnaireProvider.enableWhenItems);
 
 function QPage() {
   const questionnaire = questionnaireProvider.questionnaire;
