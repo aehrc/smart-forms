@@ -7,6 +7,7 @@ import {
 } from 'fhir/r5';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import { CalculatedExpression } from '../../Interfaces';
 
 export function createQuestionnaireResponse(
   questionnaireFormItem: QuestionnaireItem
@@ -111,8 +112,10 @@ export function evaluateCalculatedExpressions(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
   variables: Expression[],
-  calculatedExpressions: Record<string, { expression: string; value?: any }>
-): Record<string, { expression: string; value?: any }> {
+  calculatedExpressions: Record<string, CalculatedExpression>
+): Record<string, CalculatedExpression> | null {
+  let isUpdated = false;
+  const updatedCalculatedExpressions = { ...calculatedExpressions };
   if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
     const context: any = { questionnaire: questionnaire, resource: questionnaireResponse };
     const qrForm = questionnaireResponse.item[0];
@@ -139,10 +142,13 @@ export function evaluateCalculatedExpressions(
         );
 
         if (result.length > 0) {
-          calculatedExpressions[linkId].value = result[0];
+          if (calculatedExpressions[linkId].value != result[0]) {
+            isUpdated = true;
+            updatedCalculatedExpressions[linkId].value = result[0];
+          }
         }
       }
     }
   }
-  return calculatedExpressions;
+  return isUpdated ? updatedCalculatedExpressions : null;
 }

@@ -1,11 +1,12 @@
 import questionnaireData from '../../data/resources/715.R4.json';
 import { Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
 import { getCalculatedExpression } from './functions/QItemFunctions';
+import { CalculatedExpression } from '../Interfaces';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
   variables: Expression[];
-  calculatedExpressions: Record<string, { expression: string; value?: any }>;
+  calculatedExpressions: Record<string, CalculatedExpression>;
 
   constructor() {
     this.questionnaire = questionnaireData as Questionnaire;

@@ -1,27 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Container, Divider, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
-import { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemBodyTabbed from './QFormBodyTabs';
 import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFunctions';
-import { CalculatedExpressionsContext, VariablesContext } from './QPage';
+import { QuestionnaireProvider } from './QuestionnaireProvider';
+import { CalculatedExpression } from '../Interfaces';
 
 interface Props {
-  questionnaire: Questionnaire;
+  questionnaireProvider: QuestionnaireProvider;
   qrResponse: QuestionnaireResponse;
 }
 
-function QForm(props: Props) {
-  const { questionnaire, qrResponse } = props;
+export const CalculatedExpressionsContext = React.createContext<
+  Record<string, CalculatedExpression>
+>({});
 
-  const variables = useContext(VariablesContext);
-  let calculatedExpressions = useContext(CalculatedExpressionsContext);
+function QForm(props: Props) {
+  const { questionnaireProvider, qrResponse } = props;
 
   const [questionnaireResponse, setQuestionnaireResponse] =
     useState<QuestionnaireResponse>(qrResponse);
+  const [calculatedExpressions, setCalculatedExpressions] = useState<
+    Record<string, CalculatedExpression>
+  >(questionnaireProvider.calculatedExpressions);
 
+  const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;
 
   const qForm = questionnaire.item[0];
@@ -38,14 +44,16 @@ function QForm(props: Props) {
 
   function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
     const newQuestionnaireResponse = { ...questionnaireResponse, item: [newQrForm] };
-    calculatedExpressions = {
-      ...evaluateCalculatedExpressions(
-        questionnaire,
-        questionnaireResponse,
-        variables,
-        calculatedExpressions
-      )
-    };
+    const updatedCalculatedExpressions = evaluateCalculatedExpressions(
+      questionnaire,
+      questionnaireResponse,
+      questionnaireProvider.variables,
+      calculatedExpressions
+    );
+
+    if (updatedCalculatedExpressions) {
+      setCalculatedExpressions(updatedCalculatedExpressions);
+    }
     setQuestionnaireResponse(newQuestionnaireResponse);
   }
 
@@ -61,7 +69,7 @@ function QForm(props: Props) {
 
   if (qForm.item && qrForm.item) {
     return (
-      <div>
+      <CalculatedExpressionsContext.Provider value={calculatedExpressions}>
         <Container maxWidth="lg">
           <Stack spacing={2.5} sx={{ my: 4 }}>
             <Typography variant="h4">{questionnaire.title}</Typography>
@@ -97,8 +105,8 @@ function QForm(props: Props) {
               {<pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>}
             </Box>
           </Stack>
-        </Container>
-      </div>
+        </Container>{' '}
+      </CalculatedExpressionsContext.Provider>
     );
   } else {
     return <div>Questionnaire is invalid.</div>;

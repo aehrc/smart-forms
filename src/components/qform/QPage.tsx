@@ -4,15 +4,10 @@ import ProgressSpinner from './ProgressSpinner';
 import NavBar from '../NavBar';
 import { oauth2 } from 'fhirclient';
 import { getPatient } from './functions/LaunchFunctions';
-import { Expression, Patient, QuestionnaireResponse } from 'fhir/r5';
+import { Patient, QuestionnaireResponse } from 'fhir/r5';
 import FhirClient from '../FhirClient';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
-
-export const CalculatedExpressionsContext = React.createContext<
-  Record<string, { expression: string; value?: any }>
->({});
-export const VariablesContext = React.createContext<Expression[]>([]);
 
 const questionnaireProvider = new QuestionnaireProvider();
 questionnaireProvider.readCalculatedExpressions();
@@ -63,11 +58,7 @@ function QPage() {
   const renderQPage = spinner.isLoading ? (
     <ProgressSpinner message={spinner.message} />
   ) : (
-    <CalculatedExpressionsContext.Provider value={questionnaireProvider.calculatedExpressions}>
-      <VariablesContext.Provider value={questionnaireProvider.variables}>
-        <QForm questionnaire={questionnaire} qrResponse={questionnaireResponse} />
-      </VariablesContext.Provider>
-    </CalculatedExpressionsContext.Provider>
+    <QForm questionnaireProvider={questionnaireProvider} qrResponse={questionnaireResponse} />
   );
 
   return (

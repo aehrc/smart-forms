@@ -1,6 +1,6 @@
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute, QItemType } from '../FormModel';
 import QItemString from './QItemString';
-import React, { useContext } from 'react';
+import React from 'react';
 import QItemBoolean from './QItemBoolean';
 import QItemDate from './QItemDate';
 import QItemText from './QItemText';
@@ -14,7 +14,6 @@ import { isHidden } from '../functions/QItemFunctions';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemTime';
 import QItemOpenChoice from './QItemOpenChoice';
-import { CalculatedExpressionsContext } from '../QPage';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -30,12 +29,6 @@ interface Props
  */
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
-
-  const calculatedExpressions = useContext(CalculatedExpressionsContext);
-  if (qItem.linkId in calculatedExpressions) {
-    console.log(qItem.linkId);
-    console.log(calculatedExpressions[qItem.linkId]);
-  }
 
   if (isHidden(qItem)) return null;
 
