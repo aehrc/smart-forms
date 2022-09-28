@@ -24,12 +24,13 @@ export interface EnableWhenItemProperties {
 
 export interface EnableWhenLinkedItem {
   enableWhen: QuestionnaireItemEnableWhen;
-  value?: QuestionnaireResponseItemAnswer;
+  answer?: QuestionnaireResponseItemAnswer[];
 }
 
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
   linkMap: Record<string, string[]>;
   setItems: (enableWhenItems: EnableWhenItems) => unknown;
-  updateItem: (linkId: string, newValue: QuestionnaireResponseItemAnswer) => unknown;
+  updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
+  checkItemIsEnabled: (linkId: string) => boolean;
 };
