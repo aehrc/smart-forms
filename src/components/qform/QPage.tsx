@@ -8,6 +8,7 @@ import { Patient, QuestionnaireResponse } from 'fhir/r5';
 import FhirClient from '../FhirClient';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
+import EnableWhenProvider from './functions/EnableWhenContext';
 
 const questionnaireProvider = new QuestionnaireProvider();
 questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
@@ -58,7 +59,9 @@ function QPage() {
   const renderQPage = spinner.isLoading ? (
     <ProgressSpinner message={spinner.message} />
   ) : (
-    <QForm questionnaireProvider={questionnaireProvider} qrResponse={questionnaireResponse} />
+    <EnableWhenProvider>
+      <QForm questionnaireProvider={questionnaireProvider} qrResponse={questionnaireResponse} />
+    </EnableWhenProvider>
   );
 
   return (
