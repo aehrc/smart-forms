@@ -34,7 +34,7 @@ function QForm(props: Props) {
   const qrForm = questionnaireResponse.item[0];
 
   useEffect(() => {
-    enableWhenContext.setItems(questionnaireProvider.enableWhenItems);
+    enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
   }, []);
 
   useEffect(() => {

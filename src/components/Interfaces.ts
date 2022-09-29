@@ -1,6 +1,7 @@
 import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
+  QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 
@@ -30,7 +31,10 @@ export interface EnableWhenLinkedItem {
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
   linkMap: Record<string, string[]>;
-  setItems: (enableWhenItems: EnableWhenItems) => unknown;
+  setItems: (
+    enableWhenItems: EnableWhenItems,
+    questionnaireResponseForm: QuestionnaireResponseItem
+  ) => unknown;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
   checkItemIsEnabled: (linkId: string) => boolean;
 };

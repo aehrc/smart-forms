@@ -1,5 +1,10 @@
 import { EnableWhenItems } from '../../Interfaces';
-import { Quantity, QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r5';
+import {
+  Quantity,
+  QuestionnaireItemEnableWhen,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r5';
 
 export function createLinkedQuestionsMap(enableWhenItems: EnableWhenItems) {
   const linkedQuestionsMap: Record<string, string[]> = {};
@@ -96,4 +101,71 @@ function answerOperatorSwitcher(
     default:
       return false;
   }
+}
+
+export function readInitialAnswers(
+  questionnaireResponseForm: QuestionnaireResponseItem,
+  linkedQuestionsMap: Record<string, string[]>
+): Record<string, QuestionnaireResponseItemAnswer[]> | null {
+  if (!questionnaireResponseForm.item) return null;
+
+  const initialValuesMap: Record<string, QuestionnaireResponseItemAnswer[]> = {};
+  questionnaireResponseForm.item.forEach((item) => {
+    readQuestionnaireResponseItem(item, initialValuesMap, linkedQuestionsMap);
+  });
+  return initialValuesMap;
+}
+
+function readQuestionnaireResponseItem(
+  item: QuestionnaireResponseItem,
+  initialValues: Record<string, QuestionnaireResponseItemAnswer[]>,
+  linkedQuestionsMap: Record<string, string[]>
+) {
+  const items = item.item;
+  if (items && items.length > 0) {
+    items.forEach((item) => {
+      readQuestionnaireResponseItem(item, initialValues, linkedQuestionsMap);
+    });
+    return;
+  }
+
+  if (linkedQuestionsMap[item.linkId] && item.answer) {
+    initialValues[item.linkId] = item.answer;
+  }
+
+  return;
+}
+
+export function setInitialAnswers(
+  initialAnswers: Record<string, QuestionnaireResponseItemAnswer[]>,
+  items: EnableWhenItems,
+  linkedQuestionsMap: Record<string, string[]>
+): EnableWhenItems {
+  let updatedItems = { ...items };
+
+  if (initialAnswers) {
+    for (const linkId in initialAnswers) {
+      const linkedQuestions = linkedQuestionsMap[linkId];
+      const newAnswer = initialAnswers[linkId];
+
+      updatedItems = updateItemAnswer(updatedItems, linkedQuestions, linkId, newAnswer);
+    }
+  }
+  return updatedItems;
+}
+
+export function updateItemAnswer(
+  items: EnableWhenItems,
+  linkedQuestions: string[],
+  linkId: string,
+  newAnswer: QuestionnaireResponseItemAnswer[]
+): EnableWhenItems {
+  linkedQuestions.forEach((question) => {
+    items[question].linked.forEach((linkedItem) => {
+      if (linkedItem.enableWhen.question === linkId) {
+        linkedItem.answer = newAnswer ?? undefined;
+      }
+    });
+  });
+  return items;
 }

@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { EnableWhenContextType, EnableWhenItems } from '../../Interfaces';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r5';
-import { createLinkedQuestionsMap, isEnabledAnswerTypeSwitcher } from './EnableWhenFunctions';
+import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r5';
+import {
+  createLinkedQuestionsMap,
+  isEnabledAnswerTypeSwitcher,
+  readInitialAnswers,
+  setInitialAnswers,
+  updateItemAnswer
+} from './EnableWhenFunctions';
 
 export const EnableWhenContext = React.createContext<EnableWhenContextType>({
   items: {},
@@ -19,25 +25,28 @@ function EnableWhenProvider(props: { children: any }) {
   const enableWhenContext: EnableWhenContextType = {
     items: enableWhenItems,
     linkMap: linkedQuestionsMap,
-    setItems: (enableWhenItems: EnableWhenItems) => {
-      setLinkedQuestionsMap(createLinkedQuestionsMap(enableWhenItems));
-      setEnableWhenItems(enableWhenItems);
-      // TODO assign answers to these items on initialize
+    setItems: (items: EnableWhenItems, qrForm: QuestionnaireResponseItem) => {
+      const linkedQuestionsMap = createLinkedQuestionsMap(items);
+      const initialAnswers = readInitialAnswers(qrForm, linkedQuestionsMap);
+
+      const updatedItems = initialAnswers
+        ? setInitialAnswers(initialAnswers, items, linkedQuestionsMap)
+        : items;
+
+      setLinkedQuestionsMap(linkedQuestionsMap);
+      setEnableWhenItems(updatedItems);
     },
     updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => {
       if (!linkedQuestionsMap[linkId]) return;
 
       const linkedQuestions = linkedQuestionsMap[linkId];
-      const updatedEnableWhenItems = { ...enableWhenItems };
-
-      linkedQuestions.forEach((question) => {
-        updatedEnableWhenItems[question].linked.forEach((linkedItem) => {
-          if (linkedItem.enableWhen.question === linkId) {
-            linkedItem.answer = newAnswer ?? undefined;
-          }
-        });
-      });
-      setEnableWhenItems({ ...updatedEnableWhenItems });
+      const updatedItems = updateItemAnswer(
+        { ...enableWhenItems },
+        linkedQuestions,
+        linkId,
+        newAnswer
+      );
+      setEnableWhenItems(updatedItems);
     },
     checkItemIsEnabled: (linkId: string) => {
       let isEnabled = false;
