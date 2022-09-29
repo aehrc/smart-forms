@@ -1,17 +1,19 @@
 import questionnaireData from '../../data/resources/715.R4.json';
 import { Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
-import { getCalculatedExpression } from './functions/QItemFunctions';
-import { CalculatedExpression } from '../Interfaces';
+import { getCalculatedExpression, getEnableWhenItemProperties } from './functions/QItemFunctions';
+import { CalculatedExpression, EnableWhenItemProperties } from '../Interfaces';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
   variables: Expression[];
   calculatedExpressions: Record<string, CalculatedExpression>;
+  enableWhenItems: Record<string, EnableWhenItemProperties>;
 
   constructor() {
     this.questionnaire = questionnaireData as Questionnaire;
     this.variables = [];
     this.calculatedExpressions = {};
+    this.enableWhenItems = {};
   }
 
   readVariables() {
@@ -32,7 +34,7 @@ export class QuestionnaireProvider {
     });
   }
 
-  readCalculatedExpressions() {
+  readCalculatedExpressionsAndEnableWhenItems() {
     if (!this.questionnaire.item) return;
 
     this.questionnaire.item.forEach((item) => {
@@ -54,6 +56,11 @@ export class QuestionnaireProvider {
       this.calculatedExpressions[item.linkId] = {
         expression: `${calculatedExpression.expression}`
       };
+    }
+
+    const EnableWhenItemProperties = getEnableWhenItemProperties(item);
+    if (EnableWhenItemProperties) {
+      this.enableWhenItems[item.linkId] = EnableWhenItemProperties;
     }
 
     return;

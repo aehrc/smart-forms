@@ -14,6 +14,7 @@ import { isHidden } from '../functions/QItemFunctions';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemTime';
 import QItemOpenChoice from './QItemOpenChoice';
+import { EnableWhenContext } from '../functions/EnableWhenContext';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -29,8 +30,17 @@ interface Props
  */
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const enableWhenContext = React.useContext(EnableWhenContext);
+
+  function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+    if (newQrItem.answer) {
+      enableWhenContext.updateItem(qItem.linkId, newQrItem.answer);
+    }
+    onQrItemChange(newQrItem);
+  }
 
   if (isHidden(qItem)) return null;
+  if (!enableWhenContext.checkItemIsEnabled(qItem.linkId)) return null;
 
   switch (qItem.type) {
     case QItemType.String:
@@ -39,7 +49,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Boolean:
@@ -48,7 +58,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Time:
@@ -57,7 +67,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Date:
@@ -66,7 +76,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.DateTime:
@@ -75,7 +85,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Text:
@@ -84,7 +94,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Display:
@@ -95,7 +105,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Decimal:
@@ -104,7 +114,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Quantity:
@@ -113,7 +123,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           repeats={repeats}
-          onQrItemChange={onQrItemChange}
+          onQrItemChange={handleQrItemChange}
         />
       );
     case QItemType.Coding:
@@ -128,7 +138,7 @@ function QItemSwitcher(props: Props) {
             qItem={qItem}
             qrItem={qrItem}
             repeats={repeats}
-            onQrItemChange={onQrItemChange}
+            onQrItemChange={handleQrItemChange}
           />
         );
       }
@@ -141,7 +151,7 @@ function QItemSwitcher(props: Props) {
             qItem={qItem}
             qrItem={qrItem}
             repeats={repeats}
-            onQrItemChange={onQrItemChange}
+            onQrItemChange={handleQrItemChange}
           />
         );
       }

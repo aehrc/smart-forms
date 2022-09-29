@@ -3,23 +3,23 @@ import { Box, Button, Container, Divider, Stack, Typography } from '@mui/materia
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
-import QItemBodyTabbed from './QFormBodyTabs';
+import QFormBodyTabbed from './QFormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFunctions';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { CalculatedExpression } from '../Interfaces';
+import { EnableWhenContext } from './functions/EnableWhenContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   qrResponse: QuestionnaireResponse;
 }
 
-export const CalculatedExpressionsContext = React.createContext<
-  Record<string, CalculatedExpression>
->({});
+export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 
 function QForm(props: Props) {
   const { questionnaireProvider, qrResponse } = props;
+  const enableWhenContext = React.useContext(EnableWhenContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] =
     useState<QuestionnaireResponse>(qrResponse);
@@ -32,6 +32,10 @@ function QForm(props: Props) {
 
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
+
+  useEffect(() => {
+    enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
+  }, []);
 
   useEffect(() => {
     if (!qrResponse.item) return;
@@ -69,14 +73,14 @@ function QForm(props: Props) {
 
   if (qForm.item && qrForm.item) {
     return (
-      <CalculatedExpressionsContext.Provider value={calculatedExpressions}>
+      <CalcExpressionContext.Provider value={calculatedExpressions}>
         <Container maxWidth="lg">
           <Stack spacing={2.5} sx={{ my: 4 }}>
             <Typography variant="h4">{questionnaire.title}</Typography>
             <Divider />
 
             {containsTabs(qForm.item) ? (
-              <QItemBodyTabbed
+              <QFormBodyTabbed
                 qForm={qForm}
                 qrForm={qrForm}
                 indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
@@ -105,8 +109,8 @@ function QForm(props: Props) {
               {<pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>}
             </Box>
           </Stack>
-        </Container>{' '}
-      </CalculatedExpressionsContext.Provider>
+        </Container>
+      </CalcExpressionContext.Provider>
     );
   } else {
     return <div>Questionnaire is invalid.</div>;

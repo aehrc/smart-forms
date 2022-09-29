@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import QItemGroup from './qform-components/QItemGroup';
 import { PropsWithQrItemChangeHandler, QItemType } from './FormModel';
 import { getQrItemsIndex, mapQItemsIndex } from './functions/IndexFunctions';
@@ -29,14 +29,14 @@ function QFormBody(props: Props) {
 
     return (
       <div>
-        <Card>
-          <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
-            {qForm.text}
-          </Typography>
-          {qFormItems.map((qItem: QuestionnaireItem, i) => {
-            const qrItem = qrFormItemsByIndex[i];
-            if (qItem.type === QItemType.Group) {
-              return (
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          {qForm.text}
+        </Typography>
+        {qFormItems.map((qItem: QuestionnaireItem, i) => {
+          const qrItem = qrFormItemsByIndex[i];
+          if (qItem.type === QItemType.Group) {
+            return (
+              <Box sx={{ mb: 5 }}>
                 <QItemGroup
                   key={qItem.linkId}
                   qItem={qItem}
@@ -44,19 +44,19 @@ function QFormBody(props: Props) {
                   repeats={qItem.repeats ?? false}
                   groupCardElevation={1}
                   onQrItemChange={handleQrGroupChange}></QItemGroup>
-              );
-            } else {
-              return (
-                <QItemSwitcher
-                  key={qItem.linkId}
-                  qItem={qItem}
-                  qrItem={qrItem}
-                  repeats={qItem.repeats ?? false}
-                  onQrItemChange={handleQrGroupChange}></QItemSwitcher>
-              );
-            }
-          })}
-        </Card>
+              </Box>
+            );
+          } else {
+            return (
+              <QItemSwitcher
+                key={qItem.linkId}
+                qItem={qItem}
+                qrItem={qrItem}
+                repeats={qItem.repeats ?? false}
+                onQrItemChange={handleQrGroupChange}></QItemSwitcher>
+            );
+          }
+        })}
       </div>
     );
   } else {

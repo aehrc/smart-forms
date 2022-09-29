@@ -1,4 +1,5 @@
 import { Coding, Expression, Extension, QuestionnaireItem } from 'fhir/r5';
+import { EnableWhenLinkedItem, EnableWhenItemProperties } from '../../Interfaces';
 
 export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode: string): boolean {
   const itemControl = qItem.extension?.find(
@@ -40,6 +41,25 @@ export function getCalculatedExpression(qItem: QuestionnaireItem): Expression | 
     if (itemControl.valueExpression) {
       return itemControl.valueExpression;
     }
+  }
+  return null;
+}
+
+export function getEnableWhenItemProperties(
+  qItem: QuestionnaireItem
+): EnableWhenItemProperties | null {
+  const enableWhen = qItem.enableWhen;
+  if (enableWhen) {
+    const EnableWhenItemProperties: EnableWhenItemProperties = { linked: [] };
+    EnableWhenItemProperties.linked = enableWhen.map((linkedItem): EnableWhenLinkedItem => {
+      return { enableWhen: linkedItem };
+    });
+
+    if (qItem.enableBehavior) {
+      EnableWhenItemProperties.enableBehavior = qItem.enableBehavior;
+    }
+
+    return EnableWhenItemProperties;
   }
   return null;
 }

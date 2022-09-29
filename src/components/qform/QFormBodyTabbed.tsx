@@ -14,7 +14,7 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   indexOfFirstTab: number;
 }
 
-function QItemBodyTabbed(props: Props) {
+function QFormBodyTabbed(props: Props) {
   const { qForm, qrForm, indexOfFirstTab, onQrItemChange } = props;
 
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
@@ -83,8 +83,8 @@ function QItemBodyTabbed(props: Props) {
       </div>
     );
   } else {
-    return <div>Unable to load tab panel</div>;
+    return <div>Unable to load form</div>;
   }
 }
 
-export default QItemBodyTabbed;
+export default QFormBodyTabbed;
