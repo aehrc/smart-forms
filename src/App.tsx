@@ -8,7 +8,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Launch from './components/Launch';
 
 function App() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: light)');
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   return (
     <ThemeProvider theme={getTheme(prefersDarkMode)}>
       <CssBaseline />
