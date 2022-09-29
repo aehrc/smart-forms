@@ -3,7 +3,7 @@ import { Box, Button, Container, Divider, Stack, Typography } from '@mui/materia
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
-import QItemBodyTabbed from './QFormBodyTabs';
+import QFormBodyTabbed from './QFormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFunctions';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
@@ -80,7 +80,7 @@ function QForm(props: Props) {
             <Divider />
 
             {containsTabs(qForm.item) ? (
-              <QItemBodyTabbed
+              <QFormBodyTabbed
                 qForm={qForm}
                 qrForm={qrForm}
                 indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
