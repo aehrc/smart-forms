@@ -63,3 +63,14 @@ export function getEnableWhenItemProperties(
   }
   return null;
 }
+
+export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    const childItem = qItem.item[0];
+    if (childItem.type === 'display' && isSpecificItemControl(childItem, 'prompt')) {
+      const promptText = `${childItem.text}`;
+      return promptText[0].toUpperCase() + promptText.substring(1);
+    }
+  }
+  return '';
+}

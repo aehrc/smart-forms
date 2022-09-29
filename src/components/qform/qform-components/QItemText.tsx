@@ -3,6 +3,7 @@ import { FormControl, Grid, TextField, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler, PropsWithRepeatsAttribute } from '../FormModel';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../functions/QrItemFunctions';
+import { getTextDisplayPrompt } from '../functions/QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -22,15 +23,20 @@ function QItemText(props: Props) {
     onQrItemChange(qrText);
   }
 
-  const renderQItemText = repeats ? (
+  const textInput = (
     <TextField
       id={qItem.linkId}
       value={valueText}
       onChange={handleChange}
-      sx={{ mb: 0 }}
+      sx={{ mb: repeats ? 0 : 4 }} // mb:4 is MUI default value
+      label={getTextDisplayPrompt(qItem)}
       fullWidth
       multiline
     />
+  );
+
+  const renderQItemText = repeats ? (
+    <div>{textInput}</div>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -38,13 +44,7 @@ function QItemText(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <TextField
-            id={qItem.linkId}
-            value={valueText}
-            onChange={handleChange}
-            fullWidth
-            multiline
-          />
+          {textInput}
         </Grid>
       </Grid>
     </FormControl>
