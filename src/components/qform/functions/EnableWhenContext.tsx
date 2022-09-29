@@ -53,7 +53,11 @@ function EnableWhenProvider(props: { children: any }) {
       if (enableWhenItems[linkId]) {
         enableWhenItems[linkId].linked.forEach((linkedItem) => {
           if (linkedItem.answer && linkedItem.answer.length > 0) {
-            isEnabled = isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, linkedItem.answer);
+            linkedItem.answer.forEach((answer) => {
+              isEnabled = isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, answer);
+
+              if (isEnabled) return true;
+            });
             return isEnabled;
           }
         });
