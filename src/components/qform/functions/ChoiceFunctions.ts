@@ -1,4 +1,5 @@
 import {
+  Coding,
   Extension,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -44,6 +45,17 @@ export function findInAnswerOptions(
       if (selected === option.valueInteger.toString()) {
         return option;
       }
+    }
+  }
+}
+
+export function findInAnswerValueSetCodings(
+  codings: Coding[],
+  selected: string
+): QuestionnaireResponseItemAnswer | undefined {
+  for (const coding of codings) {
+    if (selected === coding.code) {
+      return coding;
     }
   }
 }

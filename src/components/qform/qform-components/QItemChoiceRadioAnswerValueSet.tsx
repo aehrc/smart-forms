@@ -6,7 +6,7 @@ import {
   QItemChoiceOrientation
 } from '../FormModel';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
-import { findInAnswerOptions } from '../functions/ChoiceFunctions';
+import { findInAnswerValueSetCodings } from '../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createQrItem } from '../functions/QrItemFunctions';
 import { AnswerValueSet } from '../AnswerValueSet';
@@ -24,9 +24,9 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
 
   const qrChoiceRadio = qrItem ? qrItem : createQrItem(qItem);
 
-  let valueCoding: Coding | undefined;
+  let valueRadio: string | undefined;
   if (qrChoiceRadio['answer']) {
-    valueCoding = qrChoiceRadio['answer'][0].valueCoding;
+    valueRadio = qrChoiceRadio['answer'][0].valueCoding?.code;
   }
 
   const [options, setOptions] = useState<Coding[]>([]);
@@ -54,11 +54,11 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     });
   }, [qItem]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (qItem.answerOption) {
-      const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (options.length > 0) {
+      const qrAnswer = findInAnswerValueSetCodings(options, event.target.value);
       if (qrAnswer) {
-        onQrItemChange({ ...qrChoiceRadio, answer: [qrAnswer] });
+        onQrItemChange({ ...qrChoiceRadio, answer: [{ valueCoding: qrAnswer }] });
       }
     }
   }
@@ -69,7 +69,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
       name={qItem.text}
       id={qItem.id}
       onChange={handleChange}
-      value={valueCoding}>
+      value={valueRadio ?? null}>
       {options.map((option) => {
         return (
           <QItemChoiceRadioSingle
