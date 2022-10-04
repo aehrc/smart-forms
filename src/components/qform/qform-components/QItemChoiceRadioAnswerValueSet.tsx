@@ -75,7 +75,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
           <QItemChoiceRadioSingle
             key={option.code ?? ''}
             value={option.code ?? ''}
-            label={option.display ?? ''}
+            label={option.display ?? `${option.code}`}
           />
         );
       })}

@@ -46,7 +46,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
             <QItemChoiceRadioSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? ''}
+              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
             />
           );
         } else if (option['valueString']) {
