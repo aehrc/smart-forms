@@ -90,15 +90,7 @@ function QForm(props: Props) {
         <EnableWhenChecksContext.Provider value={enableWhenStatus}>
           <Container maxWidth="lg">
             {/*only for testing*/}
-            <FormControlLabel
-              control={
-                <Switch
-                  onChange={(event) => setEnableWhenStatus(event.target.checked)}
-                  checked={enableWhenStatus}
-                />
-              }
-              label="EnableWhen checks"
-            />
+
             <Stack spacing={2.5} sx={{ my: 4 }}>
               <Typography variant="h4">{questionnaire.title}</Typography>
               <Divider />
@@ -134,6 +126,16 @@ function QForm(props: Props) {
               </Box>
             </Stack>
           </Container>
+          <FormControlLabel
+            control={
+              <Switch
+                onChange={(event) => setEnableWhenStatus(event.target.checked)}
+                checked={enableWhenStatus}
+              />
+            }
+            label="EnableWhen checks"
+            sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          />
         </EnableWhenChecksContext.Provider>
       </CalcExpressionContext.Provider>
     );
