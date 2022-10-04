@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../FormModel';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from './QItemSwitcher';
@@ -64,20 +64,23 @@ function QItemRepeat(props: Props) {
             const singleQrItem = answer ? { ...cleanQrItem, answer: [answer] } : { ...cleanQrItem };
 
             return (
-              <Stack key={index} direction="row" sx={{ pb: 2 }}>
-                <Box sx={{ flexGrow: 1 }}>
-                  <QItemSwitcher
-                    qItem={qItem}
-                    qrItem={singleQrItem}
-                    repeats={qItem.repeats ?? false}
-                    onQrItemChange={(newQrItem) =>
-                      handleAnswersChange(newQrItem, index)
-                    }></QItemSwitcher>
-                </Box>
-                <Button disabled={!answer} onClick={() => deleteAnswer(index)}>
-                  <Delete />
-                </Button>
-              </Stack>
+              <div key={index}>
+                {index !== 0 ? <Divider light sx={{ mb: 2, mt: 1 }} /> : null}
+                <Stack direction="row" sx={{ pb: 2 }}>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <QItemSwitcher
+                      qItem={qItem}
+                      qrItem={singleQrItem}
+                      repeats={qItem.repeats ?? false}
+                      onQrItemChange={(newQrItem) =>
+                        handleAnswersChange(newQrItem, index)
+                      }></QItemSwitcher>
+                  </Box>
+                  <Button disabled={!answer} onClick={() => deleteAnswer(index)}>
+                    <Delete />
+                  </Button>
+                </Stack>
+              </div>
             );
           })}
         </Grid>
