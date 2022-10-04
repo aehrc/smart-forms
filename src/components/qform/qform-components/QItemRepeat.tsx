@@ -85,7 +85,7 @@ function QItemRepeat(props: Props) {
 
       <Stack direction="row" justifyContent="end" sx={{ mt: 2, mb: 5 }}>
         <Button
-          variant="outlined"
+          variant="contained"
           disabled={!repeatAnswers[repeatAnswers.length - 1]}
           onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}>
           <Add sx={{ mr: 1 }} />
