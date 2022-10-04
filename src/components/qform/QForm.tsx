@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Container, Divider, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  FormControlLabel,
+  Stack,
+  Switch,
+  Typography
+} from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
@@ -17,6 +26,8 @@ interface Props {
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 
+export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
+
 function QForm(props: Props) {
   const { questionnaireProvider, qrResponse } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
@@ -26,6 +37,8 @@ function QForm(props: Props) {
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
+
+  const [enableWhenStatus, setEnableWhenStatus] = React.useState(true); // only for testing
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;
@@ -74,42 +87,54 @@ function QForm(props: Props) {
   if (qForm.item && qrForm.item) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
-        <Container maxWidth="lg">
-          <Stack spacing={2.5} sx={{ my: 4 }}>
-            <Typography variant="h4">{questionnaire.title}</Typography>
-            <Divider />
+        <EnableWhenChecksContext.Provider value={enableWhenStatus}>
+          <Container maxWidth="lg">
+            {/*only for testing*/}
+            <FormControlLabel
+              control={
+                <Switch
+                  onChange={(event) => setEnableWhenStatus(event.target.checked)}
+                  checked={enableWhenStatus}
+                />
+              }
+              label="EnableWhen checks"
+            />
+            <Stack spacing={2.5} sx={{ my: 4 }}>
+              <Typography variant="h4">{questionnaire.title}</Typography>
+              <Divider />
 
-            {containsTabs(qForm.item) ? (
-              <QFormBodyTabbed
-                qForm={qForm}
-                qrForm={qrForm}
-                indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
-                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-              />
-            ) : (
-              <QFormBody
-                qForm={qForm}
-                qrForm={qrForm}
-                onQrItemChange={(newQrForm) => {
-                  onQrFormChange(newQrForm);
-                }}></QFormBody>
-            )}
+              {containsTabs(qForm.item) ? (
+                <QFormBodyTabbed
+                  qForm={qForm}
+                  qrForm={qrForm}
+                  indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
+                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                />
+              ) : (
+                <QFormBody
+                  qForm={qForm}
+                  qrForm={qrForm}
+                  onQrItemChange={(newQrForm) => {
+                    onQrFormChange(newQrForm);
+                  }}></QFormBody>
+              )}
 
-            <Box sx={{ pt: 6 }}>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5">Questionnaire Response</Typography>
-                <Button
-                  variant="outlined"
-                  onClick={clearQuestionnaireResponseButton}
-                  sx={{ borderRadius: 20 }}>
-                  Clear Responses
-                  <ClearIcon sx={{ ml: 1 }} />
-                </Button>
-              </Stack>
-              {<pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>}
-            </Box>
-          </Stack>
-        </Container>
+              <Box sx={{ pt: 6 }}>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography variant="h5">Questionnaire Response</Typography>
+                  <Button
+                    variant="outlined"
+                    onClick={clearQuestionnaireResponseButton}
+                    sx={{ borderRadius: 20 }}>
+                    Clear Responses
+                    <ClearIcon sx={{ ml: 1 }} />
+                  </Button>
+                </Stack>
+                {<pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>}
+              </Box>
+            </Stack>
+          </Container>
+        </EnableWhenChecksContext.Provider>
       </CalcExpressionContext.Provider>
     );
   } else {
