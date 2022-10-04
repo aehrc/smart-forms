@@ -71,7 +71,7 @@ function QItemGroup(props: Props) {
               } else {
                 return (
                   <QItemRepeat
-                    key={qItem.linkId}
+                    key={i}
                     qItem={qItem}
                     qrItem={qrItem}
                     onQrItemChange={handleQrItemChange}></QItemRepeat>

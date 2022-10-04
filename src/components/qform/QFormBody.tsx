@@ -36,9 +36,8 @@ function QFormBody(props: Props) {
           const qrItem = qrFormItemsByIndex[i];
           if (qItem.type === QItemType.Group) {
             return (
-              <Box sx={{ mb: 5 }}>
+              <Box key={qItem.linkId} sx={{ mb: 5 }}>
                 <QItemGroup
-                  key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={qItem.repeats ?? false}
