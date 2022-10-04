@@ -5,12 +5,13 @@ import {
   QItemChoiceControl
 } from '../FormModel';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import QItemChoiceRadio from './QItemChoiceRadio';
+import QItemChoiceRadioAnswerOption from './QItemChoiceRadioAnswerOption';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceCheckbox from './QItemChoiceCheckbox';
 import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import { getChoiceControlType, getChoiceOrientation } from '../functions/ChoiceFunctions';
+import QItemChoiceRadioAnswerValueSet from './QItemChoiceRadioAnswerValueSet';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -25,15 +26,27 @@ function QItemChoice(props: Props) {
 
   switch (getChoiceControlType(qItem)) {
     case QItemChoiceControl.Radio:
-      return (
-        <QItemChoiceRadio
-          qItem={qItem}
-          qrItem={qrItem}
-          repeats={repeats}
-          onQrItemChange={onQrItemChange}
-          orientation={orientation}
-        />
-      );
+      if (qItem.answerValueSet) {
+        return (
+          <QItemChoiceRadioAnswerValueSet
+            qItem={qItem}
+            qrItem={qrItem}
+            repeats={repeats}
+            onQrItemChange={onQrItemChange}
+            orientation={orientation}
+          />
+        );
+      } else {
+        return (
+          <QItemChoiceRadioAnswerOption
+            qItem={qItem}
+            qrItem={qrItem}
+            repeats={repeats}
+            onQrItemChange={onQrItemChange}
+            orientation={orientation}
+          />
+        );
+      }
     case QItemChoiceControl.Checkbox:
       return (
         <QItemChoiceCheckbox
