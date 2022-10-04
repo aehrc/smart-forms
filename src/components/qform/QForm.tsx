@@ -18,6 +18,7 @@ import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFu
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
+import { grey } from '@mui/material/colors';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -126,16 +127,26 @@ function QForm(props: Props) {
               </Box>
             </Stack>
           </Container>
-          <FormControlLabel
-            control={
-              <Switch
-                onChange={(event) => setEnableWhenStatus(event.target.checked)}
-                checked={enableWhenStatus}
-              />
-            }
-            label="EnableWhen checks"
-            sx={{ position: 'fixed', bottom: 16, right: 16 }}
-          />
+          <Box
+            bgcolor={grey['100']}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              px: 2,
+              py: 0.5,
+              borderRadius: 10
+            }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  onChange={(event) => setEnableWhenStatus(event.target.checked)}
+                  checked={enableWhenStatus}
+                />
+              }
+              label={<Typography variant="subtitle2">EnableWhen checks (testing only)</Typography>}
+            />
+          </Box>
         </EnableWhenChecksContext.Provider>
       </CalcExpressionContext.Provider>
     );
