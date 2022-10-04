@@ -15,6 +15,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemTime';
 import QItemOpenChoice from './QItemOpenChoice';
 import { EnableWhenContext } from '../functions/EnableWhenContext';
+import { EnableWhenChecksContext } from '../QForm';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -31,6 +32,7 @@ interface Props
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     if (newQrItem.answer) {
@@ -40,7 +42,11 @@ function QItemSwitcher(props: Props) {
   }
 
   if (isHidden(qItem)) return null;
-  if (!enableWhenContext.checkItemIsEnabled(qItem.linkId)) return null;
+
+  // only for testing
+  if (enableWhenChecksContext) {
+    if (!enableWhenContext.checkItemIsEnabled(qItem.linkId)) return null; // preserve this line in final build
+  }
 
   switch (qItem.type) {
     case QItemType.String:

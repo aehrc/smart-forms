@@ -10,6 +10,9 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import { createQrItem } from '../functions/QrItemFunctions';
+import { EnableWhenContext } from '../functions/EnableWhenContext';
+import { EnableWhenChecksContext } from '../QForm';
+import { isHidden } from '../functions/QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -21,6 +24,15 @@ interface Props
 
 function QItemRepeatGroup(props: Props) {
   const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+
+  if (isHidden(qItem)) return null;
+
+  // only for testing
+  if (enableWhenChecksContext) {
+    if (!enableWhenContext.checkItemIsEnabled(qItem.linkId)) return null; // preserve this line in final build
+  }
 
   const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;

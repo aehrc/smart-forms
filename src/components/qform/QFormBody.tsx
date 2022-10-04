@@ -1,11 +1,13 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
 import QItemGroup from './qform-components/QItemGroup';
 import { PropsWithQrItemChangeHandler, QItemType } from './FormModel';
 import { getQrItemsIndex, mapQItemsIndex } from './functions/IndexFunctions';
 import QItemSwitcher from './qform-components/QItemSwitcher';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { updateLinkedItem } from './functions/QrItemFunctions';
+import QItemRepeatGroup from './qform-components/QItemRepeatGroup';
+import QItemRepeat from './qform-components/QItemRepeat';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
@@ -16,7 +18,7 @@ function QFormBody(props: Props) {
   const { qForm, qrForm, onQrItemChange } = props;
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
 
-  function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
+  function handleQrItemChange(qrItem: QuestionnaireResponseItem) {
     updateLinkedItem(qrItem, qrForm, indexMap);
     onQrItemChange(qrForm);
   }
@@ -28,22 +30,47 @@ function QFormBody(props: Props) {
     const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems);
 
     return (
-      <div>
+      <Card elevation={2} sx={{ p: 5, py: 4 }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           {qForm.text}
         </Typography>
         {qFormItems.map((qItem: QuestionnaireItem, i) => {
           const qrItem = qrFormItemsByIndex[i];
+          if (qItem['repeats']) {
+            if (qItem.repeats) {
+              if (qItem.type === QItemType.Group) {
+                return (
+                  <Box key={qItem.linkId} sx={{ my: 3 }}>
+                    <QItemRepeatGroup
+                      qItem={qItem}
+                      qrItem={qrItem}
+                      repeats={true}
+                      groupCardElevation={3}
+                      onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
+                  </Box>
+                );
+              } else {
+                return (
+                  <QItemRepeat
+                    key={i}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    onQrItemChange={handleQrItemChange}></QItemRepeat>
+                );
+              }
+            }
+          }
+
+          // if qItem is not a repeating question
           if (qItem.type === QItemType.Group) {
             return (
-              <Box sx={{ mb: 5 }}>
+              <Box key={qItem.linkId} sx={{ my: 4 }}>
                 <QItemGroup
-                  key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
-                  repeats={qItem.repeats ?? false}
-                  groupCardElevation={1}
-                  onQrItemChange={handleQrGroupChange}></QItemGroup>
+                  repeats={false}
+                  groupCardElevation={3}
+                  onQrItemChange={handleQrItemChange}></QItemGroup>
               </Box>
             );
           } else {
@@ -52,12 +79,12 @@ function QFormBody(props: Props) {
                 key={qItem.linkId}
                 qItem={qItem}
                 qrItem={qrItem}
-                repeats={qItem.repeats ?? false}
-                onQrItemChange={handleQrGroupChange}></QItemSwitcher>
+                repeats={false}
+                onQrItemChange={handleQrItemChange}></QItemSwitcher>
             );
           }
         })}
-      </div>
+      </Card>
     );
   } else {
     return <div>Unable to load form</div>;

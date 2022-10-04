@@ -27,7 +27,7 @@ export function isEnabledAnswerTypeSwitcher(
   enableWhen: QuestionnaireItemEnableWhen,
   answer: QuestionnaireResponseItemAnswer
 ): boolean {
-  if (enableWhen['answerBoolean'] && answer.valueBoolean) {
+  if (enableWhen['answerBoolean'] !== undefined && answer.valueBoolean !== undefined) {
     return answerOperatorSwitcher(
       enableWhen.answerBoolean,
       answer.valueBoolean,

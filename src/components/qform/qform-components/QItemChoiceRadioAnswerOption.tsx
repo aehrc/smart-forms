@@ -18,7 +18,7 @@ interface Props
   orientation: QItemChoiceOrientation;
 }
 
-function QItemChoiceRadio(props: Props) {
+function QItemChoiceRadioAnswerOption(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
 
   const qrChoiceRadio = qrItem ? qrItem : createQrItem(qItem);
@@ -46,7 +46,7 @@ function QItemChoiceRadio(props: Props) {
             <QItemChoiceRadioSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? ''}
+              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
             />
           );
         } else if (option['valueString']) {
@@ -87,4 +87,4 @@ function QItemChoiceRadio(props: Props) {
   return <div>{renderQItemChoiceRadio}</div>;
 }
 
-export default QItemChoiceRadio;
+export default QItemChoiceRadioAnswerOption;

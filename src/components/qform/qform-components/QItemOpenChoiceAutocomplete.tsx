@@ -91,7 +91,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
       renderInput={(params) => (
         <TextField
           {...params}
-          label={'Search ' + qItem.text?.toLowerCase() + '...'}
+          label={valueAutocomplete ? '' : 'Search ' + qItem.text?.toLowerCase() + '...'}
           onChange={handleInputChange}
           sx={{ ...(repeats && { mb: 0 }) }}
           InputProps={{

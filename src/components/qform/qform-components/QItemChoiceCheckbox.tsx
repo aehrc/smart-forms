@@ -48,7 +48,7 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
             <QItemChoiceCheckboxSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? ''}
+              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer) === JSON.stringify(option)
               )}

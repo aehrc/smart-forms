@@ -48,6 +48,11 @@ export class QuestionnaireProvider {
       items.forEach((item) => {
         this.readQuestionnaireItem(item);
       });
+
+      const EnableWhenItemProperties = getEnableWhenItemProperties(item);
+      if (EnableWhenItemProperties) {
+        this.enableWhenItems[item.linkId] = EnableWhenItemProperties;
+      }
       return;
     }
 

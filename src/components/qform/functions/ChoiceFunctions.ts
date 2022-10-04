@@ -1,4 +1,5 @@
 import {
+  Coding,
   Extension,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -14,6 +15,8 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
     return QItemChoiceControl.Autocomplete;
   } else if (isSpecificItemControl(qItem, 'check-box')) {
     return QItemChoiceControl.Checkbox;
+  } else if (isSpecificItemControl(qItem, 'radio-button')) {
+    return QItemChoiceControl.Radio;
   } else {
     if (qItem.answerOption) {
       return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
@@ -42,6 +45,17 @@ export function findInAnswerOptions(
       if (selected === option.valueInteger.toString()) {
         return option;
       }
+    }
+  }
+}
+
+export function findInAnswerValueSetCodings(
+  codings: Coding[],
+  selected: string
+): QuestionnaireResponseItemAnswer | undefined {
+  for (const coding of codings) {
+    if (selected === coding.code) {
+      return coding;
     }
   }
 }
