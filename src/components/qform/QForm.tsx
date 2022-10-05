@@ -18,7 +18,6 @@ import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFu
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
-import { grey } from '@mui/material/colors';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -39,7 +38,9 @@ function QForm(props: Props) {
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
 
-  const [enableWhenStatus, setEnableWhenStatus] = React.useState(true); // only for testing
+  // states only for testing
+  const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
+  const [hideQResponse, setHideQResponse] = React.useState(true);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;
@@ -112,23 +113,24 @@ function QForm(props: Props) {
                   }}></QFormBody>
               )}
 
-              <Box sx={{ pt: 6 }}>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography variant="h5">Questionnaire Response</Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={clearQuestionnaireResponseButton}
-                    sx={{ borderRadius: 20 }}>
-                    Clear Responses
-                    <ClearIcon sx={{ ml: 1 }} />
-                  </Button>
-                </Stack>
-                {<pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>}
-              </Box>
+              {hideQResponse ? null : (
+                <Box sx={{ pt: 6 }}>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="h5">Questionnaire Response</Typography>
+                    <Button
+                      variant="outlined"
+                      onClick={clearQuestionnaireResponseButton}
+                      sx={{ borderRadius: 20 }}>
+                      Clear Responses
+                      <ClearIcon sx={{ ml: 1 }} />
+                    </Button>
+                  </Stack>
+                  <pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>
+                </Box>
+              )}
             </Stack>
           </Container>
           <Box
-            bgcolor={grey['100']}
             sx={{
               position: 'fixed',
               bottom: 16,
@@ -137,6 +139,15 @@ function QForm(props: Props) {
               py: 0.5,
               borderRadius: 10
             }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  onChange={(event) => setHideQResponse(event.target.checked)}
+                  checked={hideQResponse}
+                />
+              }
+              label={<Typography variant="subtitle2">Hide QuestionnaireResponse</Typography>}
+            />
             <FormControlLabel
               control={
                 <Switch
