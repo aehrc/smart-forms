@@ -12,16 +12,18 @@ export default class FhirClient {
   populate(
     questionnaire: Questionnaire,
     patient: Patient,
-    setQuestionnaireResponse: { (questionnaireResponse: QuestionnaireResponse): void }
+    getPrepopulationData: {
+      (questionnaireResponse: QuestionnaireResponse, batchResponse: Bundle): void;
+    }
   ) {
     if (questionnaire.contained && questionnaire.contained.length > 0) {
-      let populationQuery: Bundle = questionnaire.contained[0] as Bundle;
+      let batchQuery: Bundle = questionnaire.contained[0] as Bundle;
 
       // replace all instances of launchPatientId placeholder with patient id
-      populationQuery = this.replaceLaunchPatientIdInstances(populationQuery, patient);
+      batchQuery = this.replaceLaunchPatientIdInstances(batchQuery, patient);
 
       // perform batch query to CMS FHIR API
-      const batchResponsePromise = this.batchQuery(populationQuery);
+      const batchResponsePromise = this.batchQueryRequest(batchQuery);
       batchResponsePromise
         .then((batchResponse) => {
           // get questionnaireResponse from population parameters
@@ -30,7 +32,7 @@ export default class FhirClient {
           qrPromise
             .then((qResponse) => {
               // set questionnaireResponse in callback function
-              setQuestionnaireResponse(qResponse);
+              getPrepopulationData(qResponse, batchResponse);
             })
             .catch((error) => console.log(error));
         })
@@ -38,7 +40,7 @@ export default class FhirClient {
     }
   }
 
-  private batchQuery(bundle: Bundle): Promise<Bundle> {
+  private batchQueryRequest(bundle: Bundle): Promise<Bundle> {
     const headers = {
       'Cache-Control': 'no-cache',
       'Content-Type': 'application/json+fhir; charset=UTF-8'

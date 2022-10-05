@@ -37,7 +37,7 @@ function DebugBar(props: Props) {
               checked={hideQResponse}
             />
           }
-          label={<Typography variant="subtitle2">Hide QuestionnaireResponse</Typography>}
+          label={<Typography variant="subtitle2">Hide Debug QResponse</Typography>}
         />
         <FormControlLabel
           control={
@@ -46,7 +46,7 @@ function DebugBar(props: Props) {
               checked={enableWhenStatus}
             />
           }
-          label={<Typography variant="subtitle2">EnableWhen checks (testing only)</Typography>}
+          label={<Typography variant="subtitle2">EnableWhen checks</Typography>}
         />
       </Box>
     </div>

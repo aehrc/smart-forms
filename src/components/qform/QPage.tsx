@@ -4,7 +4,7 @@ import ProgressSpinner from './ProgressSpinner';
 import NavBar from '../NavBar';
 import { oauth2 } from 'fhirclient';
 import { getPatient } from './functions/LaunchFunctions';
-import { Patient, QuestionnaireResponse } from 'fhir/r5';
+import { Bundle, Patient, QuestionnaireResponse } from 'fhir/r5';
 import FhirClient from '../FhirClient';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
@@ -21,6 +21,7 @@ function QPage() {
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
     createQuestionnaireResponse(questionnaire.item[0])
   );
+  const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [spinner, setSpinner] = useState({
     isLoading: true,
@@ -38,12 +39,11 @@ function QPage() {
             setSpinner({ ...spinner, message: 'Loading questionnaire form' });
 
             // obtain questionnaireResponse for prepopulation
-            fhirClient.populate(questionnaire, patient, (qResponse) => {
+            fhirClient.populate(questionnaire, patient, (qResponse, batchResponse) => {
               setQuestionnaireResponse(qResponse);
+              setBatchResponse(batchResponse);
               setSpinner({ ...spinner, isLoading: false });
             });
-
-            // TODO do calculations and enablewhen
           })
           .catch((error) => {
             console.error(error);
@@ -60,7 +60,11 @@ function QPage() {
     <ProgressSpinner message={spinner.message} />
   ) : (
     <EnableWhenProvider>
-      <QForm questionnaireProvider={questionnaireProvider} qrResponse={questionnaireResponse} />
+      <QForm
+        questionnaireProvider={questionnaireProvider}
+        qrResponse={questionnaireResponse}
+        batchResponse={batchResponse}
+      />
     </EnableWhenProvider>
   );
 

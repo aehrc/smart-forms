@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
-import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFunctions';
@@ -9,11 +9,12 @@ import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
 import DebugBar from './DebugBar';
-import QResponseDisplay from './QResponseDisplay';
+import DisplayDebugQResponse from './DisplayDebugQResponse';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   qrResponse: QuestionnaireResponse;
+  batchResponse: Bundle | null; // only for testing
 }
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
@@ -21,7 +22,7 @@ export const CalcExpressionContext = React.createContext<Record<string, Calculat
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
 function QForm(props: Props) {
-  const { questionnaireProvider, qrResponse } = props;
+  const { questionnaireProvider, qrResponse, batchResponse } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] =
@@ -106,9 +107,11 @@ function QForm(props: Props) {
               )}
 
               {hideQResponse ? null : (
-                <QResponseDisplay
+                <DisplayDebugQResponse
+                  questionnaire={questionnaire}
                   questionnaireResponse={questionnaireResponse}
-                  clearQResponse={clearQResponse}
+                  clearQResponse={() => clearQResponse()}
+                  batchResponse={batchResponse}
                 />
               )}
             </Stack>
