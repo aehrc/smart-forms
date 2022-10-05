@@ -7,6 +7,7 @@ import { getQrItemsIndex, mapQItemsIndex } from './functions/IndexFunctions';
 import QItemGroup from './qform-components/QItemGroup';
 import { isTab } from './functions/TabFunctions';
 import { updateLinkedItem } from './functions/QrItemFunctions';
+import { getShortText } from './functions/QItemFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
@@ -51,7 +52,11 @@ function QFormBodyTabbed(props: Props) {
                     {qFormItems.map((qItem, i) => {
                       if (isTab(qItem)) {
                         return (
-                          <Tab key={qItem.linkId} label={qItem.text} value={(i + 1).toString()} />
+                          <Tab
+                            key={qItem.linkId}
+                            label={getShortText(qItem) ?? qItem.text}
+                            value={(i + 1).toString()}
+                          />
                         );
                       }
                     })}

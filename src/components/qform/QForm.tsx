@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControlLabel,
-  Stack,
-  Switch,
-  Typography
-} from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
+import { Container, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
-import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from './functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFunctions';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
-import { grey } from '@mui/material/colors';
+import DebugBar from './DebugBar';
+import DisplayDebugQResponse from './DisplayDebugQResponse';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   qrResponse: QuestionnaireResponse;
+  batchResponse: Bundle | null; // only for testing
 }
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
@@ -30,7 +22,7 @@ export const CalcExpressionContext = React.createContext<Record<string, Calculat
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
 function QForm(props: Props) {
-  const { questionnaireProvider, qrResponse } = props;
+  const { questionnaireProvider, qrResponse, batchResponse } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] =
@@ -39,7 +31,9 @@ function QForm(props: Props) {
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
 
-  const [enableWhenStatus, setEnableWhenStatus] = React.useState(true); // only for testing
+  // states only for testing
+  const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
+  const [hideQResponse, setHideQResponse] = React.useState(true);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;
@@ -76,9 +70,9 @@ function QForm(props: Props) {
   }
 
   // only for testing
-  function clearQuestionnaireResponseButton() {
+  function clearQResponse() {
     const clearQrForm: QuestionnaireResponseItem = {
-      linkId: '715-clear',
+      linkId: '715',
       text: 'MBS 715 Cleared',
       item: []
     };
@@ -112,41 +106,22 @@ function QForm(props: Props) {
                   }}></QFormBody>
               )}
 
-              <Box sx={{ pt: 6 }}>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography variant="h5">Questionnaire Response</Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={clearQuestionnaireResponseButton}
-                    sx={{ borderRadius: 20 }}>
-                    Clear Responses
-                    <ClearIcon sx={{ ml: 1 }} />
-                  </Button>
-                </Stack>
-                {<pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>}
-              </Box>
+              {hideQResponse ? null : (
+                <DisplayDebugQResponse
+                  questionnaire={questionnaire}
+                  questionnaireResponse={questionnaireResponse}
+                  clearQResponse={() => clearQResponse()}
+                  batchResponse={batchResponse}
+                />
+              )}
             </Stack>
           </Container>
-          <Box
-            bgcolor={grey['100']}
-            sx={{
-              position: 'fixed',
-              bottom: 16,
-              right: 16,
-              px: 2,
-              py: 0.5,
-              borderRadius: 10
-            }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  onChange={(event) => setEnableWhenStatus(event.target.checked)}
-                  checked={enableWhenStatus}
-                />
-              }
-              label={<Typography variant="subtitle2">EnableWhen checks (testing only)</Typography>}
-            />
-          </Box>
+          <DebugBar
+            hideQResponse={hideQResponse}
+            toggleHideQResponse={(checked) => setHideQResponse(checked)}
+            enableWhenStatus={enableWhenStatus}
+            toggleEnableWhenStatus={(checked) => setEnableWhenStatus(checked)}
+          />
         </EnableWhenChecksContext.Provider>
       </CalcExpressionContext.Provider>
     );

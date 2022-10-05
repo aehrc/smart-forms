@@ -17,6 +17,19 @@ export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode:
   return false;
 }
 
+export function getShortText(qItem: QuestionnaireItem): string | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText'
+  );
+  if (itemControl) {
+    if (itemControl.valueString) {
+      return itemControl.valueString;
+    }
+  }
+  return null;
+}
+
 export function isHidden(qItem: QuestionnaireItem): boolean {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
