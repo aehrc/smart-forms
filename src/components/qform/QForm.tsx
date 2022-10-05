@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Container, Divider, Stack, Typography } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
+import { Container, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -10,6 +9,7 @@ import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
 import DebugBar from './DebugBar';
+import QResponseDisplay from './QResponseDisplay';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -69,9 +69,9 @@ function QForm(props: Props) {
   }
 
   // only for testing
-  function clearQuestionnaireResponseButton() {
+  function clearQResponse() {
     const clearQrForm: QuestionnaireResponseItem = {
-      linkId: '715-clear',
+      linkId: '715',
       text: 'MBS 715 Cleared',
       item: []
     };
@@ -106,19 +106,10 @@ function QForm(props: Props) {
               )}
 
               {hideQResponse ? null : (
-                <Box sx={{ pt: 6 }}>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="h5">Questionnaire Response</Typography>
-                    <Button
-                      variant="outlined"
-                      onClick={clearQuestionnaireResponseButton}
-                      sx={{ borderRadius: 20 }}>
-                      Clear Responses
-                      <ClearIcon sx={{ ml: 1 }} />
-                    </Button>
-                  </Stack>
-                  <pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>
-                </Box>
+                <QResponseDisplay
+                  questionnaireResponse={questionnaireResponse}
+                  clearQResponse={clearQResponse}
+                />
               )}
             </Stack>
           </Container>
