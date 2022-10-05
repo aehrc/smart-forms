@@ -18,18 +18,25 @@ function QItemString(props: Props) {
   let qrString = qrItem ? qrItem : createQrItem(qItem);
   const valueString = qrString['answer'] ? qrString['answer'][0].valueString : '';
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    qrString = { ...qrString, answer: [{ valueString: e.target.value }] };
+  let hasError = false;
+  if (qItem.maxLength && valueString) {
+    hasError = valueString.length > qItem.maxLength;
+  }
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    qrString = { ...qrString, answer: [{ valueString: event.target.value }] };
     onQrItemChange(qrString);
   }
 
   const stringInput = (
     <TextField
+      error={hasError}
       id={qItem.linkId}
       value={valueString}
       onChange={handleChange}
       sx={{ mb: repeats ? 0 : 4 }} // mb:4 is MUI default value
       label={getTextDisplayPrompt(qItem)}
+      helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
     />
   );
 
