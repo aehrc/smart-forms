@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControlLabel,
-  Stack,
-  Switch,
-  Typography
-} from '@mui/material';
+import { Box, Button, Container, Divider, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
@@ -18,6 +9,7 @@ import { cleanQrItem, evaluateCalculatedExpressions } from './functions/QrItemFu
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
+import DebugBar from './DebugBar';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -130,34 +122,12 @@ function QForm(props: Props) {
               )}
             </Stack>
           </Container>
-          <Box
-            sx={{
-              position: 'fixed',
-              bottom: 16,
-              right: 16,
-              px: 2,
-              py: 0.5,
-              borderRadius: 10
-            }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  onChange={(event) => setHideQResponse(event.target.checked)}
-                  checked={hideQResponse}
-                />
-              }
-              label={<Typography variant="subtitle2">Hide QuestionnaireResponse</Typography>}
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  onChange={(event) => setEnableWhenStatus(event.target.checked)}
-                  checked={enableWhenStatus}
-                />
-              }
-              label={<Typography variant="subtitle2">EnableWhen checks (testing only)</Typography>}
-            />
-          </Box>
+          <DebugBar
+            hideQResponse={hideQResponse}
+            toggleHideQResponse={(checked) => setHideQResponse(checked)}
+            enableWhenStatus={enableWhenStatus}
+            toggleEnableWhenStatus={(checked) => setEnableWhenStatus(checked)}
+          />
         </EnableWhenChecksContext.Provider>
       </CalcExpressionContext.Provider>
     );
