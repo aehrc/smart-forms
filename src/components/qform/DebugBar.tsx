@@ -16,16 +16,6 @@ function DebugBar(props: Props) {
         sx={{
           position: 'fixed',
           bottom: 0,
-          px: 2,
-          py: 1.5
-        }}>
-        <Typography variant="subtitle2">Debug Bar</Typography>
-      </Box>
-
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
           right: 0,
           px: 2,
           py: 0.5
