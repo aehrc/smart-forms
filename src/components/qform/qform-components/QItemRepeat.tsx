@@ -36,10 +36,15 @@ function QItemRepeat(props: Props) {
     ? qrRepeat.answer
     : [undefined];
 
-  const [repeatAnswers, setRepeatAnswers] = useState(qrRepeatAnswers);
+  const [repeatAnswers, setRepeatAnswers] = useState([...qrRepeatAnswers, undefined]);
 
   useEffect(() => {
-    setRepeatAnswers(qrRepeatAnswers);
+    const lastRepeatItem = repeatAnswers[repeatAnswers.length - 1];
+    if (lastRepeatItem === undefined) {
+      setRepeatAnswers([...qrRepeatAnswers, undefined]);
+    } else {
+      setRepeatAnswers(qrRepeatAnswers);
+    }
   }, [qrItem]);
 
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
@@ -59,9 +64,8 @@ function QItemRepeat(props: Props) {
   }
 
   function updateAnswers(updatedAnswers: (QuestionnaireResponseItemAnswer | undefined)[]) {
-    setRepeatAnswers(updatedAnswers);
-
     const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));
+    setRepeatAnswers(answersWithValues);
     onQrItemChange({ ...qrRepeat, answer: answersWithValues });
   }
 

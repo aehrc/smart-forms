@@ -1,30 +1,59 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { AppBar, Box, Toolbar, Typography, Container } from '@mui/material';
-import { PatientData } from './Interfaces';
+import { AppBar, Box, Toolbar, Container } from '@mui/material';
+import { PatientData, UserData } from './Interfaces';
 import NavBarPatientData from './NavBarPatientData';
-import { Patient } from 'fhir/r5';
+import { Patient, Practitioner } from 'fhir/r5';
+import NavBarUserData from './NavBarUserData';
 
 interface Props {
   patient: Patient | null;
+  user: Practitioner | null;
 }
 
 function NavBar(props: Props) {
-  const { patient } = props;
+  const { patient, user } = props;
 
   const patientData: PatientData = {
-    patientName: '',
+    name: '',
     gender: '',
     dateOfBirth: ''
+  };
+
+  const userData: UserData = {
+    name: ''
   };
 
   if (patient) {
     const dateOfBirthDayJs = dayjs(patient.birthDate);
     const age = dayjs().diff(dateOfBirthDayJs, 'year');
 
-    patientData.patientName = `${patient.name?.[0].given?.[0]}`;
+    // dealing with name variations between different implementations
+    if (patient.name?.[0]['text']) {
+      patientData.name = `${patient.name?.[0].text}`;
+    } else {
+      const prefix = `${patient.name?.[0].prefix?.[0]}`;
+      const givenName = `${patient.name?.[0].given?.[0]}`;
+      const familyName = `${patient.name?.[0].family}`;
+
+      patientData.name = `${prefix} ${givenName} ${familyName}`;
+    }
+
     patientData.gender = `${patient.gender}`;
     patientData.dateOfBirth = `${dateOfBirthDayJs.format('LL')} (${age} years)`;
+  }
+
+  if (user) {
+    // dealing with name variations between different implementations
+    if (user.name?.[0]['text']) {
+      userData.name = `${user.name?.[0].text}`;
+    } else {
+      const prefix = `${user.name?.[0].prefix?.[0]}`;
+      const givenName = `${user.name?.[0].given?.[0]}`;
+      const familyName = `${user.name?.[0].family}`;
+
+      userData.name = `${prefix} ${givenName} ${familyName}`;
+    }
   }
 
   return (
@@ -32,10 +61,12 @@ function NavBar(props: Props) {
       <AppBar position="static">
         <Container maxWidth="lg">
           <Toolbar disableGutters>
-            <Typography variant="h6">Smart Health Checks</Typography>
-            <Box sx={{ flexGrow: 1, mx: 4 }}></Box>
             <Box sx={{ flexGrow: 0 }}>
               <NavBarPatientData patientData={patientData} />
+            </Box>
+            <Box sx={{ flexGrow: 1, mx: 4 }}></Box>
+            <Box>
+              <NavBarUserData userData={userData} />
             </Box>
           </Toolbar>
         </Container>
