@@ -13,7 +13,7 @@ function NavBar(props: Props) {
   const { patient } = props;
 
   const patientData: PatientData = {
-    patientName: '',
+    name: '',
     gender: '',
     dateOfBirth: ''
   };
@@ -22,7 +22,17 @@ function NavBar(props: Props) {
     const dateOfBirthDayJs = dayjs(patient.birthDate);
     const age = dayjs().diff(dateOfBirthDayJs, 'year');
 
-    patientData.patientName = `${patient.name?.[0].given?.[0]}`;
+    // dealing with name variations between different implementations
+    if (patient.name?.[0]['text']) {
+      patientData.name = `${patient.name?.[0].text}`;
+    } else {
+      const prefix = `${patient.name?.[0].prefix?.[0]}`;
+      const givenName = `${patient.name?.[0].given?.[0]}`;
+      const familyName = `${patient.name?.[0].family}`;
+
+      patientData.name = `${prefix} ${givenName} ${familyName}`;
+    }
+
     patientData.gender = `${patient.gender}`;
     patientData.dateOfBirth = `${dateOfBirthDayJs.format('LL')} (${age} years)`;
   }

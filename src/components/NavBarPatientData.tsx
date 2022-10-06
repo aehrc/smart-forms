@@ -12,7 +12,7 @@ interface Props {
 function NavBarPatientData(props: Props) {
   const { patientData } = props;
 
-  if (patientData.patientName === '') {
+  if (patientData.name === '') {
     return (
       <Stack direction={'row'} spacing={1}>
         <AccountCircleIcon />
@@ -24,7 +24,7 @@ function NavBarPatientData(props: Props) {
       <Stack direction={'row'} spacing={4}>
         <Stack direction={'row'} spacing={1}>
           <AccountCircleIcon />
-          <Typography>{patientData.patientName}</Typography>
+          <Typography>{patientData.name}</Typography>
         </Stack>
         <Stack direction={'row'} spacing={1}>
           <NavBarGenderIcon gender={patientData.gender} />

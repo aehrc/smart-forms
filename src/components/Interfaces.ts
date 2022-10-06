@@ -6,7 +6,7 @@ import {
 } from 'fhir/r5';
 
 export interface PatientData {
-  patientName: string;
+  name: string;
   gender: string;
   dateOfBirth: string;
 }
