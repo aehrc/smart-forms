@@ -14,6 +14,7 @@ function Launch() {
   const redirectUri = window.location.origin + '/';
 
   oauth2.authorize({
+    iss: iss ?? 'https://launch.smarthealthit.org/v/r4/fhir',
     client_id: clientId,
     scope: scope,
     launch: launch ?? undefined,
@@ -23,6 +24,8 @@ function Launch() {
   return (
     <div>
       <ProgressSpinner message={'Launching the SMART Health Checks application'} />
+      <div>{iss}</div>
+      <div>{launch}</div>
     </div>
   );
 }

@@ -11,6 +11,10 @@ export interface PatientData {
   dateOfBirth: string;
 }
 
+export interface UserData {
+  name: string;
+}
+
 export interface CalculatedExpression {
   expression: string;
   value?: number;

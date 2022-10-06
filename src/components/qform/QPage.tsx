@@ -3,8 +3,8 @@ import QForm from './QForm';
 import ProgressSpinner from './ProgressSpinner';
 import NavBar from '../NavBar';
 import { oauth2 } from 'fhirclient';
-import { getPatient } from './functions/LaunchFunctions';
-import { Bundle, Patient, QuestionnaireResponse } from 'fhir/r5';
+import { getPatient, getUser } from './functions/LaunchFunctions';
+import { Bundle, Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import FhirClient from '../FhirClient';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
@@ -23,6 +23,7 @@ function QPage() {
   );
   const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [user, setUser] = useState<Practitioner | null>(null);
   const [spinner, setSpinner] = useState({
     isLoading: true,
     message: 'Retrieving patient'
@@ -33,6 +34,8 @@ function QPage() {
       .ready()
       .then((client) => {
         const fhirClient = new FhirClient(client);
+
+        // request patient details
         getPatient(client)
           .then((patient) => {
             setPatient(patient);
@@ -49,6 +52,13 @@ function QPage() {
             console.error(error);
             setSpinner({ ...spinner, isLoading: false });
           });
+
+        // request user details
+        getUser(client)
+          .then((user) => {
+            setUser(user);
+          })
+          .catch((error) => console.log(error));
       })
       .catch((error) => {
         console.error(error);
@@ -70,7 +80,7 @@ function QPage() {
 
   return (
     <div>
-      <NavBar patient={patient} />
+      <NavBar patient={patient} user={user} />
       {renderQPage}
     </div>
   );
