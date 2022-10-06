@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 type Props = {
   questionnaire: Questionnaire;
@@ -29,6 +30,20 @@ function DisplayDebugQResponse(props: Props) {
       <Stack direction="row" justifyContent="space-between">
         <Stack direction="row">
           <Typography variant="h5">{displayInfo.name}</Typography>
+          <Button
+            onClick={() => {
+              navigator.clipboard
+                .writeText(JSON.stringify(displayInfo.data, null, 2))
+                .then(() => alert(`${displayInfo.name} copied to clipboard`))
+                .catch(() =>
+                  alert(
+                    'The copy operation doesnt work within an iframe (CMS-launched app in this case)\n:('
+                  )
+                );
+            }}
+            sx={{ borderRadius: 2, ml: 1 }}>
+            <ContentCopyIcon />
+          </Button>
           {displayInfo.name === 'Questionnaire Response' ? (
             <Button onClick={clearQResponse} color="error" sx={{ borderRadius: 2, ml: 1 }}>
               <DeleteIcon />
@@ -57,7 +72,7 @@ function DisplayDebugQResponse(props: Props) {
             onClick={() => {
               if (batchResponse) setDisplayInfo({ name: 'Batch Response', data: batchResponse });
             }}
-            disabled={displayInfo.name === 'Batch Response'}
+            disabled={displayInfo.name === 'Batch Response' || !batchResponse}
             sx={{ borderRadius: 20, ml: 1 }}>
             Batch Response
           </Button>
