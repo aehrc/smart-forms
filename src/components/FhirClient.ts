@@ -105,4 +105,18 @@ export default class FhirClient {
       headers: headers
     });
   }
+
+  saveQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
+    const headers = {
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'application/json+fhir; charset=UTF-8'
+    };
+
+    return this.fhirClient.request({
+      url: 'QuestionnaireResponse',
+      method: 'POST',
+      body: JSON.stringify(questionnaireResponse),
+      headers: headers
+    });
+  }
 }

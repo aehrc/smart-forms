@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Divider, Stack, Typography } from '@mui/material';
+import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
 import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -10,11 +10,13 @@ import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
 import DebugBar from './DebugBar';
 import DisplayDebugQResponse from './DisplayDebugQResponse';
+import FhirClient from '../FhirClient';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   qrResponse: QuestionnaireResponse;
   batchResponse: Bundle | null; // only for testing
+  fhirClient: FhirClient | null;
 }
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
@@ -22,7 +24,7 @@ export const CalcExpressionContext = React.createContext<Record<string, Calculat
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
 function QForm(props: Props) {
-  const { questionnaireProvider, qrResponse, batchResponse } = props;
+  const { questionnaireProvider, qrResponse, batchResponse, fhirClient } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] =
@@ -105,6 +107,20 @@ function QForm(props: Props) {
                     onQrFormChange(newQrForm);
                   }}></QFormBody>
               )}
+
+              <Button
+                onClick={() => {
+                  if (fhirClient) {
+                    fhirClient
+                      .saveQuestionnaireResponse(questionnaireResponse)
+                      .then((r) => console.log(r))
+                      .catch((e) => console.log(e));
+                  }
+                  console.log('hey');
+                  console.log(fhirClient);
+                }}>
+                Save
+              </Button>
 
               {hideQResponse ? null : (
                 <DisplayDebugQResponse
