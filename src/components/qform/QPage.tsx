@@ -28,7 +28,6 @@ function QPage(props: Props) {
   const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
-  const [fhirClient, setFhirClient] = useState<FhirClient | null>(null);
 
   const spinnerMessage = patient ? 'Loading questionnaire form' : 'Retrieving patient';
   const [spinner, setSpinner] = useState({
@@ -40,8 +39,7 @@ function QPage(props: Props) {
     oauth2
       .ready()
       .then((client) => {
-        const fhirclient = new FhirClient(client);
-        setFhirClient(fhirclient);
+        const fhirClient = new FhirClient(client);
 
         // request patient details
         getPatient(client)
@@ -50,7 +48,7 @@ function QPage(props: Props) {
             setSpinner({ ...spinner, message: 'Loading questionnaire form' });
 
             // obtain questionnaireResponse for prepopulation
-            fhirclient.populate(questionnaire, patient, (qResponse, batchResponse) => {
+            fhirClient.populate(questionnaire, patient, (qResponse, batchResponse) => {
               setQuestionnaireResponse(qResponse);
               setBatchResponse(batchResponse);
               setSpinner({ ...spinner, isLoading: false });
@@ -84,7 +82,6 @@ function QPage(props: Props) {
           questionnaireProvider={questionnaireProvider}
           qrResponse={questionnaireResponse}
           batchResponse={batchResponse}
-          fhirClient={fhirClient}
         />
       </Container>
     </EnableWhenProvider>

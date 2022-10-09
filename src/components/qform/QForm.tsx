@@ -10,13 +10,12 @@ import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
 import DebugBar from './DebugBar';
 import DisplayDebugQResponse from './DisplayDebugQResponse';
-import FhirClient from '../FhirClient';
+import { saveQuestionnaireResponse } from './functions/SaveQrFunctions';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   qrResponse: QuestionnaireResponse;
   batchResponse: Bundle | null; // only for testing
-  fhirClient: FhirClient | null;
 }
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
@@ -24,7 +23,7 @@ export const CalcExpressionContext = React.createContext<Record<string, Calculat
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
 function QForm(props: Props) {
-  const { questionnaireProvider, qrResponse, batchResponse, fhirClient } = props;
+  const { questionnaireProvider, qrResponse, batchResponse } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] =
@@ -106,14 +105,9 @@ function QForm(props: Props) {
 
             <Button
               onClick={() => {
-                if (fhirClient) {
-                  fhirClient
-                    .saveQuestionnaireResponse(questionnaireResponse)
-                    .then((response) => console.log(response))
-                    .catch((error) => console.log(error));
-                }
-                console.log('hey');
-                console.log(fhirClient);
+                saveQuestionnaireResponse(questionnaireResponse)
+                  .then((response) => console.log(response))
+                  .catch((error) => console.log(error));
               }}>
               Save
             </Button>
