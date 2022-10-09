@@ -39,8 +39,9 @@ function QItemRepeat(props: Props) {
   const [repeatAnswers, setRepeatAnswers] = useState([...qrRepeatAnswers, undefined]);
 
   useEffect(() => {
+    const firstRepeatItem = repeatAnswers[0];
     const lastRepeatItem = repeatAnswers[repeatAnswers.length - 1];
-    if (lastRepeatItem === undefined) {
+    if (lastRepeatItem === undefined && firstRepeatItem !== undefined) {
       setRepeatAnswers([...qrRepeatAnswers, undefined]);
     } else {
       setRepeatAnswers(qrRepeatAnswers);
