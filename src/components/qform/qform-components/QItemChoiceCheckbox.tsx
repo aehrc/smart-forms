@@ -81,7 +81,7 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
   );
 
   const renderQItemChoiceCheckbox = repeats ? (
-    <div>{choiceCheckbox}</div>
+    <>{choiceCheckbox}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -94,7 +94,7 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemChoiceCheckbox}</div>;
+  return <>{renderQItemChoiceCheckbox}</>;
 }
 
 export default QItemChoiceCheckbox;

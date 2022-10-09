@@ -36,7 +36,7 @@ function QItemText(props: Props) {
   );
 
   const renderQItemText = repeats ? (
-    <div>{textInput}</div>
+    <>{textInput}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -50,7 +50,7 @@ function QItemText(props: Props) {
     </FormControl>
   );
 
-  return <div>{renderQItemText}</div>;
+  return <>{renderQItemText}</>;
 }
 
 export default QItemText;

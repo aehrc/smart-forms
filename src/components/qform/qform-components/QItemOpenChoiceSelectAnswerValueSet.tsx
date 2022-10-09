@@ -73,7 +73,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   );
 
   const renderQItemOpenChoiceSelectAnswerValueSet = repeats ? (
-    <div>{openChoiceSelectAnswerValueSet}</div>
+    <>{openChoiceSelectAnswerValueSet}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -86,7 +86,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemOpenChoiceSelectAnswerValueSet}</div>;
+  return <>{renderQItemOpenChoiceSelectAnswerValueSet}</>;
 }
 
 export default QItemOpenChoiceSelectAnswerValueSet;

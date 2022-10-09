@@ -22,11 +22,11 @@ function Launch() {
   });
 
   return (
-    <div>
+    <>
       <ProgressSpinner message={'Launching the SMART Health Checks application'} />
       <div>{iss}</div>
       <div>{launch}</div>
-    </div>
+    </>
   );
 }
 

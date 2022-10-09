@@ -70,7 +70,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   );
 
   const renderQItemChoiceSelectAnswerValueSet = repeats ? (
-    <div>{choiceSelectAnswerValueSet}</div>
+    <>{choiceSelectAnswerValueSet}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -83,7 +83,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemChoiceSelectAnswerValueSet}</div>;
+  return <>{renderQItemChoiceSelectAnswerValueSet}</>;
 }
 
 export default QItemChoiceSelectAnswerValueSet;

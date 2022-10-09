@@ -43,7 +43,7 @@ function QItemBoolean(props: Props) {
     </FormControl>
   );
 
-  return <div>{renderQItemBoolean}</div>;
+  return <>{renderQItemBoolean}</>;
 }
 
 export default QItemBoolean;

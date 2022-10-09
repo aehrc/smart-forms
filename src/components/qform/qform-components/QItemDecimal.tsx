@@ -64,7 +64,7 @@ function QItemDecimal(props: Props) {
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemDecimal}</div>;
+  return <>{renderQItemDecimal}</>;
 }
 
 export default QItemDecimal;

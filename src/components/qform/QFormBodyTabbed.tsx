@@ -33,7 +33,7 @@ function QFormBodyTabbed(props: Props) {
     const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems);
 
     return (
-      <div>
+      <>
         <Typography variant="h6" sx={{ mb: 2 }}>
           {qForm.text}
         </Typography>
@@ -85,10 +85,10 @@ function QFormBodyTabbed(props: Props) {
             </Grid>
           </Box>
         </TabContext>
-      </div>
+      </>
     );
   } else {
-    return <div>Unable to load form</div>;
+    return <>Unable to load form</>;
   }
 }
 

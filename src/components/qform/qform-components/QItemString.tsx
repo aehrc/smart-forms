@@ -41,7 +41,7 @@ function QItemString(props: Props) {
   );
 
   const renderQItemString = repeats ? (
-    <div>{stringInput}</div>
+    <>{stringInput}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -55,7 +55,7 @@ function QItemString(props: Props) {
     </FormControl>
   );
 
-  return <div>{renderQItemString}</div>;
+  return <>{renderQItemString}</>;
 }
 
 export default QItemString;

@@ -82,10 +82,10 @@ function QPage() {
   );
 
   return (
-    <div>
+    <>
       <NavBar patient={patient} user={user} />
       {renderQPage}
-    </div>
+    </>
   );
 }
 

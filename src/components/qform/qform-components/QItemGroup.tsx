@@ -58,12 +58,12 @@ function QItemGroup(props: Props) {
     return (
       <Card elevation={groupCardElevation} sx={{ p: 5, pb: 4 }}>
         {repeats ? null : (
-          <div>
+          <>
             <Typography variant="h6" sx={{ mb: 1 }}>
               {qItem.text}
             </Typography>
             <Divider sx={{ mt: 2, mb: 4 }} light />
-          </div>
+          </>
         )}
         {qItems.map((qItem: QuestionnaireItem, i) => {
           const qrItem = qrItemsByIndex[i];

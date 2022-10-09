@@ -19,7 +19,7 @@ function QItemTextInstruction(props: Props) {
       <Box sx={{ mb: 4 }} />
     );
 
-  return <div>{renderQItemTextInstruction}</div>;
+  return <>{renderQItemTextInstruction}</>;
 }
 
 export default QItemTextInstruction;

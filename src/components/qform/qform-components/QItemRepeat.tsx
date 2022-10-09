@@ -70,7 +70,7 @@ function QItemRepeat(props: Props) {
   }
 
   return (
-    <div>
+    <>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <Typography>{qItem.text}</Typography>
@@ -80,7 +80,7 @@ function QItemRepeat(props: Props) {
             const singleQrItem = answer ? { ...cleanQrItem, answer: [answer] } : { ...cleanQrItem };
 
             return (
-              <div key={index}>
+              <React.Fragment key={index}>
                 {index !== 0 ? <Divider light sx={{ mb: 2, mt: 1 }} /> : null}
                 <Stack direction="row" sx={{ pb: 2 }}>
                   <Box sx={{ flexGrow: 1 }}>
@@ -96,7 +96,7 @@ function QItemRepeat(props: Props) {
                     <Delete />
                   </Button>
                 </Stack>
-              </div>
+              </React.Fragment>
             );
           })}
         </Grid>
@@ -111,7 +111,7 @@ function QItemRepeat(props: Props) {
           Add Item
         </Button>
       </Stack>
-    </div>
+    </>
   );
 }
 
