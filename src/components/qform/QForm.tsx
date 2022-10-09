@@ -31,6 +31,7 @@ function QForm(props: Props) {
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
+  const [hasChanges, setHasChanges] = useState(false);
 
   // states only for testing
   const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
@@ -68,6 +69,7 @@ function QForm(props: Props) {
       setCalculatedExpressions(updatedCalculatedExpressions);
     }
     setQuestionnaireResponse(newQuestionnaireResponse);
+    setHasChanges(true);
   }
 
   // only for testing
@@ -104,9 +106,13 @@ function QForm(props: Props) {
             )}
 
             <Button
+              disabled={!hasChanges}
               onClick={() => {
                 saveQuestionnaireResponse(questionnaireResponse)
-                  .then((response) => console.log(response))
+                  .then((response) => {
+                    setHasChanges(false);
+                    console.log(response);
+                  })
                   .catch((error) => console.log(error));
               }}>
               Save
