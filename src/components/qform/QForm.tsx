@@ -113,8 +113,8 @@ function QForm(props: Props) {
                   if (fhirClient) {
                     fhirClient
                       .saveQuestionnaireResponse(questionnaireResponse)
-                      .then((r) => console.log(r))
-                      .catch((e) => console.log(e));
+                      .then((response) => console.log(response))
+                      .catch((error) => console.log(error));
                   }
                   console.log('hey');
                   console.log(fhirClient);
