@@ -11,6 +11,7 @@ import { EnableWhenContext } from './functions/EnableWhenContext';
 import DebugBar from './DebugBar';
 import DisplayDebugQResponse from './DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from './functions/SaveQrFunctions';
+import SavedSnackbar from './SavedSnackbar';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -31,7 +32,7 @@ function QForm(props: Props) {
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [qrHasChanges, setQrHasChanges] = useState(false);
 
   // states only for testing
   const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
@@ -69,7 +70,7 @@ function QForm(props: Props) {
       setCalculatedExpressions(updatedCalculatedExpressions);
     }
     setQuestionnaireResponse(newQuestionnaireResponse);
-    setHasChanges(true);
+    setQrHasChanges(true);
   }
 
   // only for testing
@@ -106,11 +107,11 @@ function QForm(props: Props) {
             )}
 
             <Button
-              disabled={!hasChanges}
+              disabled={!qrHasChanges}
               onClick={() => {
                 saveQuestionnaireResponse(questionnaireResponse)
                   .then((response) => {
-                    setHasChanges(false);
+                    setQrHasChanges(false);
                     console.log(response);
                   })
                   .catch((error) => console.log(error));
@@ -127,6 +128,7 @@ function QForm(props: Props) {
               />
             )}
           </Stack>
+          <SavedSnackbar isDisplayed={!qrHasChanges} />
           <DebugBar
             hideQResponse={hideQResponse}
             toggleHideQResponse={(checked) => setHideQResponse(checked)}
