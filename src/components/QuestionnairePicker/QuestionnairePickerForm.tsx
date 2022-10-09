@@ -2,28 +2,26 @@ import React, { useState } from 'react';
 import { Button, Divider, List, ListItemButton, ListItemText, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
-import { slugify } from '../qform/functions/StringFunctions';
 import { Questionnaire } from 'fhir/r5';
+import { QuestionnaireProvider } from '../qform/QuestionnaireProvider';
 
 interface Props {
   questionnaires: Questionnaire[];
+  questionnaireProvider: QuestionnaireProvider;
 }
 
 function QuestionnairePickerForm(props: Props) {
-  const { questionnaires } = props;
+  const { questionnaires, questionnaireProvider } = props;
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  console.log(questionnaires);
-  console.log(selectedIndex);
-
   return (
     <>
-      <Typography variant="h1" fontWeight="bold" fontSize={36} color="inherit">
+      <Typography variant="h2" fontWeight="bold" fontSize={36} color="inherit">
         Select a Questionnaire
       </Typography>
-      <Divider sx={{ mt: 3 }} />
+      <Divider sx={{ mt: 2.5 }} />
 
       <List sx={{ width: '100%', maxHeight: 440, overflow: 'auto', py: 0 }}>
         {questionnaires.map((questionnaire, i) => (
@@ -44,9 +42,9 @@ function QuestionnairePickerForm(props: Props) {
         variant="contained"
         disabled={typeof selectedIndex !== 'number'}
         onClick={() => {
-          if (selectedIndex) {
-            const selectedQuestionnaireId = `${questionnaires[selectedIndex].id}`;
-            navigate(`/form/${slugify(selectedQuestionnaireId)}`);
+          if (typeof selectedIndex === 'number') {
+            questionnaireProvider.setQuestionnaire(questionnaires[selectedIndex]);
+            navigate(`/`);
           }
         }}
         sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>

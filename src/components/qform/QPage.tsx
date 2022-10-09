@@ -9,12 +9,16 @@ import FhirClient from '../FhirClient';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
 import EnableWhenProvider from './functions/EnableWhenContext';
+import { Container } from '@mui/material';
+import QTitle from './QTitle';
 
-const questionnaireProvider = new QuestionnaireProvider();
-questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
-questionnaireProvider.readVariables();
+interface Props {
+  questionnaireProvider: QuestionnaireProvider;
+}
 
-function QPage() {
+function QPage(props: Props) {
+  const { questionnaireProvider } = props;
+
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
 
@@ -25,9 +29,11 @@ function QPage() {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
   const [fhirClient, setFhirClient] = useState<FhirClient | null>(null);
+
+  const spinnerMessage = patient ? 'Loading questionnaire form' : 'Retrieving patient';
   const [spinner, setSpinner] = useState({
     isLoading: true,
-    message: 'Retrieving patient'
+    message: spinnerMessage
   });
 
   useEffect(() => {
@@ -72,12 +78,15 @@ function QPage() {
     <ProgressSpinner message={spinner.message} />
   ) : (
     <EnableWhenProvider>
-      <QForm
-        questionnaireProvider={questionnaireProvider}
-        qrResponse={questionnaireResponse}
-        batchResponse={batchResponse}
-        fhirClient={fhirClient}
-      />
+      <Container maxWidth="lg">
+        <QTitle questionnaire={questionnaire} />
+        <QForm
+          questionnaireProvider={questionnaireProvider}
+          qrResponse={questionnaireResponse}
+          batchResponse={batchResponse}
+          fhirClient={fhirClient}
+        />
+      </Container>
     </EnableWhenProvider>
   );
 

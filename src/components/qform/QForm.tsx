@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Divider, Stack, Typography } from '@mui/material';
+import { Button, Divider, Stack } from '@mui/material';
 import QFormBody from './QFormBody';
 import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -85,53 +85,48 @@ function QForm(props: Props) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
         <EnableWhenChecksContext.Provider value={enableWhenStatus}>
-          <Container maxWidth="lg">
-            {/*only for testing*/}
+          <Stack spacing={2.5} sx={{ my: 2 }}>
+            <Divider />
 
-            <Stack spacing={2.5} sx={{ my: 4 }}>
-              <Typography variant="h4">{questionnaire.title}</Typography>
-              <Divider />
+            {containsTabs(qForm.item) ? (
+              <QFormBodyTabbed
+                qForm={qForm}
+                qrForm={qrForm}
+                indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
+                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+              />
+            ) : (
+              <QFormBody
+                qForm={qForm}
+                qrForm={qrForm}
+                onQrItemChange={(newQrForm) => {
+                  onQrFormChange(newQrForm);
+                }}></QFormBody>
+            )}
 
-              {containsTabs(qForm.item) ? (
-                <QFormBodyTabbed
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                />
-              ) : (
-                <QFormBody
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  onQrItemChange={(newQrForm) => {
-                    onQrFormChange(newQrForm);
-                  }}></QFormBody>
-              )}
+            <Button
+              onClick={() => {
+                if (fhirClient) {
+                  fhirClient
+                    .saveQuestionnaireResponse(questionnaireResponse)
+                    .then((response) => console.log(response))
+                    .catch((error) => console.log(error));
+                }
+                console.log('hey');
+                console.log(fhirClient);
+              }}>
+              Save
+            </Button>
 
-              <Button
-                onClick={() => {
-                  if (fhirClient) {
-                    fhirClient
-                      .saveQuestionnaireResponse(questionnaireResponse)
-                      .then((response) => console.log(response))
-                      .catch((error) => console.log(error));
-                  }
-                  console.log('hey');
-                  console.log(fhirClient);
-                }}>
-                Save
-              </Button>
-
-              {hideQResponse ? null : (
-                <DisplayDebugQResponse
-                  questionnaire={questionnaire}
-                  questionnaireResponse={questionnaireResponse}
-                  clearQResponse={() => clearQResponse()}
-                  batchResponse={batchResponse}
-                />
-              )}
-            </Stack>
-          </Container>
+            {hideQResponse ? null : (
+              <DisplayDebugQResponse
+                questionnaire={questionnaire}
+                questionnaireResponse={questionnaireResponse}
+                clearQResponse={() => clearQResponse()}
+                batchResponse={batchResponse}
+              />
+            )}
+          </Stack>
           <DebugBar
             hideQResponse={hideQResponse}
             toggleHideQResponse={(checked) => setHideQResponse(checked)}

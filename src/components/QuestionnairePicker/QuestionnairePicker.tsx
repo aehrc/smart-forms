@@ -6,8 +6,14 @@ import {
 } from '../qform/functions/LoadQuestionnaireFunctions';
 import { Questionnaire } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
+import { QuestionnaireProvider } from '../qform/QuestionnaireProvider';
 
-function QuestionnairePicker() {
+interface Props {
+  questionnaireProvider: QuestionnaireProvider;
+}
+
+function QuestionnairePicker(props: Props) {
+  const { questionnaireProvider } = props;
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
 
   useEffect(() => {
@@ -44,7 +50,9 @@ function QuestionnairePicker() {
               justifyContent="center"
               minHeight="65vh"
               sx={{ p: 8 }}>
-              <QuestionnairePickerForm questionnaires={questionnaires}></QuestionnairePickerForm>
+              <QuestionnairePickerForm
+                questionnaires={questionnaires}
+                questionnaireProvider={questionnaireProvider}></QuestionnairePickerForm>
             </Box>
           </Card>
         </Grid>
