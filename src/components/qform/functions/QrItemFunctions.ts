@@ -10,9 +10,10 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { CalculatedExpression } from '../../Interfaces';
 
 export function createQuestionnaireResponse(
+  questionnaireId: string | undefined,
   questionnaireFormItem: QuestionnaireItem
 ): QuestionnaireResponse {
-  return {
+  const qResponse: QuestionnaireResponse = {
     resourceType: 'QuestionnaireResponse',
     status: 'in-progress',
     item: [
@@ -23,6 +24,12 @@ export function createQuestionnaireResponse(
       }
     ]
   };
+
+  if (questionnaireId) {
+    qResponse.questionnaire = `Questionnaire/${questionnaireId}`;
+  }
+
+  return qResponse;
 }
 
 export function cleanQrItem(
