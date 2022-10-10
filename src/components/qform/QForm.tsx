@@ -107,6 +107,7 @@ function QForm(props: Props) {
             )}
 
             <Button
+              variant="outlined"
               disabled={!qrHasChanges}
               onClick={() => {
                 saveQuestionnaireResponse(questionnaireResponse)

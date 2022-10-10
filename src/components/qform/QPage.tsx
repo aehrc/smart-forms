@@ -23,7 +23,7 @@ function QPage(props: Props) {
   if (!questionnaire.item) return null;
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
-    createQuestionnaireResponse(questionnaire.item[0])
+    createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
   );
   const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
