@@ -25,6 +25,8 @@ function QuestionnairePicker(props: Props) {
   const resourcePickerStore = new ResourcePickerStore();
 
   useEffect(() => {
+    resourcePickerStore.addQuestionnaires([questionnaireProvider.questionnaire]);
+
     loadQuestionnairesFromServer()
       .then((bundle) => {
         if (bundle.entry) {
@@ -32,7 +34,10 @@ function QuestionnairePicker(props: Props) {
           setQuestionnaires(Object.values(resourcePickerStore.questionnaires));
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setQuestionnaires(Object.values(resourcePickerStore.questionnaires));
+        console.log(error);
+      });
   }, []);
 
   function selectQuestionnaireByIndex(index: number) {
