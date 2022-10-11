@@ -10,7 +10,6 @@ interface Props {
 
 function QuestionnaireResponsePickerForm(props: Props) {
   const { questionnaireResponses, onSelectedIndexChange } = props;
-  console.log(questionnaireResponses);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
