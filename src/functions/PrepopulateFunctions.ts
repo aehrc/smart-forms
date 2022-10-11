@@ -44,7 +44,7 @@ export function populate(
  *
  * @author Sean Fong
  */
-export function replaceLaunchPatientIdInstances(containedQuery: Bundle, patient: Patient): Bundle {
+function replaceLaunchPatientIdInstances(containedQuery: Bundle, patient: Patient): Bundle {
   if (containedQuery.entry) {
     containedQuery.entry.forEach((entry) => {
       if (entry.request && patient.id)
@@ -59,7 +59,7 @@ export function replaceLaunchPatientIdInstances(containedQuery: Bundle, patient:
  *
  * @author Sean Fong
  */
-export function batchQueryRequest(client: Client, bundle: Bundle): Promise<Bundle> {
+function batchQueryRequest(client: Client, bundle: Bundle): Promise<Bundle> {
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json+fhir; charset=UTF-8'
@@ -78,7 +78,7 @@ export function batchQueryRequest(client: Client, bundle: Bundle): Promise<Bundl
  *
  * @author Sean Fong
  */
-export function definePopulationParameters(patient: Patient, batchResponse: Bundle): Parameters {
+function definePopulationParameters(patient: Patient, batchResponse: Bundle): Parameters {
   return {
     resourceType: 'Parameters',
     parameter: [
@@ -106,7 +106,7 @@ export function definePopulationParameters(patient: Patient, batchResponse: Bund
  *
  * @author Sean Fong
  */
-export function prepopulationQueryRequest(
+function prepopulationQueryRequest(
   questionnaire: Questionnaire,
   parameters: Parameters
 ): Promise<QuestionnaireResponse> {
