@@ -14,7 +14,7 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
-import { EnableWhenContext } from '../../../functions/EnableWhenContext';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../QForm';
 import { isHidden } from '../../../functions/QItemFunctions';
 

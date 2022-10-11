@@ -14,7 +14,7 @@ import { isHidden } from '../../../functions/QItemFunctions';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemSimple/QItemTime';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice';
-import { EnableWhenContext } from '../../../functions/EnableWhenContext';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../QForm';
 import {
   PropsWithQrItemChangeHandler,

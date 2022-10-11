@@ -10,7 +10,7 @@ import {
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { isHidden } from '../../../functions/QItemFunctions';
-import { EnableWhenContext } from '../../../functions/EnableWhenContext';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../QForm';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {

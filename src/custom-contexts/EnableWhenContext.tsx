@@ -7,7 +7,7 @@ import {
   readInitialAnswers,
   setInitialAnswers,
   updateItemAnswer
-} from './EnableWhenFunctions';
+} from '../functions/EnableWhenFunctions';
 
 export const EnableWhenContext = React.createContext<EnableWhenContextType>({
   items: {},

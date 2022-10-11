@@ -7,7 +7,7 @@ import { getPatient, getUser } from '../../functions/LaunchFunctions';
 import { Bundle, Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
-import EnableWhenProvider from '../../functions/EnableWhenContext';
+import EnableWhenProvider from '../../custom-contexts/EnableWhenContext';
 import { Container } from '@mui/material';
 import QTitle from './QTitle';
 import { populate } from '../../functions/PrepopulateFunctions';

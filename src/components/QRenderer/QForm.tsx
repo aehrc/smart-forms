@@ -7,7 +7,7 @@ import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { CalculatedExpression } from '../../interfaces/Interfaces';
-import { EnableWhenContext } from '../../functions/EnableWhenContext';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import DebugBar from './DebugComponents/DebugBar';
 import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
