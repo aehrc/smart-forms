@@ -10,6 +10,7 @@ import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
 import { QuestionnaireProvider } from '../qform/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
+import { ResourcePickerStore } from './ResourcePickerStore';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -21,11 +22,14 @@ function QuestionnairePicker(props: Props) {
   const [qResponses, setQResponses] = useState<QuestionnaireResponse[]>([]);
   const [selectedQResponse, setSelectedQResponse] = useState<QuestionnaireResponse | null>(null);
 
+  const resourcePickerStore = new ResourcePickerStore();
+
   useEffect(() => {
     loadQuestionnairesFromServer()
       .then((bundle) => {
         if (bundle.entry) {
-          setQuestionnaires(getQuestionnairesFromBundle(bundle));
+          resourcePickerStore.addQuestionnaires(getQuestionnairesFromBundle(bundle));
+          setQuestionnaires(Object.values(resourcePickerStore.questionnaires));
         }
       })
       .catch((error) => console.log(error));
@@ -33,13 +37,19 @@ function QuestionnairePicker(props: Props) {
 
   function selectQuestionnaireByIndex(index: number) {
     const selectedQuestionnaire = questionnaires[index];
+    const selectedQuestionnaireId = selectedQuestionnaire.id;
 
-    if (!selectedQuestionnaire.id) return null;
+    if (!selectedQuestionnaireId) return null;
 
-    loadQuestionnaireResponsesFromServer(selectedQuestionnaire.id)
+    loadQuestionnaireResponsesFromServer(selectedQuestionnaireId)
       .then((bundle) => {
         if (bundle.entry) {
-          setQResponses(getQResponsesFromBundle(bundle));
+          const responses = getQResponsesFromBundle(bundle);
+          resourcePickerStore.addQuestionnaireResponses(selectedQuestionnaireId, responses);
+
+          setQResponses(
+            Object.values(resourcePickerStore.qResponsesOfQuestionnaire[selectedQuestionnaireId])
+          );
         }
       })
       .catch((error) => console.log(error));
@@ -55,7 +65,7 @@ function QuestionnairePicker(props: Props) {
 
   return (
     <Container maxWidth="lg">
-      <Card elevation={1} sx={{ mt: 10 }}>
+      <Card elevation={2} sx={{ mt: 10 }}>
         <Box display="flex" flexDirection="column" minHeight="82.5vh" sx={{ p: 8 }}>
           <Grid container spacing={8}>
             <Grid item xs={6}>
@@ -79,7 +89,7 @@ function QuestionnairePicker(props: Props) {
       </Card>
 
       {selectedQResponse ? (
-        <Card elevation={1} sx={{ my: 20 }}>
+        <Card elevation={2} sx={{ my: 20 }}>
           <Box minHeight="80vh" sx={{ p: 8 }}>
             <pre>{JSON.stringify(selectedQResponse, null, 2)}</pre>
           </Box>
