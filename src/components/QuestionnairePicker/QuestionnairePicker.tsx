@@ -5,12 +5,12 @@ import {
   getQuestionnairesFromBundle,
   loadQuestionnaireResponsesFromServer,
   loadQuestionnairesFromServer
-} from '../qform/functions/LoadServerResourceFunctions';
+} from '../../functions/LoadServerResourceFunctions';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
-import { QuestionnaireProvider } from '../qform/QuestionnaireProvider';
+import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
-import { ResourcePickerStore } from './ResourcePickerStore';
+import { ResourcePickerStore } from '../../classes/ResourcePickerStore';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;

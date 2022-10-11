@@ -3,7 +3,7 @@ import { Button, Card, List, ListItemButton, ListItemText, Stack, Typography } f
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
 import { Questionnaire } from 'fhir/r5';
-import { QuestionnaireProvider } from '../qform/QuestionnaireProvider';
+import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 
 interface Props {
   questionnaires: Questionnaire[];
