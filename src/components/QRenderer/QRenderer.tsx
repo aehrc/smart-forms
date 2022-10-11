@@ -5,12 +5,12 @@ import NavBar from '../NavBar/NavBar';
 import { oauth2 } from 'fhirclient';
 import { getPatient, getUser } from '../../functions/LaunchFunctions';
 import { Bundle, Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
-import FhirClient from '../../classes/FhirClient';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenProvider from '../../functions/EnableWhenContext';
 import { Container } from '@mui/material';
 import QTitle from './QTitle';
+import { populate } from '../../functions/PrepopulateFunctions';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -25,22 +25,19 @@ function QRenderer(props: Props) {
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
     createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
   );
-  const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
-
-  const spinnerMessage = patient ? 'Loading questionnaire form' : 'Retrieving patient';
+  const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [spinner, setSpinner] = useState({
     isLoading: true,
-    message: spinnerMessage
+    message: patient ? 'Loading questionnaire form' : 'Retrieving patient'
   });
 
+  // Get patient, user and prepopulate form on first render
   useEffect(() => {
     oauth2
       .ready()
       .then((client) => {
-        const fhirClient = new FhirClient(client);
-
         // request patient details
         getPatient(client)
           .then((patient) => {
@@ -48,7 +45,7 @@ function QRenderer(props: Props) {
             setSpinner({ ...spinner, message: 'Loading questionnaire form' });
 
             // obtain questionnaireResponse for prepopulation
-            fhirClient.populate(questionnaire, patient, (qResponse, batchResponse) => {
+            populate(client, questionnaire, patient, (qResponse, batchResponse) => {
               setQuestionnaireResponse(qResponse);
               setBatchResponse(batchResponse);
               setSpinner({ ...spinner, isLoading: false });

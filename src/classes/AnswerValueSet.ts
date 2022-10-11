@@ -4,6 +4,11 @@ import { Coding, ValueSet, ValueSetExpansionContains } from 'fhir/r5';
 export class AnswerValueSet {
   static cache: Record<string, Coding[]> = {};
 
+  /**
+   * Expands a given valueSet URL into a valueSet and returns it in a callback function.
+   *
+   * @author Sean Fong
+   */
   static expand(valueSetUrl: string, setAnswerOptions: { (newOptions: ValueSet): void }) {
     const ontoserver =
       process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir';
@@ -16,6 +21,11 @@ export class AnswerValueSet {
       .catch((error) => console.log(error));
   }
 
+  /**
+   * Sets an array of valueCodings with the values from an array of valueSetExpansionContains
+   *
+   * @author Sean Fong
+   */
   static getValueCodings(valueSetExpansionContains: ValueSetExpansionContains[]) {
     const valueCodings: Coding[] = [];
     valueSetExpansionContains.forEach((item) => {
