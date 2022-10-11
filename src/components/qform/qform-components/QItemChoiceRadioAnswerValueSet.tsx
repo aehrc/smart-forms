@@ -83,7 +83,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
   );
 
   const renderQItemChoiceRadio = repeats ? (
-    <div>{choiceRadio}</div>
+    <>{choiceRadio}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -96,7 +96,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemChoiceRadio}</div>;
+  return <>{renderQItemChoiceRadio}</>;
 }
 
 export default QItemChoiceRadioAnswerValueSet;

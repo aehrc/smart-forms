@@ -9,24 +9,30 @@ import FhirClient from '../FhirClient';
 import { QuestionnaireProvider } from './QuestionnaireProvider';
 import { createQuestionnaireResponse } from './functions/QrItemFunctions';
 import EnableWhenProvider from './functions/EnableWhenContext';
+import { Container } from '@mui/material';
+import QTitle from './QTitle';
 
-const questionnaireProvider = new QuestionnaireProvider();
-questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
-questionnaireProvider.readVariables();
+interface Props {
+  questionnaireProvider: QuestionnaireProvider;
+}
 
-function QPage() {
+function QPage(props: Props) {
+  const { questionnaireProvider } = props;
+
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
-    createQuestionnaireResponse(questionnaire.item[0])
+    createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
   );
   const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
+
+  const spinnerMessage = patient ? 'Loading questionnaire form' : 'Retrieving patient';
   const [spinner, setSpinner] = useState({
     isLoading: true,
-    message: 'Retrieving patient'
+    message: spinnerMessage
   });
 
   useEffect(() => {
@@ -70,19 +76,22 @@ function QPage() {
     <ProgressSpinner message={spinner.message} />
   ) : (
     <EnableWhenProvider>
-      <QForm
-        questionnaireProvider={questionnaireProvider}
-        qrResponse={questionnaireResponse}
-        batchResponse={batchResponse}
-      />
+      <Container maxWidth="lg">
+        <QTitle questionnaire={questionnaire} />
+        <QForm
+          questionnaireProvider={questionnaireProvider}
+          qrResponse={questionnaireResponse}
+          batchResponse={batchResponse}
+        />
+      </Container>
     </EnableWhenProvider>
   );
 
   return (
-    <div>
+    <>
       <NavBar patient={patient} user={user} />
       {renderQPage}
-    </div>
+    </>
   );
 }
 

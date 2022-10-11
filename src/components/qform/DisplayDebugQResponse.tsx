@@ -4,12 +4,12 @@ import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-type Props = {
+interface Props {
   questionnaire: Questionnaire;
   batchResponse: Bundle | null;
   questionnaireResponse: QuestionnaireResponse;
   clearQResponse: () => unknown;
-};
+}
 
 function DisplayDebugQResponse(props: Props) {
   const { questionnaire, batchResponse, questionnaireResponse, clearQResponse } = props;

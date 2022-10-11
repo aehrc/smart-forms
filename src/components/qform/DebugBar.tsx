@@ -11,7 +11,7 @@ type Props = {
 function DebugBar(props: Props) {
   const { hideQResponse, toggleHideQResponse, enableWhenStatus, toggleEnableWhenStatus } = props;
   return (
-    <div>
+    <>
       <Box
         sx={{
           position: 'fixed',
@@ -39,7 +39,7 @@ function DebugBar(props: Props) {
           label={<Typography variant="subtitle2">EnableWhen checks</Typography>}
         />
       </Box>
-    </div>
+    </>
   );
 }
 

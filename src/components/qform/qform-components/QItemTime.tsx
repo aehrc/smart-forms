@@ -50,7 +50,7 @@ function QItemTime(props: Props) {
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemTime}</div>;
+  return <>{renderQItemTime}</>;
 }
 
 interface QItemTimePickerProps {

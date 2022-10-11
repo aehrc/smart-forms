@@ -16,6 +16,12 @@ export class QuestionnaireProvider {
     this.enableWhenItems = {};
   }
 
+  setQuestionnaire(questionnaire: Questionnaire) {
+    this.questionnaire = questionnaire;
+    this.readCalculatedExpressionsAndEnableWhenItems();
+    this.readVariables();
+  }
+
   readVariables() {
     if (!this.questionnaire.item) return;
 

@@ -11,10 +11,10 @@ function NavBarGenderIcon(props: { gender: string }) {
     return <FemaleIcon />;
   } else {
     return (
-      <div>
+      <>
         <MaleIcon sx={{ mr: -0.5 }} />
         <FemaleIcon />
-      </div>
+      </>
     );
   }
 }

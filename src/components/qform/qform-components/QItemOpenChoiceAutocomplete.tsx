@@ -97,10 +97,10 @@ function QItemOpenChoiceAutocomplete(props: Props) {
           InputProps={{
             ...params.InputProps,
             endAdornment: (
-              <React.Fragment>
+              <>
                 {loading ? <CircularProgress color="inherit" size={20} /> : null}
                 {params.InputProps.endAdornment}
-              </React.Fragment>
+              </>
             )
           }}
         />
@@ -109,7 +109,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   );
 
   const renderQItemOpenChoiceAutocomplete = repeats ? (
-    <div>{openChoiceAutocomplete}</div>
+    <>{openChoiceAutocomplete}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -122,7 +122,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
       </Grid>
     </FormControl>
   );
-  return <div>{renderQItemOpenChoiceAutocomplete}</div>;
+  return <>{renderQItemOpenChoiceAutocomplete}</>;
 }
 
 export default QItemOpenChoiceAutocomplete;

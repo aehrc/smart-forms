@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Divider, Stack, Typography } from '@mui/material';
+import { Button, Divider, Stack } from '@mui/material';
 import QFormBody from './QFormBody';
 import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -10,6 +10,8 @@ import { CalculatedExpression } from '../Interfaces';
 import { EnableWhenContext } from './functions/EnableWhenContext';
 import DebugBar from './DebugBar';
 import DisplayDebugQResponse from './DisplayDebugQResponse';
+import { saveQuestionnaireResponse } from './functions/SaveQrFunctions';
+import SavedSnackbar from './SavedSnackbar';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -30,6 +32,7 @@ function QForm(props: Props) {
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
+  const [qrHasChanges, setQrHasChanges] = useState(false);
 
   // states only for testing
   const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
@@ -67,6 +70,7 @@ function QForm(props: Props) {
       setCalculatedExpressions(updatedCalculatedExpressions);
     }
     setQuestionnaireResponse(newQuestionnaireResponse);
+    setQrHasChanges(true);
   }
 
   // only for testing
@@ -83,39 +87,49 @@ function QForm(props: Props) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
         <EnableWhenChecksContext.Provider value={enableWhenStatus}>
-          <Container maxWidth="lg">
-            {/*only for testing*/}
+          <Stack spacing={2.5} sx={{ my: 2 }}>
+            <Divider />
 
-            <Stack spacing={2.5} sx={{ my: 4 }}>
-              <Typography variant="h4">{questionnaire.title}</Typography>
-              <Divider />
+            {containsTabs(qForm.item) ? (
+              <QFormBodyTabbed
+                qForm={qForm}
+                qrForm={qrForm}
+                indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
+                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+              />
+            ) : (
+              <QFormBody
+                qForm={qForm}
+                qrForm={qrForm}
+                onQrItemChange={(newQrForm) => {
+                  onQrFormChange(newQrForm);
+                }}></QFormBody>
+            )}
 
-              {containsTabs(qForm.item) ? (
-                <QFormBodyTabbed
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                />
-              ) : (
-                <QFormBody
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  onQrItemChange={(newQrForm) => {
-                    onQrFormChange(newQrForm);
-                  }}></QFormBody>
-              )}
+            <Button
+              variant="outlined"
+              disabled={!qrHasChanges}
+              onClick={() => {
+                saveQuestionnaireResponse(questionnaireResponse)
+                  .then((response) => {
+                    setQrHasChanges(false);
+                    console.log(response);
+                  })
+                  .catch((error) => console.log(error));
+              }}>
+              Save
+            </Button>
 
-              {hideQResponse ? null : (
-                <DisplayDebugQResponse
-                  questionnaire={questionnaire}
-                  questionnaireResponse={questionnaireResponse}
-                  clearQResponse={() => clearQResponse()}
-                  batchResponse={batchResponse}
-                />
-              )}
-            </Stack>
-          </Container>
+            {hideQResponse ? null : (
+              <DisplayDebugQResponse
+                questionnaire={questionnaire}
+                questionnaireResponse={questionnaireResponse}
+                clearQResponse={() => clearQResponse()}
+                batchResponse={batchResponse}
+              />
+            )}
+          </Stack>
+          <SavedSnackbar isDisplayed={!qrHasChanges} />
           <DebugBar
             hideQResponse={hideQResponse}
             toggleHideQResponse={(checked) => setHideQResponse(checked)}

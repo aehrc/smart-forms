@@ -49,7 +49,7 @@ function QItemInteger(props: Props) {
     </FormControl>
   );
 
-  return <div>{renderQItemInteger}</div>;
+  return <>{renderQItemInteger}</>;
 }
 
 export default QItemInteger;

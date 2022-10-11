@@ -48,7 +48,7 @@ function QItemDateTime(props: Props) {
     </FormControl>
   );
 
-  return <div>{renderQItemDateTime}</div>;
+  return <>{renderQItemDateTime}</>;
 }
 
 export default QItemDateTime;

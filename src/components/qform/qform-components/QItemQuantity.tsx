@@ -58,7 +58,7 @@ function QItemQuantity(props: Props) {
   );
 
   if (repeats) {
-    return <div>{QItemQuantityFields}</div>;
+    return <>{QItemQuantityFields}</>;
   } else {
     return (
       <FormControl>
