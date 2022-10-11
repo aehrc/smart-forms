@@ -5,7 +5,8 @@ export class AnswerValueSet {
   static cache: Record<string, Coding[]> = {};
 
   static expand(valueSetUrl: string, setAnswerOptions: { (newOptions: ValueSet): void }) {
-    const ontoserver = 'https://r4.ontoserver.csiro.au/fhir';
+    const ontoserver =
+      process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir';
 
     FHIR.client({ serverUrl: ontoserver })
       .request({ url: 'ValueSet/$expand?url=' + valueSetUrl })

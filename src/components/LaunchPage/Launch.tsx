@@ -9,12 +9,14 @@ function Launch() {
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
 
-  const clientId = 'smart-health-checks';
-  const scope = 'launch/patient patient/*.read offline_access openid fhirUser';
+  const clientId = process.env.REACT_APP_LAUNCH_CLIENT_ID ?? 'smart-health-checks';
+  const scope =
+    process.env.REACT_APP_LAUNCH_SCOPE ??
+    'launch/patient patient/*.read offline_access openid fhirUser';
   const redirectUri = window.location.origin + '/';
 
   oauth2.authorize({
-    iss: iss ?? 'https://launch.smarthealthit.org/v/r4/fhir',
+    iss: iss ?? undefined,
     client_id: clientId,
     scope: scope,
     launch: launch ?? undefined,
@@ -24,8 +26,6 @@ function Launch() {
   return (
     <>
       <ProgressSpinner message={'Launching the SMART Health Checks application'} />
-      <div>{iss}</div>
-      <div>{launch}</div>
     </>
   );
 }
