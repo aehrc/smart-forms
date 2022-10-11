@@ -50,6 +50,8 @@ function QuestionnairePicker(props: Props) {
           setQResponses(
             Object.values(resourcePickerStore.qResponsesOfQuestionnaire[selectedQuestionnaireId])
           );
+        } else {
+          setQResponses([]);
         }
       })
       .catch((error) => console.log(error));
