@@ -6,8 +6,16 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 
+/**
+ * Create a linkedQuestionsMap that contains linked items of enableWhen items
+ * mapped to an array containing all its respective enableWhen items
+ * returns a key-value pair of <linkedItemId, [enableWhenItem1, enableWhenItem2, enableWhenItem3]>
+ *
+ * @author Sean Fong
+ */
 export function createLinkedQuestionsMap(enableWhenItems: EnableWhenItems) {
   const linkedQuestionsMap: Record<string, string[]> = {};
+
   for (const linkId in enableWhenItems) {
     enableWhenItems[linkId].linked.forEach((linkedItem) => {
       const linkQId = linkedItem.enableWhen.question;
@@ -23,6 +31,11 @@ export function createLinkedQuestionsMap(enableWhenItems: EnableWhenItems) {
   return linkedQuestionsMap;
 }
 
+/**
+ * Performs switching for non-group enableWhenItems based on their item types.
+ *
+ * @author Sean Fong
+ */
 export function isEnabledAnswerTypeSwitcher(
   enableWhen: QuestionnaireItemEnableWhen,
   answer: QuestionnaireResponseItemAnswer
@@ -73,6 +86,11 @@ export function isEnabledAnswerTypeSwitcher(
   return false;
 }
 
+/**
+ * Performs switching for value and expected comparisons based on given operator
+ *
+ * @author Sean Fong
+ */
 function answerOperatorSwitcher(
   expected: boolean | string | number | Quantity,
   value: boolean | string | number | Quantity,
@@ -99,6 +117,12 @@ function answerOperatorSwitcher(
   }
 }
 
+/**
+ * Read initial answer values in questionnaireResponse
+ * return a map of initial values with key-value pair <linkedItemId, initial value>
+ *
+ * @author Sean Fong
+ */
 export function readInitialAnswers(
   questionnaireResponseForm: QuestionnaireResponseItem,
   linkedQuestionsMap: Record<string, string[]>
@@ -112,6 +136,11 @@ export function readInitialAnswers(
   return initialValuesMap;
 }
 
+/**
+ * Read initial answer values of each qrItem recursively
+ *
+ * @author Sean Fong
+ */
 function readQuestionnaireResponseItem(
   item: QuestionnaireResponseItem,
   initialValues: Record<string, QuestionnaireResponseItemAnswer[]>,
@@ -132,6 +161,11 @@ function readQuestionnaireResponseItem(
   return;
 }
 
+/**
+ * Set initial answer values into enableWhenItems' answer attributes
+ *
+ * @author Sean Fong
+ */
 export function setInitialAnswers(
   initialAnswers: Record<string, QuestionnaireResponseItemAnswer[]>,
   items: EnableWhenItems,
@@ -150,6 +184,11 @@ export function setInitialAnswers(
   return updatedItems;
 }
 
+/**
+ * Update each initial answer value into each enableWhenItem's answer attribute
+ *
+ * @author Sean Fong
+ */
 export function updateItemAnswer(
   items: EnableWhenItems,
   linkedQuestions: string[],
