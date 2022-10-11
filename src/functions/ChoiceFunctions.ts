@@ -9,6 +9,11 @@ import {
 import { isSpecificItemControl } from './QItemFunctions';
 import { QItemChoiceControl, QItemChoiceOrientation } from '../interfaces/Enums';
 
+/**
+ * Get choice control type based on certain criteria in choice items
+ *
+ * @author Sean Fong
+ */
 export function getChoiceControlType(qItem: QuestionnaireItem) {
   const dropdownOptionsCount = 5;
   if (isSpecificItemControl(qItem, 'autocomplete')) {
@@ -28,6 +33,11 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
   }
 }
 
+/**
+ * Find and return corresponding answerOption based on selected answer in form
+ *
+ * @author Sean Fong
+ */
 export function findInAnswerOptions(
   answerOptions: QuestionnaireItemAnswerOption[],
   selected: string
@@ -49,6 +59,11 @@ export function findInAnswerOptions(
   }
 }
 
+/**
+ * Find and return corresponding coding from AnswerValyeSet based on selected answer in form
+ *
+ * @author Sean Fong
+ */
 export function findInAnswerValueSetCodings(
   codings: Coding[],
   selected: string
@@ -60,6 +75,11 @@ export function findInAnswerValueSetCodings(
   }
 }
 
+/**
+ * Find and return string value from selected answer
+ *
+ * @author Sean Fong
+ */
 export function getQrChoiceValue(qrChoice: QuestionnaireResponseItem): string {
   if (qrChoice['answer']) {
     const answer = qrChoice['answer'][0];
@@ -74,6 +94,11 @@ export function getQrChoiceValue(qrChoice: QuestionnaireResponseItem): string {
   return '';
 }
 
+/**
+ * Update checkbox group answers based on checkbox changes
+ *
+ * @author Sean Fong
+ */
 export function updateQrChoiceCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
@@ -106,6 +131,11 @@ export function updateQrChoiceCheckboxAnswers(
   }
 }
 
+/**
+ * Get choice orientation from its itemControl
+ *
+ * @author Sean Fong
+ */
 export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrientation {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
