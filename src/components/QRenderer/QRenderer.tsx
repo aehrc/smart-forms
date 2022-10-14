@@ -44,12 +44,16 @@ function QRenderer(props: Props) {
             setPatient(patient);
             setSpinner({ ...spinner, message: 'Loading questionnaire form' });
 
-            // obtain questionnaireResponse for prepopulation
-            populate(client, questionnaire, patient, (qResponse, batchResponse) => {
-              setQuestionnaireResponse(qResponse);
-              setBatchResponse(batchResponse);
+            if (questionnaire.contained) {
+              // obtain questionnaireResponse for prepopulation
+              populate(client, questionnaire, patient, (qResponse, batchResponse) => {
+                setQuestionnaireResponse(qResponse);
+                setBatchResponse(batchResponse);
+                setSpinner({ ...spinner, isLoading: false });
+              });
+            } else {
               setSpinner({ ...spinner, isLoading: false });
-            });
+            }
           })
           .catch((error) => {
             console.error(error);
