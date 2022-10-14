@@ -9,9 +9,13 @@ export class AnswerValueSet {
    *
    * @author Sean Fong
    */
-  static expand(valueSetUrl: string, setAnswerOptions: { (newOptions: ValueSet): void }) {
+  static expand(fullUrl: string, setAnswerOptions: { (newOptions: ValueSet): void }) {
     const ontoserver =
-      process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir';
+      process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
+
+    const valueSetUrl = fullUrl.includes('ValueSet/$expand?url=')
+      ? fullUrl.split('ValueSet/$expand?url=')[1]
+      : fullUrl;
 
     FHIR.client({ serverUrl: ontoserver })
       .request({ url: 'ValueSet/$expand?url=' + valueSetUrl })
