@@ -19,7 +19,7 @@ interface Props {
   questionnaireResponses: QuestionnaireResponse[];
   selectedIndex: number | null;
   qrIsSearching: boolean;
-  onSelectedIndexChange: (index: number) => unknown;
+  onQrSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnaireResponsePickerQRList(props: Props) {
@@ -28,7 +28,7 @@ function QuestionnaireResponsePickerQRList(props: Props) {
     questionnaireResponses,
     selectedIndex,
     qrIsSearching,
-    onSelectedIndexChange
+    onQrSelectedIndexChange
   } = props;
 
   if (!fhirClient) {
@@ -69,7 +69,7 @@ function QuestionnaireResponsePickerQRList(props: Props) {
               selected={selectedIndex === i}
               sx={{ p: 1.25 }}
               onClick={() => {
-                onSelectedIndexChange(i);
+                onQrSelectedIndexChange(i);
               }}>
               <ListItemText
                 primary={dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')}

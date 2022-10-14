@@ -17,11 +17,12 @@ interface Props {
   searchInput: string;
   selectedIndex: number | null;
   qIsSearching: boolean;
-  onSelectedIndexChange: (index: number) => unknown;
+  onQSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnairePickerQList(props: Props) {
-  const { questionnaires, searchInput, selectedIndex, qIsSearching, onSelectedIndexChange } = props;
+  const { questionnaires, searchInput, selectedIndex, qIsSearching, onQSelectedIndexChange } =
+    props;
 
   if (searchInput === '') {
     return (
@@ -62,7 +63,7 @@ function QuestionnairePickerQList(props: Props) {
               selected={selectedIndex === i}
               sx={{ p: 1.25 }}
               onClick={() => {
-                onSelectedIndexChange(i);
+                onQSelectedIndexChange(i);
               }}>
               <ListItemText
                 primary={`${questionnaire.title}`}

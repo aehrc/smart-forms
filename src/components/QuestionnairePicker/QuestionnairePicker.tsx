@@ -20,6 +20,7 @@ function QuestionnairePicker(props: Props) {
 
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [qResponses, setQResponses] = useState<QuestionnaireResponse[]>([]);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [selectedQResponse, setSelectedQResponse] = useState<QuestionnaireResponse | null>(null);
   const [qrIsSearching, setQrIsSearching] = useState(false);
 
@@ -41,6 +42,7 @@ function QuestionnairePicker(props: Props) {
           setQrIsSearching(false);
         });
     }
+    setSelectedQuestionnaire(selectedQuestionnaire);
   }
 
   function selectQResponseByIndex(index: number) {
@@ -58,10 +60,10 @@ function QuestionnairePicker(props: Props) {
           <Grid item xs={6}>
             <QuestionnairePickerForm
               questionnaires={questionnaires}
+              questionnaireProvider={questionnaireProvider}
               setQuestionnaires={setQuestionnaires}
               setQuestionnaireResponses={setQResponses}
-              questionnaireProvider={questionnaireProvider}
-              onSelectedIndexChange={selectQuestionnaireByIndex}
+              onQSelectedIndexChange={selectQuestionnaireByIndex}
             />
           </Grid>
 
@@ -70,7 +72,9 @@ function QuestionnairePicker(props: Props) {
               fhirClient={fhirClient}
               questionnaireResponses={qResponses}
               qrIsSearching={qrIsSearching}
-              onSelectedIndexChange={selectQResponseByIndex}
+              selectedQuestionnaire={selectedQuestionnaire}
+              questionnaireProvider={questionnaireProvider}
+              onQrSelectedIndexChange={selectQResponseByIndex}
             />
           </Grid>
         </Grid>

@@ -1,20 +1,33 @@
 import React, { useState } from 'react';
-import { Box, Card, Grid, Stack, Typography } from '@mui/material';
-import { QuestionnaireResponse } from 'fhir/r5';
+import { Box, Button, Card, Grid, Stack, Typography } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnaireResponsePickerQRList from './QuestionnaireResponsePickerQRList';
 import Client from 'fhirclient/lib/Client';
+import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   fhirClient: Client | null;
   questionnaireResponses: QuestionnaireResponse[];
   qrIsSearching: boolean;
-  onSelectedIndexChange: (index: number) => unknown;
+  selectedQuestionnaire: Questionnaire | null;
+  questionnaireProvider: QuestionnaireProvider;
+  onQrSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnaireResponsePickerForm(props: Props) {
-  const { fhirClient, questionnaireResponses, qrIsSearching, onSelectedIndexChange } = props;
+  const {
+    fhirClient,
+    questionnaireResponses,
+    qrIsSearching,
+    selectedQuestionnaire,
+    questionnaireProvider,
+    onQrSelectedIndexChange
+  } = props;
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -42,12 +55,26 @@ function QuestionnaireResponsePickerForm(props: Props) {
             questionnaireResponses={questionnaireResponses}
             selectedIndex={selectedIndex}
             qrIsSearching={qrIsSearching}
-            onSelectedIndexChange={(index) => {
-              onSelectedIndexChange(index);
+            onQrSelectedIndexChange={(index) => {
+              onQrSelectedIndexChange(index);
               setSelectedIndex(index);
             }}
           />
         </Card>
+
+        <Button
+          variant="contained"
+          disabled={typeof selectedIndex !== 'number' || !selectedQuestionnaire}
+          onClick={() => {
+            if (typeof selectedIndex === 'number' && selectedQuestionnaire) {
+              questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
+              navigate(`/`);
+            }
+          }}
+          sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
+          View Response
+          <VisibilityIcon sx={{ ml: 1.5 }} />
+        </Button>
       </Stack>
     </>
   );

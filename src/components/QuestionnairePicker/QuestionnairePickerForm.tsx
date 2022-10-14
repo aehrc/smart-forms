@@ -13,10 +13,10 @@ import QuestionnairePickerQList from './QuestionnairePickerQList';
 
 interface Props {
   questionnaires: Questionnaire[];
+  questionnaireProvider: QuestionnaireProvider;
   setQuestionnaires: React.Dispatch<React.SetStateAction<Questionnaire[]>>;
   setQuestionnaireResponses: React.Dispatch<React.SetStateAction<QuestionnaireResponse[]>>;
-  questionnaireProvider: QuestionnaireProvider;
-  onSelectedIndexChange: (index: number) => unknown;
+  onQSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnairePickerForm(props: Props) {
@@ -25,7 +25,7 @@ function QuestionnairePickerForm(props: Props) {
     setQuestionnaires,
     setQuestionnaireResponses,
     questionnaireProvider,
-    onSelectedIndexChange
+    onQSelectedIndexChange
   } = props;
 
   const [searchInput, setSearchInput] = useState<string>('');
@@ -75,8 +75,8 @@ function QuestionnairePickerForm(props: Props) {
             searchInput={searchInput}
             selectedIndex={selectedIndex}
             qIsSearching={qIsSearching}
-            onSelectedIndexChange={(index) => {
-              onSelectedIndexChange(index);
+            onQSelectedIndexChange={(index) => {
+              onQSelectedIndexChange(index);
               setSelectedIndex(index);
             }}
           />
@@ -92,7 +92,7 @@ function QuestionnairePickerForm(props: Props) {
             }
           }}
           sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
-          Go to Questionnaire
+          Start a new Questionnaire response
           <ArticleIcon sx={{ ml: 1.5 }} />
         </Button>
       </Stack>
