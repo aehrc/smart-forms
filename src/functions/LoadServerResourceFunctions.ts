@@ -2,8 +2,9 @@ import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 
-export async function loadQuestionnairesFromServer(): Promise<Bundle> {
+export async function loadQuestionnairesFromServer(params?: string): Promise<Bundle> {
   const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+  const urlParams = params ? params : '';
 
   const headers = {
     'Cache-Control': 'no-cache',
@@ -12,7 +13,7 @@ export async function loadQuestionnairesFromServer(): Promise<Bundle> {
   };
 
   return client(formsServerUrl).request({
-    url: 'Questionnaire?_count=10',
+    url: 'Questionnaire?_count=10&' + urlParams,
     method: 'GET',
     headers: headers
   });

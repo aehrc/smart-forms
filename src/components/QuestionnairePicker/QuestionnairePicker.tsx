@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Card, Container, Grid } from '@mui/material';
 import {
   getQResponsesFromBundle,
-  getQuestionnairesFromBundle,
-  loadQuestionnaireResponsesFromServer,
-  loadQuestionnairesFromServer
+  loadQuestionnaireResponsesFromServer
 } from '../../functions/LoadServerResourceFunctions';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
 import { ResourcePickerStore } from '../../classes/ResourcePickerStore';
-import ProgressSpinner from '../QRenderer/ProgressSpinner';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 
 interface Props {
@@ -27,20 +24,6 @@ function QuestionnairePicker(props: Props) {
   const [selectedQResponse, setSelectedQResponse] = useState<QuestionnaireResponse | null>(null);
 
   const resourcePickerStore = new ResourcePickerStore();
-
-  useEffect(() => {
-    loadQuestionnairesFromServer()
-      .then((bundle) => {
-        if (bundle.entry) {
-          resourcePickerStore.addQuestionnaires(getQuestionnairesFromBundle(bundle));
-          setQuestionnaires(Object.values(resourcePickerStore.questionnaires));
-        }
-      })
-      .catch((error) => {
-        setQuestionnaires(Object.values(resourcePickerStore.questionnaires));
-        console.log(error);
-      });
-  }, []);
 
   function selectQuestionnaireByIndex(index: number) {
     const selectedQuestionnaire = questionnaires[index];
@@ -74,45 +57,39 @@ function QuestionnairePicker(props: Props) {
     }
   }
 
-  const renderQuestionnairePicker =
-    questionnaires.length > 0 ? (
-      <Container maxWidth="lg">
-        <Box minHeight="100vh" sx={{ py: 13 }}>
-          <Card elevation={2}>
-            <Box display="flex" flexDirection="column" sx={{ p: 8 }}>
-              <Grid container spacing={8}>
-                <Grid item xs={6}>
-                  <QuestionnairePickerForm
-                    questionnaires={questionnaires}
-                    questionnaireProvider={questionnaireProvider}
-                    onSelectedIndexChange={selectQuestionnaireByIndex}
-                  />
-                </Grid>
+  const renderQuestionnairePicker = (
+    <Container maxWidth="lg">
+      <Box display="flex" flexDirection="column" sx={{ py: 5 }}>
+        <Grid container spacing={8}>
+          <Grid item xs={6}>
+            <QuestionnairePickerForm
+              questionnaires={questionnaires}
+              setQuestionnaires={setQuestionnaires}
+              questionnaireProvider={questionnaireProvider}
+              onSelectedIndexChange={selectQuestionnaireByIndex}
+            />
+          </Grid>
 
-                <Grid item xs={6}>
-                  {qResponses.length !== 0 ? (
-                    <QuestionnaireResponsePickerForm
-                      questionnaireResponses={qResponses}
-                      onSelectedIndexChange={selectQResponseByIndex}
-                    />
-                  ) : null}
-                </Grid>
-              </Grid>
-            </Box>
-          </Card>
-        </Box>
+          <Grid item xs={6}>
+            {qResponses.length !== 0 ? (
+              <QuestionnaireResponsePickerForm
+                questionnaireResponses={qResponses}
+                onSelectedIndexChange={selectQResponseByIndex}
+              />
+            ) : null}
+          </Grid>
+        </Grid>
+      </Box>
 
-        {selectedQResponse ? (
-          <Card elevation={2} sx={{ my: 20 }}>
-            <Box minHeight="80vh" sx={{ p: 8 }}>
-              <pre>{JSON.stringify(selectedQResponse, null, 2)}</pre>
-            </Box>
-          </Card>
-        ) : null}
-      </Container>
-    ) : (
-      <ProgressSpinner message={'Loading questionnaires'} />
-    );
+      {selectedQResponse ? (
+        <Card elevation={2} sx={{ my: 20 }}>
+          <Box minHeight="80vh" sx={{ p: 8 }}>
+            <pre>{JSON.stringify(selectedQResponse, null, 2)}</pre>
+          </Box>
+        </Card>
+      ) : null}
+    </Container>
+  );
 
   return <>{renderQuestionnairePicker}</>;
 }
