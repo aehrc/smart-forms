@@ -30,11 +30,7 @@ function QuestionnairePickerForm(props: Props) {
     debounce((input: string) => {
       loadQuestionnairesFromServer(`title=${input}`)
         .then((bundle) => {
-          if (bundle.entry) {
-            setQuestionnaires(getQuestionnairesFromBundle(bundle));
-          } else {
-            setQuestionnaires([]);
-          }
+          setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
           setQIsSearching(false);
         })
         .catch((error) => {
@@ -47,8 +43,8 @@ function QuestionnairePickerForm(props: Props) {
 
   return (
     <>
-      <Stack direction={'column'} spacing={3}>
-        <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit">
+      <Stack direction={'column'} spacing={2}>
+        <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit" sx={{ mb: 2 }}>
           Questionnaires
         </Typography>
 
@@ -65,7 +61,7 @@ function QuestionnairePickerForm(props: Props) {
           label="Search Questionnaires"
         />
 
-        <Card elevation={1} sx={{ height: 515 }}>
+        <Card elevation={1} sx={{ height: 508 }}>
           <QuestionnairePickerQList
             questionnaires={questionnaires}
             searchInput={searchInput}

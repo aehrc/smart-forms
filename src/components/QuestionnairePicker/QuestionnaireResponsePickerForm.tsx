@@ -1,45 +1,52 @@
 import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import { Card, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
+import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 import { QuestionnaireResponse } from 'fhir/r5';
+import QuestionnaireResponsePickerQRList from './QuestionnaireResponsePickerQRList';
+import Client from 'fhirclient/lib/Client';
 
 interface Props {
+  fhirClient: Client | null;
   questionnaireResponses: QuestionnaireResponse[];
+  qrIsSearching: boolean;
   onSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnaireResponsePickerForm(props: Props) {
-  const { questionnaireResponses, onSelectedIndexChange } = props;
+  const { fhirClient, questionnaireResponses, qrIsSearching, onSelectedIndexChange } = props;
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
     <>
-      <Stack direction={'column'}>
-        <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit">
-          Responses
-        </Typography>
+      <Stack direction="column" spacing={2}>
+        <Card elevation={1} sx={{ height: 57.5, mt: 10 }}>
+          <Box sx={{ m: 2.5 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={10}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Responses
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Status
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+        </Card>
 
-        <Card elevation={3} sx={{ my: 3.5 }}>
-          <List sx={{ width: '100%', maxHeight: 600, overflow: 'auto', py: 0 }}>
-            {questionnaireResponses.map((questionnaireResponse, i) => (
-              <React.Fragment key={questionnaireResponse.id}>
-                <ListItemButton
-                  selected={selectedIndex === i}
-                  sx={{ p: 2 }}
-                  onClick={() => {
-                    setSelectedIndex(i);
-                    onSelectedIndexChange(i);
-                  }}>
-                  <ListItemText
-                    primary={dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')}
-                    primaryTypographyProps={{ fontSize: '18px' }}
-                    sx={{ px: 1.5 }}
-                  />
-                </ListItemButton>
-              </React.Fragment>
-            ))}
-          </List>
+        <Card elevation={1} sx={{ height: 508 }}>
+          <QuestionnaireResponsePickerQRList
+            fhirClient={fhirClient}
+            questionnaireResponses={questionnaireResponses}
+            selectedIndex={selectedIndex}
+            qrIsSearching={qrIsSearching}
+            onSelectedIndexChange={(index) => {
+              onSelectedIndexChange(index);
+              setSelectedIndex(index);
+            }}
+          />
         </Card>
       </Stack>
     </>
