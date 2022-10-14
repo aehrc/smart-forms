@@ -4,6 +4,7 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
+import Client from 'fhirclient/lib/Client';
 
 export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
@@ -49,4 +50,9 @@ export type EnableWhenContextType = {
   ) => unknown;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
   checkItemIsEnabled: (linkId: string) => boolean;
+};
+
+export type FhirClientContextType = {
+  fhirClient: Client | null;
+  setFhirClient: (client: Client) => unknown;
 };

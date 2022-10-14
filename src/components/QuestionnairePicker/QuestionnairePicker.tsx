@@ -12,6 +12,7 @@ import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
 import { ResourcePickerStore } from '../../classes/ResourcePickerStore';
 import ProgressSpinner from '../QRenderer/ProgressSpinner';
+import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -19,6 +20,8 @@ interface Props {
 
 function QuestionnairePicker(props: Props) {
   const { questionnaireProvider } = props;
+  const fhirClient = React.useContext(FhirClientContext).fhirClient;
+
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [qResponses, setQResponses] = useState<QuestionnaireResponse[]>([]);
   const [selectedQResponse, setSelectedQResponse] = useState<QuestionnaireResponse | null>(null);
@@ -45,20 +48,22 @@ function QuestionnairePicker(props: Props) {
 
     if (!selectedQuestionnaireId) return null;
 
-    loadQuestionnaireResponsesFromServer(selectedQuestionnaireId)
-      .then((bundle) => {
-        if (bundle.entry) {
-          const responses = getQResponsesFromBundle(bundle);
-          resourcePickerStore.addQuestionnaireResponses(selectedQuestionnaireId, responses);
+    if (fhirClient) {
+      loadQuestionnaireResponsesFromServer(fhirClient, selectedQuestionnaireId)
+        .then((bundle) => {
+          if (bundle.entry) {
+            const responses = getQResponsesFromBundle(bundle);
+            resourcePickerStore.addQuestionnaireResponses(selectedQuestionnaireId, responses);
 
-          setQResponses(
-            Object.values(resourcePickerStore.qResponsesOfQuestionnaire[selectedQuestionnaireId])
-          );
-        } else {
-          setQResponses([]);
-        }
-      })
-      .catch((error) => console.log(error));
+            setQResponses(
+              Object.values(resourcePickerStore.qResponsesOfQuestionnaire[selectedQuestionnaireId])
+            );
+          } else {
+            setQResponses([]);
+          }
+        })
+        .catch((error) => console.log(error));
+    }
   }
 
   function selectQResponseByIndex(index: number) {

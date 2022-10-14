@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Stack } from '@mui/material';
+import { Button, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
 import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -12,6 +12,7 @@ import DebugBar from './DebugComponents/DebugBar';
 import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
+import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -26,6 +27,7 @@ export const EnableWhenChecksContext = React.createContext<boolean>(true); // on
 function QForm(props: Props) {
   const { questionnaireProvider, qrResponse, batchResponse } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
+  const fhirClient = React.useContext(FhirClientContext).fhirClient;
 
   const [questionnaireResponse, setQuestionnaireResponse] =
     useState<QuestionnaireResponse>(qrResponse);
@@ -106,19 +108,25 @@ function QForm(props: Props) {
                 }}></QFormBody>
             )}
 
-            <Button
-              variant="outlined"
-              disabled={!qrHasChanges}
-              onClick={() => {
-                saveQuestionnaireResponse(questionnaireResponse)
-                  .then((response) => {
-                    setQrHasChanges(false);
-                    console.log(response);
-                  })
-                  .catch((error) => console.log(error));
-              }}>
-              Save
-            </Button>
+            {fhirClient ? (
+              <Button
+                variant="outlined"
+                disabled={!qrHasChanges}
+                onClick={() => {
+                  saveQuestionnaireResponse(fhirClient, questionnaireResponse)
+                    .then((response) => {
+                      setQrHasChanges(false);
+                      console.log(response);
+                    })
+                    .catch((error) => console.log(error));
+                }}>
+                Save
+              </Button>
+            ) : (
+              <Typography>
+                Save functionality not available as application is not connected to CMS
+              </Typography>
+            )}
 
             {hideQResponse ? null : (
               <DisplayDebugQResponse

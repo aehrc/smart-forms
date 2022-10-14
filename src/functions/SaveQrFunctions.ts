@@ -1,13 +1,16 @@
 import { QuestionnaireResponse } from 'fhir/r5';
-import { client } from 'fhirclient';
+import Client from 'fhirclient/lib/Client';
 
-export async function saveQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
+export async function saveQuestionnaireResponse(
+  client: Client,
+  questionnaireResponse: QuestionnaireResponse
+) {
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json+fhir; charset=UTF-8'
   };
 
-  return client('http://localhost:8080/fhir/').request({
+  return client.request({
     url: 'QuestionnaireResponse',
     method: 'POST',
     body: JSON.stringify(questionnaireResponse),

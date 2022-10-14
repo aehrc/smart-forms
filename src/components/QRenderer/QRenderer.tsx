@@ -11,6 +11,7 @@ import EnableWhenProvider from '../../custom-contexts/EnableWhenContext';
 import { Container } from '@mui/material';
 import QTitle from './QTitle';
 import { populate } from '../../functions/PrepopulateFunctions';
+import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -18,6 +19,7 @@ interface Props {
 
 function QRenderer(props: Props) {
   const { questionnaireProvider } = props;
+  const fhirClientContext = React.useContext(FhirClientContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
@@ -38,6 +40,8 @@ function QRenderer(props: Props) {
     oauth2
       .ready()
       .then((client) => {
+        fhirClientContext.setFhirClient(client);
+
         // request patient details
         getPatient(client)
           .then((patient) => {

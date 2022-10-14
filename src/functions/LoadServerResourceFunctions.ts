@@ -1,8 +1,9 @@
 import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { client } from 'fhirclient';
+import Client from 'fhirclient/lib/Client';
 
 export async function loadQuestionnairesFromServer(): Promise<Bundle> {
-  const serverUrl = 'http://localhost:8080/fhir/';
+  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
 
   const headers = {
     'Cache-Control': 'no-cache',
@@ -10,25 +11,24 @@ export async function loadQuestionnairesFromServer(): Promise<Bundle> {
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(serverUrl).request({
-    url: 'Questionnaire',
+  return client(formsServerUrl).request({
+    url: 'Questionnaire?_count=10',
     method: 'GET',
     headers: headers
   });
 }
 
 export async function loadQuestionnaireResponsesFromServer(
+  client: Client,
   questionnaireId: string
 ): Promise<Bundle> {
-  const serverUrl = 'http://localhost:8080/fhir/';
-
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json+fhir; charset=UTF-8',
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(serverUrl).request({
+  return client.request({
     url: `QuestionnaireResponse?questionnaire=${questionnaireId}`,
     method: 'GET',
     headers: headers
