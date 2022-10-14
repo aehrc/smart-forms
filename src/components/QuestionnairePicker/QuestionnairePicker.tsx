@@ -11,6 +11,7 @@ import QuestionnairePickerForm from './QuestionnairePickerForm';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
 import { ResourcePickerStore } from '../../classes/ResourcePickerStore';
+import ProgressSpinner from '../QRenderer/ProgressSpinner';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -25,8 +26,6 @@ function QuestionnairePicker(props: Props) {
   const resourcePickerStore = new ResourcePickerStore();
 
   useEffect(() => {
-    resourcePickerStore.addQuestionnaires([questionnaireProvider.questionnaire]);
-
     loadQuestionnairesFromServer()
       .then((bundle) => {
         if (bundle.entry) {
@@ -70,42 +69,47 @@ function QuestionnairePicker(props: Props) {
     }
   }
 
-  return (
-    <Container maxWidth="lg">
-      <Box minHeight="100vh" sx={{ py: 13 }}>
-        <Card elevation={2}>
-          <Box display="flex" flexDirection="column" sx={{ p: 8 }}>
-            <Grid container spacing={8}>
-              <Grid item xs={6}>
-                <QuestionnairePickerForm
-                  questionnaires={questionnaires}
-                  questionnaireProvider={questionnaireProvider}
-                  onSelectedIndexChange={selectQuestionnaireByIndex}
-                />
-              </Grid>
-
-              <Grid item xs={6}>
-                {qResponses.length !== 0 ? (
-                  <QuestionnaireResponsePickerForm
-                    questionnaireResponses={qResponses}
-                    onSelectedIndexChange={selectQResponseByIndex}
+  const renderQuestionnairePicker =
+    questionnaires.length > 0 ? (
+      <Container maxWidth="lg">
+        <Box minHeight="100vh" sx={{ py: 13 }}>
+          <Card elevation={2}>
+            <Box display="flex" flexDirection="column" sx={{ p: 8 }}>
+              <Grid container spacing={8}>
+                <Grid item xs={6}>
+                  <QuestionnairePickerForm
+                    questionnaires={questionnaires}
+                    questionnaireProvider={questionnaireProvider}
+                    onSelectedIndexChange={selectQuestionnaireByIndex}
                   />
-                ) : null}
-              </Grid>
-            </Grid>
-          </Box>
-        </Card>
-      </Box>
+                </Grid>
 
-      {selectedQResponse ? (
-        <Card elevation={2} sx={{ my: 20 }}>
-          <Box minHeight="80vh" sx={{ p: 8 }}>
-            <pre>{JSON.stringify(selectedQResponse, null, 2)}</pre>
-          </Box>
-        </Card>
-      ) : null}
-    </Container>
-  );
+                <Grid item xs={6}>
+                  {qResponses.length !== 0 ? (
+                    <QuestionnaireResponsePickerForm
+                      questionnaireResponses={qResponses}
+                      onSelectedIndexChange={selectQResponseByIndex}
+                    />
+                  ) : null}
+                </Grid>
+              </Grid>
+            </Box>
+          </Card>
+        </Box>
+
+        {selectedQResponse ? (
+          <Card elevation={2} sx={{ my: 20 }}>
+            <Box minHeight="80vh" sx={{ p: 8 }}>
+              <pre>{JSON.stringify(selectedQResponse, null, 2)}</pre>
+            </Box>
+          </Card>
+        ) : null}
+      </Container>
+    ) : (
+      <ProgressSpinner message={'Loading questionnaires'} />
+    );
+
+  return <>{renderQuestionnairePicker}</>;
 }
 
 export default QuestionnairePicker;
