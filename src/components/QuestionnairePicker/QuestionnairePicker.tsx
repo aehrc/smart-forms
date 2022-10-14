@@ -72,28 +72,30 @@ function QuestionnairePicker(props: Props) {
 
   return (
     <Container maxWidth="lg">
-      <Card elevation={2} sx={{ mt: 10 }}>
-        <Box display="flex" flexDirection="column" minHeight="82.5vh" sx={{ p: 8 }}>
-          <Grid container spacing={8}>
-            <Grid item xs={6}>
-              <QuestionnairePickerForm
-                questionnaires={questionnaires}
-                questionnaireProvider={questionnaireProvider}
-                onSelectedIndexChange={selectQuestionnaireByIndex}
-              />
-            </Grid>
-
-            <Grid item xs={6}>
-              {qResponses.length !== 0 ? (
-                <QuestionnaireResponsePickerForm
-                  questionnaireResponses={qResponses}
-                  onSelectedIndexChange={selectQResponseByIndex}
+      <Box minHeight="100vh" sx={{ py: 13 }}>
+        <Card elevation={2}>
+          <Box display="flex" flexDirection="column" sx={{ p: 8 }}>
+            <Grid container spacing={8}>
+              <Grid item xs={6}>
+                <QuestionnairePickerForm
+                  questionnaires={questionnaires}
+                  questionnaireProvider={questionnaireProvider}
+                  onSelectedIndexChange={selectQuestionnaireByIndex}
                 />
-              ) : null}
+              </Grid>
+
+              <Grid item xs={6}>
+                {qResponses.length !== 0 ? (
+                  <QuestionnaireResponsePickerForm
+                    questionnaireResponses={qResponses}
+                    onSelectedIndexChange={selectQResponseByIndex}
+                  />
+                ) : null}
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      </Card>
+          </Box>
+        </Card>
+      </Box>
 
       {selectedQResponse ? (
         <Card elevation={2} sx={{ my: 20 }}>

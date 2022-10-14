@@ -21,7 +21,7 @@ function QuestionnaireResponsePickerForm(props: Props) {
         </Typography>
 
         <Card elevation={3} sx={{ my: 3.5 }}>
-          <List sx={{ width: '100%', maxHeight: 540, overflow: 'auto', py: 0 }}>
+          <List sx={{ width: '100%', maxHeight: 600, overflow: 'auto', py: 0 }}>
             {questionnaireResponses.map((questionnaireResponse, i) => (
               <React.Fragment key={questionnaireResponse.id}>
                 <ListItemButton
