@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Button, Card, Stack, TextField, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
-import { Questionnaire } from 'fhir/r5';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { debounce } from 'lodash';
 import {
@@ -14,12 +14,19 @@ import QuestionnairePickerQList from './QuestionnairePickerQList';
 interface Props {
   questionnaires: Questionnaire[];
   setQuestionnaires: React.Dispatch<React.SetStateAction<Questionnaire[]>>;
+  setQuestionnaireResponses: React.Dispatch<React.SetStateAction<QuestionnaireResponse[]>>;
   questionnaireProvider: QuestionnaireProvider;
   onSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnairePickerForm(props: Props) {
-  const { questionnaires, setQuestionnaires, questionnaireProvider, onSelectedIndexChange } = props;
+  const {
+    questionnaires,
+    setQuestionnaires,
+    setQuestionnaireResponses,
+    questionnaireProvider,
+    onSelectedIndexChange
+  } = props;
 
   const [searchInput, setSearchInput] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -55,6 +62,7 @@ function QuestionnairePickerForm(props: Props) {
             setQIsSearching(true);
             setSelectedIndex(null);
             setQuestionnaires([]);
+            setQuestionnaireResponses([]);
             setSearchInput(input);
             functionDebounce(input);
           }}
