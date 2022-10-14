@@ -59,7 +59,7 @@ function QuestionnairePicker(props: Props) {
 
   const renderQuestionnairePicker = (
     <Container maxWidth="lg">
-      <Box display="flex" flexDirection="column" sx={{ py: 5 }}>
+      <Box display="flex" height="100vh" flexDirection="column" justifyContent="center">
         <Grid container spacing={8}>
           <Grid item xs={6}>
             <QuestionnairePickerForm

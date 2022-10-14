@@ -65,7 +65,7 @@ function QuestionnairePickerForm(props: Props) {
           label="Search Questionnaires"
         />
 
-        <Card elevation={2}>
+        <Card elevation={1} sx={{ height: 515 }}>
           <QuestionnairePickerQList
             questionnaires={questionnaires}
             searchInput={searchInput}

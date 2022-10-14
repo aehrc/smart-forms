@@ -1,6 +1,15 @@
 import { Questionnaire } from 'fhir/r5';
 import React from 'react';
-import { Box, Divider, List, ListItemButton, ListItemText, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  Divider,
+  List,
+  ListItemButton,
+  ListItemText,
+  Stack,
+  Typography
+} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 interface Props {
@@ -16,33 +25,37 @@ function QuestionnairePickerQList(props: Props) {
 
   if (searchInput === '') {
     return (
-      <Box sx={{ p: 2.5 }}>
-        <Typography variant="subtitle2">
+      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+        <Typography variant="subtitle2" textAlign="center">
           Enter a questionnaire title in the search bar above to load results.
         </Typography>
-      </Box>
+      </Card>
     );
   } else if (qIsSearching) {
     return (
-      <Box sx={{ p: 2.5 }}>
-        <Box display="flex" flexDirection="row">
-          <Typography variant="subtitle2">Loading search results</Typography>
-          <CircularProgress size={20} sx={{ ml: 1 }} />
+      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Stack direction="row">
+            <Typography variant="subtitle2">Loading search results</Typography>
+            <CircularProgress size={20} sx={{ ml: 1 }} />
+          </Stack>
         </Box>
-      </Box>
+      </Card>
     );
   } else if (questionnaires.length === 0) {
     return (
-      <Box sx={{ p: 2.5 }}>
-        <Typography variant="subtitle2">
+      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+        <Typography variant="subtitle2" textAlign="center">
           We did not manage to find anything from the search terms - <b>{searchInput}</b>.
         </Typography>
-        <Typography variant="subtitle2">Try searching for something else.</Typography>
-      </Box>
+        <Typography variant="subtitle2" textAlign="center">
+          Try searching for something else.
+        </Typography>
+      </Card>
     );
   } else {
     return (
-      <List sx={{ width: '100%', maxHeight: 515, overflow: 'auto', py: 0 }}>
+      <List sx={{ width: '100%', overflow: 'auto', py: 0 }}>
         {questionnaires.map((questionnaire, i) => (
           <React.Fragment key={questionnaire.id}>
             <ListItemButton
