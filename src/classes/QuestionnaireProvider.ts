@@ -1,4 +1,3 @@
-import questionnaireData from '../data/resources/715.R4.json';
 import { Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
 import { CalculatedExpression, EnableWhenItemProperties } from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
@@ -11,7 +10,10 @@ export class QuestionnaireProvider {
   enableWhenItems: Record<string, EnableWhenItemProperties>;
 
   constructor() {
-    this.questionnaire = questionnaireData as Questionnaire;
+    this.questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active'
+    };
     this.variables = [];
     this.calculatedExpressions = {};
     this.enableWhenItems = {};

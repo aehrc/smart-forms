@@ -33,7 +33,7 @@ function QuestionnaireResponsePickerQRList(props: Props) {
 
   if (!fhirClient) {
     return (
-      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+      <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Typography variant="subtitle2">
             Application not launched from CMS, unable to fetch responses.
@@ -43,7 +43,7 @@ function QuestionnaireResponsePickerQRList(props: Props) {
     );
   } else if (qrIsSearching) {
     return (
-      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+      <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Stack direction="row">
             <Typography variant="subtitle2">Loading responses</Typography>
@@ -54,7 +54,7 @@ function QuestionnaireResponsePickerQRList(props: Props) {
     );
   } else if (questionnaireResponses.length === 0) {
     return (
-      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+      <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Typography variant="subtitle2" textAlign="center">
           There are currently no responses available for this questionnaire.
         </Typography>

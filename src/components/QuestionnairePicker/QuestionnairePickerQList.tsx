@@ -26,7 +26,7 @@ function QuestionnairePickerQList(props: Props) {
 
   if (searchInput === '') {
     return (
-      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+      <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Typography variant="subtitle2" textAlign="center">
           Enter a questionnaire title in the search bar above to load results.
         </Typography>
@@ -34,7 +34,7 @@ function QuestionnairePickerQList(props: Props) {
     );
   } else if (qIsSearching) {
     return (
-      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+      <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Box display="flex" flexDirection="column" alignItems="center">
           <Stack direction="row">
             <Typography variant="subtitle2">Loading search results</Typography>
@@ -45,7 +45,7 @@ function QuestionnairePickerQList(props: Props) {
     );
   } else if (questionnaires.length === 0) {
     return (
-      <Card elevation={5} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+      <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Typography variant="subtitle2" textAlign="center">
           We did not manage to find anything from the search terms - <b>{searchInput}</b>.
         </Typography>
