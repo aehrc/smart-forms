@@ -16,7 +16,7 @@ import {
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../QForm';
-import { isHidden } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/ItemControlFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

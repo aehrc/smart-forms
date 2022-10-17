@@ -1,6 +1,11 @@
 import { QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 
+/**
+ * Sends a request to client CMS to write back a completed questionnaireResponse
+ *
+ * @author Sean Fong
+ */
 export async function saveQuestionnaireResponse(
   client: Client,
   questionnaireResponse: QuestionnaireResponse

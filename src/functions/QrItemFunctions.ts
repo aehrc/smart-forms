@@ -9,6 +9,12 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { CalculatedExpression } from '../interfaces/Interfaces';
 
+/**
+ * Create a questionnaireResponse from a given questionnaire fprm item
+ * A questionnaire form item is the first item of a questionnaire
+ *
+ * @author Sean Fong
+ */
 export function createQuestionnaireResponse(
   questionnaireId: string | undefined,
   questionnaireFormItem: QuestionnaireItem
@@ -32,6 +38,12 @@ export function createQuestionnaireResponse(
   return qResponse;
 }
 
+/**
+ * Remove items with no answers from a given questionnaireResponse
+ * Generated questionnaireResponse only has items with answers
+ *
+ * @author Sean Fong
+ */
 export function cleanQrItem(
   qrItem: QuestionnaireResponseItem
 ): QuestionnaireResponseItem | undefined {
@@ -54,6 +66,11 @@ export function cleanQrItem(
   return qrItem['answer'] ? qrItem : undefined;
 }
 
+/**
+ * Create an empty group qrItem from a given group qItem
+ *
+ * @author Sean Fong
+ */
 export function createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {
   return {
     linkId: qItem.linkId,
@@ -62,6 +79,11 @@ export function createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseIt
   };
 }
 
+/**
+ * Create an empty qrItem from a given qItem
+ *
+ * @author Sean Fong
+ */
 export function createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
   return {
     linkId: qItem.linkId,
@@ -70,7 +92,8 @@ export function createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseIte
 }
 
 /**
- * Updates the QuestionnaireResponseItem group by slotting in a new/modified child QuestionnaireResponseItem
+ * Updates the QuestionnaireResponseItem group by adding/removing
+ * a new/modified child QuestionnaireResponseItem into/from a qrGroup
  *
  * @author Sean Fong
  */
@@ -115,6 +138,12 @@ export function updateLinkedItem(
   }
 }
 
+/**
+ * Evaluate all calculated expressions after a change has been made in a questionnaireRespoonse
+ * Evaluation is done using fhirpath.evaluate function
+ *
+ * @author Sean Fong
+ */
 export function evaluateCalculatedExpressions(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
