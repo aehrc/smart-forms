@@ -1,6 +1,11 @@
-import { EnableWhenItems } from '../interfaces/Interfaces';
+import {
+  EnableWhenItemProperties,
+  EnableWhenItems,
+  EnableWhenLinkedItem
+} from '../interfaces/Interfaces';
 import {
   Quantity,
+  QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
@@ -148,12 +153,14 @@ function readQuestionnaireResponseItem(
 ) {
   const items = item.item;
   if (items && items.length > 0) {
+    // iterate through items of item recursively
     items.forEach((item) => {
       readQuestionnaireResponseItem(item, initialValues, linkedQuestionsMap);
     });
     return;
   }
 
+  // Read initial answer value of single qrItem
   if (linkedQuestionsMap[item.linkId] && item.answer) {
     initialValues[item.linkId] = item.answer;
   }
@@ -203,4 +210,28 @@ export function updateItemAnswer(
     });
   });
   return items;
+}
+
+/**
+ * Get enableWhen items' linked items and enableBehaviour attribute and save them in an EnableWhenItemProperties object
+ *
+ * @author Sean Fong
+ */
+export function getEnableWhenItemProperties(
+  qItem: QuestionnaireItem
+): EnableWhenItemProperties | null {
+  const enableWhen = qItem.enableWhen;
+  if (enableWhen) {
+    const EnableWhenItemProperties: EnableWhenItemProperties = { linked: [] };
+    EnableWhenItemProperties.linked = enableWhen.map((linkedItem): EnableWhenLinkedItem => {
+      return { enableWhen: linkedItem };
+    });
+
+    if (qItem.enableBehavior) {
+      EnableWhenItemProperties.enableBehavior = qItem.enableBehavior;
+    }
+
+    return EnableWhenItemProperties;
+  }
+  return null;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { QuestionnaireItem } from 'fhir/r5';
-import { isSpecificItemControl } from '../../../../functions/QItemFunctions';
+import { isSpecificItemControl } from '../../../../functions/ItemControlFunctions';
 
 interface Props {
   qItem: QuestionnaireItem;

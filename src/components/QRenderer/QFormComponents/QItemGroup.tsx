@@ -6,7 +6,6 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctio
 import QItemRepeatGroup from './QItemRepeatGroup';
 import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { isHidden } from '../../../functions/QItemFunctions';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../QForm';
@@ -14,6 +13,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
+import { isHidden } from '../../../functions/ItemControlFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

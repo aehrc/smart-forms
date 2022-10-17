@@ -2,6 +2,11 @@ import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 
+/**
+ * Sends a request to forms server to obtain the first ten questionnaires that fufills the parameters provided
+ *
+ * @author Sean Fong
+ */
 export async function loadQuestionnairesFromServer(params?: string): Promise<Bundle> {
   const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
   const urlParams = params ? params : '';
@@ -19,6 +24,12 @@ export async function loadQuestionnairesFromServer(params?: string): Promise<Bun
   });
 }
 
+/**
+ * Sends a request to client CMS to obtain the questionnaireResponses with a given questionnaire context
+ * TODO add patient context
+ *
+ * @author Sean Fong
+ */
 export async function loadQuestionnaireResponsesFromServer(
   client: Client,
   questionnaireId: string
@@ -36,6 +47,11 @@ export async function loadQuestionnaireResponsesFromServer(
   });
 }
 
+/**
+ * Obtains an array of questionnaires from a bundle of questionnaires
+ *
+ * @author Sean Fong
+ */
 export function getQuestionnairesFromBundle(bundle: Bundle): Questionnaire[] {
   if (!bundle.entry) return [];
 
@@ -47,6 +63,11 @@ export function getQuestionnairesFromBundle(bundle: Bundle): Questionnaire[] {
   }, []);
 }
 
+/**
+ * Obtains an array of questionnaireResponses from a bundle of questionnaireResponses
+ *
+ * @author Sean Fong
+ */
 export function getQResponsesFromBundle(bundle: Bundle): QuestionnaireResponse[] {
   if (!bundle.entry) return [];
 

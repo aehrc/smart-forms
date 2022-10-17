@@ -6,8 +6,8 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
-import { isSpecificItemControl } from './QItemFunctions';
 import { QItemChoiceControl, QItemChoiceOrientation } from '../interfaces/Enums';
+import { isSpecificItemControl } from './ItemControlFunctions';
 
 /**
  * Get choice control type based on certain criteria in choice items

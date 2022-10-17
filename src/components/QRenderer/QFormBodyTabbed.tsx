@@ -7,7 +7,7 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../functions/IndexFunctions'
 import QItemGroup from './QFormComponents/QItemGroup';
 import { isTab } from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
-import { getShortText } from '../../functions/QItemFunctions';
+import { getShortText } from '../../functions/ItemControlFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;

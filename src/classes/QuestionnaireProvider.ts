@@ -1,7 +1,8 @@
 import questionnaireData from '../data/resources/715.R4.json';
 import { Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
-import { getCalculatedExpression, getEnableWhenItemProperties } from '../functions/QItemFunctions';
 import { CalculatedExpression, EnableWhenItemProperties } from '../interfaces/Interfaces';
+import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
+import { getCalculatedExpression } from '../functions/ItemControlFunctions';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
@@ -22,6 +23,11 @@ export class QuestionnaireProvider {
     this.readVariables();
   }
 
+  /**
+   * Check if an extension is a variable and gets all variable expressions
+   *
+   * @author Sean Fong
+   */
   readVariables() {
     if (!this.questionnaire.item) return;
 
@@ -40,6 +46,11 @@ export class QuestionnaireProvider {
     });
   }
 
+  /**
+   * Read all enableWhen items and calculated expressions in questionnaireResponse
+   *
+   * @author Sean Fong
+   */
   readCalculatedExpressionsAndEnableWhenItems() {
     if (!this.questionnaire.item) return;
 
@@ -48,13 +59,20 @@ export class QuestionnaireProvider {
     });
   }
 
+  /**
+   * Read enableWhen items and calculated expressions of each qItem recursively
+   *
+   * @author Sean Fong
+   */
   readQuestionnaireItem(item: QuestionnaireItem) {
     const items = item.item;
     if (items && items.length > 0) {
+      // iterate through items of item recursively
       items.forEach((item) => {
         this.readQuestionnaireItem(item);
       });
 
+      // Read enableWhen item and calculated expressions of group qItem
       const EnableWhenItemProperties = getEnableWhenItemProperties(item);
       if (EnableWhenItemProperties) {
         this.enableWhenItems[item.linkId] = EnableWhenItemProperties;
@@ -62,6 +80,7 @@ export class QuestionnaireProvider {
       return;
     }
 
+    // Read enableWhen item and calculated expressions of simple qItem
     const calculatedExpression = getCalculatedExpression(item);
     if (calculatedExpression) {
       this.calculatedExpressions[item.linkId] = {

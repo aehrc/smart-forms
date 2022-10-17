@@ -10,7 +10,6 @@ import QItemDateTime from './QItemSimple/QItemDateTime';
 import QItemDecimal from './QItemSimple/QItemDecimal';
 import QItemQuantity from './QItemSimple/QItemQuantity';
 import QItemChoice from './QItemChoice/QItemChoice';
-import { isHidden } from '../../../functions/QItemFunctions';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemSimple/QItemTime';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice';
@@ -20,6 +19,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
+import { isHidden } from '../../../functions/ItemControlFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
