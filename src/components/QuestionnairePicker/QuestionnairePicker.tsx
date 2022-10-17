@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Card, Container, Grid } from '@mui/material';
 import {
   getQResponsesFromBundle,
-  getQuestionnairesFromBundle,
-  loadQuestionnaireResponsesFromServer,
-  loadQuestionnairesFromServer
-} from '../qform/functions/LoadServerResourceFunctions';
+  loadQuestionnaireResponsesFromServer
+} from '../../functions/LoadServerResourceFunctions';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
-import { QuestionnaireProvider } from '../qform/QuestionnaireProvider';
+import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
-import { ResourcePickerStore } from './ResourcePickerStore';
+import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -18,27 +16,13 @@ interface Props {
 
 function QuestionnairePicker(props: Props) {
   const { questionnaireProvider } = props;
+  const fhirClient = React.useContext(FhirClientContext).fhirClient;
+
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [qResponses, setQResponses] = useState<QuestionnaireResponse[]>([]);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [selectedQResponse, setSelectedQResponse] = useState<QuestionnaireResponse | null>(null);
-
-  const resourcePickerStore = new ResourcePickerStore();
-
-  useEffect(() => {
-    resourcePickerStore.addQuestionnaires([questionnaireProvider.questionnaire]);
-
-    loadQuestionnairesFromServer()
-      .then((bundle) => {
-        if (bundle.entry) {
-          resourcePickerStore.addQuestionnaires(getQuestionnairesFromBundle(bundle));
-          setQuestionnaires(Object.values(resourcePickerStore.questionnaires));
-        }
-      })
-      .catch((error) => {
-        setQuestionnaires(Object.values(resourcePickerStore.questionnaires));
-        console.log(error);
-      });
-  }, []);
+  const [qrIsSearching, setQrIsSearching] = useState(false);
 
   function selectQuestionnaireByIndex(index: number) {
     const selectedQuestionnaire = questionnaires[index];
@@ -46,20 +30,19 @@ function QuestionnairePicker(props: Props) {
 
     if (!selectedQuestionnaireId) return null;
 
-    loadQuestionnaireResponsesFromServer(selectedQuestionnaireId)
-      .then((bundle) => {
-        if (bundle.entry) {
-          const responses = getQResponsesFromBundle(bundle);
-          resourcePickerStore.addQuestionnaireResponses(selectedQuestionnaireId, responses);
-
-          setQResponses(
-            Object.values(resourcePickerStore.qResponsesOfQuestionnaire[selectedQuestionnaireId])
-          );
-        } else {
-          setQResponses([]);
-        }
-      })
-      .catch((error) => console.log(error));
+    if (fhirClient) {
+      setQrIsSearching(true);
+      loadQuestionnaireResponsesFromServer(fhirClient, selectedQuestionnaireId)
+        .then((bundle) => {
+          setQResponses(bundle.entry ? getQResponsesFromBundle(bundle) : []);
+          setQrIsSearching(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setQrIsSearching(false);
+        });
+    }
+    setSelectedQuestionnaire(selectedQuestionnaire);
   }
 
   function selectQResponseByIndex(index: number) {
@@ -70,30 +53,32 @@ function QuestionnairePicker(props: Props) {
     }
   }
 
-  return (
+  const renderQuestionnairePicker = (
     <Container maxWidth="lg">
-      <Card elevation={2} sx={{ mt: 10 }}>
-        <Box display="flex" flexDirection="column" minHeight="82.5vh" sx={{ p: 8 }}>
-          <Grid container spacing={8}>
-            <Grid item xs={6}>
-              <QuestionnairePickerForm
-                questionnaires={questionnaires}
-                questionnaireProvider={questionnaireProvider}
-                onSelectedIndexChange={selectQuestionnaireByIndex}
-              />
-            </Grid>
-
-            <Grid item xs={6}>
-              {qResponses.length !== 0 ? (
-                <QuestionnaireResponsePickerForm
-                  questionnaireResponses={qResponses}
-                  onSelectedIndexChange={selectQResponseByIndex}
-                />
-              ) : null}
-            </Grid>
+      <Box display="flex" height="100vh" flexDirection="column" justifyContent="center">
+        <Grid container spacing={8}>
+          <Grid item xs={6}>
+            <QuestionnairePickerForm
+              questionnaires={questionnaires}
+              questionnaireProvider={questionnaireProvider}
+              setQuestionnaires={setQuestionnaires}
+              setQuestionnaireResponses={setQResponses}
+              onQSelectedIndexChange={selectQuestionnaireByIndex}
+            />
           </Grid>
-        </Box>
-      </Card>
+
+          <Grid item xs={6}>
+            <QuestionnaireResponsePickerForm
+              fhirClient={fhirClient}
+              questionnaireResponses={qResponses}
+              qrIsSearching={qrIsSearching}
+              selectedQuestionnaire={selectedQuestionnaire}
+              questionnaireProvider={questionnaireProvider}
+              onQrSelectedIndexChange={selectQResponseByIndex}
+            />
+          </Grid>
+        </Grid>
+      </Box>
 
       {selectedQResponse ? (
         <Card elevation={2} sx={{ my: 20 }}>
@@ -104,6 +89,8 @@ function QuestionnairePicker(props: Props) {
       ) : null}
     </Container>
   );
+
+  return <>{renderQuestionnairePicker}</>;
 }
 
 export default QuestionnairePicker;

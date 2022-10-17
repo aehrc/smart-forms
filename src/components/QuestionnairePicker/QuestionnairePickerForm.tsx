@@ -1,49 +1,85 @@
-import React, { useState } from 'react';
-import { Button, Card, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
+import React, { useCallback, useState } from 'react';
+import { Button, Card, Stack, TextField, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
-import { Questionnaire } from 'fhir/r5';
-import { QuestionnaireProvider } from '../qform/QuestionnaireProvider';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
+import { debounce } from 'lodash';
+import {
+  getQuestionnairesFromBundle,
+  loadQuestionnairesFromServer
+} from '../../functions/LoadServerResourceFunctions';
+import QuestionnairePickerQList from './QuestionnairePickerQList';
 
 interface Props {
   questionnaires: Questionnaire[];
   questionnaireProvider: QuestionnaireProvider;
-  onSelectedIndexChange: (index: number) => unknown;
+  setQuestionnaires: React.Dispatch<React.SetStateAction<Questionnaire[]>>;
+  setQuestionnaireResponses: React.Dispatch<React.SetStateAction<QuestionnaireResponse[]>>;
+  onQSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnairePickerForm(props: Props) {
-  const { questionnaires, questionnaireProvider, onSelectedIndexChange } = props;
+  const {
+    questionnaires,
+    setQuestionnaires,
+    setQuestionnaireResponses,
+    questionnaireProvider,
+    onQSelectedIndexChange
+  } = props;
 
+  const [searchInput, setSearchInput] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [qIsSearching, setQIsSearching] = useState(false);
   const navigate = useNavigate();
+
+  const functionDebounce = useCallback(
+    debounce((input: string) => {
+      loadQuestionnairesFromServer(`title=${input}`)
+        .then((bundle) => {
+          setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
+          setQIsSearching(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setQIsSearching(false);
+        });
+    }, 500),
+    []
+  );
 
   return (
     <>
-      <Stack direction={'column'}>
-        <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit">
+      <Stack direction={'column'} spacing={2}>
+        <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit" sx={{ mb: 2 }}>
           Questionnaires
         </Typography>
 
-        <Card elevation={3} sx={{ my: 3.5 }}>
-          <List sx={{ width: '100%', maxHeight: 540, overflow: 'auto', py: 0 }}>
-            {questionnaires.map((questionnaire, i) => (
-              <React.Fragment key={questionnaire.id}>
-                <ListItemButton
-                  selected={selectedIndex === i}
-                  sx={{ p: 2 }}
-                  onClick={() => {
-                    onSelectedIndexChange(i);
-                    setSelectedIndex(i);
-                  }}>
-                  <ListItemText
-                    primary={`${questionnaire.title}`}
-                    primaryTypographyProps={{ fontSize: '18px' }}
-                    sx={{ px: 1.5 }}
-                  />
-                </ListItemButton>
-              </React.Fragment>
-            ))}
-          </List>
+        <TextField
+          value={searchInput}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            const input = event.target.value;
+            setQIsSearching(true);
+            setSelectedIndex(null);
+            setQuestionnaires([]);
+            setQuestionnaireResponses([]);
+            setSearchInput(input);
+            functionDebounce(input);
+          }}
+          label="Search Questionnaires"
+        />
+
+        <Card elevation={1} sx={{ height: 508 }}>
+          <QuestionnairePickerQList
+            questionnaires={questionnaires}
+            searchInput={searchInput}
+            selectedIndex={selectedIndex}
+            qIsSearching={qIsSearching}
+            onQSelectedIndexChange={(index) => {
+              onQSelectedIndexChange(index);
+              setSelectedIndex(index);
+            }}
+          />
         </Card>
 
         <Button
@@ -56,7 +92,7 @@ function QuestionnairePickerForm(props: Props) {
             }
           }}
           sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
-          Go to Questionnaire
+          Start a new Questionnaire response
           <ArticleIcon sx={{ ml: 1.5 }} />
         </Button>
       </Stack>

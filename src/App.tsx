@@ -3,11 +3,12 @@ import './App.css';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import getTheme from './theme';
-import QPage from './components/qform/QPage';
+import QRenderer from './components/QRenderer/QRenderer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Launch from './components/Launch';
+import Launch from './components/LaunchPage/Launch';
 import QuestionnairePicker from './components/QuestionnairePicker/QuestionnairePicker';
-import { QuestionnaireProvider } from './components/qform/QuestionnaireProvider';
+import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
+import FhirClientProvider from './custom-contexts/FhirClientContext';
 
 const questionnaireProvider = new QuestionnaireProvider();
 questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
@@ -17,18 +18,20 @@ function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   return (
     <ThemeProvider theme={getTheme(prefersDarkMode)}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<QPage questionnaireProvider={questionnaireProvider} />} />
-          <Route
-            path="/picker"
-            element={<QuestionnairePicker questionnaireProvider={questionnaireProvider} />}
-          />
-          <Route path="/launch" element={<Launch />} />
-          <Route path="*" element={<QPage questionnaireProvider={questionnaireProvider} />} />
-        </Routes>
-      </BrowserRouter>
+      <FhirClientProvider>
+        <CssBaseline />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<QRenderer questionnaireProvider={questionnaireProvider} />} />
+            <Route
+              path="/picker"
+              element={<QuestionnairePicker questionnaireProvider={questionnaireProvider} />}
+            />
+            <Route path="/launch" element={<Launch />} />
+            <Route path="*" element={<QRenderer questionnaireProvider={questionnaireProvider} />} />
+          </Routes>
+        </BrowserRouter>
+      </FhirClientProvider>
     </ThemeProvider>
   );
 }
