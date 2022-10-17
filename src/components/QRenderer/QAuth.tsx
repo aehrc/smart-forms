@@ -3,13 +3,15 @@ import React, { useEffect } from 'react';
 import { oauth2 } from 'fhirclient';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 import QRenderer from './QRenderer';
+import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
+  questionnaireResponseProvider: QuestionnaireResponseProvider;
 }
 
 function QAuth(props: Props) {
-  const { questionnaireProvider } = props;
+  const { questionnaireProvider, questionnaireResponseProvider } = props;
   const fhirClientContext = React.useContext(FhirClientContext);
 
   useEffect(() => {
@@ -23,7 +25,12 @@ function QAuth(props: Props) {
       });
   }, []);
 
-  return <QRenderer questionnaireProvider={questionnaireProvider} />;
+  return (
+    <QRenderer
+      questionnaireProvider={questionnaireProvider}
+      questionnaireResponseProvider={questionnaireResponseProvider}
+    />
+  );
 }
 
 export default QAuth;

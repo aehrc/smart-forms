@@ -16,7 +16,7 @@ function NoQuestionnaireErrorPage() {
             </Typography>
             <Box>
               <Typography fontSize={18} textAlign={'center'}>
-                Uh oh, we cannot seem to locate a questionnaire.
+                {"Uh oh, we can't seem to locate a questionnaire."}
               </Typography>
               <Typography fontSize={18} textAlign={'center'}>
                 Select a questionnaire from the following page and you will be all set.

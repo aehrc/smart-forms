@@ -47,7 +47,7 @@ function QuestionnairePickerQList(props: Props) {
     return (
       <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Typography variant="subtitle2" textAlign="center">
-          We did not manage to find anything from the search terms - <b>{searchInput}</b>.
+          {`We didn't manage to find anything from the search terms - ${searchInput}.`}
         </Typography>
         <Typography variant="subtitle2" textAlign="center">
           Try searching for something else.

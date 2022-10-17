@@ -12,22 +12,27 @@ import QTitle from './QTitle';
 import { populate } from '../../functions/PrepopulateFunctions';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 import NoQuestionnaireErrorPage from './NoQuestionnaireErrorPage';
+import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
+  questionnaireResponseProvider: QuestionnaireResponseProvider;
 }
 
 function QRenderer(props: Props) {
-  const { questionnaireProvider } = props;
+  const { questionnaireProvider, questionnaireResponseProvider } = props;
   const fhirClientContext = React.useContext(FhirClientContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
+  const qResponse = questionnaireResponseProvider.questionnaireResponse;
   if (!questionnaire.item) {
     return <NoQuestionnaireErrorPage />;
   }
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
-    createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
+    qResponse.item
+      ? qResponse
+      : createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
   );
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
@@ -50,7 +55,10 @@ function QRenderer(props: Props) {
         setPatient(patient);
         setSpinner({ ...spinner, message: 'Loading questionnaire form' });
 
-        if (questionnaire.contained) {
+        const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item;
+
+        // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
+        if (questionnaire.contained && !qrFormItem) {
           // obtain questionnaireResponse for prepopulation
           populate(client, questionnaire, patient, (qResponse, batchResponse) => {
             setQuestionnaireResponse(qResponse);
