@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
-import { AnswerValueSet } from '../../../../classes/AnswerValueSet';
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
+import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -26,30 +26,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     valueCoding = qrChoiceSelect['answer'][0].valueCoding;
   }
 
-  const [options, setOptions] = useState<Coding[]>([]);
-
-  // get options from answerValueSet on render
-  useEffect(() => {
-    const valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl) return;
-
-    // set options from cached answer options if present
-    const cachedAnswerOptions = AnswerValueSet.cache[valueSetUrl];
-    if (cachedAnswerOptions) {
-      setOptions(cachedAnswerOptions);
-      return;
-    }
-
-    // get options from ontoserver and cache them for future use
-    AnswerValueSet.expand(valueSetUrl, (newOptions: ValueSet) => {
-      const contains = newOptions.expansion?.contains;
-      if (contains) {
-        const answerOptions = AnswerValueSet.getValueCodings(contains);
-        AnswerValueSet.cache[valueSetUrl] = answerOptions;
-        setOptions(answerOptions);
-      }
-    });
-  }, [qItem]);
+  const [options] = useValueSetOptions(qItem);
 
   function handleChange(event: any, newValue: Coding | null) {
     if (newValue) {

@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FormControl, Grid, RadioGroup, Typography } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerValueSetCodings } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
-import { AnswerValueSet } from '../../../../classes/AnswerValueSet';
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
+import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -29,30 +29,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     valueRadio = qrChoiceRadio['answer'][0].valueCoding?.code;
   }
 
-  const [options, setOptions] = useState<Coding[]>([]);
-
-  // get options from answerValueSet on render
-  useEffect(() => {
-    const valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl) return;
-
-    // set options from cached answer options if present
-    const cachedAnswerOptions = AnswerValueSet.cache[valueSetUrl];
-    if (cachedAnswerOptions) {
-      setOptions(cachedAnswerOptions);
-      return;
-    }
-
-    // get options from ontoserver and cache them for future use
-    AnswerValueSet.expand(valueSetUrl, (newOptions: ValueSet) => {
-      const contains = newOptions.expansion?.contains;
-      if (contains) {
-        const answerOptions = AnswerValueSet.getValueCodings(contains);
-        AnswerValueSet.cache[valueSetUrl] = answerOptions;
-        setOptions(answerOptions);
-      }
-    });
-  }, [qItem]);
+  const [options] = useValueSetOptions(qItem);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (options.length > 0) {
