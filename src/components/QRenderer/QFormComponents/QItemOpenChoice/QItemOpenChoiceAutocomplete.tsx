@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Autocomplete,
   CircularProgress,
@@ -7,14 +7,14 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
+import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
-import { AnswerValueSet } from '../../../../classes/AnswerValueSet';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -34,52 +34,29 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     valueAutocomplete = answer.valueCoding ? answer.valueCoding : answer.valueString;
   }
 
-  const [options, setOptions] = useState<Coding[]>([]);
-  const [loading, setLoading] = useState(false);
   const answerValueSetUrl = qItem.answerValueSet;
+  if (!answerValueSetUrl) return null;
+
   const maxlist = 10;
+
+  const { options, loading, fetchNewOptions } = useValueSetAutocomplete(answerValueSetUrl, maxlist);
 
   function handleValueChange(event: any, newValue: Coding | string | null) {
     if (newValue) {
-      if (typeof newValue === 'string') {
-        onQrItemChange({ ...qrOpenChoice, answer: [{ valueString: newValue }] });
-      } else {
-        onQrItemChange({ ...qrOpenChoice, answer: [{ valueCoding: newValue }] });
-      }
+      onQrItemChange({
+        ...qrOpenChoice,
+        answer: [
+          typeof newValue === 'string' ? { valueString: newValue } : { valueCoding: newValue }
+        ]
+      });
       return;
     }
-    onQrItemChange(createQrItem(qItem));
   }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    if (!answerValueSetUrl) return;
-
     const newInput = event.target.value;
 
-    // make no changes if input is less than 2 characters long
-    if (newInput.length < 2) {
-      setOptions([]);
-      return;
-    }
-
-    const fullUrl = answerValueSetUrl + 'filter=' + newInput + '&count=' + maxlist;
-    const cachedAnswerOptions = AnswerValueSet.cache[fullUrl];
-    if (cachedAnswerOptions) {
-      // set options from cached answer options
-      setOptions(cachedAnswerOptions);
-    } else {
-      // expand valueSet, then set and cache answer options
-      setLoading(true);
-      AnswerValueSet.expand(fullUrl, (newOptions: ValueSet) => {
-        const contains = newOptions.expansion?.contains;
-        if (contains) {
-          const answerOptions = AnswerValueSet.getValueCodings(contains);
-          AnswerValueSet.cache[fullUrl] = answerOptions;
-          setOptions(answerOptions);
-        }
-        setLoading(false);
-      });
-    }
+    fetchNewOptions(newInput);
     handleValueChange(event, newInput);
   }
 
