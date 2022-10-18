@@ -13,7 +13,6 @@ import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
-import Preview from '../Preview/Preview';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -130,8 +129,6 @@ function QForm(props: Props) {
                 </Typography>
               </div>
             )}
-
-            <Preview questionnaire={questionnaire} questionnaireResponse={questionnaireResponse} />
 
             {hideQResponse ? null : (
               <DisplayDebugQResponse

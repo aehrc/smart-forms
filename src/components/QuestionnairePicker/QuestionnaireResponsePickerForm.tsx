@@ -74,8 +74,7 @@ function QuestionnaireResponsePickerForm(props: Props) {
               questionnaireResponseProvider.setQuestionnaireResponse(
                 questionnaireResponses[selectedIndex]
               );
-              navigate(`/`);
-              // TODO navigate to a preview page, not the form itself
+              navigate(`/preview`);
             }
           }}
           sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>

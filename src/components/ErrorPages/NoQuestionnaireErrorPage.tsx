@@ -26,9 +26,7 @@ function NoQuestionnaireErrorPage() {
             <Button
               variant="contained"
               sx={{ borderRadius: 5, height: 40 }}
-              onClick={() => {
-                navigate(`/picker`);
-              }}>
+              onClick={() => navigate(`/picker`)}>
               <ArticleIcon sx={{ mr: 1.5 }} />
               Select Questionnaire
             </Button>
