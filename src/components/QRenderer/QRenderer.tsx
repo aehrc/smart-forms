@@ -11,7 +11,7 @@ import { Container } from '@mui/material';
 import QTitle from './QTitle';
 import { populate } from '../../functions/PrepopulateFunctions';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
-import NoQuestionnaireErrorPage from './NoQuestionnaireErrorPage';
+import NoQuestionnaireErrorPage from '../ErrorPages/NoQuestionnaireErrorPage';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {

@@ -13,6 +13,7 @@ import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
+import Preview from '../Preview/Preview';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -123,10 +124,14 @@ function QForm(props: Props) {
                 Save
               </Button>
             ) : (
-              <Typography>
-                Save functionality not available as application is not connected to CMS
-              </Typography>
+              <div>
+                <Typography>
+                  Save functionality not available as application is not connected to CMS
+                </Typography>
+              </div>
             )}
+
+            <Preview questionnaire={questionnaire} questionnaireResponse={questionnaireResponse} />
 
             {hideQResponse ? null : (
               <DisplayDebugQResponse
