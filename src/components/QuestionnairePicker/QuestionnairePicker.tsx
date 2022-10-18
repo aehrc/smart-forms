@@ -9,13 +9,15 @@ import QuestionnairePickerForm from './QuestionnairePickerForm';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
+import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
+  questionnaireResponseProvider: QuestionnaireResponseProvider;
 }
 
 function QuestionnairePicker(props: Props) {
-  const { questionnaireProvider } = props;
+  const { questionnaireProvider, questionnaireResponseProvider } = props;
   const fhirClient = React.useContext(FhirClientContext).fhirClient;
 
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
@@ -74,6 +76,7 @@ function QuestionnairePicker(props: Props) {
               qrIsSearching={qrIsSearching}
               selectedQuestionnaire={selectedQuestionnaire}
               questionnaireProvider={questionnaireProvider}
+              questionnaireResponseProvider={questionnaireResponseProvider}
               onQrSelectedIndexChange={selectQResponseByIndex}
             />
           </Grid>

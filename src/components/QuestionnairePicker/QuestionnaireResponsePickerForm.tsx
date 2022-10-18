@@ -6,6 +6,7 @@ import QuestionnaireResponsePickerQRList from './QuestionnaireResponsePickerQRLi
 import Client from 'fhirclient/lib/Client';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { useNavigate } from 'react-router-dom';
+import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {
   fhirClient: Client | null;
@@ -13,6 +14,7 @@ interface Props {
   qrIsSearching: boolean;
   selectedQuestionnaire: Questionnaire | null;
   questionnaireProvider: QuestionnaireProvider;
+  questionnaireResponseProvider: QuestionnaireResponseProvider;
   onQrSelectedIndexChange: (index: number) => unknown;
 }
 
@@ -23,6 +25,7 @@ function QuestionnaireResponsePickerForm(props: Props) {
     qrIsSearching,
     selectedQuestionnaire,
     questionnaireProvider,
+    questionnaireResponseProvider,
     onQrSelectedIndexChange
   } = props;
 
@@ -68,7 +71,11 @@ function QuestionnaireResponsePickerForm(props: Props) {
           onClick={() => {
             if (typeof selectedIndex === 'number' && selectedQuestionnaire) {
               questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
+              questionnaireResponseProvider.setQuestionnaireResponse(
+                questionnaireResponses[selectedIndex]
+              );
               navigate(`/`);
+              // TODO navigate to a preview page, not the form itself
             }
           }}
           sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
