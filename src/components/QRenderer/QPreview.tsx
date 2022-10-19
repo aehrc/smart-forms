@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Container } from '@mui/material';
+import { Box, Button, Container, Stack } from '@mui/material';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../functions/PreviewFunctions';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
@@ -7,6 +7,7 @@ import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireRespon
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import PrintIcon from '@mui/icons-material/Print';
+import { ArrowBack } from '@mui/icons-material';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -26,26 +27,27 @@ function QPreview(props: Props) {
   // TODO fix preview page styling
   // TODO text too big and too close to borders
   // TODO fix dark mode grey text when printing
-  // TODO check qr status and display edit button conditionally
 
   return (
     <Container maxWidth="lg">
-      <Box displayPrint="none" display="flex" flexDirection={'row'}>
-        <Box sx={{ flexGrow: 1 }}>
+      <Box displayPrint="none">
+        <Stack direction={'row'} spacing={2}>
+          <Button variant="contained" onClick={() => navigate(`/picker`)} sx={{ borderRadius: 20 }}>
+            <ArrowBack sx={{ mr: 1 }} />
+            Back to Questionnaires
+          </Button>
           <Button variant="contained" onClick={() => window.print()} sx={{ borderRadius: 20 }}>
             <PrintIcon sx={{ mr: 1 }} />
             Print Preview
           </Button>
-        </Box>
 
-        <Box>
           {qResponse.status === 'completed' ? null : (
             <Button variant="contained" onClick={() => navigate(`/`)} sx={{ borderRadius: 20 }}>
               <EditIcon sx={{ mr: 1 }} />
               Edit Response
             </Button>
           )}
-        </Box>
+        </Stack>
       </Box>
       <Box sx={{ my: 3 }}>
         <div>{parsed}</div>
