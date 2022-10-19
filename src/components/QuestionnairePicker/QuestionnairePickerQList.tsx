@@ -61,14 +61,13 @@ function QuestionnairePickerQList(props: Props) {
           <React.Fragment key={questionnaire.id}>
             <ListItemButton
               selected={selectedIndex === i}
-              sx={{ p: 1.25 }}
+              sx={{ py: 1.25, px: 2.5 }}
               onClick={() => {
                 onQSelectedIndexChange(i);
               }}>
               <ListItemText
                 primary={`${questionnaire.title}`}
                 primaryTypographyProps={{ variant: 'subtitle2' }}
-                sx={{ px: 1.5 }}
               />
             </ListItemButton>
             <Divider light />
