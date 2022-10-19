@@ -38,12 +38,12 @@ function QuestionnaireResponsePickerForm(props: Props) {
         <Card elevation={1} sx={{ height: 57.5, mt: 10 }}>
           <Box sx={{ m: 2.5 }}>
             <Grid container spacing={2}>
-              <Grid item xs={10}>
+              <Grid item xs={9}>
                 <Typography variant="subtitle2" fontWeight="bold">
                   Responses
                 </Typography>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3}>
                 <Typography variant="subtitle2" fontWeight="bold">
                   Status
                 </Typography>
@@ -74,8 +74,7 @@ function QuestionnaireResponsePickerForm(props: Props) {
               questionnaireResponseProvider.setQuestionnaireResponse(
                 questionnaireResponses[selectedIndex]
               );
-              navigate(`/`);
-              // TODO navigate to a preview page, not the form itself
+              navigate(`/preview`);
             }
           }}
           sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>

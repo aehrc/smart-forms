@@ -4,6 +4,7 @@ import {
   Box,
   Card,
   Divider,
+  Grid,
   List,
   ListItemButton,
   ListItemText,
@@ -67,15 +68,28 @@ function QuestionnaireResponsePickerQRList(props: Props) {
           <React.Fragment key={questionnaireResponse.id}>
             <ListItemButton
               selected={selectedIndex === i}
-              sx={{ p: 1.25 }}
+              sx={{ py: 1.25, px: 2.5 }}
               onClick={() => {
                 onQrSelectedIndexChange(i);
               }}>
-              <ListItemText
-                primary={dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')}
-                primaryTypographyProps={{ variant: 'subtitle2' }}
-                sx={{ px: 1.5 }}
-              />
+              <Grid container spacing={2}>
+                <Grid item xs={9}>
+                  <ListItemText
+                    primary={dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')}
+                    primaryTypographyProps={{ variant: 'subtitle2' }}
+                  />
+                </Grid>
+
+                <Grid item xs={3}>
+                  <ListItemText
+                    primary={
+                      questionnaireResponse.status[0].toUpperCase() +
+                      questionnaireResponse.status.slice(1)
+                    }
+                    primaryTypographyProps={{ variant: 'subtitle2' }}
+                  />
+                </Grid>
+              </Grid>
             </ListItemButton>
             <Divider light />
           </React.Fragment>

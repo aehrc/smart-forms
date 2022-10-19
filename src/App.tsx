@@ -10,6 +10,7 @@ import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
 import FhirClientProvider from './custom-contexts/FhirClientContext';
 import QAuth from './components/QRenderer/QAuth';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
+import QPreview from './components/QRenderer/QPreview';
 
 const questionnaireProvider = new QuestionnaireProvider();
 questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
@@ -38,6 +39,15 @@ function App() {
               path="/picker"
               element={
                 <QuestionnairePicker
+                  questionnaireProvider={questionnaireProvider}
+                  questionnaireResponseProvider={questionnaireResponseProvider}
+                />
+              }
+            />
+            <Route
+              path="/preview"
+              element={
+                <QPreview
                   questionnaireProvider={questionnaireProvider}
                   questionnaireResponseProvider={questionnaireResponseProvider}
                 />

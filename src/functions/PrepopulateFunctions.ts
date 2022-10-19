@@ -28,10 +28,13 @@ export function populate(
         // get questionnaireResponse from population parameters
         const parameters = definePopulationParameters(patient, batchResponse);
         const qrPromise = prepopulationQueryRequest(questionnaire, parameters);
+
         qrPromise
           .then((qResponse) => {
+            // add patient reference to questionnaireResponse
             // set questionnaireResponse in callback function
-            prepopulateForm(qResponse, batchResponse);
+            const qResponseWithPatientRef = addQRPatientReference(patient, qResponse);
+            prepopulateForm(qResponseWithPatientRef, batchResponse);
           })
           .catch((error) => console.log(error));
       })
@@ -126,4 +129,15 @@ function prepopulationQueryRequest(
     body: JSON.stringify(parameters),
     headers: headers
   });
+}
+
+function addQRPatientReference(patient: Patient, questionnaireResponse: QuestionnaireResponse) {
+  if (!patient.id) return questionnaireResponse;
+
+  return {
+    ...questionnaireResponse,
+    subject: {
+      reference: `Patient/${patient.id}`
+    }
+  };
 }
