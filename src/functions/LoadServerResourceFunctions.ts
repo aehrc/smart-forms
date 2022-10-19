@@ -1,4 +1,4 @@
-import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import { Bundle, Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 
@@ -32,6 +32,7 @@ export async function loadQuestionnairesFromServer(params?: string): Promise<Bun
  */
 export async function loadQuestionnaireResponsesFromServer(
   client: Client,
+  patient: Patient | null,
   questionnaireId: string
 ): Promise<Bundle> {
   const headers = {
@@ -40,8 +41,11 @@ export async function loadQuestionnaireResponsesFromServer(
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
+  let requestUrl = `QuestionnaireResponse?questionnaire=${questionnaireId}`;
+  requestUrl += patient ? `&patient=${patient.id}` : '';
+
   return client.request({
-    url: `QuestionnaireResponse?questionnaire=${questionnaireId}`,
+    url: requestUrl,
     method: 'GET',
     headers: headers
   });

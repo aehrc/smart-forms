@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Card, Container, Grid } from '@mui/material';
 import {
   getQResponsesFromBundle,
   loadQuestionnaireResponsesFromServer
 } from '../../functions/LoadServerResourceFunctions';
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import { Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import { getPatient } from '../../functions/LaunchFunctions';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -20,11 +21,21 @@ function QuestionnairePicker(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider } = props;
   const fhirClient = React.useContext(FhirClientContext).fhirClient;
 
+  const [patient, setPatient] = useState<Patient | null>(null);
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [qResponses, setQResponses] = useState<QuestionnaireResponse[]>([]);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [selectedQResponse, setSelectedQResponse] = useState<QuestionnaireResponse | null>(null);
   const [qrIsSearching, setQrIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (!fhirClient) return;
+
+    // request patient details
+    getPatient(fhirClient).then((patient) => {
+      setPatient(patient);
+    });
+  }, []);
 
   function selectQuestionnaireByIndex(index: number) {
     const selectedQuestionnaire = questionnaires[index];
@@ -34,7 +45,7 @@ function QuestionnairePicker(props: Props) {
 
     if (fhirClient) {
       setQrIsSearching(true);
-      loadQuestionnaireResponsesFromServer(fhirClient, selectedQuestionnaireId)
+      loadQuestionnaireResponsesFromServer(fhirClient, patient, selectedQuestionnaireId)
         .then((bundle) => {
           setQResponses(bundle.entry ? getQResponsesFromBundle(bundle) : []);
           setQrIsSearching(false);
