@@ -90,6 +90,7 @@ function QRenderer(props: Props) {
         <QTitle questionnaire={questionnaire} />
         <QForm
           questionnaireProvider={questionnaireProvider}
+          questionnaireResponseProvider={questionnaireResponseProvider}
           qrResponse={questionnaireResponse}
           batchResponse={batchResponse}
         />

@@ -23,7 +23,7 @@ function QTitle(props: Props) {
           onClick={() => {
             navigate(`/picker`);
           }}>
-          <ChangeCircleIcon sx={{ mr: 0.5 }} />
+          <ChangeCircleIcon sx={{ mr: 1 }} />
           Change Questionnaire
         </Button>
       </Box>

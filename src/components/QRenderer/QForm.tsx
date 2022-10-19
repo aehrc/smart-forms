@@ -13,9 +13,13 @@ import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
+import { Publish, Save, Visibility } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
+  questionnaireResponseProvider: QuestionnaireResponseProvider;
   qrResponse: QuestionnaireResponse;
   batchResponse: Bundle | null; // only for testing
 }
@@ -25,7 +29,7 @@ export const CalcExpressionContext = React.createContext<Record<string, Calculat
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
 function QForm(props: Props) {
-  const { questionnaireProvider, qrResponse, batchResponse } = props;
+  const { questionnaireProvider, questionnaireResponseProvider, qrResponse, batchResponse } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
   const fhirClient = React.useContext(FhirClientContext).fhirClient;
 
@@ -45,6 +49,7 @@ function QForm(props: Props) {
 
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
+  const navigate = useNavigate();
 
   useEffect(() => {
     enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
@@ -108,27 +113,61 @@ function QForm(props: Props) {
                 }}></QFormBody>
             )}
 
-            {fhirClient ? (
+            <Stack direction={'row'} spacing={2}>
               <Button
-                variant="outlined"
-                disabled={!qrHasChanges}
+                variant="contained"
                 onClick={() => {
-                  saveQuestionnaireResponse(fhirClient, questionnaireResponse)
-                    .then((response) => {
-                      setQrHasChanges(false);
-                      console.log(response);
-                    })
-                    .catch((error) => console.log(error));
-                }}>
-                Save
+                  questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+                  navigate(`/preview`);
+                }}
+                sx={{ borderRadius: 20 }}>
+                <Visibility sx={{ mr: 1 }} />
+                Show Preview
               </Button>
-            ) : (
-              <div>
-                <Typography>
-                  Save functionality not available as application is not connected to CMS
-                </Typography>
-              </div>
-            )}
+
+              {fhirClient ? (
+                <>
+                  <Button
+                    variant="contained"
+                    disabled={!qrHasChanges}
+                    onClick={() => {
+                      questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+                      saveQuestionnaireResponse(fhirClient, questionnaireResponse)
+                        .then(() => {
+                          setQrHasChanges(false);
+                        })
+                        .catch((error) => console.log(error));
+                    }}
+                    sx={{ borderRadius: 20 }}>
+                    <Save sx={{ mr: 1 }} />
+                    Save
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    disabled={!qrHasChanges}
+                    onClick={() => {
+                      questionnaireResponse.status = 'completed';
+                      questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+                      saveQuestionnaireResponse(fhirClient, questionnaireResponse)
+                        .then(() => {
+                          setQrHasChanges(false);
+                        })
+                        .catch((error) => console.log(error));
+                    }}
+                    sx={{ borderRadius: 20 }}>
+                    <Publish sx={{ mr: 1 }} />
+                    Submit
+                  </Button>
+                </>
+              ) : (
+                <div>
+                  <Typography fontSize={8}>
+                    Save functionality not available as application is not connected to CMS
+                  </Typography>
+                </div>
+              )}
+            </Stack>
 
             {hideQResponse ? null : (
               <DisplayDebugQResponse

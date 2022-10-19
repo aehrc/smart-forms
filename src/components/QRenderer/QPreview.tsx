@@ -32,23 +32,19 @@ function QPreview(props: Props) {
     <Container maxWidth="lg">
       <Box displayPrint="none" display="flex" flexDirection={'row'}>
         <Box sx={{ flexGrow: 1 }}>
-          <Button
-            variant="contained"
-            onClick={() => window.print()}
-            sx={{ fontSize: 16, textTransform: 'Capitalize' }}>
-            Print
-            <PrintIcon sx={{ ml: 1 }} />
+          <Button variant="contained" onClick={() => window.print()} sx={{ borderRadius: 20 }}>
+            <PrintIcon sx={{ mr: 1 }} />
+            Print Preview
           </Button>
         </Box>
 
         <Box>
-          <Button
-            variant="contained"
-            onClick={() => navigate(`/`)}
-            sx={{ fontSize: 16, textTransform: 'Capitalize' }}>
-            Edit
-            <EditIcon sx={{ ml: 1 }} />
-          </Button>
+          {qResponse.status === 'completed' ? null : (
+            <Button variant="contained" onClick={() => navigate(`/`)} sx={{ borderRadius: 20 }}>
+              <EditIcon sx={{ mr: 1 }} />
+              Edit Response
+            </Button>
+          )}
         </Box>
       </Box>
       <Box sx={{ my: 3 }}>
