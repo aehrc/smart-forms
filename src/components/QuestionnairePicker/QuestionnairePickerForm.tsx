@@ -10,10 +10,12 @@ import {
   loadQuestionnairesFromServer
 } from '../../functions/LoadServerResourceFunctions';
 import QuestionnairePickerQList from './QuestionnairePickerQList';
+import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {
   questionnaires: Questionnaire[];
   questionnaireProvider: QuestionnaireProvider;
+  questionnaireResponseProvider: QuestionnaireResponseProvider;
   setQuestionnaires: React.Dispatch<React.SetStateAction<Questionnaire[]>>;
   setQuestionnaireResponses: React.Dispatch<React.SetStateAction<QuestionnaireResponse[]>>;
   onQSelectedIndexChange: (index: number) => unknown;
@@ -25,6 +27,7 @@ function QuestionnairePickerForm(props: Props) {
     setQuestionnaires,
     setQuestionnaireResponses,
     questionnaireProvider,
+    questionnaireResponseProvider,
     onQSelectedIndexChange
   } = props;
 
@@ -88,6 +91,7 @@ function QuestionnairePickerForm(props: Props) {
           onClick={() => {
             if (typeof selectedIndex === 'number') {
               questionnaireProvider.setQuestionnaire(questionnaires[selectedIndex]);
+              questionnaireResponseProvider.clearQuestionnaireResponse();
               navigate(`/`);
             }
           }}

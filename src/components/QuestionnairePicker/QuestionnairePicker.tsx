@@ -63,6 +63,7 @@ function QuestionnairePicker(props: Props) {
             <QuestionnairePickerForm
               questionnaires={questionnaires}
               questionnaireProvider={questionnaireProvider}
+              questionnaireResponseProvider={questionnaireResponseProvider}
               setQuestionnaires={setQuestionnaires}
               setQuestionnaireResponses={setQResponses}
               onQSelectedIndexChange={selectQuestionnaireByIndex}
