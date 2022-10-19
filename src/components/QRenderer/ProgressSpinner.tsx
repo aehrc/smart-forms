@@ -11,8 +11,8 @@ function ProgressSpinner(props: Props) {
   const { message } = props;
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center" minHeight="95vh">
-      <Box display="flex" flexDirection="row" justifyContent="center">
+    <Box display="flex" flexDirection="column" justifyContent="center" minHeight="90vh">
+      <Box display="flex" flexDirection="row">
         <CircularProgress size={72} />
       </Box>
       <Box display="flex" justifyContent="center" sx={{ m: 3 }}>

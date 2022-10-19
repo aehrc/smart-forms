@@ -71,7 +71,7 @@ function QuestionnairePickerForm(props: Props) {
 
   return (
     <>
-      <Stack direction={'column'} spacing={2}>
+      <Stack direction="column" spacing={2}>
         <Box display="flex" flexDirection="row">
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit" sx={{ mb: 2 }}>

@@ -13,7 +13,7 @@ function ErrorPage(props: Props) {
     <Container maxWidth="lg">
       <Grid container>
         <Grid item xs={8}>
-          <Box display="flex" flexDirection="column" justifyContent="center" minHeight="100vh">
+          <Box display="flex" flexDirection="column" justifyContent="center" minHeight="90vh">
             <Typography variant="h2" fontSize={72} fontWeight="bold" sx={{ mb: 3 }}>
               Error 404
             </Typography>
