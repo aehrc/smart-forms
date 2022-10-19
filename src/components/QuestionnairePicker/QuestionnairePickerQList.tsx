@@ -13,6 +13,7 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 
 interface Props {
+  qHostingIsLocal: boolean;
   questionnaires: Questionnaire[];
   searchInput: string;
   selectedIndex: number | null;
@@ -21,10 +22,16 @@ interface Props {
 }
 
 function QuestionnairePickerQList(props: Props) {
-  const { questionnaires, searchInput, selectedIndex, qIsSearching, onQSelectedIndexChange } =
-    props;
+  const {
+    qHostingIsLocal,
+    questionnaires,
+    searchInput,
+    selectedIndex,
+    qIsSearching,
+    onQSelectedIndexChange
+  } = props;
 
-  if (searchInput === '') {
+  if (!qHostingIsLocal && searchInput === '') {
     return (
       <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Typography variant="subtitle2" textAlign="center">

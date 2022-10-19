@@ -1,6 +1,12 @@
 import { Bundle, Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
+import Q715 from '../data/resources/715.R4.json';
+import Q715Modified from '../data/resources/715.R4-modified.json';
+import QAssembled from '../data/resources/Assembled.json';
+import QCvdCheck from '../data/resources/CVD Check.json';
+import QCvdRisk from '../data/resources/CVD Risk.json';
+import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
 
 /**
  * Sends a request to forms server to obtain the first ten questionnaires that fufills the parameters provided
@@ -26,7 +32,6 @@ export async function loadQuestionnairesFromServer(params?: string): Promise<Bun
 
 /**
  * Sends a request to client CMS to obtain the questionnaireResponses with a given questionnaire context
- * TODO add patient context
  *
  * @author Sean Fong
  */
@@ -81,4 +86,36 @@ export function getQResponsesFromBundle(bundle: Bundle): QuestionnaireResponse[]
     }
     return mapping;
   }, []);
+}
+
+/**
+ * FOR TESTING ONLY
+ * Loads local questionnaires and returns them as an array of questionnaireResponses
+ *
+ * To add local questionnaires to list:
+ * 1. Move questionnaire file to src/data/resources
+ * 2. Import file at the beginning of this file
+ *    i.e. import QNew from '../data/resources/NewQuestionnaire.json';
+ *
+ * 3. Add imported questionnaire in localFiles array below
+ *    i.e. const localFiles = [
+ *            Q715,
+ *            QAssembled,
+ *            QCvdCheck,
+ *            QNew
+ *         ] as Questionnaire[];
+ *
+ * @author Sean Fong
+ */
+export function loadQuestionnairesFromLocal() {
+  const questionnaires = [
+    Q715,
+    Q715Modified,
+    QAssembled,
+    QCvdCheck,
+    QCvdRisk,
+    QCvdRiskHiso
+  ] as Questionnaire[];
+
+  return questionnaires;
 }
