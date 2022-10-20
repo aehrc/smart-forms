@@ -15,14 +15,15 @@ export function populate(
     (questionnaireResponse: QuestionnaireResponse, batchResponse: Bundle): void;
   }
 ) {
-  if (questionnaire.contained && questionnaire.contained.length > 0) {
-    let batchQuery: Bundle = questionnaire.contained[0] as Bundle;
+  if (!questionnaire.contained || questionnaire.contained.length === 0) return;
 
+  let prePopQueryBundle = getPrePopQueryBundle(questionnaire);
+  if (prePopQueryBundle) {
     // replace all instances of launchPatientId placeholder with patient id
-    batchQuery = replaceLaunchPatientIdInstances(batchQuery, patient);
+    prePopQueryBundle = replaceLaunchPatientIdInstances(prePopQueryBundle, patient);
 
     // perform batch query to CMS FHIR API
-    const batchResponsePromise = batchQueryRequest(client, batchQuery);
+    const batchResponsePromise = batchQueryRequest(client, prePopQueryBundle);
     batchResponsePromise
       .then((batchResponse) => {
         // get questionnaireResponse from population parameters
@@ -43,18 +44,35 @@ export function populate(
 }
 
 /**
+ * Get prepopulation query bundle from the questionnaire
+ *
+ * @author Sean Fong
+ */
+export function getPrePopQueryBundle(questionnaire: Questionnaire): Bundle | null {
+  if (!questionnaire.contained || questionnaire.contained.length === 0) return null;
+
+  questionnaire.contained.forEach((entry) => {
+    if (entry.resourceType === 'Bundle' && entry.id === 'PrePopQuery') {
+      return entry;
+    }
+  });
+
+  return null;
+}
+
+/**
  * Replace LaunchPatientId variable instances in questionnaire with CMS Patient ID
  *
  * @author Sean Fong
  */
-function replaceLaunchPatientIdInstances(containedQuery: Bundle, patient: Patient): Bundle {
-  if (containedQuery.entry) {
-    containedQuery.entry.forEach((entry) => {
+function replaceLaunchPatientIdInstances(batchQuery: Bundle, patient: Patient): Bundle {
+  if (batchQuery.entry) {
+    batchQuery.entry.forEach((entry) => {
       if (entry.request && patient.id)
         entry.request.url = entry.request.url.replace('{{%LaunchPatient.id}}', patient.id);
     });
   }
-  return containedQuery;
+  return { ...batchQuery };
 }
 
 /**
