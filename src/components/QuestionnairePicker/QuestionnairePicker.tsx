@@ -68,7 +68,7 @@ function QuestionnairePicker(props: Props) {
 
   const renderQuestionnairePicker = (
     <Container maxWidth="lg">
-      <Box display="flex" height="100vh" flexDirection="column" justifyContent="center">
+      <Box display="flex" flexDirection="column" justifyContent="center" height="90vh">
         <Grid container spacing={8}>
           <Grid item xs={6}>
             <QuestionnairePickerForm

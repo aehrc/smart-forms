@@ -1,5 +1,14 @@
-import React, { useCallback, useState } from 'react';
-import { Button, Card, Stack, TextField, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Box,
+  Button,
+  Card,
+  FormControlLabel,
+  Stack,
+  Switch,
+  TextField,
+  Typography
+} from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
@@ -7,6 +16,7 @@ import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { debounce } from 'lodash';
 import {
   getQuestionnairesFromBundle,
+  loadQuestionnairesFromLocal,
   loadQuestionnairesFromServer
 } from '../../functions/LoadServerResourceFunctions';
 import QuestionnairePickerQList from './QuestionnairePickerQList';
@@ -31,10 +41,18 @@ function QuestionnairePickerForm(props: Props) {
     onQSelectedIndexChange
   } = props;
 
+  const [qHostingIsLocal, setQHostingIsLocal] = useState(true);
   const [searchInput, setSearchInput] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [qIsSearching, setQIsSearching] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (qHostingIsLocal) {
+      setSearchInput('');
+      setQuestionnaires(loadQuestionnairesFromLocal());
+    }
+  }, [qHostingIsLocal]);
 
   const functionDebounce = useCallback(
     debounce((input: string) => {
@@ -53,13 +71,30 @@ function QuestionnairePickerForm(props: Props) {
 
   return (
     <>
-      <Stack direction={'column'} spacing={2}>
-        <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit" sx={{ mb: 2 }}>
-          Questionnaires
-        </Typography>
+      <Stack direction="column" spacing={2}>
+        <Box display="flex" flexDirection="row">
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit" sx={{ mb: 2 }}>
+              Questionnaires
+            </Typography>
+          </Box>
+          <Box sx={{ mt: 1 }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  disabled={qIsSearching}
+                  checked={qHostingIsLocal}
+                  onChange={() => setQHostingIsLocal(!qHostingIsLocal)}
+                />
+              }
+              label={qHostingIsLocal ? 'Local' : 'Remote'}
+            />
+          </Box>
+        </Box>
 
         <TextField
           value={searchInput}
+          disabled={qHostingIsLocal}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             const input = event.target.value;
             setQIsSearching(true);
@@ -74,6 +109,7 @@ function QuestionnairePickerForm(props: Props) {
 
         <Card elevation={1} sx={{ height: 508 }}>
           <QuestionnairePickerQList
+            qHostingIsLocal={qHostingIsLocal}
             questionnaires={questionnaires}
             searchInput={searchInput}
             selectedIndex={selectedIndex}

@@ -8,17 +8,17 @@ function NoQuestionnaireErrorPage() {
 
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" minHeight="90vh">
-      <Box width={800} margin={'auto'}>
+      <Box width={800} margin="auto">
         <Box display="flex" flexDirection="column" alignItems="center">
           <Stack spacing={3}>
-            <Typography variant="h6" fontSize={50} textAlign={'center'}>
+            <Typography variant="h6" fontSize={50} textAlign="center">
               Questionnaire not found
             </Typography>
             <Box>
-              <Typography fontSize={18} textAlign={'center'}>
+              <Typography fontSize={18} textAlign="center">
                 {"Uh oh, we can't seem to locate a questionnaire."}
               </Typography>
-              <Typography fontSize={18} textAlign={'center'}>
+              <Typography fontSize={18} textAlign="center">
                 Select a questionnaire from the following page and you will be all set.
               </Typography>
             </Box>

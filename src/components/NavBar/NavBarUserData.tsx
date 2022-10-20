@@ -12,15 +12,15 @@ function NavBarUserData(props: Props) {
 
   if (userData.name === '') {
     return (
-      <Stack direction={'row'} spacing={1}>
+      <Stack direction="row" spacing={1}>
         <MedicalServicesIcon />
         <Typography>No User</Typography>
       </Stack>
     );
   } else {
     return (
-      <Stack direction={'row'} spacing={4}>
-        <Stack direction={'row'} spacing={1}>
+      <Stack direction="row" spacing={4}>
+        <Stack direction="row" spacing={1}>
           <MedicalServicesIcon />
           <Typography>{userData.name}</Typography>
         </Stack>

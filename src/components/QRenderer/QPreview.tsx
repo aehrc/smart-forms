@@ -31,8 +31,8 @@ function QPreview(props: Props) {
   return (
     <Container maxWidth="lg">
       <Box displayPrint="none">
-        <Stack direction={'row'} spacing={2}>
-          <Button variant="contained" onClick={() => navigate(`/picker`)} sx={{ borderRadius: 20 }}>
+        <Stack direction="row" spacing={2}>
+          <Button variant="contained" onClick={() => navigate('/picker')} sx={{ borderRadius: 20 }}>
             <ArrowBack sx={{ mr: 1 }} />
             Back to Questionnaires
           </Button>
@@ -42,7 +42,7 @@ function QPreview(props: Props) {
           </Button>
 
           {qResponse.status === 'completed' ? null : (
-            <Button variant="contained" onClick={() => navigate(`/`)} sx={{ borderRadius: 20 }}>
+            <Button variant="contained" onClick={() => navigate('/')} sx={{ borderRadius: 20 }}>
               <EditIcon sx={{ mr: 1 }} />
               Edit Response
             </Button>
