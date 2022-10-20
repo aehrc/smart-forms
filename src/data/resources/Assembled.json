@@ -3,7 +3,7 @@
   "id": "715-Assembled",
   "meta": {
     "versionId": "1",
-    "lastUpdated": "2022-10-20T14:15:38.276539"
+    "lastUpdated": "2022-10-21T09:09:21.755754"
   },
   "text": {
     "status": "generated",
@@ -191,86 +191,6 @@
           }
         }
       ]
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "YesNoNA",
-      "status": "active",
-      "name": "YesNoNA",
-      "title": "Yes No NA",
-      "description": "Concepts for Yes, No and Not applicable",
-      "version": "0.1.0",
-      "url": "https://aehrc.csiro.au/fhir/ValueSet/YesNoNA",
-      "expansion": {
-        "identifier": "7709b027-415d-4eff-abf0-dc8edb2dc8fa",
-        "timestamp": "2022-10-20T09:39:51+10:00",
-        "total": 3,
-        "offset": 0,
-        "parameter": [
-          {
-            "name": "version",
-            "valueUri": "http://terminology.hl7.org/CodeSystem/v2-0136|2.9"
-          },
-          {
-            "name": "version",
-            "valueUri": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor|2018-08-12"
-          },
-          {
-            "name": "count",
-            "valueInteger": 2147483647
-          },
-          {
-            "name": "offset",
-            "valueInteger": 0
-          }
-        ],
-        "contains": [
-          {
-            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
-            "version": "2.9",
-            "code": "Y",
-            "display": "Yes"
-          },
-          {
-            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
-            "version": "2.9",
-            "code": "N",
-            "display": "No"
-          },
-          {
-            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-            "version": "2018-08-12",
-            "code": "NA",
-            "display": "Not applicable"
-          }
-        ]
-      },
-      "compose": {
-        "include": [
-          {
-            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
-            "concept": [
-              {
-                "code": "Y",
-                "display": "Yes"
-              },
-              {
-                "code": "N",
-                "display": "No"
-              }
-            ]
-          },
-          {
-            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-            "concept": [
-              {
-                "code": "NA",
-                "display": "N/A"
-              }
-            ]
-          }
-        ]
-      }
     },
     {
       "resourceType": "ValueSet",
@@ -950,6 +870,154 @@
           }
         ]
       }
+    },
+    {
+      "resourceType": "ValueSet",
+      "status": "active",
+      "name": "AboriginalTorresStraitIslander",
+      "id": "AboriginalTorresStraitIslander",
+      "title": "Aboriginal and/or Torres Strait Islander",
+      "description": "The Aboriginal and/or Torres Strait Islander value set includes the Australian Indigenous statuses for Indigenous people.",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/AboriginalTorresStraitIslander",
+      "expansion": {
+        "identifier": "e2b013bd-1725-4299-a7a5-53635d42f1be",
+        "timestamp": "2022-10-20T11:38:45+10:00",
+        "total": 3,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1|1.0.3"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "1",
+            "display": "Aboriginal but not Torres Strait Islander origin"
+          },
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "2",
+            "display": "Torres Strait Islander but not Aboriginal origin"
+          },
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "3",
+            "display": "Both Aboriginal and Torres Strait Islander origin"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Aboriginal"
+              },
+              {
+                "code": "2",
+                "display": "Torres Strait Islander"
+              },
+              {
+                "code": "3",
+                "display": "Aboriginal and Torres Strait Islander"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "YesNoNA",
+      "status": "active",
+      "name": "YesNoNA",
+      "title": "Yes No NA",
+      "description": "Concepts for Yes, No and Not applicable",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/YesNoNA",
+      "expansion": {
+        "identifier": "7709b027-415d-4eff-abf0-dc8edb2dc8fa",
+        "timestamp": "2022-10-20T09:39:51+10:00",
+        "total": 3,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v2-0136|2.9"
+          },
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor|2018-08-12"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "version": "2.9",
+            "code": "Y",
+            "display": "Yes"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "version": "2.9",
+            "code": "N",
+            "display": "No"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "version": "2018-08-12",
+            "code": "NA",
+            "display": "not applicable"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "concept": [
+              {
+                "code": "Y",
+                "display": "Yes"
+              },
+              {
+                "code": "N",
+                "display": "No"
+              }
+            ]
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "concept": [
+              {
+                "code": "NA",
+                "display": "N/A"
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "extension": [
@@ -986,7 +1054,7 @@
   "status": "draft",
   "experimental": true,
   "subjectType": ["Patient"],
-  "date": "2022-10-20T14:15:38.276546",
+  "date": "2022-10-21T09:09:21.755764",
   "publisher": "aehrc",
   "description": "Aboriginal and Torres Strait Islander Health Checks questionnaire formed from an assembled collection of sub-questionnaires",
   "item": [
@@ -1426,7 +1494,7 @@
               ]
             }
           ],
-          "linkId": "2e82032a-dc28-45f2-916e-862303d39fe5",
+          "linkId": "2e82032a-dc28-45f2-916e-862303d39fe4",
           "text": "Consent",
           "type": "group",
           "repeats": false
