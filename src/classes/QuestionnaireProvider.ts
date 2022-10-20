@@ -1,4 +1,4 @@
-import { Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
+import { Expression, Questionnaire, QuestionnaireItem, ValueSet } from 'fhir/r5';
 import { CalculatedExpression, EnableWhenItemProperties } from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
 import { getCalculatedExpression } from '../functions/ItemControlFunctions';
@@ -8,6 +8,7 @@ export class QuestionnaireProvider {
   variables: Expression[];
   calculatedExpressions: Record<string, CalculatedExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
+  containedValueSets: ValueSet[];
 
   constructor() {
     this.questionnaire = {
@@ -17,12 +18,14 @@ export class QuestionnaireProvider {
     this.variables = [];
     this.calculatedExpressions = {};
     this.enableWhenItems = {};
+    this.containedValueSets = [];
   }
 
   setQuestionnaire(questionnaire: Questionnaire) {
     this.questionnaire = questionnaire;
     this.readCalculatedExpressionsAndEnableWhenItems();
     this.readVariables();
+    this.readContainedValueSets();
   }
 
   /**
@@ -96,5 +99,15 @@ export class QuestionnaireProvider {
     }
 
     return;
+  }
+
+  readContainedValueSets() {
+    if (!this.questionnaire.contained || this.questionnaire.contained.length === 0) return;
+
+    this.questionnaire.contained.forEach((entry) => {
+      if (entry.resourceType === 'ValueSet') {
+        this.containedValueSets.push(entry);
+      }
+    });
   }
 }
