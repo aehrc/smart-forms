@@ -3,7 +3,7 @@
   "id": "715-Assembled",
   "meta": {
     "versionId": "1",
-    "lastUpdated": "2022-10-19T18:26:11.726510"
+    "lastUpdated": "2022-10-21T09:09:21.755754"
   },
   "text": {
     "status": "generated",
@@ -191,6 +191,833 @@
           }
         }
       ]
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "YesNo",
+      "status": "active",
+      "name": "YesNo",
+      "title": "Yes No",
+      "description": "Concepts for Yes and No",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/YesNo",
+      "expansion": {
+        "identifier": "91d952b0-22ed-474a-aad7-da1db1d7dcc7",
+        "timestamp": "2022-10-20T09:43:07+10:00",
+        "total": 2,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v2-0136|2.9"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "Y",
+            "display": "Yes"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "N",
+            "display": "No"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "concept": [
+              {
+                "code": "Y",
+                "display": "Yes"
+              },
+              {
+                "code": "N",
+                "display": "No"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistory",
+      "status": "active",
+      "name": "MedicalHistory",
+      "title": "Medical History",
+      "description": "The Medical History value set includes values that may be used to represent medical history, operations and hospital admissions.",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistory",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "filter": [
+              {
+                "property": "constraint",
+                "op": "=",
+                "value": "^32570581000036105|Problem/Diagnosis reference set| OR ^32570141000036105|Procedure foundation reference set|"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListInfants",
+      "status": "active",
+      "name": "MedicalHistoryShortListInfants",
+      "title": "Medical History Short List for Infants",
+      "description": "The Medical History Short List for Infants value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Infants.",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListInfants",
+      "expansion": {
+        "identifier": "06bd5f41-3c10-4cdb-a304-b8127d72957f",
+        "timestamp": "2022-10-20T09:50:13+10:00",
+        "total": 13,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "609496007",
+            "display": "Complication occurring during pregnancy"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "199745000",
+            "display": "Complication occurring during labour and delivery"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "80113008",
+            "display": "Complication of the puerperium"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "32485007",
+            "display": "Hospital admission"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "50417007",
+            "display": "Lower respiratory tract infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "49727002",
+            "display": "Cough"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129127001",
+            "display": "Ear infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38394007",
+            "display": "Chronic otitis media with perforation"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "78868004",
+            "display": "Chronic mucoid otitis media"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "247253001",
+            "display": "Ventilation tube in tympanic membrane"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "43381005",
+            "display": "Passive smoker"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195528001",
+            "display": "Acute rheumatic fever"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "312591002",
+            "display": "Acute rheumatic heart disease"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "609496007",
+                "display": "Pregnancy complications"
+              },
+              {
+                "code": "199745000",
+                "display": "Birth complications"
+              },
+              {
+                "code": "80113008",
+                "display": "Problems after birth"
+              },
+              {
+                "code": "32485007",
+                "display": "Hospital admissions"
+              },
+              {
+                "code": "50417007",
+                "display": "Lower respiratory tract infection"
+              },
+              {
+                "code": "49727002",
+                "display": "Cough"
+              },
+              {
+                "code": "129127001",
+                "display": "Ear infection"
+              },
+              {
+                "code": "38394007",
+                "display": "Chronic otitis media with perforation"
+              },
+              {
+                "code": "78868004",
+                "display": "Chronic mucoid otitis media"
+              },
+              {
+                "code": "247253001",
+                "display": "Ventilation tube in tympanic membrane"
+              },
+              {
+                "code": "43381005",
+                "display": "Passive smoker"
+              },
+              {
+                "code": "195528001",
+                "display": "Acute rheumatic fever"
+              },
+              {
+                "code": "312591002",
+                "display": "Acute rheumatic heart disease"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListPrimarySchool",
+      "status": "active",
+      "name": "MedicalHistoryShortListPrimarySchool",
+      "title": "Medical History Short List for Primary School Children",
+      "description": "The Medical History Short List for Primary School Children value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Primary School Children.",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListPrimarySchool",
+      "expansion": {
+        "identifier": "455f4b6f-5083-4f56-8995-5ec798e47cc4",
+        "timestamp": "2022-10-20T09:54:05+10:00",
+        "total": 11,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "50417007",
+            "display": "Lower respiratory tract infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "49727002",
+            "display": "Cough"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129127001",
+            "display": "Ear infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38394007",
+            "display": "Chronic otitis media with perforation"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "78868004",
+            "display": "Chronic mucoid otitis media"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "247253001",
+            "display": "Ventilation tube in tympanic membrane"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129823000",
+            "display": "Childhood growth AND/OR development alteration"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195528001",
+            "display": "Acute rheumatic fever"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "312591002",
+            "display": "Acute rheumatic heart disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "43381005",
+            "display": "Passive smoker"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "32485007",
+            "display": "Hospital admission"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "50417007",
+                "display": "Lower respiratory tract infection"
+              },
+              {
+                "code": "49727002",
+                "display": "Cough"
+              },
+              {
+                "code": "129127001",
+                "display": "Ear infection"
+              },
+              {
+                "code": "38394007",
+                "display": "Chronic otitis media with perforation"
+              },
+              {
+                "code": "78868004",
+                "display": "Chronic mucoid otitis media"
+              },
+              {
+                "code": "247253001",
+                "display": "Ventilation tube in tympanic membrane"
+              },
+              {
+                "code": "129823000",
+                "display": "Childhood growth AND/OR development alteration"
+              },
+              {
+                "code": "195528001",
+                "display": "Acute rheumatic fever"
+              },
+              {
+                "code": "312591002",
+                "display": "Acute rheumatic heart disease"
+              },
+              {
+                "code": "43381005",
+                "display": "Passive smoker"
+              },
+              {
+                "code": "32485007",
+                "display": "Hospital admissions"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListAdolescents",
+      "status": "active",
+      "name": "MedicalHistoryShortListAdolescents",
+      "title": "Medical History Short List for Adolescents",
+      "description": "The Medical History Short List for Adolescents value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Adolescents.",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListAdolescents",
+      "expansion": {
+        "identifier": "5b0bb9f4-1ca3-47e2-bb1d-91cad5454ce4",
+        "timestamp": "2022-10-20T09:45:56+10:00",
+        "total": 11,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129127001",
+            "display": "Ear infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "300228004",
+            "display": "Hearing problem"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195967001",
+            "display": "Asthma"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38341003",
+            "display": "Hypertension"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "84757009",
+            "display": "Epilepsy"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "25064002",
+            "display": "Headache"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "37796009",
+            "display": "Migraine"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "73211009",
+            "display": "Diabetes mellitus"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "23685000",
+            "display": "Rheumatic heart disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "90708001",
+            "display": "Kidney disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "413307004",
+            "display": "Mental health problem"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "129127001",
+                "display": "Ear infections"
+              },
+              {
+                "code": "300228004",
+                "display": "Hearing problems"
+              },
+              {
+                "code": "195967001",
+                "display": "Asthma"
+              },
+              {
+                "code": "38341003",
+                "display": "High blood pressure"
+              },
+              {
+                "code": "84757009",
+                "display": "Epilepsy"
+              },
+              {
+                "code": "25064002",
+                "display": "Headaches"
+              },
+              {
+                "code": "37796009",
+                "display": "Migraines"
+              },
+              {
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+              },
+              {
+                "code": "23685000",
+                "display": "Rheumatic heart disease"
+              },
+              {
+                "code": "90708001",
+                "display": "Kidney disease"
+              },
+              {
+                "code": "413307004",
+                "display": "Mental health"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListAdults",
+      "status": "active",
+      "name": "MedicalHistoryShortListAdultsAndOlderPeople",
+      "title": "Medical History Short List for Adults and Older People",
+      "description": "The Medical History Short List for Adults and Older People value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Adults and Older People.",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListAdults",
+      "expansion": {
+        "identifier": "1998291e-ed8a-49f2-ac11-9e6056efd7f3",
+        "timestamp": "2022-10-20T09:48:19+10:00",
+        "total": 13,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "73211009",
+            "display": "Diabetes mellitus"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38341003",
+            "display": "Hypertension"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "22298006",
+            "display": "Myocardial infarction"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "230690007",
+            "display": "Stroke"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "90708001",
+            "display": "Kidney disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "15188001",
+            "display": "Hearing loss"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "84757009",
+            "display": "Epilepsy"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195967001",
+            "display": "Asthma"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "13645005",
+            "display": "COPD"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "23685000",
+            "display": "Rheumatic heart disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "66071002",
+            "display": "Hepatitis B"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "82271004",
+            "display": "Head injury"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "413307004",
+            "display": "Mental health problem"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+              },
+              {
+                "code": "38341003",
+                "display": "Hypertension"
+              },
+              {
+                "code": "22298006",
+                "display": "Myocardial infarction"
+              },
+              {
+                "code": "230690007",
+                "display": "Stroke"
+              },
+              {
+                "code": "90708001",
+                "display": "Kidney disease"
+              },
+              {
+                "code": "15188001",
+                "display": "Hearing impairment"
+              },
+              {
+                "code": "84757009",
+                "display": "Epilepsy"
+              },
+              {
+                "code": "195967001",
+                "display": "Asthma"
+              },
+              {
+                "code": "13645005",
+                "display": "COPD"
+              },
+              {
+                "code": "23685000",
+                "display": "Rheumatic heart disease"
+              },
+              {
+                "code": "66071002",
+                "display": "HBV"
+              },
+              {
+                "code": "82271004",
+                "display": "Significant head trauma"
+              },
+              {
+                "code": "413307004",
+                "display": "Mental health"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "status": "active",
+      "name": "AboriginalTorresStraitIslander",
+      "id": "AboriginalTorresStraitIslander",
+      "title": "Aboriginal and/or Torres Strait Islander",
+      "description": "The Aboriginal and/or Torres Strait Islander value set includes the Australian Indigenous statuses for Indigenous people.",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/AboriginalTorresStraitIslander",
+      "expansion": {
+        "identifier": "e2b013bd-1725-4299-a7a5-53635d42f1be",
+        "timestamp": "2022-10-20T11:38:45+10:00",
+        "total": 3,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1|1.0.3"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "1",
+            "display": "Aboriginal but not Torres Strait Islander origin"
+          },
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "2",
+            "display": "Torres Strait Islander but not Aboriginal origin"
+          },
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "3",
+            "display": "Both Aboriginal and Torres Strait Islander origin"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Aboriginal"
+              },
+              {
+                "code": "2",
+                "display": "Torres Strait Islander"
+              },
+              {
+                "code": "3",
+                "display": "Aboriginal and Torres Strait Islander"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "YesNoNA",
+      "status": "active",
+      "name": "YesNoNA",
+      "title": "Yes No NA",
+      "description": "Concepts for Yes, No and Not applicable",
+      "version": "0.1.0",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/YesNoNA",
+      "expansion": {
+        "identifier": "7709b027-415d-4eff-abf0-dc8edb2dc8fa",
+        "timestamp": "2022-10-20T09:39:51+10:00",
+        "total": 3,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v2-0136|2.9"
+          },
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor|2018-08-12"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "version": "2.9",
+            "code": "Y",
+            "display": "Yes"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "version": "2.9",
+            "code": "N",
+            "display": "No"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "version": "2018-08-12",
+            "code": "NA",
+            "display": "not applicable"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "concept": [
+              {
+                "code": "Y",
+                "display": "Yes"
+              },
+              {
+                "code": "N",
+                "display": "No"
+              }
+            ]
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "concept": [
+              {
+                "code": "NA",
+                "display": "N/A"
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "extension": [
@@ -227,7 +1054,7 @@
   "status": "draft",
   "experimental": true,
   "subjectType": ["Patient"],
-  "date": "2022-10-19T18:26:11.726519",
+  "date": "2022-10-21T09:09:21.755764",
   "publisher": "aehrc",
   "description": "Aboriginal and Torres Strait Islander Health Checks questionnaire formed from an assembled collection of sub-questionnaires",
   "item": [
@@ -289,7 +1116,7 @@
               "text": "Eligible for health check",
               "type": "choice",
               "repeats": false,
-              "answerValueSet": "https://aehrc.csiro.au/fhir/ValueSet/YesNoNA"
+              "answerValueSet": "#YesNoNA"
             },
             {
               "linkId": "5960c096-d5f7-4745-bd74-44ff2775bde9",
@@ -431,20 +1258,27 @@
               ]
             },
             {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "code": "radio-button",
-                        "system": "http://hl7.org/fhir/questionnaire-item-control"
-                      }
-                    ]
-                  }
-                }
-              ],
               "item": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "linkId": "057483ce-f265-46df-a1c5-7a18d492c1ba",
+                  "text": "Consent given for sharing of information with relevant healthcare providers?",
+                  "type": "choice",
+                  "repeats": false,
+                  "answerValueSet": "https://aehrc.csiro.au/fhir/ValueSet/YesNoNA"
+                },
                 {
                   "extension": [
                     {
@@ -475,11 +1309,10 @@
                   "repeats": true
                 }
               ],
-              "linkId": "057483ce-f265-46df-a1c5-7a18d492c1ba",
-              "text": "Consent given for sharing of information with relevant healthcare providers",
-              "type": "choice",
-              "repeats": false,
-              "answerValueSet": "https://aehrc.csiro.au/fhir/ValueSet/YesNoNA"
+              "linkId": "d8c88bff-75ea-476f-8f83-e9b72fc9e1a0",
+              "text": "Consent for sharing of information",
+              "type": "group",
+              "repeats": false
             },
             {
               "extension": [
@@ -661,7 +1494,7 @@
               ]
             }
           ],
-          "linkId": "2e82032a-dc28-45f2-916e-862303d39fe5",
+          "linkId": "2e82032a-dc28-45f2-916e-862303d39fe4",
           "text": "Consent",
           "type": "group",
           "repeats": false
@@ -789,26 +1622,7 @@
               "text": "Aboriginal and/or Torres Strait Islander status",
               "type": "choice",
               "repeats": false,
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "code": "1",
-                    "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "code": "2",
-                    "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "code": "3",
-                    "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1"
-                  }
-                }
-              ]
+              "answerValueSet": "#AboriginalTorresStraitIslander"
             },
             {
               "extension": [
@@ -828,32 +1642,7 @@
               "text": "Parents/primary carer/s",
               "type": "choice",
               "repeats": true,
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "code": "MTH",
-                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "code": "FTH",
-                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "code": "GRPRN",
-                    "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "code": "NA",
-                    "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
-                  }
-                }
-              ],
+              "answerValueSet": "#PrimaryCarerParentGrandparent",
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -1281,7 +2070,7 @@
                       }
                     }
                   ],
-                  "linkId": "27099697-d6d1-42c0-bb0a-5e9ff7372a96",
+                  "linkId": "aa35d559-f45b-4d35-9453-dd02e4a790f3",
                   "text": "Relationship to child",
                   "type": "string",
                   "repeats": true,
@@ -1762,7 +2551,8 @@
                   "operator": ">",
                   "answerInteger": 12
                 }
-              ]
+              ],
+              "enableBehavior": "all"
             },
             {
               "item": [
@@ -1869,7 +2659,7 @@
                   "type": "string",
                   "enableWhen": [
                     {
-                      "question": "a08271f1-194b-4fe9-91f9-4f3398858eb0",
+                      "question": "d05558fb-a3cc-4bd6-b803-b672b36b9c51",
                       "operator": "=",
                       "answerCoding": {
                         "code": "Y",
@@ -1887,7 +2677,7 @@
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
-                  "operator": ">",
+                  "operator": ">=",
                   "answerInteger": 50
                 }
               ]
@@ -2043,7 +2833,7 @@
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
-                  "operator": ">",
+                  "operator": ">=",
                   "answerInteger": 50
                 }
               ]
@@ -2066,6 +2856,10 @@
                   }
                 ]
               }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Current priorities"
             }
           ],
           "item": [
@@ -2509,7 +3303,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.coding.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
+                    "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
                   }
                 },
                 {
@@ -2541,6 +3335,129 @@
               "text": "Provide details of identified problems",
               "type": "text",
               "repeats": false
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "htable",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "item": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
+                      }
+                    }
+                  ],
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "type": "open-choice",
+                  "answerValueSet": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistory"
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "drop-down",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.clinicalStatus.coding.code"
+                      }
+                    }
+                  ],
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "type": "choice",
+                  "answerValueSet": "#condition-clinical"
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.onsetDateTime"
+                      }
+                    }
+                  ],
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "type": "dateTime"
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.recordedDate"
+                      }
+                    }
+                  ],
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "type": "dateTime"
+                }
+              ],
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "type": "group",
+              "repeats": true
             },
             {
               "extension": [
@@ -2803,15 +3720,40 @@
                   ],
                   "linkId": "9bc2daf9-6d13-4747-90c3-4a1862f6199a",
                   "text": "Details",
-                  "type": "display",
-                  "enableWhen": [
-                    {
-                      "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
-                      "operator": "<=",
-                      "answerInteger": 12
-                    }
-                  ]
+                  "type": "display"
+                }
+              ],
+              "linkId": "532e09ea-2c2d-48c6-81f8-e23380b329a0",
+              "text": "Provide relevant family history information",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 12
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "text-box",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
                 },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+                  "valueString": "Provide relevant family history information"
+                }
+              ],
+              "item": [
                 {
                   "extension": [
                     {
@@ -2827,21 +3769,21 @@
                     }
                   ],
                   "linkId": "8f801e02-bfe8-437f-ba51-07c8f3631a0e",
-                  "text": "Details (including diabetes, heart disease, cancer, mental health)",
-                  "type": "display",
-                  "enableWhen": [
-                    {
-                      "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
-                      "operator": ">",
-                      "answerInteger": 12
-                    }
-                  ]
+                  "text": "Details",
+                  "type": "display"
                 }
               ],
-              "linkId": "532e09ea-2c2d-48c6-81f8-e23380b329a0",
-              "text": "Provide relevant family history information",
+              "linkId": "df5b2081-a373-48ee-acab-96225dad3c1d",
+              "text": "Provide relevant family history information (including diabetes, heart disease, cancer, mental health)",
               "type": "text",
-              "repeats": false
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 12
+                }
+              ]
             },
             {
               "extension": [
@@ -2884,20 +3826,27 @@
           ],
           "item": [
             {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "code": "radio-button",
-                        "system": "http://hl7.org/fhir/questionnaire-item-control"
-                      }
-                    ]
-                  }
-                }
-              ],
               "item": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "linkId": "e7297156-cfed-4437-b877-c345f744168b",
+                  "text": "Have there been any particular stressful life events that are impacting on you/your health lately?",
+                  "type": "choice",
+                  "repeats": false,
+                  "answerValueSet": "https://aehrc.csiro.au/fhir/ValueSet/YesNo"
+                },
                 {
                   "extension": [
                     {
@@ -2928,11 +3877,10 @@
                   ]
                 }
               ],
-              "linkId": "e7297156-cfed-4437-b877-c345f744168b",
-              "text": "Have there been any particular stressful life events that are impacting on you/your health lately?",
-              "type": "choice",
-              "repeats": false,
-              "answerValueSet": "https://aehrc.csiro.au/fhir/ValueSet/YesNo"
+              "linkId": "c736d065-88f6-49c3-a5a4-91a2bd7a54bb",
+              "text": "Stressful life events",
+              "type": "group",
+              "repeats": false
             },
             {
               "linkId": "7d783b71-7303-441b-822a-14e11a740038",

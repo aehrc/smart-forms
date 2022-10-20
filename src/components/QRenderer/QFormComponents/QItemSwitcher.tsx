@@ -14,12 +14,11 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemSimple/QItemTime';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../QForm';
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
-import { isHidden } from '../../../functions/ItemControlFunctions';
+import { hideQItem } from '../../../functions/QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -36,7 +35,6 @@ interface Props
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     if (newQrItem.answer) {
@@ -45,12 +43,7 @@ function QItemSwitcher(props: Props) {
     onQrItemChange(newQrItem);
   }
 
-  if (isHidden(qItem)) return null;
-
-  // only for testing
-  if (enableWhenChecksContext) {
-    if (!enableWhenContext.checkItemIsEnabled(qItem.linkId)) return null; // preserve this line in final build
-  }
+  if (hideQItem(qItem)) return null;
 
   switch (qItem.type) {
     case QItemType.String:
