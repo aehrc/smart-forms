@@ -8,7 +8,7 @@ export class QuestionnaireProvider {
   variables: Expression[];
   calculatedExpressions: Record<string, CalculatedExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
-  containedValueSets: ValueSet[];
+  containedValueSets: Record<string, ValueSet>;
 
   constructor() {
     this.questionnaire = {
@@ -18,7 +18,7 @@ export class QuestionnaireProvider {
     this.variables = [];
     this.calculatedExpressions = {};
     this.enableWhenItems = {};
-    this.containedValueSets = [];
+    this.containedValueSets = {};
   }
 
   setQuestionnaire(questionnaire: Questionnaire) {
@@ -105,8 +105,8 @@ export class QuestionnaireProvider {
     if (!this.questionnaire.contained || this.questionnaire.contained.length === 0) return;
 
     this.questionnaire.contained.forEach((entry) => {
-      if (entry.resourceType === 'ValueSet') {
-        this.containedValueSets.push(entry);
+      if (entry.resourceType === 'ValueSet' && entry.id) {
+        this.containedValueSets[entry.id] = entry;
       }
     });
   }

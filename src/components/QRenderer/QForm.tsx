@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
-import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
@@ -25,6 +25,7 @@ interface Props {
 }
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
+export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
 
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
@@ -38,6 +39,9 @@ function QForm(props: Props) {
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
+  const [containedValueSets] = useState<Record<string, ValueSet>>(
+    questionnaireProvider.containedValueSets
+  );
   const [qrHasChanges, setQrHasChanges] = useState(false);
 
   // states only for testing
@@ -93,99 +97,105 @@ function QForm(props: Props) {
   if (qForm.item && qrForm.item) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
-        <EnableWhenChecksContext.Provider value={enableWhenStatus}>
-          <Stack spacing={2.5} sx={{ my: 2 }}>
-            <Divider />
+        <ContainedValueSetContext.Provider value={containedValueSets}>
+          <EnableWhenChecksContext.Provider value={enableWhenStatus}>
+            <Stack spacing={2.5} sx={{ my: 2 }}>
+              <Divider />
 
-            {containsTabs(qForm.item) ? (
-              <QFormBodyTabbed
-                qForm={qForm}
-                qrForm={qrForm}
-                indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
-                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-              />
-            ) : (
-              <QFormBody
-                qForm={qForm}
-                qrForm={qrForm}
-                onQrItemChange={(newQrForm) => {
-                  onQrFormChange(newQrForm);
-                }}></QFormBody>
-            )}
-
-            <Stack direction="row" spacing={2}>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-                  navigate(`/preview`);
-                }}
-                sx={{ borderRadius: 20 }}>
-                <Visibility sx={{ mr: 1 }} />
-                Show Preview
-              </Button>
-
-              {fhirClient ? (
-                <>
-                  <Button
-                    variant="contained"
-                    disabled={!qrHasChanges}
-                    onClick={() => {
-                      questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-                      saveQuestionnaireResponse(fhirClient, questionnaireResponse)
-                        .then(() => {
-                          setQrHasChanges(false);
-                        })
-                        .catch((error) => console.log(error));
-                    }}
-                    sx={{ borderRadius: 20 }}>
-                    <Save sx={{ mr: 1 }} />
-                    Save
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    disabled={!qrHasChanges}
-                    onClick={() => {
-                      questionnaireResponse.status = 'completed';
-                      questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-                      saveQuestionnaireResponse(fhirClient, questionnaireResponse)
-                        .then(() => {
-                          setQrHasChanges(false);
-                        })
-                        .catch((error) => console.log(error));
-                    }}
-                    sx={{ borderRadius: 20 }}>
-                    <Publish sx={{ mr: 1 }} />
-                    Submit
-                  </Button>
-                </>
+              {containsTabs(qForm.item) ? (
+                <QFormBodyTabbed
+                  qForm={qForm}
+                  qrForm={qrForm}
+                  indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
+                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                />
               ) : (
-                <div>
-                  <Typography fontSize={8}>
-                    Save functionality not available as application is not connected to CMS
-                  </Typography>
-                </div>
+                <QFormBody
+                  qForm={qForm}
+                  qrForm={qrForm}
+                  onQrItemChange={(newQrForm) => {
+                    onQrFormChange(newQrForm);
+                  }}></QFormBody>
+              )}
+
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+                    navigate(`/preview`);
+                  }}
+                  sx={{ borderRadius: 20 }}>
+                  <Visibility sx={{ mr: 1 }} />
+                  Show Preview
+                </Button>
+
+                {fhirClient ? (
+                  <>
+                    <Button
+                      variant="contained"
+                      disabled={!qrHasChanges}
+                      onClick={() => {
+                        questionnaireResponseProvider.setQuestionnaireResponse(
+                          questionnaireResponse
+                        );
+                        saveQuestionnaireResponse(fhirClient, questionnaireResponse)
+                          .then(() => {
+                            setQrHasChanges(false);
+                          })
+                          .catch((error) => console.log(error));
+                      }}
+                      sx={{ borderRadius: 20 }}>
+                      <Save sx={{ mr: 1 }} />
+                      Save
+                    </Button>
+
+                    <Button
+                      variant="contained"
+                      disabled={!qrHasChanges}
+                      onClick={() => {
+                        questionnaireResponse.status = 'completed';
+                        questionnaireResponseProvider.setQuestionnaireResponse(
+                          questionnaireResponse
+                        );
+                        saveQuestionnaireResponse(fhirClient, questionnaireResponse)
+                          .then(() => {
+                            setQrHasChanges(false);
+                          })
+                          .catch((error) => console.log(error));
+                      }}
+                      sx={{ borderRadius: 20 }}>
+                      <Publish sx={{ mr: 1 }} />
+                      Submit
+                    </Button>
+                  </>
+                ) : (
+                  <div>
+                    <Typography fontSize={8}>
+                      Save functionality not available as application is not connected to CMS
+                    </Typography>
+                  </div>
+                )}
+              </Stack>
+
+              {hideQResponse ? null : (
+                <DisplayDebugQResponse
+                  questionnaire={questionnaire}
+                  questionnaireResponse={questionnaireResponse}
+                  clearQResponse={() => clearQResponse()}
+                  batchResponse={batchResponse}
+                />
               )}
             </Stack>
-
-            {hideQResponse ? null : (
-              <DisplayDebugQResponse
-                questionnaire={questionnaire}
-                questionnaireResponse={questionnaireResponse}
-                clearQResponse={() => clearQResponse()}
-                batchResponse={batchResponse}
-              />
-            )}
-          </Stack>
-          <QRSavedSnackbar isDisplayed={!qrHasChanges} />
-          <DebugBar
-            hideQResponse={hideQResponse}
-            toggleHideQResponse={(checked) => setHideQResponse(checked)}
-            enableWhenStatus={enableWhenStatus}
-            toggleEnableWhenStatus={(checked) => setEnableWhenStatus(checked)}
-          />
-        </EnableWhenChecksContext.Provider>
+            <QRSavedSnackbar isDisplayed={!qrHasChanges} />
+            <DebugBar
+              hideQResponse={hideQResponse}
+              toggleHideQResponse={(checked) => setHideQResponse(checked)}
+              enableWhenStatus={enableWhenStatus}
+              toggleEnableWhenStatus={(checked) => setEnableWhenStatus(checked)}
+            />
+          </EnableWhenChecksContext.Provider>
+        </ContainedValueSetContext.Provider>
       </CalcExpressionContext.Provider>
     );
   } else {
