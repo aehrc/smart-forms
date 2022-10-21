@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Checkbox, FormControl, FormControlLabel, Grid, Typography } from '@mui/material';
 
 import {
@@ -21,18 +21,19 @@ function QItemBoolean(props: Props) {
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
-  let qrBoolean = qrItem ? qrItem : createQrItem(qItem);
+  const qrBoolean = qrItem ? qrItem : createQrItem(qItem);
   const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
 
-  // if boolean item is an enableWhen linked question and it does not have an answer yet
-  // set default answer to false - to trigger enableWhen == false
-  if (qItem.linkId in enableWhenLinkMap && !qrBoolean['answer']) {
-    onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: false }] });
-  }
+  useEffect(() => {
+    // if boolean item is an enableWhen linked question and it does not have an answer yet
+    // set default answer to false - to trigger enableWhen == false
+    if (qItem.linkId in enableWhenLinkMap && !qrBoolean['answer']) {
+      onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: false }] });
+    }
+  }, []);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    qrBoolean = { ...qrBoolean, answer: [{ valueBoolean: event.target.checked }] };
-    onQrItemChange(qrBoolean);
+    onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: event.target.checked }] });
   }
 
   const renderQItemBoolean = repeats ? (

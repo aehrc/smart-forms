@@ -44,33 +44,60 @@ function readQuestionnaireResponseItem(
 
     return formInHTML;
   }
-  formInHTML += qrItemDivRenderSwitcher(item, nestedLevel);
+  formInHTML += qrItemDivRenderSwitcher(item, nestedLevel, false);
 
   return formInHTML;
 }
 
-function qrItemDivRenderSwitcher(item: QuestionnaireResponseItem, nestedLevel: number) {
+function qrItemDivRenderSwitcher(
+  item: QuestionnaireResponseItem,
+  nestedLevel: number,
+  inRepeatGroup: boolean
+) {
   if (!item.answer) return '';
 
-  const marginBottomAnswer = item.answer.length === 1 ? '0' : '10px';
+  const marginBottomAnswer = item.answer.length === 1 ? '10px' : '5px';
   let qrItemAnswer = '';
-  item.answer.forEach((answer) => {
-    const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
-    qrItemAnswer += `<div style='margin-bottom: ${marginBottomAnswer}'>${
-      answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
-    }</div>`;
-  });
+  let qrItemRender = '';
 
-  const qrItemRender = `<div style="flex: 40%;">${item.text}</div>
+  item.answer.forEach((answer, i) => {
+    const repeatGroup = answer.item;
+
+    if (repeatGroup) {
+      qrItemAnswer += `<div style="flex: 100%; margin-top: 20px; text-decoration: underline">Answer ${
+        i + 1
+      }</div>`;
+      // recursively get item answers from repeat groups
+      repeatGroup.forEach((repeatGroupAnswerItem) => {
+        qrItemAnswer += qrItemDivRenderSwitcher(repeatGroupAnswerItem, nestedLevel, true);
+      });
+
+      qrItemRender = `<div style="flex: 100%; font-weight: bold">${item.text}</div>
+                        <div style="flex: 100%;">${qrItemAnswer}</div>`;
+    } else {
+      // if not repeat group, get item answer and construct div
+      const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
+
+      qrItemAnswer += `<div style='margin-bottom: ${marginBottomAnswer}'>${
+        answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
+      }</div>`;
+
+      qrItemRender = `<div style="flex: 40%;">${item.text}</div>
                         <div style="flex: 10%;"></div>
                         <div style="flex: 45%;" >${qrItemAnswer}</div>
                         <div style="flex: 5%;"></div>`;
+    }
+  });
 
-  switch (nestedLevel) {
-    case 0:
-      return `<div style="margin: 20px 0 20px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
-    default:
-      return `<div style="margin: 20px 0 20px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
+  if (inRepeatGroup) {
+    return `<div style="margin: 10px 0 10px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
+  } else {
+    switch (nestedLevel) {
+      case 0:
+        return `<div style="margin: 20px 0 20px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
+      default:
+        return `<div style="margin: 20px 0 20px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
+    }
   }
 }
 

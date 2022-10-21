@@ -27,8 +27,6 @@ interface Props
 function QItemRepeatGroup(props: Props) {
   const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
 
-  if (hideQItem(qItem)) return null;
-
   const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
   const qrRepeatAnswerItems: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
@@ -40,6 +38,8 @@ function QItemRepeatGroup(props: Props) {
   useEffect(() => {
     setRepeatAnswerItems(qrRepeatAnswerItems);
   }, [qrItem]);
+
+  if (hideQItem(qItem)) return null;
 
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
     const answerItemsTemp = [...repeatAnswerItems];

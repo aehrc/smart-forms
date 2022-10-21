@@ -19,8 +19,6 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemRepeat(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  if (hideQItem(qItem)) return null;
-
   const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
   const qrRepeatAnswers: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
@@ -38,6 +36,8 @@ function QItemRepeat(props: Props) {
       setRepeatAnswers(qrRepeatAnswers);
     }
   }, [qrItem]);
+
+  if (hideQItem(qItem)) return null;
 
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const answersTemp = [...repeatAnswers];

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
-import { Bundle, QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
+import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
@@ -14,14 +14,12 @@ import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 import { Publish, Save, Visibility } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   questionnaireResponseProvider: QuestionnaireResponseProvider;
-  qrResponse: QuestionnaireResponse;
-  batchResponse: Bundle | null; // only for testing
+  setPreviewMode: () => unknown;
 }
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
@@ -30,12 +28,13 @@ export const ContainedValueSetContext = React.createContext<Record<string, Value
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
 function QForm(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider, qrResponse, batchResponse } = props;
+  const { questionnaireProvider, questionnaireResponseProvider, setPreviewMode } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
   const fhirClient = React.useContext(FhirClientContext).fhirClient;
 
-  const [questionnaireResponse, setQuestionnaireResponse] =
-    useState<QuestionnaireResponse>(qrResponse);
+  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
+    questionnaireResponseProvider.questionnaireResponse
+  );
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
@@ -53,20 +52,22 @@ function QForm(props: Props) {
 
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
-  const navigate = useNavigate();
 
   useEffect(() => {
     enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
   }, []);
 
+  // update QR state if QR is updated from the server
+  // introduces two-way binding
   useEffect(() => {
-    if (!qrResponse.item) return;
+    const updatedQResponse = questionnaireResponseProvider.questionnaireResponse;
+    if (!updatedQResponse.item) return;
 
-    const qrFormClean = cleanQrItem(qrResponse.item[0]);
+    const qrFormClean = cleanQrItem(updatedQResponse.item[0]);
     if (qrFormClean) {
-      setQuestionnaireResponse({ ...qrResponse, item: [qrFormClean] });
+      setQuestionnaireResponse({ ...updatedQResponse, item: [qrFormClean] });
     }
-  }, [qrResponse]);
+  }, [questionnaireResponseProvider.questionnaireResponse]);
 
   function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
     const newQuestionnaireResponse = { ...questionnaireResponse, item: [newQrForm] };
@@ -81,6 +82,7 @@ function QForm(props: Props) {
       setCalculatedExpressions(updatedCalculatedExpressions);
     }
     setQuestionnaireResponse(newQuestionnaireResponse);
+    questionnaireResponseProvider.setQuestionnaireResponse(newQuestionnaireResponse);
     setQrHasChanges(true);
   }
 
@@ -122,8 +124,7 @@ function QForm(props: Props) {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-                    navigate(`/preview`);
+                    setPreviewMode();
                   }}
                   sx={{ borderRadius: 20 }}>
                   <Visibility sx={{ mr: 1 }} />
@@ -183,7 +184,7 @@ function QForm(props: Props) {
                   questionnaire={questionnaire}
                   questionnaireResponse={questionnaireResponse}
                   clearQResponse={() => clearQResponse()}
-                  batchResponse={batchResponse}
+                  batchResponse={questionnaireResponseProvider.batchResponse}
                 />
               )}
             </Stack>

@@ -3,7 +3,7 @@ import QForm from './QForm';
 import ProgressSpinner from './ProgressSpinner';
 import NavBar from '../NavBar/NavBar';
 import { getPatient, getUser } from '../../functions/LaunchFunctions';
-import { Bundle, Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
+import { Patient, Practitioner } from 'fhir/r5';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenProvider from '../../custom-contexts/EnableWhenContext';
@@ -13,6 +13,7 @@ import { populate } from '../../functions/PrepopulateFunctions';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 import NoQuestionnaireErrorPage from '../ErrorPages/NoQuestionnaireErrorPage';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import PreviewFromRenderer from '../Preview/PreviewFromRenderer';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -24,23 +25,23 @@ function QRenderer(props: Props) {
   const fhirClientContext = React.useContext(FhirClientContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  const qResponse = questionnaireResponseProvider.questionnaireResponse;
   if (!questionnaire.item) {
     return <NoQuestionnaireErrorPage />;
   }
 
-  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
-    qResponse.item
-      ? qResponse
-      : createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
-  );
+  if (!questionnaireResponseProvider.questionnaireResponse.item) {
+    questionnaireResponseProvider.setQuestionnaireResponse(
+      createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
+    );
+  }
+
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
-  const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [spinner, setSpinner] = useState({
     isLoading: true,
     message: patient ? 'Loading questionnaire form' : 'Retrieving patient'
   });
+  const [previewMode, setPreviewMode] = useState(false);
 
   useEffect(() => {
     const client = fhirClientContext.fhirClient;
@@ -61,8 +62,8 @@ function QRenderer(props: Props) {
         if (questionnaire.contained && !qrFormItem) {
           // obtain questionnaireResponse for prepopulation
           populate(client, questionnaire, patient, (qResponse, batchResponse) => {
-            setQuestionnaireResponse(qResponse);
-            setBatchResponse(batchResponse);
+            questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
+            questionnaireResponseProvider.setBatchResponse(batchResponse);
             setSpinner({ ...spinner, isLoading: false });
           });
         } else {
@@ -82,26 +83,37 @@ function QRenderer(props: Props) {
       .catch((error) => console.log(error));
   }, []);
 
-  const renderQPage = spinner.isLoading ? (
-    <ProgressSpinner message={spinner.message} />
-  ) : (
-    <EnableWhenProvider>
-      <Container maxWidth="lg">
-        <QTitle questionnaire={questionnaire} />
-        <QForm
+  const RenderQPage = () => {
+    if (spinner.isLoading) {
+      return <ProgressSpinner message={spinner.message} />;
+    } else if (previewMode) {
+      return (
+        <PreviewFromRenderer
           questionnaireProvider={questionnaireProvider}
           questionnaireResponseProvider={questionnaireResponseProvider}
-          qrResponse={questionnaireResponse}
-          batchResponse={batchResponse}
+          setPreviewMode={() => setPreviewMode(!previewMode)}
         />
-      </Container>
-    </EnableWhenProvider>
-  );
+      );
+    } else {
+      return (
+        <EnableWhenProvider>
+          <Container maxWidth="lg">
+            <QTitle questionnaire={questionnaire} />
+            <QForm
+              questionnaireProvider={questionnaireProvider}
+              questionnaireResponseProvider={questionnaireResponseProvider}
+              setPreviewMode={() => setPreviewMode(!previewMode)}
+            />
+          </Container>
+        </EnableWhenProvider>
+      );
+    }
+  };
 
   return (
     <>
       <NavBar patient={patient} user={user} />
-      {renderQPage}
+      <RenderQPage />
     </>
   );
 }
