@@ -18,7 +18,8 @@ interface Props
 
 function QItemBoolean(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
-  const enableWhenLinkMap = React.useContext(EnableWhenContext).linkMap;
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   let qrBoolean = qrItem ? qrItem : createQrItem(qItem);
   const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
