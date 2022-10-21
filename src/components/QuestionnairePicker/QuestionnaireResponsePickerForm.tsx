@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Card, Grid, Stack, Typography } from '@mui/material';
+import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnaireResponsePickerQRList from './QuestionnaireResponsePickerQRList';
@@ -7,6 +7,7 @@ import Client from 'fhirclient/lib/Client';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { useNavigate } from 'react-router-dom';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 
 interface Props {
   fhirClient: Client | null;
@@ -65,8 +66,9 @@ function QuestionnaireResponsePickerForm(props: Props) {
           />
         </Card>
 
-        <Button
-          variant="contained"
+        <RoundButton
+          variant="outlined"
+          startIcon={<VisibilityIcon />}
           disabled={typeof selectedIndex !== 'number' || !selectedQuestionnaire}
           onClick={() => {
             if (typeof selectedIndex === 'number' && selectedQuestionnaire) {
@@ -77,10 +79,9 @@ function QuestionnaireResponsePickerForm(props: Props) {
               navigate(`/preview`);
             }
           }}
-          sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
+          sx={{ py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
           View Response
-          <VisibilityIcon sx={{ ml: 1.5 }} />
-        </Button>
+        </RoundButton>
       </Stack>
     </>
   );

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
+import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 
 function NoQuestionnaireErrorPage() {
   const navigate = useNavigate();
@@ -23,13 +24,13 @@ function NoQuestionnaireErrorPage() {
               </Typography>
             </Box>
 
-            <Button
-              variant="contained"
-              sx={{ borderRadius: 5, height: 40 }}
+            <RoundButton
+              variant="outlined"
+              sx={{ height: 40 }}
+              startIcon={<ArticleIcon />}
               onClick={() => navigate(`/picker`)}>
-              <ArticleIcon sx={{ mr: 1.5 }} />
               Select Questionnaire
-            </Button>
+            </RoundButton>
           </Stack>
         </Box>
       </Box>

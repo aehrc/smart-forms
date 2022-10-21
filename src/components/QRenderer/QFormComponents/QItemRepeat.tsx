@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from './QItemSwitcher';
@@ -84,9 +84,9 @@ function QItemRepeat(props: Props) {
                         handleAnswersChange(newQrItem, index)
                       }></QItemSwitcher>
                   </Box>
-                  <Button disabled={!answer} onClick={() => deleteAnswer(index)}>
+                  <IconButton disabled={!answer} onClick={() => deleteAnswer(index)}>
                     <Delete />
-                  </Button>
+                  </IconButton>
                 </Stack>
               </React.Fragment>
             );
@@ -97,9 +97,9 @@ function QItemRepeat(props: Props) {
       <Stack direction="row" justifyContent="end" sx={{ mt: 2, mb: 5 }}>
         <Button
           variant="contained"
+          startIcon={<Add />}
           disabled={!repeatAnswers[repeatAnswers.length - 1]}
           onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}>
-          <Add sx={{ mr: 1 }} />
           Add Item
         </Button>
       </Stack>

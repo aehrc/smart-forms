@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Button, Container, Stack } from '@mui/material';
+import { Box, Container, Stack } from '@mui/material';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import EditIcon from '@mui/icons-material/Edit';
 import FormPreview from './FormPreview';
+import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -18,10 +19,9 @@ function PreviewFromPicker(props: Props) {
     <Container maxWidth="lg">
       <Box displayPrint="none">
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={() => setPreviewMode()} sx={{ borderRadius: 20 }}>
-            <EditIcon sx={{ mr: 1 }} />
+          <RoundButton variant="outlined" startIcon={<EditIcon />} onClick={() => setPreviewMode()}>
             Continue Editing
-          </Button>
+          </RoundButton>
         </Stack>
       </Box>
       <FormPreview

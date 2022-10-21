@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Container, Stack } from '@mui/material';
+import { Box, Container, Stack } from '@mui/material';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PrintIcon from '@mui/icons-material/Print';
 import { ArrowBack } from '@mui/icons-material';
 import FormPreview from './FormPreview';
+import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -22,20 +23,20 @@ function PreviewFromPicker(props: Props) {
     <Container maxWidth="lg">
       <Box displayPrint="none">
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={() => navigate('/picker')} sx={{ borderRadius: 20 }}>
-            <ArrowBack sx={{ mr: 1 }} />
+          <RoundButton
+            variant="outlined"
+            startIcon={<ArrowBack />}
+            onClick={() => navigate('/picker')}>
             Back to Questionnaires
-          </Button>
-          <Button variant="contained" onClick={() => window.print()} sx={{ borderRadius: 20 }}>
-            <PrintIcon sx={{ mr: 1 }} />
+          </RoundButton>
+          <RoundButton variant="outlined" startIcon={<PrintIcon />} onClick={() => window.print()}>
             Print Preview
-          </Button>
+          </RoundButton>
 
           {qResponse.status === 'completed' ? null : (
-            <Button variant="contained" onClick={() => navigate('/')} sx={{ borderRadius: 20 }}>
-              <EditIcon sx={{ mr: 1 }} />
+            <RoundButton variant="outlined" startIcon={<EditIcon />} onClick={() => navigate('/')}>
               Edit Response
-            </Button>
+            </RoundButton>
           )}
         </Stack>
       </Box>

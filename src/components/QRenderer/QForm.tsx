@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Stack, Typography } from '@mui/material';
+import { Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -13,8 +13,11 @@ import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
-import { Publish, Save, Visibility } from '@mui/icons-material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import PublishIcon from '@mui/icons-material/Publish';
+import SaveIcon from '@mui/icons-material/Save';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -121,21 +124,19 @@ function QForm(props: Props) {
               )}
 
               <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    setPreviewMode();
-                  }}
-                  sx={{ borderRadius: 20 }}>
-                  <Visibility sx={{ mr: 1 }} />
+                <RoundButton
+                  variant="outlined"
+                  startIcon={<VisibilityIcon />}
+                  onClick={() => setPreviewMode()}>
                   Show Preview
-                </Button>
+                </RoundButton>
 
                 {fhirClient ? (
                   <>
-                    <Button
-                      variant="contained"
+                    <RoundButton
+                      variant="outlined"
                       disabled={!qrHasChanges}
+                      startIcon={<SaveIcon />}
                       onClick={() => {
                         questionnaireResponseProvider.setQuestionnaireResponse(
                           questionnaireResponse
@@ -145,15 +146,14 @@ function QForm(props: Props) {
                             setQrHasChanges(false);
                           })
                           .catch((error) => console.log(error));
-                      }}
-                      sx={{ borderRadius: 20 }}>
-                      <Save sx={{ mr: 1 }} />
+                      }}>
                       Save
-                    </Button>
+                    </RoundButton>
 
-                    <Button
-                      variant="contained"
+                    <RoundButton
+                      variant="outlined"
                       disabled={!qrHasChanges}
+                      startIcon={<PublishIcon />}
                       onClick={() => {
                         questionnaireResponse.status = 'completed';
                         questionnaireResponseProvider.setQuestionnaireResponse(
@@ -164,11 +164,9 @@ function QForm(props: Props) {
                             setQrHasChanges(false);
                           })
                           .catch((error) => console.log(error));
-                      }}
-                      sx={{ borderRadius: 20 }}>
-                      <Publish sx={{ mr: 1 }} />
+                      }}>
                       Submit
-                    </Button>
+                    </RoundButton>
                   </>
                 ) : (
                   <div>

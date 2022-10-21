@@ -1,14 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  FormControlLabel,
-  Stack,
-  Switch,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, Card, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
@@ -21,6 +12,7 @@ import {
 } from '../../functions/LoadServerResourceFunctions';
 import QuestionnairePickerQList from './QuestionnairePickerQList';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 
 interface Props {
   questionnaires: Questionnaire[];
@@ -121,8 +113,9 @@ function QuestionnairePickerForm(props: Props) {
           />
         </Card>
 
-        <Button
-          variant="contained"
+        <RoundButton
+          variant="outlined"
+          startIcon={<ArticleIcon />}
           disabled={typeof selectedIndex !== 'number'}
           onClick={() => {
             if (typeof selectedIndex === 'number') {
@@ -131,10 +124,9 @@ function QuestionnairePickerForm(props: Props) {
               navigate(`/`);
             }
           }}
-          sx={{ borderRadius: 20, py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
+          sx={{ py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
           Start a new Questionnaire response
-          <ArticleIcon sx={{ ml: 1.5 }} />
-        </Button>
+        </RoundButton>
       </Stack>
     </>
   );
