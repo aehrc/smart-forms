@@ -13,6 +13,7 @@ import { populate } from '../../functions/PrepopulateFunctions';
 import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
 import NoQuestionnaireErrorPage from '../ErrorPages/NoQuestionnaireErrorPage';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import PreviewFromRenderer from '../Preview/PreviewFromRenderer';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -40,6 +41,7 @@ function QRenderer(props: Props) {
     isLoading: true,
     message: patient ? 'Loading questionnaire form' : 'Retrieving patient'
   });
+  const [previewMode, setPreviewMode] = useState(false);
 
   useEffect(() => {
     const client = fhirClientContext.fhirClient;
@@ -81,24 +83,37 @@ function QRenderer(props: Props) {
       .catch((error) => console.log(error));
   }, []);
 
-  const renderQPage = spinner.isLoading ? (
-    <ProgressSpinner message={spinner.message} />
-  ) : (
-    <EnableWhenProvider>
-      <Container maxWidth="lg">
-        <QTitle questionnaire={questionnaire} />
-        <QForm
+  const RenderQPage = () => {
+    if (spinner.isLoading) {
+      return <ProgressSpinner message={spinner.message} />;
+    } else if (previewMode) {
+      return (
+        <PreviewFromRenderer
           questionnaireProvider={questionnaireProvider}
           questionnaireResponseProvider={questionnaireResponseProvider}
+          setPreviewMode={() => setPreviewMode(!previewMode)}
         />
-      </Container>
-    </EnableWhenProvider>
-  );
+      );
+    } else {
+      return (
+        <EnableWhenProvider>
+          <Container maxWidth="lg">
+            <QTitle questionnaire={questionnaire} />
+            <QForm
+              questionnaireProvider={questionnaireProvider}
+              questionnaireResponseProvider={questionnaireResponseProvider}
+              setPreviewMode={() => setPreviewMode(!previewMode)}
+            />
+          </Container>
+        </EnableWhenProvider>
+      );
+    }
+  };
 
   return (
     <>
       <NavBar patient={patient} user={user} />
-      {renderQPage}
+      <RenderQPage />
     </>
   );
 }
