@@ -47,7 +47,13 @@ function QItemInteger(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <TextField type="number" id={qItem.linkId} value={valueInteger} onChange={handleChange} />
+          <TextField
+            id={qItem.linkId}
+            value={valueInteger}
+            onChange={handleChange}
+            sx={{ mb: 0 }}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+          />
         </Grid>
       </Grid>
     </FormControl>

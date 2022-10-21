@@ -7,6 +7,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -17,9 +18,17 @@ interface Props
 
 function QItemBoolean(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   let qrBoolean = qrItem ? qrItem : createQrItem(qItem);
   const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
+
+  // if boolean item is an enableWhen linked question and it does not have an answer yet
+  // set default answer to false - to trigger enableWhen == false
+  if (qItem.linkId in enableWhenLinkMap && !qrBoolean['answer']) {
+    onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: false }] });
+  }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     qrBoolean = { ...qrBoolean, answer: [{ valueBoolean: event.target.checked }] };
