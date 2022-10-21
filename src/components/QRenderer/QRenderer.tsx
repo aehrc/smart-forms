@@ -3,7 +3,7 @@ import QForm from './QForm';
 import ProgressSpinner from './ProgressSpinner';
 import NavBar from '../NavBar/NavBar';
 import { getPatient, getUser } from '../../functions/LaunchFunctions';
-import { Bundle, Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
+import { Patient, Practitioner } from 'fhir/r5';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenProvider from '../../custom-contexts/EnableWhenContext';
@@ -24,19 +24,18 @@ function QRenderer(props: Props) {
   const fhirClientContext = React.useContext(FhirClientContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  const qResponse = questionnaireResponseProvider.questionnaireResponse;
   if (!questionnaire.item) {
     return <NoQuestionnaireErrorPage />;
   }
 
-  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
-    qResponse.item
-      ? qResponse
-      : createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
-  );
+  if (!questionnaireResponseProvider.questionnaireResponse.item) {
+    questionnaireResponseProvider.setQuestionnaireResponse(
+      createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
+    );
+  }
+
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
-  const [batchResponse, setBatchResponse] = useState<Bundle | null>(null);
   const [spinner, setSpinner] = useState({
     isLoading: true,
     message: patient ? 'Loading questionnaire form' : 'Retrieving patient'
@@ -61,8 +60,8 @@ function QRenderer(props: Props) {
         if (questionnaire.contained && !qrFormItem) {
           // obtain questionnaireResponse for prepopulation
           populate(client, questionnaire, patient, (qResponse, batchResponse) => {
-            setQuestionnaireResponse(qResponse);
-            setBatchResponse(batchResponse);
+            questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
+            questionnaireResponseProvider.setBatchResponse(batchResponse);
             setSpinner({ ...spinner, isLoading: false });
           });
         } else {
@@ -91,8 +90,6 @@ function QRenderer(props: Props) {
         <QForm
           questionnaireProvider={questionnaireProvider}
           questionnaireResponseProvider={questionnaireResponseProvider}
-          qrResponse={questionnaireResponse}
-          batchResponse={batchResponse}
         />
       </Container>
     </EnableWhenProvider>
