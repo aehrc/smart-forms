@@ -16,7 +16,6 @@ function Layout(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider } = props;
   const questionnaireActiveContext = React.useContext(QuestionnaireActiveContext);
   const launchContext = React.useContext(LaunchContext);
-  // TODO fix the nav bar patient details to side
 
   const [firstLaunch, setFirstLaunch] = useState(true);
 
@@ -35,7 +34,7 @@ function Layout(props: Props) {
 
   return (
     <>
-      <NavBar patient={launchContext.patient} user={launchContext.user} />
+      <NavBar questionnaire={questionnaireProvider.questionnaire} launchContext={launchContext} />
       {renderComponent}
     </>
   );

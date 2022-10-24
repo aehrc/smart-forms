@@ -1,29 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import dayjs from 'dayjs';
-import { AppBar, Box, Toolbar, Container } from '@mui/material';
+import { AppBar, Box, Toolbar, Stack, Typography } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
 import NavBarPatientData from './NavBarPatientData';
-import { Patient, Practitioner } from 'fhir/r5';
+import { Questionnaire } from 'fhir/r5';
 import NavBarUserData from './NavBarUserData';
 import { constructName } from '../../functions/LaunchContextFunctions';
+import { LaunchContextType } from '../../interfaces/ContextTypes';
+import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {
-  patient: Patient | null;
-  user: Practitioner | null;
+  questionnaire: Questionnaire;
+  launchContext: LaunchContextType;
 }
 
+const patientData: PatientData = {
+  name: '',
+  gender: '',
+  dateOfBirth: ''
+};
+
+const userData: UserData = {
+  name: ''
+};
+
 function NavBar(props: Props) {
-  const { patient, user } = props;
+  const { questionnaire, launchContext } = props;
+  const questionnaireActive = useContext(QuestionnaireActiveContext);
 
-  const patientData: PatientData = {
-    name: '',
-    gender: '',
-    dateOfBirth: ''
-  };
-
-  const userData: UserData = {
-    name: ''
-  };
+  const patient = launchContext.patient;
+  const user = launchContext.user;
 
   if (patient) {
     const dateOfBirthDayJs = dayjs(patient.birthDate);
@@ -41,17 +47,24 @@ function NavBar(props: Props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Container maxWidth="lg">
-          <Toolbar disableGutters>
-            <Box sx={{ flexGrow: 0 }}>
+        <Toolbar variant="dense">
+          <Box>
+            <Typography>
+              {questionnaireActive.questionnaireActive
+                ? questionnaire.title
+                : 'SMART Health Checks'}
+            </Typography>
+          </Box>
+          <Box sx={{ flexGrow: 1 }}></Box>
+          <Stack direction="row" spacing={3}>
+            <Box>
               <NavBarPatientData patientData={patientData} />
             </Box>
-            <Box sx={{ flexGrow: 1, mx: 4 }}></Box>
             <Box>
               <NavBarUserData userData={userData} />
             </Box>
-          </Toolbar>
-        </Container>
+          </Stack>
+        </Toolbar>
       </AppBar>
     </Box>
   );

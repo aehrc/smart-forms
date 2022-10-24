@@ -21,7 +21,7 @@ function NavBarPatientData(props: Props) {
     );
   } else {
     return (
-      <Stack direction="row" spacing={4}>
+      <Stack direction="row" spacing={3}>
         <Stack direction="row" spacing={1}>
           <AccountCircleIcon />
           <Typography>{patientData.name}</Typography>
