@@ -12,7 +12,7 @@ import DebugBar from './DebugComponents/DebugBar';
 import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
-import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PublishIcon from '@mui/icons-material/Publish';
 import SaveIcon from '@mui/icons-material/Save';
@@ -33,7 +33,7 @@ export const EnableWhenChecksContext = React.createContext<boolean>(true); // on
 function QForm(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider, setPreviewMode } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
-  const fhirClient = React.useContext(FhirClientContext).fhirClient;
+  const fhirClient = React.useContext(LaunchContext).fhirClient;
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
     questionnaireResponseProvider.questionnaireResponse
