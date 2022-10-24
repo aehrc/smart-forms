@@ -25,7 +25,7 @@ function Launch() {
 
   return (
     <>
-      <ProgressSpinner message="Launching the SMART Health Checks application" />
+      <ProgressSpinner message="Launching the SMART Forms application" />
     </>
   );
 }

@@ -1,4 +1,6 @@
 import {
+  Patient,
+  Practitioner,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponseItem,
@@ -52,7 +54,16 @@ export type EnableWhenContextType = {
   checkItemIsEnabled: (linkId: string) => boolean;
 };
 
-export type FhirClientContextType = {
+export type LaunchContextType = {
   fhirClient: Client | null;
+  patient: Patient | null;
+  user: Practitioner | null;
   setFhirClient: (client: Client) => unknown;
+  setPatient: (patient: Patient) => unknown;
+  setUser: (user: Practitioner) => unknown;
+};
+
+export type QuestionnaireActiveContextType = {
+  questionnaireActive: boolean;
+  setQuestionnaireActive: (questionnaireActive: boolean) => unknown;
 };
