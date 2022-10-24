@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import QForm from './QForm';
 import ProgressSpinner from './ProgressSpinner';
-import NavBar from '../NavBar/NavBar';
-import { getPatient, getUser } from '../../functions/LaunchFunctions';
-import { Patient, Practitioner } from 'fhir/r5';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
-import EnableWhenProvider from '../../custom-contexts/EnableWhenContext';
+import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import { Container } from '@mui/material';
 import QTitle from './QTitle';
 import { populate } from '../../functions/PrepopulateFunctions';
-import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
-import NoQuestionnaireErrorPage from '../ErrorPages/NoQuestionnaireErrorPage';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import PreviewFromRenderer from '../Preview/PreviewFromRenderer';
 
@@ -22,12 +18,10 @@ interface Props {
 
 function QRenderer(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider } = props;
-  const fhirClientContext = React.useContext(FhirClientContext);
+  const launchContext = React.useContext(LaunchContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  if (!questionnaire.item) {
-    return <NoQuestionnaireErrorPage />;
-  }
+  if (!questionnaire.item) return null;
 
   if (!questionnaireResponseProvider.questionnaireResponse.item) {
     questionnaireResponseProvider.setQuestionnaireResponse(
@@ -35,52 +29,33 @@ function QRenderer(props: Props) {
     );
   }
 
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [user, setUser] = useState<Practitioner | null>(null);
   const [spinner, setSpinner] = useState({
     isLoading: true,
-    message: patient ? 'Loading questionnaire form' : 'Retrieving patient'
+    message: 'Loading questionnaire form'
   });
   const [previewMode, setPreviewMode] = useState(false);
 
   useEffect(() => {
-    const client = fhirClientContext.fhirClient;
-    if (!client) {
+    const client = launchContext.fhirClient;
+    const patient = launchContext.patient;
+    if (!client || !patient) {
       setSpinner({ ...spinner, isLoading: false });
       return;
     }
 
-    // request patient details
-    getPatient(client)
-      .then((patient) => {
-        setPatient(patient);
-        setSpinner({ ...spinner, message: 'Loading questionnaire form' });
+    const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item;
 
-        const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item;
-
-        // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
-        if (questionnaire.contained && !qrFormItem) {
-          // obtain questionnaireResponse for prepopulation
-          populate(client, questionnaire, patient, (qResponse, batchResponse) => {
-            questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
-            questionnaireResponseProvider.setBatchResponse(batchResponse);
-            setSpinner({ ...spinner, isLoading: false });
-          });
-        } else {
-          setSpinner({ ...spinner, isLoading: false });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
+    // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
+    if (questionnaire.contained && !qrFormItem) {
+      // obtain questionnaireResponse for prepopulation
+      populate(client, questionnaire, patient, (qResponse, batchResponse) => {
+        questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
+        questionnaireResponseProvider.setBatchResponse(batchResponse);
         setSpinner({ ...spinner, isLoading: false });
       });
-
-    // request user details
-    getUser(client)
-      .then((user) => {
-        setUser(user);
-      })
-      .catch((error) => console.log(error));
+    } else {
+      setSpinner({ ...spinner, isLoading: false });
+    }
   }, []);
 
   const RenderQPage = () => {
@@ -96,7 +71,7 @@ function QRenderer(props: Props) {
       );
     } else {
       return (
-        <EnableWhenProvider>
+        <EnableWhenContextProvider>
           <Container maxWidth="lg">
             <QTitle questionnaire={questionnaire} />
             <QForm
@@ -105,14 +80,13 @@ function QRenderer(props: Props) {
               setPreviewMode={() => setPreviewMode(!previewMode)}
             />
           </Container>
-        </EnableWhenProvider>
+        </EnableWhenContextProvider>
       );
     }
   };
 
   return (
     <>
-      <NavBar patient={patient} user={user} />
       <RenderQPage />
     </>
   );

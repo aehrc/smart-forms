@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Box, Card, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
-import { useNavigate } from 'react-router-dom';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { debounce } from 'lodash';
@@ -13,6 +12,7 @@ import {
 import QuestionnairePickerQList from './QuestionnairePickerQList';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {
   questionnaires: Questionnaire[];
@@ -33,11 +33,12 @@ function QuestionnairePickerForm(props: Props) {
     onQSelectedIndexChange
   } = props;
 
+  const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
+
   const [qHostingIsLocal, setQHostingIsLocal] = useState(true);
   const [searchInput, setSearchInput] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [qIsSearching, setQIsSearching] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (qHostingIsLocal) {
@@ -121,7 +122,8 @@ function QuestionnairePickerForm(props: Props) {
             if (typeof selectedIndex === 'number') {
               questionnaireProvider.setQuestionnaire(questionnaires[selectedIndex]);
               questionnaireResponseProvider.clearQuestionnaireResponse();
-              navigate(`/`);
+
+              questionnaireActiveContext.setQuestionnaireActive(true);
             }
           }}
           sx={{ py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>

@@ -1,9 +1,13 @@
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { oauth2 } from 'fhirclient';
-import { FhirClientContext } from '../../custom-contexts/FhirClientContext';
-import QRenderer from './QRenderer';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import { getPatient, getUser } from '../../functions/LaunchFunctions';
+import ProgressSpinner from './ProgressSpinner';
+import { isStillAuthenticating } from '../../functions/LaunchContextFunctions';
+import Layout from '../Layout';
+import QuestionnaireActiveContextProvider from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -12,25 +16,43 @@ interface Props {
 
 function QAuth(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider } = props;
-  const fhirClientContext = React.useContext(FhirClientContext);
+  const launchContext = React.useContext(LaunchContext);
+
+  const [hasClient, setHasClient] = useState<boolean | null>(null);
 
   useEffect(() => {
     oauth2
       .ready()
       .then((client) => {
-        fhirClientContext.setFhirClient(client);
+        launchContext.setFhirClient(client);
+        setHasClient(true);
+
+        getPatient(client)
+          .then((patient) => launchContext.setPatient(patient))
+          .catch((error) => console.error(error));
+
+        getUser(client)
+          .then((user) => launchContext.setUser(user))
+          .catch((error) => console.error(error));
       })
       .catch((error) => {
         console.error(error);
+        setHasClient(false);
       });
   }, []);
 
-  return (
-    <QRenderer
-      questionnaireProvider={questionnaireProvider}
-      questionnaireResponseProvider={questionnaireResponseProvider}
-    />
-  );
+  if (isStillAuthenticating(hasClient, launchContext.patient, launchContext.user)) {
+    return <ProgressSpinner message="Fetching patient" />;
+  } else {
+    return (
+      <QuestionnaireActiveContextProvider>
+        <Layout
+          questionnaireProvider={questionnaireProvider}
+          questionnaireResponseProvider={questionnaireResponseProvider}
+        />
+      </QuestionnaireActiveContextProvider>
+    );
+  }
 }
 
 export default QAuth;

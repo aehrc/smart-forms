@@ -1,11 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, Stack, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 
-function NoQuestionnaireErrorPage() {
-  const navigate = useNavigate();
+interface Props {
+  goToPicker: () => unknown;
+}
+function NoQuestionnaireErrorPage(props: Props) {
+  const { goToPicker } = props;
 
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" minHeight="90vh">
@@ -28,7 +30,7 @@ function NoQuestionnaireErrorPage() {
               variant="outlined"
               sx={{ height: 40 }}
               startIcon={<ArticleIcon />}
-              onClick={() => navigate(`/picker`)}>
+              onClick={goToPicker}>
               Select Questionnaire
             </RoundButton>
           </Stack>

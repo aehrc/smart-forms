@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Questionnaire } from 'fhir/r5';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import { useNavigate } from 'react-router-dom';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {
   questionnaire: Questionnaire;
 }
 function QTitle(props: Props) {
   const { questionnaire } = props;
-  const navigate = useNavigate();
+  const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
 
   return (
     <>
@@ -21,7 +21,7 @@ function QTitle(props: Props) {
         <RoundButton
           variant="outlined"
           startIcon={<ChangeCircleIcon />}
-          onClick={() => navigate(`/picker`)}>
+          onClick={() => questionnaireActiveContext.setQuestionnaireActive(false)}>
           Change Questionnaire
         </RoundButton>
       </Box>

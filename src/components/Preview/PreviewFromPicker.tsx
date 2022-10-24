@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Container, Stack } from '@mui/material';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
-import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import PrintIcon from '@mui/icons-material/Print';
 import { ArrowBack } from '@mui/icons-material';
 import FormPreview from './FormPreview';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -16,8 +16,9 @@ interface Props {
 
 function PreviewFromPicker(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider } = props;
+  const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
+
   const qResponse = questionnaireResponseProvider.questionnaireResponse;
-  const navigate = useNavigate();
 
   return (
     <Container maxWidth="lg">
@@ -26,7 +27,7 @@ function PreviewFromPicker(props: Props) {
           <RoundButton
             variant="outlined"
             startIcon={<ArrowBack />}
-            onClick={() => navigate('/picker')}>
+            onClick={() => questionnaireActiveContext.setQuestionnaireActive(false)}>
             Back to Questionnaires
           </RoundButton>
           <RoundButton variant="outlined" startIcon={<PrintIcon />} onClick={() => window.print()}>
@@ -34,7 +35,10 @@ function PreviewFromPicker(props: Props) {
           </RoundButton>
 
           {qResponse.status === 'completed' ? null : (
-            <RoundButton variant="outlined" startIcon={<EditIcon />} onClick={() => navigate('/')}>
+            <RoundButton
+              variant="outlined"
+              startIcon={<EditIcon />}
+              onClick={() => questionnaireActiveContext.setQuestionnaireActive(true)}>
               Edit Response
             </RoundButton>
           )}

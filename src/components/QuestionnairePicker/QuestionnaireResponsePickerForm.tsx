@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnaireResponsePickerQRList from './QuestionnaireResponsePickerQRList';
 import Client from 'fhirclient/lib/Client';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
-import { useNavigate } from 'react-router-dom';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {
   fhirClient: Client | null;
@@ -30,8 +30,8 @@ function QuestionnaireResponsePickerForm(props: Props) {
     onQrSelectedIndexChange
   } = props;
 
+  const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const navigate = useNavigate();
 
   return (
     <>
@@ -76,7 +76,8 @@ function QuestionnaireResponsePickerForm(props: Props) {
               questionnaireResponseProvider.setQuestionnaireResponse(
                 questionnaireResponses[selectedIndex]
               );
-              navigate(`/preview`);
+
+              questionnaireActiveContext.setQuestionnaireActive(false);
             }
           }}
           sx={{ py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>
