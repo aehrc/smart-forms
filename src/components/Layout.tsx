@@ -1,6 +1,6 @@
 import { QuestionnaireProvider } from '../classes/QuestionnaireProvider';
 import { QuestionnaireResponseProvider } from '../classes/QuestionnaireResponseProvider';
-import React from 'react';
+import React, { useState } from 'react';
 import NavBar from './NavBar/NavBar';
 import QRenderer from './QRenderer/QRenderer';
 import QuestionnairePicker from './QuestionnairePicker/QuestionnairePicker';
@@ -18,6 +18,8 @@ function Layout(props: Props) {
   const launchContext = React.useContext(LaunchContext);
   // TODO fix the nav bar patient details to side
 
+  const [firstLaunch, setFirstLaunch] = useState(true);
+
   const renderComponent = questionnaireActiveContext.questionnaireActive ? (
     <QRenderer
       questionnaireProvider={questionnaireProvider}
@@ -27,6 +29,7 @@ function Layout(props: Props) {
     <QuestionnairePicker
       questionnaireProvider={questionnaireProvider}
       questionnaireResponseProvider={questionnaireResponseProvider}
+      firstLaunch={{ status: firstLaunch, invalidate: () => setFirstLaunch(false) }}
     />
   );
 

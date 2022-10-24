@@ -67,3 +67,8 @@ export type QuestionnaireActiveContextType = {
   questionnaireActive: boolean;
   setQuestionnaireActive: (questionnaireActive: boolean) => unknown;
 };
+
+export interface FirstLaunch {
+  status: boolean;
+  invalidate: () => unknown;
+}

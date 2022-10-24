@@ -1,43 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Container, Grid } from '@mui/material';
 import {
   getQResponsesFromBundle,
   loadQuestionnaireResponsesFromServer
 } from '../../functions/LoadServerResourceFunctions';
-import { Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
-import { getPatient } from '../../functions/LaunchFunctions';
-import NoQuestionnaireErrorPage from '../ErrorPages/NoQuestionnaireErrorPage';
+import NoQuestionnaireDialog from './NoQuestionnaireDialog';
+import { FirstLaunch } from '../../interfaces/Interfaces';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   questionnaireResponseProvider: QuestionnaireResponseProvider;
+  firstLaunch: FirstLaunch;
 }
 
 function QuestionnairePicker(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
-  const fhirClient = React.useContext(LaunchContext).fhirClient;
+  const { questionnaireProvider, questionnaireResponseProvider, firstLaunch } = props;
+  const launchContext = React.useContext(LaunchContext);
 
-  const [firstLaunch, setFirstLaunch] = useState(true);
-  const [patient, setPatient] = useState<Patient | null>(null);
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [qResponses, setQResponses] = useState<QuestionnaireResponse[]>([]);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [selectedQResponse, setSelectedQResponse] = useState<QuestionnaireResponse | null>(null);
   const [qrIsSearching, setQrIsSearching] = useState(false);
-
-  useEffect(() => {
-    if (!fhirClient) return;
-
-    // request patient details
-    getPatient(fhirClient).then((patient) => {
-      setPatient(patient);
-    });
-  }, []);
 
   function selectQuestionnaireByIndex(index: number) {
     const selectedQuestionnaire = questionnaires[index];
@@ -45,17 +35,18 @@ function QuestionnairePicker(props: Props) {
 
     if (!selectedQuestionnaireId) return null;
 
-    if (fhirClient) {
+    if (launchContext.fhirClient) {
       setQrIsSearching(true);
-      loadQuestionnaireResponsesFromServer(fhirClient, patient, selectedQuestionnaireId)
+      loadQuestionnaireResponsesFromServer(
+        launchContext.fhirClient,
+        launchContext.patient,
+        selectedQuestionnaireId
+      )
         .then((bundle) => {
           setQResponses(bundle.entry ? getQResponsesFromBundle(bundle) : []);
           setQrIsSearching(false);
         })
-        .catch((error) => {
-          console.log(error);
-          setQrIsSearching(false);
-        });
+        .catch(() => setQrIsSearching(false));
     }
     setSelectedQuestionnaire(selectedQuestionnaire);
   }
@@ -68,7 +59,7 @@ function QuestionnairePicker(props: Props) {
     }
   }
 
-  const renderQuestionnairePicker = (
+  return (
     <Container maxWidth="lg">
       <Box display="flex" flexDirection="column" justifyContent="center" height="90vh">
         <Grid container spacing={8}>
@@ -85,7 +76,7 @@ function QuestionnairePicker(props: Props) {
 
           <Grid item xs={6}>
             <QuestionnaireResponsePickerForm
-              fhirClient={fhirClient}
+              fhirClient={launchContext.fhirClient}
               questionnaireResponses={qResponses}
               qrIsSearching={qrIsSearching}
               selectedQuestionnaire={selectedQuestionnaire}
@@ -96,14 +87,9 @@ function QuestionnairePicker(props: Props) {
           </Grid>
         </Grid>
       </Box>
+      <NoQuestionnaireDialog firstLaunch={firstLaunch} />
     </Container>
   );
-
-  if (firstLaunch) {
-    return <NoQuestionnaireErrorPage goToPicker={() => setFirstLaunch(false)} />;
-  } else {
-    return <>{renderQuestionnairePicker}</>;
-  }
 }
 
 export default QuestionnairePicker;
