@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { QuestionnaireActiveContextType } from '../interfaces/Interfaces';
+import { QuestionnaireActiveContextType } from '../interfaces/ContextTypes';
 
 export const QuestionnaireActiveContext = React.createContext<QuestionnaireActiveContextType>({
   questionnaireActive: false,

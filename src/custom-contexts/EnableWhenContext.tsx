@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { EnableWhenContextType, EnableWhenItems } from '../interfaces/Interfaces';
+import { EnableWhenItems } from '../interfaces/Interfaces';
+import { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r5';
 import {
   createLinkedQuestionsMap,

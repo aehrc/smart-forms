@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LaunchContextType } from '../interfaces/Interfaces';
+import { LaunchContextType } from '../interfaces/ContextTypes';
 import Client from 'fhirclient/lib/Client';
 import { Patient, Practitioner } from 'fhir/r5';
 
