@@ -18,11 +18,11 @@ import PublishIcon from '@mui/icons-material/Publish';
 import SaveIcon from '@mui/icons-material/Save';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   questionnaireResponseProvider: QuestionnaireResponseProvider;
-  setPreviewMode: () => unknown;
 }
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
@@ -31,8 +31,9 @@ export const ContainedValueSetContext = React.createContext<Record<string, Value
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
 function QForm(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider, setPreviewMode } = props;
+  const { questionnaireProvider, questionnaireResponseProvider } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
+  const previewModeContext = React.useContext(PreviewModeContext);
   const fhirClient = React.useContext(LaunchContext).fhirClient;
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
@@ -127,7 +128,7 @@ function QForm(props: Props) {
                 <RoundButton
                   variant="outlined"
                   startIcon={<VisibilityIcon />}
-                  onClick={() => setPreviewMode()}>
+                  onClick={() => previewModeContext.setPreviewMode(true)}>
                   Show Preview
                 </RoundButton>
 

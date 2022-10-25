@@ -31,3 +31,8 @@ export type QuestionnaireActiveContextType = {
   questionnaireActive: boolean;
   setQuestionnaireActive: (questionnaireActive: boolean) => unknown;
 };
+
+export type PreviewModeContextType = {
+  previewMode: boolean;
+  setPreviewMode: (previewMode: boolean) => unknown;
+};

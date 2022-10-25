@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import QForm from './QForm';
 import ProgressSpinner from './ProgressSpinner';
 import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
-import { Container } from '@mui/material';
-import QTitle from './QTitle';
 import { populate } from '../../functions/PrepopulateFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import PreviewFromRenderer from '../Preview/PreviewFromRenderer';
+import QLayout from './QLayout';
+import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
@@ -19,6 +18,7 @@ interface Props {
 function QRenderer(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider } = props;
   const launchContext = React.useContext(LaunchContext);
+  const previewModeContext = React.useContext(PreviewModeContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
@@ -33,7 +33,6 @@ function QRenderer(props: Props) {
     isLoading: true,
     message: 'Loading questionnaire form'
   });
-  const [previewMode, setPreviewMode] = useState(false);
 
   useEffect(() => {
     const client = launchContext.fhirClient;
@@ -61,35 +60,43 @@ function QRenderer(props: Props) {
   const RenderQPage = () => {
     if (spinner.isLoading) {
       return <ProgressSpinner message={spinner.message} />;
-    } else if (previewMode) {
+    } else if (previewModeContext.previewMode) {
       return (
         <PreviewFromRenderer
           questionnaireProvider={questionnaireProvider}
           questionnaireResponseProvider={questionnaireResponseProvider}
-          setPreviewMode={() => setPreviewMode(!previewMode)}
         />
       );
     } else {
       return (
         <EnableWhenContextProvider>
-          <Container maxWidth="lg">
-            <QTitle questionnaire={questionnaire} />
-            <QForm
-              questionnaireProvider={questionnaireProvider}
-              questionnaireResponseProvider={questionnaireResponseProvider}
-              setPreviewMode={() => setPreviewMode(!previewMode)}
-            />
-          </Container>
+          <QLayout
+            questionnaireProvider={questionnaireProvider}
+            questionnaireResponseProvider={questionnaireResponseProvider}
+          />
+          {/*<Grid>*/}
+          {/*  <Grid item xs={5}>*/}
+          {/*    <QList></QList>*/}
+          {/*  </Grid>*/}
+          {/*  <Grid item xs={7}>*/}
+          {/*    <QList></QList>*/}
+          {/*  </Grid>*/}
+          {/*</Grid>*/}
+
+          {/*<Container maxWidth="lg">*/}
+          {/*  <QTitle questionnaire={questionnaire} />*/}
+          {/*  <QForm*/}
+          {/*    questionnaireProvider={questionnaireProvider}*/}
+          {/*    questionnaireResponseProvider={questionnaireResponseProvider}*/}
+          {/*    setPreviewMode={() => setPreviewMode(!previewMode)}*/}
+          {/*  />*/}
+          {/*</Container>*/}
         </EnableWhenContextProvider>
       );
     }
   };
 
-  return (
-    <>
-      <RenderQPage />
-    </>
-  );
+  return <RenderQPage />;
 }
 
 export default QRenderer;

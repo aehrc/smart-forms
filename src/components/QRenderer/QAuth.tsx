@@ -6,7 +6,7 @@ import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireRespon
 import { getPatient, getUser } from '../../functions/LaunchFunctions';
 import ProgressSpinner from './ProgressSpinner';
 import { isStillAuthenticating } from '../../functions/LaunchContextFunctions';
-import Layout from '../Layout';
+import PageSwitcher from '../PageSwitcher';
 import QuestionnaireActiveContextProvider from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {
@@ -46,7 +46,7 @@ function QAuth(props: Props) {
   } else {
     return (
       <QuestionnaireActiveContextProvider>
-        <Layout
+        <PageSwitcher
           questionnaireProvider={questionnaireProvider}
           questionnaireResponseProvider={questionnaireResponseProvider}
         />

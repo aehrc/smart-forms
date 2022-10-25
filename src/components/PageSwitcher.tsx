@@ -4,18 +4,17 @@ import React, { useState } from 'react';
 import NavBar from './NavBar/NavBar';
 import QRenderer from './QRenderer/QRenderer';
 import QuestionnairePicker from './QuestionnairePicker/QuestionnairePicker';
-import { LaunchContext } from '../custom-contexts/LaunchContext';
 import { QuestionnaireActiveContext } from '../custom-contexts/QuestionnaireActiveContext';
+import PreviewModeContextProvider from '../custom-contexts/PreviewModeContext';
 
 interface Props {
   questionnaireProvider: QuestionnaireProvider;
   questionnaireResponseProvider: QuestionnaireResponseProvider;
 }
 
-function Layout(props: Props) {
+function PageSwitcher(props: Props) {
   const { questionnaireProvider, questionnaireResponseProvider } = props;
   const questionnaireActiveContext = React.useContext(QuestionnaireActiveContext);
-  const launchContext = React.useContext(LaunchContext);
 
   const [firstLaunch, setFirstLaunch] = useState(true);
 
@@ -33,11 +32,14 @@ function Layout(props: Props) {
   );
 
   return (
-    <>
-      <NavBar questionnaire={questionnaireProvider.questionnaire} launchContext={launchContext} />
+    <PreviewModeContextProvider>
+      <NavBar
+        questionnaire={questionnaireProvider.questionnaire}
+        handleDrawerToggle={() => console.log('hello')}
+      />
       {renderComponent}
-    </>
+    </PreviewModeContextProvider>
   );
 }
 
-export default Layout;
+export default PageSwitcher;
