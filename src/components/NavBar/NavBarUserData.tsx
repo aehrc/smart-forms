@@ -1,7 +1,7 @@
 import React from 'react';
-import { Stack, Typography } from '@mui/material';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import { UserData } from '../../interfaces/Interfaces';
+import NavBarText from './NavBarText';
 
 interface Props {
   userData: UserData;
@@ -10,23 +10,12 @@ interface Props {
 function NavBarUserData(props: Props) {
   const { userData } = props;
 
-  if (userData.name === '') {
-    return (
-      <Stack direction="row" spacing={1}>
-        <MedicalServicesIcon />
-        <Typography>No User</Typography>
-      </Stack>
-    );
-  } else {
-    return (
-      <Stack direction="row" spacing={4}>
-        <Stack direction="row" spacing={1}>
-          <MedicalServicesIcon />
-          <Typography>{userData.name}</Typography>
-        </Stack>
-      </Stack>
-    );
-  }
+  return (
+    <NavBarText
+      icon={<MedicalServicesIcon />}
+      text={userData.name === '' ? 'No User' : userData.name}
+    />
+  );
 }
 
 export default NavBarUserData;

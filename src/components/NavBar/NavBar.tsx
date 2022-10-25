@@ -1,17 +1,28 @@
 import React, { useContext } from 'react';
 import dayjs from 'dayjs';
-import { AppBar, Box, Toolbar, Stack, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
 import NavBarPatientData from './NavBarPatientData';
 import { Questionnaire } from 'fhir/r5';
 import NavBarUserData from './NavBarUserData';
 import { constructName } from '../../functions/LaunchContextFunctions';
-import { LaunchContextType } from '../../interfaces/ContextTypes';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import MenuIcon from '@mui/icons-material/Menu';
+import {
+  NavAppBar,
+  NavBarContextDetailsBox,
+  NavBarDrawerIconButton,
+  NavBarFillerBox,
+  NavBarTitleBox,
+  NavBarTitleTypography,
+  NavToolBar
+} from './NavBar.styles';
 
 interface Props {
   questionnaire: Questionnaire;
-  launchContext: LaunchContextType;
+  handleDrawerToggle: () => unknown;
+  drawerWidth?: number;
 }
 
 const patientData: PatientData = {
@@ -25,8 +36,9 @@ const userData: UserData = {
 };
 
 function NavBar(props: Props) {
-  const { questionnaire, launchContext } = props;
+  const { questionnaire, handleDrawerToggle, drawerWidth } = props;
   const questionnaireActive = useContext(QuestionnaireActiveContext);
+  const launchContext = useContext(LaunchContext);
 
   const patient = launchContext.patient;
   const user = launchContext.user;
@@ -45,28 +57,31 @@ function NavBar(props: Props) {
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar variant="dense">
-          <Box>
-            <Typography>
+    <>
+      <NavAppBar drawerWidth={drawerWidth}>
+        <NavToolBar variant="dense">
+          {drawerWidth ? (
+            <NavBarDrawerIconButton onClick={handleDrawerToggle}>
+              <MenuIcon />
+            </NavBarDrawerIconButton>
+          ) : null}
+
+          <NavBarTitleBox>
+            <NavBarTitleTypography>
               {questionnaireActive.questionnaireActive
                 ? questionnaire.title
                 : 'SMART Health Checks'}
-            </Typography>
-          </Box>
-          <Box sx={{ flexGrow: 1 }}></Box>
-          <Stack direction="row" spacing={3}>
-            <Box>
-              <NavBarPatientData patientData={patientData} />
-            </Box>
-            <Box>
-              <NavBarUserData userData={userData} />
-            </Box>
-          </Stack>
-        </Toolbar>
-      </AppBar>
-    </Box>
+            </NavBarTitleTypography>
+          </NavBarTitleBox>
+          <Box sx={{ flexGrow: 1 }} />
+          <NavBarContextDetailsBox gap={2}>
+            <NavBarPatientData patientData={patientData} />
+            <NavBarUserData userData={userData} />
+          </NavBarContextDetailsBox>
+        </NavToolBar>
+      </NavAppBar>
+      <NavBarFillerBox drawerWidth={drawerWidth} />
+    </>
   );
 }
 
