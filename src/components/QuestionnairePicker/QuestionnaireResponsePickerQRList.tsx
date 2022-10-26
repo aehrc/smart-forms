@@ -63,7 +63,7 @@ function QuestionnaireResponsePickerQRList(props: Props) {
     );
   } else {
     return (
-      <List sx={{ width: '100%', overflow: 'auto', py: 0 }}>
+      <List sx={{ width: '100%', overflow: 'auto', height: '50vh', py: 0 }}>
         {questionnaireResponses.map((questionnaireResponse, i) => (
           <React.Fragment key={questionnaireResponse.id}>
             <ListItemButton

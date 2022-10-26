@@ -35,7 +35,7 @@ function QuestionnairePickerForm(props: Props) {
 
   const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
 
-  const [qHostingIsLocal, setQHostingIsLocal] = useState(true);
+  const [qHostingIsLocal, setQHostingIsLocal] = useState(false);
   const [searchInput, setSearchInput] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [qIsSearching, setQIsSearching] = useState(false);
@@ -44,10 +44,21 @@ function QuestionnairePickerForm(props: Props) {
     if (qHostingIsLocal) {
       setSearchInput('');
       setQuestionnaires(loadQuestionnairesFromLocal());
+    } else {
+      setQIsSearching(true);
+      loadQuestionnairesFromServer()
+        .then((bundle) => {
+          setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
+          setQIsSearching(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setQIsSearching(false);
+        });
     }
   }, [qHostingIsLocal]);
 
-  const functionDebounce = useCallback(
+  const searchQuestionnaireWithDebounce = useCallback(
     debounce((input: string) => {
       loadQuestionnairesFromServer(`title=${input}`)
         .then((bundle) => {
@@ -95,12 +106,12 @@ function QuestionnairePickerForm(props: Props) {
             setQuestionnaires([]);
             setQuestionnaireResponses([]);
             setSearchInput(input);
-            functionDebounce(input);
+            searchQuestionnaireWithDebounce(input);
           }}
           label="Search Questionnaires"
         />
 
-        <Card elevation={1} sx={{ height: 508 }}>
+        <Card elevation={1} sx={{ height: '50vh' }}>
           <QuestionnairePickerQList
             qHostingIsLocal={qHostingIsLocal}
             questionnaires={questionnaires}

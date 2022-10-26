@@ -22,24 +22,19 @@ interface Props {
 }
 
 function QuestionnairePickerQList(props: Props) {
-  const {
-    qHostingIsLocal,
-    questionnaires,
-    searchInput,
-    selectedIndex,
-    qIsSearching,
-    onQSelectedIndexChange
-  } = props;
+  const { questionnaires, searchInput, selectedIndex, qIsSearching, onQSelectedIndexChange } =
+    props;
 
-  if (!qHostingIsLocal && searchInput === '') {
-    return (
-      <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
-        <Typography variant="subtitle2" textAlign="center">
-          Enter a questionnaire title in the search bar above to load results.
-        </Typography>
-      </Card>
-    );
-  } else if (qIsSearching) {
+  // if (!qHostingIsLocal && searchInput === '') {
+  //   return (
+  //     <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
+  //       <Typography variant="subtitle2" textAlign="center">
+  //         Enter a questionnaire title in the search bar above to load results.
+  //       </Typography>
+  //     </Card>
+  //   );
+  // } else
+  if (qIsSearching) {
     return (
       <Card elevation={2} sx={{ m: 2, p: 2, borderRadius: 25 }}>
         <Box display="flex" flexDirection="column" alignItems="center">
@@ -63,7 +58,7 @@ function QuestionnairePickerQList(props: Props) {
     );
   } else {
     return (
-      <List sx={{ width: '100%', overflow: 'auto', py: 0 }}>
+      <List sx={{ width: '100%', overflow: 'auto', height: '50vh', py: 0 }}>
         {questionnaires.map((questionnaire, i) => (
           <React.Fragment key={questionnaire.id}>
             <ListItemButton

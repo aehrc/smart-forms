@@ -79,9 +79,11 @@ function QuestionnairePicker(props: Props) {
               fhirClient={launchContext.fhirClient}
               questionnaireResponses={qResponses}
               qrIsSearching={qrIsSearching}
+              setQrIsSearching={setQrIsSearching}
               selectedQuestionnaire={selectedQuestionnaire}
               questionnaireProvider={questionnaireProvider}
               questionnaireResponseProvider={questionnaireResponseProvider}
+              setQuestionnaireResponses={setQResponses}
               onQrSelectedIndexChange={selectQResponseByIndex}
             />
           </Grid>

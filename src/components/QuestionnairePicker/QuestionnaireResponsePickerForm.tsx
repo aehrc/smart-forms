@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
@@ -8,14 +8,21 @@ import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
+import {
+  getQResponsesFromBundle,
+  loadQuestionnaireResponsesFromServer
+} from '../../functions/LoadServerResourceFunctions';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 interface Props {
   fhirClient: Client | null;
   questionnaireResponses: QuestionnaireResponse[];
   qrIsSearching: boolean;
+  setQrIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
   selectedQuestionnaire: Questionnaire | null;
   questionnaireProvider: QuestionnaireProvider;
   questionnaireResponseProvider: QuestionnaireResponseProvider;
+  setQuestionnaireResponses: React.Dispatch<React.SetStateAction<QuestionnaireResponse[]>>;
   onQrSelectedIndexChange: (index: number) => unknown;
 }
 
@@ -24,14 +31,29 @@ function QuestionnaireResponsePickerForm(props: Props) {
     fhirClient,
     questionnaireResponses,
     qrIsSearching,
+    setQrIsSearching,
     selectedQuestionnaire,
     questionnaireProvider,
     questionnaireResponseProvider,
+    setQuestionnaireResponses,
     onQrSelectedIndexChange
   } = props;
 
   const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const launchContext = React.useContext(LaunchContext);
+
+  useEffect(() => {
+    if (launchContext.fhirClient) {
+      setQrIsSearching(true);
+      loadQuestionnaireResponsesFromServer(launchContext.fhirClient, launchContext.patient)
+        .then((bundle) => {
+          setQuestionnaireResponses(bundle.entry ? getQResponsesFromBundle(bundle) : []);
+          setQrIsSearching(false);
+        })
+        .catch(() => setQrIsSearching(false));
+    }
+  }, []);
 
   return (
     <>
@@ -53,7 +75,7 @@ function QuestionnaireResponsePickerForm(props: Props) {
           </Box>
         </Card>
 
-        <Card elevation={1} sx={{ height: 508 }}>
+        <Card elevation={1} sx={{ height: '50vh' }}>
           <QuestionnaireResponsePickerQRList
             fhirClient={fhirClient}
             questionnaireResponses={questionnaireResponses}

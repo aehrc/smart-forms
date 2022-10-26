@@ -24,7 +24,7 @@ export async function loadQuestionnairesFromServer(params?: string): Promise<Bun
   };
 
   return client(formsServerUrl).request({
-    url: 'Questionnaire?_count=10&' + urlParams,
+    url: 'Questionnaire?_count=10&_sort=-date&' + urlParams,
     method: 'GET',
     headers: headers
   });
@@ -38,7 +38,7 @@ export async function loadQuestionnairesFromServer(params?: string): Promise<Bun
 export async function loadQuestionnaireResponsesFromServer(
   client: Client,
   patient: Patient | null,
-  questionnaireId: string
+  questionnaireId?: string
 ): Promise<Bundle> {
   const headers = {
     'Cache-Control': 'no-cache',
@@ -46,8 +46,9 @@ export async function loadQuestionnaireResponsesFromServer(
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  let requestUrl = `QuestionnaireResponse?questionnaire=${questionnaireId}`;
-  requestUrl += patient ? `&patient=${patient.id}` : '';
+  let requestUrl = 'QuestionnaireResponse?';
+  requestUrl += questionnaireId ? `questionnaire=${questionnaireId}&` : '';
+  requestUrl += patient ? `patient=${patient.id}&` : '';
 
   return client.request({
     url: requestUrl,
