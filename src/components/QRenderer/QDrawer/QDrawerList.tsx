@@ -47,8 +47,6 @@ function QDrawerList(props: Props) {
           <DrawerTitleTypography>SMART Health Checks</DrawerTitleTypography>
         </Box>
       </Toolbar>
-      <Divider />
-      <QOperationList />
 
       <Divider />
 
@@ -65,6 +63,9 @@ function QDrawerList(props: Props) {
         ))}
       </DrawerTabList>
       <Box sx={{ flexGrow: 1 }}></Box>
+      <Divider />
+      <QOperationList />
+
       <Divider />
       <QDrawerOrganisationLogo />
     </DrawerListBox>

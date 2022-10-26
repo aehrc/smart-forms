@@ -2,22 +2,20 @@ import React, { useContext } from 'react';
 import dayjs from 'dayjs';
 import { Box } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
-import NavBarPatientData from './NavBarPatientData';
 import { Questionnaire } from 'fhir/r5';
-import NavBarUserData from './NavBarUserData';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   NavAppBar,
-  NavBarContextDetailsBox,
   NavBarDrawerIconButton,
   NavBarFillerBox,
   NavBarTitleBox,
   NavBarTitleTypography,
   NavToolBar
 } from './NavBar.styles';
+import NavBarPatientUserDetails from './NavBarPatientUserDetails';
 
 interface Props {
   questionnaire: Questionnaire;
@@ -74,10 +72,7 @@ function NavBar(props: Props) {
             </NavBarTitleTypography>
           </NavBarTitleBox>
           <Box sx={{ flexGrow: 1 }} />
-          <NavBarContextDetailsBox gap={2}>
-            <NavBarPatientData patientData={patientData} />
-            <NavBarUserData userData={userData} />
-          </NavBarContextDetailsBox>
+          <NavBarPatientUserDetails patientData={patientData} userData={userData} />
         </NavToolBar>
       </NavAppBar>
       <NavBarFillerBox drawerWidth={drawerWidth} />
