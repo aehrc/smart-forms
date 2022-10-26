@@ -6,12 +6,12 @@ import {
   DialogTitle,
   List,
   ListItem,
-  Stack,
-  Typography
+  Stack
 } from '@mui/material';
 import React from 'react';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
 import {
+  NavBarPatientDetailsTypography,
   NavBarPatientUserDataBox,
   NavBarPatientUserDataIconButton,
   PatientDetailsDialogTypography
@@ -45,11 +45,11 @@ function NavBarPatientUserDetails(props: Props) {
       <NavBarPatientUserDataBox gap={2}>
         <NavBarPatientDetails patientData={patientData} />
 
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={1}>
           <MedicalServicesIcon />
-          <Typography textTransform="capitalize">
+          <NavBarPatientDetailsTypography>
             {userData.name === '' ? 'No User' : userData.name}
-          </Typography>
+          </NavBarPatientDetailsTypography>
         </Stack>
       </NavBarPatientUserDataBox>
 

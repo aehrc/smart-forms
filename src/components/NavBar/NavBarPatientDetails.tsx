@@ -4,7 +4,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EventIcon from '@mui/icons-material/Event';
 import { PatientData } from '../../interfaces/Interfaces';
 import NavBarGenderIcon from './NavBarGenderIcon';
-import { NavBarIconTypography } from './NavBar.styles';
+import { NavBarPatientDetailsTypography } from './NavBar.styles';
 
 interface Props {
   patientData: PatientData;
@@ -17,7 +17,7 @@ function NavBarPatientDetails(props: Props) {
     return (
       <Stack direction="row" alignItems="center" spacing={1}>
         <AccountCircleIcon />
-        <NavBarIconTypography>No Patient</NavBarIconTypography>
+        <NavBarPatientDetailsTypography>No Patient</NavBarPatientDetailsTypography>
       </Stack>
     );
   } else {
@@ -25,16 +25,18 @@ function NavBarPatientDetails(props: Props) {
       <Stack direction="row" spacing={2}>
         <Stack direction="row" alignItems="center" spacing={1}>
           <AccountCircleIcon />
-          <NavBarIconTypography>{patientData.name}</NavBarIconTypography>
+          <NavBarPatientDetailsTypography>{patientData.name}</NavBarPatientDetailsTypography>
         </Stack>
         <Stack direction="row" spacing={2}>
           <Stack direction="row" alignItems="center" spacing={1}>
             <NavBarGenderIcon gender={patientData.gender} />
-            <NavBarIconTypography>{patientData.gender}</NavBarIconTypography>
+            <NavBarPatientDetailsTypography>{patientData.gender}</NavBarPatientDetailsTypography>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
             <EventIcon />
-            <NavBarIconTypography>{patientData.dateOfBirth}</NavBarIconTypography>
+            <NavBarPatientDetailsTypography>
+              {patientData.dateOfBirth}
+            </NavBarPatientDetailsTypography>
           </Stack>
         </Stack>
       </Stack>
