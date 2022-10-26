@@ -59,7 +59,7 @@ function QuestionnairePicker(props: Props) {
     <Container maxWidth="lg">
       <Box display="flex" flexDirection="column" justifyContent="center" height="90vh">
         <Grid container spacing={8}>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <QuestionnairePickerForm
               questionnaires={questionnaires}
               setQuestionnaires={setQuestionnaires}
@@ -68,7 +68,7 @@ function QuestionnairePicker(props: Props) {
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <QuestionnaireResponsePickerForm
               fhirClient={launch.fhirClient}
               questionnaireResponses={qResponses}

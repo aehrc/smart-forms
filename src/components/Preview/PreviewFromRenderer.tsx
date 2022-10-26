@@ -14,6 +14,7 @@ function PreviewFromPicker() {
         <Stack direction="row" spacing={2}>
           <RoundButton
             variant="outlined"
+            sx={{ mt: 10 }}
             startIcon={<EditIcon />}
             onClick={() => previewModeContext.setIsPreviewMode(false)}>
             Continue Editing

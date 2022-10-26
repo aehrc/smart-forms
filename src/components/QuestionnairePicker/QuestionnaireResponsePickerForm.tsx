@@ -58,12 +58,17 @@ function QuestionnaireResponsePickerForm(props: Props) {
         <Card elevation={1} sx={{ height: 57.5, mt: 10 }}>
           <Box sx={{ m: 2.5 }}>
             <Grid container spacing={2}>
-              <Grid item xs={9}>
+              <Grid item xs={6}>
                 <Typography variant="subtitle2" fontWeight="bold">
                   Responses
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Modified At
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
                 <Typography variant="subtitle2" fontWeight="bold">
                   Status
                 </Typography>

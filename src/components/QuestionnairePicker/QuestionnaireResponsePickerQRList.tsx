@@ -73,14 +73,21 @@ function QuestionnaireResponsePickerQRList(props: Props) {
                 onQrSelectedIndexChange(i);
               }}>
               <Grid container spacing={2}>
-                <Grid item xs={9}>
+                <Grid item xs={6}>
+                  <ListItemText
+                    primary={questionnaireResponse.questionnaire}
+                    primaryTypographyProps={{ variant: 'subtitle2' }}
+                  />
+                </Grid>
+
+                <Grid item xs={4}>
                   <ListItemText
                     primary={dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')}
                     primaryTypographyProps={{ variant: 'subtitle2' }}
                   />
                 </Grid>
 
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                   <ListItemText
                     primary={
                       questionnaireResponse.status[0].toUpperCase() +
