@@ -37,10 +37,10 @@ function QRenderer() {
       return;
     }
 
-    const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item;
+    const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item?.[0].item;
 
     // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
-    if (questionnaire.contained && !qrFormItem) {
+    if (questionnaire.contained && (!qrFormItem || qrFormItem.length === 0)) {
       // obtain questionnaireResponse for prepopulation
       populate(client, questionnaire, patient, (qResponse, batchResponse) => {
         questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
