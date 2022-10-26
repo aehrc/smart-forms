@@ -1,21 +1,13 @@
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import React, { useEffect, useState } from 'react';
 import { oauth2 } from 'fhirclient';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { getPatient, getUser } from '../../functions/LaunchFunctions';
 import ProgressSpinner from './ProgressSpinner';
 import { isStillAuthenticating } from '../../functions/LaunchContextFunctions';
 import PageSwitcher from '../PageSwitcher';
 import QuestionnaireActiveContextProvider from '../../custom-contexts/QuestionnaireActiveContext';
 
-interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
-}
-
-function QAuth(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
+function QAuth() {
   const launchContext = React.useContext(LaunchContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
@@ -46,10 +38,7 @@ function QAuth(props: Props) {
   } else {
     return (
       <QuestionnaireActiveContextProvider>
-        <PageSwitcher
-          questionnaireProvider={questionnaireProvider}
-          questionnaireResponseProvider={questionnaireResponseProvider}
-        />
+        <PageSwitcher />
       </QuestionnaireActiveContextProvider>
     );
   }

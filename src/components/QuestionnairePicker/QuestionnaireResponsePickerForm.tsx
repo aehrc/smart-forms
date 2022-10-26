@@ -4,8 +4,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnaireResponsePickerQRList from './QuestionnaireResponsePickerQRList';
 import Client from 'fhirclient/lib/Client';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import {
@@ -13,6 +11,7 @@ import {
   loadQuestionnaireResponsesFromServer
 } from '../../functions/LoadServerResourceFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 
 interface Props {
   fhirClient: Client | null;
@@ -20,8 +19,6 @@ interface Props {
   qrIsSearching: boolean;
   setQrIsSearching: React.Dispatch<React.SetStateAction<boolean>>;
   selectedQuestionnaire: Questionnaire | null;
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
   setQuestionnaireResponses: React.Dispatch<React.SetStateAction<QuestionnaireResponse[]>>;
   onQrSelectedIndexChange: (index: number) => unknown;
 }
@@ -33,13 +30,13 @@ function QuestionnaireResponsePickerForm(props: Props) {
     qrIsSearching,
     setQrIsSearching,
     selectedQuestionnaire,
-    questionnaireProvider,
-    questionnaireResponseProvider,
     setQuestionnaireResponses,
     onQrSelectedIndexChange
   } = props;
 
-  const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const questionnaireActive = useContext(QuestionnaireActiveContext);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const launchContext = React.useContext(LaunchContext);
 
@@ -99,7 +96,7 @@ function QuestionnaireResponsePickerForm(props: Props) {
                 questionnaireResponses[selectedIndex]
               );
 
-              questionnaireActiveContext.setQuestionnaireActive(false);
+              questionnaireActive.setQuestionnaireActive(false);
             }
           }}
           sx={{ py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>

@@ -1,24 +1,18 @@
 import React, { useContext } from 'react';
 import { Box, Container, Stack } from '@mui/material';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import EditIcon from '@mui/icons-material/Edit';
 import PrintIcon from '@mui/icons-material/Print';
 import { ArrowBack } from '@mui/icons-material';
 import FormPreview from './FormPreview';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
+import { QuestionnaireResponseProviderContext } from '../../App';
 
-interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
-}
-
-function PreviewFromPicker(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
+function PreviewFromPicker() {
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
   const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
 
-  const qResponse = questionnaireResponseProvider.questionnaireResponse;
+  const questionnaireResponse = questionnaireResponseProvider.questionnaireResponse;
 
   return (
     <Container maxWidth="lg">
@@ -34,7 +28,7 @@ function PreviewFromPicker(props: Props) {
             Print Preview
           </RoundButton>
 
-          {qResponse.status === 'completed' ? null : (
+          {questionnaireResponse.status === 'completed' ? null : (
             <RoundButton
               variant="outlined"
               startIcon={<EditIcon />}
@@ -44,9 +38,7 @@ function PreviewFromPicker(props: Props) {
           )}
         </Stack>
       </Box>
-      <FormPreview
-        questionnaireProvider={questionnaireProvider}
-        questionnaireResponseProvider={questionnaireResponseProvider}></FormPreview>
+      <FormPreview />
     </Container>
   );
 }

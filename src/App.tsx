@@ -13,30 +13,30 @@ import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponsePr
 const questionnaireProvider = new QuestionnaireProvider();
 questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
 questionnaireProvider.readVariables();
-
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
+
+export const QuestionnaireProviderContext =
+  React.createContext<QuestionnaireProvider>(questionnaireProvider);
+export const QuestionnaireResponseProviderContext =
+  React.createContext<QuestionnaireResponseProvider>(questionnaireResponseProvider);
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   return (
     <ThemeProvider theme={getTheme(prefersDarkMode)}>
-      <LaunchContextProvider>
-        <CssBaseline />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <QAuth
-                  questionnaireProvider={questionnaireProvider}
-                  questionnaireResponseProvider={questionnaireResponseProvider}
-                />
-              }
-            />
-            <Route path="/launch" element={<Launch />} />
-          </Routes>
-        </BrowserRouter>
-      </LaunchContextProvider>
+      <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
+        <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
+          <LaunchContextProvider>
+            <CssBaseline />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<QAuth />} />
+                <Route path="/launch" element={<Launch />} />
+              </Routes>
+            </BrowserRouter>
+          </LaunchContextProvider>
+        </QuestionnaireResponseProviderContext.Provider>
+      </QuestionnaireProviderContext.Provider>
     </ThemeProvider>
   );
 }

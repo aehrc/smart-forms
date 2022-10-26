@@ -5,7 +5,6 @@ import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir
 import QFormBodyTabbed from './QFormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { CalculatedExpression } from '../../interfaces/Interfaces';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import DebugBar from './DebugComponents/DebugBar';
@@ -16,24 +15,20 @@ import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PublishIcon from '@mui/icons-material/Publish';
 import SaveIcon from '@mui/icons-material/Save';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
-
-interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
-}
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
 
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
-function QForm(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const previewModeContext = React.useContext(PreviewModeContext);
+function QForm() {
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const enableWhen = React.useContext(EnableWhenContext);
+  const previewMode = React.useContext(PreviewModeContext);
   const fhirClient = React.useContext(LaunchContext).fhirClient;
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
@@ -58,7 +53,7 @@ function QForm(props: Props) {
   const qrForm = questionnaireResponse.item[0];
 
   useEffect(() => {
-    enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
+    enableWhen.setItems(questionnaireProvider.enableWhenItems, qrForm);
   }, []);
 
   // update QR state if QR is updated from the server
@@ -128,7 +123,7 @@ function QForm(props: Props) {
                 <RoundButton
                   variant="outlined"
                   startIcon={<VisibilityIcon />}
-                  onClick={() => previewModeContext.setPreviewMode(true)}>
+                  onClick={() => previewMode.setIsPreviewMode(true)}>
                   Show Preview
                 </RoundButton>
 

@@ -6,22 +6,18 @@ import {
 } from '../../functions/LoadServerResourceFunctions';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import QuestionnairePickerForm from './QuestionnairePickerForm';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import QuestionnaireResponsePickerForm from './QuestionnaireResponsePickerForm';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import NoQuestionnaireDialog from './NoQuestionnaireDialog';
 import { FirstLaunch } from '../../interfaces/Interfaces';
 
 interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
   firstLaunch: FirstLaunch;
 }
 
 function QuestionnairePicker(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider, firstLaunch } = props;
-  const launchContext = React.useContext(LaunchContext);
+  const { firstLaunch } = props;
+  const launch = React.useContext(LaunchContext);
 
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [qResponses, setQResponses] = useState<QuestionnaireResponse[]>([]);
@@ -35,11 +31,11 @@ function QuestionnairePicker(props: Props) {
 
     if (!selectedQuestionnaireId) return null;
 
-    if (launchContext.fhirClient) {
+    if (launch.fhirClient) {
       setQrIsSearching(true);
       loadQuestionnaireResponsesFromServer(
-        launchContext.fhirClient,
-        launchContext.patient,
+        launch.fhirClient,
+        launch.patient,
         selectedQuestionnaireId
       )
         .then((bundle) => {
@@ -66,8 +62,6 @@ function QuestionnairePicker(props: Props) {
           <Grid item xs={6}>
             <QuestionnairePickerForm
               questionnaires={questionnaires}
-              questionnaireProvider={questionnaireProvider}
-              questionnaireResponseProvider={questionnaireResponseProvider}
               setQuestionnaires={setQuestionnaires}
               setQuestionnaireResponses={setQResponses}
               onQSelectedIndexChange={selectQuestionnaireByIndex}
@@ -76,13 +70,11 @@ function QuestionnairePicker(props: Props) {
 
           <Grid item xs={6}>
             <QuestionnaireResponsePickerForm
-              fhirClient={launchContext.fhirClient}
+              fhirClient={launch.fhirClient}
               questionnaireResponses={qResponses}
               qrIsSearching={qrIsSearching}
               setQrIsSearching={setQrIsSearching}
               selectedQuestionnaire={selectedQuestionnaire}
-              questionnaireProvider={questionnaireProvider}
-              questionnaireResponseProvider={questionnaireResponseProvider}
               setQuestionnaireResponses={setQResponses}
               onQrSelectedIndexChange={selectQResponseByIndex}
             />

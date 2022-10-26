@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Box, Card, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { debounce } from 'lodash';
 import {
   getQuestionnairesFromBundle,
@@ -10,30 +9,24 @@ import {
   loadQuestionnairesFromServer
 } from '../../functions/LoadServerResourceFunctions';
 import QuestionnairePickerQList from './QuestionnairePickerQList';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 
 interface Props {
   questionnaires: Questionnaire[];
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
   setQuestionnaires: React.Dispatch<React.SetStateAction<Questionnaire[]>>;
   setQuestionnaireResponses: React.Dispatch<React.SetStateAction<QuestionnaireResponse[]>>;
   onQSelectedIndexChange: (index: number) => unknown;
 }
 
 function QuestionnairePickerForm(props: Props) {
-  const {
-    questionnaires,
-    setQuestionnaires,
-    setQuestionnaireResponses,
-    questionnaireProvider,
-    questionnaireResponseProvider,
-    onQSelectedIndexChange
-  } = props;
+  const { questionnaires, setQuestionnaires, setQuestionnaireResponses, onQSelectedIndexChange } =
+    props;
 
-  const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const questionnaireActive = useContext(QuestionnaireActiveContext);
 
   const [qHostingIsLocal, setQHostingIsLocal] = useState(false);
   const [searchInput, setSearchInput] = useState<string>('');
@@ -134,7 +127,7 @@ function QuestionnairePickerForm(props: Props) {
               questionnaireProvider.setQuestionnaire(questionnaires[selectedIndex]);
               questionnaireResponseProvider.clearQuestionnaireResponse();
 
-              questionnaireActiveContext.setQuestionnaireActive(true);
+              questionnaireActive.setQuestionnaireActive(true);
             }
           }}
           sx={{ py: 1.5, fontSize: 16, textTransform: 'Capitalize' }}>

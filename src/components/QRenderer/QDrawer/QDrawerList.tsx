@@ -5,7 +5,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import QOperationList from './QOperationsList';
-import { Questionnaire } from 'fhir/r5';
 import { getShortText } from '../../../functions/ItemControlFunctions';
 import { isTab } from '../../../functions/TabFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
@@ -18,16 +17,13 @@ import {
   TabListTypography
 } from './QDrawerList.styles';
 import QDrawerOrganisationLogo from './QDrawerOrganisationLogo';
+import { QuestionnaireProviderContext } from '../../../App';
 
-interface Props {
-  questionnaire: Questionnaire;
-}
-
-function QDrawerList(props: Props) {
-  const { questionnaire } = props;
+function QDrawerList() {
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
 
   let tabList: string[] = [];
-  const qForm = questionnaire.item;
+  const qForm = questionnaireProvider.questionnaire.item;
   if (qForm) {
     if (qForm[0].item) {
       tabList = qForm[0].item

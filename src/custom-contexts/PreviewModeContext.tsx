@@ -2,17 +2,17 @@ import * as React from 'react';
 import { PreviewModeContextType } from '../interfaces/ContextTypes';
 
 export const PreviewModeContext = React.createContext<PreviewModeContextType>({
-  previewMode: false,
-  setPreviewMode: () => void 0
+  isPreviewMode: false,
+  setIsPreviewMode: () => void 0
 });
 
 function PreviewModeContextProvider(props: { children: any }) {
   const { children } = props;
-  const [previewMode, setPreviewMode] = React.useState<boolean>(false);
+  const [isPreviewMode, setIsPreviewMode] = React.useState<boolean>(false);
 
   const questionnaireActiveContext: PreviewModeContextType = {
-    previewMode: previewMode,
-    setPreviewMode: setPreviewMode
+    isPreviewMode: isPreviewMode,
+    setIsPreviewMode: setIsPreviewMode
   };
 
   return (

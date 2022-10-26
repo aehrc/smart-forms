@@ -1,16 +1,15 @@
 import * as React from 'react';
 import QDrawerList from './QDrawerList';
-import { Questionnaire } from 'fhir/r5';
 import { DesktopDrawer, DrawerContainerBox, MobileDrawer } from './QDrawer.styles';
 
 interface Props {
-  questionnaire: Questionnaire;
   drawerWidth: number;
   mobileOpen: boolean;
   handleDrawerToggle: () => unknown;
 }
+
 function QDrawer(props: Props) {
-  const { questionnaire, drawerWidth, mobileOpen, handleDrawerToggle } = props;
+  const { drawerWidth, mobileOpen, handleDrawerToggle } = props;
 
   return (
     <DrawerContainerBox drawerWidth={drawerWidth}>
@@ -23,12 +22,12 @@ function QDrawer(props: Props) {
         ModalProps={{
           keepMounted: true // Better open performance on mobile.
         }}>
-        <QDrawerList questionnaire={questionnaire} />
+        <QDrawerList />
       </MobileDrawer>
 
       {/*  desktop */}
       <DesktopDrawer variant="permanent" open drawerWidth={drawerWidth}>
-        <QDrawerList questionnaire={questionnaire} />
+        <QDrawerList />
       </DesktopDrawer>
     </DrawerContainerBox>
   );

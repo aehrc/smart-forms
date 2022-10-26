@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import dayjs from 'dayjs';
 import { Box } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
-import { Questionnaire } from 'fhir/r5';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
@@ -16,10 +15,10 @@ import {
   NavToolBar
 } from './NavBar.styles';
 import NavBarPatientUserDetails from './NavBarPatientUserDetails';
+import { QuestionnaireProviderContext } from '../../App';
 
 interface Props {
-  questionnaire: Questionnaire;
-  handleDrawerToggle: () => unknown;
+  handleDrawerToggle?: () => unknown;
   drawerWidth?: number;
 }
 
@@ -34,7 +33,8 @@ const userData: UserData = {
 };
 
 function NavBar(props: Props) {
-  const { questionnaire, handleDrawerToggle, drawerWidth } = props;
+  const { handleDrawerToggle, drawerWidth } = props;
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireActive = useContext(QuestionnaireActiveContext);
   const launchContext = useContext(LaunchContext);
 
@@ -58,7 +58,7 @@ function NavBar(props: Props) {
     <>
       <NavAppBar drawerWidth={drawerWidth}>
         <NavToolBar variant="dense">
-          {drawerWidth ? (
+          {drawerWidth && handleDrawerToggle ? (
             <NavBarDrawerIconButton onClick={handleDrawerToggle}>
               <MenuIcon />
             </NavBarDrawerIconButton>
@@ -67,7 +67,7 @@ function NavBar(props: Props) {
           <NavBarTitleBox>
             <NavBarTitleTypography>
               {questionnaireActive.questionnaireActive
-                ? questionnaire.title
+                ? questionnaireProvider.questionnaire.title
                 : 'SMART Health Checks'}
             </NavBarTitleTypography>
           </NavBarTitleBox>

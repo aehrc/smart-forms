@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import ProgressSpinner from './ProgressSpinner';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import { populate } from '../../functions/PrepopulateFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import PreviewFromRenderer from '../Preview/PreviewFromRenderer';
 import QLayout from './QLayout';
 import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 
-interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
-}
-
-function QRenderer(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
-  const launchContext = React.useContext(LaunchContext);
-  const previewModeContext = React.useContext(PreviewModeContext);
+function QRenderer() {
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const launch = React.useContext(LaunchContext);
+  const previewMode = React.useContext(PreviewModeContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
@@ -35,8 +30,8 @@ function QRenderer(props: Props) {
   });
 
   useEffect(() => {
-    const client = launchContext.fhirClient;
-    const patient = launchContext.patient;
+    const client = launch.fhirClient;
+    const patient = launch.patient;
     if (!client || !patient) {
       setSpinner({ ...spinner, isLoading: false });
       return;
@@ -60,20 +55,12 @@ function QRenderer(props: Props) {
   const RenderQPage = () => {
     if (spinner.isLoading) {
       return <ProgressSpinner message={spinner.message} />;
-    } else if (previewModeContext.previewMode) {
-      return (
-        <PreviewFromRenderer
-          questionnaireProvider={questionnaireProvider}
-          questionnaireResponseProvider={questionnaireResponseProvider}
-        />
-      );
+    } else if (previewMode.isPreviewMode) {
+      return <PreviewFromRenderer />;
     } else {
       return (
         <EnableWhenContextProvider>
-          <QLayout
-            questionnaireProvider={questionnaireProvider}
-            questionnaireResponseProvider={questionnaireResponseProvider}
-          />
+          <QLayout />
           {/*<Grid>*/}
           {/*  <Grid item xs={5}>*/}
           {/*    <QList></QList>*/}

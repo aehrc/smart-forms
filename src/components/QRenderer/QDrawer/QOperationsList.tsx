@@ -29,7 +29,7 @@ function QOperationList() {
           />
         </ListItemButton>
 
-        <ListItemButton onClick={() => previewModeContext.setPreviewMode(true)}>
+        <ListItemButton onClick={() => previewModeContext.setIsPreviewMode(true)}>
           <Visibility sx={{ mr: 2 }} />
           <ListItemText
             primary={

@@ -1,19 +1,11 @@
 import React, { useContext } from 'react';
 import { Box, Container, Stack } from '@mui/material';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
 import EditIcon from '@mui/icons-material/Edit';
 import FormPreview from './FormPreview';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 
-interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
-}
-
-function PreviewFromPicker(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
+function PreviewFromPicker() {
   const previewModeContext = useContext(PreviewModeContext);
 
   return (
@@ -23,14 +15,12 @@ function PreviewFromPicker(props: Props) {
           <RoundButton
             variant="outlined"
             startIcon={<EditIcon />}
-            onClick={() => previewModeContext.setPreviewMode(false)}>
+            onClick={() => previewModeContext.setIsPreviewMode(false)}>
             Continue Editing
           </RoundButton>
         </Stack>
       </Box>
-      <FormPreview
-        questionnaireProvider={questionnaireProvider}
-        questionnaireResponseProvider={questionnaireResponseProvider}></FormPreview>
+      <FormPreview />
     </Container>
   );
 }

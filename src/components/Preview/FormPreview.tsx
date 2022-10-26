@@ -2,16 +2,11 @@ import React from 'react';
 import { Box, Container } from '@mui/material';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../functions/PreviewFunctions';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 
-interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
-}
-
-function FormPreview(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
+function FormPreview() {
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   const qResponse = questionnaireResponseProvider.questionnaireResponse;
