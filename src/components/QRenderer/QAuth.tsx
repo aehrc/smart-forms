@@ -6,6 +6,7 @@ import ProgressSpinner from './ProgressSpinner';
 import { isStillAuthenticating } from '../../functions/LaunchContextFunctions';
 import PageSwitcher from '../PageSwitcher';
 import QuestionnaireActiveContextProvider from '../../custom-contexts/QuestionnaireActiveContext';
+import PageSwitcherContextProvider from '../../custom-contexts/PageSwitcherContext';
 
 function QAuth() {
   const launchContext = React.useContext(LaunchContext);
@@ -37,9 +38,11 @@ function QAuth() {
     return <ProgressSpinner message="Fetching patient" />;
   } else {
     return (
-      <QuestionnaireActiveContextProvider>
-        <PageSwitcher />
-      </QuestionnaireActiveContextProvider>
+      <PageSwitcherContextProvider>
+        <QuestionnaireActiveContextProvider>
+          <PageSwitcher />
+        </QuestionnaireActiveContextProvider>
+      </PageSwitcherContextProvider>
     );
   }
 }

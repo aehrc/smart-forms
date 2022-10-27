@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
+import { FormControlLabel, Switch, Typography } from '@mui/material';
+import { DebugBarContainerBox } from './DebugBar.styles';
 
 type Props = {
   hideQResponse: boolean;
@@ -8,18 +9,11 @@ type Props = {
   toggleEnableWhenStatus: (checked: boolean) => unknown;
 };
 
-function DebugBar(props: Props) {
+function RendererDebugBar(props: Props) {
   const { hideQResponse, toggleHideQResponse, enableWhenStatus, toggleEnableWhenStatus } = props;
   return (
     <>
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          right: 0,
-          px: 2,
-          py: 0.5
-        }}>
+      <DebugBarContainerBox>
         <FormControlLabel
           control={
             <Switch
@@ -38,9 +32,9 @@ function DebugBar(props: Props) {
           }
           label={<Typography variant="subtitle2">EnableWhen checks</Typography>}
         />
-      </Box>
+      </DebugBarContainerBox>
     </>
   );
 }
 
-export default DebugBar;
+export default RendererDebugBar;

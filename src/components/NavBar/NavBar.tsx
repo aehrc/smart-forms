@@ -1,19 +1,12 @@
 import React, { useContext } from 'react';
 import dayjs from 'dayjs';
-import { Box } from '@mui/material';
+import { AppBar, Box } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-  NavAppBar,
-  NavBarDrawerIconButton,
-  NavBarFillerBox,
-  NavBarTitleBox,
-  NavBarTitleTypography,
-  NavToolBar
-} from './NavBar.styles';
+import { NavBarDrawerIconButton, NavBarTitleTypography, NavToolBar } from './NavBar.styles';
 import NavBarPatientUserDetails from './NavBarPatientUserDetails';
 import { QuestionnaireProviderContext } from '../../App';
 
@@ -56,7 +49,7 @@ function NavBar(props: Props) {
 
   return (
     <>
-      <NavAppBar drawerWidth={drawerWidth}>
+      <AppBar position="static">
         <NavToolBar variant="dense">
           {drawerWidth && handleDrawerToggle ? (
             <NavBarDrawerIconButton onClick={handleDrawerToggle}>
@@ -64,18 +57,17 @@ function NavBar(props: Props) {
             </NavBarDrawerIconButton>
           ) : null}
 
-          <NavBarTitleBox>
+          <Box>
             <NavBarTitleTypography>
               {questionnaireActive.questionnaireActive
                 ? questionnaireProvider.questionnaire.title
                 : 'SMART Health Checks'}
             </NavBarTitleTypography>
-          </NavBarTitleBox>
+          </Box>
           <Box sx={{ flexGrow: 1 }} />
           <NavBarPatientUserDetails patientData={patientData} userData={userData} />
         </NavToolBar>
-      </NavAppBar>
-      <NavBarFillerBox drawerWidth={drawerWidth} />
+      </AppBar>
     </>
   );
 }

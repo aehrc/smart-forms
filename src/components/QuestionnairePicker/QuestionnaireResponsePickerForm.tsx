@@ -55,7 +55,7 @@ function QuestionnaireResponsePickerForm(props: Props) {
   return (
     <>
       <Stack direction="column" spacing={2}>
-        <Card elevation={1} sx={{ height: 57.5, mt: 10 }}>
+        <Card elevation={1} sx={{ height: 57.5, mt: 0.25 }}>
           <Box sx={{ m: 2.5 }}>
             <Grid container spacing={2}>
               <Grid item xs={6}>

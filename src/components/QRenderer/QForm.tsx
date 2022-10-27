@@ -7,7 +7,7 @@ import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
 import { CalculatedExpression } from '../../interfaces/Interfaces';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import DebugBar from './DebugComponents/DebugBar';
+import RendererDebugBar from './DebugComponents/RendererDebugBar';
 import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
@@ -183,7 +183,7 @@ function QForm() {
               )}
             </Stack>
             <QRSavedSnackbar isDisplayed={!qrHasChanges} />
-            <DebugBar
+            <RendererDebugBar
               hideQResponse={hideQResponse}
               toggleHideQResponse={(checked) => setHideQResponse(checked)}
               enableWhenStatus={enableWhenStatus}

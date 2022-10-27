@@ -1,4 +1,4 @@
-import { styled, Typography, List, Box } from '@mui/material';
+import { styled, Typography, List, Box, Card } from '@mui/material';
 export const TabListTypography = styled(Typography)(() => ({
   fontSize: 12
 }));
@@ -20,10 +20,18 @@ export const DrawerSubTitleTypography = styled(Typography)(() => ({
   marginTop: '8px'
 }));
 
-export const DrawerListBox = styled(Box)(({ theme }) => ({
-  paddingLeft: '12px',
-  paddingRight: '12px',
-  backgroundColor: theme.palette.background.default
+export const DrawerListBox = styled(Box)(() => ({
+  paddingLeft: '8px',
+  paddingRight: '8px',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column'
+}));
+
+export const SideBarCard = styled(Card)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  height: '95vh',
+  borderRadius: 0
 }));
 
 export const DrawerOperationList = styled(List)(({ theme }) => ({

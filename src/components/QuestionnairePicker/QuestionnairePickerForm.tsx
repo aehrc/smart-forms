@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Box, Card, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { debounce } from 'lodash';
@@ -12,6 +12,8 @@ import QuestionnairePickerQList from './QuestionnairePickerQList';
 import { RoundButton } from '../StyledComponents/StyledComponents.styles';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
+import PickerDebugBar from '../QRenderer/DebugComponents/PickerDebugBar';
+import { PickerTextField } from './QuestionnairePicker.styles';
 
 interface Props {
   questionnaires: Questionnaire[];
@@ -69,27 +71,7 @@ function QuestionnairePickerForm(props: Props) {
   return (
     <>
       <Stack direction="column" spacing={2}>
-        <Box display="flex" flexDirection="row">
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h1" fontWeight="bold" fontSize={42} color="inherit" sx={{ mb: 2 }}>
-              Questionnaires
-            </Typography>
-          </Box>
-          <Box sx={{ mt: 1 }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  disabled={qIsSearching}
-                  checked={qHostingIsLocal}
-                  onChange={() => setQHostingIsLocal(!qHostingIsLocal)}
-                />
-              }
-              label={qHostingIsLocal ? 'Local' : 'Remote'}
-            />
-          </Box>
-        </Box>
-
-        <TextField
+        <PickerTextField
           value={searchInput}
           disabled={qHostingIsLocal}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +86,7 @@ function QuestionnairePickerForm(props: Props) {
           label="Search Questionnaires"
         />
 
-        <Card elevation={1} sx={{ height: '50vh' }}>
+        <Card elevation={1} sx={{ height: '60vh' }}>
           <QuestionnairePickerQList
             qHostingIsLocal={qHostingIsLocal}
             questionnaires={questionnaires}
@@ -134,6 +116,11 @@ function QuestionnairePickerForm(props: Props) {
           Start a new Questionnaire response
         </RoundButton>
       </Stack>
+      <PickerDebugBar
+        qIsSearching={qIsSearching}
+        qHostingIsLocal={qHostingIsLocal}
+        setQHostingIsLocal={setQHostingIsLocal}
+      />
     </>
   );
 }

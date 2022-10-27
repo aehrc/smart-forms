@@ -31,3 +31,9 @@ export enum QItemChoiceOrientation {
   Horizontal = 'horizontal',
   Vertical = 'vertical'
 }
+
+export enum PageType {
+  Picker = 'picker',
+  Renderer = 'renderer',
+  Preview = 'preview'
+}

@@ -17,7 +17,7 @@ function QOperationList() {
   return (
     <Box sx={{ my: 1 }}>
       <DrawerSubTitleTypography variant="overline">Operations</DrawerSubTitleTypography>
-      <DrawerOperationList dense disablePadding>
+      <DrawerOperationList disablePadding>
         <ListItemButton onClick={() => questionnaireActiveContext.setQuestionnaireActive(false)}>
           <ChangeCircle sx={{ mr: 2 }} />
           <ListItemText

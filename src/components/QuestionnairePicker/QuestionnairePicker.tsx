@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Container, Grid } from '@mui/material';
+import { Box, Divider, Grid, Typography } from '@mui/material';
 import {
   getQResponsesFromBundle,
   loadQuestionnaireResponsesFromServer
@@ -56,33 +56,37 @@ function QuestionnairePicker(props: Props) {
   }
 
   return (
-    <Container maxWidth="lg">
-      <Box display="flex" flexDirection="column" justifyContent="center" height="90vh">
-        <Grid container spacing={8}>
-          <Grid item xs={12} md={6}>
-            <QuestionnairePickerForm
-              questionnaires={questionnaires}
-              setQuestionnaires={setQuestionnaires}
-              setQuestionnaireResponses={setQResponses}
-              onQSelectedIndexChange={selectQuestionnaireByIndex}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <QuestionnaireResponsePickerForm
-              fhirClient={launch.fhirClient}
-              questionnaireResponses={qResponses}
-              qrIsSearching={qrIsSearching}
-              setQrIsSearching={setQrIsSearching}
-              selectedQuestionnaire={selectedQuestionnaire}
-              setQuestionnaireResponses={setQResponses}
-              onQrSelectedIndexChange={selectQResponseByIndex}
-            />
-          </Grid>
-        </Grid>
+    <Box display="flex" flexDirection="column" sx={{ m: 4 }} gap={2}>
+      <Box display="flex" flexDirection="row" gap={2}>
+        <Typography variant="h1" fontWeight="bold" fontSize={36} color="inherit">
+          Questionnaires
+        </Typography>
       </Box>
+      <Divider></Divider>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={5}>
+          <QuestionnairePickerForm
+            questionnaires={questionnaires}
+            setQuestionnaires={setQuestionnaires}
+            setQuestionnaireResponses={setQResponses}
+            onQSelectedIndexChange={selectQuestionnaireByIndex}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={7}>
+          <QuestionnaireResponsePickerForm
+            fhirClient={launch.fhirClient}
+            questionnaireResponses={qResponses}
+            qrIsSearching={qrIsSearching}
+            setQrIsSearching={setQrIsSearching}
+            selectedQuestionnaire={selectedQuestionnaire}
+            setQuestionnaireResponses={setQResponses}
+            onQrSelectedIndexChange={selectQResponseByIndex}
+          />
+        </Grid>
+      </Grid>
       <NoQuestionnaireDialog firstLaunch={firstLaunch} />
-    </Container>
+    </Box>
   );
 }
 

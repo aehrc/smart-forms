@@ -6,6 +6,7 @@ import {
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import { EnableWhenItemProperties, EnableWhenItems } from './Interfaces';
+import { PageType } from './Enums';
 
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
@@ -35,4 +36,9 @@ export type QuestionnaireActiveContextType = {
 export type PreviewModeContextType = {
   isPreviewMode: boolean;
   setIsPreviewMode: (previewMode: boolean) => unknown;
+};
+
+export type PageSwitcherContextType = {
+  currentPage: PageType;
+  goToPage: (page: PageType) => unknown;
 };

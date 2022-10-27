@@ -4,16 +4,13 @@ import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import { populate } from '../../functions/PrepopulateFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import PreviewFromRenderer from '../Preview/PreviewFromRenderer';
-import QLayout from './QLayout';
-import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
+import QForm from './QForm';
 
 function QRenderer() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const launch = React.useContext(LaunchContext);
-  const previewMode = React.useContext(PreviewModeContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
@@ -55,29 +52,10 @@ function QRenderer() {
   const RenderQPage = () => {
     if (spinner.isLoading) {
       return <ProgressSpinner message={spinner.message} />;
-    } else if (previewMode.isPreviewMode) {
-      return <PreviewFromRenderer />;
     } else {
       return (
         <EnableWhenContextProvider>
-          <QLayout />
-          {/*<Grid>*/}
-          {/*  <Grid item xs={5}>*/}
-          {/*    <QList></QList>*/}
-          {/*  </Grid>*/}
-          {/*  <Grid item xs={7}>*/}
-          {/*    <QList></QList>*/}
-          {/*  </Grid>*/}
-          {/*</Grid>*/}
-
-          {/*<Container maxWidth="lg">*/}
-          {/*  <QTitle questionnaire={questionnaire} />*/}
-          {/*  <QForm*/}
-          {/*    questionnaireProvider={questionnaireProvider}*/}
-          {/*    questionnaireResponseProvider={questionnaireResponseProvider}*/}
-          {/*    setPreviewMode={() => setPreviewMode(!previewMode)}*/}
-          {/*  />*/}
-          {/*</Container>*/}
+          <QForm />
         </EnableWhenContextProvider>
       );
     }

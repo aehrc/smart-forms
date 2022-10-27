@@ -39,10 +39,6 @@ export const NavBarPatientUserDataIconButton = styled(IconButton)(({ theme }) =>
   }
 }));
 
-export const NavBarTitleBox = styled(Box)(() => ({
-  minWidth: '250px'
-}));
-
 export const NavBarPatientDetailsTypography = styled(Typography)(() => ({
   textTransform: 'capitalize',
   fontSize: 14
@@ -57,10 +53,4 @@ export const NavBarTitleTypography = styled(Typography)(() => ({
   textTransform: 'capitalize',
   fontSize: 14,
   fontWeight: 500
-}));
-
-export const NavBarFillerBox = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'drawerWidth'
-})<{ drawerWidth?: number }>(({ drawerWidth }) => ({
-  height: `${drawerWidth}px`
 }));
