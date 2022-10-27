@@ -1,14 +1,13 @@
 import { QuestionnaireResponse } from 'fhir/r5';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Alert, AlertTitle, ListItemButton, ListItemText } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 import PickerSkeletonList from './PickerSkeletonList';
 import dayjs from 'dayjs';
-import { LaunchContextType } from '../../interfaces/ContextTypes';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 interface Props {
-  launch: LaunchContextType;
   questionnaireResponses: QuestionnaireResponse[];
   selectedQuestionnaireResponseIndex: number | null;
   questionnaireResponseIsSearching: boolean;
@@ -17,12 +16,13 @@ interface Props {
 
 function PickerQuestionnaireResponseCardContent(props: Props) {
   const {
-    launch,
     questionnaireResponses,
     selectedQuestionnaireResponseIndex,
     questionnaireResponseIsSearching,
     onQrSelectedIndexChange
   } = props;
+
+  const launch = useContext(LaunchContext);
 
   if (!launch.fhirClient) {
     return (
