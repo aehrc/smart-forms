@@ -3,13 +3,13 @@ import { PageType } from '../interfaces/Enums';
 import { PageSwitcherContextType } from '../interfaces/ContextTypes';
 
 export const PageSwitcherContext = React.createContext<PageSwitcherContextType>({
-  currentPage: PageType.Picker,
+  currentPage: PageType.Renderer,
   goToPage: () => void 0
 });
 
 function PageSwitcherContextProvider(props: { children: any }) {
   const { children } = props;
-  const [currentPage, goToPage] = React.useState<PageType>(PageType.Picker);
+  const [currentPage, goToPage] = React.useState<PageType>(PageType.Renderer);
 
   const pageSwitcherContext: PageSwitcherContextType = {
     currentPage: currentPage,

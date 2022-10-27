@@ -6,11 +6,14 @@ import { populate } from '../../functions/PrepopulateFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import QForm from './QForm';
+import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
+import { PageType } from '../../interfaces/Enums';
 
-function QRenderer() {
+function Renderer() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const launch = React.useContext(LaunchContext);
+  const pageSwitcher = React.useContext(PageSwitcherContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
@@ -64,4 +67,4 @@ function QRenderer() {
   return <RenderQPage />;
 }
 
-export default QRenderer;
+export default Renderer;

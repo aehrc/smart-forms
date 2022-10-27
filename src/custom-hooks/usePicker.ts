@@ -60,7 +60,6 @@ function usePicker(launch: LaunchContextType) {
   }
 
   function resetPickerState() {
-    setQuestionnaireIsSearching(true);
     setSelectedQuestionnaireIndex(null);
     setQuestionnaires([]);
     setQuestionnaireResponses([]);

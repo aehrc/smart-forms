@@ -52,7 +52,7 @@ function Picker(props: Props) {
           autoFocus
         />
       </Stack>
-      <Grid container spacing={4}>
+      <Grid container spacing={4} sx={{ flexGrow: 1 }}>
         <Grid item xs={12} md={5}>
           <PickerQuestionnaireCard
             searchInput={searchInput}
