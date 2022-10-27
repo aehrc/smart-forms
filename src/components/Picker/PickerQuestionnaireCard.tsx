@@ -34,6 +34,16 @@ function PickerQuestionnaireCard(props: Props) {
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
 
+  function handleCreateNewResponseButtonClick() {
+    if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
+      questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
+      questionnaireResponseProvider.setQuestionnaireResponse(
+        questionnaireResponses[selectedQuestionnaireIndex]
+      );
+      pageSwitcher.goToPage(PageType.Renderer);
+    }
+  }
+
   return (
     <FullHeightCard>
       <CardOverlineTypography variant="overline">Questionnaires</CardOverlineTypography>
@@ -50,15 +60,7 @@ function PickerQuestionnaireCard(props: Props) {
           variant="contained"
           endIcon={<ArrowForwardIcon />}
           disabled={typeof selectedQuestionnaireIndex !== 'number'}
-          onClick={() => {
-            if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
-              questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
-              questionnaireResponseProvider.setQuestionnaireResponse(
-                questionnaireResponses[selectedQuestionnaireIndex]
-              );
-              pageSwitcher.goToPage(PageType.Renderer);
-            }
-          }}
+          onClick={() => handleCreateNewResponseButtonClick()}
           sx={{ m: 1.5, textTransform: 'Capitalize' }}>
           Create new response
         </RoundButton>

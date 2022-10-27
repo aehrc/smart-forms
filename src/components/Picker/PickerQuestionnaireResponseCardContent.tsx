@@ -1,11 +1,13 @@
 import { QuestionnaireResponse } from 'fhir/r5';
 import React, { useContext } from 'react';
-import { Alert, AlertTitle, ListItemButton, ListItemText } from '@mui/material';
+import { Alert, AlertTitle, ListItemButton, ListItemText, Tooltip } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 import PickerSkeletonList from './PickerSkeletonList';
 import dayjs from 'dayjs';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import PendingIcon from '@mui/icons-material/Pending';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
@@ -37,7 +39,7 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
     return (
       <Alert severity="info" sx={{ m: 2, p: 2 }}>
         <AlertTitle>No responses found</AlertTitle>
-        There are currently no responses available for this questionnaire.
+        There are currently no responses available.
       </Alert>
     );
   } else {
@@ -53,9 +55,22 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
             }}>
             <ArticleIcon sx={{ mr: 2 }} />
             <ListItemText
-              primary={dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')}
+              primary={
+                questionnaireResponse.questionnaire +
+                ' - ' +
+                dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')
+              }
               primaryTypographyProps={{ variant: 'subtitle2' }}
             />
+            {questionnaireResponse.status === 'completed' ? (
+              <Tooltip title="Completed">
+                <TaskAltIcon />
+              </Tooltip>
+            ) : (
+              <Tooltip title="In progress">
+                <PendingIcon />
+              </Tooltip>
+            )}
           </ListItemButton>
         ))}
       </PrimarySelectableList>

@@ -34,9 +34,7 @@ function NoQuestionnaireDialog(props: Props) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} autoFocus>
-          Ok, got it
-        </Button>
+        <Button onClick={handleClose}>Ok, got it</Button>
       </DialogActions>
     </Dialog>
   );

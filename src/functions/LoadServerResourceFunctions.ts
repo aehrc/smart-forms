@@ -89,6 +89,25 @@ export function getQResponsesFromBundle(bundle: Bundle): QuestionnaireResponse[]
   }, []);
 }
 
+export function loadQuestionnaireFromResponse(
+  questionnaireReference: string
+): Promise<Questionnaire> {
+  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+  const questionnaireId = questionnaireReference.replace('Questionnaire/', '');
+
+  const headers = {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'application/json+fhir; charset=UTF-8',
+    Accept: 'application/json+fhir; charset=utf-8'
+  };
+
+  return client(formsServerUrl).request({
+    url: `Questionnaire/${questionnaireId}`,
+    method: 'GET',
+    headers: headers
+  });
+}
+
 /**
  * FOR TESTING ONLY
  * Loads local questionnaires and returns them as an array of questionnaireResponses

@@ -27,10 +27,12 @@ function usePicker(launch: LaunchContextType) {
 
   // determine if questionnaires are fetched from local or remote
   useEffect(() => {
+    resetPickerState();
     if (questionnaireSourceIsLocal) {
       setSearchInput('');
       setQuestionnaires(loadQuestionnairesFromLocal());
     } else {
+      // fetch questionnaires and questionnaireResponses from remote
       setQuestionnaireIsSearching(true);
       loadQuestionnairesFromServer()
         .then((bundle) => {
@@ -38,6 +40,16 @@ function usePicker(launch: LaunchContextType) {
           setQuestionnaireIsSearching(false);
         })
         .catch(() => setQuestionnaireIsSearching(false));
+
+      if (launch.fhirClient) {
+        setQuestionnaireResponseIsSearching(true);
+        loadQuestionnaireResponsesFromServer(launch.fhirClient, launch.patient)
+          .then((bundle) => {
+            setQuestionnaireResponses(bundle.entry ? getQResponsesFromBundle(bundle) : []);
+            setQuestionnaireResponseIsSearching(false);
+          })
+          .catch(() => setQuestionnaireIsSearching(false));
+      }
     }
   }, [questionnaireSourceIsLocal]);
 
