@@ -3,28 +3,26 @@ import { FormControlLabel, Switch } from '@mui/material';
 import { DebugBarContainerBox } from './DebugBar.styles';
 
 type Props = {
-  qIsSearching: boolean;
-  qHostingIsLocal: boolean;
-  setQHostingIsLocal: React.Dispatch<React.SetStateAction<boolean>>;
+  questionnaireIsSearching: boolean;
+  questionnaireSourceIsLocal: boolean;
+  toggleQuestionnaireSource: () => unknown;
 };
 
 function PickerDebugBar(props: Props) {
-  const { qIsSearching, qHostingIsLocal, setQHostingIsLocal } = props;
+  const { questionnaireIsSearching, questionnaireSourceIsLocal, toggleQuestionnaireSource } = props;
   return (
-    <>
-      <DebugBarContainerBox>
-        <FormControlLabel
-          control={
-            <Switch
-              disabled={qIsSearching}
-              checked={qHostingIsLocal}
-              onChange={() => setQHostingIsLocal(!qHostingIsLocal)}
-            />
-          }
-          label={qHostingIsLocal ? 'Local' : 'Remote'}
-        />
-      </DebugBarContainerBox>
-    </>
+    <DebugBarContainerBox>
+      <FormControlLabel
+        control={
+          <Switch
+            disabled={questionnaireIsSearching}
+            checked={questionnaireSourceIsLocal}
+            onChange={() => toggleQuestionnaireSource()}
+          />
+        }
+        label={questionnaireSourceIsLocal ? 'Local' : 'Remote'}
+      />
+    </DebugBarContainerBox>
   );
 }
 

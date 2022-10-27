@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
-import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { RoundButton } from '../StyledComponents/Buttons.styles';
 
 interface Props {
   goToPicker: () => unknown;

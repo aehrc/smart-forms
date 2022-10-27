@@ -1,12 +1,7 @@
 import { AppBar, Box, IconButton, styled, Toolbar, Typography } from '@mui/material';
 
-export const NavAppBar = styled(AppBar, {
-  shouldForwardProp: (prop) => prop !== 'drawerWidth'
-})<{ drawerWidth?: number }>(({ theme, drawerWidth }) => ({
-  [theme.breakpoints.up('md')]: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`
-  }
+export const NavAppBar = styled(AppBar)(() => ({
+  height: '45px'
 }));
 
 export const NavToolBar = styled(Toolbar)(() => ({

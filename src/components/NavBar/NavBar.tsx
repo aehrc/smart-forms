@@ -1,12 +1,17 @@
 import React, { useContext } from 'react';
 import dayjs from 'dayjs';
-import { AppBar, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import MenuIcon from '@mui/icons-material/Menu';
-import { NavBarDrawerIconButton, NavBarTitleTypography, NavToolBar } from './NavBar.styles';
+import {
+  NavAppBar,
+  NavBarDrawerIconButton,
+  NavBarTitleTypography,
+  NavToolBar
+} from './NavBar.styles';
 import NavBarPatientUserDetails from './NavBarPatientUserDetails';
 import { QuestionnaireProviderContext } from '../../App';
 
@@ -49,7 +54,7 @@ function NavBar(props: Props) {
 
   return (
     <>
-      <AppBar position="static">
+      <NavAppBar position="static">
         <NavToolBar variant="dense">
           {drawerWidth && handleDrawerToggle ? (
             <NavBarDrawerIconButton onClick={handleDrawerToggle}>
@@ -67,7 +72,7 @@ function NavBar(props: Props) {
           <Box sx={{ flexGrow: 1 }} />
           <NavBarPatientUserDetails patientData={patientData} userData={userData} />
         </NavToolBar>
-      </AppBar>
+      </NavAppBar>
     </>
   );
 }

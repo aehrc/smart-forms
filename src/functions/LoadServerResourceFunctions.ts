@@ -13,9 +13,9 @@ import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
  *
  * @author Sean Fong
  */
-export async function loadQuestionnairesFromServer(params?: string): Promise<Bundle> {
+export async function loadQuestionnairesFromServer(input?: string): Promise<Bundle> {
   const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
-  const urlParams = params ? params : '';
+  const urlParams = input ? `title=${input}` : '';
 
   const headers = {
     'Cache-Control': 'no-cache',

@@ -15,7 +15,7 @@ import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PublishIcon from '@mui/icons-material/Publish';
 import SaveIcon from '@mui/icons-material/Save';
-import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { RoundButton } from '../StyledComponents/Buttons.styles';
 import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 

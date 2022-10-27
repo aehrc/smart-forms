@@ -33,7 +33,8 @@ export enum QItemChoiceOrientation {
 }
 
 export enum PageType {
-  Picker = 'picker',
+  ResponsePreview = 'responsePreview',
+  FormPreview = 'formPicker',
   Renderer = 'renderer',
-  Preview = 'preview'
+  Picker = 'picker'
 }

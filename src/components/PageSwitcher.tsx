@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import NavBar from './NavBar/NavBar';
 import { PageSwitcherContext } from '../custom-contexts/PageSwitcherContext';
 import { PageType } from '../interfaces/Enums';
-import QuestionnairePicker from './QuestionnairePicker/QuestionnairePicker';
+import Picker from './Picker/Picker';
 import QRenderer from './QRenderer/QRenderer';
 import { Grid } from '@mui/material';
-import QDrawerList from './QRenderer/QDrawer/QDrawerList';
+import SideBar from './QRenderer/SideBar/SideBar';
 
 const drawerWidth = 320;
 
@@ -21,27 +21,28 @@ function PageSwitcher() {
 
   const renderPage = () => {
     switch (pageSwitcherContext.currentPage) {
-      case PageType.Preview:
-        return <div>Preview</div>;
+      case PageType.FormPreview:
+        return <div>Form Preview</div>;
+      case PageType.ResponsePreview:
+        return <div>Response Preview</div>;
       case PageType.Picker:
         return (
-          <QuestionnairePicker
-            firstLaunch={{ status: firstLaunch, invalidate: () => setFirstLaunch(false) }}
-          />
+          <Picker firstLaunch={{ status: firstLaunch, invalidate: () => setFirstLaunch(false) }} />
         );
       default:
         return <QRenderer />;
     }
   };
 
+  // TODO add drawer here when xs
   return (
     <>
       <NavBar handleDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} />
       <Grid container spacing={2}>
-        <Grid item xs={1.75}>
-          <QDrawerList />
+        <Grid item xs={2} lg={2} xl={1.75}>
+          <SideBar />
         </Grid>
-        <Grid item xs={10.25}>
+        <Grid item xs={10} lg={10} xl={10.25}>
           {renderPage()}
         </Grid>
       </Grid>

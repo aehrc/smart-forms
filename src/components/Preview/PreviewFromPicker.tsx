@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import PrintIcon from '@mui/icons-material/Print';
 import { ArrowBack } from '@mui/icons-material';
 import FormPreview from './FormPreview';
-import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { RoundButton } from '../StyledComponents/Buttons.styles';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { QuestionnaireResponseProviderContext } from '../../App';
 

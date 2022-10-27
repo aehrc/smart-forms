@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Questionnaire } from 'fhir/r5';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { RoundButton } from '../StyledComponents/Buttons.styles';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 
 interface Props {

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Box, Container, Stack } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import FormPreview from './FormPreview';
-import { RoundButton } from '../StyledComponents/StyledComponents.styles';
+import { RoundButton } from '../StyledComponents/Buttons.styles';
 import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 
 function PreviewFromPicker() {
