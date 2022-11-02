@@ -71,18 +71,6 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
             borderRadius: 10
           }
         }
-      },
-      MuiLink: {
-        styleOverrides: {
-          root: {
-            textDecoration: 'none',
-            color: '#fff',
-            transition: '0.3s',
-            '&:hover': {
-              color: '#8fc9f9'
-            }
-          }
-        }
       }
     }
   });

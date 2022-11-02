@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Stack, Typography } from '@mui/material';
+import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import NoQuestionnaireDialog from './NoQuestionnaireDialog';
 import { FirstLaunch } from '../../interfaces/Interfaces';
@@ -34,7 +34,7 @@ function Picker(props: Props) {
   } = usePicker(launch);
 
   return (
-    <Box display="flex" flexDirection="column" sx={{ p: 5, height: '100%' }} gap={3}>
+    <Box display="flex" flexDirection="column" sx={{ p: 4, height: '100%' }} gap={2.5}>
       <Stack direction="row" gap={8}>
         <Typography variant="h1" fontWeight="bold" fontSize={36}>
           Questionnaires
@@ -52,12 +52,12 @@ function Picker(props: Props) {
           autoFocus
         />
       </Stack>
-      <Grid container spacing={4} sx={{ flexGrow: 1 }}>
+      <Divider light />
+      <Grid container spacing={3} sx={{ flexGrow: 1 }}>
         <Grid item xs={12} md={5}>
           <PickerQuestionnaireCard
             searchInput={searchInput}
             questionnaires={questionnaires}
-            questionnaireResponses={questionnaireResponses}
             selectedQuestionnaire={selectedQuestionnaire}
             selectedQuestionnaireIndex={selectedQuestionnaireIndex}
             questionnaireIsSearching={questionnaireIsSearching}

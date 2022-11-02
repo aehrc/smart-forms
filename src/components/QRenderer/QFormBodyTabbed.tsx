@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Card, Grid, Tab, Typography } from '@mui/material';
+import { Box, Grid, ListItemButton, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../functions/IndexFunctions';
 import QItemGroup from './QFormComponents/QItemGroup';
 import { isTab } from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import { getShortText } from '../../functions/ItemControlFunctions';
 import { hideQItem } from '../../functions/QItemFunctions';
-
+import { FullHeightCard } from '../StyledComponents/Card.styles';
+import { CardOverlineTypography } from '../StyledComponents/Typographys.styles';
+import ListItemText from '@mui/material/ListItemText';
+import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
@@ -35,57 +38,61 @@ function QFormBodyTabbed(props: Props) {
 
     return (
       <>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          {qForm.text}
-        </Typography>
-        <TabContext value={tabIndex}>
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: 'flex'
-            }}>
-            <Grid container columnSpacing={2.5}>
-              <Grid item xs={3.5}>
-                <Card sx={{ py: 1 }}>
-                  <TabList
-                    orientation="vertical"
-                    onChange={(event, newTabIndex) => setTabIndex(newTabIndex)}>
-                    {qFormItems.map((qItem, i) => {
-                      if (!isTab(qItem) || hideQItem(qItem)) return null;
+        <Grid container spacing={3} sx={{ flexGrow: 1 }}>
+          <TabContext value={tabIndex}>
+            <Grid item xs={12} md={3}>
+              <FullHeightCard>
+                <CardOverlineTypography variant="overline">Tabs</CardOverlineTypography>
 
+                <Box sx={{ flexGrow: 1 }}>
+                  <PrimarySelectableList
+                    dense
+                    disablePadding
+                    sx={{ height: '600px', overflow: 'auto', my: 0.5 }}>
+                    {qFormItems.map((qItem, index) => {
+                      if (!isTab(qItem) || hideQItem(qItem) || index === 5 || index === 6)
+                        return null;
                       return (
-                        <Tab
+                        <ListItemButton
                           key={qItem.linkId}
-                          label={getShortText(qItem) ?? qItem.text}
-                          value={(i + 1).toString()}
-                        />
+                          selected={tabIndex === (index + 1).toString()}
+                          sx={{ my: 0.5 }}
+                          onClick={() => setTabIndex((index + 1).toString())}>
+                          <ListItemText
+                            primary={
+                              <Typography fontSize={12} variant="h6">
+                                {getShortText(qItem) ?? qItem.text}
+                              </Typography>
+                            }
+                          />
+                        </ListItemButton>
                       );
                     })}
-                  </TabList>
-                </Card>
-              </Grid>
-
-              <Grid item xs={8.5}>
-                {qFormItems.map((qItem, i) => {
-                  const qrItem = qrFormItemsByIndex[i];
-
-                  if (isTab(qItem)) {
-                    return (
-                      <TabPanel key={qItem.linkId} sx={{ p: 0 }} value={(i + 1).toString()}>
-                        <QItemGroup
-                          qItem={qItem}
-                          qrItem={qrItem}
-                          repeats={qItem.repeats ?? false}
-                          groupCardElevation={2}
-                          onQrItemChange={handleQrGroupChange}></QItemGroup>
-                      </TabPanel>
-                    );
-                  }
-                })}
-              </Grid>
+                  </PrimarySelectableList>
+                </Box>
+              </FullHeightCard>
             </Grid>
-          </Box>
-        </TabContext>
+
+            <Grid item xs={12} md={9}>
+              {qFormItems.map((qItem, i) => {
+                const qrItem = qrFormItemsByIndex[i];
+
+                if (isTab(qItem)) {
+                  return (
+                    <TabPanel key={qItem.linkId} sx={{ p: 0 }} value={(i + 1).toString()}>
+                      <QItemGroup
+                        qItem={qItem}
+                        qrItem={qrItem}
+                        repeats={qItem.repeats ?? false}
+                        groupCardElevation={2}
+                        onQrItemChange={handleQrGroupChange}></QItemGroup>
+                    </TabPanel>
+                  );
+                }
+              })}
+            </Grid>
+          </TabContext>
+        </Grid>
       </>
     );
   } else {

@@ -27,7 +27,7 @@ function PageSwitcher() {
     setMobileOpen(!mobileOpen);
   };
 
-  const renderPage = () => {
+  function RenderPage() {
     switch (pageSwitcher.currentPage) {
       case PageType.FormPreview:
         return <div>Form Preview</div>;
@@ -40,7 +40,7 @@ function PageSwitcher() {
       default:
         return <Renderer />;
     }
-  };
+  }
 
   // TODO add drawer here when xs
   return (
@@ -51,7 +51,7 @@ function PageSwitcher() {
           <SideBar />
         </Grid>
         <Grid item xs={10} lg={10} xl={10.25}>
-          {renderPage()}
+          <RenderPage />
         </Grid>
       </Grid>
     </>

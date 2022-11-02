@@ -6,14 +6,13 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { PageType } from '../../interfaces/Enums';
 import { FullHeightCard } from '../StyledComponents/Card.styles';
 import React from 'react';
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
+import { Questionnaire } from 'fhir/r5';
+import { QuestionnaireProviderContext } from '../../App';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 
 interface Props {
   searchInput: string;
   questionnaires: Questionnaire[];
-  questionnaireResponses: QuestionnaireResponse[];
   selectedQuestionnaire: Questionnaire | null;
   selectedQuestionnaireIndex: number | null;
   questionnaireIsSearching: boolean;
@@ -24,22 +23,17 @@ function PickerQuestionnaireCard(props: Props) {
   const {
     searchInput,
     questionnaires,
-    questionnaireResponses,
     selectedQuestionnaire,
     selectedQuestionnaireIndex,
     questionnaireIsSearching,
     onQSelectedIndexChange
   } = props;
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
 
   function handleCreateNewResponseButtonClick() {
     if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
       questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
-      questionnaireResponseProvider.setQuestionnaireResponse(
-        questionnaireResponses[selectedQuestionnaireIndex]
-      );
       pageSwitcher.goToPage(PageType.Renderer);
     }
   }

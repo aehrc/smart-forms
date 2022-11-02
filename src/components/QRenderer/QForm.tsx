@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Stack, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -55,6 +55,10 @@ function QForm() {
   useEffect(() => {
     enableWhen.setItems(questionnaireProvider.enableWhenItems, qrForm);
   }, []);
+  // TODO style form better - low prio
+  // TODO make operation buttons dynamic
+  // TODO make operation buttons working
+  // TODO look at previous draser why can be seperate scroll bar
 
   // update QR state if QR is updated from the server
   // introduces two-way binding
@@ -100,9 +104,11 @@ function QForm() {
       <CalcExpressionContext.Provider value={calculatedExpressions}>
         <ContainedValueSetContext.Provider value={containedValueSets}>
           <EnableWhenChecksContext.Provider value={enableWhenStatus}>
-            <Stack spacing={2.5} sx={{ my: 2 }}>
-              <Divider />
-
+            <Box display="flex" flexDirection="column" sx={{ p: 4, height: '100%' }} gap={2}>
+              <Typography variant="h1" fontWeight="bold" fontSize={36}>
+                Questionnaires
+              </Typography>
+              <Divider light />
               {containsTabs(qForm.item) ? (
                 <QFormBodyTabbed
                   qForm={qForm}
@@ -118,6 +124,10 @@ function QForm() {
                     onQrFormChange(newQrForm);
                   }}></QFormBody>
               )}
+            </Box>
+
+            <Stack spacing={2.5} sx={{ my: 2 }}>
+              <Divider />
 
               <Stack direction="row" spacing={2}>
                 <RoundButton
