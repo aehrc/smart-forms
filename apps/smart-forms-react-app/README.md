@@ -50,7 +50,7 @@ npm start
 1. Open https://launch.smarthealthit.org/index.html in a browser.
 2. Set the **App Launch URL** at the bottom of the page as ```http://localhost:3000/launch``` and launch app.
 
-![img.png](apps/smart-forms-react-app/images_readme/img.png)
+![img.png](images_readme/img.png)
 
 ### Running without a patient
 1. Open http://localhost:3000/ in a browser.
