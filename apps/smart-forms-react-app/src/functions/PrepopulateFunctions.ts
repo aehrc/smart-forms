@@ -1,4 +1,11 @@
-import { Bundle, Parameters, Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import {
+  Bundle,
+  FhirResource,
+  Parameters,
+  Patient,
+  Questionnaire,
+  QuestionnaireResponse
+} from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 
@@ -17,7 +24,7 @@ export function populate(
 ) {
   if (!questionnaire.contained || questionnaire.contained.length === 0) return;
 
-  let prePopQueryBundle = getPrePopQueryBundle(questionnaire);
+  let prePopQueryBundle = getPrePopQueryBundle(questionnaire.contained);
   if (prePopQueryBundle) {
     // replace all instances of launchPatientId placeholder with patient id
     prePopQueryBundle = replaceLaunchPatientIdInstances(prePopQueryBundle, patient);
@@ -48,14 +55,12 @@ export function populate(
  *
  * @author Sean Fong
  */
-export function getPrePopQueryBundle(questionnaire: Questionnaire): Bundle | null {
-  if (!questionnaire.contained || questionnaire.contained.length === 0) return null;
-
-  questionnaire.contained.forEach((entry) => {
+export function getPrePopQueryBundle(contained: FhirResource[]): Bundle | null {
+  for (const entry of contained) {
     if (entry.resourceType === 'Bundle' && entry.id === 'PrePopQuery') {
-      return entry;
+      return entry as Bundle;
     }
-  });
+  }
 
   return null;
 }
