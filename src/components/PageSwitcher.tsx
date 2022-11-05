@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import NavBar from './NavBar/NavBar';
 import { PageSwitcherContext } from '../custom-contexts/PageSwitcherContext';
 import { PageType } from '../interfaces/Enums';
 import Picker from './Picker/Picker';
@@ -8,26 +7,19 @@ import { Grid } from '@mui/material';
 import SideBar from './SideBar/SideBar';
 import { QuestionnaireProviderContext } from '../App';
 import { MainGrid, SideBarGrid } from './StyledComponents/Grids.styles';
-import Drawer from './Drawer/Drawer';
-
-const drawerWidth = 320;
+import Navigation from './Navigation/Navigation';
 
 function PageSwitcher() {
   const pageSwitcher = React.useContext(PageSwitcherContext);
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
 
   const [firstLaunch, setFirstLaunch] = useState(true);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   useEffect(() => {
     if (!questionnaireProvider.questionnaire.item) {
       pageSwitcher.goToPage(PageType.Picker);
     }
   }, []);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
 
   function RenderPage() {
     switch (pageSwitcher.currentPage) {
@@ -46,11 +38,7 @@ function PageSwitcher() {
 
   return (
     <>
-      <NavBar handleDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} />
-      <Drawer
-        drawerWidth={drawerWidth}
-        handleDrawerToggle={handleDrawerToggle}
-        mobileOpen={mobileOpen}></Drawer>
+      <Navigation />
       <Grid container>
         <SideBarGrid item md={2.25} lg={1.75} xl={1.75}>
           <SideBar />

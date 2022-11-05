@@ -32,7 +32,7 @@ function Picker(props: Props) {
     selectQuestionnaireByIndex,
     selectQuestionnaireResponseByIndex,
     toggleQuestionnaireSource
-  } = usePicker(launch);
+  } = usePicker(launch, firstLaunch);
 
   return (
     <MainGridContainerBox gap={2.5}>

@@ -9,8 +9,9 @@ import {
 } from '../functions/LoadServerResourceFunctions';
 import { debounce } from 'lodash';
 import { LaunchContextType } from '../interfaces/ContextTypes';
+import { FirstLaunch } from '../interfaces/Interfaces';
 
-function usePicker(launch: LaunchContextType) {
+function usePicker(launch: LaunchContextType, firstLaunch: FirstLaunch) {
   const [searchInput, setSearchInput] = useState<string>('');
   const [questionnaireIsSearching, setQuestionnaireIsSearching] = useState(false);
   const [questionnaireResponseIsSearching, setQuestionnaireResponseIsSearching] = useState(false);
@@ -27,28 +28,30 @@ function usePicker(launch: LaunchContextType) {
 
   // determine if questionnaires are fetched from local or remote
   useEffect(() => {
-    resetPickerState();
-    if (questionnaireSourceIsLocal) {
-      setSearchInput('');
-      setQuestionnaires(loadQuestionnairesFromLocal());
-    } else {
-      // fetch questionnaires and questionnaireResponses from remote
-      setQuestionnaireIsSearching(true);
-      loadQuestionnairesFromServer()
-        .then((bundle) => {
-          setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
-          setQuestionnaireIsSearching(false);
-        })
-        .catch(() => setQuestionnaireIsSearching(false));
-
-      if (launch.fhirClient) {
-        setQuestionnaireResponseIsSearching(true);
-        loadQuestionnaireResponsesFromServer(launch.fhirClient, launch.patient)
+    if (!firstLaunch.status) {
+      resetPickerState();
+      if (questionnaireSourceIsLocal) {
+        setSearchInput('');
+        setQuestionnaires(loadQuestionnairesFromLocal());
+      } else {
+        // fetch questionnaires and questionnaireResponses from remote
+        setQuestionnaireIsSearching(true);
+        loadQuestionnairesFromServer()
           .then((bundle) => {
-            setQuestionnaireResponses(bundle.entry ? getQResponsesFromBundle(bundle) : []);
-            setQuestionnaireResponseIsSearching(false);
+            setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
+            setQuestionnaireIsSearching(false);
           })
           .catch(() => setQuestionnaireIsSearching(false));
+
+        if (launch.fhirClient) {
+          setQuestionnaireResponseIsSearching(true);
+          loadQuestionnaireResponsesFromServer(launch.fhirClient, launch.patient)
+            .then((bundle) => {
+              setQuestionnaireResponses(bundle.entry ? getQResponsesFromBundle(bundle) : []);
+              setQuestionnaireResponseIsSearching(false);
+            })
+            .catch(() => setQuestionnaireIsSearching(false));
+        }
       }
     }
   }, [questionnaireSourceIsLocal]);
