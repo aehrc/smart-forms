@@ -5,9 +5,10 @@ import { PageType } from '../interfaces/Enums';
 import Picker from './Picker/Picker';
 import Renderer from './QRenderer/Renderer';
 import { Grid } from '@mui/material';
-import SideBar from './QRenderer/SideBar/SideBar';
+import SideBar from './SideBar/SideBar';
 import { QuestionnaireProviderContext } from '../App';
 import { MainGrid, SideBarGrid } from './StyledComponents/Grids.styles';
+import Drawer from './Drawer/Drawer';
 
 const drawerWidth = 320;
 
@@ -47,6 +48,10 @@ function PageSwitcher() {
   return (
     <>
       <NavBar handleDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} />
+      <Drawer
+        drawerWidth={drawerWidth}
+        handleDrawerToggle={handleDrawerToggle}
+        mobileOpen={mobileOpen}></Drawer>
       <Grid container>
         <SideBarGrid item md={2.25} lg={1.75} xl={1.75}>
           <SideBar />

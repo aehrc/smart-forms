@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import ProgressSpinner from './ProgressSpinner';
+import ProgressSpinner from '../ProgressSpinner';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import { populate } from '../../functions/PrepopulateFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import QForm from './QForm';
+import Form from './Form';
 
 function Renderer() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
@@ -55,7 +55,7 @@ function Renderer() {
     } else {
       return (
         <EnableWhenContextProvider>
-          <QForm />
+          <Form />
         </EnableWhenContextProvider>
       );
     }

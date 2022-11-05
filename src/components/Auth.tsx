@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { oauth2 } from 'fhirclient';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { getPatient, getUser } from '../../functions/LaunchFunctions';
+import { LaunchContext } from '../custom-contexts/LaunchContext';
+import { getPatient, getUser } from '../functions/LaunchFunctions';
 import ProgressSpinner from './ProgressSpinner';
-import { isStillAuthenticating } from '../../functions/LaunchContextFunctions';
-import PageSwitcher from '../PageSwitcher';
-import QuestionnaireActiveContextProvider from '../../custom-contexts/QuestionnaireActiveContext';
-import PageSwitcherContextProvider from '../../custom-contexts/PageSwitcherContext';
+import { isStillAuthenticating } from '../functions/LaunchContextFunctions';
+import PageSwitcher from './PageSwitcher';
+import QuestionnaireActiveContextProvider from '../custom-contexts/QuestionnaireActiveContext';
+import PageSwitcherContextProvider from '../custom-contexts/PageSwitcherContext';
 
-function QAuth() {
+function Auth() {
   const launchContext = React.useContext(LaunchContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
@@ -47,4 +47,4 @@ function QAuth() {
   }
 }
 
-export default QAuth;
+export default Auth;

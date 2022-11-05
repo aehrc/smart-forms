@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material';
 
-export const DrawerOrganisationLogoBox = styled(Box)(() => ({
+export const OrganisationLogoBox = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'center',
   padding: '16px'

@@ -4,7 +4,7 @@ import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import NoQuestionnaireDialog from './NoQuestionnaireDialog';
 import { FirstLaunch } from '../../interfaces/Interfaces';
 import { PickerSearchField } from './Picker.styles';
-import PickerDebugBar from '../QRenderer/DebugComponents/PickerDebugBar';
+import PickerDebugBar from '../DebugComponents/PickerDebugBar';
 import usePicker from '../../custom-hooks/usePicker';
 import PickerQuestionnaireCard from './PickerQuestionnaireCard';
 import PickerQuestionnaireResponseCard from './PickerQuestionnaireResponseCard';

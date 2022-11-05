@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Typography } from '@mui/material';
-import QFormBody from './QFormBody';
+import FormBodyUntabbed from './FormBodyUntabbed';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
-import QFormBodyTabbed from './QFormBodyTabbed';
+import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import { cleanQrItem, evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
 import { CalculatedExpression } from '../../interfaces/Interfaces';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import RendererDebugBar from './DebugComponents/RendererDebugBar';
-import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
+import RendererDebugBar from '../DebugComponents/RendererDebugBar';
+import DisplayDebugQResponse from '../DebugComponents/DisplayDebugQResponse';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
@@ -20,7 +20,7 @@ export const ContainedValueSetContext = React.createContext<Record<string, Value
 
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
-function QForm() {
+function Form() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const enableWhen = React.useContext(EnableWhenContext);
@@ -106,19 +106,19 @@ function QForm() {
               </Typography>
               <Divider light />
               {containsTabs(qForm.item) ? (
-                <QFormBodyTabbed
+                <FormBodyTabbed
                   qForm={qForm}
                   qrForm={qrForm}
                   indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
                   onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                 />
               ) : (
-                <QFormBody
+                <FormBodyUntabbed
                   qForm={qForm}
                   qrForm={qrForm}
                   onQrItemChange={(newQrForm) => {
                     onQrFormChange(newQrForm);
-                  }}></QFormBody>
+                  }}></FormBodyUntabbed>
               )}
             </MainGridContainerBox>
 
@@ -204,4 +204,4 @@ function QForm() {
   }
 }
 
-export default QForm;
+export default Form;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Divider from '@mui/material/Divider';
 import { Box } from '@mui/material';
-import QDrawerOrganisationLogo from '../QDrawer/QDrawerOrganisationLogo';
+import OrganisationLogo from '../OrganisationLogo';
 import { SideBarCard, SideBarListBox } from './SideBar.styles';
 import SideBarOperationList from './SideBarOperationList';
 
@@ -12,7 +12,7 @@ function SideBar() {
         <SideBarOperationList />
         <Box sx={{ flexGrow: 1 }}></Box>
         <Divider />
-        <QDrawerOrganisationLogo />
+        <OrganisationLogo />
       </SideBarListBox>
     </SideBarCard>
   );

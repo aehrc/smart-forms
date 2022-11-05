@@ -2,10 +2,10 @@ import React, { useContext } from 'react';
 import ListItemText from '@mui/material/ListItemText';
 import { Save, Publish, Visibility, ChangeCircle } from '@mui/icons-material';
 import { Box, ListItemButton, Typography } from '@mui/material';
-import { QuestionnaireActiveContext } from '../../../custom-contexts/QuestionnaireActiveContext';
-import { PreviewModeContext } from '../../../custom-contexts/PreviewModeContext';
-import { CardOverlineTypography } from '../../StyledComponents/Typographys.styles';
-import { SecondaryNonSelectableList } from '../../StyledComponents/Lists.styles';
+import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
+import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
+import { CardOverlineTypography } from '../StyledComponents/Typographys.styles';
+import { SecondaryNonSelectableList } from '../StyledComponents/Lists.styles';
 
 function SideBarOperationList() {
   const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
