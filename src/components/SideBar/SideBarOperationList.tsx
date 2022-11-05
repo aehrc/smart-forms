@@ -1,63 +1,58 @@
-import React, { useContext } from 'react';
-import ListItemText from '@mui/material/ListItemText';
-import { Save, Publish, Visibility, ChangeCircle } from '@mui/icons-material';
-import { Box, ListItemButton, Typography } from '@mui/material';
-import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
-import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
+import React from 'react';
+import { Box } from '@mui/material';
 import { CardOverlineTypography } from '../StyledComponents/Typographys.styles';
 import { SecondaryNonSelectableList } from '../StyledComponents/Lists.styles';
+import ChangeQuestionnaireButton from './OperationButtons/ChangeQuestionnaireButton';
+import ViewFormPreviewButton from './OperationButtons/ViewFormPreviewButton';
+import SaveAsDraftButton from './OperationButtons/SaveAsDraftButton';
+import SaveAsFinalButton from './OperationButtons/SaveAsFinalButton';
+import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
+import RefreshQuestionnaireListButton from './OperationButtons/RefreshQuestionnaireListButton';
+import BackToFormButton from './OperationButtons/BackToFormButton';
+import { PageType } from '../../interfaces/Enums';
+import BackToPickerButton from './OperationButtons/BackToPickerButton';
+import EditResponseButton from './OperationButtons/EditResponseButton';
 
 function SideBarOperationList() {
-  const questionnaireActiveContext = useContext(QuestionnaireActiveContext);
-  const previewModeContext = useContext(PreviewModeContext);
+  const pageSwitcher = React.useContext(PageSwitcherContext);
 
+  function RenderButtons() {
+    switch (pageSwitcher.currentPage) {
+      case PageType.Picker:
+        return <RefreshQuestionnaireListButton />;
+      case PageType.Renderer:
+        return (
+          <>
+            <ChangeQuestionnaireButton />
+            <ViewFormPreviewButton />
+            <SaveAsDraftButton />
+            <SaveAsFinalButton />
+          </>
+        );
+      case PageType.FormPreview:
+        return (
+          <>
+            <BackToFormButton />
+            <SaveAsDraftButton />
+            <SaveAsFinalButton />
+          </>
+        );
+      case PageType.ResponsePreview:
+        return (
+          <>
+            <BackToPickerButton />
+            <EditResponseButton />
+          </>
+        );
+      default:
+        return <>Invalid current page</>;
+    }
+  }
   return (
     <Box sx={{ my: 1 }}>
       <CardOverlineTypography variant="overline">Operations</CardOverlineTypography>
       <SecondaryNonSelectableList disablePadding>
-        <ListItemButton onClick={() => questionnaireActiveContext.setQuestionnaireActive(false)}>
-          <ChangeCircle sx={{ mr: 2 }} />
-          <ListItemText
-            primary={
-              <Typography fontSize={12} variant="h6">
-                Change Questionnaire
-              </Typography>
-            }
-          />
-        </ListItemButton>
-
-        <ListItemButton onClick={() => previewModeContext.setIsPreviewMode(true)}>
-          <Visibility sx={{ mr: 2 }} />
-          <ListItemText
-            primary={
-              <Typography fontSize={12} variant="h6">
-                View Preview
-              </Typography>
-            }
-          />
-        </ListItemButton>
-
-        <ListItemButton>
-          <Save sx={{ mr: 2 }} />
-          <ListItemText
-            primary={
-              <Typography fontSize={12} variant="h6">
-                Save
-              </Typography>
-            }
-          />
-        </ListItemButton>
-
-        <ListItemButton>
-          <Publish sx={{ mr: 2 }} />
-          <ListItemText
-            primary={
-              <Typography fontSize={12} variant="h6">
-                Submit
-              </Typography>
-            }
-          />
-        </ListItemButton>
+        <RenderButtons />
       </SecondaryNonSelectableList>
     </Box>
   );

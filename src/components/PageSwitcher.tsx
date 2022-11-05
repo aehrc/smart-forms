@@ -44,7 +44,6 @@ function PageSwitcher() {
     }
   }
 
-  // TODO add drawer here when xs
   return (
     <>
       <NavBar handleDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} />
