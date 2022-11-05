@@ -1,17 +1,14 @@
-import { AppBar, Box, IconButton, styled, Toolbar, Typography } from '@mui/material';
+import { Box, IconButton, styled, Toolbar, Typography } from '@mui/material';
 
-export const NavAppBar = styled(AppBar)(() => ({
-  height: '45px'
-}));
-
-export const NavToolBar = styled(Toolbar)(() => ({
+export const NavToolBar = styled(Toolbar)(({ theme }) => ({
   paddingTop: '8px',
-  paddingBottom: '8px'
+  paddingBottom: '8px',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white
 }));
 
 export const NavBarDrawerIconButton = styled(IconButton)(({ theme }) => ({
   color: 'inherit',
-  edge: 'start',
   marginRight: '8px',
   [theme.breakpoints.up('md')]: {
     display: 'none'
@@ -31,7 +28,9 @@ export const NavBarPatientUserDataIconButton = styled(IconButton)(({ theme }) =>
   color: 'inherit',
   [theme.breakpoints.up('lg')]: {
     display: 'none'
-  }
+  },
+  paddingTop: '4px',
+  paddingBottom: '4px'
 }));
 
 export const NavBarPatientDetailsTypography = styled(Typography)(() => ({

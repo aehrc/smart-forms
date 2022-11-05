@@ -5,11 +5,13 @@ export const SideBarListBox = styled(Box)(() => ({
   paddingRight: '8px',
   height: '100%',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  justifyContent: 'center'
 }));
 
 export const SideBarCard = styled(Card)(({ theme }) => ({
-  height: '95vh',
   backgroundColor: theme.palette.background.default,
-  borderRadius: 0
+  borderRadius: 0,
+  width: '100%',
+  marginRight: '1px'
 }));

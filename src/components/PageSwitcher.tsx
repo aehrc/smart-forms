@@ -7,6 +7,7 @@ import Renderer from './QRenderer/Renderer';
 import { Grid } from '@mui/material';
 import SideBar from './QRenderer/SideBar/SideBar';
 import { QuestionnaireProviderContext } from '../App';
+import { MainGrid, SideBarGrid } from './StyledComponents/Grids.styles';
 
 const drawerWidth = 320;
 
@@ -46,13 +47,13 @@ function PageSwitcher() {
   return (
     <>
       <NavBar handleDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} />
-      <Grid container spacing={2}>
-        <Grid item xs={2} lg={2} xl={1.75}>
+      <Grid container>
+        <SideBarGrid item md={2.25} lg={1.75} xl={1.75}>
           <SideBar />
-        </Grid>
-        <Grid item xs={10} lg={10} xl={10.25}>
+        </SideBarGrid>
+        <MainGrid item xs={12} md={9.75} lg={10.25} xl={10.25}>
           <RenderPage />
-        </Grid>
+        </MainGrid>
       </Grid>
     </>
   );

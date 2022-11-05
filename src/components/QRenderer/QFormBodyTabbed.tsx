@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, ListItemButton, Typography } from '@mui/material';
+import { Box, Card, Grid, ListItemButton, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
 import { TabContext, TabPanel } from '@mui/lab';
@@ -9,7 +9,6 @@ import { isTab } from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import { getShortText } from '../../functions/ItemControlFunctions';
 import { hideQItem } from '../../functions/QItemFunctions';
-import { FullHeightCard } from '../StyledComponents/Card.styles';
 import { CardOverlineTypography } from '../StyledComponents/Typographys.styles';
 import ListItemText from '@mui/material/ListItemText';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
@@ -40,15 +39,12 @@ function QFormBodyTabbed(props: Props) {
       <>
         <Grid container spacing={3} sx={{ flexGrow: 1 }}>
           <TabContext value={tabIndex}>
-            <Grid item xs={12} md={3}>
-              <FullHeightCard>
+            <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
+              <Card sx={{ p: 1, mb: 1 }}>
                 <CardOverlineTypography variant="overline">Tabs</CardOverlineTypography>
 
                 <Box sx={{ flexGrow: 1 }}>
-                  <PrimarySelectableList
-                    dense
-                    disablePadding
-                    sx={{ height: '600px', overflow: 'auto', my: 0.5 }}>
+                  <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }}>
                     {qFormItems.map((qItem, index) => {
                       if (!isTab(qItem) || hideQItem(qItem) || index === 5 || index === 6)
                         return null;
@@ -70,10 +66,10 @@ function QFormBodyTabbed(props: Props) {
                     })}
                   </PrimarySelectableList>
                 </Box>
-              </FullHeightCard>
+              </Card>
             </Grid>
 
-            <Grid item xs={12} md={9}>
+            <Grid item xs={12} md={8.5} lg={9} xl={9.25}>
               {qFormItems.map((qItem, i) => {
                 const qrItem = qrFormItemsByIndex[i];
 

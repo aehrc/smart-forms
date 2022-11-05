@@ -53,9 +53,11 @@ function NavBarPatientUserDetails(props: Props) {
         </Stack>
       </NavBarPatientUserDataBox>
 
-      <NavBarPatientUserDataIconButton onClick={handleClickOpen}>
-        <AccountCircleIcon />
-      </NavBarPatientUserDataIconButton>
+      {patientData.name !== '' ? (
+        <NavBarPatientUserDataIconButton onClick={handleClickOpen}>
+          <AccountCircleIcon />
+        </NavBarPatientUserDataIconButton>
+      ) : null}
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Patient and user details</DialogTitle>

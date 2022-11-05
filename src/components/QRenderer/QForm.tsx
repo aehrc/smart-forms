@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 import QFormBody from './QFormBody';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import QFormBodyTabbed from './QFormBodyTabbed';
@@ -9,15 +9,11 @@ import { CalculatedExpression } from '../../interfaces/Interfaces';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import RendererDebugBar from './DebugComponents/RendererDebugBar';
 import DisplayDebugQResponse from './DebugComponents/DisplayDebugQResponse';
-import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import PublishIcon from '@mui/icons-material/Publish';
-import SaveIcon from '@mui/icons-material/Save';
-import { RoundButton } from '../StyledComponents/Buttons.styles';
 import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
+import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -104,9 +100,9 @@ function QForm() {
       <CalcExpressionContext.Provider value={calculatedExpressions}>
         <ContainedValueSetContext.Provider value={containedValueSets}>
           <EnableWhenChecksContext.Provider value={enableWhenStatus}>
-            <Box display="flex" flexDirection="column" sx={{ p: 4, height: '100%' }} gap={2}>
+            <MainGridContainerBox gap={2}>
               <Typography variant="h1" fontWeight="bold" fontSize={36}>
-                Questionnaires
+                {questionnaire.title}
               </Typography>
               <Divider light />
               {containsTabs(qForm.item) ? (
@@ -124,74 +120,74 @@ function QForm() {
                     onQrFormChange(newQrForm);
                   }}></QFormBody>
               )}
-            </Box>
+            </MainGridContainerBox>
 
-            <Stack spacing={2.5} sx={{ my: 2 }}>
-              <Divider />
+            {/*<Stack spacing={2.5} sx={{ my: 2 }}>*/}
+            {/*  <Divider />*/}
 
-              <Stack direction="row" spacing={2}>
-                <RoundButton
-                  variant="outlined"
-                  startIcon={<VisibilityIcon />}
-                  onClick={() => previewMode.setIsPreviewMode(true)}>
-                  Show Preview
-                </RoundButton>
+            {/*  <Stack direction="row" spacing={2}>*/}
+            {/*    <RoundButton*/}
+            {/*      variant="outlined"*/}
+            {/*      startIcon={<VisibilityIcon />}*/}
+            {/*      onClick={() => previewMode.setIsPreviewMode(true)}>*/}
+            {/*      Show Preview*/}
+            {/*    </RoundButton>*/}
 
-                {fhirClient ? (
-                  <>
-                    <RoundButton
-                      variant="outlined"
-                      disabled={!qrHasChanges}
-                      startIcon={<SaveIcon />}
-                      onClick={() => {
-                        questionnaireResponseProvider.setQuestionnaireResponse(
-                          questionnaireResponse
-                        );
-                        saveQuestionnaireResponse(fhirClient, questionnaireResponse)
-                          .then(() => {
-                            setQrHasChanges(false);
-                          })
-                          .catch((error) => console.log(error));
-                      }}>
-                      Save
-                    </RoundButton>
+            {/*    {fhirClient ? (*/}
+            {/*      <>*/}
+            {/*        <RoundButton*/}
+            {/*          variant="outlined"*/}
+            {/*          disabled={!qrHasChanges}*/}
+            {/*          startIcon={<SaveIcon />}*/}
+            {/*          onClick={() => {*/}
+            {/*            questionnaireResponseProvider.setQuestionnaireResponse(*/}
+            {/*              questionnaireResponse*/}
+            {/*            );*/}
+            {/*            saveQuestionnaireResponse(fhirClient, questionnaireResponse)*/}
+            {/*              .then(() => {*/}
+            {/*                setQrHasChanges(false);*/}
+            {/*              })*/}
+            {/*              .catch((error) => console.log(error));*/}
+            {/*          }}>*/}
+            {/*          Save*/}
+            {/*        </RoundButton>*/}
 
-                    <RoundButton
-                      variant="outlined"
-                      disabled={!qrHasChanges}
-                      startIcon={<PublishIcon />}
-                      onClick={() => {
-                        questionnaireResponse.status = 'completed';
-                        questionnaireResponseProvider.setQuestionnaireResponse(
-                          questionnaireResponse
-                        );
-                        saveQuestionnaireResponse(fhirClient, questionnaireResponse)
-                          .then(() => {
-                            setQrHasChanges(false);
-                          })
-                          .catch((error) => console.log(error));
-                      }}>
-                      Submit
-                    </RoundButton>
-                  </>
-                ) : (
-                  <div>
-                    <Typography fontSize={8}>
-                      Save functionality not available as application is not connected to CMS
-                    </Typography>
-                  </div>
-                )}
-              </Stack>
+            {/*        <RoundButton*/}
+            {/*          variant="outlined"*/}
+            {/*          disabled={!qrHasChanges}*/}
+            {/*          startIcon={<PublishIcon />}*/}
+            {/*          onClick={() => {*/}
+            {/*            questionnaireResponse.status = 'completed';*/}
+            {/*            questionnaireResponseProvider.setQuestionnaireResponse(*/}
+            {/*              questionnaireResponse*/}
+            {/*            );*/}
+            {/*            saveQuestionnaireResponse(fhirClient, questionnaireResponse)*/}
+            {/*              .then(() => {*/}
+            {/*                setQrHasChanges(false);*/}
+            {/*              })*/}
+            {/*              .catch((error) => console.log(error));*/}
+            {/*          }}>*/}
+            {/*          Submit*/}
+            {/*        </RoundButton>*/}
+            {/*      </>*/}
+            {/*    ) : (*/}
+            {/*      <div>*/}
+            {/*        <Typography fontSize={8}>*/}
+            {/*          Save functionality not available as application is not connected to CMS*/}
+            {/*        </Typography>*/}
+            {/*      </div>*/}
+            {/*    )}*/}
+            {/*  </Stack>*/}
+            {/*</Stack>*/}
 
-              {hideQResponse ? null : (
-                <DisplayDebugQResponse
-                  questionnaire={questionnaire}
-                  questionnaireResponse={questionnaireResponse}
-                  clearQResponse={() => clearQResponse()}
-                  batchResponse={questionnaireResponseProvider.batchResponse}
-                />
-              )}
-            </Stack>
+            {hideQResponse ? null : (
+              <DisplayDebugQResponse
+                questionnaire={questionnaire}
+                questionnaireResponse={questionnaireResponse}
+                clearQResponse={() => clearQResponse()}
+                batchResponse={questionnaireResponseProvider.batchResponse}
+              />
+            )}
             <QRSavedSnackbar isDisplayed={!qrHasChanges} />
             <RendererDebugBar
               hideQResponse={hideQResponse}
