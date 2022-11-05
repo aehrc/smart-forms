@@ -57,7 +57,7 @@ function usePicker(launch: LaunchContextType, firstLaunch: FirstLaunch) {
   }, [questionnaireSourceIsLocal]);
 
   function handleSearchInputChange(input: string) {
-    resetPickerState();
+    setQuestionnaireIsSearching(true);
     setSearchInput(input);
     searchQuestionnaireWithDebounce(input);
   }
