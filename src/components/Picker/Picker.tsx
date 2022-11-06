@@ -1,7 +1,7 @@
 import React from 'react';
-import { Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import NoQuestionnaireDialog from './NoQuestionnaireDialog';
+import NoQuestionnaireDialog from '../Dialogs/NoQuestionnaireDialog';
 import { FirstLaunch } from '../../interfaces/Interfaces';
 import { PickerSearchField } from './Picker.styles';
 import PickerDebugBar from '../DebugComponents/PickerDebugBar';
@@ -9,6 +9,11 @@ import usePicker from '../../custom-hooks/usePicker';
 import PickerQuestionnaireCard from './PickerQuestionnaireCard';
 import PickerQuestionnaireResponseCard from './PickerQuestionnaireResponseCard';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
+import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
+import SideBar from '../SideBar/SideBar';
+import ChipBar from '../ChipBar/ChipBar';
+import { Operation } from '../../interfaces/Enums';
+import PickerOperationButtons from './PickerOperationButtons';
 
 interface Props {
   firstLaunch: FirstLaunch;
@@ -31,73 +36,101 @@ function Picker(props: Props) {
     handleSearchInputChange,
     selectQuestionnaireByIndex,
     selectQuestionnaireResponseByIndex,
-    toggleQuestionnaireSource
+    toggleQuestionnaireSource,
+    refreshQuestionnaireList
   } = usePicker(launch, firstLaunch);
 
   return (
-    <MainGridContainerBox gap={2.5}>
-      <Stack direction="row" gap={8}>
-        <Typography variant="h1" fontWeight="bold" fontSize={36}>
-          Questionnaires
-        </Typography>
+    <Grid container>
+      <SideBarGrid item md={2.25} lg={1.75} xl={1.75}>
+        <SideBar>
+          <PickerOperationButtons
+            buttonOrChip={Operation.Button}
+            refreshQuestionnaireList={refreshQuestionnaireList}
+          />
+        </SideBar>
+      </SideBarGrid>
+      <MainGrid item md={9.75} lg={10.25} xl={10.25}>
+        <MainGridContainerBox gap={2.5}>
+          <Stack direction="row" gap={8}>
+            <Typography fontWeight="bold" fontSize={36}>
+              Questionnaires
+            </Typography>
 
-        <PickerSearchField
-          fullWidth
-          size="small"
-          value={searchInput}
-          disabled={questionnaireSourceIsLocal}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            handleSearchInputChange(event.target.value)
-          }
-          sx={{ display: { xs: 'none', md: 'flex' } }}
-          label="Search Questionnaires"
-          autoFocus
-        />
-      </Stack>
+            <PickerSearchField
+              fullWidth
+              size="small"
+              value={searchInput}
+              disabled={questionnaireSourceIsLocal}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                handleSearchInputChange(event.target.value)
+              }
+              sx={{ display: { xs: 'none', md: 'flex' } }}
+              label="Search Questionnaires"
+              autoFocus
+            />
+          </Stack>
 
-      <PickerSearchField
-        fullWidth
-        size="small"
-        value={searchInput}
-        disabled={questionnaireSourceIsLocal}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          handleSearchInputChange(event.target.value)
-        }
-        sx={{ display: { xs: 'flex', md: 'none' } }}
-        label="Search Questionnaires"
-        autoFocus
-      />
-      <Divider light />
-      <Grid container spacing={3} sx={{ flexGrow: 1 }}>
-        <Grid item xs={12} md={5}>
-          <PickerQuestionnaireCard
-            searchInput={searchInput}
-            questionnaires={questionnaires}
-            selectedQuestionnaire={selectedQuestionnaire}
-            selectedQuestionnaireIndex={selectedQuestionnaireIndex}
+          <PickerSearchField
+            fullWidth
+            size="small"
+            value={searchInput}
+            disabled={questionnaireSourceIsLocal}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              handleSearchInputChange(event.target.value)
+            }
+            sx={{ display: { xs: 'flex', md: 'none' } }}
+            label="Search Questionnaires"
+            autoFocus
+          />
+          <ChipBar>
+            <PickerOperationButtons
+              buttonOrChip={Operation.Chip}
+              refreshQuestionnaireList={refreshQuestionnaireList}
+            />
+          </ChipBar>
+          <Divider light />
+          <Grid container spacing={3} sx={{ flexGrow: 1 }}>
+            <Grid item xs={12} md={5}>
+              <PickerQuestionnaireCard
+                searchInput={searchInput}
+                questionnaires={questionnaires}
+                selectedQuestionnaire={selectedQuestionnaire}
+                selectedQuestionnaireIndex={selectedQuestionnaireIndex}
+                questionnaireIsSearching={questionnaireIsSearching}
+                onQSelectedIndexChange={selectQuestionnaireByIndex}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={7}>
+              <PickerQuestionnaireResponseCard
+                questionnaireResponses={questionnaireResponses}
+                selectedQuestionnaire={selectedQuestionnaire}
+                selectedQuestionnaireResponseIndex={selectedQuestionnaireResponseIndex}
+                questionnaireResponseIsSearching={questionnaireResponseIsSearching}
+                onQrSelectedIndexChange={selectQuestionnaireResponseByIndex}
+              />
+            </Grid>
+          </Grid>
+
+          <Box sx={{ pb: 2 }}>
+            <ChipBar>
+              <PickerOperationButtons
+                buttonOrChip={Operation.Chip}
+                refreshQuestionnaireList={refreshQuestionnaireList}
+              />
+            </ChipBar>
+          </Box>
+          <NoQuestionnaireDialog firstLaunch={firstLaunch} />
+
+          <PickerDebugBar
             questionnaireIsSearching={questionnaireIsSearching}
-            onQSelectedIndexChange={selectQuestionnaireByIndex}
+            questionnaireSourceIsLocal={questionnaireSourceIsLocal}
+            toggleQuestionnaireSource={toggleQuestionnaireSource}
           />
-        </Grid>
-
-        <Grid item xs={12} md={7}>
-          <PickerQuestionnaireResponseCard
-            questionnaireResponses={questionnaireResponses}
-            selectedQuestionnaire={selectedQuestionnaire}
-            selectedQuestionnaireResponseIndex={selectedQuestionnaireResponseIndex}
-            questionnaireResponseIsSearching={questionnaireResponseIsSearching}
-            onQrSelectedIndexChange={selectQuestionnaireResponseByIndex}
-          />
-        </Grid>
-      </Grid>
-      <NoQuestionnaireDialog firstLaunch={firstLaunch} />
-
-      <PickerDebugBar
-        questionnaireIsSearching={questionnaireIsSearching}
-        questionnaireSourceIsLocal={questionnaireSourceIsLocal}
-        toggleQuestionnaireSource={toggleQuestionnaireSource}
-      />
-    </MainGridContainerBox>
+        </MainGridContainerBox>
+      </MainGrid>
+    </Grid>
   );
 }
 

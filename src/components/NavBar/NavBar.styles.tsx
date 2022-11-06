@@ -33,6 +33,11 @@ export const NavBarPatientUserDataIconButton = styled(IconButton)(({ theme }) =>
   paddingBottom: '4px'
 }));
 
+export const NavBarPopUpBox = styled(Box)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  padding: '4px'
+}));
+
 export const NavBarPatientDetailsTypography = styled(Typography)(() => ({
   textTransform: 'capitalize',
   fontSize: 14

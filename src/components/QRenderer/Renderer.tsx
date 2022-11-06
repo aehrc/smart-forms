@@ -5,7 +5,7 @@ import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import { populate } from '../../functions/PrepopulateFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import Form from './Form';
+import RendererBody from './RendererBody';
 
 function Renderer() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
@@ -49,19 +49,19 @@ function Renderer() {
     }
   }, []);
 
-  const RenderQPage = () => {
+  const RenderPage = () => {
     if (spinner.isLoading) {
       return <ProgressSpinner message={spinner.message} />;
     } else {
       return (
         <EnableWhenContextProvider>
-          <Form />
+          <RendererBody />
         </EnableWhenContextProvider>
       );
     }
   };
 
-  return <RenderQPage />;
+  return <RenderPage />;
 }
 
 export default Renderer;

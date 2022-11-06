@@ -28,10 +28,19 @@ function usePicker(launch: LaunchContextType, firstLaunch: FirstLaunch) {
 
   // determine if questionnaires are fetched from local or remote
   useEffect(() => {
+    initializeQuestionnaireList();
+  }, [questionnaireSourceIsLocal]);
+
+  function handleSearchInputChange(input: string) {
+    setQuestionnaireIsSearching(true);
+    setSearchInput(input);
+    searchQuestionnaireWithDebounce(input);
+  }
+
+  function initializeQuestionnaireList() {
     if (!firstLaunch.status) {
       resetPickerState();
       if (questionnaireSourceIsLocal) {
-        setSearchInput('');
         setQuestionnaires(loadQuestionnairesFromLocal());
       } else {
         // fetch questionnaires and questionnaireResponses from remote
@@ -54,18 +63,13 @@ function usePicker(launch: LaunchContextType, firstLaunch: FirstLaunch) {
         }
       }
     }
-  }, [questionnaireSourceIsLocal]);
-
-  function handleSearchInputChange(input: string) {
-    setQuestionnaireIsSearching(true);
-    setSearchInput(input);
-    searchQuestionnaireWithDebounce(input);
   }
 
   function resetPickerState() {
     setSelectedQuestionnaireIndex(null);
     setQuestionnaires([]);
     setQuestionnaireResponses([]);
+    setSearchInput('');
   }
 
   // search questionnaires from input with delay
@@ -116,6 +120,10 @@ function usePicker(launch: LaunchContextType, firstLaunch: FirstLaunch) {
     setQuestionnaireSourceIsLocal(!questionnaireSourceIsLocal);
   }
 
+  function refreshQuestionnaireList() {
+    initializeQuestionnaireList();
+  }
+
   return {
     searchInput,
     questionnaireIsSearching,
@@ -130,7 +138,8 @@ function usePicker(launch: LaunchContextType, firstLaunch: FirstLaunch) {
     searchQuestionnaireWithDebounce,
     selectQuestionnaireByIndex,
     selectQuestionnaireResponseByIndex,
-    toggleQuestionnaireSource
+    toggleQuestionnaireSource,
+    refreshQuestionnaireList
   };
 }
 

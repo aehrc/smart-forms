@@ -9,7 +9,7 @@ import { isTab } from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import { getShortText } from '../../functions/ItemControlFunctions';
 import { hideQItem } from '../../functions/QItemFunctions';
-import { CardOverlineTypography } from '../StyledComponents/Typographys.styles';
+import { SideBarOverlineTypography } from '../StyledComponents/Typographys.styles';
 import ListItemText from '@mui/material/ListItemText';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
@@ -40,7 +40,7 @@ function FormBodyTabbed(props: Props) {
         <TabContext value={tabIndex}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
             <Card sx={{ p: 1, mb: 2 }}>
-              <CardOverlineTypography variant="overline">Tabs</CardOverlineTypography>
+              <SideBarOverlineTypography variant="overline">Tabs</SideBarOverlineTypography>
 
               <Box sx={{ flexGrow: 1 }}>
                 <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }}>

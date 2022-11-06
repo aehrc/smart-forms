@@ -1,4 +1,4 @@
-import { CardOverlineTypography } from '../StyledComponents/Typographys.styles';
+import { SideBarOverlineTypography } from '../StyledComponents/Typographys.styles';
 import PickerQuestionnaireCardContent from './PickerQuestionnaireCardContent';
 import { Box } from '@mui/material';
 import { RoundButton } from '../StyledComponents/Buttons.styles';
@@ -40,7 +40,7 @@ function PickerQuestionnaireCard(props: Props) {
 
   return (
     <FullHeightCard>
-      <CardOverlineTypography variant="overline">Questionnaires</CardOverlineTypography>
+      <SideBarOverlineTypography variant="overline">Questionnaires</SideBarOverlineTypography>
       <PickerQuestionnaireCardContent
         searchInput={searchInput}
         questionnaires={questionnaires}
@@ -54,7 +54,7 @@ function PickerQuestionnaireCard(props: Props) {
           variant="contained"
           endIcon={<ArrowForwardIcon />}
           disabled={typeof selectedQuestionnaireIndex !== 'number'}
-          onClick={() => handleCreateNewResponseButtonClick()}
+          onClick={handleCreateNewResponseButtonClick}
           sx={{ m: 1.5, textTransform: 'Capitalize' }}>
           Create new response
         </RoundButton>

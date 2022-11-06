@@ -23,7 +23,7 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
   return createTheme({
     palette: {
       background: {
-        default: '#fdfefe'
+        default: '#fbfbfc'
       },
       secondary: {
         main: '#229954',

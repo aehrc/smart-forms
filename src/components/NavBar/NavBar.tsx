@@ -5,15 +5,9 @@ import { PatientData, UserData } from '../../interfaces/Interfaces';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import MenuIcon from '@mui/icons-material/Menu';
-import { NavBarDrawerIconButton, NavBarTitleTypography, NavToolBar } from './NavBar.styles';
+import { NavBarTitleTypography, NavToolBar } from './NavBar.styles';
 import NavBarPatientUserDetails from './NavBarPatientUserDetails';
 import { QuestionnaireProviderContext } from '../../App';
-
-interface Props {
-  handleDrawerToggle?: () => unknown;
-  drawerWidth?: number;
-}
 
 const patientData: PatientData = {
   name: '',
@@ -25,8 +19,7 @@ const userData: UserData = {
   name: ''
 };
 
-function NavBar(props: Props) {
-  const { handleDrawerToggle, drawerWidth } = props;
+function NavBar() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireActive = useContext(QuestionnaireActiveContext);
   const launchContext = useContext(LaunchContext);
@@ -50,12 +43,6 @@ function NavBar(props: Props) {
   return (
     <>
       <NavToolBar variant="dense">
-        {drawerWidth && handleDrawerToggle ? (
-          <NavBarDrawerIconButton onClick={handleDrawerToggle}>
-            <MenuIcon />
-          </NavBarDrawerIconButton>
-        ) : null}
-
         <Box>
           <NavBarTitleTypography>
             {questionnaireActive.questionnaireActive

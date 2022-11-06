@@ -1,42 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Typography } from '@mui/material';
+import { Box, Divider, Grid, Typography } from '@mui/material';
 import FormBodyUntabbed from './FormBodyUntabbed';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
-import { cleanQrItem, evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
+import { evaluateCalculatedExpressions } from '../../functions/QrItemFunctions';
 import { CalculatedExpression } from '../../interfaces/Interfaces';
-import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import RendererDebugBar from '../DebugComponents/RendererDebugBar';
 import DisplayDebugQResponse from '../DebugComponents/DisplayDebugQResponse';
-import QRSavedSnackbar from './QRSavedSnackbar';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { PreviewModeContext } from '../../custom-contexts/PreviewModeContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
+import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
+import SideBar from '../SideBar/SideBar';
+import ChipBar from '../ChipBar/ChipBar';
+import { Operation } from '../../interfaces/Enums';
+import RendererOperationButtons from './RendererOperationButtons';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
 
 export const EnableWhenChecksContext = React.createContext<boolean>(true); // only for testing
 
-function Form() {
+interface Props {
+  questionnaireResponse: QuestionnaireResponse;
+  qrHasChanges: boolean;
+  removeQrHasChanges: () => unknown;
+  togglePreviewMode: () => unknown;
+  updateQuestionnaireResponse: (newQuestionnaireResponse: QuestionnaireResponse) => unknown;
+  clearQuestionnaireResponse: (clearedQuestionnaireResponse: QuestionnaireResponse) => unknown;
+}
+function Form(props: Props) {
+  const {
+    questionnaireResponse,
+    qrHasChanges,
+    removeQrHasChanges,
+    togglePreviewMode,
+    updateQuestionnaireResponse,
+    clearQuestionnaireResponse
+  } = props;
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const enableWhen = React.useContext(EnableWhenContext);
-  const previewMode = React.useContext(PreviewModeContext);
-  const fhirClient = React.useContext(LaunchContext).fhirClient;
 
-  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
-    questionnaireResponseProvider.questionnaireResponse
-  );
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
   >(questionnaireProvider.calculatedExpressions);
   const [containedValueSets] = useState<Record<string, ValueSet>>(
     questionnaireProvider.containedValueSets
   );
-  const [qrHasChanges, setQrHasChanges] = useState(false);
 
   // states only for testing
   const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
@@ -51,22 +63,6 @@ function Form() {
   useEffect(() => {
     enableWhen.setItems(questionnaireProvider.enableWhenItems, qrForm);
   }, []);
-  // TODO style form better - low prio
-  // TODO make operation buttons dynamic
-  // TODO make operation buttons working
-  // TODO look at previous draser why can be seperate scroll bar
-
-  // update QR state if QR is updated from the server
-  // introduces two-way binding
-  useEffect(() => {
-    const updatedQResponse = questionnaireResponseProvider.questionnaireResponse;
-    if (!updatedQResponse.item) return;
-
-    const qrFormClean = cleanQrItem(updatedQResponse.item[0]);
-    if (qrFormClean) {
-      setQuestionnaireResponse({ ...updatedQResponse, item: [qrFormClean] });
-    }
-  }, [questionnaireResponseProvider.questionnaireResponse]);
 
   function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
     const newQuestionnaireResponse = { ...questionnaireResponse, item: [newQrForm] };
@@ -80,115 +76,90 @@ function Form() {
     if (updatedCalculatedExpressions) {
       setCalculatedExpressions(updatedCalculatedExpressions);
     }
-    setQuestionnaireResponse(newQuestionnaireResponse);
     questionnaireResponseProvider.setQuestionnaireResponse(newQuestionnaireResponse);
-    setQrHasChanges(true);
+    updateQuestionnaireResponse(newQuestionnaireResponse);
   }
 
-  // only for testing
-  function clearQResponse() {
-    const clearQrForm: QuestionnaireResponseItem = {
-      linkId: '715',
-      text: 'MBS 715 Cleared',
-      item: []
-    };
-    setQuestionnaireResponse({ ...questionnaireResponse, item: [clearQrForm] });
-  }
+  // TODO save as draft saves as the same entry
 
   if (qForm.item && qrForm.item) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
         <ContainedValueSetContext.Provider value={containedValueSets}>
           <EnableWhenChecksContext.Provider value={enableWhenStatus}>
-            <MainGridContainerBox gap={2}>
-              <Typography variant="h1" fontWeight="bold" fontSize={36}>
-                {questionnaire.title}
-              </Typography>
-              <Divider light />
-              {containsTabs(qForm.item) ? (
-                <FormBodyTabbed
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                />
-              ) : (
-                <FormBodyUntabbed
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  onQrItemChange={(newQrForm) => {
-                    onQrFormChange(newQrForm);
-                  }}></FormBodyUntabbed>
-              )}
-            </MainGridContainerBox>
+            <Grid container>
+              <SideBarGrid item md={2.25} lg={1.75} xl={1.75}>
+                <SideBar>
+                  <RendererOperationButtons
+                    buttonOrChip={Operation.Button}
+                    qrHasChanges={qrHasChanges}
+                    removeQrHasChanges={removeQrHasChanges}
+                    togglePreviewMode={togglePreviewMode}
+                    questionnaireResponse={questionnaireResponse}
+                  />
+                </SideBar>
+              </SideBarGrid>
+              <MainGrid item md={9.75} lg={10.25} xl={10.25}>
+                <MainGridContainerBox gap={2}>
+                  <Typography fontWeight="bold" fontSize={36}>
+                    {questionnaire.title}
+                  </Typography>
+                  <ChipBar>
+                    <RendererOperationButtons
+                      buttonOrChip={Operation.Chip}
+                      qrHasChanges={qrHasChanges}
+                      removeQrHasChanges={removeQrHasChanges}
+                      togglePreviewMode={togglePreviewMode}
+                      questionnaireResponse={questionnaireResponse}
+                    />
+                  </ChipBar>
+                  <Divider light />
+                  {containsTabs(qForm.item) ? (
+                    <FormBodyTabbed
+                      qForm={qForm}
+                      qrForm={qrForm}
+                      indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
+                      onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                    />
+                  ) : (
+                    <FormBodyUntabbed
+                      qForm={qForm}
+                      qrForm={qrForm}
+                      onQrItemChange={(newQrForm) => {
+                        onQrFormChange(newQrForm);
+                      }}></FormBodyUntabbed>
+                  )}
 
-            {/*<Stack spacing={2.5} sx={{ my: 2 }}>*/}
-            {/*  <Divider />*/}
-
-            {/*  <Stack direction="row" spacing={2}>*/}
-            {/*    <RoundButton*/}
-            {/*      variant="outlined"*/}
-            {/*      startIcon={<VisibilityIcon />}*/}
-            {/*      onClick={() => previewMode.setIsPreviewMode(true)}>*/}
-            {/*      Show Preview*/}
-            {/*    </RoundButton>*/}
-
-            {/*    {fhirClient ? (*/}
-            {/*      <>*/}
-            {/*        <RoundButton*/}
-            {/*          variant="outlined"*/}
-            {/*          disabled={!qrHasChanges}*/}
-            {/*          startIcon={<SaveIcon />}*/}
-            {/*          onClick={() => {*/}
-            {/*            questionnaireResponseProvider.setQuestionnaireResponse(*/}
-            {/*              questionnaireResponse*/}
-            {/*            );*/}
-            {/*            saveQuestionnaireResponse(fhirClient, questionnaireResponse)*/}
-            {/*              .then(() => {*/}
-            {/*                setQrHasChanges(false);*/}
-            {/*              })*/}
-            {/*              .catch((error) => console.log(error));*/}
-            {/*          }}>*/}
-            {/*          Save*/}
-            {/*        </RoundButton>*/}
-
-            {/*        <RoundButton*/}
-            {/*          variant="outlined"*/}
-            {/*          disabled={!qrHasChanges}*/}
-            {/*          startIcon={<PublishIcon />}*/}
-            {/*          onClick={() => {*/}
-            {/*            questionnaireResponse.status = 'completed';*/}
-            {/*            questionnaireResponseProvider.setQuestionnaireResponse(*/}
-            {/*              questionnaireResponse*/}
-            {/*            );*/}
-            {/*            saveQuestionnaireResponse(fhirClient, questionnaireResponse)*/}
-            {/*              .then(() => {*/}
-            {/*                setQrHasChanges(false);*/}
-            {/*              })*/}
-            {/*              .catch((error) => console.log(error));*/}
-            {/*          }}>*/}
-            {/*          Submit*/}
-            {/*        </RoundButton>*/}
-            {/*      </>*/}
-            {/*    ) : (*/}
-            {/*      <div>*/}
-            {/*        <Typography fontSize={8}>*/}
-            {/*          Save functionality not available as application is not connected to CMS*/}
-            {/*        </Typography>*/}
-            {/*      </div>*/}
-            {/*    )}*/}
-            {/*  </Stack>*/}
-            {/*</Stack>*/}
+                  <Box sx={{ pb: 2 }}>
+                    <ChipBar>
+                      <RendererOperationButtons
+                        buttonOrChip={Operation.Chip}
+                        qrHasChanges={qrHasChanges}
+                        removeQrHasChanges={removeQrHasChanges}
+                        togglePreviewMode={togglePreviewMode}
+                        questionnaireResponse={questionnaireResponse}
+                      />
+                    </ChipBar>
+                  </Box>
+                </MainGridContainerBox>
+              </MainGrid>
+            </Grid>
 
             {hideQResponse ? null : (
               <DisplayDebugQResponse
                 questionnaire={questionnaire}
                 questionnaireResponse={questionnaireResponse}
-                clearQResponse={() => clearQResponse()}
+                clearQResponse={() => {
+                  const clearQrForm: QuestionnaireResponseItem = {
+                    linkId: '715',
+                    text: 'MBS 715 Cleared',
+                    item: []
+                  };
+                  clearQuestionnaireResponse({ ...questionnaireResponse, item: [clearQrForm] });
+                }}
                 batchResponse={questionnaireResponseProvider.batchResponse}
               />
             )}
-            <QRSavedSnackbar isDisplayed={!qrHasChanges} />
             <RendererDebugBar
               hideQResponse={hideQResponse}
               toggleHideQResponse={(checked) => setHideQResponse(checked)}
