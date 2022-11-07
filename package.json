@@ -2,5 +2,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "sdc-populate": "^1.0.0"
+  }
 }
