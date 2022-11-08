@@ -86,7 +86,10 @@ function readQuestionnaireItem(
       };
     }
   }
-  return null;
+  return {
+    linkId: qItem.linkId,
+    text: qItem.text
+  };
 }
 
 function getAnswerValues(initialValues: any[]) {
