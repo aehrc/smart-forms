@@ -33,7 +33,7 @@ export function sdcPopulate() {
     );
   }
 
-  const questionnaireResponse = constructResponse(questionnaire, initialExpressions);
+  return constructResponse(questionnaire, initialExpressions);
 }
 
 function removeUnimplementedFunction(unimplementedFunctions: string[], expression: string): string {
