@@ -6,7 +6,7 @@ export const SideBarGrid = styled(Grid)(({ theme }) => ({
   [theme.breakpoints.up('xs')]: {
     display: 'none'
   },
-  [theme.breakpoints.up('md')]: {
+  [theme.breakpoints.up('lg')]: {
     display: 'flex'
   }
 }));

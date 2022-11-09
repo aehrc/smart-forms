@@ -7,14 +7,6 @@ export const NavToolBar = styled(Toolbar)(({ theme }) => ({
   color: theme.palette.common.white
 }));
 
-export const NavBarDrawerIconButton = styled(IconButton)(({ theme }) => ({
-  color: 'inherit',
-  marginRight: '8px',
-  [theme.breakpoints.up('md')]: {
-    display: 'none'
-  }
-}));
-
 export const NavBarPatientUserDataBox = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up('xs')]: {
     display: 'none'

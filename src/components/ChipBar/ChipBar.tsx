@@ -6,7 +6,7 @@ function ChipBar(props: { children: any }) {
   const { children } = props;
 
   return (
-    <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+    <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
       <ChipBarBox gap={1}>{children}</ChipBarBox>
     </Box>
   );
