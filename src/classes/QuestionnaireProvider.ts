@@ -76,13 +76,6 @@ export class QuestionnaireProvider {
       items.forEach((item) => {
         this.readQuestionnaireItem(item);
       });
-
-      // Read enableWhen item and calculated expressions of group qItem
-      const EnableWhenItemProperties = getEnableWhenItemProperties(item);
-      if (EnableWhenItemProperties) {
-        this.enableWhenItems[item.linkId] = EnableWhenItemProperties;
-      }
-      return;
     }
 
     // Read enableWhen item and calculated expressions of simple qItem
