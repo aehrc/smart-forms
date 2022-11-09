@@ -45,8 +45,7 @@ function FormBodyTabbed(props: Props) {
               <Box sx={{ flexGrow: 1 }}>
                 <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }}>
                   {qFormItems.map((qItem, index) => {
-                    if (!isTab(qItem) || hideQItem(qItem) || index === 5 || index === 6)
-                      return null;
+                    if (!isTab(qItem) || hideQItem(qItem)) return null;
                     return (
                       <ListItemButton
                         key={qItem.linkId}
