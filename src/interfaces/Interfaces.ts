@@ -38,8 +38,3 @@ export interface EnableWhenLinkedItem {
   enableWhen: QuestionnaireItemEnableWhen;
   answer?: QuestionnaireResponseItemAnswer[];
 }
-
-export interface FirstLaunch {
-  status: boolean;
-  invalidate: () => unknown;
-}

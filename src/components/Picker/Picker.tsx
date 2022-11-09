@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import NoQuestionnaireDialog from '../Dialogs/NoQuestionnaireDialog';
-import { FirstLaunch } from '../../interfaces/Interfaces';
 import { PickerSearchField } from './Picker.styles';
 import PickerDebugBar from '../DebugComponents/PickerDebugBar';
 import usePicker from '../../custom-hooks/usePicker';
@@ -15,12 +13,7 @@ import ChipBar from '../ChipBar/ChipBar';
 import { Operation } from '../../interfaces/Enums';
 import PickerOperationButtons from './PickerOperationButtons';
 
-interface Props {
-  firstLaunch: FirstLaunch;
-}
-
-function Picker(props: Props) {
-  const { firstLaunch } = props;
+function Picker() {
   const launch = React.useContext(LaunchContext);
 
   const {
@@ -38,7 +31,7 @@ function Picker(props: Props) {
     selectQuestionnaireResponseByIndex,
     toggleQuestionnaireSource,
     refreshQuestionnaireList
-  } = usePicker(launch, firstLaunch);
+  } = usePicker(launch);
 
   return (
     <Grid container>
@@ -121,7 +114,6 @@ function Picker(props: Props) {
               />
             </ChipBar>
           </Box>
-          <NoQuestionnaireDialog firstLaunch={firstLaunch} />
 
           <PickerDebugBar
             questionnaireIsSearching={questionnaireIsSearching}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { PageSwitcherContext } from '../custom-contexts/PageSwitcherContext';
 import { PageType } from '../interfaces/Enums';
 import Picker from './Picker/Picker';
@@ -11,8 +11,6 @@ function PageSwitcher() {
   const pageSwitcher = React.useContext(PageSwitcherContext);
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
 
-  const [firstLaunch, setFirstLaunch] = useState(true);
-
   useEffect(() => {
     if (!questionnaireProvider.questionnaire.item) {
       pageSwitcher.goToPage(PageType.Picker);
@@ -24,9 +22,7 @@ function PageSwitcher() {
       case PageType.ResponsePreview:
         return <ResponsePreview />;
       case PageType.Picker:
-        return (
-          <Picker firstLaunch={{ status: firstLaunch, invalidate: () => setFirstLaunch(false) }} />
-        );
+        return <Picker />;
       default:
         return <Renderer />;
     }
