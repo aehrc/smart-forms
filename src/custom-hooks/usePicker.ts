@@ -33,7 +33,12 @@ function usePicker(launch: LaunchContextType) {
   function handleSearchInputChange(input: string) {
     setQuestionnaireIsSearching(true);
     setSearchInput(input);
-    searchQuestionnaireWithDebounce(input);
+    resetPickerState();
+    if (input !== '') {
+      searchQuestionnaireWithDebounce(input);
+    } else {
+      setQuestionnaireIsSearching(false);
+    }
   }
 
   function initializeQuestionnaireList() {
@@ -64,9 +69,9 @@ function usePicker(launch: LaunchContextType) {
 
   function resetPickerState() {
     setSelectedQuestionnaireIndex(null);
+    setSelectedQuestionnaireResponseIndex(null);
     setQuestionnaires([]);
     setQuestionnaireResponses([]);
-    setSearchInput('');
   }
 
   // search questionnaires from input with delay
@@ -76,8 +81,12 @@ function usePicker(launch: LaunchContextType) {
         .then((bundle) => {
           setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
           setQuestionnaireIsSearching(false);
+          setQuestionnaireResponseIsSearching(false);
         })
-        .catch(() => setQuestionnaireIsSearching(false));
+        .catch(() => {
+          setQuestionnaireIsSearching(false);
+          setQuestionnaireResponseIsSearching(false);
+        });
     }, 500),
     []
   );

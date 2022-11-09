@@ -11,6 +11,7 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
+  selectedQuestionnaireIndex: number | null;
   selectedQuestionnaireResponseIndex: number | null;
   questionnaireResponseIsSearching: boolean;
   onQrSelectedIndexChange: (index: number) => unknown;
@@ -19,6 +20,7 @@ interface Props {
 function PickerQuestionnaireResponseCardContent(props: Props) {
   const {
     questionnaireResponses,
+    selectedQuestionnaireIndex,
     selectedQuestionnaireResponseIndex,
     questionnaireResponseIsSearching,
     onQrSelectedIndexChange
@@ -36,12 +38,21 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
   } else if (questionnaireResponseIsSearching) {
     return <PickerSkeletonList />;
   } else if (questionnaireResponses.length === 0) {
-    return (
-      <Alert severity="info" sx={{ m: 2, p: 2 }}>
-        <AlertTitle>No responses found</AlertTitle>
-        There are currently no responses available.
-      </Alert>
-    );
+    if (selectedQuestionnaireIndex === null) {
+      return (
+        <Alert severity="info" sx={{ m: 2, p: 2 }}>
+          <AlertTitle>No questionnaire selected</AlertTitle>
+          Select a questionnaire to view responses.
+        </Alert>
+      );
+    } else {
+      return (
+        <Alert severity="info" sx={{ m: 2, p: 2 }}>
+          <AlertTitle>No responses found</AlertTitle>
+          There are currently no responses available.
+        </Alert>
+      );
+    }
   } else {
     return (
       <PrimarySelectableList>

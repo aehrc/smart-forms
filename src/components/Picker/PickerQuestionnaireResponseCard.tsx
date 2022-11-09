@@ -14,6 +14,7 @@ import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
   selectedQuestionnaire: Questionnaire | null;
+  selectedQuestionnaireIndex: number | null;
   selectedQuestionnaireResponseIndex: number | null;
   questionnaireResponseIsSearching: boolean;
   onQrSelectedIndexChange: (index: number) => unknown;
@@ -23,6 +24,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
   const {
     questionnaireResponses,
     selectedQuestionnaire,
+    selectedQuestionnaireIndex,
     selectedQuestionnaireResponseIndex,
     questionnaireResponseIsSearching,
     onQrSelectedIndexChange
@@ -74,6 +76,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
       </Box>
       <PickerQuestionnaireResponseCardContent
         questionnaireResponses={questionnaireResponses}
+        selectedQuestionnaireIndex={selectedQuestionnaireIndex}
         selectedQuestionnaireResponseIndex={selectedQuestionnaireResponseIndex}
         questionnaireResponseIsSearching={questionnaireResponseIsSearching}
         onQrSelectedIndexChange={onQrSelectedIndexChange}

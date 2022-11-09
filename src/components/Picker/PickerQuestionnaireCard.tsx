@@ -16,6 +16,7 @@ interface Props {
   selectedQuestionnaire: Questionnaire | null;
   selectedQuestionnaireIndex: number | null;
   questionnaireIsSearching: boolean;
+  questionnaireSourceIsLocal: boolean;
   onQSelectedIndexChange: (index: number) => unknown;
 }
 
@@ -26,6 +27,7 @@ function PickerQuestionnaireCard(props: Props) {
     selectedQuestionnaire,
     selectedQuestionnaireIndex,
     questionnaireIsSearching,
+    questionnaireSourceIsLocal,
     onQSelectedIndexChange
   } = props;
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
@@ -46,6 +48,7 @@ function PickerQuestionnaireCard(props: Props) {
         questionnaires={questionnaires}
         selectedQuestionnaireIndex={selectedQuestionnaireIndex}
         questionnaireIsSearching={questionnaireIsSearching}
+        questionnaireSourceIsLocal={questionnaireSourceIsLocal}
         onQSelectedIndexChange={onQSelectedIndexChange}
       />
       <Box sx={{ flexGrow: 1 }}></Box>
