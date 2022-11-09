@@ -20,34 +20,47 @@ export function populate(
   patient: Patient,
   prepopulateForm: {
     (questionnaireResponse: QuestionnaireResponse, batchResponse: Bundle): void;
-  }
+  },
+  exitSpinner: { (): void }
 ) {
-  if (!questionnaire.contained || questionnaire.contained.length === 0) return;
+  if (!questionnaire.contained || questionnaire.contained.length === 0) {
+    exitSpinner();
+    return;
+  }
 
   let prePopQueryBundle = getPrePopQueryBundle(questionnaire.contained);
-  if (prePopQueryBundle) {
-    // replace all instances of launchPatientId placeholder with patient id
-    prePopQueryBundle = replaceLaunchPatientIdInstances(prePopQueryBundle, patient);
-
-    // perform batch query to CMS FHIR API
-    const batchResponsePromise = batchQueryRequest(client, prePopQueryBundle);
-    batchResponsePromise
-      .then((batchResponse) => {
-        // get questionnaireResponse from population parameters
-        const parameters = definePopulationParameters(patient, batchResponse);
-        const qrPromise = prepopulationQueryRequest(questionnaire, parameters);
-
-        qrPromise
-          .then((qResponse) => {
-            // add patient reference to questionnaireResponse
-            // set questionnaireResponse in callback function
-            const qResponseWithPatientRef = addQRPatientReference(patient, qResponse);
-            prepopulateForm(qResponseWithPatientRef, batchResponse);
-          })
-          .catch((error) => console.log(error));
-      })
-      .catch((error) => console.log(error));
+  if (!prePopQueryBundle) {
+    exitSpinner();
+    return;
   }
+
+  // replace all instances of launchPatientId placeholder with patient id
+  prePopQueryBundle = replaceLaunchPatientIdInstances(prePopQueryBundle, patient);
+
+  // perform batch query to CMS FHIR API
+  const batchResponsePromise = batchQueryRequest(client, prePopQueryBundle);
+  batchResponsePromise
+    .then((batchResponse) => {
+      // get questionnaireResponse from population parameters
+      const parameters = definePopulationParameters(patient, batchResponse);
+      const qrPromise = prepopulationQueryRequest(questionnaire, parameters);
+
+      qrPromise
+        .then((qResponse) => {
+          // add patient reference to questionnaireResponse
+          // set questionnaireResponse in callback function
+          const qResponseWithPatientRef = addQRPatientReference(patient, qResponse);
+          prepopulateForm(qResponseWithPatientRef, batchResponse);
+        })
+        .catch((error) => {
+          console.log(error);
+          exitSpinner();
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+      exitSpinner();
+    });
 }
 
 /**
@@ -71,6 +84,7 @@ export function getPrePopQueryBundle(contained: FhirResource[]): Bundle | null {
  * @author Sean Fong
  */
 function replaceLaunchPatientIdInstances(batchQuery: Bundle, patient: Patient): Bundle {
+  // console.log(batchQuery);
   if (batchQuery.entry) {
     batchQuery.entry.forEach((entry) => {
       if (entry.request && patient.id)

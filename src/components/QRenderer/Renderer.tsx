@@ -39,11 +39,21 @@ function Renderer() {
     // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
     if (questionnaire.contained && (!qrFormItem || qrFormItem.length === 0)) {
       // obtain questionnaireResponse for prepopulation
-      populate(client, questionnaire, patient, (qResponse, batchResponse) => {
-        questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
-        questionnaireResponseProvider.setBatchResponse(batchResponse);
-        setSpinner({ ...spinner, isLoading: false });
-      });
+      populate(
+        client,
+        questionnaire,
+        patient,
+        (qResponse, batchResponse) => {
+          questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
+          questionnaireResponseProvider.setBatchResponse(batchResponse);
+          setSpinner({ ...spinner, isLoading: false });
+        },
+        () => {
+          setSpinner({ ...spinner, isLoading: false });
+          console.log('fail to populate');
+          // TODO popup questionnaire fail to populate
+        }
+      );
     } else {
       setSpinner({ ...spinner, isLoading: false });
     }
