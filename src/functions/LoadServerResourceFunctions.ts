@@ -24,7 +24,7 @@ export async function loadQuestionnairesFromServer(input?: string): Promise<Bund
   };
 
   return client(formsServerUrl).request({
-    url: 'Questionnaire?_count=8&_sort=-date&' + urlParams,
+    url: 'Questionnaire?_count=10&_sort=-date&' + urlParams,
     method: 'GET',
     headers: headers
   });

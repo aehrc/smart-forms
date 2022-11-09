@@ -3,11 +3,13 @@ import {
   FhirResource,
   Parameters,
   Patient,
+  Practitioner,
   Questionnaire,
   QuestionnaireResponse
 } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
+import { constructName } from './LaunchContextFunctions';
 
 /**
  * Prepopulate form from CMS patient data
@@ -18,6 +20,7 @@ export function populate(
   client: Client,
   questionnaire: Questionnaire,
   patient: Patient,
+  user: Practitioner,
   prepopulateForm: {
     (questionnaireResponse: QuestionnaireResponse, batchResponse: Bundle): void;
   },
@@ -49,8 +52,8 @@ export function populate(
         .then((qResponse) => {
           // add patient reference to questionnaireResponse
           // set questionnaireResponse in callback function
-          const qResponseWithPatientRef = addQRPatientReference(patient, qResponse);
-          prepopulateForm(qResponseWithPatientRef, batchResponse);
+          const qResponseWithRef = addPatientAndUserReference(patient, user, qResponse);
+          prepopulateForm(qResponseWithRef, batchResponse);
         })
         .catch((error) => {
           console.log(error);
@@ -168,13 +171,24 @@ function prepopulationQueryRequest(
   });
 }
 
-function addQRPatientReference(patient: Patient, questionnaireResponse: QuestionnaireResponse) {
-  if (!patient.id) return questionnaireResponse;
+function addPatientAndUserReference(
+  patient: Patient,
+  user: Practitioner,
+  questionnaireResponse: QuestionnaireResponse
+): QuestionnaireResponse {
+  if (!patient.id || !user.id) return questionnaireResponse;
 
   return {
     ...questionnaireResponse,
     subject: {
-      reference: `Patient/${patient.id}`
+      reference: `Patient/${patient.id}`,
+      type: 'Patient',
+      display: constructName(patient.name)
+    },
+    author: {
+      reference: `Practitioner/${user.id}`,
+      type: 'Practitioner',
+      display: constructName(user.name)
     }
   };
 }

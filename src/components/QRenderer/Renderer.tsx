@@ -29,7 +29,8 @@ function Renderer() {
   useEffect(() => {
     const client = launch.fhirClient;
     const patient = launch.patient;
-    if (!client || !patient) {
+    const user = launch.user;
+    if (!client || !patient || !user) {
       setSpinner({ ...spinner, isLoading: false });
       return;
     }
@@ -43,6 +44,7 @@ function Renderer() {
         client,
         questionnaire,
         patient,
+        user,
         (qResponse, batchResponse) => {
           questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
           questionnaireResponseProvider.setBatchResponse(batchResponse);

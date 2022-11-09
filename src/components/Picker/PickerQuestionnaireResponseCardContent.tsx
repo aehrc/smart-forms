@@ -1,7 +1,7 @@
 import { QuestionnaireResponse } from 'fhir/r5';
 import React, { useContext } from 'react';
 import { Alert, AlertTitle, ListItemButton, ListItemText, Tooltip } from '@mui/material';
-import ArticleIcon from '@mui/icons-material/Article';
+import GradingIcon from '@mui/icons-material/Grading';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 import PickerSkeletonList from './PickerSkeletonList';
 import dayjs from 'dayjs';
@@ -64,12 +64,15 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
             onClick={() => {
               onQrSelectedIndexChange(i);
             }}>
-            <ArticleIcon sx={{ mr: 2 }} />
+            <GradingIcon sx={{ mr: 2 }} />
             <ListItemText
               primary={
-                questionnaireResponse.questionnaire +
-                ' - ' +
-                dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL')
+                questionnaireResponse.item?.[0].text +
+                ' - by ' +
+                questionnaireResponse.author?.display +
+                ' (' +
+                dayjs(`${questionnaireResponse.meta?.lastUpdated}`).format('LLL') +
+                ')'
               }
               primaryTypographyProps={{ variant: 'subtitle2' }}
             />
