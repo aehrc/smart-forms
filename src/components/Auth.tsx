@@ -7,11 +7,23 @@ import { isStillAuthenticating } from '../functions/LaunchContextFunctions';
 import PageSwitcher from './PageSwitcher';
 import QuestionnaireActiveContextProvider from '../custom-contexts/QuestionnaireActiveContext';
 import PageSwitcherContextProvider from '../custom-contexts/PageSwitcherContext';
+import { getQuestionnaireFromUrl } from '../functions/LoadServerResourceFunctions';
+import { QuestionnaireProviderContext } from '../App';
 
 function Auth() {
   const launchContext = React.useContext(LaunchContext);
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
+
+  if (!questionnaireProvider.questionnaire.item) {
+    const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
+    if (questionnaireUrl) {
+      getQuestionnaireFromUrl(questionnaireUrl).then((questionnaire) =>
+        questionnaireProvider.setQuestionnaire(questionnaire)
+      );
+    }
+  }
 
   useEffect(() => {
     oauth2

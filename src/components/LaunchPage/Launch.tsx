@@ -8,6 +8,11 @@ function Launch() {
 
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
+  const questionnaireUrl = searchParams.get('questionnaire');
+
+  if (questionnaireUrl) {
+    sessionStorage.setItem('questionnaireUrl', questionnaireUrl);
+  }
 
   const clientId = process.env.REACT_APP_LAUNCH_CLIENT_ID ?? 'smart-health-checks';
   const scope =

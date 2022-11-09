@@ -24,7 +24,7 @@ export async function loadQuestionnairesFromServer(input?: string): Promise<Bund
   };
 
   return client(formsServerUrl).request({
-    url: 'Questionnaire?_count=10&_sort=-date&' + urlParams,
+    url: 'Questionnaire?_count=8&_sort=-date&' + urlParams,
     method: 'GET',
     headers: headers
   });
@@ -103,6 +103,22 @@ export function loadQuestionnaireFromResponse(
 
   return client(formsServerUrl).request({
     url: `Questionnaire/${questionnaireId}`,
+    method: 'GET',
+    headers: headers
+  });
+}
+
+export function getQuestionnaireFromUrl(canonicalReferenceUrl: string): Promise<Questionnaire> {
+  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+
+  const headers = {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'application/json+fhir; charset=UTF-8',
+    Accept: 'application/json+fhir; charset=utf-8'
+  };
+
+  return client(formsServerUrl).request({
+    url: `Questionnaire/${canonicalReferenceUrl}`,
     method: 'GET',
     headers: headers
   });
