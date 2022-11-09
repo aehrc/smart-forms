@@ -88,7 +88,7 @@ function Form(props: Props) {
         <ContainedValueSetContext.Provider value={containedValueSets}>
           <EnableWhenChecksContext.Provider value={enableWhenStatus}>
             <Grid container>
-              <SideBarGrid item lg={1.75} xl={1.75}>
+              <SideBarGrid item lg={1.75}>
                 <SideBar>
                   <RendererOperationButtons
                     buttonOrChip={Operation.Button}
@@ -99,7 +99,7 @@ function Form(props: Props) {
                   />
                 </SideBar>
               </SideBarGrid>
-              <MainGrid item lg={10.25} xl={10.25}>
+              <MainGrid item lg={10.25}>
                 <MainGridContainerBox gap={2}>
                   <Typography fontWeight="bold" fontSize={36}>
                     {questionnaire.title}

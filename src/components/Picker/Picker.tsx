@@ -35,7 +35,7 @@ function Picker() {
 
   return (
     <Grid container>
-      <SideBarGrid item md={2.25} lg={1.75} xl={1.75}>
+      <SideBarGrid item lg={1.75}>
         <SideBar>
           <PickerOperationButtons
             buttonOrChip={Operation.Button}
@@ -43,7 +43,7 @@ function Picker() {
           />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item md={9.75} lg={10.25} xl={10.25}>
+      <MainGrid item lg={10.25}>
         <MainGridContainerBox gap={2.5}>
           <Stack direction="row" gap={8}>
             <Typography fontWeight="bold" fontSize={36}>
@@ -108,14 +108,7 @@ function Picker() {
             </Grid>
           </Grid>
 
-          <Box sx={{ pb: 2 }}>
-            <ChipBar>
-              <PickerOperationButtons
-                buttonOrChip={Operation.Chip}
-                refreshQuestionnaireList={refreshQuestionnaireList}
-              />
-            </ChipBar>
-          </Box>
+          <Box sx={{ pb: 2 }}></Box>
 
           <PickerDebugBar
             questionnaireIsSearching={questionnaireIsSearching}
