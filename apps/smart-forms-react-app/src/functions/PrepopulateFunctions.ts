@@ -8,6 +8,7 @@ import {
 } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
+import { sdcPopulate } from 'sdc-populate';
 
 /**
  * Prepopulate form from CMS patient data
@@ -36,6 +37,9 @@ export function populate(
         // get questionnaireResponse from population parameters
         const parameters = definePopulationParameters(patient, batchResponse);
         const qrPromise = prepopulationQueryRequest(questionnaire, parameters);
+
+        // test local prepop
+        localPrepopulate(questionnaire, patient, batchResponse);
 
         qrPromise
           .then((qResponse) => {
@@ -163,4 +167,34 @@ function addQRPatientReference(patient: Patient, questionnaireResponse: Question
       reference: `Patient/${patient.id}`
     }
   };
+}
+
+function localPrepopulate(questionnaire: Questionnaire, patient: Patient, batchResponse: Bundle) {
+  const inputPopParams: Parameters = {
+    resourceType: 'Parameters',
+    parameter: [
+      {
+        name: 'questionnaire',
+        resource: questionnaire
+      },
+      {
+        name: 'subject',
+        valueReference: {
+          type: 'Patient',
+          reference: 'Patient/' + '87a339d0-8cae-418e-89c7-8651e6aab3c6'
+        }
+      },
+      {
+        name: 'patient',
+        resource: patient as Patient
+      },
+      {
+        name: 'query',
+        resource: batchResponse as Bundle
+      }
+    ]
+  };
+
+  const outputPopParams = sdcPopulate(inputPopParams);
+  console.log(outputPopParams);
 }
