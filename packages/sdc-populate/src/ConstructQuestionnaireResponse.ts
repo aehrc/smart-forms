@@ -86,15 +86,17 @@ function readQuestionnaireItem(
       };
     }
   }
-  return {
-    linkId: qItem.linkId,
-    text: qItem.text
-  };
+  return null;
+
+  // Use this return statement instead to also list items with no answers
+  // return {
+  //   linkId: qItem.linkId,
+  //   text: qItem.text
+  // };
 }
 
 function getAnswerValues(initialValues: any[]) {
   return initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
-    console.log(value)
     if (typeof value === 'boolean') {
       return {valueBoolean: value};
     } else if (typeof value === 'object') {
