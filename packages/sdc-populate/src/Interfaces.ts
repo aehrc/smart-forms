@@ -1,4 +1,4 @@
 interface InitialExpression {
-  expression: string
-  value: any[] | undefined
+  expression: string;
+  value: any[] | undefined;
 }

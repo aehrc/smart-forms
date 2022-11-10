@@ -28,7 +28,6 @@ export function evaluateInitialExpressions(
   return initialExpressions;
 }
 
-
 function removeUnimplementedFunction(unimplementedFunctions: string[], expression: string): string {
   for (const fnName of unimplementedFunctions) {
     const foundFnIndex = expression.indexOf('.' + fnName);

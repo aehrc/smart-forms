@@ -27,7 +27,7 @@ export function constructResponse(
   qrForm = readQuestionnaire(questionnaire, qrForm, initialExpressions);
 
   questionnaireResponse.questionnaire = 'Questionnaire/' + questionnaire.id;
-  questionnaireResponse.item = [qrForm]
+  questionnaireResponse.item = [qrForm];
 
   return questionnaireResponse;
 }
@@ -42,7 +42,7 @@ export function readQuestionnaire(
   questionnaire.item.forEach((item) => {
     const newQrForm = readQuestionnaireItem(item, qrForm, initialExpressions);
     if (newQrForm) {
-      qrForm = {...newQrForm};
+      qrForm = { ...newQrForm };
     }
   });
   return qrForm;
@@ -68,10 +68,10 @@ function readQuestionnaireItem(
 
     return qrItems.length > 0
       ? {
-        linkId: qItem.linkId,
-        text: qItem.text,
-        item: qrItems
-      }
+          linkId: qItem.linkId,
+          text: qItem.text,
+          item: qrItems
+        }
       : null;
   }
 
@@ -98,15 +98,15 @@ function readQuestionnaireItem(
 function getAnswerValues(initialValues: any[]) {
   return initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
     if (typeof value === 'boolean') {
-      return {valueBoolean: value};
+      return { valueBoolean: value };
     } else if (typeof value === 'object') {
-      return {valueCoding: value};
+      return { valueCoding: value };
     } else if (typeof value === 'number') {
-      return Number.isInteger(value) ? {valueInteger: value} : {valueDecimal: value};
+      return Number.isInteger(value) ? { valueInteger: value } : { valueDecimal: value };
     } else if (checkIsDate(value)) {
-      return {valueDate: value};
+      return { valueDate: value };
     } else {
-      return {valueString: value};
+      return { valueString: value };
     }
   });
 }

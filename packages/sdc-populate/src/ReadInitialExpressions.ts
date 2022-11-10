@@ -1,4 +1,4 @@
-import {Expression, Extension, Questionnaire, QuestionnaireItem} from 'fhir/r5';
+import { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r5';
 
 export function readInitialExpressions(
   questionnaire: Questionnaire
