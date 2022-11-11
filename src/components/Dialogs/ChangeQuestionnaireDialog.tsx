@@ -13,20 +13,20 @@ import { PageType } from '../../interfaces/Enums';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import { QuestionnaireResponseProviderContext } from '../../App';
 import { QuestionnaireResponse } from 'fhir/r5';
-import Client from 'fhirclient/lib/Client';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 export interface Props {
   dialogOpen: boolean;
   closeDialog: () => unknown;
   removeQrHasChanges: () => unknown;
-  fhirClient: Client | null;
   questionnaireResponse: QuestionnaireResponse;
 }
 
 function ChangeQuestionnaireDialog(props: Props) {
-  const { dialogOpen, closeDialog, removeQrHasChanges, fhirClient, questionnaireResponse } = props;
+  const { dialogOpen, closeDialog, removeQrHasChanges, questionnaireResponse } = props;
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
+  const launchContext = React.useContext(LaunchContext);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -43,33 +43,34 @@ function ChangeQuestionnaireDialog(props: Props) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Go back</Button>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          onClick={() => {
+            pageSwitcher.goToPage(PageType.Picker);
+            handleClose();
+          }}>
+          Proceed without saving
+        </Button>
         <Button
           disabled={isSaving}
           endIcon={isSaving ? <CircularProgress size={20} /> : null}
           onClick={() => {
-            if (fhirClient) {
+            if (launchContext.fhirClient && launchContext.patient && launchContext.user) {
               setIsSaving(true);
               questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-              saveQuestionnaireResponse(fhirClient, questionnaireResponse)
+              saveQuestionnaireResponse(
+                launchContext.fhirClient,
+                launchContext.patient,
+                launchContext.user,
+                questionnaireResponse
+              )
                 .then(() => {
                   removeQrHasChanges();
                   pageSwitcher.goToPage(PageType.Picker);
                   handleClose();
                   setIsSaving(false);
                 })
-                .catch((error) => {
-                  if (error.message.includes('400 Bad Request')) {
-                    saveQuestionnaireResponse(fhirClient, questionnaireResponse)
-                      .then(() => removeQrHasChanges())
-                      .catch((error) => {
-                        console.log(error);
-                        pageSwitcher.goToPage(PageType.Picker);
-                        handleClose();
-                        setIsSaving(false);
-                      });
-                  }
-                });
+                .catch((error) => console.log(error));
             } else {
               handleClose();
             }

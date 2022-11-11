@@ -80,8 +80,6 @@ function Form(props: Props) {
     updateQuestionnaireResponse(newQuestionnaireResponse);
   }
 
-  // TODO save as draft saves as the same entry
-
   if (qForm.item && qrForm.item) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>

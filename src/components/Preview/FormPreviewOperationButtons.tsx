@@ -24,32 +24,35 @@ function FormPreviewOperationButtons(props: Props) {
     questionnaireResponse
   } = props;
 
-  const fhirClient = React.useContext(LaunchContext).fhirClient;
+  const launch = React.useContext(LaunchContext);
   return (
     <>
       <ChangeQuestionnaireButton
         buttonOrChip={buttonOrChip}
         qrHasChanges={qrHasChanges}
         removeQrHasChanges={removeQrHasChanges}
-        fhirClient={fhirClient}
         questionnaireResponse={questionnaireResponse}
       />
       <ContinueEditingButton buttonOrChip={buttonOrChip} togglePreviewMode={togglePreviewMode} />
-      {fhirClient ? (
+      {launch.fhirClient && launch.user && launch.patient ? (
         <>
           <SaveAsDraftButton
             buttonOrChip={buttonOrChip}
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
-            fhirClient={fhirClient}
             questionnaireResponse={questionnaireResponse}
+            fhirClient={launch.fhirClient}
+            patient={launch.patient}
+            user={launch.user}
           />
           <SaveAsFinalButton
             buttonOrChip={buttonOrChip}
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
-            fhirClient={fhirClient}
             questionnaireResponse={questionnaireResponse}
+            fhirClient={launch.fhirClient}
+            patient={launch.patient}
+            user={launch.user}
           />
         </>
       ) : null}

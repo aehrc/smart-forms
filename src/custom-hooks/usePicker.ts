@@ -42,6 +42,7 @@ function usePicker(launch: LaunchContextType) {
   }
 
   function initializeQuestionnaireList() {
+    setSearchInput('');
     resetPickerState();
     if (questionnaireSourceIsLocal) {
       setQuestionnaires(loadQuestionnairesFromLocal());

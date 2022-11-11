@@ -2,7 +2,7 @@ import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
 import { Save } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { QuestionnaireResponse } from 'fhir/r5';
+import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import { QuestionnaireResponseProviderContext } from '../../App';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
@@ -15,25 +15,28 @@ interface Props {
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;
   fhirClient: Client;
+  patient: Patient;
+  user: Practitioner;
 }
 
 function SaveAsFinalButton(props: Props) {
-  const { buttonOrChip, qrHasChanges, removeQrHasChanges, questionnaireResponse, fhirClient } =
-    props;
+  const {
+    buttonOrChip,
+    qrHasChanges,
+    removeQrHasChanges,
+    questionnaireResponse,
+    fhirClient,
+    patient,
+    user
+  } = props;
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
 
   function handleClick() {
     questionnaireResponse.status = 'completed';
     questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-    saveQuestionnaireResponse(fhirClient, questionnaireResponse)
+    saveQuestionnaireResponse(fhirClient, patient, user, questionnaireResponse)
       .then(() => removeQrHasChanges())
-      .catch((error) => {
-        if (error.message.includes('400 Bad Request')) {
-          saveQuestionnaireResponse(fhirClient, questionnaireResponse)
-            .then(() => removeQrHasChanges())
-            .catch((error) => console.log(error));
-        }
-      });
+      .catch((error) => console.log(error));
   }
 
   const renderButtonOrChip =

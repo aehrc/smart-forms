@@ -6,21 +6,20 @@ import { Operation, PageType } from '../../interfaces/Enums';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import ChangeQuestionnaireDialog from '../Dialogs/ChangeQuestionnaireDialog';
 import { OperationChip } from '../ChipBar/ChipBar.styles';
-import Client from 'fhirclient/lib/Client';
 import { QuestionnaireResponse } from 'fhir/r5';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 interface Props {
   buttonOrChip: Operation;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
-  fhirClient: Client | null;
   questionnaireResponse: QuestionnaireResponse;
 }
 
 function ChangeQuestionnaireButton(props: Props) {
-  const { buttonOrChip, qrHasChanges, removeQrHasChanges, fhirClient, questionnaireResponse } =
-    props;
+  const { buttonOrChip, qrHasChanges, removeQrHasChanges, questionnaireResponse } = props;
   const pageSwitcher = React.useContext(PageSwitcherContext);
+  const fhirClient = React.useContext(LaunchContext).fhirClient;
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -60,7 +59,6 @@ function ChangeQuestionnaireButton(props: Props) {
         dialogOpen={dialogOpen}
         closeDialog={() => setDialogOpen(false)}
         removeQrHasChanges={removeQrHasChanges}
-        fhirClient={fhirClient}
         questionnaireResponse={questionnaireResponse}
       />
     </>
