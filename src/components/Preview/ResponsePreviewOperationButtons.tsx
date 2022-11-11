@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Operation } from '../../interfaces/Enums';
 import BackToPickerButton from '../OperationButtons/BackToPickerButton';
 import PrintPreviewButton from '../OperationButtons/PrintPreviewButton';
 import EditResponseButton from '../OperationButtons/EditResponseButton';
+import { QuestionnaireResponseProviderContext } from '../../App';
 
 interface Props {
   buttonOrChip: Operation;
@@ -10,11 +11,14 @@ interface Props {
 
 function ResponsePreviewOperationButtons(props: Props) {
   const { buttonOrChip } = props;
+  const questionnaireProvider = useContext(QuestionnaireResponseProviderContext);
   return (
     <>
       <BackToPickerButton buttonOrChip={buttonOrChip} />
       <PrintPreviewButton buttonOrChip={buttonOrChip} />
-      <EditResponseButton buttonOrChip={buttonOrChip} />
+      {questionnaireProvider.questionnaireResponse.status === 'completed' ? null : (
+        <EditResponseButton buttonOrChip={buttonOrChip} />
+      )}
     </>
   );
 }
