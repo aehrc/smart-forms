@@ -12,8 +12,8 @@ import { LaunchContextType } from '../interfaces/ContextTypes';
 
 function usePicker(launch: LaunchContextType) {
   const [searchInput, setSearchInput] = useState<string>('');
-  const [questionnaireIsSearching, setQuestionnaireIsSearching] = useState(false);
-  const [questionnaireResponseIsSearching, setQuestionnaireResponseIsSearching] = useState(false);
+  const [questionnaireIsSearching, setQuestionnaireIsSearching] = useState(true);
+  const [questionnaireResponseIsSearching, setQuestionnaireResponseIsSearching] = useState(true);
 
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [questionnaireResponses, setQuestionnaireResponses] = useState<QuestionnaireResponse[]>([]);
