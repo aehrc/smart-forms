@@ -118,10 +118,29 @@ export function getQuestionnaireFromUrl(canonicalReferenceUrl: string): Promise<
   };
 
   return client(formsServerUrl).request({
-    url: `Questionnaire/${canonicalReferenceUrl}`,
+    url: `Questionnaire?url=${canonicalReferenceUrl}`,
     method: 'GET',
     headers: headers
   });
+}
+
+export function getInitialQuestionnaireFromResponse(
+  response: Questionnaire | Bundle
+): Questionnaire | null {
+  if (response.resourceType === 'Questionnaire') {
+    return response;
+  }
+
+  const bundleEntries = response.entry;
+  if (bundleEntries && bundleEntries.length > 0) {
+    for (const entry of bundleEntries) {
+      if (entry.resource?.resourceType === 'Questionnaire') {
+        return entry.resource;
+      }
+    }
+  }
+
+  return null;
 }
 
 /**

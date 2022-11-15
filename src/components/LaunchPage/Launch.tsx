@@ -8,7 +8,7 @@ function Launch() {
 
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
-  const questionnaireUrl = searchParams.get('questionnaire');
+  const questionnaireUrl = searchParams.get('questionnaireUrl');
 
   if (questionnaireUrl) {
     sessionStorage.setItem('questionnaireUrl', questionnaireUrl);

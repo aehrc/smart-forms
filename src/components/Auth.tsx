@@ -7,7 +7,10 @@ import { isStillAuthenticating } from '../functions/LaunchContextFunctions';
 import PageSwitcher from './PageSwitcher';
 import QuestionnaireActiveContextProvider from '../custom-contexts/QuestionnaireActiveContext';
 import PageSwitcherContextProvider from '../custom-contexts/PageSwitcherContext';
-import { getQuestionnaireFromUrl } from '../functions/LoadServerResourceFunctions';
+import {
+  getInitialQuestionnaireFromResponse,
+  getQuestionnaireFromUrl
+} from '../functions/LoadServerResourceFunctions';
 import { QuestionnaireProviderContext } from '../App';
 
 function Auth() {
@@ -15,15 +18,7 @@ function Auth() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
-
-  if (!questionnaireProvider.questionnaire.item) {
-    const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
-    if (questionnaireUrl) {
-      getQuestionnaireFromUrl(questionnaireUrl).then((questionnaire) =>
-        questionnaireProvider.setQuestionnaire(questionnaire)
-      );
-    }
-  }
+  const [questionnaireIsLoading, setQuestionnaireIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     oauth2
@@ -44,9 +39,27 @@ function Auth() {
         console.error(error);
         setHasClient(false);
       });
+
+    const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
+    if (questionnaireUrl) {
+      getQuestionnaireFromUrl(questionnaireUrl)
+        .then((response) => {
+          const questionnaire = getInitialQuestionnaireFromResponse(response);
+          if (questionnaire) {
+            questionnaireProvider.setQuestionnaire(questionnaire);
+          }
+          setQuestionnaireIsLoading(false);
+        })
+        .catch(() => setQuestionnaireIsLoading(false));
+    } else {
+      setQuestionnaireIsLoading(false);
+    }
   }, []);
 
-  if (isStillAuthenticating(hasClient, launchContext.patient, launchContext.user)) {
+  if (
+    isStillAuthenticating(hasClient, launchContext.patient, launchContext.user) ||
+    questionnaireIsLoading
+  ) {
     return <ProgressSpinner message="Fetching patient" />;
   } else {
     return (
