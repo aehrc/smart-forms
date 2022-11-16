@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import {
@@ -7,6 +7,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { CalcExpressionContext } from '../../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -18,8 +19,19 @@ interface Props
 function QItemInteger(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
+  const calculatedExpressions = useContext(CalcExpressionContext);
+
   let qrInteger = qrItem ? qrItem : createQrItem(qItem);
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
+
+  useEffect(() => {
+    const expression = calculatedExpressions[qItem.linkId];
+
+    if (expression && expression.value) {
+      qrInteger = { ...qrInteger, answer: [{ valueInteger: expression.value }] };
+      onQrItemChange(qrInteger);
+    }
+  }, [calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;

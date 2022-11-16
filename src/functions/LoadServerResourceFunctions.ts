@@ -7,6 +7,7 @@ import QAssembled from '../data/resources/Assembled.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
 import QCvdRisk from '../data/resources/CVD Risk.json';
 import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
+import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 
 /**
  * Sends a request to forms server to obtain the first ten questionnaires that fufills the parameters provided
@@ -169,7 +170,8 @@ export function loadQuestionnairesFromLocal() {
     QAssembled,
     QCvdCheck,
     QCvdRisk,
-    QCvdRiskHiso
+    QCvdRiskHiso,
+    QAboriginalTorresStraitIslanderHealthCheckAssembled
   ] as Questionnaire[];
 
   return questionnaires;

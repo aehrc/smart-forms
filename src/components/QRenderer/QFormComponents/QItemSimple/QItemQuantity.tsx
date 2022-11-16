@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import {
@@ -7,6 +7,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { CalcExpressionContext } from '../../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -17,8 +18,9 @@ interface Props
 
 function QItemQuantity(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const calculatedExpressions = useContext(CalcExpressionContext);
 
-  const qrQuantity = qrItem ? qrItem : createQrItem(qItem);
+  let qrQuantity = qrItem ? qrItem : createQrItem(qItem);
   let valueQuantity: number | undefined = 0.0;
   let unitQuantity: string | undefined = '';
 
@@ -28,6 +30,39 @@ function QItemQuantity(props: Props) {
     unitQuantity = answer.valueQuantity ? answer.valueQuantity.unit : '';
   }
 
+  useEffect(() => {
+    const expression = calculatedExpressions[qItem.linkId];
+
+    if (expression && expression.value) {
+      qrQuantity = {
+        ...qrQuantity,
+        answer: [{ valueQuantity: { value: expression.value, unit: unitQuantity } }]
+      };
+      onQrItemChange(qrQuantity);
+    }
+  }, [calculatedExpressions]);
+
+  function handleValueChange(event: React.ChangeEvent<HTMLInputElement>) {
+    let input = event.target.value;
+
+    const hasNumber = /\d/;
+    if (!hasNumber.test(input)) {
+      input = '0';
+    }
+    qrQuantity = {
+      ...qrQuantity,
+      answer: [{ valueQuantity: { value: parseFloat(input), unit: unitQuantity } }]
+    };
+    onQrItemChange(qrQuantity);
+  }
+
+  function handleUnitChange(event: React.ChangeEvent<HTMLInputElement>) {
+    onQrItemChange({
+      ...qrQuantity,
+      answer: [{ valueQuantity: { value: valueQuantity, unit: event.target.value } }]
+    });
+  }
+
   const QItemQuantityFields = (
     <Grid container columnSpacing={1}>
       <Grid item xs={6}>
@@ -35,28 +70,12 @@ function QItemQuantity(props: Props) {
           type="number"
           id={qItem.linkId}
           value={valueQuantity}
-          onChange={(event) =>
-            onQrItemChange({
-              ...qrQuantity,
-              answer: [
-                { valueQuantity: { value: parseFloat(event.target.value), unit: unitQuantity } }
-              ]
-            })
-          }
+          onChange={handleValueChange}
         />
       </Grid>
 
       <Grid item xs={6}>
-        <TextField
-          id={qItem.linkId + '_unit'}
-          value={unitQuantity}
-          onChange={(event) =>
-            onQrItemChange({
-              ...qrQuantity,
-              answer: [{ valueQuantity: { value: valueQuantity, unit: event.target.value } }]
-            })
-          }
-        />
+        <TextField id={qItem.linkId + '_unit'} value={unitQuantity} onChange={handleUnitChange} />
       </Grid>
     </Grid>
   );
