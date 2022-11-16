@@ -4,10 +4,9 @@ import { Save } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
-import { QuestionnaireResponseProviderContext } from '../../App';
-import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import { Operation } from '../../interfaces/Enums';
 import { OperationChip } from '../ChipBar/ChipBar.styles';
+import ConfirmSaveAsFinalDialog from '../Dialogs/ConfirmSaveAsFinalDialog';
 
 interface Props {
   buttonOrChip: Operation;
@@ -29,14 +28,11 @@ function SaveAsFinalButton(props: Props) {
     patient,
     user
   } = props;
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   function handleClick() {
-    questionnaireResponse.status = 'completed';
-    questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-    saveQuestionnaireResponse(fhirClient, patient, user, questionnaireResponse)
-      .then(() => removeQrHasChanges())
-      .catch((error) => console.log(error));
+    setDialogOpen(true);
   }
 
   const renderButtonOrChip =
@@ -60,7 +56,20 @@ function SaveAsFinalButton(props: Props) {
         onClick={handleClick}
       />
     );
-  return <>{renderButtonOrChip}</>;
+  return (
+    <>
+      {renderButtonOrChip}
+      <ConfirmSaveAsFinalDialog
+        dialogOpen={dialogOpen}
+        closeDialog={() => setDialogOpen(false)}
+        removeQrHasChanges={removeQrHasChanges}
+        questionnaireResponse={questionnaireResponse}
+        fhirClient={fhirClient}
+        patient={patient}
+        user={user}
+      />
+    </>
+  );
 }
 
 export default SaveAsFinalButton;

@@ -5,7 +5,6 @@ import { getPatient, getUser } from '../functions/LaunchFunctions';
 import ProgressSpinner from './ProgressSpinner';
 import { isStillAuthenticating } from '../functions/LaunchContextFunctions';
 import PageSwitcher from './PageSwitcher';
-import QuestionnaireActiveContextProvider from '../custom-contexts/QuestionnaireActiveContext';
 import PageSwitcherContextProvider from '../custom-contexts/PageSwitcherContext';
 import {
   getInitialQuestionnaireFromResponse,
@@ -64,9 +63,7 @@ function Auth() {
   } else {
     return (
       <PageSwitcherContextProvider>
-        <QuestionnaireActiveContextProvider>
-          <PageSwitcher />
-        </QuestionnaireActiveContextProvider>
+        <PageSwitcher />
       </PageSwitcherContextProvider>
     );
   }
