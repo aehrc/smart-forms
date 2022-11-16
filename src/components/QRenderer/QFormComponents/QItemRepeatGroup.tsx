@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, IconButton, Stack, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -92,9 +92,9 @@ function QItemRepeatGroup(props: Props) {
                 }></QItemGroup>
             </Box>
 
-            <Button disabled={!answerItem} onClick={() => deleteAnswerItem(index)}>
+            <IconButton disabled={!answerItem} onClick={() => deleteAnswerItem(index)}>
               <Delete />
-            </Button>
+            </IconButton>
           </Stack>
         );
       })}
@@ -102,9 +102,9 @@ function QItemRepeatGroup(props: Props) {
       <Stack direction="row" justifyContent="end" sx={{ my: 2 }}>
         <Button
           variant="contained"
+          startIcon={<Add />}
           disabled={!repeatAnswerItems[repeatAnswerItems.length - 1]}
           onClick={() => setRepeatAnswerItems([...repeatAnswerItems, undefined])}>
-          <Add sx={{ mr: 1 }} />
           Add Item
         </Button>
       </Stack>

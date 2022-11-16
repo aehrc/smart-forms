@@ -11,7 +11,8 @@ export function qrToHTML(
 ) {
   if (!questionnaireResponse.item) return '';
 
-  const title = `<div style="font-size:40px;"><b>${questionnaire.title}</b></div><hr style="margin: 20px 0 40px"/>`;
+  const title = `<div style="font-size:36px; font-weight: bold">${questionnaire.title}</div><hr style="border: none;
+    height: 1px; background-color: #e7e7e8; margin: 20px 0 40px; "/>`;
   const qrForm = qrFormToHTML(questionnaireResponse.item[0]);
 
   return `<div>${title + qrForm}</div>`;

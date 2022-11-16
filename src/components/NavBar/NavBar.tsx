@@ -1,29 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import dayjs from 'dayjs';
-import { AppBar, Box, Toolbar, Container } from '@mui/material';
+import { Box } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
-import NavBarPatientData from './NavBarPatientData';
-import { Patient, Practitioner } from 'fhir/r5';
-import NavBarUserData from './NavBarUserData';
 import { constructName } from '../../functions/LaunchContextFunctions';
+import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { NavBarTitleTypography, NavToolBar } from './NavBar.styles';
+import NavBarPatientUserDetails from './NavBarPatientUserDetails';
+import { QuestionnaireProviderContext } from '../../App';
 
-interface Props {
-  patient: Patient | null;
-  user: Practitioner | null;
-}
+const patientData: PatientData = {
+  name: '',
+  gender: '',
+  dateOfBirth: ''
+};
 
-function NavBar(props: Props) {
-  const { patient, user } = props;
+const userData: UserData = {
+  name: ''
+};
 
-  const patientData: PatientData = {
-    name: '',
-    gender: '',
-    dateOfBirth: ''
-  };
+function NavBar() {
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireActive = useContext(QuestionnaireActiveContext);
+  const launchContext = useContext(LaunchContext);
 
-  const userData: UserData = {
-    name: ''
-  };
+  const patient = launchContext.patient;
+  const user = launchContext.user;
 
   if (patient) {
     const dateOfBirthDayJs = dayjs(patient.birthDate);
@@ -39,22 +41,20 @@ function NavBar(props: Props) {
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Container maxWidth="lg">
-          <Toolbar disableGutters>
-            <Box sx={{ flexGrow: 0 }}>
-              <NavBarPatientData patientData={patientData} />
-            </Box>
-            <Box sx={{ flexGrow: 1, mx: 4 }}></Box>
-            <Box>
-              <NavBarUserData userData={userData} />
-            </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    </Box>
+    <>
+      <NavToolBar variant="dense">
+        <Box>
+          <NavBarTitleTypography>
+            {questionnaireActive.questionnaireActive
+              ? questionnaireProvider.questionnaire.title
+              : 'SMART Health Checks'}
+          </NavBarTitleTypography>
+        </Box>
+        <Box sx={{ flexGrow: 1 }} />
+        <NavBarPatientUserDetails patientData={patientData} userData={userData} />
+      </NavToolBar>
+    </>
   );
 }
 
-export default NavBar;
+export default React.memo(NavBar);

@@ -1,35 +1,70 @@
 import React from 'react';
-import { Box, Container } from '@mui/material';
-import parse from 'html-react-parser';
-import { qrToHTML } from '../../functions/PreviewFunctions';
-import { QuestionnaireProvider } from '../../classes/QuestionnaireProvider';
-import { QuestionnaireResponseProvider } from '../../classes/QuestionnaireResponseProvider';
+import { Box, Divider, Grid, Typography } from '@mui/material';
+import Preview from './Preview';
+import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
+import { Operation } from '../../interfaces/Enums';
+import ChipBar from '../ChipBar/ChipBar';
+import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
+import SideBar from '../SideBar/SideBar';
+import { QuestionnaireResponse } from 'fhir/r5';
+import { QuestionnaireProviderContext } from '../../App';
+import FormPreviewOperationButtons from './FormPreviewOperationButtons';
 
 interface Props {
-  questionnaireProvider: QuestionnaireProvider;
-  questionnaireResponseProvider: QuestionnaireResponseProvider;
+  questionnaireResponse: QuestionnaireResponse;
+  qrHasChanges: boolean;
+  removeQrHasChanges: () => unknown;
+  togglePreviewMode: () => unknown;
 }
-
 function FormPreview(props: Props) {
-  const { questionnaireProvider, questionnaireResponseProvider } = props;
+  const { questionnaireResponse, qrHasChanges, removeQrHasChanges, togglePreviewMode } = props;
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  const qResponse = questionnaireResponseProvider.questionnaireResponse;
+  if (!questionnaire.item || !questionnaireResponse.item) return null;
 
-  const test = qrToHTML(questionnaire, qResponse);
-  const parsed = parse(test);
+  const qForm = questionnaire.item[0];
+  const qrForm = questionnaireResponse.item[0];
 
-  // TODO fix preview page styling
-  // TODO text too big and too close to borders
-  // TODO fix dark mode grey text when printing
-
-  return (
-    <Container maxWidth="lg">
-      <Box sx={{ my: 3 }}>
-        <div>{parsed}</div>
-      </Box>
-    </Container>
-  );
+  if (qForm.item && qrForm.item) {
+    return (
+      <Grid container>
+        <SideBarGrid item lg={1.75}>
+          <SideBar>
+            <FormPreviewOperationButtons
+              buttonOrChip={Operation.Button}
+              togglePreviewMode={togglePreviewMode}
+              qrHasChanges={qrHasChanges}
+              removeQrHasChanges={removeQrHasChanges}
+              questionnaireResponse={questionnaireResponse}
+            />
+          </SideBar>
+        </SideBarGrid>
+        <MainGrid item lg={10.25}>
+          <MainGridContainerBox gap={2}>
+            <Typography fontWeight="bold" fontSize={36}>
+              {questionnaire.title}
+            </Typography>
+            <Box displayPrint="none">
+              <ChipBar>
+                <FormPreviewOperationButtons
+                  buttonOrChip={Operation.Chip}
+                  togglePreviewMode={togglePreviewMode}
+                  qrHasChanges={qrHasChanges}
+                  removeQrHasChanges={() => removeQrHasChanges}
+                  questionnaireResponse={questionnaireResponse}
+                />
+              </ChipBar>
+            </Box>
+            <Divider light />
+            <Preview />
+          </MainGridContainerBox>
+        </MainGrid>
+      </Grid>
+    );
+  } else {
+    return <div>Questionnaire is invalid.</div>;
+  }
 }
 
 export default FormPreview;

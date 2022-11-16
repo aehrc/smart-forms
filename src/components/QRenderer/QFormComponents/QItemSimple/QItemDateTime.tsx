@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormControl, Grid, TextField, Typography } from '@mui/material';
-
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import dayjs, { Dayjs } from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -18,22 +21,25 @@ interface Props
 function QItemDateTime(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
 
-  let qrDateTime = qrItem ? qrItem : createQrItem(qItem);
-  const valueDateTime = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDate : '';
+  const qrDateTime = qrItem ? qrItem : createQrItem(qItem);
+  const answerValue = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDateTime : null;
+  const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    qrDateTime = { ...qrDateTime, answer: [{ valueDateTime: event.target.value }] };
-    onQrItemChange(qrDateTime);
+  const [value, setValue] = React.useState<Dayjs | null>(answerValueDayJs);
+
+  useEffect(() => {
+    setValue(answerValueDayJs);
+  }, [answerValue]);
+
+  function handleChange(newValue: Dayjs | null | undefined) {
+    if (newValue) {
+      setValue(newValue);
+      onQrItemChange({ ...qrDateTime, answer: [{ valueDateTime: newValue.format() }] });
+    }
   }
 
   const renderQItemDateTime = repeats ? (
-    <TextField
-      id={qItem.linkId}
-      type="datetime-local"
-      value={valueDateTime}
-      onChange={handleChange}
-      sx={{ mb: 0 }}
-    />
+    <QItemDateTimePicker value={value} onDateTimeChange={handleChange} />
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -41,18 +47,33 @@ function QItemDateTime(props: Props) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          <TextField
-            id={qItem.linkId}
-            type="datetime-local"
-            value={valueDateTime}
-            onChange={handleChange}
-          />
+          <QItemDateTimePicker value={value} onDateTimeChange={handleChange} />
         </Grid>
       </Grid>
     </FormControl>
   );
 
   return <>{renderQItemDateTime}</>;
+}
+
+interface QItemDateTimePickerProps {
+  value: Dayjs | null;
+  onDateTimeChange: (newValue: Dayjs | null) => unknown;
+}
+
+function QItemDateTimePicker(props: QItemDateTimePickerProps) {
+  const { value, onDateTimeChange } = props;
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DateTimePicker
+        showToolbar
+        value={value}
+        onChange={onDateTimeChange}
+        renderInput={(params) => <TextField {...params} />}
+      />
+    </LocalizationProvider>
+  );
 }
 
 export default QItemDateTime;

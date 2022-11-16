@@ -1,13 +1,18 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { oauth2 } from 'fhirclient';
-import ProgressSpinner from '../QRenderer/ProgressSpinner';
+import ProgressSpinner from '../ProgressSpinner';
 
 function Launch() {
   const [searchParams] = useSearchParams();
 
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
+  const questionnaireUrl = searchParams.get('questionnaireUrl');
+
+  if (questionnaireUrl) {
+    sessionStorage.setItem('questionnaireUrl', questionnaireUrl);
+  }
 
   const clientId = process.env.REACT_APP_LAUNCH_CLIENT_ID ?? 'smart-health-checks';
   const scope =
@@ -25,7 +30,7 @@ function Launch() {
 
   return (
     <>
-      <ProgressSpinner message="Launching the SMART Health Checks application" />
+      <ProgressSpinner message="Launching the SMART Forms application" />
     </>
   );
 }

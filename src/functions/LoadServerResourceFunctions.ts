@@ -14,9 +14,9 @@ import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resourc
  *
  * @author Sean Fong
  */
-export async function loadQuestionnairesFromServer(params?: string): Promise<Bundle> {
+export async function loadQuestionnairesFromServer(input?: string): Promise<Bundle> {
   const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
-  const urlParams = params ? params : '';
+  const urlParams = input ? `title=${input}` : '';
 
   const headers = {
     'Cache-Control': 'no-cache',
@@ -25,7 +25,7 @@ export async function loadQuestionnairesFromServer(params?: string): Promise<Bun
   };
 
   return client(formsServerUrl).request({
-    url: 'Questionnaire?_count=10&' + urlParams,
+    url: 'Questionnaire?_count=10&_sort=-date&' + urlParams,
     method: 'GET',
     headers: headers
   });
@@ -39,7 +39,7 @@ export async function loadQuestionnairesFromServer(params?: string): Promise<Bun
 export async function loadQuestionnaireResponsesFromServer(
   client: Client,
   patient: Patient | null,
-  questionnaireId: string
+  questionnaireId?: string
 ): Promise<Bundle> {
   const headers = {
     'Cache-Control': 'no-cache',
@@ -47,8 +47,9 @@ export async function loadQuestionnaireResponsesFromServer(
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  let requestUrl = `QuestionnaireResponse?questionnaire=${questionnaireId}`;
-  requestUrl += patient ? `&patient=${patient.id}` : '';
+  let requestUrl = 'QuestionnaireResponse?';
+  requestUrl += questionnaireId ? `questionnaire=${questionnaireId}&` : '';
+  requestUrl += patient ? `patient=${patient.id}&` : '';
 
   return client.request({
     url: requestUrl,
@@ -87,6 +88,60 @@ export function getQResponsesFromBundle(bundle: Bundle): QuestionnaireResponse[]
     }
     return mapping;
   }, []);
+}
+
+export function loadQuestionnaireFromResponse(
+  questionnaireReference: string
+): Promise<Questionnaire> {
+  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+  const questionnaireId = questionnaireReference.replace('Questionnaire/', '');
+
+  const headers = {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'application/json+fhir; charset=UTF-8',
+    Accept: 'application/json+fhir; charset=utf-8'
+  };
+
+  return client(formsServerUrl).request({
+    url: `Questionnaire/${questionnaireId}`,
+    method: 'GET',
+    headers: headers
+  });
+}
+
+export function getQuestionnaireFromUrl(canonicalReferenceUrl: string): Promise<Questionnaire> {
+  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+
+  const headers = {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'application/json+fhir; charset=UTF-8',
+    Accept: 'application/json+fhir; charset=utf-8'
+  };
+
+  return client(formsServerUrl).request({
+    url: `Questionnaire?url=${canonicalReferenceUrl}`,
+    method: 'GET',
+    headers: headers
+  });
+}
+
+export function getInitialQuestionnaireFromResponse(
+  response: Questionnaire | Bundle
+): Questionnaire | null {
+  if (response.resourceType === 'Questionnaire') {
+    return response;
+  }
+
+  const bundleEntries = response.entry;
+  if (bundleEntries && bundleEntries.length > 0) {
+    for (const entry of bundleEntries) {
+      if (entry.resource?.resourceType === 'Questionnaire') {
+        return entry.resource;
+      }
+    }
+  }
+
+  return null;
 }
 
 /**

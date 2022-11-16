@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Coding, QuestionnaireItem, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
-import { ContainedValueSetContext } from '../components/QRenderer/QForm';
+import { ContainedValueSetContext } from '../components/QRenderer/Form';
 
 function useValueSetOptions(qItem: QuestionnaireItem) {
   const containedValueSetContext = React.useContext(ContainedValueSetContext);

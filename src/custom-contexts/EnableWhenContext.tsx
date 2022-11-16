@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { EnableWhenContextType, EnableWhenItems } from '../interfaces/Interfaces';
+import { EnableWhenItems } from '../interfaces/Interfaces';
+import { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r5';
 import {
   createLinkedQuestionsMap,
@@ -17,7 +18,7 @@ export const EnableWhenContext = React.createContext<EnableWhenContextType>({
   checkItemIsEnabled: () => true
 });
 
-function EnableWhenProvider(props: { children: any }) {
+function EnableWhenContextProvider(props: { children: any }) {
   const { children } = props;
   const [enableWhenItems, setEnableWhenItems] = React.useState<EnableWhenItems>({});
   const [linkedQuestionsMap, setLinkedQuestionsMap] = React.useState<Record<string, string[]>>({});
@@ -73,4 +74,4 @@ function EnableWhenProvider(props: { children: any }) {
   );
 }
 
-export default EnableWhenProvider;
+export default EnableWhenContextProvider;

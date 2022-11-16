@@ -2,7 +2,7 @@ import { QuestionnaireItem } from 'fhir/r5';
 import { isHidden, isSpecificItemControl } from './ItemControlFunctions';
 import React from 'react';
 import { EnableWhenContext } from '../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../components/QRenderer/QForm';
+import { EnableWhenChecksContext } from '../components/QRenderer/Form';
 
 /**
  * Get string text display prompt for items with itemControlCode prompt and has a prompt childItem

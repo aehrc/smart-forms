@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Snackbar } from '@mui/material';
 interface Props {
   isDisplayed: boolean;
 }
 function QRSavedSnackbar(props: Props) {
   const { isDisplayed } = props;
-  const [open, setOpen] = React.useState(isDisplayed);
+  const [open, setOpen] = useState(isDisplayed);
 
   useEffect(() => {
     if (isDisplayed) {
