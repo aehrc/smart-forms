@@ -1,5 +1,6 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import { InitialExpression } from './Interfaces';
 
 const unimplementedFunctions = ['join'];
 

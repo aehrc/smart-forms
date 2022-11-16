@@ -1,32 +1,22 @@
-import {Parameters, ParametersParameter, Reference} from 'fhir/r5';
 import { readInitialExpressions } from './ReadInitialExpressions';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { evaluateInitialExpressions } from './EvaulateInitialExpressions';
+import { createOutputParameters } from './CreateParameters';
 import {
-  createInvalidParametersIssue,
-  createInvalidPatientIssue,
-  createInvalidQueryIssue,
-  createInvalidQuestionnaireIssue
-} from './CreateIssues';
-import { createParameters } from './CreateParameters';
-import {PopulateInputParameters, PopulateOutputParameters, PatientParameter} from "./Interfaces";
+  PopulateInputParameters,
+  PopulateOutputParameters,
+  PopulateOutputParametersWithIssues
+} from './Interfaces';
 
-function isPopulateInputParameters(parameters: Parameters): parameter is PopulateInputParameters {
-  return !!parameters.parameter?.find(p => p.name === "patient" && p.resource?.resourceType === "Patient");
-}
-
-export default function sdcPopulate(parameters: PopulateInputParameters): PopulateOutputParameters {
+export default function sdcPopulate(
+  parameters: PopulateInputParameters
+): PopulateOutputParameters | PopulateOutputParametersWithIssues {
   const parameterArr = parameters.parameter;
 
-  const questionnaire = parameterArr.find(
-    (parameter) => (parameter instanceof PatientParameter)
-  const patient = parameterArr.find((parameter) => parameter.name === 'patient')?.resource;
-  const query = parameterArr.find((parameter) => parameter.name === 'query')?.resource;
-
-  if (!questionnaire || !patient || !query) return createInvalidParametersIssue();
-  if (questionnaire.resourceType !== 'Questionnaire') return createInvalidQuestionnaireIssue();
-  if (patient.resourceType !== 'Patient') return createInvalidPatientIssue();
-  if (query.resourceType !== 'Bundle') return createInvalidQueryIssue();
+  const questionnaire = parameterArr[0].resource;
+  const subject = parameterArr[1].valueReference;
+  const patient = parameterArr[2].part[0].resource;
+  const query = parameterArr[2].part[1].resource;
 
   let initialExpressions = readInitialExpressions(questionnaire);
   initialExpressions = evaluateInitialExpressions(initialExpressions, {
@@ -34,10 +24,7 @@ export default function sdcPopulate(parameters: PopulateInputParameters): Popula
     PrePopQuery: query
   });
 
-  const questionnaireResponse = constructResponse(questionnaire, initialExpressions);
+  const questionnaireResponse = constructResponse(questionnaire, subject, initialExpressions);
 
-  return createParameters({
-    name: 'QuestionnaireResponse',
-    resource: questionnaireResponse
-  });
+  return createOutputParameters(questionnaireResponse);
 }

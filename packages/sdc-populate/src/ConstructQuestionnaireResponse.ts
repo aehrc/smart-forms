@@ -3,8 +3,10 @@ import {
   QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItemAnswer,
+  Reference
 } from 'fhir/r5';
+import { InitialExpression } from './Interfaces';
 
 const cleanQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -13,6 +15,7 @@ const cleanQuestionnaireResponse: QuestionnaireResponse = {
 
 export function constructResponse(
   questionnaire: Questionnaire,
+  subject: Reference,
   initialExpressions: Record<string, InitialExpression>
 ): QuestionnaireResponse {
   const questionnaireResponse = cleanQuestionnaireResponse;
