@@ -9,7 +9,6 @@ import {
 } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
-import { constructName } from './LaunchContextFunctions';
 
 /**
  * Prepopulate form from CMS patient data
@@ -50,10 +49,8 @@ export function populate(
 
       qrPromise
         .then((qResponse) => {
-          // add patient reference to questionnaireResponse
           // set questionnaireResponse in callback function
-          const qResponseWithRef = addPatientAndUserReference(patient, user, qResponse);
-          prepopulateForm(qResponseWithRef, batchResponse);
+          prepopulateForm(qResponse, batchResponse);
         })
         .catch((error) => {
           console.log(error);
@@ -169,26 +166,4 @@ function prepopulationQueryRequest(
     body: JSON.stringify(parameters),
     headers: headers
   });
-}
-
-function addPatientAndUserReference(
-  patient: Patient,
-  user: Practitioner,
-  questionnaireResponse: QuestionnaireResponse
-): QuestionnaireResponse {
-  if (!patient.id || !user.id) return questionnaireResponse;
-
-  return {
-    ...questionnaireResponse,
-    subject: {
-      reference: `Patient/${patient.id}`,
-      type: 'Patient',
-      display: constructName(patient.name)
-    },
-    author: {
-      reference: `Practitioner/${user.id}`,
-      type: 'Practitioner',
-      display: constructName(user.name)
-    }
-  };
 }
