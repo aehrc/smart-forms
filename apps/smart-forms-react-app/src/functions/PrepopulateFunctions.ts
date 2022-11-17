@@ -53,7 +53,6 @@ export function populate(
 
       qrPromise
         .then((qResponse) => {
-          console.log(JSON.stringify(qResponse));
           // set questionnaireResponse in callback function
           prepopulateForm(qResponse, batchResponse);
         })
@@ -206,7 +205,5 @@ function localPrepopulate(questionnaire: Questionnaire, patient: Patient, batchR
 
   if (isPopulateInputParameters(inputPopParams)) {
     const outputPopParams = sdcPopulate(inputPopParams);
-
-    console.log(JSON.stringify(outputPopParams.parameter[0].resource));
   }
 }

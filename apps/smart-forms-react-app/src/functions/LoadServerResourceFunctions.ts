@@ -109,7 +109,9 @@ export function loadQuestionnaireFromResponse(
   });
 }
 
-export function getQuestionnaireFromUrl(canonicalReferenceUrl: string): Promise<Questionnaire> {
+export function getQuestionnaireFromUrl(
+  canonicalReferenceUrl: string
+): Promise<Questionnaire | Bundle> {
   const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
 
   const headers = {
@@ -119,7 +121,7 @@ export function getQuestionnaireFromUrl(canonicalReferenceUrl: string): Promise<
   };
 
   return client(formsServerUrl).request({
-    url: `Questionnaire?url=${canonicalReferenceUrl}`,
+    url: `Questionnaire?url=${canonicalReferenceUrl}&sort=-date`,
     method: 'GET',
     headers: headers
   });
