@@ -1,12 +1,19 @@
-import { readInitialExpressions } from './ReadInitialExpressions';
-import { constructResponse } from './ConstructQuestionnaireResponse';
-import { evaluateInitialExpressions } from './EvaulateInitialExpressions';
-import { createOutputParameters } from './CreateParameters';
 import {
   PopulateInputParameters,
   PopulateOutputParameters,
   PopulateOutputParametersWithIssues
 } from './Interfaces';
+import { readInitialExpressions } from './ReadInitialExpressions';
+import { evaluateInitialExpressions } from './EvaulateInitialExpressions';
+import { constructResponse } from './ConstructQuestionnaireResponse';
+import { createOutputParameters } from './CreateParameters';
+import { Parameters } from 'fhir/r5';
+import {
+  isContextPatientParameter,
+  isContextQueryParameter,
+  isQuestionnaireParameter,
+  isSubjectParameter
+} from './TypePredicates';
 
 export default function sdcPopulate(
   parameters: PopulateInputParameters
@@ -27,4 +34,28 @@ export default function sdcPopulate(
   const questionnaireResponse = constructResponse(questionnaire, subject, initialExpressions);
 
   return createOutputParameters(questionnaireResponse);
+}
+
+export function isPopulateInputParameters(
+  parameters: Parameters
+): parameters is PopulateInputParameters {
+  const questionnairePresent = !!parameters.parameter?.find((parameter) =>
+    isQuestionnaireParameter(parameter)
+  );
+
+  const subjectPresent = !!parameters.parameter?.find((parameter) => isSubjectParameter(parameter));
+
+  const contextPatientPresent = !!parameters.parameter?.find(
+    (parameter) =>
+      parameter.name === 'context' &&
+      parameter.part?.find((parameter) => isContextPatientParameter(parameter))
+  );
+
+  const contextQueryPresent = !!parameters.parameter?.find(
+    (parameter) =>
+      parameter.name === 'context' &&
+      parameter.part?.find((parameter) => isContextQueryParameter(parameter))
+  );
+
+  return questionnairePresent && subjectPresent && contextPatientPresent && contextQueryPresent;
 }
