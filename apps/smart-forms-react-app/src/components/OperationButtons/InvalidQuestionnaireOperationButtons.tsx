@@ -3,7 +3,7 @@ import ChangeQuestionnaireButton from './SingleButtons/ChangeQuestionnaireButton
 import { QuestionnaireResponse } from 'fhir/r5';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;

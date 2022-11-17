@@ -5,7 +5,7 @@ import EditResponseButton from './SingleButtons/EditResponseButton';
 import { QuestionnaireResponseProviderContext } from '../../App';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
 }
 
 function ResponsePreviewOperationButtons(props: Props) {

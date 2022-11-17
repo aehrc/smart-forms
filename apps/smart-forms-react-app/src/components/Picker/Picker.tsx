@@ -36,10 +36,7 @@ function Picker() {
     <Grid container>
       <SideBarGrid item lg={1.75}>
         <SideBar>
-          <PickerOperationButtons
-            isChip={false}
-            refreshQuestionnaireList={refreshQuestionnaireList}
-          />
+          <PickerOperationButtons refreshQuestionnaireList={refreshQuestionnaireList} />
         </SideBar>
       </SideBarGrid>
       <MainGrid item lg={10.25}>

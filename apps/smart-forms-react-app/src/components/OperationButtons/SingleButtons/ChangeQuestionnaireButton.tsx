@@ -10,7 +10,7 @@ import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;

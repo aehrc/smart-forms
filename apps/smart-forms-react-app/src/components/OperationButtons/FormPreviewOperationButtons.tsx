@@ -7,7 +7,7 @@ import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import ContinueEditingButton from './SingleButtons/ContinueEditingButton';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   togglePreviewMode: () => unknown;

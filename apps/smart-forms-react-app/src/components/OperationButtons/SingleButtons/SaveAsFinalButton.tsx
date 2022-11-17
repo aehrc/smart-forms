@@ -8,7 +8,7 @@ import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import ConfirmSaveAsFinalDialog from '../../Dialogs/ConfirmSaveAsFinalDialog';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;

@@ -5,7 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   refreshQuestionnaireList: () => unknown;
 }
 function RefreshQuestionnaireListButton(props: Props) {

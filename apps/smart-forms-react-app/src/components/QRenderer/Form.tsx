@@ -91,7 +91,6 @@ function Form(props: Props) {
               <SideBarGrid item lg={1.75}>
                 <SideBar>
                   <RendererOperationButtons
-                    isChip={false}
                     qrHasChanges={qrHasChanges}
                     removeQrHasChanges={removeQrHasChanges}
                     togglePreviewMode={togglePreviewMode}
@@ -176,7 +175,6 @@ function Form(props: Props) {
         <SideBarGrid item lg={1.75}>
           <SideBar>
             <InvalidQuestionnaireOperationButtons
-              isChip={false}
               qrHasChanges={qrHasChanges}
               removeQrHasChanges={removeQrHasChanges}
               questionnaireResponse={questionnaireResponse}

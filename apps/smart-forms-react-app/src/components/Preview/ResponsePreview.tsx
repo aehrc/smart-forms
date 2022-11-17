@@ -15,7 +15,7 @@ function ResponsePreview() {
     <Grid container>
       <SideBarGrid item lg={1.75}>
         <SideBar>
-          <ResponsePreviewOperationButtons isChip={false} />
+          <ResponsePreviewOperationButtons />
         </SideBar>
       </SideBarGrid>
       <MainGrid item lg={10.25}>

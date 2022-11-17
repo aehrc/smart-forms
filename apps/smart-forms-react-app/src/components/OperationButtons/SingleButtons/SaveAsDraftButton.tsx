@@ -9,7 +9,7 @@ import Client from 'fhirclient/lib/Client';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;

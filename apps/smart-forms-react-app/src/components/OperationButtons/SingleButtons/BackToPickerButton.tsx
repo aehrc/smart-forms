@@ -7,7 +7,7 @@ import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContex
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
 }
 
 function BackToPickerButton(props: Props) {

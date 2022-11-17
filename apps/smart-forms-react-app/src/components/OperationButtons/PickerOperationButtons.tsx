@@ -2,7 +2,7 @@ import React from 'react';
 import RefreshQuestionnaireListButton from './SingleButtons/RefreshQuestionnaireListButton';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   refreshQuestionnaireList: () => unknown;
 }
 

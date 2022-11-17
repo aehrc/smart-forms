@@ -32,7 +32,6 @@ function FormPreview(props: Props) {
         <SideBarGrid item lg={1.75}>
           <SideBar>
             <FormPreviewOperationButtons
-              isChip={false}
               togglePreviewMode={togglePreviewMode}
               qrHasChanges={qrHasChanges}
               removeQrHasChanges={removeQrHasChanges}

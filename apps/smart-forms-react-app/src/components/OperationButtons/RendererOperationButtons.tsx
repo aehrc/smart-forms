@@ -7,7 +7,7 @@ import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import ViewFormPreviewButton from './SingleButtons/ViewFormPreviewButton';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   togglePreviewMode: () => unknown;

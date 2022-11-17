@@ -7,7 +7,7 @@ import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContext';
 
 interface Props {
-  isChip: boolean;
+  isChip?: boolean;
 }
 
 function EditResponseButton(props: Props) {
