@@ -16,6 +16,7 @@ import ChipBar from '../ChipBar/ChipBar';
 import { Operation } from '../../interfaces/Enums';
 import RendererOperationButtons from './RendererOperationButtons';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import InvalidQuestionnaireOperationButtons from './InvalidQuestionnaireOperationButtons';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -80,6 +81,8 @@ function Form(props: Props) {
     updateQuestionnaireResponse(newQuestionnaireResponse);
   }
 
+  console.log('qFor---------------------m');
+  console.log(qForm);
   if (qForm.item && qrForm.item) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
@@ -169,7 +172,33 @@ function Form(props: Props) {
       </CalcExpressionContext.Provider>
     );
   } else {
-    return <div>Questionnaire is invalid.</div>;
+    return (
+      <Grid container>
+        <SideBarGrid item lg={1.75}>
+          <SideBar>
+            <InvalidQuestionnaireOperationButtons
+              buttonOrChip={Operation.Button}
+              qrHasChanges={qrHasChanges}
+              removeQrHasChanges={removeQrHasChanges}
+              questionnaireResponse={questionnaireResponse}
+            />
+          </SideBar>
+        </SideBarGrid>
+        <MainGrid item lg={10.25}>
+          <MainGridContainerBox gap={2}>
+            <Typography fontSize={24}>Questionnaire does not have a form item.</Typography>
+            <ChipBar>
+              <InvalidQuestionnaireOperationButtons
+                buttonOrChip={Operation.Chip}
+                qrHasChanges={qrHasChanges}
+                removeQrHasChanges={removeQrHasChanges}
+                questionnaireResponse={questionnaireResponse}
+              />
+            </ChipBar>
+          </MainGridContainerBox>
+        </MainGrid>
+      </Grid>
+    );
   }
 }
 
