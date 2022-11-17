@@ -13,9 +13,9 @@ import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
-import { Operation } from '../../interfaces/Enums';
-import RendererOperationButtons from './RendererOperationButtons';
+import RendererOperationButtons from '../OperationButtons/RendererOperationButtons';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import FormBodyInvalid from './FormBodyInvalid';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -89,7 +89,6 @@ function Form(props: Props) {
               <SideBarGrid item lg={1.75}>
                 <SideBar>
                   <RendererOperationButtons
-                    buttonOrChip={Operation.Button}
                     qrHasChanges={qrHasChanges}
                     removeQrHasChanges={removeQrHasChanges}
                     togglePreviewMode={togglePreviewMode}
@@ -104,7 +103,7 @@ function Form(props: Props) {
                   </Typography>
                   <ChipBar>
                     <RendererOperationButtons
-                      buttonOrChip={Operation.Chip}
+                      isChip={true}
                       qrHasChanges={qrHasChanges}
                       removeQrHasChanges={removeQrHasChanges}
                       togglePreviewMode={togglePreviewMode}
@@ -131,7 +130,7 @@ function Form(props: Props) {
                   <Box sx={{ pb: 2 }}>
                     <ChipBar>
                       <RendererOperationButtons
-                        buttonOrChip={Operation.Chip}
+                        isChip={true}
                         qrHasChanges={qrHasChanges}
                         removeQrHasChanges={removeQrHasChanges}
                         togglePreviewMode={togglePreviewMode}
@@ -169,7 +168,7 @@ function Form(props: Props) {
       </CalcExpressionContext.Provider>
     );
   } else {
-    return <div>Questionnaire is invalid.</div>;
+    return <FormBodyInvalid />;
   }
 }
 

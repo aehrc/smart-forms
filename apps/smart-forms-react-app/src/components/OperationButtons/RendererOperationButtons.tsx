@@ -1,43 +1,37 @@
 import React from 'react';
-import ChangeQuestionnaireButton from '../OperationButtons/ChangeQuestionnaireButton';
-import SaveAsDraftButton from '../OperationButtons/SaveAsDraftButton';
-import { Operation } from '../../interfaces/Enums';
-import SaveAsFinalButton from '../OperationButtons/SaveAsFinalButton';
+import ChangeQuestionnaireButton from './SingleButtons/ChangeQuestionnaireButton';
+import SaveAsDraftButton from './SingleButtons/SaveAsDraftButton';
+import SaveAsFinalButton from './SingleButtons/SaveAsFinalButton';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import ContinueEditingButton from '../OperationButtons/ContinueEditingButton';
+import ViewFormPreviewButton from './SingleButtons/ViewFormPreviewButton';
 
 interface Props {
-  buttonOrChip: Operation;
+  isChip?: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   togglePreviewMode: () => unknown;
   questionnaireResponse: QuestionnaireResponse;
 }
 
-function FormPreviewOperationButtons(props: Props) {
-  const {
-    buttonOrChip,
-    qrHasChanges,
-    removeQrHasChanges,
-    togglePreviewMode,
-    questionnaireResponse
-  } = props;
+function RendererOperationButtons(props: Props) {
+  const { isChip, qrHasChanges, removeQrHasChanges, togglePreviewMode, questionnaireResponse } =
+    props;
 
   const launch = React.useContext(LaunchContext);
   return (
     <>
       <ChangeQuestionnaireButton
-        buttonOrChip={buttonOrChip}
+        isChip={isChip}
         qrHasChanges={qrHasChanges}
         removeQrHasChanges={removeQrHasChanges}
         questionnaireResponse={questionnaireResponse}
       />
-      <ContinueEditingButton buttonOrChip={buttonOrChip} togglePreviewMode={togglePreviewMode} />
+      <ViewFormPreviewButton isChip={isChip} togglePreviewMode={togglePreviewMode} />
       {launch.fhirClient && launch.user && launch.patient ? (
         <>
           <SaveAsDraftButton
-            buttonOrChip={buttonOrChip}
+            isChip={isChip}
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
             questionnaireResponse={questionnaireResponse}
@@ -46,7 +40,7 @@ function FormPreviewOperationButtons(props: Props) {
             user={launch.user}
           />
           <SaveAsFinalButton
-            buttonOrChip={buttonOrChip}
+            isChip={isChip}
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
             questionnaireResponse={questionnaireResponse}
@@ -60,4 +54,4 @@ function FormPreviewOperationButtons(props: Props) {
   );
 }
 
-export default FormPreviewOperationButtons;
+export default RendererOperationButtons;

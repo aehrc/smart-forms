@@ -10,8 +10,7 @@ import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
-import { Operation } from '../../interfaces/Enums';
-import PickerOperationButtons from './PickerOperationButtons';
+import PickerOperationButtons from '../OperationButtons/PickerOperationButtons';
 
 function Picker() {
   const launch = React.useContext(LaunchContext);
@@ -37,10 +36,7 @@ function Picker() {
     <Grid container>
       <SideBarGrid item lg={1.75}>
         <SideBar>
-          <PickerOperationButtons
-            buttonOrChip={Operation.Button}
-            refreshQuestionnaireList={refreshQuestionnaireList}
-          />
+          <PickerOperationButtons refreshQuestionnaireList={refreshQuestionnaireList} />
         </SideBar>
       </SideBarGrid>
       <MainGrid item lg={10.25}>
@@ -78,7 +74,7 @@ function Picker() {
           />
           <ChipBar>
             <PickerOperationButtons
-              buttonOrChip={Operation.Chip}
+              isChip={true}
               refreshQuestionnaireList={refreshQuestionnaireList}
             />
           </ChipBar>

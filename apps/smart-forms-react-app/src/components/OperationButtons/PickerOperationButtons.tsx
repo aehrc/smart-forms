@@ -1,18 +1,17 @@
 import React from 'react';
-import { Operation } from '../../interfaces/Enums';
-import RefreshQuestionnaireListButton from '../OperationButtons/RefreshQuestionnaireListButton';
+import RefreshQuestionnaireListButton from './SingleButtons/RefreshQuestionnaireListButton';
 
 interface Props {
-  buttonOrChip: Operation;
+  isChip?: boolean;
   refreshQuestionnaireList: () => unknown;
 }
 
 function PickerOperationButtons(props: Props) {
-  const { buttonOrChip, refreshQuestionnaireList } = props;
+  const { isChip, refreshQuestionnaireList } = props;
 
   return (
     <RefreshQuestionnaireListButton
-      buttonOrChip={buttonOrChip}
+      isChip={isChip}
       refreshQuestionnaireList={refreshQuestionnaireList}
     />
   );

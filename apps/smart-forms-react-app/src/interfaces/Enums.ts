@@ -37,8 +37,3 @@ export enum PageType {
   Renderer = 'renderer',
   Picker = 'picker'
 }
-
-export enum Operation {
-  Button = 'button',
-  Chip = 'chip'
-}
