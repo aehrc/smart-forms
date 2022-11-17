@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { Operation } from '../../interfaces/Enums';
-import BackToPickerButton from '../OperationButtons/BackToPickerButton';
-import PrintPreviewButton from '../OperationButtons/PrintPreviewButton';
-import EditResponseButton from '../OperationButtons/EditResponseButton';
+import BackToPickerButton from './SingleButtons/BackToPickerButton';
+import PrintPreviewButton from './SingleButtons/PrintPreviewButton';
+import EditResponseButton from './SingleButtons/EditResponseButton';
 import { QuestionnaireResponseProviderContext } from '../../App';
 
 interface Props {

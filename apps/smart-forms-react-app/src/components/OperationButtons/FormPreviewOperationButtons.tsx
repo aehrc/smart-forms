@@ -1,11 +1,11 @@
 import React from 'react';
-import ChangeQuestionnaireButton from '../OperationButtons/ChangeQuestionnaireButton';
-import SaveAsDraftButton from '../OperationButtons/SaveAsDraftButton';
+import ChangeQuestionnaireButton from './SingleButtons/ChangeQuestionnaireButton';
+import SaveAsDraftButton from './SingleButtons/SaveAsDraftButton';
 import { Operation } from '../../interfaces/Enums';
-import SaveAsFinalButton from '../OperationButtons/SaveAsFinalButton';
+import SaveAsFinalButton from './SingleButtons/SaveAsFinalButton';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import ViewFormPreviewButton from '../OperationButtons/ViewFormPreviewButton';
+import ContinueEditingButton from './SingleButtons/ContinueEditingButton';
 
 interface Props {
   buttonOrChip: Operation;
@@ -15,7 +15,7 @@ interface Props {
   questionnaireResponse: QuestionnaireResponse;
 }
 
-function RendererOperationButtons(props: Props) {
+function FormPreviewOperationButtons(props: Props) {
   const {
     buttonOrChip,
     qrHasChanges,
@@ -33,7 +33,7 @@ function RendererOperationButtons(props: Props) {
         removeQrHasChanges={removeQrHasChanges}
         questionnaireResponse={questionnaireResponse}
       />
-      <ViewFormPreviewButton buttonOrChip={buttonOrChip} togglePreviewMode={togglePreviewMode} />
+      <ContinueEditingButton buttonOrChip={buttonOrChip} togglePreviewMode={togglePreviewMode} />
       {launch.fhirClient && launch.user && launch.patient ? (
         <>
           <SaveAsDraftButton
@@ -60,4 +60,4 @@ function RendererOperationButtons(props: Props) {
   );
 }
 
-export default RendererOperationButtons;
+export default FormPreviewOperationButtons;

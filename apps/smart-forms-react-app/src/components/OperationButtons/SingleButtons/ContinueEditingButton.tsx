@@ -1,39 +1,38 @@
 import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { ArrowBack } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { Operation, PageType } from '../../interfaces/Enums';
-import { OperationChip } from '../ChipBar/ChipBar.styles';
-import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
+import { Operation } from '../../../interfaces/Enums';
+import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
   buttonOrChip: Operation;
+  togglePreviewMode: () => unknown;
 }
 
-function EditResponseButton(props: Props) {
-  const { buttonOrChip } = props;
-  const pageSwitcher = React.useContext(PageSwitcherContext);
+function ContinueEditingButton(props: Props) {
+  const { buttonOrChip, togglePreviewMode } = props;
 
   function handleClick() {
-    pageSwitcher.goToPage(PageType.Renderer);
+    togglePreviewMode();
   }
 
   const renderButtonOrChip =
     buttonOrChip === Operation.Button ? (
       <ListItemButton onClick={handleClick}>
-        <Edit sx={{ mr: 2 }} />
+        <ArrowBack sx={{ mr: 2 }} />
         <ListItemText
           primary={
             <Typography fontSize={12} variant="h6">
-              Edit Response
+              Continue Editing
             </Typography>
           }
         />
       </ListItemButton>
     ) : (
       <OperationChip
-        icon={<Edit fontSize="small" />}
-        label="Edit Response"
+        icon={<ArrowBack fontSize="small" />}
+        label="Continue Editing"
         clickable
         onClick={handleClick}
       />
@@ -42,4 +41,4 @@ function EditResponseButton(props: Props) {
   return <>{renderButtonOrChip}</>;
 }
 
-export default EditResponseButton;
+export default ContinueEditingButton;

@@ -14,9 +14,9 @@ import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
 import { Operation } from '../../interfaces/Enums';
-import RendererOperationButtons from './RendererOperationButtons';
+import RendererOperationButtons from '../OperationButtons/RendererOperationButtons';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import InvalidQuestionnaireOperationButtons from './InvalidQuestionnaireOperationButtons';
+import InvalidQuestionnaireOperationButtons from '../OperationButtons/InvalidQuestionnaireOperationButtons';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});

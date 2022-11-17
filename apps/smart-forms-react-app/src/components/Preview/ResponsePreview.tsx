@@ -6,7 +6,7 @@ import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import ChipBar from '../ChipBar/ChipBar';
-import ResponsePreviewOperationButtons from './ResponsePreviewOperationButtons';
+import ResponsePreviewOperationButtons from '../OperationButtons/ResponsePreviewOperationButtons';
 import { Operation } from '../../interfaces/Enums';
 
 function ResponsePreview() {

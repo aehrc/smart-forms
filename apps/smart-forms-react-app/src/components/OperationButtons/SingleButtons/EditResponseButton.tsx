@@ -1,39 +1,39 @@
 import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { Edit } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { Operation, PageType } from '../../interfaces/Enums';
-import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
-import { OperationChip } from '../ChipBar/ChipBar.styles';
+import { Operation, PageType } from '../../../interfaces/Enums';
+import { OperationChip } from '../../ChipBar/ChipBar.styles';
+import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContext';
 
 interface Props {
   buttonOrChip: Operation;
 }
 
-function BackToPickerButton(props: Props) {
+function EditResponseButton(props: Props) {
   const { buttonOrChip } = props;
   const pageSwitcher = React.useContext(PageSwitcherContext);
 
   function handleClick() {
-    pageSwitcher.goToPage(PageType.Picker);
+    pageSwitcher.goToPage(PageType.Renderer);
   }
 
   const renderButtonOrChip =
     buttonOrChip === Operation.Button ? (
       <ListItemButton onClick={handleClick}>
-        <ArrowBack sx={{ mr: 2 }} />
+        <Edit sx={{ mr: 2 }} />
         <ListItemText
           primary={
             <Typography fontSize={12} variant="h6">
-              Back to Questionnaires
+              Edit Response
             </Typography>
           }
         />
       </ListItemButton>
     ) : (
       <OperationChip
-        icon={<ArrowBack fontSize="small" />}
-        label="Back to Questionnaires"
+        icon={<Edit fontSize="small" />}
+        label="Edit Response"
         clickable
         onClick={handleClick}
       />
@@ -42,4 +42,4 @@ function BackToPickerButton(props: Props) {
   return <>{renderButtonOrChip}</>;
 }
 
-export default BackToPickerButton;
+export default EditResponseButton;

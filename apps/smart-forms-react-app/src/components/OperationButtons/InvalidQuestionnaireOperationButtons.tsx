@@ -1,5 +1,5 @@
 import React from 'react';
-import ChangeQuestionnaireButton from '../OperationButtons/ChangeQuestionnaireButton';
+import ChangeQuestionnaireButton from './SingleButtons/ChangeQuestionnaireButton';
 import { Operation } from '../../interfaces/Enums';
 import { QuestionnaireResponse } from 'fhir/r5';
 

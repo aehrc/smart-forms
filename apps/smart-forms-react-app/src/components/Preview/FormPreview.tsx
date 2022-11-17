@@ -8,7 +8,7 @@ import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import SideBar from '../SideBar/SideBar';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { QuestionnaireProviderContext } from '../../App';
-import FormPreviewOperationButtons from './FormPreviewOperationButtons';
+import FormPreviewOperationButtons from '../OperationButtons/FormPreviewOperationButtons';
 
 interface Props {
   questionnaireResponse: QuestionnaireResponse;

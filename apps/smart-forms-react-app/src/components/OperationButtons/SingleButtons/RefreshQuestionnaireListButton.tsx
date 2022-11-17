@@ -2,8 +2,8 @@ import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
 import { Sync } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { Operation } from '../../interfaces/Enums';
-import { OperationChip } from '../ChipBar/ChipBar.styles';
+import { Operation } from '../../../interfaces/Enums';
+import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
   buttonOrChip: Operation;

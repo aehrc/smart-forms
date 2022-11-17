@@ -1,38 +1,38 @@
 import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
-import { Print } from '@mui/icons-material';
+import { Visibility } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { Operation } from '../../interfaces/Enums';
-import { OperationChip } from '../ChipBar/ChipBar.styles';
+import { Operation } from '../../../interfaces/Enums';
+import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
   buttonOrChip: Operation;
+  togglePreviewMode: () => unknown;
 }
 
-function PrintPreviewButton(props: Props) {
-  const { buttonOrChip } = props;
+function ViewFormPreviewButton(props: Props) {
+  const { buttonOrChip, togglePreviewMode } = props;
 
   function handleClick() {
-    window.print();
-    // TODO print specific area of page
+    togglePreviewMode();
   }
 
   const renderButtonOrChip =
     buttonOrChip === Operation.Button ? (
       <ListItemButton onClick={handleClick}>
-        <Print sx={{ mr: 2 }} />
+        <Visibility sx={{ mr: 2 }} />
         <ListItemText
           primary={
             <Typography fontSize={12} variant="h6">
-              Print Preview
+              View Preview
             </Typography>
           }
         />
       </ListItemButton>
     ) : (
       <OperationChip
-        icon={<Print fontSize="small" />}
-        label="Print Preview"
+        icon={<Visibility fontSize="small" />}
+        label="View Preview"
         clickable
         onClick={handleClick}
       />
@@ -41,4 +41,4 @@ function PrintPreviewButton(props: Props) {
   return <>{renderButtonOrChip}</>;
 }
 
-export default PrintPreviewButton;
+export default ViewFormPreviewButton;

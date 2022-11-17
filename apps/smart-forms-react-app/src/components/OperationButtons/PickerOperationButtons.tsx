@@ -1,6 +1,6 @@
 import React from 'react';
 import { Operation } from '../../interfaces/Enums';
-import RefreshQuestionnaireListButton from '../OperationButtons/RefreshQuestionnaireListButton';
+import RefreshQuestionnaireListButton from './SingleButtons/RefreshQuestionnaireListButton';
 
 interface Props {
   buttonOrChip: Operation;

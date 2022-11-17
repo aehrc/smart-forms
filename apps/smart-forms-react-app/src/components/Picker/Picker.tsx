@@ -11,7 +11,7 @@ import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
 import { Operation } from '../../interfaces/Enums';
-import PickerOperationButtons from './PickerOperationButtons';
+import PickerOperationButtons from '../OperationButtons/PickerOperationButtons';
 
 function Picker() {
   const launch = React.useContext(LaunchContext);

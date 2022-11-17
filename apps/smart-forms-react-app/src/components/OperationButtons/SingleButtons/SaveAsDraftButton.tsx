@@ -1,12 +1,13 @@
 import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
-import { Save } from '@mui/icons-material';
+import { SaveAs } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
+import { QuestionnaireResponseProviderContext } from '../../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
+import { saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
 import Client from 'fhirclient/lib/Client';
-import { Operation } from '../../interfaces/Enums';
-import { OperationChip } from '../ChipBar/ChipBar.styles';
-import ConfirmSaveAsFinalDialog from '../Dialogs/ConfirmSaveAsFinalDialog';
+import { Operation } from '../../../interfaces/Enums';
+import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
   buttonOrChip: Operation;
@@ -18,7 +19,7 @@ interface Props {
   user: Practitioner;
 }
 
-function SaveAsFinalButton(props: Props) {
+function SaveAsDraftButton(props: Props) {
   const {
     buttonOrChip,
     qrHasChanges,
@@ -28,48 +29,37 @@ function SaveAsFinalButton(props: Props) {
     patient,
     user
   } = props;
-
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
 
   function handleClick() {
-    setDialogOpen(true);
+    questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+    saveQuestionnaireResponse(fhirClient, patient, user, questionnaireResponse)
+      .then(() => removeQrHasChanges())
+      .catch((error) => console.log(error));
   }
 
   const renderButtonOrChip =
     buttonOrChip === Operation.Button ? (
       <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
-        <Save sx={{ mr: 2 }} />
+        <SaveAs sx={{ mr: 2 }} />
         <ListItemText
           primary={
             <Typography fontSize={12} variant="h6">
-              Save as Final
+              Save as Draft
             </Typography>
           }
         />
       </ListItemButton>
     ) : (
       <OperationChip
-        icon={<Save fontSize="small" />}
-        label="Save as Final"
+        icon={<SaveAs fontSize="small" />}
+        label="Save as Draft"
         clickable
         disabled={!qrHasChanges}
         onClick={handleClick}
       />
     );
-  return (
-    <>
-      {renderButtonOrChip}
-      <ConfirmSaveAsFinalDialog
-        dialogOpen={dialogOpen}
-        closeDialog={() => setDialogOpen(false)}
-        removeQrHasChanges={removeQrHasChanges}
-        questionnaireResponse={questionnaireResponse}
-        fhirClient={fhirClient}
-        patient={patient}
-        user={user}
-      />
-    </>
-  );
+  return <>{renderButtonOrChip}</>;
 }
 
-export default SaveAsFinalButton;
+export default SaveAsDraftButton;

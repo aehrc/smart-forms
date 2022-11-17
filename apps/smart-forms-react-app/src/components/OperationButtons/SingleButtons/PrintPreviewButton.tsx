@@ -1,38 +1,38 @@
 import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { Print } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { Operation } from '../../interfaces/Enums';
-import { OperationChip } from '../ChipBar/ChipBar.styles';
+import { Operation } from '../../../interfaces/Enums';
+import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
   buttonOrChip: Operation;
-  togglePreviewMode: () => unknown;
 }
 
-function ContinueEditingButton(props: Props) {
-  const { buttonOrChip, togglePreviewMode } = props;
+function PrintPreviewButton(props: Props) {
+  const { buttonOrChip } = props;
 
   function handleClick() {
-    togglePreviewMode();
+    window.print();
+    // TODO print specific area of page
   }
 
   const renderButtonOrChip =
     buttonOrChip === Operation.Button ? (
       <ListItemButton onClick={handleClick}>
-        <ArrowBack sx={{ mr: 2 }} />
+        <Print sx={{ mr: 2 }} />
         <ListItemText
           primary={
             <Typography fontSize={12} variant="h6">
-              Continue Editing
+              Print Preview
             </Typography>
           }
         />
       </ListItemButton>
     ) : (
       <OperationChip
-        icon={<ArrowBack fontSize="small" />}
-        label="Continue Editing"
+        icon={<Print fontSize="small" />}
+        label="Print Preview"
         clickable
         onClick={handleClick}
       />
@@ -41,4 +41,4 @@ function ContinueEditingButton(props: Props) {
   return <>{renderButtonOrChip}</>;
 }
 
-export default ContinueEditingButton;
+export default PrintPreviewButton;

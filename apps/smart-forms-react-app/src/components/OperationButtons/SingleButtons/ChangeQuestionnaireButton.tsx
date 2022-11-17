@@ -2,12 +2,12 @@ import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
 import { ChangeCircle } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { Operation, PageType } from '../../interfaces/Enums';
-import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
-import ChangeQuestionnaireDialog from '../Dialogs/ChangeQuestionnaireDialog';
-import { OperationChip } from '../ChipBar/ChipBar.styles';
+import { Operation, PageType } from '../../../interfaces/Enums';
+import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContext';
+import ChangeQuestionnaireDialog from '../../Dialogs/ChangeQuestionnaireDialog';
+import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { QuestionnaireResponse } from 'fhir/r5';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 
 interface Props {
   buttonOrChip: Operation;
