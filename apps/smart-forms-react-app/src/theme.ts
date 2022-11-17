@@ -64,13 +64,6 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
             }
           }
         }
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: 10
-          }
-        }
       }
     }
   });
