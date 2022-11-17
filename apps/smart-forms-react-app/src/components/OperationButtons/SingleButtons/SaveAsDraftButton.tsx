@@ -6,11 +6,10 @@ import { QuestionnaireResponseProviderContext } from '../../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import { saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
 import Client from 'fhirclient/lib/Client';
-import { Operation } from '../../../interfaces/Enums';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
-  buttonOrChip: Operation;
+  isChip: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;
@@ -21,7 +20,7 @@ interface Props {
 
 function SaveAsDraftButton(props: Props) {
   const {
-    buttonOrChip,
+    isChip,
     qrHasChanges,
     removeQrHasChanges,
     questionnaireResponse,
@@ -38,27 +37,26 @@ function SaveAsDraftButton(props: Props) {
       .catch((error) => console.log(error));
   }
 
-  const renderButtonOrChip =
-    buttonOrChip === Operation.Button ? (
-      <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
-        <SaveAs sx={{ mr: 2 }} />
-        <ListItemText
-          primary={
-            <Typography fontSize={12} variant="h6">
-              Save as Draft
-            </Typography>
-          }
-        />
-      </ListItemButton>
-    ) : (
-      <OperationChip
-        icon={<SaveAs fontSize="small" />}
-        label="Save as Draft"
-        clickable
-        disabled={!qrHasChanges}
-        onClick={handleClick}
+  const renderButtonOrChip = !isChip ? (
+    <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
+      <SaveAs sx={{ mr: 2 }} />
+      <ListItemText
+        primary={
+          <Typography fontSize={12} variant="h6">
+            Save as Draft
+          </Typography>
+        }
       />
-    );
+    </ListItemButton>
+  ) : (
+    <OperationChip
+      icon={<SaveAs fontSize="small" />}
+      label="Save as Draft"
+      clickable
+      disabled={!qrHasChanges}
+      onClick={handleClick}
+    />
+  );
   return <>{renderButtonOrChip}</>;
 }
 

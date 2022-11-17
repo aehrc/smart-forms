@@ -13,7 +13,6 @@ import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
-import { Operation } from '../../interfaces/Enums';
 import RendererOperationButtons from '../OperationButtons/RendererOperationButtons';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import InvalidQuestionnaireOperationButtons from '../OperationButtons/InvalidQuestionnaireOperationButtons';
@@ -92,7 +91,7 @@ function Form(props: Props) {
               <SideBarGrid item lg={1.75}>
                 <SideBar>
                   <RendererOperationButtons
-                    buttonOrChip={Operation.Button}
+                    isChip={false}
                     qrHasChanges={qrHasChanges}
                     removeQrHasChanges={removeQrHasChanges}
                     togglePreviewMode={togglePreviewMode}
@@ -107,7 +106,7 @@ function Form(props: Props) {
                   </Typography>
                   <ChipBar>
                     <RendererOperationButtons
-                      buttonOrChip={Operation.Chip}
+                      isChip={true}
                       qrHasChanges={qrHasChanges}
                       removeQrHasChanges={removeQrHasChanges}
                       togglePreviewMode={togglePreviewMode}
@@ -134,7 +133,7 @@ function Form(props: Props) {
                   <Box sx={{ pb: 2 }}>
                     <ChipBar>
                       <RendererOperationButtons
-                        buttonOrChip={Operation.Chip}
+                        isChip={true}
                         qrHasChanges={qrHasChanges}
                         removeQrHasChanges={removeQrHasChanges}
                         togglePreviewMode={togglePreviewMode}
@@ -177,7 +176,7 @@ function Form(props: Props) {
         <SideBarGrid item lg={1.75}>
           <SideBar>
             <InvalidQuestionnaireOperationButtons
-              buttonOrChip={Operation.Button}
+              isChip={false}
               qrHasChanges={qrHasChanges}
               removeQrHasChanges={removeQrHasChanges}
               questionnaireResponse={questionnaireResponse}
@@ -189,7 +188,7 @@ function Form(props: Props) {
             <Typography fontSize={24}>Questionnaire does not have a form item.</Typography>
             <ChipBar>
               <InvalidQuestionnaireOperationButtons
-                buttonOrChip={Operation.Chip}
+                isChip={true}
                 qrHasChanges={qrHasChanges}
                 removeQrHasChanges={removeQrHasChanges}
                 questionnaireResponse={questionnaireResponse}

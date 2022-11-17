@@ -10,7 +10,6 @@ import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
-import { Operation } from '../../interfaces/Enums';
 import PickerOperationButtons from '../OperationButtons/PickerOperationButtons';
 
 function Picker() {
@@ -38,7 +37,7 @@ function Picker() {
       <SideBarGrid item lg={1.75}>
         <SideBar>
           <PickerOperationButtons
-            buttonOrChip={Operation.Button}
+            isChip={false}
             refreshQuestionnaireList={refreshQuestionnaireList}
           />
         </SideBar>
@@ -78,7 +77,7 @@ function Picker() {
           />
           <ChipBar>
             <PickerOperationButtons
-              buttonOrChip={Operation.Chip}
+              isChip={true}
               refreshQuestionnaireList={refreshQuestionnaireList}
             />
           </ChipBar>

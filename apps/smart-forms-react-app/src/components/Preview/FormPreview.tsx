@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
-import { Operation } from '../../interfaces/Enums';
+
 import ChipBar from '../ChipBar/ChipBar';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import SideBar from '../SideBar/SideBar';
@@ -32,7 +32,7 @@ function FormPreview(props: Props) {
         <SideBarGrid item lg={1.75}>
           <SideBar>
             <FormPreviewOperationButtons
-              buttonOrChip={Operation.Button}
+              isChip={false}
               togglePreviewMode={togglePreviewMode}
               qrHasChanges={qrHasChanges}
               removeQrHasChanges={removeQrHasChanges}
@@ -48,7 +48,7 @@ function FormPreview(props: Props) {
             <Box displayPrint="none">
               <ChipBar>
                 <FormPreviewOperationButtons
-                  buttonOrChip={Operation.Chip}
+                  isChip={true}
                   togglePreviewMode={togglePreviewMode}
                   qrHasChanges={qrHasChanges}
                   removeQrHasChanges={() => removeQrHasChanges}

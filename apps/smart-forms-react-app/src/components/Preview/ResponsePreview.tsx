@@ -7,7 +7,6 @@ import SideBar from '../SideBar/SideBar';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import ChipBar from '../ChipBar/ChipBar';
 import ResponsePreviewOperationButtons from '../OperationButtons/ResponsePreviewOperationButtons';
-import { Operation } from '../../interfaces/Enums';
 
 function ResponsePreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
@@ -16,7 +15,7 @@ function ResponsePreview() {
     <Grid container>
       <SideBarGrid item lg={1.75}>
         <SideBar>
-          <ResponsePreviewOperationButtons buttonOrChip={Operation.Button} />
+          <ResponsePreviewOperationButtons isChip={false} />
         </SideBar>
       </SideBarGrid>
       <MainGrid item lg={10.25}>
@@ -26,7 +25,7 @@ function ResponsePreview() {
           </Typography>
           <Box displayPrint="none">
             <ChipBar>
-              <ResponsePreviewOperationButtons buttonOrChip={Operation.Chip} />
+              <ResponsePreviewOperationButtons isChip={true} />
             </ChipBar>
           </Box>
           <Divider light />

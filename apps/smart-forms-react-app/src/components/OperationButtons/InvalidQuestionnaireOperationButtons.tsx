@@ -1,22 +1,21 @@
 import React from 'react';
 import ChangeQuestionnaireButton from './SingleButtons/ChangeQuestionnaireButton';
-import { Operation } from '../../interfaces/Enums';
 import { QuestionnaireResponse } from 'fhir/r5';
 
 interface Props {
-  buttonOrChip: Operation;
+  isChip: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;
 }
 
 function InvalidQuestionnaireOperationButtons(props: Props) {
-  const { buttonOrChip, qrHasChanges, removeQrHasChanges, questionnaireResponse } = props;
+  const { isChip, qrHasChanges, removeQrHasChanges, questionnaireResponse } = props;
 
   return (
     <>
       <ChangeQuestionnaireButton
-        buttonOrChip={buttonOrChip}
+        isChip={isChip}
         qrHasChanges={qrHasChanges}
         removeQrHasChanges={removeQrHasChanges}
         questionnaireResponse={questionnaireResponse}

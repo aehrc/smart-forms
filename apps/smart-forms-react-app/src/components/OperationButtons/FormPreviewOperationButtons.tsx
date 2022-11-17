@@ -1,14 +1,13 @@
 import React from 'react';
 import ChangeQuestionnaireButton from './SingleButtons/ChangeQuestionnaireButton';
 import SaveAsDraftButton from './SingleButtons/SaveAsDraftButton';
-import { Operation } from '../../interfaces/Enums';
 import SaveAsFinalButton from './SingleButtons/SaveAsFinalButton';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import ContinueEditingButton from './SingleButtons/ContinueEditingButton';
 
 interface Props {
-  buttonOrChip: Operation;
+  isChip: boolean;
   qrHasChanges: boolean;
   removeQrHasChanges: () => unknown;
   togglePreviewMode: () => unknown;
@@ -16,28 +15,23 @@ interface Props {
 }
 
 function FormPreviewOperationButtons(props: Props) {
-  const {
-    buttonOrChip,
-    qrHasChanges,
-    removeQrHasChanges,
-    togglePreviewMode,
-    questionnaireResponse
-  } = props;
+  const { isChip, qrHasChanges, removeQrHasChanges, togglePreviewMode, questionnaireResponse } =
+    props;
 
   const launch = React.useContext(LaunchContext);
   return (
     <>
       <ChangeQuestionnaireButton
-        buttonOrChip={buttonOrChip}
+        isChip={isChip}
         qrHasChanges={qrHasChanges}
         removeQrHasChanges={removeQrHasChanges}
         questionnaireResponse={questionnaireResponse}
       />
-      <ContinueEditingButton buttonOrChip={buttonOrChip} togglePreviewMode={togglePreviewMode} />
+      <ContinueEditingButton isChip={isChip} togglePreviewMode={togglePreviewMode} />
       {launch.fhirClient && launch.user && launch.patient ? (
         <>
           <SaveAsDraftButton
-            buttonOrChip={buttonOrChip}
+            isChip={isChip}
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
             questionnaireResponse={questionnaireResponse}
@@ -46,7 +40,7 @@ function FormPreviewOperationButtons(props: Props) {
             user={launch.user}
           />
           <SaveAsFinalButton
-            buttonOrChip={buttonOrChip}
+            isChip={isChip}
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
             questionnaireResponse={questionnaireResponse}
