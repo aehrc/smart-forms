@@ -44,22 +44,13 @@ export function populate(
   const batchResponsePromise = batchQueryRequest(client, prePopQueryBundle);
   batchResponsePromise
     .then((batchResponse) => {
-      // get questionnaireResponse from population parameters
-      const parameters = definePopulationParameters(patient, batchResponse);
-      const qrPromise = prepopulationQueryRequest(questionnaire, parameters);
-
-      // test local prepop
-      localPrepopulate(questionnaire, patient, batchResponse);
-
-      qrPromise
-        .then((qResponse) => {
-          // set questionnaireResponse in callback function
-          prepopulateForm(qResponse, batchResponse);
-        })
-        .catch((error) => {
-          console.log(error);
-          exitSpinner();
-        });
+      const parameters = definePopulationParameters(questionnaire, patient, batchResponse);
+      const populatedResponse = localPrepopulate(parameters);
+      if (populatedResponse) {
+        prepopulateForm(populatedResponse, batchResponse);
+      } else {
+        exitSpinner();
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -122,58 +113,12 @@ function batchQueryRequest(client: Client, bundle: Bundle): Promise<Bundle> {
  *
  * @author Sean Fong
  */
-function definePopulationParameters(patient: Patient, batchResponse: Bundle): Parameters {
-  return {
-    resourceType: 'Parameters',
-    parameter: [
-      {
-        name: 'subject',
-        valueReference: {
-          reference: '',
-          display: ''
-        }
-      },
-      {
-        name: 'LaunchPatient',
-        resource: patient
-      },
-      {
-        name: 'PrePopQuery',
-        resource: batchResponse
-      }
-    ]
-  };
-}
-
-/**
- * Perform prepopulation query request to Telstra Forms server to obtain questionnaireResponse
- *
- * @author Sean Fong
- */
-function prepopulationQueryRequest(
+function definePopulationParameters(
   questionnaire: Questionnaire,
-  parameters: Parameters
-): Promise<QuestionnaireResponse> {
-  const serverUrl =
-    process.env.REACT_APP_PREPOPULATE_SERVER_URL ?? 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
-
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8',
-    Accept: 'application/json+fhir; charset=utf-8'
-  };
-  const operation = 'Questionnaire/' + questionnaire.id + '/$populate';
-
-  return client(serverUrl).request({
-    url: operation,
-    method: 'POST',
-    body: JSON.stringify(parameters),
-    headers: headers
-  });
-}
-
-function localPrepopulate(questionnaire: Questionnaire, patient: Patient, batchResponse: Bundle) {
-  const inputPopParams: Parameters = {
+  patient: Patient,
+  batchResponse: Bundle
+): Parameters {
+  return {
     resourceType: 'Parameters',
     parameter: [
       {
@@ -184,7 +129,7 @@ function localPrepopulate(questionnaire: Questionnaire, patient: Patient, batchR
         name: 'subject',
         valueReference: {
           type: 'Patient',
-          reference: 'Patient/' + '87a339d0-8cae-418e-89c7-8651e6aab3c6'
+          reference: 'Patient/' + patient.id
         }
       },
       {
@@ -202,8 +147,41 @@ function localPrepopulate(questionnaire: Questionnaire, patient: Patient, batchR
       }
     ]
   };
+}
 
-  if (isPopulateInputParameters(inputPopParams)) {
-    const outputPopParams = sdcPopulate(inputPopParams);
+/**
+ * Perform prepopulation query request to Telstra Forms server to obtain questionnaireResponse
+ *
+ * @author Sean Fong
+ */
+function prepopulationQueryRequest(
+  questionnaire: Questionnaire,
+  parameters: Parameters
+): Promise<QuestionnaireResponse> {
+  const serverUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'https://launch.smarthealthit.org/v/r4/fhir/Questionnaire';
+
+  const headers = {
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'application/json+fhir; charset=UTF-8',
+    Accept: 'application/json+fhir; charset=utf-8'
+  };
+  const operation = 'Questionnaire/' + questionnaire.id + '/$populate';
+
+  return client(serverUrl).request({
+    url: operation,
+    method: 'POST',
+    body: JSON.stringify(parameters),
+    headers: headers
+  });
+}
+
+function localPrepopulate(parameters: Parameters): QuestionnaireResponse | null {
+  if (isPopulateInputParameters(parameters)) {
+    const outputPopParams = sdcPopulate(parameters);
+    return outputPopParams.parameter[0].resource;
   }
+
+  return null;
 }
