@@ -9,6 +9,7 @@ import {
 } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
+import sdcPopulate, { isPopulateInputParameters } from 'sdc-populate';
 
 /**
  * Prepopulate form from CMS patient data
@@ -43,19 +44,13 @@ export function populate(
   const batchResponsePromise = batchQueryRequest(client, prePopQueryBundle);
   batchResponsePromise
     .then((batchResponse) => {
-      // get questionnaireResponse from population parameters
-      const parameters = definePopulationParameters(patient, batchResponse);
-      const qrPromise = prepopulationQueryRequest(questionnaire, parameters);
-
-      qrPromise
-        .then((qResponse) => {
-          // set questionnaireResponse in callback function
-          prepopulateForm(qResponse, batchResponse);
-        })
-        .catch((error) => {
-          console.log(error);
-          exitSpinner();
-        });
+      const parameters = definePopulationParameters(questionnaire, patient, batchResponse);
+      const populatedResponse = localPrepopulate(parameters);
+      if (populatedResponse) {
+        prepopulateForm(populatedResponse, batchResponse);
+      } else {
+        exitSpinner();
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -118,24 +113,37 @@ function batchQueryRequest(client: Client, bundle: Bundle): Promise<Bundle> {
  *
  * @author Sean Fong
  */
-function definePopulationParameters(patient: Patient, batchResponse: Bundle): Parameters {
+function definePopulationParameters(
+  questionnaire: Questionnaire,
+  patient: Patient,
+  batchResponse: Bundle
+): Parameters {
   return {
     resourceType: 'Parameters',
     parameter: [
       {
+        name: 'questionnaire',
+        resource: questionnaire
+      },
+      {
         name: 'subject',
         valueReference: {
-          reference: '',
-          display: ''
+          type: 'Patient',
+          reference: 'Patient/' + patient.id
         }
       },
       {
-        name: 'LaunchPatient',
-        resource: patient
-      },
-      {
-        name: 'PrePopQuery',
-        resource: batchResponse
+        name: 'context',
+        part: [
+          {
+            name: 'patient',
+            resource: patient
+          },
+          {
+            name: 'query',
+            resource: batchResponse
+          }
+        ]
       }
     ]
   };
@@ -151,7 +159,7 @@ function prepopulationQueryRequest(
   parameters: Parameters
 ): Promise<QuestionnaireResponse> {
   const serverUrl =
-    process.env.REACT_APP_PREPOPULATE_SERVER_URL ?? 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
 
   const headers = {
     'Cache-Control': 'no-cache',
@@ -166,4 +174,13 @@ function prepopulationQueryRequest(
     body: JSON.stringify(parameters),
     headers: headers
   });
+}
+
+function localPrepopulate(parameters: Parameters): QuestionnaireResponse | null {
+  if (isPopulateInputParameters(parameters)) {
+    const outputPopParams = sdcPopulate(parameters);
+    return outputPopParams.parameter[0].resource;
+  }
+
+  return null;
 }

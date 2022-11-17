@@ -15,7 +15,8 @@ import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resourc
  * @author Sean Fong
  */
 export async function loadQuestionnairesFromServer(input?: string): Promise<Bundle> {
-  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+  const serverUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
   const urlParams = input ? `title=${input}` : '';
 
   const headers = {
@@ -24,7 +25,7 @@ export async function loadQuestionnairesFromServer(input?: string): Promise<Bund
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(formsServerUrl).request({
+  return client(serverUrl).request({
     url: 'Questionnaire?_count=10&_sort=-date&' + urlParams,
     method: 'GET',
     headers: headers
@@ -93,7 +94,8 @@ export function getQResponsesFromBundle(bundle: Bundle): QuestionnaireResponse[]
 export function loadQuestionnaireFromResponse(
   questionnaireReference: string
 ): Promise<Questionnaire> {
-  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+  const serverUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
   const questionnaireId = questionnaireReference.replace('Questionnaire/', '');
 
   const headers = {
@@ -102,15 +104,18 @@ export function loadQuestionnaireFromResponse(
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(formsServerUrl).request({
+  return client(serverUrl).request({
     url: `Questionnaire/${questionnaireId}`,
     method: 'GET',
     headers: headers
   });
 }
 
-export function getQuestionnaireFromUrl(canonicalReferenceUrl: string): Promise<Questionnaire> {
-  const formsServerUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir/';
+export function getQuestionnaireFromUrl(
+  canonicalReferenceUrl: string
+): Promise<Questionnaire | Bundle> {
+  const serverUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
 
   const headers = {
     'Cache-Control': 'no-cache',
@@ -118,8 +123,8 @@ export function getQuestionnaireFromUrl(canonicalReferenceUrl: string): Promise<
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(formsServerUrl).request({
-    url: `Questionnaire?url=${canonicalReferenceUrl}`,
+  return client(serverUrl).request({
+    url: `Questionnaire?url=${canonicalReferenceUrl}&_sort=-date`,
     method: 'GET',
     headers: headers
   });
