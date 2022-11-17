@@ -1,14 +1,13 @@
 import React from 'react';
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import { Divider, Grid, Paper, Typography } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
-
-import ChipBar from '../ChipBar/ChipBar';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import SideBar from '../SideBar/SideBar';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { QuestionnaireProviderContext } from '../../App';
 import FormPreviewOperationButtons from '../OperationButtons/FormPreviewOperationButtons';
+import ChipBar from '../ChipBar/ChipBar';
 
 interface Props {
   questionnaireResponse: QuestionnaireResponse;
@@ -40,23 +39,23 @@ function FormPreview(props: Props) {
           </SideBar>
         </SideBarGrid>
         <MainGrid item lg={10.25}>
-          <MainGridContainerBox gap={2}>
+          <MainGridContainerBox gap={2.5}>
             <Typography fontWeight="bold" fontSize={36}>
-              {questionnaire.title}
+              Preview
             </Typography>
-            <Box displayPrint="none">
-              <ChipBar>
-                <FormPreviewOperationButtons
-                  isChip={true}
-                  togglePreviewMode={togglePreviewMode}
-                  qrHasChanges={qrHasChanges}
-                  removeQrHasChanges={() => removeQrHasChanges}
-                  questionnaireResponse={questionnaireResponse}
-                />
-              </ChipBar>
-            </Box>
+            <ChipBar>
+              <FormPreviewOperationButtons
+                isChip={true}
+                togglePreviewMode={togglePreviewMode}
+                qrHasChanges={qrHasChanges}
+                removeQrHasChanges={() => removeQrHasChanges}
+                questionnaireResponse={questionnaireResponse}
+              />
+            </ChipBar>
             <Divider light />
-            <Preview />
+            <Paper sx={{ p: 4 }}>
+              <Preview />
+            </Paper>
           </MainGridContainerBox>
         </MainGrid>
       </Grid>

@@ -97,7 +97,7 @@ function Form(props: Props) {
                 </SideBar>
               </SideBarGrid>
               <MainGrid item lg={10.25}>
-                <MainGridContainerBox gap={2}>
+                <MainGridContainerBox gap={2.5}>
                   <Typography fontWeight="bold" fontSize={36}>
                     {questionnaire.title}
                   </Typography>

@@ -11,8 +11,7 @@ export function qrToHTML(
 ) {
   if (!questionnaireResponse.item) return '';
 
-  const title = `<div style="font-size:36px; font-weight: bold">${questionnaire.title}</div><hr style="border: none;
-    height: 1px; background-color: #e7e7e8; margin: 20px 0 40px; "/>`;
+  const title = `<div style="font-size:24px; font-weight: bold">${questionnaire.title}</div><hr />`;
   const qrForm = qrFormToHTML(questionnaireResponse.item[0]);
 
   return `<div>${title + qrForm}</div>`;
@@ -23,7 +22,7 @@ export function qrFormToHTML(questionnaireResponseForm: QuestionnaireResponseIte
 
   let formInHTML = '';
   questionnaireResponseForm.item.forEach((item) => {
-    formInHTML = readQuestionnaireResponseItem(item, formInHTML, 0, 0);
+    formInHTML = readQuestionnaireResponseItem(item, formInHTML, 0);
   });
 
   return formInHTML;
@@ -32,32 +31,33 @@ export function qrFormToHTML(questionnaireResponseForm: QuestionnaireResponseIte
 function readQuestionnaireResponseItem(
   item: QuestionnaireResponseItem,
   formInHTML: string,
-  nestedLevel: number,
-  index: number
+  nestedLevel: number
 ) {
   const items = item.item;
   if (items && items.length > 0) {
-    formInHTML += qrGroupDivStartRenderSwitcher(item, nestedLevel, index);
-    items.forEach((item, i) => {
-      formInHTML = readQuestionnaireResponseItem(item, formInHTML, nestedLevel + 1, i);
+    // Group
+    formInHTML += renderGroupHeadingDiv(item, nestedLevel);
+    items.forEach((item) => {
+      formInHTML = readQuestionnaireResponseItem(item, formInHTML, nestedLevel + 1);
     });
-    formInHTML += qrGroupDivEndRenderSwitcher(item, nestedLevel);
-
-    return formInHTML;
+    formInHTML += renderGroupBottomMargin();
+  } else {
+    // Item
+    formInHTML += renderItemDiv(item, nestedLevel, false);
   }
-  formInHTML += qrItemDivRenderSwitcher(item, nestedLevel, false);
+  formInHTML += renderGeneralBottomMargin(nestedLevel);
+  // formInHTML += renderBottomDivider(nestedLevel);
 
   return formInHTML;
 }
 
-function qrItemDivRenderSwitcher(
+function renderItemDiv(
   item: QuestionnaireResponseItem,
   nestedLevel: number,
   inRepeatGroup: boolean
 ) {
   if (!item.answer) return '';
 
-  const marginBottomAnswer = item.answer.length === 1 ? '10px' : '5px';
   let qrItemAnswer = '';
   let qrItemRender = '';
 
@@ -65,12 +65,12 @@ function qrItemDivRenderSwitcher(
     const repeatGroup = answer.item;
 
     if (repeatGroup) {
-      qrItemAnswer += `<div style="flex: 100%; margin-top: 20px; text-decoration: underline">Answer ${
+      qrItemAnswer += `<div style="flex: 100%; margin-top: 200px; text-decoration: underline">Answer ${
         i + 1
       }</div>`;
       // recursively get item answers from repeat groups
       repeatGroup.forEach((repeatGroupAnswerItem) => {
-        qrItemAnswer += qrItemDivRenderSwitcher(repeatGroupAnswerItem, nestedLevel, true);
+        qrItemAnswer += renderItemDiv(repeatGroupAnswerItem, nestedLevel, true);
       });
 
       qrItemRender = `<div style="flex: 100%; font-weight: bold">${item.text}</div>
@@ -79,59 +79,29 @@ function qrItemDivRenderSwitcher(
       // if not repeat group, get item answer and construct div
       const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
 
-      qrItemAnswer += `<div style='margin-bottom: ${marginBottomAnswer}'>${
+      qrItemAnswer += `<div>${
         answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
       }</div>`;
 
-      qrItemRender = `<div style="flex: 40%;">${item.text}</div>
+      qrItemRender = `<div style="flex:40%;">${item.text}</div>
                         <div style="flex: 10%;"></div>
-                        <div style="flex: 45%;" >${qrItemAnswer}</div>
-                        <div style="flex: 5%;"></div>`;
+                        <div style="flex: 50%;" >${qrItemAnswer}</div>`;
     }
   });
 
   if (inRepeatGroup) {
     return `<div style="margin: 10px 0 10px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
   } else {
-    switch (nestedLevel) {
-      case 0:
-        return `<div style="margin: 20px 0 20px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
-      default:
-        return `<div style="margin: 20px 0 20px; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
-    }
+    return `<div style="margin-top: ${
+      nestedLevel === 0 ? '20px' : '10px'
+    }; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
   }
 }
 
-function qrGroupDivStartRenderSwitcher(
-  item: QuestionnaireResponseItem,
-  nestedLevel: number,
-  index: number
-) {
-  const text = item.text;
-
-  switch (nestedLevel) {
-    case 0:
-      return `<div style="font-size: 28px; font-weight: bold; margin-top: 100px">${text}</div>`;
-    case 1:
-      return `<div style="font-size: 20px; font-weight: bold; margin-top: ${
-        index === 0 ? '30px' : '60px'
-      }">${text}</div>`;
-    default:
-      return `<div style="font-size: 16px; font-weight: bold; margin-top: ${
-        index === 0 ? '30px' : '50px'
-      }">${text}</div>`;
-  }
-}
-
-function qrGroupDivEndRenderSwitcher(item: QuestionnaireResponseItem, nestedLevel: number) {
-  switch (nestedLevel) {
-    case 0:
-      return `<div style="margin-bottom: 100px"></div>`;
-    case 1:
-      return `<div style="margin-bottom: 75px"></div>`;
-    default:
-      return `<div style="margin-bottom: 50px"></div>`;
-  }
+function renderGroupHeadingDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
+  return `<div style="font-size: ${
+    nestedLevel === 0 ? '18px' : '16px'
+  }; font-weight: bold; margin-top: 15px">${item.text}</div>`;
 }
 
 function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer): string {
@@ -147,4 +117,12 @@ function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer):
     return display ? `${display}` : `${answer.valueCoding?.code}`;
   } else if (answer.valueQuantity) return `${answer.valueQuantity}`;
   return '';
+}
+
+function renderGroupBottomMargin() {
+  return `<div style="margin-bottom: 30px;"></div>`;
+}
+
+function renderGeneralBottomMargin(nestedLevel: number) {
+  return nestedLevel === 0 ? `<div style="margin: 60px 0 20px;"></div>` : '';
 }
