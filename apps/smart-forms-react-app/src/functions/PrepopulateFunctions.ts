@@ -159,8 +159,7 @@ function prepopulationQueryRequest(
   parameters: Parameters
 ): Promise<QuestionnaireResponse> {
   const serverUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ??
-    'https://launch.smarthealthit.org/v/r4/fhir/Questionnaire';
+    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
 
   const headers = {
     'Cache-Control': 'no-cache',
