@@ -11,9 +11,9 @@ import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 
 interface Props {
   isChip?: boolean;
-  qrHasChanges: boolean;
-  removeQrHasChanges: () => unknown;
-  questionnaireResponse: QuestionnaireResponse;
+  qrHasChanges?: boolean;
+  removeQrHasChanges?: () => unknown;
+  questionnaireResponse?: QuestionnaireResponse;
 }
 
 function ChangeQuestionnaireButton(props: Props) {
@@ -54,12 +54,14 @@ function ChangeQuestionnaireButton(props: Props) {
   return (
     <>
       {renderButtonOrChip}
-      <ChangeQuestionnaireDialog
-        dialogOpen={dialogOpen}
-        closeDialog={() => setDialogOpen(false)}
-        removeQrHasChanges={removeQrHasChanges}
-        questionnaireResponse={questionnaireResponse}
-      />
+      {qrHasChanges && removeQrHasChanges && questionnaireResponse ? (
+        <ChangeQuestionnaireDialog
+          dialogOpen={dialogOpen}
+          closeDialog={() => setDialogOpen(false)}
+          removeQrHasChanges={removeQrHasChanges}
+          questionnaireResponse={questionnaireResponse}
+        />
+      ) : null}
     </>
   );
 }
