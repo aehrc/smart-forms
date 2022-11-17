@@ -7,8 +7,9 @@ import { PageType } from '../../interfaces/Enums';
 import { FullHeightCard } from '../StyledComponents/Card.styles';
 import React from 'react';
 import { Questionnaire } from 'fhir/r5';
-import { QuestionnaireProviderContext } from '../../App';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
+import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 
 interface Props {
   searchInput: string;
@@ -31,11 +32,18 @@ function PickerQuestionnaireCard(props: Props) {
     onQSelectedIndexChange
   } = props;
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
 
   function handleCreateNewResponseButtonClick() {
     if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
       questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
+      if (selectedQuestionnaire.item && selectedQuestionnaire.item.length > 0) {
+        questionnaireResponseProvider.setQuestionnaireResponse(
+          createQuestionnaireResponse(selectedQuestionnaire.id, selectedQuestionnaire.item[0])
+        );
+      }
+
       pageSwitcher.goToPage(PageType.Renderer);
     }
   }
