@@ -90,12 +90,6 @@ function readQuestionnaireItem(
     }
   }
   return null;
-
-  // Use this return statement instead to also list items with no answers
-  // return {
-  //   linkId: qItem.linkId,
-  //   text: qItem.text
-  // };
 }
 
 function getAnswerValues(initialValues: any[]) {

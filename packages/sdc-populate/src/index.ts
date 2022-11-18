@@ -15,7 +15,7 @@ import {
   isSubjectParameter
 } from './TypePredicates';
 
-export default function sdcPopulate(
+export default function populate(
   parameters: PopulateInputParameters
 ): PopulateOutputParameters | PopulateOutputParametersWithIssues {
   const parameterArr = parameters.parameter;
