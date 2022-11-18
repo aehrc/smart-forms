@@ -1,36 +1,44 @@
-import React, { useContext } from 'react';
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import React, { useRef } from 'react';
+import { Box, Divider, Grid, Paper, Typography } from '@mui/material';
 import Preview from './Preview';
-import { QuestionnaireProviderContext } from '../../App';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
 import ChipBar from '../ChipBar/ChipBar';
 import ResponsePreviewOperationButtons from '../OperationButtons/ResponsePreviewOperationButtons';
+import { useReactToPrint } from 'react-to-print';
+import PrintPreviewButton from '../OperationButtons/SingleButtons/PrintPreviewButton';
 
 function ResponsePreview() {
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current
+  });
 
   return (
     <Grid container>
       <SideBarGrid item lg={1.75}>
         <SideBar>
           <ResponsePreviewOperationButtons />
+          <PrintPreviewButton handlePrint={handlePrint} />
         </SideBar>
       </SideBarGrid>
       <MainGrid item lg={10.25}>
         <MainGridContainerBox gap={2.5}>
           <Typography fontWeight="bold" fontSize={36}>
-            {questionnaireProvider.questionnaire.title}
+            Response Preview
           </Typography>
-          <Box displayPrint="none">
-            <ChipBar>
-              <ResponsePreviewOperationButtons isChip={true} />
-            </ChipBar>
-          </Box>
+          <ChipBar>
+            <ResponsePreviewOperationButtons isChip={true} />
+            <PrintPreviewButton handlePrint={handlePrint} isChip={true} />
+          </ChipBar>
           <Divider light />
 
-          <Preview />
+          <Paper>
+            <Box sx={{ p: 4 }} ref={componentRef}>
+              <Preview />
+            </Box>
+          </Paper>
         </MainGridContainerBox>
       </MainGrid>
     </Grid>

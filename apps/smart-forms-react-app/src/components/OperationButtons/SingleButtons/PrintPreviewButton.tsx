@@ -5,19 +5,15 @@ import ListItemText from '@mui/material/ListItemText';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 
 interface Props {
+  handlePrint: () => unknown;
   isChip?: boolean;
 }
 
 function PrintPreviewButton(props: Props) {
-  const { isChip } = props;
-
-  function handleClick() {
-    window.print();
-    // TODO print specific area of page
-  }
+  const { handlePrint, isChip } = props;
 
   const renderButtonOrChip = !isChip ? (
-    <ListItemButton onClick={handleClick}>
+    <ListItemButton onClick={handlePrint}>
       <Print sx={{ mr: 2 }} />
       <ListItemText
         primary={
@@ -32,7 +28,7 @@ function PrintPreviewButton(props: Props) {
       icon={<Print fontSize="small" />}
       label="Print Preview"
       clickable
-      onClick={handleClick}
+      onClick={handlePrint}
     />
   );
 
