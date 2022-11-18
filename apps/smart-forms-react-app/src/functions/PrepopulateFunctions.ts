@@ -7,7 +7,6 @@ import {
   Questionnaire,
   QuestionnaireResponse
 } from 'fhir/r5';
-import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
 
@@ -150,32 +149,10 @@ function definePopulationParameters(
 }
 
 /**
- * Perform prepopulation query request to Telstra Forms server to obtain questionnaireResponse
+ * Attempt population request to obtain populated questionnaireResponse
  *
  * @author Sean Fong
  */
-function prepopulationQueryRequest(
-  questionnaire: Questionnaire,
-  parameters: Parameters
-): Promise<QuestionnaireResponse> {
-  const serverUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
-
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8',
-    Accept: 'application/json+fhir; charset=utf-8'
-  };
-  const operation = 'Questionnaire/' + questionnaire.id + '/$populate';
-
-  return client(serverUrl).request({
-    url: operation,
-    method: 'POST',
-    body: JSON.stringify(parameters),
-    headers: headers
-  });
-}
-
 function getPopulatedResponse(parameters: Parameters): QuestionnaireResponse | null {
   if (isPopulateInputParameters(parameters)) {
     const outputPopParams = populate(parameters);
