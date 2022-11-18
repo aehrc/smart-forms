@@ -9,19 +9,19 @@ import {
 } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
-import sdcPopulate, { isPopulateInputParameters } from 'sdc-populate';
+import populate, { isPopulateInputParameters } from 'sdc-populate';
 
 /**
  * Prepopulate form from CMS patient data
  *
  * @author Sean Fong
  */
-export function populate(
+export function prepopulate(
   client: Client,
   questionnaire: Questionnaire,
   patient: Patient,
   user: Practitioner,
-  prepopulateForm: {
+  populateForm: {
     (questionnaireResponse: QuestionnaireResponse, batchResponse: Bundle): void;
   },
   exitSpinner: { (): void }
@@ -45,9 +45,9 @@ export function populate(
   batchResponsePromise
     .then((batchResponse) => {
       const parameters = definePopulationParameters(questionnaire, patient, batchResponse);
-      const populatedResponse = localPrepopulate(parameters);
+      const populatedResponse = getPopulatedResponse(parameters);
       if (populatedResponse) {
-        prepopulateForm(populatedResponse, batchResponse);
+        populateForm(populatedResponse, batchResponse);
       } else {
         exitSpinner();
       }
@@ -176,9 +176,9 @@ function prepopulationQueryRequest(
   });
 }
 
-function localPrepopulate(parameters: Parameters): QuestionnaireResponse | null {
+function getPopulatedResponse(parameters: Parameters): QuestionnaireResponse | null {
   if (isPopulateInputParameters(parameters)) {
-    const outputPopParams = sdcPopulate(parameters);
+    const outputPopParams = populate(parameters);
     return outputPopParams.parameter[0].resource;
   }
 

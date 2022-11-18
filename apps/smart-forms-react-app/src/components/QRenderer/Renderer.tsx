@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import ProgressSpinner from '../ProgressSpinner';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
-import { populate } from '../../functions/PrepopulateFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import RendererBody from './RendererBody';
+import { prepopulate } from '../../functions/PrepopulateFunctions';
 
 function Renderer() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
@@ -40,7 +40,7 @@ function Renderer() {
     // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
     if (questionnaire.contained && (!qrFormItem || qrFormItem.length === 0)) {
       // obtain questionnaireResponse for prepopulation
-      populate(
+      prepopulate(
         client,
         questionnaire,
         patient,
