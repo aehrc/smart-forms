@@ -1,7 +1,7 @@
 {
   "name": "sdc-populate",
   "version": "1.0.0",
-  "description": "Performs prepopulation functionality from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/2019May/",
+  "description": "Performs prepopulation functionality from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

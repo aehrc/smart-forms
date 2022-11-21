@@ -1,5 +1,5 @@
-import { ParametersParameter } from 'fhir/r5';
-import {
+import type { ParametersParameter } from 'fhir/r5';
+import type {
   ContextPatientParameter,
   ContextQueryParameter,
   QuestionnaireParameter,

@@ -1,13 +1,13 @@
-import {
+import type {
   PopulateInputParameters,
   PopulateOutputParameters,
   PopulateOutputParametersWithIssues
 } from './Interfaces';
 import { readInitialExpressions } from './ReadInitialExpressions';
-import { evaluateInitialExpressions } from './EvaulateInitialExpressions';
+import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateParameters';
-import { Parameters } from 'fhir/r5';
+import type { Parameters, ParametersParameter } from 'fhir/r5';
 import {
   isContextPatientParameter,
   isContextQueryParameter,
@@ -15,6 +15,12 @@ import {
   isSubjectParameter
 } from './TypePredicates';
 
+/**
+ * Main function of this populate module.
+ * Input and output specific parameters conformant to the SDC populate specification.
+ *
+ * @author Sean Fong
+ */
 export default function populate(
   parameters: PopulateInputParameters
 ): PopulateOutputParameters | PopulateOutputParametersWithIssues {
@@ -36,25 +42,26 @@ export default function populate(
   return createOutputParameters(questionnaireResponse);
 }
 
+/**
+ * Checks if the parameters passed satisfies the conditions of populateInputParameters.
+ *
+ * @author Sean Fong
+ */
 export function isPopulateInputParameters(
   parameters: Parameters
 ): parameters is PopulateInputParameters {
-  const questionnairePresent = !!parameters.parameter?.find((parameter) =>
-    isQuestionnaireParameter(parameter)
-  );
+  const questionnairePresent = !!parameters.parameter?.find(isQuestionnaireParameter);
 
-  const subjectPresent = !!parameters.parameter?.find((parameter) => isSubjectParameter(parameter));
+  const subjectPresent = !!parameters.parameter?.find(isSubjectParameter);
 
   const contextPatientPresent = !!parameters.parameter?.find(
-    (parameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find((parameter) => isContextPatientParameter(parameter))
+    (parameter: ParametersParameter) =>
+      parameter.name === 'context' && parameter.part?.find(isContextPatientParameter)
   );
 
   const contextQueryPresent = !!parameters.parameter?.find(
-    (parameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find((parameter) => isContextQueryParameter(parameter))
+    (parameter: ParametersParameter) =>
+      parameter.name === 'context' && parameter.part?.find(isContextQueryParameter)
   );
 
   return questionnairePresent && subjectPresent && contextPatientPresent && contextQueryPresent;

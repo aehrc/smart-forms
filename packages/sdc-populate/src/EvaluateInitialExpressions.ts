@@ -1,34 +1,44 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { InitialExpression } from './Interfaces';
+import type { InitialExpression } from './Interfaces';
 
 const unimplementedFunctions = ['join'];
 
+/**
+ * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
+ * There are some functions that are yet to be implemented in FHIRPath.js - these functions would be removed from the expressions to avoid errors.
+ *
+ * @author Sean Fong
+ */
 export function evaluateInitialExpressions(
   initialExpressions: Record<string, InitialExpression>,
   context: any
 ): Record<string, InitialExpression> {
   for (const linkId in initialExpressions) {
-    let expression = initialExpressions[linkId].expression;
+    const initialExpression = initialExpressions[linkId];
+    if (initialExpression) {
+      let expression = initialExpression.expression;
 
-    if (unimplementedFunctions.some((fn) => initialExpressions[linkId].expression.includes(fn))) {
-      expression = removeUnimplementedFunction(
-        unimplementedFunctions,
-        initialExpressions[linkId].expression
-      );
+      if (unimplementedFunctions.some((fn: string) => initialExpression.expression.includes(fn))) {
+        expression = removeUnimplementedFunction(
+          unimplementedFunctions,
+          initialExpression.expression
+        );
+      }
+
+      initialExpression.value = fhirpath.evaluate({}, expression, context, fhirpath_r4_model);
+      initialExpressions[linkId] = initialExpression;
     }
-
-    initialExpressions[linkId].value = fhirpath.evaluate(
-      {},
-      expression,
-      context,
-      fhirpath_r4_model
-    );
   }
 
   return initialExpressions;
 }
 
+/**
+ * Check if the expression contains any unimplemented functions and remove them from the expression
+ *
+ * @author Sean Fong
+ */
 function removeUnimplementedFunction(unimplementedFunctions: string[], expression: string): string {
   for (const fnName of unimplementedFunctions) {
     const foundFnIndex = expression.indexOf('.' + fnName);
@@ -41,6 +51,11 @@ function removeUnimplementedFunction(unimplementedFunctions: string[], expressio
   return expression;
 }
 
+/**
+ * For an opening bracket within an expression, find its corresponding closing bracket.
+ *
+ * @author Sean Fong
+ */
 function findClosingBracketMatchIndex(str: string, startPosition: number) {
   if (str[startPosition] != '(') {
     throw new Error("No '(' at index " + startPosition);
