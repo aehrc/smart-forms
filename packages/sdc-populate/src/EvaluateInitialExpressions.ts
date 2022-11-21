@@ -4,6 +4,12 @@ import type { InitialExpression } from './Interfaces';
 
 const unimplementedFunctions = ['join'];
 
+/**
+ * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
+ * There are some functions that are yet to be implemented in FHIRPath.js - these functions would be removed from the expressions to avoid errors.
+ *
+ * @author Sean Fong
+ */
 export function evaluateInitialExpressions(
   initialExpressions: Record<string, InitialExpression>,
   context: any
@@ -13,7 +19,7 @@ export function evaluateInitialExpressions(
     if (initialExpression) {
       let expression = initialExpression.expression;
 
-      if (unimplementedFunctions.some((fn) => initialExpression.expression.includes(fn))) {
+      if (unimplementedFunctions.some((fn: string) => initialExpression.expression.includes(fn))) {
         expression = removeUnimplementedFunction(
           unimplementedFunctions,
           initialExpression.expression
@@ -28,6 +34,11 @@ export function evaluateInitialExpressions(
   return initialExpressions;
 }
 
+/**
+ * Check if the expression contains any unimplemented functions and remove them from the expression
+ *
+ * @author Sean Fong
+ */
 function removeUnimplementedFunction(unimplementedFunctions: string[], expression: string): string {
   for (const fnName of unimplementedFunctions) {
     const foundFnIndex = expression.indexOf('.' + fnName);
@@ -40,6 +51,11 @@ function removeUnimplementedFunction(unimplementedFunctions: string[], expressio
   return expression;
 }
 
+/**
+ * For an opening bracket within an expression, find its corresponding closing bracket.
+ *
+ * @author Sean Fong
+ */
 function findClosingBracketMatchIndex(str: string, startPosition: number) {
   if (str[startPosition] != '(') {
     throw new Error("No '(' at index " + startPosition);

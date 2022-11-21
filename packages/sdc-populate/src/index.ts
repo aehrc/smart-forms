@@ -4,7 +4,7 @@ import type {
   PopulateOutputParametersWithIssues
 } from './Interfaces';
 import { readInitialExpressions } from './ReadInitialExpressions';
-import { evaluateInitialExpressions } from './EvaulateInitialExpressions';
+import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateParameters';
 import type { Parameters, ParametersParameter } from 'fhir/r5';
