@@ -9,7 +9,7 @@ applications:
           commands:
             - npm run build -w apps/smart-forms-react-app
       artifacts:
-        baseDirectory: build -w apps/smart-forms-react-app
+        baseDirectory: apps/smart-forms-react-app/build
         files:
           - '**/*'
       cache:
