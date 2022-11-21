@@ -1,5 +1,5 @@
-import { OperationOutcome, QuestionnaireResponse } from 'fhir/r5';
-import {
+import type { OperationOutcome, QuestionnaireResponse } from 'fhir/r5';
+import type {
   PopulateOutputParameters,
   PopulateOutputParametersWithIssues,
   ResponseParameter

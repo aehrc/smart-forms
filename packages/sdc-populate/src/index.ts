@@ -1,4 +1,4 @@
-import {
+import type {
   PopulateInputParameters,
   PopulateOutputParameters,
   PopulateOutputParametersWithIssues
@@ -7,7 +7,7 @@ import { readInitialExpressions } from './ReadInitialExpressions';
 import { evaluateInitialExpressions } from './EvaulateInitialExpressions';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateParameters';
-import { Parameters } from 'fhir/r5';
+import type { Parameters } from 'fhir/r5';
 import {
   isContextPatientParameter,
   isContextQueryParameter,

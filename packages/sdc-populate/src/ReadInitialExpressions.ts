@@ -1,5 +1,5 @@
-import { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r5';
-import { InitialExpression } from './Interfaces';
+import type { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r5';
+import type { InitialExpression } from './Interfaces';
 
 export function readInitialExpressions(
   questionnaire: Questionnaire

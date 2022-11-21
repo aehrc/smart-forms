@@ -1,6 +1,6 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { InitialExpression } from './Interfaces';
+import type { InitialExpression } from './Interfaces';
 
 const unimplementedFunctions = ['join'];
 
@@ -9,21 +9,20 @@ export function evaluateInitialExpressions(
   context: any
 ): Record<string, InitialExpression> {
   for (const linkId in initialExpressions) {
-    let expression = initialExpressions[linkId].expression;
+    const initialExpression = initialExpressions[linkId];
+    if (initialExpression) {
+      let expression = initialExpression.expression;
 
-    if (unimplementedFunctions.some((fn) => initialExpressions[linkId].expression.includes(fn))) {
-      expression = removeUnimplementedFunction(
-        unimplementedFunctions,
-        initialExpressions[linkId].expression
-      );
+      if (unimplementedFunctions.some((fn) => initialExpression.expression.includes(fn))) {
+        expression = removeUnimplementedFunction(
+          unimplementedFunctions,
+          initialExpression.expression
+        );
+      }
+
+      initialExpression.value = fhirpath.evaluate({}, expression, context, fhirpath_r4_model);
+      initialExpressions[linkId] = initialExpression;
     }
-
-    initialExpressions[linkId].value = fhirpath.evaluate(
-      {},
-      expression,
-      context,
-      fhirpath_r4_model
-    );
   }
 
   return initialExpressions;

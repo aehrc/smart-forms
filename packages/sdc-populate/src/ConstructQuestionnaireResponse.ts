@@ -1,4 +1,4 @@
-import {
+import type {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
@@ -6,7 +6,7 @@ import {
   QuestionnaireResponseItemAnswer,
   Reference
 } from 'fhir/r5';
-import { InitialExpression } from './Interfaces';
+import type { InitialExpression } from './Interfaces';
 
 const cleanQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -23,6 +23,7 @@ export function constructResponse(
   if (!questionnaire.item) return questionnaireResponse;
   const qForm = questionnaire.item[0];
 
+  if (!qForm) return questionnaireResponse;
   let qrForm: QuestionnaireResponseItem = {
     linkId: qForm.linkId,
     text: qForm.text
@@ -31,6 +32,7 @@ export function constructResponse(
 
   questionnaireResponse.questionnaire = 'Questionnaire/' + questionnaire.id;
   questionnaireResponse.item = [qrForm];
+  questionnaireResponse.subject = subject;
 
   return questionnaireResponse;
 }
@@ -78,8 +80,9 @@ function readQuestionnaireItem(
       : null;
   }
 
-  if (initialExpressions[qItem.linkId]) {
-    const initialValues = initialExpressions[qItem.linkId].value;
+  const initialExpression = initialExpressions[qItem.linkId];
+  if (initialExpression) {
+    const initialValues = initialExpression.value;
 
     if (initialValues && initialValues.length) {
       return {
