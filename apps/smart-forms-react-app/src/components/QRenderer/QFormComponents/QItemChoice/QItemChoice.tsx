@@ -3,7 +3,7 @@ import { QItemChoiceControl } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemChoiceRadioAnswerOption from './QItemChoiceRadioAnswerOption';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
-import QItemChoiceCheckbox from './QItemChoiceCheckbox';
+import QItemChoiceCheckboxAnswerOption from './QItemChoiceCheckboxAnswerOption';
 import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import { getChoiceControlType, getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
@@ -12,6 +12,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
+import QItemChoiceCheckboxAnswerValueSet from './QItemChoiceCheckboxAnswerValueSet';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,15 +49,27 @@ function QItemChoice(props: Props) {
         );
       }
     case QItemChoiceControl.Checkbox:
-      return (
-        <QItemChoiceCheckbox
-          qItem={qItem}
-          qrItem={qrItem}
-          repeats={repeats}
-          onQrItemChange={onQrItemChange}
-          orientation={orientation}
-        />
-      );
+      if (qItem.answerValueSet) {
+        return (
+          <QItemChoiceCheckboxAnswerValueSet
+            qItem={qItem}
+            qrItem={qrItem}
+            repeats={repeats}
+            onQrItemChange={onQrItemChange}
+            orientation={orientation}
+          />
+        );
+      } else {
+        return (
+          <QItemChoiceCheckboxAnswerOption
+            qItem={qItem}
+            qrItem={qrItem}
+            repeats={repeats}
+            onQrItemChange={onQrItemChange}
+            orientation={orientation}
+          />
+        );
+      }
     case QItemChoiceControl.Autocomplete:
       return (
         <QItemChoiceAutocomplete

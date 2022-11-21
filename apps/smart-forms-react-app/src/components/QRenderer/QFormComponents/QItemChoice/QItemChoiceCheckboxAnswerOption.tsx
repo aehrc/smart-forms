@@ -18,7 +18,7 @@ interface QItemChoiceCheckboxProps
   orientation: QItemChoiceOrientation;
 }
 
-function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
+function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
   const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
 
   const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
@@ -97,4 +97,4 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
   return <>{renderQItemChoiceCheckbox}</>;
 }
 
-export default QItemChoiceCheckbox;
+export default QItemChoiceCheckboxAnswerOption;
