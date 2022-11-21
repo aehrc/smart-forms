@@ -13,6 +13,11 @@ const cleanQuestionnaireResponse: QuestionnaireResponse = {
   status: 'in-progress'
 };
 
+/**
+ * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions.
+ *
+ * @author Sean Fong
+ */
 export function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
@@ -37,6 +42,11 @@ export function constructResponse(
   return questionnaireResponse;
 }
 
+/**
+ * Read items within a questionnaire recursively and generates a questionnaireResponseItem to be added to the populated response.
+ *
+ * @author Sean Fong
+ */
 export function readQuestionnaire(
   questionnaire: Questionnaire,
   qrForm: QuestionnaireResponseItem,
@@ -53,6 +63,11 @@ export function readQuestionnaire(
   return qrForm;
 }
 
+/**
+ * Read a single questionnaire item/group recursively and generating questionnaire response items from initialExpressions if present
+ *
+ * @author Sean Fong
+ */
 function readQuestionnaireItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
@@ -95,6 +110,11 @@ function readQuestionnaireItem(
   return null;
 }
 
+/**
+ * Determine a specific value[x] type from an initialValue answer
+ *
+ * @author Sean Fong
+ */
 function getAnswerValues(initialValues: any[]) {
   return initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
     if (typeof value === 'boolean') {
@@ -111,6 +131,11 @@ function getAnswerValues(initialValues: any[]) {
   });
 }
 
+/**
+ * Check if a answer is a date
+ *
+ * @author Sean Fong
+ */
 function checkIsDate(value: any) {
   const hasDateHyphens = value[4] === '-' && value[7] === '-';
   const hasYear = /^-?\d+$/.test(value.slice(0, 4));
