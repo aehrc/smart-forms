@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormControl, FormGroup, Grid, Typography } from '@mui/material';
-import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { updateQrChoiceCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
-import QItemChoiceCheckboxSingle from './QItemChoiceCheckboxSingle';
+import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
+import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
+import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
+import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel';
+import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 
-interface QItemChoiceCheckboxProps
+interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
@@ -18,21 +24,27 @@ interface QItemChoiceCheckboxProps
   orientation: QItemChoiceOrientation;
 }
 
-function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
+function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
   const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
 
-  const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
-  const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
+  const qrOpenChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
+  const answers = qrOpenChoiceCheckbox['answer'] ? qrOpenChoiceCheckbox['answer'] : [];
+
+  const openLabelText = getOpenLabelText(qItem);
+  const [openLabelValue, setOpenLabelValue] = useState<string>('');
+  const [openLabelChecked, setOpenLabelChecked] = useState<boolean>(false);
 
   function handleCheckedChange(changedValue: string) {
+    setOpenLabelChecked(false);
     const answerOptions = qItem.answerOption;
     if (!answerOptions) return null;
 
-    const updatedQrChoiceCheckbox = updateQrChoiceCheckboxAnswers(
+    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
       changedValue,
       answers,
       answerOptions,
-      qrChoiceCheckbox
+      qrOpenChoiceCheckbox,
+      CheckBoxOptionType.AnswerOption
     );
 
     if (updatedQrChoiceCheckbox) {
@@ -40,12 +52,12 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
     }
   }
 
-  const choiceCheckbox = (
+  const openChoiceCheckbox = (
     <FormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <QItemCheckboxSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
@@ -57,7 +69,7 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
           );
         } else if (option['valueString']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <QItemCheckboxSingle
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
@@ -67,7 +79,7 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
           );
         } else if (option['valueInteger']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <QItemCheckboxSingle
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
@@ -77,11 +89,29 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
           );
         }
       })}
+
+      {openLabelText ? (
+        <QItemCheckboxSingleWithOpenLabel
+          value={openLabelValue}
+          label={openLabelText}
+          isChecked={openLabelChecked}
+          onCheckedChange={(checked) => {
+            const updatedAnswer: QuestionnaireResponseItemAnswer = { valueString: openLabelValue };
+            onQrItemChange({ ...qrOpenChoiceCheckbox, answer: [updatedAnswer] });
+            setOpenLabelChecked(checked);
+          }}
+          onInputChange={(input) => {
+            const updatedAnswer: QuestionnaireResponseItemAnswer = { valueString: input };
+            onQrItemChange({ ...qrOpenChoiceCheckbox, answer: [updatedAnswer] });
+            setOpenLabelValue(input);
+          }}
+        />
+      ) : null}
     </FormGroup>
   );
 
   const renderQItemChoiceCheckbox = repeats ? (
-    <>{choiceCheckbox}</>
+    <>{openChoiceCheckbox}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -89,7 +119,7 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
           <Typography>{qItem.text}</Typography>
         </Grid>
         <Grid item xs={7}>
-          {choiceCheckbox}
+          {openChoiceCheckbox}
         </Grid>
       </Grid>
     </FormControl>
@@ -97,4 +127,4 @@ function QItemChoiceCheckbox(props: QItemChoiceCheckboxProps) {
   return <>{renderQItemChoiceCheckbox}</>;
 }
 
-export default QItemChoiceCheckbox;
+export default QItemOpenChoiceCheckboxAnswerOption;

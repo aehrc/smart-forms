@@ -11,6 +11,8 @@ import { isSpecificItemControl } from './ItemControlFunctions';
 export function getOpenChoiceControlType(qItem: QuestionnaireItem) {
   if (isSpecificItemControl(qItem, 'autocomplete')) {
     return QItemOpenChoiceControl.Autocomplete;
+  } else if (isSpecificItemControl(qItem, 'check-box')) {
+    return QItemOpenChoiceControl.Checkbox;
   } else {
     return QItemOpenChoiceControl.Select;
   }

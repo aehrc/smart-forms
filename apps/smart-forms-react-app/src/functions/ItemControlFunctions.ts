@@ -76,3 +76,21 @@ export function getCalculatedExpression(qItem: QuestionnaireItem): Expression | 
   }
   return null;
 }
+
+/**
+ * Check if the extension has url for items that use open label
+ *
+ * @author Sean Fong
+ */
+export function getOpenLabelText(qItem: QuestionnaireItem): string | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel'
+  );
+  if (itemControl) {
+    if (itemControl.valueString) {
+      return itemControl.valueString;
+    }
+  }
+  return null;
+}

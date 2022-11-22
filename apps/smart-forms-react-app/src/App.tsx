@@ -11,8 +11,6 @@ import Auth from './components/Auth';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
 
 const questionnaireProvider = new QuestionnaireProvider();
-questionnaireProvider.readCalculatedExpressionsAndEnableWhenItems();
-questionnaireProvider.readVariables();
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
 
 export const QuestionnaireProviderContext =

@@ -6,7 +6,11 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
-import { QItemChoiceControl, QItemChoiceOrientation } from '../interfaces/Enums';
+import {
+  CheckBoxOptionType,
+  QItemChoiceControl,
+  QItemChoiceOrientation
+} from '../interfaces/Enums';
 import { isSpecificItemControl } from './ItemControlFunctions';
 
 /**
@@ -99,36 +103,23 @@ export function getQrChoiceValue(qrChoice: QuestionnaireResponseItem): string {
  *
  * @author Sean Fong
  */
-export function updateQrChoiceCheckboxAnswers(
+export function updateQrCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
-  answerOptions: QuestionnaireItemAnswerOption[],
-  qrChoiceCheckbox: QuestionnaireResponseItem
+  answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
+  qrChoiceCheckbox: QuestionnaireResponseItem,
+  checkboxOptionType: CheckBoxOptionType
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
-  const newAnswer = findInAnswerOptions(answerOptions, changedValue);
+  const newAnswer =
+    checkboxOptionType === CheckBoxOptionType.AnswerOption
+      ? findInAnswerOptions(answerOptions, changedValue)
+      : findInAnswerValueSetCodings(answerOptions, changedValue);
   if (!newAnswer) return null;
 
-  if (answers.length > 0) {
-    // check if new answer exists in existing qrAnswers
-    let qrAnswers = answers;
-    const newAnswerInAnswers = findInAnswerOptions(qrAnswers, changedValue);
-
-    if (newAnswerInAnswers) {
-      // remove new answer from qrAnswers
-      qrAnswers = qrAnswers.filter(
-        (answer) => JSON.stringify(answer) !== JSON.stringify(newAnswerInAnswers)
-      );
-    } else {
-      // add new answer to qrAnswers
-      qrAnswers.push(newAnswer);
-    }
-
-    return { ...qrChoiceCheckbox, answer: qrAnswers };
-  } else {
-    // add new value as first answer
-    return { ...qrChoiceCheckbox, answer: [newAnswer] };
-  }
+  return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
+    ? { ...qrChoiceCheckbox, answer: [] }
+    : { ...qrChoiceCheckbox, answer: [newAnswer] };
 }
 
 /**

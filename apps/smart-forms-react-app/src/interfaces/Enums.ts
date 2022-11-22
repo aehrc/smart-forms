@@ -24,7 +24,8 @@ export enum QItemChoiceControl {
 
 export enum QItemOpenChoiceControl {
   Select = 'select',
-  Autocomplete = 'autocomplete'
+  Autocomplete = 'autocomplete',
+  Checkbox = 'check-box'
 }
 
 export enum QItemChoiceOrientation {
@@ -36,4 +37,9 @@ export enum PageType {
   ResponsePreview = 'responsePreview',
   Renderer = 'renderer',
   Picker = 'picker'
+}
+
+export enum CheckBoxOptionType {
+  AnswerOption = 'answerOption',
+  AnswerValueSet = 'answerValueSet'
 }
