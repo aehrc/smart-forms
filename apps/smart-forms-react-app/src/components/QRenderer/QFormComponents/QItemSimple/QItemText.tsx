@@ -32,7 +32,7 @@ function QItemText(props: Props) {
       id={qItem.linkId}
       value={valueText}
       onChange={handleChange}
-      sx={{ mb: repeats ? 0 : 4 }} // mb:4 is MUI default value
+      sx={{ mb: repeats ? 0 : 2 }} // mb:4 is MUI default value
       label={getTextDisplayPrompt(qItem)}
       fullWidth
       multiline

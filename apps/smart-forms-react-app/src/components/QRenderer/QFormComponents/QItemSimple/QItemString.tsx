@@ -38,7 +38,7 @@ function QItemString(props: Props) {
       id={qItem.linkId}
       value={valueString}
       onChange={handleChange}
-      sx={{ mb: repeats ? 0 : 4 }} // mb:4 is MUI default value
+      sx={{ mb: repeats ? 0 : 2 }} // mb:4 is MUI default value
       label={getTextDisplayPrompt(qItem)}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
     />
