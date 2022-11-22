@@ -117,28 +117,7 @@ export function updateQrChoiceCheckboxAnswers(
       : findInAnswerValueSetCodings(answerOptions, changedValue);
   if (!newAnswer) return null;
 
-  if (answers.length > 0) {
-    // check if new answer exists in existing qrAnswers
-    let qrAnswers = answers;
-    const newAnswerInAnswers =
-      checkboxOptionType === CheckBoxOptionType.AnswerOption
-        ? findInAnswerOptions(qrAnswers, changedValue)
-        : findInAnswerValueSetCodings(qrAnswers, changedValue);
-
-    if (newAnswerInAnswers) {
-      // remove new answer from qrAnswers
-      qrAnswers = qrAnswers.filter(
-        (answer) => JSON.stringify(answer) !== JSON.stringify(newAnswerInAnswers)
-      );
-    } else {
-      // add new answer to qrAnswers
-      qrAnswers.push(newAnswer);
-    }
-    return { ...qrChoiceCheckbox, answer: qrAnswers };
-  } else {
-    // add new value as first answer
-    return { ...qrChoiceCheckbox, answer: [newAnswer] };
-  }
+  return { ...qrChoiceCheckbox, answer: [newAnswer] };
 }
 
 /**
