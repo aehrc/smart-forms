@@ -14,7 +14,7 @@ import {
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel';
-import { updateQrOpenChoiceCheckboxAnswers } from '../../../../functions/OpenChoiceFunctions';
+import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -39,7 +39,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
     const answerOptions = qItem.answerOption;
     if (!answerOptions) return null;
 
-    const updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
+    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
       changedValue,
       answers,
       answerOptions,

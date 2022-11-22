@@ -9,7 +9,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import { updateQrChoiceCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
+import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 
 interface Props
@@ -31,7 +31,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   function handleCheckedChange(changedValue: string) {
     if (options.length < 1) return null;
 
-    const updatedQrChoiceCheckbox = updateQrChoiceCheckboxAnswers(
+    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
       changedValue,
       answers,
       options,

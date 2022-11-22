@@ -2,7 +2,7 @@ import React from 'react';
 import { FormControl, FormGroup, Grid, Typography } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { updateQrChoiceCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
+import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
@@ -28,7 +28,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
     const answerOptions = qItem.answerOption;
     if (!answerOptions) return null;
 
-    const updatedQrChoiceCheckbox = updateQrChoiceCheckboxAnswers(
+    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
       changedValue,
       answers,
       answerOptions,

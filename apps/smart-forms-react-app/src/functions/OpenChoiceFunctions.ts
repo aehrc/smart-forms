@@ -1,13 +1,6 @@
-import {
-  Coding,
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
-import { CheckBoxOptionType, QItemOpenChoiceControl } from '../interfaces/Enums';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r5';
+import { QItemOpenChoiceControl } from '../interfaces/Enums';
 import { isSpecificItemControl } from './ItemControlFunctions';
-import { findInAnswerOptions, findInAnswerValueSetCodings } from './ChoiceFunctions';
 
 /**
  * Get openChoice control type from qItem
@@ -43,31 +36,5 @@ export function getAnswerOptionLabel(option: QuestionnaireItemAnswerOption | str
     return option.valueInteger.toString();
   } else {
     return '';
-  }
-}
-
-/**
- * Update open-choice checkbox group answers based on checkbox changes
- *
- * @author Sean Fong
- */
-export function updateQrOpenChoiceCheckboxAnswers(
-  changedValue: string,
-  answers: QuestionnaireResponseItemAnswer[],
-  answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
-  qrOpenChoiceCheckbox: QuestionnaireResponseItem,
-  checkboxOptionType: CheckBoxOptionType
-): QuestionnaireResponseItem | null {
-  // search for answer item of changedValue from list of answer options
-  const newAnswer =
-    checkboxOptionType === CheckBoxOptionType.AnswerOption
-      ? findInAnswerOptions(answerOptions, changedValue)
-      : findInAnswerValueSetCodings(answerOptions, changedValue);
-  if (!newAnswer) return null;
-
-  if (answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))) {
-    return { ...qrOpenChoiceCheckbox, answer: [] };
-  } else {
-    return { ...qrOpenChoiceCheckbox, answer: [newAnswer] };
   }
 }

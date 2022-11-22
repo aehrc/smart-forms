@@ -99,11 +99,11 @@ export function getQrChoiceValue(qrChoice: QuestionnaireResponseItem): string {
 }
 
 /**
- * Update choice checkbox group answers based on checkbox changes
+ * Update checkbox group answers based on checkbox changes
  *
  * @author Sean Fong
  */
-export function updateQrChoiceCheckboxAnswers(
+export function updateQrCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
   answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
