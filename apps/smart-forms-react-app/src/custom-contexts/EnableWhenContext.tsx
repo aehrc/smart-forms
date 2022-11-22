@@ -52,17 +52,21 @@ function EnableWhenContextProvider(props: { children: any }) {
     checkItemIsEnabled: (linkId: string) => {
       let isEnabled = false;
       if (enableWhenItems[linkId]) {
+        const checkedIsEnabledItems: boolean[] = [];
         enableWhenItems[linkId].linked.forEach((linkedItem) => {
           if (linkedItem.answer && linkedItem.answer.length > 0) {
             linkedItem.answer.forEach((answer) => {
               isEnabled = isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, answer);
-
-              if (isEnabled) return true;
+              checkedIsEnabledItems.push(isEnabled);
             });
-            return isEnabled;
           }
         });
-        return isEnabled;
+
+        if (checkedIsEnabledItems.length === 0) return false;
+
+        return enableWhenItems[linkId].enableBehavior === 'any'
+          ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
+          : checkedIsEnabledItems.every((isEnabled) => isEnabled);
       }
       // always enable component when linkId not in enableWhenItems
       return true;

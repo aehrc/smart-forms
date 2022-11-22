@@ -57,7 +57,7 @@ export function isEnabledAnswerTypeSwitcher(
       answer.valueDecimal,
       enableWhen.operator
     );
-  } else if (enableWhen['answerInteger'] && answer.valueInteger) {
+  } else if (enableWhen['answerInteger'] !== undefined && answer.valueInteger !== undefined) {
     return answerOperatorSwitcher(
       enableWhen.answerInteger,
       answer.valueInteger,
