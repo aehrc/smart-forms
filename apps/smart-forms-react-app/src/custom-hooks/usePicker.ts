@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import {
   getQResponsesFromBundle,
@@ -23,7 +23,7 @@ function usePicker(launch: LaunchContextType) {
     number | null
   >(null);
 
-  const [questionnaireSourceIsLocal, setQuestionnaireSourceIsLocal] = useState(false);
+  const [questionnaireSourceIsLocal, setQuestionnaireSourceIsLocal] = useState(true);
 
   // determine if questionnaires are fetched from local or remote
   useEffect(() => {
@@ -46,6 +46,7 @@ function usePicker(launch: LaunchContextType) {
     resetPickerState();
     if (questionnaireSourceIsLocal) {
       setQuestionnaires(loadQuestionnairesFromLocal());
+      setQuestionnaireIsSearching(false);
     } else {
       // fetch questionnaires and questionnaireResponses from remote
       setQuestionnaireIsSearching(true);
