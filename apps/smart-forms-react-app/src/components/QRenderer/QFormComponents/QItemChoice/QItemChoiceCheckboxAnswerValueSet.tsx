@@ -9,8 +9,8 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import QItemChoiceCheckboxSingle from './QItemChoiceCheckboxSingle';
 import { updateQrChoiceCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
+import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,7 +48,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
     <FormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
       {options.map((option) => {
         return (
-          <QItemChoiceCheckboxSingle
+          <QItemCheckboxSingle
             key={option.code ?? ''}
             value={option.code ?? ''}
             label={option.display ?? `${option.code}`}

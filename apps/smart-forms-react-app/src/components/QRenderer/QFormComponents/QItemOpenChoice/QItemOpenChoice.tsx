@@ -9,6 +9,8 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
+import { getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
+import QItemOpenChoiceCheckboxAnswerOption from './QItemOpenChoiceCheckboxAnswerOption';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -19,8 +21,19 @@ interface Props
 
 function QItemOpenChoice(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const orientation = getChoiceOrientation(qItem);
 
   switch (getOpenChoiceControlType(qItem)) {
+    case QItemOpenChoiceControl.Checkbox:
+      return (
+        <QItemOpenChoiceCheckboxAnswerOption
+          qItem={qItem}
+          qrItem={qrItem}
+          repeats={repeats}
+          onQrItemChange={onQrItemChange}
+          orientation={orientation}
+        />
+      );
     case QItemOpenChoiceControl.Autocomplete:
       return (
         <QItemOpenChoiceAutocomplete
