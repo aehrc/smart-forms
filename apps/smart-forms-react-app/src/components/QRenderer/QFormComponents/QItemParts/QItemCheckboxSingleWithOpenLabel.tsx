@@ -1,22 +1,34 @@
 import React from 'react';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { Checkbox, FormControlLabel, TextField } from '@mui/material';
 
 interface Props {
-  value: string;
+  value: string | null;
   label: string;
   isChecked: boolean;
-  onCheckedChange: (value: string) => unknown;
+  onCheckedChange: (checked: boolean) => unknown;
+  onInputChange: (input: string) => unknown;
 }
 
 function QItemCheckboxSingleWithOpenLabel(props: Props) {
-  const { value, label, isChecked, onCheckedChange } = props;
+  const { value, label, isChecked, onCheckedChange, onInputChange } = props;
+
+  function handleCheckedChange(event: React.ChangeEvent<HTMLInputElement>) {
+    onCheckedChange(event.target.checked);
+  }
+
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    onInputChange(event.target.value);
+  }
 
   return (
-    <FormControlLabel
-      control={<Checkbox checked={isChecked} onChange={() => onCheckedChange(value)} />}
-      label={label}
-      sx={{ mr: 3 }}
-    />
+    <>
+      <FormControlLabel
+        control={<Checkbox checked={isChecked} onChange={handleCheckedChange} />}
+        label={label + ':'}
+        sx={{ mr: 3 }}
+      />
+      <TextField disabled={!isChecked} value={value} onChange={handleInputChange} />
+    </>
   );
 }
 

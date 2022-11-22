@@ -117,7 +117,9 @@ export function updateQrChoiceCheckboxAnswers(
       : findInAnswerValueSetCodings(answerOptions, changedValue);
   if (!newAnswer) return null;
 
-  return { ...qrChoiceCheckbox, answer: [newAnswer] };
+  return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
+    ? { ...qrChoiceCheckbox, answer: [] }
+    : { ...qrChoiceCheckbox, answer: [newAnswer] };
 }
 
 /**

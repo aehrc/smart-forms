@@ -55,18 +55,19 @@ export function updateQrOpenChoiceCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
   answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
-  qrChoiceCheckbox: QuestionnaireResponseItem,
+  qrOpenChoiceCheckbox: QuestionnaireResponseItem,
   checkboxOptionType: CheckBoxOptionType
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
-  let newAnswer =
+  const newAnswer =
     checkboxOptionType === CheckBoxOptionType.AnswerOption
       ? findInAnswerOptions(answerOptions, changedValue)
       : findInAnswerValueSetCodings(answerOptions, changedValue);
+  if (!newAnswer) return null;
 
-  if (!newAnswer) {
-    newAnswer = { valueString: changedValue };
+  if (answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))) {
+    return { ...qrOpenChoiceCheckbox, answer: [] };
+  } else {
+    return { ...qrOpenChoiceCheckbox, answer: [newAnswer] };
   }
-
-  return { ...qrChoiceCheckbox, answer: [newAnswer] };
 }

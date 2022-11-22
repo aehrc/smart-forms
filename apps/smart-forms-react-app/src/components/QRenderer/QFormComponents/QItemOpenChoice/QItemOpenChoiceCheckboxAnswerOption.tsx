@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormControl, FormGroup, Grid, Typography } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
@@ -12,7 +16,7 @@ import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel';
 import { updateQrOpenChoiceCheckboxAnswers } from '../../../../functions/OpenChoiceFunctions';
 
-interface QItemChoiceCheckboxProps
+interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
@@ -20,15 +24,18 @@ interface QItemChoiceCheckboxProps
   orientation: QItemChoiceOrientation;
 }
 
-function QItemOpenChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
+function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
   const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
 
   const qrOpenChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrOpenChoiceCheckbox['answer'] ? qrOpenChoiceCheckbox['answer'] : [];
 
   const openLabelText = getOpenLabelText(qItem);
+  const [openLabelValue, setOpenLabelValue] = useState<string>('');
+  const [openLabelChecked, setOpenLabelChecked] = useState<boolean>(false);
 
   function handleCheckedChange(changedValue: string) {
+    setOpenLabelChecked(false);
     const answerOptions = qItem.answerOption;
     if (!answerOptions) return null;
 
@@ -85,10 +92,19 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
 
       {openLabelText ? (
         <QItemCheckboxSingleWithOpenLabel
-          value={openLabelText}
+          value={openLabelValue}
           label={openLabelText}
-          isChecked={answers.some((answer) => answer.valueString === openLabelText)}
-          onCheckedChange={handleCheckedChange}
+          isChecked={openLabelChecked}
+          onCheckedChange={(checked) => {
+            const updatedAnswer: QuestionnaireResponseItemAnswer = { valueString: openLabelValue };
+            onQrItemChange({ ...qrOpenChoiceCheckbox, answer: [updatedAnswer] });
+            setOpenLabelChecked(checked);
+          }}
+          onInputChange={(input) => {
+            const updatedAnswer: QuestionnaireResponseItemAnswer = { valueString: input };
+            onQrItemChange({ ...qrOpenChoiceCheckbox, answer: [updatedAnswer] });
+            setOpenLabelValue(input);
+          }}
         />
       ) : null}
     </FormGroup>
