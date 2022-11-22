@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormControl, FormGroup, Grid, Typography } from '@mui/material';
-import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
+import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { updateQrChoiceCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceCheckboxSingle from './QItemChoiceCheckboxSingle';
@@ -32,7 +32,8 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
       changedValue,
       answers,
       answerOptions,
-      qrChoiceCheckbox
+      qrChoiceCheckbox,
+      CheckBoxOptionType.AnswerOption
     );
 
     if (updatedQrChoiceCheckbox) {

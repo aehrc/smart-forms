@@ -8,7 +8,7 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
-import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
+import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import QItemChoiceCheckboxSingle from './QItemChoiceCheckboxSingle';
 import { updateQrChoiceCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 
@@ -35,7 +35,8 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
       changedValue,
       answers,
       options,
-      qrChoiceCheckbox
+      qrChoiceCheckbox,
+      CheckBoxOptionType.AnswerValueSet
     );
 
     if (updatedQrChoiceCheckbox) {

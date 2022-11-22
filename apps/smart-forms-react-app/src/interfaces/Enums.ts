@@ -37,3 +37,8 @@ export enum PageType {
   Renderer = 'renderer',
   Picker = 'picker'
 }
+
+export enum CheckBoxOptionType {
+  AnswerOption = 'answerOption',
+  AnswerValueSet = 'answerValueSet'
+}
