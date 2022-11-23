@@ -17,13 +17,13 @@ function ResponsePreview() {
 
   return (
     <Grid container>
-      <SideBarGrid item lg={1.75}>
+      <SideBarGrid item xs={12} lg={1.75}>
         <SideBar>
           <ResponsePreviewOperationButtons />
           <PrintPreviewButton handlePrint={handlePrint} />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item lg={10.25}>
+      <MainGrid item xs={12} lg={10.25}>
         <MainGridContainerBox gap={2.5}>
           <Typography fontWeight="bold" fontSize={36}>
             Response Preview

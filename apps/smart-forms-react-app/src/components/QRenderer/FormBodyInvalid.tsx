@@ -9,12 +9,12 @@ import ChipBar from '../ChipBar/ChipBar';
 function FormBodyInvalid() {
   return (
     <Grid container>
-      <SideBarGrid item lg={1.75}>
+      <SideBarGrid item xs={12} lg={1.75}>
         <SideBar>
           <InvalidQuestionnaireOperationButtons />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item lg={10.25}>
+      <MainGrid item xs={12} lg={10.25}>
         <MainGridContainerBox gap={2.5}>
           <Typography fontSize={24}>Questionnaire does not have a form item.</Typography>
           <ChipBar>
