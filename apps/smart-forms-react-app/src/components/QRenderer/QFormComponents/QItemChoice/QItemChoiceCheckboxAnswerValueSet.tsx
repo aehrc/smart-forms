@@ -11,7 +11,7 @@ import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
-import { QFormGroup } from '../../../StyledComponents/Item.styles';
+import { QFormGroup, QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -72,7 +72,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}

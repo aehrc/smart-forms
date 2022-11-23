@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, Stack } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from './QItemSwitcher';
@@ -10,6 +10,7 @@ import {
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
+import { QItemTypography } from '../../StyledComponents/Item.styles';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -65,7 +66,7 @@ function QItemRepeat(props: Props) {
     <>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {repeatAnswers.map((answer, index) => {
@@ -93,7 +94,7 @@ function QItemRepeat(props: Props) {
         </Grid>
       </Grid>
 
-      <Stack direction="row" justifyContent="end" sx={{ mt: 0.5, mb: 3 }}>
+      <Stack direction="row" justifyContent="end" sx={{ mb: 3 }}>
         <Button
           variant="contained"
           startIcon={<Add />}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, Typography } from '@mui/material';
+import { FormControl, Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
@@ -9,7 +9,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
-import { QRadioGroup } from '../../../StyledComponents/Item.styles';
+import { QItemTypography, QRadioGroup } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -77,7 +77,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}

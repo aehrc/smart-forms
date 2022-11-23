@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, TextField, Typography } from '@mui/material';
+import { FormControl, Grid, TextField } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -8,6 +8,7 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -50,7 +51,7 @@ function QItemString(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {stringInput}

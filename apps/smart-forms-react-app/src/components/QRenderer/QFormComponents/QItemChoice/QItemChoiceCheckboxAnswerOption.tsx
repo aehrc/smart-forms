@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, Typography } from '@mui/material';
+import { FormControl, Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
@@ -9,7 +9,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
-import { QFormGroup } from '../../../StyledComponents/Item.styles';
+import { QFormGroup, QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface QItemChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -88,7 +88,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormControl, Grid, Typography } from '@mui/material';
+import { FormControl, Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import {
   QuestionnaireItem,
@@ -15,7 +15,7 @@ import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
-import { QFormGroup } from '../../../StyledComponents/Item.styles';
+import { QFormGroup, QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -117,7 +117,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {openChoiceCheckbox}
