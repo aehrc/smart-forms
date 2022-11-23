@@ -8,6 +8,7 @@ import {
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -39,16 +40,19 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     onQrItemChange(createQrItem(qItem));
   }
 
-  const choiceSelectAnswerValueSet = (
-    <Autocomplete
-      id={qItem.id}
-      options={options}
-      getOptionLabel={(option) => `${option.display}`}
-      value={valueCoding ?? null}
-      onChange={handleChange}
-      renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
-    />
-  );
+  const choiceSelectAnswerValueSet =
+    options.length > 0 ? (
+      <Autocomplete
+        id={qItem.id}
+        options={options}
+        getOptionLabel={(option) => `${option.display}`}
+        value={valueCoding ?? null}
+        onChange={handleChange}
+        renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
+      />
+    ) : (
+      <Typography variant="subtitle2">Unable to fetch options</Typography>
+    );
 
   const renderQItemChoiceSelectAnswerValueSet = repeats ? (
     <>{choiceSelectAnswerValueSet}</>
@@ -56,7 +60,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerValueSet}

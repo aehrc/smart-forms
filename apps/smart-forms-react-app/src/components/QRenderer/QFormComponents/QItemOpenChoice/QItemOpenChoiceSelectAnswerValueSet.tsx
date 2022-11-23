@@ -1,5 +1,5 @@
 import React from 'react';
-import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { Autocomplete, FormControl, Grid, TextField } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -8,6 +8,7 @@ import {
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -59,7 +60,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {openChoiceSelectAnswerValueSet}

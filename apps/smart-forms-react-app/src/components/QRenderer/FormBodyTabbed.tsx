@@ -11,6 +11,7 @@ import { getShortText } from '../../functions/ItemControlFunctions';
 import { hideQItem } from '../../functions/QItemFunctions';
 import ListItemText from '@mui/material/ListItemText';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
+
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
@@ -35,7 +36,7 @@ function FormBodyTabbed(props: Props) {
     const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems);
 
     return (
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <TabContext value={tabIndex}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
             <Card sx={{ p: 1, mb: 2 }}>

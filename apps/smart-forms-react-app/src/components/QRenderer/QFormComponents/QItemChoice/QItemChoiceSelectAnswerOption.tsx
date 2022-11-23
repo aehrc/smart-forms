@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { FormControl, Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -8,6 +8,7 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -65,7 +66,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerOption}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Card, Divider, Typography } from '@mui/material';
+import { Box, Card, Divider } from '@mui/material';
 import { QItemType } from '../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
@@ -12,6 +12,7 @@ import {
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
 import { hideQItem } from '../../../functions/QItemFunctions';
+import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,13 +50,11 @@ function QItemGroup(props: Props) {
     const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
 
     return (
-      <Card elevation={groupCardElevation} sx={{ p: 5, pb: 4 }}>
+      <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: 3.5 }}>
         {repeats ? null : (
           <>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              {qItem.text}
-            </Typography>
-            <Divider sx={{ mt: 2, mb: 4 }} light />
+            <QGroupHeadingTypography variant="h6">{qItem.text}</QGroupHeadingTypography>
+            <Divider sx={{ mt: 1, mb: 1.5 }} light />
           </>
         )}
         {qItems.map((qItem: QuestionnaireItem, i) => {
@@ -64,12 +63,12 @@ function QItemGroup(props: Props) {
             if (qItem.repeats) {
               if (qItem.type === QItemType.Group) {
                 return (
-                  <Box key={qItem.linkId} sx={{ my: 3 }}>
+                  <Box key={qItem.linkId} sx={{ my: 2 }}>
                     <QItemRepeatGroup
                       qItem={qItem}
                       qrItem={qrItem}
                       repeats={true}
-                      groupCardElevation={groupCardElevation + 2}
+                      groupCardElevation={groupCardElevation + 1}
                       onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
                   </Box>
                 );
@@ -88,12 +87,12 @@ function QItemGroup(props: Props) {
           // if qItem is not a repeating question
           if (qItem.type === QItemType.Group) {
             return (
-              <Box key={qItem.linkId} sx={{ my: 4 }}>
+              <Box key={qItem.linkId} sx={{ my: 2 }}>
                 <QItemGroup
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={false}
-                  groupCardElevation={groupCardElevation + 2}
+                  groupCardElevation={groupCardElevation + 1}
                   onQrItemChange={handleQrItemChange}></QItemGroup>
               </Box>
             );

@@ -1,6 +1,7 @@
 import React from 'react';
-import { FormControl, Typography } from '@mui/material';
+import { FormControl } from '@mui/material';
 import { QuestionnaireItem } from 'fhir/r5';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props {
   qItem: QuestionnaireItem;
@@ -11,7 +12,7 @@ function QItemDisplay(props: Props) {
 
   return (
     <FormControl>
-      <Typography>{qItem.text}</Typography>
+      <QItemTypography>{qItem.text}</QItemTypography>
     </FormControl>
   );
 }

@@ -21,6 +21,14 @@ declare module '@mui/material/styles' {
 
 const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
   return createTheme({
+    typography: {
+      body1: {
+        fontSize: 14
+      },
+      subtitle2: {
+        fontSize: 13
+      }
+    },
     palette: {
       background: {
         default: '#fbfbfc'
@@ -49,7 +57,7 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
         styleOverrides: {
           root: {
             marginTop: 4,
-            marginBottom: 32
+            marginBottom: 8
           }
         }
       },

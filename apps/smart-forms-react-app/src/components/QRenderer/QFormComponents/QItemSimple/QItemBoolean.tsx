@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Checkbox, FormControl, FormControlLabel, Grid, Typography } from '@mui/material';
+import { Checkbox, FormControl, FormControlLabel, Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -8,6 +8,7 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,7 +46,7 @@ function QItemBoolean(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           <FormControlLabel

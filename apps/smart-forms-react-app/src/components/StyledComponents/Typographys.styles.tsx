@@ -6,7 +6,6 @@ export const SideBarOverlineTypography = styled(Typography)(() => ({
   marginTop: '8px'
 }));
 
-export const ChipBarOverlineTypography = styled(Typography)(() => ({
-  fontSize: 10,
-  marginLeft: '8px'
+export const QGroupHeadingTypography = styled(Typography)(() => ({
+  fontSize: 16
 }));

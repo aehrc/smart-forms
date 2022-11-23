@@ -47,6 +47,7 @@ function usePicker(launch: LaunchContextType) {
     if (questionnaireSourceIsLocal) {
       setQuestionnaires(loadQuestionnairesFromLocal());
       setQuestionnaireIsSearching(false);
+      setQuestionnaireResponseIsSearching(false);
     } else {
       // fetch questionnaires and questionnaireResponses from remote
       setQuestionnaireIsSearching(true);

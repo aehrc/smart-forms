@@ -1,16 +1,17 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { FormControl, Grid, Typography } from '@mui/material';
+import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+import { FormControl, Grid } from '@mui/material';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { useEffect } from 'react';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 
 interface Props
@@ -46,7 +47,7 @@ function QItemTime(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           <QItemTimePicker value={value} onTimeChange={handleChange} />

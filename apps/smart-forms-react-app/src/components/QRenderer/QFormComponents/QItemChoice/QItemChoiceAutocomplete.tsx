@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Autocomplete,
-  CircularProgress,
-  FormControl,
-  Grid,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Autocomplete, CircularProgress, FormControl, Grid, TextField } from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
@@ -15,6 +8,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
+import { QItemTypography } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -89,7 +83,7 @@ function QItemChoiceAutocomplete(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <Typography>{qItem.text}</Typography>
+          <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}
