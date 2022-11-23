@@ -1,9 +1,10 @@
 import { Questionnaire } from 'fhir/r5';
 import React from 'react';
-import { Alert, AlertTitle, ListItemButton, ListItemText } from '@mui/material';
+import { AlertTitle, ListItemButton, ListItemText } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 import PickerSkeletonList from './PickerSkeletonList';
+import { PickerAlert } from '../StyledComponents/Alert.styles';
 
 interface Props {
   searchInput: string;
@@ -29,36 +30,36 @@ function PickerQuestionnaireCardContent(props: Props) {
   } else if (questionnaires.length === 0) {
     if (searchInput === '') {
       return (
-        <Alert severity="info" sx={{ m: 2, p: 2 }}>
+        <PickerAlert severity="info">
           Enter a questionnaire title in the search bar above to load results.
-        </Alert>
+        </PickerAlert>
       );
     } else {
       return (
-        <Alert severity="info" sx={{ m: 2, p: 2 }}>
+        <PickerAlert severity="warning">
           <AlertTitle>No questionnaires found</AlertTitle>
           <div>
             {`We didn't manage to find anything from the search terms - `}
             <b>{searchInput}</b>.
           </div>
           <div>Try searching for something else.</div>
-        </Alert>
+        </PickerAlert>
       );
     }
   } else {
     return (
       <>
         {searchInput === '' && !questionnaireSourceIsLocal ? (
-          <Alert severity="info" sx={{ m: 2, mb: 0, p: 2 }}>
+          <PickerAlert severity="info" sx={{ mb: 0 }}>
             Looking for something else? Refine your search in the search bar above.
-          </Alert>
+          </PickerAlert>
         ) : null}
         <PrimarySelectableList>
           {questionnaires.map((questionnaire, i) => (
             <ListItemButton
               key={questionnaire.id}
               selected={selectedQuestionnaireIndex === i}
-              sx={{ py: 1.25, px: 2.5 }}
+              sx={{ py: 1, px: 2.5 }}
               onClick={() => {
                 onQSelectedIndexChange(i);
               }}>
