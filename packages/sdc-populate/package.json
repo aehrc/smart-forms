@@ -1,6 +1,6 @@
 {
   "name": "sdc-populate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Performs prepopulation functionality from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/",
   "main": "lib/index.js",
   "scripts": {
