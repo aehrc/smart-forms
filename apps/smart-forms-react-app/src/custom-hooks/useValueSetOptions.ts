@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Coding, QuestionnaireItem, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
 import { ContainedValueSetContext } from '../components/QRenderer/Form';
@@ -23,7 +23,9 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
       // get options from referenced valueSet
       const reference = valueSetUrl.slice(1);
       const valueSet = containedValueSetContext[reference];
-      setOptionsFromValueSet(valueSetUrl, valueSet);
+      if (valueSet) {
+        setOptionsFromValueSet(valueSetUrl, valueSet);
+      }
     } else {
       // get options from terminology server
       AnswerValueSet.expand(valueSetUrl, (valueSet: ValueSet) => {
