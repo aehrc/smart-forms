@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Box, Divider, Grid, Paper, Typography } from '@mui/material';
+import { Box, Divider, Grid, Paper } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
@@ -8,6 +8,7 @@ import ChipBar from '../ChipBar/ChipBar';
 import ResponsePreviewOperationButtons from '../OperationButtons/ResponsePreviewOperationButtons';
 import { useReactToPrint } from 'react-to-print';
 import PrintPreviewButton from '../OperationButtons/SingleButtons/PrintPreviewButton';
+import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 
 function ResponsePreview() {
   const componentRef = useRef(null);
@@ -24,10 +25,8 @@ function ResponsePreview() {
         </SideBar>
       </SideBarGrid>
       <MainGrid item xs={12} lg={10.25}>
-        <MainGridContainerBox gap={2.5}>
-          <Typography fontWeight="bold" fontSize={36}>
-            Response Preview
-          </Typography>
+        <MainGridContainerBox>
+          <MainGridHeadingTypography>Response Preview</MainGridHeadingTypography>
           <ChipBar>
             <ResponsePreviewOperationButtons isChip={true} />
             <PrintPreviewButton handlePrint={handlePrint} isChip={true} />

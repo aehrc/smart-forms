@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import { Box, Divider, Grid } from '@mui/material';
 import FormBodyUntabbed from './FormBodyUntabbed';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
@@ -16,6 +16,7 @@ import ChipBar from '../ChipBar/ChipBar';
 import RendererOperationButtons from '../OperationButtons/RendererOperationButtons';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import FormBodyInvalid from './FormBodyInvalid';
+import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -97,10 +98,8 @@ function Form(props: Props) {
                 </SideBar>
               </SideBarGrid>
               <MainGrid item xs={12} lg={10.25}>
-                <MainGridContainerBox gap={2.5}>
-                  <Typography fontWeight="bold" fontSize={36}>
-                    {questionnaire.title}
-                  </Typography>
+                <MainGridContainerBox>
+                  <MainGridHeadingTypography>{questionnaire.title}</MainGridHeadingTypography>
                   <ChipBar>
                     <RendererOperationButtons
                       isChip={true}

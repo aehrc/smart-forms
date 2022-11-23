@@ -9,3 +9,8 @@ export const SideBarOverlineTypography = styled(Typography)(() => ({
 export const QGroupHeadingTypography = styled(Typography)(() => ({
   fontSize: 16
 }));
+
+export const MainGridHeadingTypography = styled(Typography)(() => ({
+  fontSize: 30,
+  fontWeight: 'bold'
+}));
