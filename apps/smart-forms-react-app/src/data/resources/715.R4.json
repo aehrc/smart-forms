@@ -741,7 +741,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.name.where(use='usual').select(given.first() + ' ' + family)"
+                    "expression": "iif(%LaunchPatient.name.where(use = 'official').exists(),%LaunchPatient.name.where(use = 'official').first().select(given.first() & ' ' & family),%LaunchPatient.name.text.first())"
                   }
                 }
               ],
@@ -898,7 +898,7 @@
               "text": "Language Group",
               "type": "choice",
               "repeats": true,
-              "answerValueSet": "http://snomed.info/sct?fhir_vs=refset/32570591000036107&"
+              "answerValueSet": "http://csiro.au/valueset/1267/au-indigenous&"
             },
             {
               "extension": [
