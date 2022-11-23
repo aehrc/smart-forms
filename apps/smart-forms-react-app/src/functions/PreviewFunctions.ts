@@ -65,19 +65,22 @@ function renderItemDiv(
     const repeatGroup = answer.item;
 
     if (repeatGroup) {
-      qrItemAnswer += `<div style="flex: 100%; margin-top: 200px; text-decoration: underline">Answer ${
+      qrItemAnswer += `<div style="flex: 100%; margin-top: 10px; text-decoration: underline">Answer ${
         i + 1
       }</div>`;
       // recursively get item answers from repeat groups
       repeatGroup.forEach((repeatGroupAnswerItem) => {
         qrItemAnswer += renderItemDiv(repeatGroupAnswerItem, nestedLevel, true);
       });
+      qrItemAnswer += `<div style="margin-bottom: 10px"></div>`;
 
       qrItemRender = `<div style="flex: 100%; font-weight: bold">${item.text}</div>
                         <div style="flex: 100%;">${qrItemAnswer}</div>`;
     } else {
       // if not repeat group, get item answer and construct div
       const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
+      console.log(answer);
+      console.log(answerValueInString);
 
       qrItemAnswer += `<div>${
         answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
@@ -107,7 +110,7 @@ function renderGroupHeadingDiv(item: QuestionnaireResponseItem, nestedLevel: num
 function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer): string {
   if (answer.valueBoolean !== undefined) return `${answer.valueBoolean}`;
   else if (answer.valueDecimal) return `${answer.valueDecimal}`;
-  else if (answer.valueInteger) return `${answer.valueInteger}`;
+  else if (answer.valueInteger !== undefined) return `${answer.valueInteger}`;
   else if (answer.valueDate) return `${answer.valueDate}`;
   else if (answer.valueDateTime) return `${answer.valueDateTime}`;
   else if (answer.valueTime) return `${answer.valueTime}`;
