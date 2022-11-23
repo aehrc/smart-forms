@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, RadioGroup, Typography } from '@mui/material';
+import { FormControl, Grid, Typography } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerValueSetCodings } from '../../../../functions/ChoiceFunctions';
@@ -10,6 +10,7 @@ import {
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
+import { QRadioGroup } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -40,24 +41,27 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     }
   }
 
-  const choiceRadio = (
-    <RadioGroup
-      row={orientation === QItemChoiceOrientation.Horizontal}
-      name={qItem.text}
-      id={qItem.id}
-      onChange={handleChange}
-      value={valueRadio ?? null}>
-      {options.map((option) => {
-        return (
-          <QItemChoiceRadioSingle
-            key={option.code ?? ''}
-            value={option.code ?? ''}
-            label={option.display ?? `${option.code}`}
-          />
-        );
-      })}
-    </RadioGroup>
-  );
+  const choiceRadio =
+    options.length > 0 ? (
+      <QRadioGroup
+        row={orientation === QItemChoiceOrientation.Horizontal}
+        name={qItem.text}
+        id={qItem.id}
+        onChange={handleChange}
+        value={valueRadio ?? null}>
+        {options.map((option) => {
+          return (
+            <QItemChoiceRadioSingle
+              key={option.code ?? ''}
+              value={option.code ?? ''}
+              label={option.display ?? `${option.code}`}
+            />
+          );
+        })}
+      </QRadioGroup>
+    ) : (
+      <Typography variant="subtitle2">Unable to fetch options</Typography>
+    );
 
   const renderQItemChoiceRadio = repeats ? (
     <>{choiceRadio}</>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, FormGroup, Grid, Typography } from '@mui/material';
+import { FormControl, Grid, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -11,6 +11,7 @@ import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
+import { QFormGroup } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -44,21 +45,26 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
     }
   }
 
-  const choiceCheckbox = (
-    <FormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
-      {options.map((option) => {
-        return (
-          <QItemCheckboxSingle
-            key={option.code ?? ''}
-            value={option.code ?? ''}
-            label={option.display ?? `${option.code}`}
-            isChecked={answers.some((answer) => JSON.stringify(answer) === JSON.stringify(option))}
-            onCheckedChange={handleCheckedChange}
-          />
-        );
-      })}
-    </FormGroup>
-  );
+  const choiceCheckbox =
+    options.length > 0 ? (
+      <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
+        {options.map((option) => {
+          return (
+            <QItemCheckboxSingle
+              key={option.code ?? ''}
+              value={option.code ?? ''}
+              label={option.display ?? `${option.code}`}
+              isChecked={answers.some(
+                (answer) => JSON.stringify(answer) === JSON.stringify(option)
+              )}
+              onCheckedChange={handleCheckedChange}
+            />
+          );
+        })}
+      </QFormGroup>
+    ) : (
+      <Typography variant="subtitle2">Unable to fetch options</Typography>
+    );
 
   const renderQItemChoiceCheckbox = repeats ? (
     <>{choiceCheckbox}</>

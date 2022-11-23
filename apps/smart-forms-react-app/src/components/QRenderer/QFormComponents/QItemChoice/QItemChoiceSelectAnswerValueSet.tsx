@@ -39,16 +39,19 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     onQrItemChange(createQrItem(qItem));
   }
 
-  const choiceSelectAnswerValueSet = (
-    <Autocomplete
-      id={qItem.id}
-      options={options}
-      getOptionLabel={(option) => `${option.display}`}
-      value={valueCoding ?? null}
-      onChange={handleChange}
-      renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
-    />
-  );
+  const choiceSelectAnswerValueSet =
+    options.length > 0 ? (
+      <Autocomplete
+        id={qItem.id}
+        options={options}
+        getOptionLabel={(option) => `${option.display}`}
+        value={valueCoding ?? null}
+        onChange={handleChange}
+        renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
+      />
+    ) : (
+      <Typography variant="subtitle2">Unable to fetch options</Typography>
+    );
 
   const renderQItemChoiceSelectAnswerValueSet = repeats ? (
     <>{choiceSelectAnswerValueSet}</>

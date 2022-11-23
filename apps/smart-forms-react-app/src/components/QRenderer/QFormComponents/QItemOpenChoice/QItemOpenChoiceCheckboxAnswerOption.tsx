@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormControl, FormGroup, Grid, Typography } from '@mui/material';
+import { FormControl, Grid, Typography } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import {
   QuestionnaireItem,
@@ -15,6 +15,7 @@ import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
+import { QFormGroup } from '../../../StyledComponents/Item.styles';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -53,7 +54,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   }
 
   const openChoiceCheckbox = (
-    <FormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
+    <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
@@ -107,7 +108,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
           }}
         />
       ) : null}
-    </FormGroup>
+    </QFormGroup>
   );
 
   const renderQItemChoiceCheckbox = repeats ? (
