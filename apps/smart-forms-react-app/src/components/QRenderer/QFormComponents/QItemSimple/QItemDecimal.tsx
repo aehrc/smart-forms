@@ -9,6 +9,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import QItemTextInstruction from './QItemTextInstruction';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -65,6 +66,9 @@ function QItemDecimal(props: Props) {
             onChange={handleChange}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           />
+
+          {/* For demo purposes only*/}
+          <QItemTextInstruction qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>
