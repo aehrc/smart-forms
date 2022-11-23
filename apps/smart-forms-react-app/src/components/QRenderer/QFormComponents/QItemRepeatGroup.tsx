@@ -91,7 +91,7 @@ function QItemRepeatGroup(props: Props) {
                 qItem={qItem}
                 qrItem={singleQrItem}
                 repeats={true}
-                groupCardElevation={groupCardElevation + 2}
+                groupCardElevation={groupCardElevation + 1}
                 onQrItemChange={(newQrGroup) =>
                   handleAnswerItemsChange(newQrGroup, index)
                 }></QItemGroup>

@@ -68,7 +68,7 @@ function QItemGroup(props: Props) {
                       qItem={qItem}
                       qrItem={qrItem}
                       repeats={true}
-                      groupCardElevation={groupCardElevation + 2}
+                      groupCardElevation={groupCardElevation + 1}
                       onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
                   </Box>
                 );
@@ -92,7 +92,7 @@ function QItemGroup(props: Props) {
                   qItem={qItem}
                   qrItem={qrItem}
                   repeats={false}
-                  groupCardElevation={groupCardElevation + 2}
+                  groupCardElevation={groupCardElevation + 1}
                   onQrItemChange={handleQrItemChange}></QItemGroup>
               </Box>
             );
