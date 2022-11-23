@@ -2,9 +2,11 @@ import { Expression, Questionnaire, QuestionnaireItem, ValueSet } from 'fhir/r5'
 import { CalculatedExpression, EnableWhenItemProperties } from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
 import { getCalculatedExpression } from '../functions/ItemControlFunctions';
+import { QuestionnaireSource } from '../interfaces/Enums';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
+  source: QuestionnaireSource | null;
   variables: Expression[];
   calculatedExpressions: Record<string, CalculatedExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
@@ -15,14 +17,18 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'active'
     };
+    this.source = null;
     this.variables = [];
     this.calculatedExpressions = {};
     this.enableWhenItems = {};
     this.containedValueSets = {};
   }
 
-  setQuestionnaire(questionnaire: Questionnaire) {
+  setQuestionnaire(questionnaire: Questionnaire, questionnaireSourceIsLocal: boolean) {
     this.questionnaire = questionnaire;
+    this.source = questionnaireSourceIsLocal
+      ? QuestionnaireSource.Local
+      : QuestionnaireSource.Remote;
     this.readCalculatedExpressionsAndEnableWhenItems();
     this.readVariables();
     this.readContainedValueSets();

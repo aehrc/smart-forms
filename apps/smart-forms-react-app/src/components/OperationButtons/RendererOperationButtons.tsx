@@ -5,6 +5,8 @@ import SaveAsFinalButton from './SingleButtons/SaveAsFinalButton';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import ViewFormPreviewButton from './SingleButtons/ViewFormPreviewButton';
+import { QuestionnaireProviderContext } from '../../App';
+import { QuestionnaireSource } from '../../interfaces/Enums';
 
 interface Props {
   isChip?: boolean;
@@ -19,6 +21,7 @@ function RendererOperationButtons(props: Props) {
     props;
 
   const launch = React.useContext(LaunchContext);
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   return (
     <>
       <ChangeQuestionnaireButton
@@ -28,7 +31,10 @@ function RendererOperationButtons(props: Props) {
         questionnaireResponse={questionnaireResponse}
       />
       <ViewFormPreviewButton isChip={isChip} togglePreviewMode={togglePreviewMode} />
-      {launch.fhirClient && launch.user && launch.patient ? (
+      {launch.fhirClient &&
+      launch.user &&
+      launch.patient &&
+      questionnaireProvider.source === QuestionnaireSource.Remote ? (
         <>
           <SaveAsDraftButton
             isChip={isChip}

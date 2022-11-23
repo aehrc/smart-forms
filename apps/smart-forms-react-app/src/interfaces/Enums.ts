@@ -43,3 +43,8 @@ export enum CheckBoxOptionType {
   AnswerOption = 'answerOption',
   AnswerValueSet = 'answerValueSet'
 }
+
+export enum QuestionnaireSource {
+  Local = 'local',
+  Remote = 'remote'
+}

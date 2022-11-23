@@ -99,6 +99,7 @@ function Picker() {
                 selectedQuestionnaireIndex={selectedQuestionnaireIndex}
                 selectedQuestionnaireResponseIndex={selectedQuestionnaireResponseIndex}
                 questionnaireResponseIsSearching={questionnaireResponseIsSearching}
+                questionnaireSourceIsLocal={questionnaireSourceIsLocal}
                 onQrSelectedIndexChange={selectQuestionnaireResponseByIndex}
               />
             </Grid>

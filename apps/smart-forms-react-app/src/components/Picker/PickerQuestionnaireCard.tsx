@@ -37,7 +37,7 @@ function PickerQuestionnaireCard(props: Props) {
 
   function handleCreateNewResponseButtonClick() {
     if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
-      questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
+      questionnaireProvider.setQuestionnaire(selectedQuestionnaire, questionnaireSourceIsLocal);
       if (selectedQuestionnaire.item && selectedQuestionnaire.item.length > 0) {
         questionnaireResponseProvider.setQuestionnaireResponse(
           createQuestionnaireResponse(selectedQuestionnaire.id, selectedQuestionnaire.item[0])

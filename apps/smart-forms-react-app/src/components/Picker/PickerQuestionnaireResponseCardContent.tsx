@@ -15,6 +15,7 @@ interface Props {
   selectedQuestionnaireIndex: number | null;
   selectedQuestionnaireResponseIndex: number | null;
   questionnaireResponseIsSearching: boolean;
+  questionnaireSourceIsLocal: boolean;
   onQrSelectedIndexChange: (index: number) => unknown;
 }
 
@@ -24,6 +25,7 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
     selectedQuestionnaireIndex,
     selectedQuestionnaireResponseIndex,
     questionnaireResponseIsSearching,
+    questionnaireSourceIsLocal,
     onQrSelectedIndexChange
   } = props;
 
@@ -34,6 +36,13 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
       <PickerAlert severity="error">
         <AlertTitle>CMS not connected</AlertTitle>
         Application not launched from CMS, unable to fetch responses.
+      </PickerAlert>
+    );
+  } else if (questionnaireSourceIsLocal) {
+    return (
+      <PickerAlert severity="error">
+        <AlertTitle>Questionnaire source set to local</AlertTitle>
+        Questionnaires loaded from local source instead of CMS, unable to fetch responses.
       </PickerAlert>
     );
   } else if (questionnaireResponseIsSearching) {
