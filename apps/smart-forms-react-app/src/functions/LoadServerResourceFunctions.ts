@@ -2,8 +2,6 @@ import { Bundle, Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 import Q715 from '../data/resources/715.R4.json';
-import Q715Modified from '../data/resources/715.R4-modified.json';
-import QAssembled from '../data/resources/Assembled.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
 import QCvdRisk from '../data/resources/CVD Risk.json';
 import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
@@ -171,8 +169,6 @@ export function getInitialQuestionnaireFromResponse(
 export function loadQuestionnairesFromLocal() {
   const questionnaires = [
     Q715,
-    Q715Modified,
-    QAssembled,
     QCvdCheck,
     QCvdRisk,
     QCvdRiskHiso,
