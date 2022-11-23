@@ -74,7 +74,7 @@ function QItemRepeat(props: Props) {
 
             return (
               <React.Fragment key={index}>
-                <Stack direction="row" sx={{ pb: 2 }}>
+                <Stack direction="row" sx={{ pb: 2 }} alignItems="center">
                   <Box sx={{ flexGrow: 1 }}>
                     <QItemSwitcher
                       qItem={qItem}
@@ -84,9 +84,15 @@ function QItemRepeat(props: Props) {
                         handleAnswersChange(newQrItem, index)
                       }></QItemSwitcher>
                   </Box>
-                  <IconButton disabled={!answer} onClick={() => deleteAnswer(index)}>
-                    <Delete />
-                  </IconButton>
+                  <Box sx={{ ml: 1 }}>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      disabled={!answer}
+                      onClick={() => deleteAnswer(index)}>
+                      <Delete />
+                    </IconButton>
+                  </Box>
                 </Stack>
               </React.Fragment>
             );

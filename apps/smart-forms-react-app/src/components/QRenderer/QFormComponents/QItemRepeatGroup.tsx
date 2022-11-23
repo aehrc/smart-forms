@@ -80,7 +80,12 @@ function QItemRepeatGroup(props: Props) {
           : { ...cleanQrItem };
 
         return (
-          <Stack key={index} direction="row" justifyContent="end" sx={{ pb: 2 }}>
+          <Stack
+            key={index}
+            direction="row"
+            justifyContent="end"
+            alignItems="center"
+            sx={{ pb: 2 }}>
             <Box sx={{ flexGrow: 1 }}>
               <QItemGroup
                 qItem={qItem}
@@ -92,9 +97,15 @@ function QItemRepeatGroup(props: Props) {
                 }></QItemGroup>
             </Box>
 
-            <IconButton disabled={!answerItem} onClick={() => deleteAnswerItem(index)}>
-              <Delete />
-            </IconButton>
+            <Box sx={{ ml: 1 }}>
+              <IconButton
+                size="small"
+                color="error"
+                disabled={!answerItem}
+                onClick={() => deleteAnswerItem(index)}>
+                <Delete />
+              </IconButton>
+            </Box>
           </Stack>
         );
       })}

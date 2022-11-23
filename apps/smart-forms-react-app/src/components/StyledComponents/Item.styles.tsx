@@ -9,5 +9,5 @@ export const QRadioGroup = styled(RadioGroup)(() => ({
 }));
 
 export const QItemTypography = styled(Typography)(() => ({
-  marginBottom: '4px'
+  marginTop: '4px'
 }));
