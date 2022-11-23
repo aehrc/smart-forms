@@ -23,7 +23,10 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
   return createTheme({
     typography: {
       body1: {
-        fontSize: 14
+        fontSize: 12,
+        '@media (min-width:1200px)': {
+          fontSize: 14
+        }
       }
     },
     palette: {
@@ -53,8 +56,7 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
         },
         styleOverrides: {
           root: {
-            marginTop: 4,
-            marginBottom: 8
+            marginBottom: 12
           }
         }
       },

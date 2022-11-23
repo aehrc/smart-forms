@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from './QItemSwitcher';
@@ -73,7 +73,6 @@ function QItemRepeat(props: Props) {
 
             return (
               <React.Fragment key={index}>
-                {index !== 0 ? <Divider light sx={{ mb: 2, mt: 1 }} /> : null}
                 <Stack direction="row" sx={{ pb: 2 }}>
                   <Box sx={{ flexGrow: 1 }}>
                     <QItemSwitcher
@@ -94,7 +93,7 @@ function QItemRepeat(props: Props) {
         </Grid>
       </Grid>
 
-      <Stack direction="row" justifyContent="end" sx={{ mt: 2, mb: 5 }}>
+      <Stack direction="row" justifyContent="end" sx={{ mt: 0.5, mb: 3 }}>
         <Button
           variant="contained"
           startIcon={<Add />}
