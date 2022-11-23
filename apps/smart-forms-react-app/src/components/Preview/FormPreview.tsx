@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Grid, Paper, Typography } from '@mui/material';
+import { Divider, Grid, Paper } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
@@ -8,6 +8,7 @@ import { QuestionnaireResponse } from 'fhir/r5';
 import { QuestionnaireProviderContext } from '../../App';
 import FormPreviewOperationButtons from '../OperationButtons/FormPreviewOperationButtons';
 import ChipBar from '../ChipBar/ChipBar';
+import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 
 interface Props {
   questionnaireResponse: QuestionnaireResponse;
@@ -39,10 +40,8 @@ function FormPreview(props: Props) {
           </SideBar>
         </SideBarGrid>
         <MainGrid item xs={12} lg={10.25}>
-          <MainGridContainerBox gap={2.5}>
-            <Typography fontWeight="bold" fontSize={36}>
-              Preview
-            </Typography>
+          <MainGridContainerBox>
+            <MainGridHeadingTypography>Preview</MainGridHeadingTypography>
             <ChipBar>
               <FormPreviewOperationButtons
                 isChip={true}

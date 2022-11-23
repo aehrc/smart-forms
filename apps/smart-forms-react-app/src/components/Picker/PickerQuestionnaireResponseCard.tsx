@@ -17,6 +17,7 @@ interface Props {
   selectedQuestionnaireIndex: number | null;
   selectedQuestionnaireResponseIndex: number | null;
   questionnaireResponseIsSearching: boolean;
+  questionnaireSourceIsLocal: boolean;
   onQrSelectedIndexChange: (index: number) => unknown;
 }
 
@@ -27,6 +28,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
     selectedQuestionnaireIndex,
     selectedQuestionnaireResponseIndex,
     questionnaireResponseIsSearching,
+    questionnaireSourceIsLocal,
     onQrSelectedIndexChange
   } = props;
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
@@ -42,7 +44,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
       );
 
       if (selectedQuestionnaire) {
-        questionnaireProvider.setQuestionnaire(selectedQuestionnaire);
+        questionnaireProvider.setQuestionnaire(selectedQuestionnaire, questionnaireSourceIsLocal);
         pageSwitcher.goToPage(PageType.ResponsePreview);
       } else {
         const questionnaireReference =
@@ -52,7 +54,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
         setViewResponseButtonLoading(true);
         loadQuestionnaireFromResponse(questionnaireReference)
           .then((questionnaire) => {
-            questionnaireProvider.setQuestionnaire(questionnaire);
+            questionnaireProvider.setQuestionnaire(questionnaire, questionnaireSourceIsLocal);
             setViewResponseButtonLoading(false);
             pageSwitcher.goToPage(PageType.ResponsePreview);
           })
@@ -79,6 +81,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
         selectedQuestionnaireIndex={selectedQuestionnaireIndex}
         selectedQuestionnaireResponseIndex={selectedQuestionnaireResponseIndex}
         questionnaireResponseIsSearching={questionnaireResponseIsSearching}
+        questionnaireSourceIsLocal={questionnaireSourceIsLocal}
         onQrSelectedIndexChange={onQrSelectedIndexChange}
       />
 

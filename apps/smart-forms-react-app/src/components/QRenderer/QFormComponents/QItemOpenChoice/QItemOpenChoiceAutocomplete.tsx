@@ -33,7 +33,10 @@ function QItemOpenChoiceAutocomplete(props: Props) {
 
   const maxlist = 10;
 
-  const { options, loading, fetchNewOptions } = useValueSetAutocomplete(answerValueSetUrl, maxlist);
+  const { options, loading, setLoading, searchResultsWithDebounce } = useValueSetAutocomplete(
+    answerValueSetUrl,
+    maxlist
+  );
 
   function handleValueChange(event: any, newValue: Coding | string | null) {
     if (newValue) {
@@ -50,7 +53,8 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
 
-    fetchNewOptions(newInput);
+    setLoading(true);
+    searchResultsWithDebounce(newInput);
     handleValueChange(event, newInput);
   }
 
@@ -58,9 +62,14 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     <Autocomplete
       id={qItem.id}
       freeSolo
+      autoHighlight
       value={valueAutocomplete ?? null}
       options={options}
+      noOptionsText={'No results'}
       getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
+      loading={loading}
+      loadingText={'Fetching results...'}
+      clearOnEscape
       onChange={handleValueChange}
       filterOptions={(x) => x}
       renderInput={(params) => (

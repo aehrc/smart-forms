@@ -802,7 +802,7 @@
     },
     {
       "resourceType": "ValueSet",
-      "id": "MedicalHistoryShortListAdults",
+      "id": "MedicalHistoryShortListAdultsAndOlderPeople",
       "status": "active",
       "name": "MedicalHistoryShortListAdultsAndOlderPeople",
       "title": "Medical History Short List for Adults and Older People",
@@ -1141,7 +1141,7 @@
       }
     }
   ],
-  "url": "http://www.health.gov.au/assessments/mbs/715",
+  "url": "http://www.health.gov.au/assessments/mbs/715-Assembled",
   "name": "MBS715 Assembled",
   "title": "Aboriginal and Torres Strait Islander Health Check (Assembled)",
   "status": "draft",
@@ -5581,7 +5581,7 @@
                   ]
                 }
               ],
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf4",
+              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf5",
               "text": "Screen time concerns",
               "type": "group",
               "repeats": false,
@@ -5645,7 +5645,7 @@
                   ]
                 }
               ],
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf4",
+              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf6",
               "text": "Physical activity or screen time concerns",
               "type": "group",
               "repeats": false,
@@ -5723,7 +5723,7 @@
               "enableBehavior": "all"
             },
             {
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf4",
+              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf7",
               "text": "Health priorities, actions and follow-up",
               "type": "text",
               "repeats": false
@@ -5808,7 +5808,7 @@
                   ]
                 }
               ],
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf4",
+              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf8",
               "text": "Physical activity concerns",
               "type": "group",
               "repeats": false

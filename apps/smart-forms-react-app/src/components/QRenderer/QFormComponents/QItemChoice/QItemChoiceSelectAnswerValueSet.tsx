@@ -44,6 +44,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     options.length > 0 ? (
       <Autocomplete
         id={qItem.id}
+        autoHighlight
         options={options}
         getOptionLabel={(option) => `${option.display}`}
         value={valueCoding ?? null}

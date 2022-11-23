@@ -45,6 +45,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     <Autocomplete
       id={qItem.id}
       freeSolo
+      autoHighlight
       value={valueSelect ?? null}
       options={options}
       getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}

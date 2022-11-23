@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Coding, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
+import { debounce } from 'lodash';
 
 function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
   const [options, setOptions] = useState<Coding[]>([]);
@@ -10,6 +11,7 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
     // make no changes if input is less than 2 characters long
     if (newInput.length < 2) {
       setOptions([]);
+      setLoading(false);
       return;
     }
 
@@ -18,22 +20,32 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
     if (cachedAnswerOptions) {
       // set options from cached answer options
       setOptions(cachedAnswerOptions);
+      setLoading(false);
     } else {
       // expand valueSet, then set and cache answer options
-      setLoading(true);
       AnswerValueSet.expand(fullUrl, (newOptions: ValueSet) => {
         const contains = newOptions.expansion?.contains;
         if (contains) {
           const answerOptions = AnswerValueSet.getValueCodings(contains);
           AnswerValueSet.cache[fullUrl] = answerOptions;
           setOptions(answerOptions);
+        } else {
+          setOptions([]);
         }
         setLoading(false);
       });
     }
   }
 
-  return { options, loading, fetchNewOptions };
+  // search questionnaires from input with delay
+  const searchResultsWithDebounce = useCallback(
+    debounce((input: string) => {
+      fetchNewOptions(input);
+    }, 500),
+    []
+  );
+
+  return { options, loading, setLoading, searchResultsWithDebounce };
 }
 
 export default useValueSetAutocomplete;

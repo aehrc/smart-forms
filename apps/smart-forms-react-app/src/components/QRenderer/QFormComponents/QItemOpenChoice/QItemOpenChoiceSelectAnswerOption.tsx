@@ -60,6 +60,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
     <Autocomplete
       id={qItem.id}
       freeSolo
+      autoHighlight
       value={valueSelect ?? null}
       options={answerOptions}
       getOptionLabel={(option) => getAnswerOptionLabel(option)}

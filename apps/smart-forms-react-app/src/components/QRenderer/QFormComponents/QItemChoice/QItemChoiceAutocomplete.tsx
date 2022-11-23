@@ -31,7 +31,10 @@ function QItemChoiceAutocomplete(props: Props) {
 
   const maxlist = 10;
 
-  const { options, loading, fetchNewOptions } = useValueSetAutocomplete(answerValueSetUrl, maxlist);
+  const { options, loading, setLoading, searchResultsWithDebounce } = useValueSetAutocomplete(
+    answerValueSetUrl,
+    maxlist
+  );
 
   function handleValueChange(event: any, newValue: Coding | null) {
     if (newValue) {
@@ -45,16 +48,22 @@ function QItemChoiceAutocomplete(props: Props) {
   }
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    fetchNewOptions(event.target.value);
+    setLoading(true);
+    searchResultsWithDebounce(event.target.value);
   }
 
   const choiceAutocomplete = (
     <Autocomplete
       id={qItem.id}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
+      autoHighlight
       value={valueCoding ?? null}
       options={options}
+      noOptionsText={'No results'}
       getOptionLabel={(option) => `${option.display}`}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      loading={loading}
+      loadingText={'Fetching results...'}
+      clearOnEscape
       onChange={handleValueChange}
       filterOptions={(x) => x}
       renderInput={(params) => (

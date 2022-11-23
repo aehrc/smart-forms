@@ -15,7 +15,7 @@ function FormBodyInvalid() {
         </SideBar>
       </SideBarGrid>
       <MainGrid item xs={12} lg={10.25}>
-        <MainGridContainerBox gap={2.5}>
+        <MainGridContainerBox>
           <Typography fontSize={24}>Questionnaire does not have a form item.</Typography>
           <ChipBar>
             <InvalidQuestionnaireOperationButtons isChip={true} />

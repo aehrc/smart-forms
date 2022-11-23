@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Box, Divider, Grid, Stack } from '@mui/material';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { PickerSearchField } from './Picker.styles';
 import PickerDebugBar from '../DebugComponents/PickerDebugBar';
@@ -11,6 +11,7 @@ import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
 import PickerOperationButtons from '../OperationButtons/PickerOperationButtons';
+import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 
 function Picker() {
   const launch = React.useContext(LaunchContext);
@@ -40,11 +41,9 @@ function Picker() {
         </SideBar>
       </SideBarGrid>
       <MainGrid item xs={12} lg={10.25}>
-        <MainGridContainerBox gap={2.5}>
+        <MainGridContainerBox>
           <Stack direction="row" gap={8}>
-            <Typography fontWeight="bold" fontSize={36}>
-              Questionnaires
-            </Typography>
+            <MainGridHeadingTypography>Questionnaires</MainGridHeadingTypography>
 
             <PickerSearchField
               fullWidth
@@ -99,6 +98,7 @@ function Picker() {
                 selectedQuestionnaireIndex={selectedQuestionnaireIndex}
                 selectedQuestionnaireResponseIndex={selectedQuestionnaireResponseIndex}
                 questionnaireResponseIsSearching={questionnaireResponseIsSearching}
+                questionnaireSourceIsLocal={questionnaireSourceIsLocal}
                 onQrSelectedIndexChange={selectQuestionnaireResponseByIndex}
               />
             </Grid>
