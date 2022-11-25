@@ -70,7 +70,7 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
           <ListItemButton
             key={questionnaireResponse.id}
             selected={selectedQuestionnaireResponseIndex === i}
-            sx={{ py: 1.25, px: 2.5 }}
+            sx={{ py: 1, px: 2.5 }}
             onClick={() => {
               onQrSelectedIndexChange(i);
             }}>

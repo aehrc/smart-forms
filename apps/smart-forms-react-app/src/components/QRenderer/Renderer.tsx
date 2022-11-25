@@ -23,7 +23,7 @@ function Renderer() {
 
   const [spinner, setSpinner] = useState({
     isLoading: true,
-    message: 'Loading questionnaire form'
+    message: 'Populating questionnaire form'
   });
 
   useEffect(() => {

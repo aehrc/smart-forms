@@ -33,7 +33,10 @@ function SaveAsDraftButton(props: Props) {
   function handleClick() {
     questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
     saveQuestionnaireResponse(fhirClient, patient, user, questionnaireResponse)
-      .then(() => removeQrHasChanges())
+      .then((response) => {
+        questionnaireResponseProvider.setQuestionnaireResponse(response);
+        removeQrHasChanges();
+      })
       .catch((error) => console.log(error));
   }
 
