@@ -21,15 +21,17 @@ export function qrFormToHTML(questionnaireResponseForm: QuestionnaireResponseIte
   if (!questionnaireResponseForm.item) return null;
 
   let formInHTML = '';
-  questionnaireResponseForm.item.forEach((item) => {
-    formInHTML = readQuestionnaireResponseItem(item, formInHTML, 0);
-  });
+  const qrItems = questionnaireResponseForm.item;
+  for (let i = 0; i < qrItems.length; i++) {
+    formInHTML = readQuestionnaireResponseItem(qrItems[i], qrItems[i + 1], formInHTML, 0);
+  }
 
   return formInHTML;
 }
 
 function readQuestionnaireResponseItem(
   item: QuestionnaireResponseItem,
+  nextItem: QuestionnaireResponseItem | undefined,
   formInHTML: string,
   nestedLevel: number
 ) {
@@ -37,15 +39,20 @@ function readQuestionnaireResponseItem(
   if (items && items.length > 0) {
     // Group
     formInHTML += renderGroupHeadingDiv(item, nestedLevel);
-    items.forEach((item) => {
-      formInHTML = readQuestionnaireResponseItem(item, formInHTML, nestedLevel + 1);
-    });
+    for (let i = 0; i < items.length; i++) {
+      formInHTML = readQuestionnaireResponseItem(
+        items[i],
+        items[i + 1],
+        formInHTML,
+        nestedLevel + 1
+      );
+    }
     formInHTML += renderGroupBottomMargin();
   } else {
     // Item
     formInHTML += renderItemDiv(item, nestedLevel, false);
   }
-  formInHTML += renderGeneralBottomMargin(nestedLevel);
+  formInHTML += renderGeneralBottomMargin(nestedLevel, nextItem);
   // formInHTML += renderBottomDivider(nestedLevel);
 
   return formInHTML;
@@ -79,8 +86,6 @@ function renderItemDiv(
     } else {
       // if not repeat group, get item answer and construct div
       const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
-      console.log(answer);
-      console.log(answerValueInString);
 
       qrItemAnswer += `<div>${
         answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
@@ -126,6 +131,17 @@ function renderGroupBottomMargin() {
   return `<div style="margin-bottom: 30px;"></div>`;
 }
 
-function renderGeneralBottomMargin(nestedLevel: number) {
-  return nestedLevel === 0 ? `<div style="margin: 60px 0 20px;"></div>` : '';
+function renderGeneralBottomMargin(
+  nestedLevel: number,
+  nextItem: QuestionnaireResponseItem | undefined
+) {
+  const smallMarginDiv = `<div style="margin: 20px 0 20px;"></div>`;
+  const largeMarginDiv = `<div style="margin: 55px 0 20px;"></div>`;
+
+  if (nestedLevel !== 0) return '';
+
+  if (!nextItem) return smallMarginDiv;
+
+  const items = nextItem.item;
+  return items && items.length > 0 ? largeMarginDiv : smallMarginDiv;
 }
