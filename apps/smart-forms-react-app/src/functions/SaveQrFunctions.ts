@@ -13,7 +13,7 @@ export async function saveQuestionnaireResponse(
   patient: Patient,
   user: Practitioner,
   questionnaireResponse: QuestionnaireResponse
-) {
+): Promise<QuestionnaireResponse> {
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json+fhir; charset=UTF-8'
