@@ -4,7 +4,6 @@ export const ChipBarBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
   '& .MuiButtonBase-root: hover': {
-    transition: '0.2s',
     color: theme.palette.secondary.dark,
     backgroundColor: theme.palette.accent2.light,
     '& .MuiSvgIcon-root': {
