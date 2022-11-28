@@ -1,5 +1,12 @@
 import React from 'react';
-import { Autocomplete, CircularProgress, FormControl, Grid, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  CircularProgress,
+  FormControl,
+  Grid,
+  TextField,
+  Typography
+} from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
@@ -31,10 +38,8 @@ function QItemChoiceAutocomplete(props: Props) {
 
   const maxlist = 10;
 
-  const { options, loading, setLoading, searchResultsWithDebounce } = useValueSetAutocomplete(
-    answerValueSetUrl,
-    maxlist
-  );
+  const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
+    useValueSetAutocomplete(answerValueSetUrl, maxlist);
 
   function handleValueChange(event: any, newValue: Coding | null) {
     if (newValue) {
@@ -53,37 +58,45 @@ function QItemChoiceAutocomplete(props: Props) {
   }
 
   const choiceAutocomplete = (
-    <Autocomplete
-      id={qItem.id}
-      autoHighlight
-      value={valueCoding ?? null}
-      options={options}
-      noOptionsText={'No results'}
-      getOptionLabel={(option) => `${option.display}`}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={loading}
-      loadingText={'Fetching results...'}
-      clearOnEscape
-      onChange={handleValueChange}
-      filterOptions={(x) => x}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={valueCoding ? '' : 'Search ' + qItem.text?.toLowerCase() + '...'}
-          onChange={handleInputChange}
-          sx={{ ...(repeats && { mb: 0 }) }}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
-              </>
-            )
-          }}
-        />
-      )}
-    />
+    <>
+      <Autocomplete
+        id={qItem.id}
+        autoHighlight
+        value={valueCoding ?? null}
+        options={options}
+        noOptionsText={'No results'}
+        getOptionLabel={(option) => `${option.display}`}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        loading={loading}
+        loadingText={'Fetching results...'}
+        clearOnEscape
+        onChange={handleValueChange}
+        filterOptions={(x) => x}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label={valueCoding ? '' : 'Search...'}
+            onChange={handleInputChange}
+            sx={{ ...(repeats && { mb: 0 }) }}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                  {params.InputProps.endAdornment}
+                </>
+              )
+            }}
+          />
+        )}
+      />
+
+      {serverError ? (
+        <Typography variant="subtitle2">
+          There was an error fetching results from the terminology server.
+        </Typography>
+      ) : null}
+    </>
   );
 
   const renderQItemChoiceAutocomplete = repeats ? (

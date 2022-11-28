@@ -6,6 +6,7 @@ import { ContainedValueSetContext } from '../components/QRenderer/Form';
 function useValueSetOptions(qItem: QuestionnaireItem) {
   const containedValueSetContext = React.useContext(ContainedValueSetContext);
   const [options, setOptions] = useState<Coding[]>([]);
+  const [serverError, setServerError] = useState<Error | null>(null);
 
   // get options from answerValueSet on render
   useEffect(() => {
@@ -28,9 +29,15 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
       }
     } else {
       // get options from terminology server
-      AnswerValueSet.expand(valueSetUrl, (valueSet: ValueSet) => {
-        setOptionsFromValueSet(valueSetUrl, valueSet);
-      });
+      AnswerValueSet.expand(
+        valueSetUrl,
+        (valueSet: ValueSet) => {
+          setOptionsFromValueSet(valueSetUrl, valueSet);
+        },
+        (error: Error) => {
+          setServerError(error);
+        }
+      );
     }
   }, [qItem]);
 
@@ -43,7 +50,7 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
     }
   }
 
-  return [options];
+  return { options, serverError };
 }
 
 export default useValueSetOptions;

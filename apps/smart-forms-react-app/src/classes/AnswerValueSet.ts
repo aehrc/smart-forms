@@ -9,7 +9,11 @@ export class AnswerValueSet {
    *
    * @author Sean Fong
    */
-  static expand(fullUrl: string, setAnswerOptions: { (newOptions: ValueSet): void }) {
+  static expand(
+    fullUrl: string,
+    setAnswerOptions: { (newOptions: ValueSet): void },
+    displayError: { (error: Error): void }
+  ) {
     const ontoserver =
       process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
 
@@ -22,7 +26,10 @@ export class AnswerValueSet {
       .then((response) => {
         setAnswerOptions(response);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        displayError(error);
+      });
   }
 
   /**

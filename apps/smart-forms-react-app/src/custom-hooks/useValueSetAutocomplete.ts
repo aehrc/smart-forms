@@ -6,6 +6,7 @@ import { debounce } from 'lodash';
 function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
   const [options, setOptions] = useState<Coding[]>([]);
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState<Error | null>(null);
 
   function fetchNewOptions(newInput: string) {
     // make no changes if input is less than 2 characters long
@@ -23,17 +24,23 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
       setLoading(false);
     } else {
       // expand valueSet, then set and cache answer options
-      AnswerValueSet.expand(fullUrl, (newOptions: ValueSet) => {
-        const contains = newOptions.expansion?.contains;
-        if (contains) {
-          const answerOptions = AnswerValueSet.getValueCodings(contains);
-          AnswerValueSet.cache[fullUrl] = answerOptions;
-          setOptions(answerOptions);
-        } else {
-          setOptions([]);
+      AnswerValueSet.expand(
+        fullUrl,
+        (newOptions: ValueSet) => {
+          const contains = newOptions.expansion?.contains;
+          if (contains) {
+            const answerOptions = AnswerValueSet.getValueCodings(contains);
+            AnswerValueSet.cache[fullUrl] = answerOptions;
+            setOptions(answerOptions);
+          } else {
+            setOptions([]);
+          }
+          setLoading(false);
+        },
+        (error: Error) => {
+          setServerError(error);
         }
-        setLoading(false);
-      });
+      );
     }
   }
 
@@ -45,7 +52,7 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
     []
   );
 
-  return { options, loading, setLoading, searchResultsWithDebounce };
+  return { options, loading, setLoading, searchResultsWithDebounce, serverError };
 }
 
 export default useValueSetAutocomplete;
