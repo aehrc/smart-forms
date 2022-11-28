@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FormControl, Grid, TextField } from '@mui/material';
 
 import {
@@ -10,6 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
 import QItemTextInstruction from './QItemTextInstruction';
+import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -22,33 +23,64 @@ function QItemDecimal(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
   const calculatedExpressions = useContext(CalcExpressionContext);
 
-  let qrDecimal = qrItem ? qrItem : createQrItem(qItem);
+  const precision = getDecimalPrecision(qItem);
+
+  const qrDecimal = qrItem ? qrItem : createQrItem(qItem);
   const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
+
+  const [input, setInput] = useState('0');
+
+  useEffect(() => {
+    if (valueDecimal && parseFloat(input) !== valueDecimal) {
+      setInput(precision ? valueDecimal.toFixed(precision) : valueDecimal.toString());
+    }
+  }, [valueDecimal]);
 
   useEffect(() => {
     const expression = calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
-      qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: expression.value }] };
-      onQrItemChange(qrDecimal);
+      const precision = getDecimalPrecision(qItem);
+      const value = precision ? parseFloat(expression.value.toFixed(precision)) : expression.value;
+
+      onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
     }
   }, [calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;
 
+    // set input as 0 if no number in input
     const hasNumber = /\d/;
     if (!hasNumber.test(input)) {
       input = '0';
     }
-    qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] };
-    onQrItemChange(qrDecimal);
+
+    let parsedInput = parseFloat(input).toString();
+
+    // restore decimal digits if parseFloat() removes them
+    const decimalPoint = input.indexOf('.');
+    if (decimalPoint !== -1) {
+      const decimalDigits = input.slice(decimalPoint);
+      if (parsedInput.indexOf('.') === -1) {
+        parsedInput += decimalDigits;
+      }
+    }
+
+    // truncate decimal digits based on precision
+    const parsedDecimalPoint = input.indexOf('.');
+    if (precision && parsedDecimalPoint !== -1) {
+      parsedInput = parsedInput.substring(0, parsedDecimalPoint + precision + 1);
+    }
+
+    setInput(parsedInput);
+    onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] });
   }
 
   const renderQItemDecimal = repeats ? (
     <TextField
       id={qItem.linkId}
-      value={valueDecimal}
+      value={input}
       onChange={handleChange}
       sx={{ mb: 0 }}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -62,7 +94,7 @@ function QItemDecimal(props: Props) {
         <Grid item xs={7}>
           <TextField
             id={qItem.linkId}
-            value={valueDecimal}
+            value={input}
             onChange={handleChange}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           />

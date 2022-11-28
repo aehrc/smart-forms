@@ -94,3 +94,21 @@ export function getOpenLabelText(qItem: QuestionnaireItem): string | null {
   }
   return null;
 }
+
+/**
+ * Check if the decimal value has a quantity precision for the decimal value
+ *
+ * @author Sean Fong
+ */
+export function getDecimalPrecision(qItem: QuestionnaireItem): number | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/quantity-precision'
+  );
+  if (itemControl) {
+    if (itemControl.valueInteger) {
+      return itemControl.valueInteger;
+    }
+  }
+  return null;
+}
