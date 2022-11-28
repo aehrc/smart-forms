@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FormControl, Grid, TextField } from '@mui/material';
 
 import {
+  CalculatedExpression,
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
@@ -24,6 +25,8 @@ function QItemDecimal(props: Props) {
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   const precision = getDecimalPrecision(qItem);
+  const calculatedExpression: CalculatedExpression | undefined =
+    calculatedExpressions[qItem.linkId];
 
   const qrDecimal = qrItem ? qrItem : createQrItem(qItem);
   const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
@@ -37,11 +40,11 @@ function QItemDecimal(props: Props) {
   }, [valueDecimal]);
 
   useEffect(() => {
-    const expression = calculatedExpressions[qItem.linkId];
-
-    if (expression && expression.value) {
+    if (calculatedExpression && calculatedExpression.value) {
       const precision = getDecimalPrecision(qItem);
-      const value = precision ? parseFloat(expression.value.toFixed(precision)) : expression.value;
+      const value = precision
+        ? parseFloat(calculatedExpression.value.toFixed(precision))
+        : calculatedExpression.value;
 
       onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
     }
@@ -82,6 +85,7 @@ function QItemDecimal(props: Props) {
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
+      disabled={!!calculatedExpression}
       sx={{ mb: 0 }}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
     />
@@ -96,6 +100,7 @@ function QItemDecimal(props: Props) {
             id={qItem.linkId}
             value={input}
             onChange={handleChange}
+            disabled={!!calculatedExpression}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
           />
 
