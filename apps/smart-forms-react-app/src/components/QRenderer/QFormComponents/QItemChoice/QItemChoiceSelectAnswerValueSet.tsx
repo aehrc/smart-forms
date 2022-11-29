@@ -27,7 +27,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     valueCoding = qrChoiceSelect['answer'][0].valueCoding;
   }
 
-  const [options] = useValueSetOptions(qItem);
+  const { options, serverError } = useValueSetOptions(qItem);
 
   function handleChange(event: any, newValue: Coding | null) {
     if (newValue) {
@@ -51,8 +51,14 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         onChange={handleChange}
         renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
       />
+    ) : serverError ? (
+      <Typography variant="subtitle2">
+        There was an error fetching options from the terminology server.
+      </Typography>
     ) : (
-      <Typography variant="subtitle2">Unable to fetch options</Typography>
+      <Typography variant="subtitle2">
+        Unable to fetch options, contained resources not found in questionnaire.
+      </Typography>
     );
 
   const renderQItemChoiceSelectAnswerValueSet = repeats ? (

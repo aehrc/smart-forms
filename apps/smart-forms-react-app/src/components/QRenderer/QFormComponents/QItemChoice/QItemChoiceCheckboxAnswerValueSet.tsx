@@ -27,7 +27,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
 
-  const [options] = useValueSetOptions(qItem);
+  const { options, serverError } = useValueSetOptions(qItem);
 
   function handleCheckedChange(changedValue: string) {
     if (options.length < 1) return null;
@@ -62,8 +62,14 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
           );
         })}
       </QFormGroup>
+    ) : serverError ? (
+      <Typography variant="subtitle2">
+        There was an error fetching options from the terminology server.
+      </Typography>
     ) : (
-      <Typography variant="subtitle2">Unable to fetch options</Typography>
+      <Typography variant="subtitle2">
+        Unable to fetch options, contained resources not found in questionnaire.
+      </Typography>
     );
 
   const renderQItemChoiceCheckbox = repeats ? (

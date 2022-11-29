@@ -50,7 +50,7 @@ function QItemGroup(props: Props) {
     const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
 
     return (
-      <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: 3.5 }}>
+      <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: repeats ? 0 : 3.5 }}>
         {repeats ? null : (
           <>
             <QGroupHeadingTypography variant="h6">{qItem.text}</QGroupHeadingTypography>

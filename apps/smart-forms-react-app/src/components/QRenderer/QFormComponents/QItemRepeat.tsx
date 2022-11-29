@@ -90,7 +90,7 @@ function QItemRepeat(props: Props) {
                       color="error"
                       disabled={!answer}
                       onClick={() => deleteAnswer(index)}>
-                      <Delete />
+                      <Delete fontSize="small" />
                     </IconButton>
                   </Box>
                 </Stack>

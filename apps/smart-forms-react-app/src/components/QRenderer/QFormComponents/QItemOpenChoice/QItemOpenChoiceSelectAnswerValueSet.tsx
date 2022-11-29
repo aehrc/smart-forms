@@ -1,5 +1,5 @@
 import React from 'react';
-import { Autocomplete, FormControl, Grid, TextField } from '@mui/material';
+import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -27,7 +27,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     valueSelect = qrOpenChoice['answer'][0].valueCoding;
   }
 
-  const [options] = useValueSetOptions(qItem);
+  const { options, serverError } = useValueSetOptions(qItem);
 
   function handleValueChange(event: any, newValue: Coding | string | null) {
     if (newValue) {
@@ -42,17 +42,24 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   }
 
   const openChoiceSelectAnswerValueSet = (
-    <Autocomplete
-      id={qItem.id}
-      freeSolo
-      autoHighlight
-      value={valueSelect ?? null}
-      options={options}
-      getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
-      onChange={handleValueChange}
-      onInputChange={(event, newValue) => handleValueChange(event, newValue)}
-      renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
-    />
+    <>
+      <Autocomplete
+        id={qItem.id}
+        freeSolo
+        autoHighlight
+        value={valueSelect ?? null}
+        options={options}
+        getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
+        onChange={handleValueChange}
+        onInputChange={(event, newValue) => handleValueChange(event, newValue)}
+        renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
+      />
+      {serverError ? (
+        <Typography variant="subtitle2">
+          There was an error fetching options from the terminology server.
+        </Typography>
+      ) : null}
+    </>
   );
 
   const renderQItemOpenChoiceSelectAnswerValueSet = repeats ? (

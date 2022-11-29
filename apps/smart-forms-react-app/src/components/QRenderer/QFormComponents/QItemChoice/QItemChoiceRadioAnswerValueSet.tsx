@@ -30,7 +30,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     valueRadio = qrChoiceRadio['answer'][0].valueCoding?.code;
   }
 
-  const [options] = useValueSetOptions(qItem);
+  const { options, serverError } = useValueSetOptions(qItem);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (options.length > 0) {
@@ -59,8 +59,14 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
           );
         })}
       </QRadioGroup>
+    ) : serverError ? (
+      <Typography variant="subtitle2">
+        There was an error fetching options from the terminology server.
+      </Typography>
     ) : (
-      <Typography variant="subtitle2">Unable to fetch options</Typography>
+      <Typography variant="subtitle2">
+        Unable to fetch options, contained resources not found in questionnaire.
+      </Typography>
     );
 
   const renderQItemChoiceRadio = repeats ? (

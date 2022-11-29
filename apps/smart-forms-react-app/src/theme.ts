@@ -60,18 +60,6 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
             marginBottom: 8
           }
         }
-      },
-      MuiTab: {
-        styleOverrides: {
-          root: {
-            padding: 16,
-            textTransform: 'capitalize',
-            transition: '0.15s',
-            '&:hover': {
-              background: '#F8F8F8'
-            }
-          }
-        }
       }
     }
   });

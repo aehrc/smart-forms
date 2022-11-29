@@ -110,7 +110,7 @@ function QItemRepeatGroup(props: Props) {
         );
       })}
 
-      <Stack direction="row" justifyContent="end" sx={{ my: 2 }}>
+      <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
         <Button
           variant="contained"
           startIcon={<Add />}

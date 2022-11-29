@@ -9,7 +9,7 @@ import ConfirmSaveAsFinalDialog from '../../Dialogs/ConfirmSaveAsFinalDialog';
 
 interface Props {
   isChip?: boolean;
-  qrHasChanges: boolean;
+  qrHasChanges?: boolean;
   removeQrHasChanges: () => unknown;
   questionnaireResponse: QuestionnaireResponse;
   fhirClient: Client;
@@ -35,7 +35,11 @@ function SaveAsFinalButton(props: Props) {
   }
 
   const renderButtonOrChip = !isChip ? (
-    <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
+    <ListItemButton
+      disabled={
+        qrHasChanges === false || (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)
+      }
+      onClick={handleClick}>
       <Save sx={{ mr: 2 }} />
       <ListItemText
         primary={
