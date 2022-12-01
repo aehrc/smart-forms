@@ -49,16 +49,15 @@ function usePicker(launch: LaunchContextType) {
       setQuestionnaireIsSearching(false);
       setQuestionnaireResponseIsSearching(false);
     } else {
-      // fetch questionnaires and questionnaireResponses from remote
-      setQuestionnaireIsSearching(true);
-      loadQuestionnairesFromServer()
-        .then((bundle) => {
-          setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
-          setQuestionnaireIsSearching(false);
-        })
-        .catch(() => setQuestionnaireIsSearching(false));
-
       if (launch.fhirClient) {
+        // fetch questionnaires and questionnaireResponses from remote
+        setQuestionnaireIsSearching(true);
+        loadQuestionnairesFromServer(launch.fhirClient)
+          .then((bundle) => {
+            setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
+            setQuestionnaireIsSearching(false);
+          })
+          .catch(() => setQuestionnaireIsSearching(false));
         setQuestionnaireResponseIsSearching(true);
         loadQuestionnaireResponsesFromServer(launch.fhirClient, launch.patient)
           .then((bundle) => {
@@ -80,16 +79,18 @@ function usePicker(launch: LaunchContextType) {
   // search questionnaires from input with delay
   const searchQuestionnaireWithDebounce = useCallback(
     debounce((input: string) => {
-      loadQuestionnairesFromServer(input)
-        .then((bundle) => {
-          setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
-          setQuestionnaireIsSearching(false);
-          setQuestionnaireResponseIsSearching(false);
-        })
-        .catch(() => {
-          setQuestionnaireIsSearching(false);
-          setQuestionnaireResponseIsSearching(false);
-        });
+      if (launch.fhirClient) {
+        loadQuestionnairesFromServer(launch.fhirClient, input)
+          .then((bundle) => {
+            setQuestionnaires(bundle.entry ? getQuestionnairesFromBundle(bundle) : []);
+            setQuestionnaireIsSearching(false);
+            setQuestionnaireResponseIsSearching(false);
+          })
+          .catch(() => {
+            setQuestionnaireIsSearching(false);
+            setQuestionnaireResponseIsSearching(false);
+          });
+      }
     }, 500),
     []
   );

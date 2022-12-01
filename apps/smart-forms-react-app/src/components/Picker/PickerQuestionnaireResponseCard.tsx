@@ -10,6 +10,7 @@ import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { loadQuestionnaireFromResponse } from '../../functions/LoadServerResourceFunctions';
 import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
@@ -34,6 +35,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = useContext(PageSwitcherContext);
+  const launch = useContext(LaunchContext);
 
   const [viewResponseButtonLoading, setViewResponseButtonLoading] = useState(false);
 
@@ -51,14 +53,16 @@ function PickerQuestionnaireResponseCard(props: Props) {
           questionnaireResponses[selectedQuestionnaireResponseIndex].questionnaire;
         if (!questionnaireReference) return null;
 
-        setViewResponseButtonLoading(true);
-        loadQuestionnaireFromResponse(questionnaireReference)
-          .then((questionnaire) => {
-            questionnaireProvider.setQuestionnaire(questionnaire, questionnaireSourceIsLocal);
-            setViewResponseButtonLoading(false);
-            pageSwitcher.goToPage(PageType.ResponsePreview);
-          })
-          .catch(() => setViewResponseButtonLoading(false));
+        if (launch.fhirClient) {
+          setViewResponseButtonLoading(true);
+          loadQuestionnaireFromResponse(launch.fhirClient, questionnaireReference)
+            .then((questionnaire) => {
+              questionnaireProvider.setQuestionnaire(questionnaire, questionnaireSourceIsLocal);
+              setViewResponseButtonLoading(false);
+              pageSwitcher.goToPage(PageType.ResponsePreview);
+            })
+            .catch(() => setViewResponseButtonLoading(false));
+        }
       }
     }
   }
