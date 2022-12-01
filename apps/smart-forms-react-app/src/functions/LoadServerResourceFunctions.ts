@@ -1,5 +1,4 @@
 import { Bundle, Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
-import { client } from 'fhirclient';
 import Client from 'fhirclient/lib/Client';
 import Q715 from '../data/resources/715.R4.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
@@ -12,9 +11,10 @@ import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resourc
  *
  * @author Sean Fong
  */
-export async function loadQuestionnairesFromServer(input?: string): Promise<Bundle> {
-  const serverUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
+export async function loadQuestionnairesFromServer(
+  client: Client,
+  input?: string
+): Promise<Bundle> {
   const urlParams = input ? `title=${input}` : '';
 
   const headers = {
@@ -23,7 +23,7 @@ export async function loadQuestionnairesFromServer(input?: string): Promise<Bund
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(serverUrl).request({
+  return client.request({
     url: 'Questionnaire?_count=10&_sort=-&' + urlParams,
     method: 'GET',
     headers: headers
@@ -90,10 +90,9 @@ export function getQResponsesFromBundle(bundle: Bundle): QuestionnaireResponse[]
 }
 
 export function loadQuestionnaireFromResponse(
+  client: Client,
   questionnaireReference: string
 ): Promise<Questionnaire> {
-  const serverUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
   const questionnaireId = questionnaireReference.replace('Questionnaire/', '');
 
   const headers = {
@@ -102,7 +101,7 @@ export function loadQuestionnaireFromResponse(
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(serverUrl).request({
+  return client.request({
     url: `Questionnaire/${questionnaireId}`,
     method: 'GET',
     headers: headers
@@ -110,18 +109,16 @@ export function loadQuestionnaireFromResponse(
 }
 
 export function getQuestionnaireFromUrl(
+  client: Client,
   canonicalReferenceUrl: string
 ): Promise<Questionnaire | Bundle> {
-  const serverUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://launch.smarthealthit.org/v/r4/fhir';
-
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json+fhir; charset=UTF-8',
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
-  return client(serverUrl).request({
+  return client.request({
     url: `Questionnaire?url=${canonicalReferenceUrl}&_sort=-&`,
     method: 'GET',
     headers: headers

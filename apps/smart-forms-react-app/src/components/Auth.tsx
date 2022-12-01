@@ -33,26 +33,26 @@ function Auth() {
         getUser(client)
           .then((user) => launchContext.setUser(user))
           .catch((error) => console.error(error));
+
+        const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
+        if (questionnaireUrl) {
+          getQuestionnaireFromUrl(client, questionnaireUrl)
+            .then((response) => {
+              const questionnaire = getInitialQuestionnaireFromResponse(response);
+              if (questionnaire) {
+                questionnaireProvider.setQuestionnaire(questionnaire, false);
+              }
+              setQuestionnaireIsLoading(false);
+            })
+            .catch(() => setQuestionnaireIsLoading(false));
+        } else {
+          setQuestionnaireIsLoading(false);
+        }
       })
       .catch((error) => {
         console.error(error);
         setHasClient(false);
       });
-
-    const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
-    if (questionnaireUrl) {
-      getQuestionnaireFromUrl(questionnaireUrl)
-        .then((response) => {
-          const questionnaire = getInitialQuestionnaireFromResponse(response);
-          if (questionnaire) {
-            questionnaireProvider.setQuestionnaire(questionnaire, false);
-          }
-          setQuestionnaireIsLoading(false);
-        })
-        .catch(() => setQuestionnaireIsLoading(false));
-    } else {
-      setQuestionnaireIsLoading(false);
-    }
   }, []);
 
   if (
