@@ -25,7 +25,9 @@ export const EnableWhenChecksContext = React.createContext<boolean>(true); // on
 
 interface Props {
   questionnaireResponse: QuestionnaireResponse;
+  tabIndex: number | null;
   qrHasChanges: boolean;
+  setTabIndex: (newTabIndex: number) => unknown;
   removeQrHasChanges: () => unknown;
   togglePreviewMode: () => unknown;
   updateQuestionnaireResponse: (newQuestionnaireResponse: QuestionnaireResponse) => unknown;
@@ -34,7 +36,9 @@ interface Props {
 function Form(props: Props) {
   const {
     questionnaireResponse,
+    tabIndex,
     qrHasChanges,
+    setTabIndex,
     removeQrHasChanges,
     togglePreviewMode,
     updateQuestionnaireResponse,
@@ -114,7 +118,8 @@ function Form(props: Props) {
                     <FormBodyTabbed
                       qForm={qForm}
                       qrForm={qrForm}
-                      indexOfFirstTab={getIndexOfFirstTab(qForm.item)}
+                      tabIndex={tabIndex ?? getIndexOfFirstTab(qForm.item)}
+                      setTabIndex={setTabIndex}
                       onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                     />
                   ) : (

@@ -13,6 +13,7 @@ function RendererBody() {
     questionnaireResponseProvider.questionnaireResponse
   );
   const [qrHasChanges, setQrHasChanges] = useState(false);
+  const [tabIndex, setTabIndex] = useState<number | null>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   // update QR state if QR is updated from the server
@@ -39,7 +40,9 @@ function RendererBody() {
       ) : (
         <Form
           questionnaireResponse={questionnaireResponse}
+          tabIndex={tabIndex}
           qrHasChanges={qrHasChanges}
+          setTabIndex={(newTabIndex) => setTabIndex(newTabIndex)}
           removeQrHasChanges={() => setQrHasChanges(false)}
           togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
           updateQuestionnaireResponse={(newQuestionnaireResponse) => {
