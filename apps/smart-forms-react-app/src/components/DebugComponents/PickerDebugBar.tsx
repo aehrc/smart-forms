@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FormControlLabel, Switch } from '@mui/material';
 import { DebugBarContainerBox } from './DebugBar.styles';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 type Props = {
   questionnaireIsSearching: boolean;
@@ -10,12 +11,14 @@ type Props = {
 
 function PickerDebugBar(props: Props) {
   const { questionnaireIsSearching, questionnaireSourceIsLocal, toggleQuestionnaireSource } = props;
+
+  const launch = useContext(LaunchContext);
   return (
     <DebugBarContainerBox>
       <FormControlLabel
         control={
           <Switch
-            disabled={questionnaireIsSearching}
+            disabled={questionnaireIsSearching || launch.fhirClient === null}
             checked={questionnaireSourceIsLocal}
             onChange={() => toggleQuestionnaireSource()}
           />
