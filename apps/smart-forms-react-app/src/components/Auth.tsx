@@ -51,6 +51,7 @@ function Auth() {
       })
       .catch((error) => {
         console.error(error);
+        setQuestionnaireIsLoading(false);
         setHasClient(false);
       });
   }, []);
