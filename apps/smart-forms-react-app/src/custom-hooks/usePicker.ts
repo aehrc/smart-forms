@@ -23,7 +23,7 @@ function usePicker(launch: LaunchContextType) {
     number | null
   >(null);
 
-  const [questionnaireSourceIsLocal, setQuestionnaireSourceIsLocal] = useState(false);
+  const [questionnaireSourceIsLocal, setQuestionnaireSourceIsLocal] = useState(!launch.fhirClient);
 
   // determine if questionnaires are fetched from local or remote
   useEffect(() => {
