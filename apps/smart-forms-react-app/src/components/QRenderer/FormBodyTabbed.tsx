@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Card, Grid, ListItemButton, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
@@ -15,17 +15,16 @@ import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
-  indexOfFirstTab: number;
+  tabIndex: number;
+  setTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabbed(props: Props) {
-  const { qForm, qrForm, indexOfFirstTab, onQrItemChange } = props;
+  const { qForm, qrForm, tabIndex, setTabIndex, onQrItemChange } = props;
 
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
-
-  const [tabIndex, setTabIndex] = useState(indexOfFirstTab.toString());
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
     updateLinkedItem(qrItem, qrForm, indexMap);
@@ -37,7 +36,7 @@ function FormBodyTabbed(props: Props) {
 
     return (
       <Grid container spacing={2}>
-        <TabContext value={tabIndex}>
+        <TabContext value={tabIndex.toString()}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
             <Card sx={{ p: 1, mb: 2 }}>
               <Box sx={{ flexGrow: 1 }}>
@@ -47,9 +46,9 @@ function FormBodyTabbed(props: Props) {
                     return (
                       <ListItemButton
                         key={qItem.linkId}
-                        selected={tabIndex === (index + 1).toString()}
+                        selected={tabIndex.toString() === (index + 1).toString()}
                         sx={{ my: 0.5 }}
-                        onClick={() => setTabIndex((index + 1).toString())}>
+                        onClick={() => setTabIndex(index + 1)}>
                         <ListItemText
                           primary={
                             <Typography fontSize={12} variant="h6">
