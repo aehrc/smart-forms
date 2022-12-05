@@ -1,7 +1,6 @@
 import { QuestionnaireResponse } from 'fhir/r5';
 import React, { useContext } from 'react';
 import { AlertTitle, ListItemButton, ListItemText, Tooltip } from '@mui/material';
-import GradingIcon from '@mui/icons-material/Grading';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 import PickerSkeletonList from './PickerSkeletonList';
 import dayjs from 'dayjs';
@@ -74,7 +73,15 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
             onClick={() => {
               onQrSelectedIndexChange(i);
             }}>
-            <GradingIcon sx={{ mr: 2 }} />
+            {questionnaireResponse.status === 'completed' ? (
+              <Tooltip title="Completed" sx={{ mr: 2 }}>
+                <TaskAltIcon />
+              </Tooltip>
+            ) : (
+              <Tooltip title="In progress" sx={{ mr: 2 }}>
+                <PendingIcon />
+              </Tooltip>
+            )}
             <ListItemText
               primary={
                 questionnaireResponse.item?.[0].text +
@@ -86,15 +93,6 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
               }
               primaryTypographyProps={{ variant: 'subtitle2' }}
             />
-            {questionnaireResponse.status === 'completed' ? (
-              <Tooltip title="Completed">
-                <TaskAltIcon />
-              </Tooltip>
-            ) : (
-              <Tooltip title="In progress">
-                <PendingIcon />
-              </Tooltip>
-            )}
           </ListItemButton>
         ))}
       </PrimarySelectableList>

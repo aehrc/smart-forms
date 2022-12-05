@@ -11,6 +11,7 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { loadQuestionnaireFromResponse } from '../../functions/LoadServerResourceFunctions';
 import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import PickerQuestionnaireResponseListFilterPopper from './PickerQuestionnaireResponseListFilterPopper';
 
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
@@ -20,6 +21,7 @@ interface Props {
   questionnaireResponseIsSearching: boolean;
   questionnaireSourceIsLocal: boolean;
   onQrSelectedIndexChange: (index: number) => unknown;
+  onQrSortByParamChange: (sortByParam: string) => unknown;
 }
 
 function PickerQuestionnaireResponseCard(props: Props) {
@@ -30,7 +32,8 @@ function PickerQuestionnaireResponseCard(props: Props) {
     selectedQuestionnaireResponseIndex,
     questionnaireResponseIsSearching,
     questionnaireSourceIsLocal,
-    onQrSelectedIndexChange
+    onQrSelectedIndexChange,
+    onQrSortByParamChange
   } = props;
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
@@ -73,11 +76,13 @@ function PickerQuestionnaireResponseCard(props: Props) {
         <Typography variant="overline" fontSize={10}>
           Responses
         </Typography>
-        <Box sx={{ flexGrow: 1 }}></Box>
         {questionnaireResponses.length > 0 && !questionnaireResponseIsSearching ? (
-          <Typography variant="overline" fontSize={10}>
-            Status
-          </Typography>
+          <>
+            <Box sx={{ flexGrow: 1 }}></Box>
+            <PickerQuestionnaireResponseListFilterPopper
+              onQrSortByParamChange={onQrSortByParamChange}
+            />
+          </>
         ) : null}
       </Box>
       <PickerQuestionnaireResponseCardContent

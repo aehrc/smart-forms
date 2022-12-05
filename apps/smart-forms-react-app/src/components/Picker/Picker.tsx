@@ -29,6 +29,7 @@ function Picker() {
     handleSearchInputChange,
     selectQuestionnaireByIndex,
     selectQuestionnaireResponseByIndex,
+    sortQuestionnaireResponses,
     toggleQuestionnaireSource,
     refreshQuestionnaireList
   } = usePicker(launch);
@@ -100,6 +101,7 @@ function Picker() {
                 questionnaireResponseIsSearching={questionnaireResponseIsSearching}
                 questionnaireSourceIsLocal={questionnaireSourceIsLocal}
                 onQrSelectedIndexChange={selectQuestionnaireResponseByIndex}
+                onQrSortByParamChange={sortQuestionnaireResponses}
               />
             </Grid>
           </Grid>
