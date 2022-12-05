@@ -48,3 +48,10 @@ export enum QuestionnaireSource {
   Local = 'local',
   Remote = 'remote'
 }
+
+export enum QrSortParam {
+  QuestionnaireName = 'questionnaireName',
+  AuthorName = 'authorName',
+  LastUpdated = 'lastUpdated',
+  Status = 'status'
+}

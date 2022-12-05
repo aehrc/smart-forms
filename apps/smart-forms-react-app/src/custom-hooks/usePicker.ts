@@ -9,6 +9,13 @@ import {
 } from '../functions/LoadServerResourceFunctions';
 import { debounce } from 'lodash';
 import { LaunchContextType } from '../interfaces/ContextTypes';
+import {
+  sortByAuthorName,
+  sortByLastUpdated,
+  sortByQuestionnaireName,
+  sortByStatus
+} from '../functions/QrSortFunctions';
+import { QrSortParam } from '../interfaces/Enums';
 
 function usePicker(launch: LaunchContextType) {
   const [searchInput, setSearchInput] = useState<string>('');
@@ -126,6 +133,26 @@ function usePicker(launch: LaunchContextType) {
     }
   }
 
+  function sortQuestionnaireResponses(sortByParam: string) {
+    let sortedQuestionnaireResponses: QuestionnaireResponse[] = [];
+
+    switch (sortByParam) {
+      case QrSortParam.QuestionnaireName:
+        sortedQuestionnaireResponses = sortByQuestionnaireName([...questionnaireResponses]);
+        break;
+      case QrSortParam.AuthorName:
+        sortedQuestionnaireResponses = sortByAuthorName([...questionnaireResponses]);
+        break;
+      case QrSortParam.LastUpdated:
+        sortedQuestionnaireResponses = sortByLastUpdated([...questionnaireResponses]);
+        break;
+      case QrSortParam.Status:
+        sortedQuestionnaireResponses = sortByStatus([...questionnaireResponses]);
+        break;
+    }
+    setQuestionnaireResponses(sortedQuestionnaireResponses);
+  }
+
   function toggleQuestionnaireSource() {
     setQuestionnaireSourceIsLocal(!questionnaireSourceIsLocal);
   }
@@ -148,6 +175,7 @@ function usePicker(launch: LaunchContextType) {
     searchQuestionnaireWithDebounce,
     selectQuestionnaireByIndex,
     selectQuestionnaireResponseByIndex,
+    sortQuestionnaireResponses,
     toggleQuestionnaireSource,
     refreshQuestionnaireList
   };

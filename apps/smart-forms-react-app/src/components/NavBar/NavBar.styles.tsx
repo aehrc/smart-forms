@@ -26,8 +26,8 @@ export const NavBarPatientUserDataIconButton = styled(IconButton)(({ theme }) =>
 }));
 
 export const NavBarPopUpBox = styled(Box)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  padding: '4px'
+  background: theme.palette.primary.main,
+  color: theme.palette.common.white
 }));
 
 export const NavBarPatientDetailsTypography = styled(Typography)(() => ({
@@ -37,7 +37,7 @@ export const NavBarPatientDetailsTypography = styled(Typography)(() => ({
 
 export const PatientDetailsDialogTypography = styled(Typography)(() => ({
   textTransform: 'capitalize',
-  fontSize: 16
+  fontSize: 14
 }));
 
 export const NavBarTitleTypography = styled(Typography)(() => ({
