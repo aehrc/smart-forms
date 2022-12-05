@@ -5,7 +5,7 @@ import {
   NavBarPopUpBox,
   PatientDetailsDialogTypography
 } from './NavBar.styles';
-import { List, ListItem, Popover, Stack } from '@mui/material';
+import { List, ListItem, Popover, Stack, Tooltip } from '@mui/material';
 import NavBarGenderIcon from './NavBarGenderIcon';
 import { AccountCircle, Event, MedicalServices } from '@mui/icons-material/';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
@@ -23,9 +23,11 @@ function NavBarPatientUserPopper(props: Props) {
       <PopupState variant="popover" popupId="patient-details-popover">
         {(popupState) => (
           <div>
-            <NavBarPatientUserDataIconButton {...bindTrigger(popupState)}>
-              <AccountCircle />
-            </NavBarPatientUserDataIconButton>
+            <Tooltip title="View patient and user details">
+              <NavBarPatientUserDataIconButton {...bindTrigger(popupState)}>
+                <AccountCircle />
+              </NavBarPatientUserDataIconButton>
+            </Tooltip>
             <Popover
               {...bindPopover(popupState)}
               anchorOrigin={{
@@ -39,7 +41,7 @@ function NavBarPatientUserPopper(props: Props) {
               <NavBarPopUpBox>
                 <List>
                   <ListItem>
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    <Stack direction="row" alignItems="center" spacing={1.5}>
                       <AccountCircle />
                       <PatientDetailsDialogTypography>
                         {patientData.name}
@@ -47,7 +49,7 @@ function NavBarPatientUserPopper(props: Props) {
                     </Stack>
                   </ListItem>
                   <ListItem>
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    <Stack direction="row" alignItems="center" spacing={1.5}>
                       <NavBarGenderIcon gender={patientData.gender} />
                       <PatientDetailsDialogTypography>
                         {patientData.gender}
@@ -55,7 +57,7 @@ function NavBarPatientUserPopper(props: Props) {
                     </Stack>
                   </ListItem>
                   <ListItem>
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    <Stack direction="row" alignItems="center" spacing={1.5}>
                       <Event />
                       <PatientDetailsDialogTypography>
                         {patientData.dateOfBirth}
@@ -63,7 +65,7 @@ function NavBarPatientUserPopper(props: Props) {
                     </Stack>
                   </ListItem>
                   <ListItem>
-                    <Stack direction="row" alignItems="center" spacing={2}>
+                    <Stack direction="row" alignItems="center" spacing={1.5}>
                       <MedicalServices />
                       <PatientDetailsDialogTypography>
                         {userData.name}

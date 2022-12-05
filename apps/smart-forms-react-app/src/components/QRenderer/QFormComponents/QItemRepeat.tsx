@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, IconButton, Stack } from '@mui/material';
+import { Box, Button, Grid, IconButton, Stack, Tooltip } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from './QItemSwitcher';
@@ -85,13 +85,15 @@ function QItemRepeat(props: Props) {
                       }></QItemSwitcher>
                   </Box>
                   <Box sx={{ ml: 1 }}>
-                    <IconButton
-                      size="small"
-                      color="error"
-                      disabled={!answer}
-                      onClick={() => deleteAnswer(index)}>
-                      <Delete fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="Delete item">
+                      <IconButton
+                        size="small"
+                        color="error"
+                        disabled={!answer}
+                        onClick={() => deleteAnswer(index)}>
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
                 </Stack>
               </React.Fragment>

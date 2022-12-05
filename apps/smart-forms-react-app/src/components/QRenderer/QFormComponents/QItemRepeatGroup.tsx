@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -98,13 +98,15 @@ function QItemRepeatGroup(props: Props) {
             </Box>
 
             <Box sx={{ ml: 1 }}>
-              <IconButton
-                size="small"
-                color="error"
-                disabled={!answerItem}
-                onClick={() => deleteAnswerItem(index)}>
-                <Delete />
-              </IconButton>
+              <Tooltip title="Delete group">
+                <IconButton
+                  size="small"
+                  color="error"
+                  disabled={!answerItem}
+                  onClick={() => deleteAnswerItem(index)}>
+                  <Delete />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Stack>
         );
