@@ -9,6 +9,7 @@ import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import QItemRepeatGroup from './QFormComponents/QItemRepeatGroup';
 import QItemRepeat from './QFormComponents/QItemRepeat';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
+import { isRepeatItemAndNotCheckbox } from '../../functions/QItemFunctions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
@@ -35,28 +36,26 @@ function FormBodyUntabbed(props: Props) {
         <Card elevation={2} sx={{ p: 5, mb: 2 }}>
           {qFormItems.map((qItem: QuestionnaireItem, i) => {
             const qrItem = qrFormItemsByIndex[i];
-            if (qItem['repeats']) {
-              if (qItem.repeats) {
-                if (qItem.type === QItemType.Group) {
-                  return (
-                    <Box key={qItem.linkId} sx={{ my: 3 }}>
-                      <QItemRepeatGroup
-                        qItem={qItem}
-                        qrItem={qrItem}
-                        repeats={true}
-                        groupCardElevation={3}
-                        onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
-                    </Box>
-                  );
-                } else {
-                  return (
-                    <QItemRepeat
-                      key={i}
+            if (isRepeatItemAndNotCheckbox(qItem)) {
+              if (qItem.type === QItemType.Group) {
+                return (
+                  <Box key={qItem.linkId} sx={{ my: 3 }}>
+                    <QItemRepeatGroup
                       qItem={qItem}
                       qrItem={qrItem}
-                      onQrItemChange={handleQrItemChange}></QItemRepeat>
-                  );
-                }
+                      repeats={true}
+                      groupCardElevation={3}
+                      onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
+                  </Box>
+                );
+              } else {
+                return (
+                  <QItemRepeat
+                    key={i}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    onQrItemChange={handleQrItemChange}></QItemRepeat>
+                );
               }
             }
 

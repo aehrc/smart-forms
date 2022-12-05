@@ -3,6 +3,9 @@ import { isHidden, isSpecificItemControl } from './ItemControlFunctions';
 import React from 'react';
 import { EnableWhenContext } from '../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../components/QRenderer/Form';
+import { getChoiceControlType } from './ChoiceFunctions';
+import { QItemChoiceControl, QItemOpenChoiceControl } from '../interfaces/Enums';
+import { getOpenChoiceControlType } from './OpenChoiceFunctions';
 
 /**
  * Get string text display prompt for items with itemControlCode prompt and has a prompt childItem
@@ -39,4 +42,18 @@ export function hideQItem(qItem: QuestionnaireItem): boolean {
   }
 
   return false;
+}
+
+/**
+ * Check if qItem is a repeat item AND if it isnt a checkbox item
+ * Note: repeat checkbox items are rendered as multi-select checkbox instead of being rendered as a traditional repeat item
+ *
+ * @author Sean Fong
+ */
+export function isRepeatItemAndNotCheckbox(qItem: QuestionnaireItem): boolean {
+  const isCheckbox =
+    getChoiceControlType(qItem) === QItemChoiceControl.Checkbox ||
+    getOpenChoiceControlType(qItem) === QItemOpenChoiceControl.Checkbox;
+
+  return !!qItem['repeats'] && !isCheckbox;
 }
