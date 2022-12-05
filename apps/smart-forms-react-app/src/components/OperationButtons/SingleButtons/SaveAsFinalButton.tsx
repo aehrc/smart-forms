@@ -54,7 +54,9 @@ function SaveAsFinalButton(props: Props) {
       icon={<Save fontSize="small" />}
       label="Save as Final"
       clickable
-      disabled={!qrHasChanges}
+      disabled={
+        qrHasChanges === false || (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)
+      }
       onClick={handleClick}
     />
   );
