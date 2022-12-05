@@ -45,7 +45,8 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
       answers,
       answerOptions,
       qrOpenChoiceCheckbox,
-      CheckBoxOptionType.AnswerOption
+      CheckBoxOptionType.AnswerOption,
+      repeats
     );
 
     if (updatedQrChoiceCheckbox) {

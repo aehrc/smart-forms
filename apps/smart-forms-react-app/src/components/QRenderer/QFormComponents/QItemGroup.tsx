@@ -11,7 +11,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { hideQItem, isRepeatItemAndNotCheckbox } from '../../../functions/QItemFunctions';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
 
 interface Props
@@ -59,7 +59,7 @@ function QItemGroup(props: Props) {
         )}
         {qItems.map((qItem: QuestionnaireItem, i) => {
           const qrItem = qrItemsByIndex[i];
-          if (qItem['repeats']) {
+          if (isRepeatItemAndNotCheckbox(qItem)) {
             if (qItem.repeats) {
               if (qItem.type === QItemType.Group) {
                 return (

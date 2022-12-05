@@ -108,7 +108,8 @@ export function updateQrCheckboxAnswers(
   answers: QuestionnaireResponseItemAnswer[],
   answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
   qrChoiceCheckbox: QuestionnaireResponseItem,
-  checkboxOptionType: CheckBoxOptionType
+  checkboxOptionType: CheckBoxOptionType,
+  isMultiSelection: boolean
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
   const newAnswer =
@@ -117,9 +118,30 @@ export function updateQrCheckboxAnswers(
       : findInAnswerValueSetCodings(answerOptions, changedValue);
   if (!newAnswer) return null;
 
-  return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
-    ? { ...qrChoiceCheckbox, answer: [] }
-    : { ...qrChoiceCheckbox, answer: [newAnswer] };
+  if (isMultiSelection && answers.length > 0) {
+    // check if new answer exists in existing qrAnswers
+    let qrAnswers = answers;
+    const newAnswerInAnswers =
+      checkboxOptionType === CheckBoxOptionType.AnswerOption
+        ? findInAnswerOptions(qrAnswers, changedValue)
+        : findInAnswerValueSetCodings(qrAnswers, changedValue);
+
+    if (newAnswerInAnswers) {
+      // remove new answer from qrAnswers
+      qrAnswers = qrAnswers.filter(
+        (answer) => JSON.stringify(answer) !== JSON.stringify(newAnswerInAnswers)
+      );
+    } else {
+      // add new answer to qrAnswers
+      qrAnswers.push(newAnswer);
+    }
+
+    return { ...qrChoiceCheckbox, answer: qrAnswers };
+  } else {
+    return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
+      ? { ...qrChoiceCheckbox, answer: [] }
+      : { ...qrChoiceCheckbox, answer: [newAnswer] };
+  }
 }
 
 /**

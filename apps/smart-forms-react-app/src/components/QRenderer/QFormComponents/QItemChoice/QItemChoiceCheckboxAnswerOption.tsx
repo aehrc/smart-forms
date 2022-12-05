@@ -2,7 +2,6 @@ import React from 'react';
 import { FormControl, Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
@@ -10,6 +9,7 @@ import {
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
 import { QFormGroup, QItemTypography } from '../../../StyledComponents/Item.styles';
+import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 
 interface QItemChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -34,7 +34,8 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
       answers,
       answerOptions,
       qrChoiceCheckbox,
-      CheckBoxOptionType.AnswerOption
+      CheckBoxOptionType.AnswerOption,
+      repeats
     );
 
     if (updatedQrChoiceCheckbox) {
@@ -82,9 +83,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
     </QFormGroup>
   );
 
-  const renderQItemChoiceCheckbox = repeats ? (
-    <>{choiceCheckbox}</>
-  ) : (
+  return (
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -96,7 +95,6 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
       </Grid>
     </FormControl>
   );
-  return <>{renderQItemChoiceCheckbox}</>;
 }
 
 export default QItemChoiceCheckboxAnswerOption;

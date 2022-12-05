@@ -37,7 +37,8 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
       answers,
       options,
       qrChoiceCheckbox,
-      CheckBoxOptionType.AnswerValueSet
+      CheckBoxOptionType.AnswerValueSet,
+      repeats
     );
 
     if (updatedQrChoiceCheckbox) {
@@ -72,9 +73,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
       </Typography>
     );
 
-  const renderQItemChoiceCheckbox = repeats ? (
-    <>{choiceCheckbox}</>
-  ) : (
+  return (
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -86,7 +85,6 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
       </Grid>
     </FormControl>
   );
-  return <>{renderQItemChoiceCheckbox}</>;
 }
 
 export default QItemChoiceCheckboxAnswerValueSet;

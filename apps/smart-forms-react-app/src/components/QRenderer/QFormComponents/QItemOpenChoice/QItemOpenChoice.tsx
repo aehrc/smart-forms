@@ -29,7 +29,7 @@ function QItemOpenChoice(props: Props) {
         <QItemOpenChoiceCheckboxAnswerOption
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          repeats={qItem['repeats'] ?? false}
           onQrItemChange={onQrItemChange}
           orientation={orientation}
         />

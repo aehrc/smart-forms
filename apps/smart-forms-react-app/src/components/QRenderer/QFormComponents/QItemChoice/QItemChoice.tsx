@@ -54,7 +54,7 @@ function QItemChoice(props: Props) {
           <QItemChoiceCheckboxAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            repeats={qItem['repeats'] ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />
@@ -64,7 +64,7 @@ function QItemChoice(props: Props) {
           <QItemChoiceCheckboxAnswerOption
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            repeats={qItem['repeats'] ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />
