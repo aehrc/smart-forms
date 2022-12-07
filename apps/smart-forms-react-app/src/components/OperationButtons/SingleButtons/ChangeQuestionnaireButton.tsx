@@ -2,12 +2,13 @@ import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
 import { ChangeCircle } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { PageType } from '../../../interfaces/Enums';
+import { PageType, QuestionnaireSource } from '../../../interfaces/Enums';
 import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContext';
 import ChangeQuestionnaireDialog from '../../Dialogs/ChangeQuestionnaireDialog';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { QuestionnaireProviderContext } from '../../../App';
 
 interface Props {
   isChip?: boolean;
@@ -19,12 +20,13 @@ interface Props {
 function ChangeQuestionnaireButton(props: Props) {
   const { isChip, qrHasChanges, removeQrHasChanges, questionnaireResponse } = props;
   const pageSwitcher = React.useContext(PageSwitcherContext);
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const fhirClient = React.useContext(LaunchContext).fhirClient;
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   function handleClick() {
-    if (qrHasChanges && fhirClient) {
+    if (qrHasChanges && fhirClient && questionnaireProvider.source === QuestionnaireSource.Remote) {
       setDialogOpen(true);
     } else {
       pageSwitcher.goToPage(PageType.Picker);
