@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { FormControl, Grid, InputAdornment, OutlinedInput } from '@mui/material';
 
 import {
   CalculatedExpression,
@@ -12,6 +12,7 @@ import { CalcExpressionContext } from '../../Form';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
 import QItemTextInstruction from './QItemTextInstruction';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
+import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -25,6 +26,8 @@ function QItemDecimal(props: Props) {
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   const precision = getDecimalPrecision(qItem);
+  const displayUnit = getTextDisplayUnit(qItem);
+
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
 
@@ -80,15 +83,23 @@ function QItemDecimal(props: Props) {
     onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] });
   }
 
-  const renderQItemDecimal = repeats ? (
-    <TextField
+  const decimalInput = (
+    <OutlinedInput
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
       disabled={!!calculatedExpression}
-      sx={{ mb: 0 }}
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+      sx={{ mb: repeats ? 0 : 2 }}
+      inputProps={{
+        inputMode: 'numeric',
+        pattern: '[0-9]*'
+      }}
+      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
     />
+  );
+
+  const renderQItemDecimal = repeats ? (
+    <>{decimalInput}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -96,13 +107,7 @@ function QItemDecimal(props: Props) {
           <QItemTypography>{qItem.text}</QItemTypography>
         </Grid>
         <Grid item xs={7}>
-          <TextField
-            id={qItem.linkId}
-            value={input}
-            onChange={handleChange}
-            disabled={!!calculatedExpression}
-            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-          />
+          {decimalInput}
 
           {/* For demo purposes only*/}
           <QItemTextInstruction qItem={qItem} />
