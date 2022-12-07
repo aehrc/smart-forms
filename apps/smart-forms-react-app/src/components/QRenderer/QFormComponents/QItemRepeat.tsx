@@ -86,13 +86,15 @@ function QItemRepeat(props: Props) {
                   </Box>
                   <Box sx={{ ml: 1 }}>
                     <Tooltip title="Delete item">
-                      <IconButton
-                        size="small"
-                        color="error"
-                        disabled={!answer}
-                        onClick={() => deleteAnswer(index)}>
-                        <Delete fontSize="small" />
-                      </IconButton>
+                      <span>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          disabled={!answer}
+                          onClick={() => deleteAnswer(index)}>
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   </Box>
                 </Stack>
