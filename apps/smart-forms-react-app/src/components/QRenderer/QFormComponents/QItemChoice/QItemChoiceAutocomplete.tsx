@@ -16,6 +16,7 @@ import {
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -109,6 +110,7 @@ function QItemChoiceAutocomplete(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

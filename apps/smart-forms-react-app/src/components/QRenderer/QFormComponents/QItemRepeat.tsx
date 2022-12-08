@@ -11,6 +11,7 @@ import {
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
 import { QItemTypography } from '../../StyledComponents/Item.styles';
+import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -101,6 +102,7 @@ function QItemRepeat(props: Props) {
               </React.Fragment>
             );
           })}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
 

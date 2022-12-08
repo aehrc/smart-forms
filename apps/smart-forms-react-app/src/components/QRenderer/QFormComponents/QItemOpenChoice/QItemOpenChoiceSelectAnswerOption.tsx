@@ -13,6 +13,7 @@ import {
 import { getAnswerOptionLabel } from '../../../../functions/OpenChoiceFunctions';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -78,6 +79,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {openOpenChoiceSelectAnswerOption}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

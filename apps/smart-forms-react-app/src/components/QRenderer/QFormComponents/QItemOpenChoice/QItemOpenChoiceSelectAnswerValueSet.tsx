@@ -9,6 +9,7 @@ import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -72,6 +73,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {openChoiceSelectAnswerValueSet}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

@@ -13,6 +13,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
+import QItemDisplayInstructions from './QItemDisplayInstructions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -51,6 +52,7 @@ function QItemTime(props: Props) {
         </Grid>
         <Grid item xs={7}>
           <QItemTimePicker value={value} onTimeChange={handleChange} />
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>
