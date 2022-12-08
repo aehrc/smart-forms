@@ -7,7 +7,7 @@ export const PageSwitcherContext = React.createContext<PageSwitcherContextType>(
   goToPage: () => void 0
 });
 
-function PageSwitcherContextProvider(props: { children: any }) {
+function PageSwitcherContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
   const [currentPage, goToPage] = React.useState<PageType>(PageType.Renderer);
 

@@ -6,7 +6,7 @@ export const QuestionnaireActiveContext = React.createContext<QuestionnaireActiv
   setQuestionnaireActive: () => void 0
 });
 
-function QuestionnaireActiveContextProvider(props: { children: any }) {
+function QuestionnaireActiveContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
   const [questionnaireActive, setQuestionnaireActive] = React.useState<boolean>(false);
 

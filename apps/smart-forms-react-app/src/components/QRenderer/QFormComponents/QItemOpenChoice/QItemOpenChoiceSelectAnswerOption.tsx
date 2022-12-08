@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Autocomplete, FormControl, Grid, TextField } from '@mui/material';
 
 import {
@@ -35,7 +35,10 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
     valueSelect = qrOpenChoice['answer'][0];
   }
 
-  function handleChange(event: any, newValue: QuestionnaireItemAnswerOption | string | null) {
+  function handleChange(
+    event: SyntheticEvent<Element, Event>,
+    newValue: QuestionnaireItemAnswerOption | string | null
+  ) {
     if (newValue) {
       if (typeof newValue === 'string') {
         onQrItemChange({ ...qrOpenChoice, answer: [{ valueString: newValue }] });

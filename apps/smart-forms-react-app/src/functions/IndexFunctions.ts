@@ -11,7 +11,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 export function getQrItemsIndex(
   qItems: QuestionnaireItem[],
   qrItems: QuestionnaireResponseItem[]
-): any[] {
+): QuestionnaireResponseItem[] {
   // generate a <linkId, QrItem> dictionary
   const qrItemsDict = qrItems.reduce((mapping: Record<string, QuestionnaireResponseItem>, item) => {
     mapping[item.linkId] = { ...item };

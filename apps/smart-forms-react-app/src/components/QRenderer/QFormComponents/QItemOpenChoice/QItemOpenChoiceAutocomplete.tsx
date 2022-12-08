@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import {
   Autocomplete,
   CircularProgress,
@@ -43,7 +43,10 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
     useValueSetAutocomplete(answerValueSetUrl, maxlist);
 
-  function handleValueChange(event: any, newValue: Coding | string | null) {
+  function handleValueChange(
+    event: SyntheticEvent<Element, Event>,
+    newValue: Coding | string | null
+  ) {
     if (newValue) {
       onQrItemChange({
         ...qrOpenChoice,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import {
@@ -30,7 +30,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
 
   const { options, serverError } = useValueSetOptions(qItem);
 
-  function handleChange(event: any, newValue: Coding | null) {
+  function handleChange(event: SyntheticEvent<Element, Event>, newValue: Coding | null) {
     if (newValue) {
       onQrItemChange({
         ...qrChoiceSelect,

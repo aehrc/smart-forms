@@ -12,7 +12,7 @@ export const LaunchContext = React.createContext<LaunchContextType>({
   setUser: () => void 0
 });
 
-function LaunchContextProvider(props: { children: any }) {
+function LaunchContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
   const [client, setClient] = React.useState<Client | null>(null);
   const [patient, setPatient] = React.useState<Patient | null>(null);
