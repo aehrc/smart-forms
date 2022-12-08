@@ -1,5 +1,5 @@
 import { QuestionnaireItem } from 'fhir/r5';
-import { isHidden, isSpecificItemControl } from './ItemControlFunctions';
+import { isHidden, isSpecificDisplayCategory, isSpecificItemControl } from './ItemControlFunctions';
 import React from 'react';
 import { EnableWhenContext } from '../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../components/QRenderer/Form';
@@ -32,6 +32,21 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
   if (qItem.item) {
     const childItem = qItem.item[0];
     if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
+      return `${childItem.text}`;
+    }
+  }
+  return '';
+}
+
+/**
+ * Get text display instructions for items with itemControlCode instructions and has an instructions childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    const childItem = qItem.item[0];
+    if (childItem.type === 'display' && isSpecificDisplayCategory(childItem, 'instructions')) {
       return `${childItem.text}`;
     }
   }

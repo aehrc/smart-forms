@@ -11,6 +11,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { QItemTypography, QRadioGroup } from '../../../StyledComponents/Item.styles';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -79,6 +80,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

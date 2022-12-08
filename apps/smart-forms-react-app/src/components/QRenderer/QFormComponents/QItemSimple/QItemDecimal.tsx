@@ -10,7 +10,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
-import QItemTextInstruction from './QItemTextInstruction';
+import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 
@@ -108,9 +108,7 @@ function QItemDecimal(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {decimalInput}
-
-          {/* For demo purposes only*/}
-          <QItemTextInstruction qItem={qItem} />
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

@@ -22,6 +22,30 @@ export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode:
 }
 
 /**
+ * Check if the extension has an displayCategory code equal to the given displayCategory
+ *
+ * @author Sean Fong
+ */
+export function isSpecificDisplayCategory(
+  qItem: QuestionnaireItem,
+  itemControlCode: string
+): boolean {
+  const displayCategory = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory'
+  );
+  if (displayCategory) {
+    const code = displayCategory.valueCodeableConcept?.coding?.find(
+      (coding: Coding) => coding.code === itemControlCode
+    );
+    if (code) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Check if the extension has url for items that use shortText
  *
  * @author Sean Fong
