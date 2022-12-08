@@ -10,6 +10,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QFormGroup, QItemTypography } from '../../../StyledComponents/Item.styles';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface QItemChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -91,6 +92,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

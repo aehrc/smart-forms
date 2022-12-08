@@ -6,7 +6,7 @@ import { SideBarCard, SideBarListBox } from './SideBar.styles';
 import { SideBarOverlineTypography } from '../StyledComponents/Typographys.styles';
 import { SecondaryNonSelectableList } from '../StyledComponents/Lists.styles';
 
-function SideBar(props: { children: any }) {
+function SideBar(props: { children: React.ReactNode }) {
   const { children } = props;
 
   return (

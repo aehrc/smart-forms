@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box } from '@mui/material';
 import { ChipBarBox } from './ChipBar.styles';
 
-function ChipBar(props: { children: any }) {
+function ChipBar(props: { children: React.ReactNode }) {
   const { children } = props;
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import {
@@ -9,6 +9,7 @@ import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -29,7 +30,10 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
 
   const { options, serverError } = useValueSetOptions(qItem);
 
-  function handleValueChange(event: any, newValue: Coding | string | null) {
+  function handleValueChange(
+    event: SyntheticEvent<Element, Event>,
+    newValue: Coding | string | null
+  ) {
     if (newValue) {
       if (typeof newValue === 'string') {
         onQrItemChange({ ...qrOpenChoice, answer: [{ valueString: newValue }] });
@@ -72,6 +76,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {openChoiceSelectAnswerValueSet}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

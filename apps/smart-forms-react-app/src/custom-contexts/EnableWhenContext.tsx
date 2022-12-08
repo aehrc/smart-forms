@@ -18,7 +18,7 @@ export const EnableWhenContext = React.createContext<EnableWhenContextType>({
   checkItemIsEnabled: () => true
 });
 
-function EnableWhenContextProvider(props: { children: any }) {
+function EnableWhenContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
   const [enableWhenItems, setEnableWhenItems] = React.useState<EnableWhenItems>({});
   const [linkedQuestionsMap, setLinkedQuestionsMap] = React.useState<Record<string, string[]>>({});

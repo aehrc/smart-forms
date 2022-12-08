@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import {
   Autocomplete,
   CircularProgress,
@@ -16,6 +16,7 @@ import {
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -42,7 +43,10 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
     useValueSetAutocomplete(answerValueSetUrl, maxlist);
 
-  function handleValueChange(event: any, newValue: Coding | string | null) {
+  function handleValueChange(
+    event: SyntheticEvent<Element, Event>,
+    newValue: Coding | string | null
+  ) {
     if (newValue) {
       onQrItemChange({
         ...qrOpenChoice,
@@ -113,6 +117,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {openChoiceAutocomplete}
+          <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
     </FormControl>

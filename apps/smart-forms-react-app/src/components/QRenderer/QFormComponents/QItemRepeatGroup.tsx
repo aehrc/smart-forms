@@ -99,13 +99,15 @@ function QItemRepeatGroup(props: Props) {
 
             <Box sx={{ ml: 1 }}>
               <Tooltip title="Delete group">
-                <IconButton
-                  size="small"
-                  color="error"
-                  disabled={!answerItem}
-                  onClick={() => deleteAnswerItem(index)}>
-                  <Delete />
-                </IconButton>
+                <span>
+                  <IconButton
+                    size="small"
+                    color="error"
+                    disabled={!answerItem}
+                    onClick={() => deleteAnswerItem(index)}>
+                    <Delete />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Box>
           </Stack>

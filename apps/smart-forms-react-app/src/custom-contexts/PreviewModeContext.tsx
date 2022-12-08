@@ -6,7 +6,7 @@ export const PreviewModeContext = React.createContext<PreviewModeContextType>({
   setIsPreviewMode: () => void 0
 });
 
-function PreviewModeContextProvider(props: { children: any }) {
+function PreviewModeContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
   const [isPreviewMode, setIsPreviewMode] = React.useState<boolean>(false);
 

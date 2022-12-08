@@ -1,5 +1,5 @@
 import { QuestionnaireItem } from 'fhir/r5';
-import { isHidden, isSpecificItemControl } from './ItemControlFunctions';
+import { isHidden, isSpecificDisplayCategory, isSpecificItemControl } from './ItemControlFunctions';
 import React from 'react';
 import { EnableWhenContext } from '../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../components/QRenderer/Form';
@@ -8,7 +8,7 @@ import { QItemChoiceControl, QItemOpenChoiceControl } from '../interfaces/Enums'
 import { getOpenChoiceControlType } from './OpenChoiceFunctions';
 
 /**
- * Get string text display prompt for items with itemControlCode prompt and has a prompt childItem
+ * Get text display prompt for items with itemControlCode prompt and has a prompt childItem
  *
  * @author Sean Fong
  */
@@ -18,6 +18,36 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
     if (childItem.type === 'display' && isSpecificItemControl(childItem, 'prompt')) {
       const promptText = `${childItem.text}`;
       return promptText[0].toUpperCase() + promptText.substring(1);
+    }
+  }
+  return '';
+}
+
+/**
+ * Get decimal text display unit for items with itemControlCode unit and has a unit childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    const childItem = qItem.item[0];
+    if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
+      return `${childItem.text}`;
+    }
+  }
+  return '';
+}
+
+/**
+ * Get text display instructions for items with itemControlCode instructions and has an instructions childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    const childItem = qItem.item[0];
+    if (childItem.type === 'display' && isSpecificDisplayCategory(childItem, 'instructions')) {
+      return `${childItem.text}`;
     }
   }
   return '';
