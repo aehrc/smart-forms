@@ -2,7 +2,7 @@ import React from 'react';
 import { ListItemButton, Typography } from '@mui/material';
 import { SaveAs } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
-import { QuestionnaireResponseProviderContext } from '../../../App';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import { saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
 import Client from 'fhirclient/lib/Client';
@@ -28,11 +28,18 @@ function SaveAsDraftButton(props: Props) {
     patient,
     user
   } = props;
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
 
   function handleClick() {
     questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-    saveQuestionnaireResponse(fhirClient, patient, user, questionnaireResponse)
+    saveQuestionnaireResponse(
+      fhirClient,
+      patient,
+      user,
+      questionnaireProvider.questionnaire,
+      questionnaireResponse
+    )
       .then((response) => {
         questionnaireResponseProvider.setQuestionnaireResponse(response);
         removeQrHasChanges();
