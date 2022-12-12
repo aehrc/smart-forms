@@ -1,7 +1,8 @@
-import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
+import { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import { constructName } from './LaunchContextFunctions';
 import dayjs from 'dayjs';
+import { qrToHTML } from './PreviewFunctions';
 
 /**
  * Sends a request to client CMS to write back a completed questionnaireResponse
@@ -12,6 +13,7 @@ export async function saveQuestionnaireResponse(
   client: Client,
   patient: Patient,
   user: Practitioner,
+  questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ): Promise<QuestionnaireResponse> {
   const headers = {
@@ -29,6 +31,10 @@ export async function saveQuestionnaireResponse(
   } else {
     questionnaireResponseBody = {
       ...questionnaireResponse,
+      text: {
+        status: 'generated',
+        div: qrToHTML(questionnaire, questionnaireResponse)
+      },
       subject: {
         reference: `Patient/${patient.id}`,
         type: 'Patient',
