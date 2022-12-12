@@ -19,175 +19,175 @@
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52553",
           "request": {
             "method": "GET",
-            "url": "FamilyMemberHistory?patient={{%LaunchPatient.id}}"
+            "url": "FamilyMemberHistory?patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52554",
           "request": {
             "method": "GET",
-            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52555",
           "request": {
             "method": "GET",
-            "url": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52556",
           "request": {
             "method": "GET",
-            "url": "Observation?code=8280-0&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=8280-0&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52557",
           "request": {
             "method": "GET",
-            "url": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52558",
           "request": {
             "method": "GET",
-            "url": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52559",
           "request": {
             "method": "GET",
-            "url": "Observation?code=39156-5&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=39156-5&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52560",
           "request": {
             "method": "GET",
-            "url": "Observation?code=85354-9&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=85354-9&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52561",
           "request": {
             "method": "GET",
-            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52562",
           "request": {
             "method": "GET",
-            "url": "Observation?code=160625004&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=160625004&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52563",
           "request": {
             "method": "GET",
-            "url": "Observation?code=smoking-date-started&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=smoking-date-started&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52564",
           "request": {
             "method": "GET",
-            "url": "Observation?code=229819007&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=229819007&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52565",
           "request": {
             "method": "GET",
-            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52566",
           "request": {
             "method": "GET",
-            "url": "Observation?code=228308009&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=228308009&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52567",
           "request": {
             "method": "GET",
-            "url": "Observation?code=1373041000168105&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=1373041000168105&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52568",
           "request": {
             "method": "GET",
-            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52569",
           "request": {
             "method": "GET",
-            "url": "Observation?code=60621009&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=60621009&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52570",
           "request": {
             "method": "GET",
-            "url": "Observation?code=absolute-cvd-risk&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=absolute-cvd-risk&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52571",
           "request": {
             "method": "GET",
-            "url": "Immunization?patient={{%LaunchPatient.id}}"
+            "url": "Immunization?patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52572",
           "request": {
             "method": "GET",
-            "url": "MedicationStatement?patient={{%LaunchPatient.id}}"
+            "url": "MedicationStatement?patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52573",
           "request": {
             "method": "GET",
-            "url": "AllergyIntolerance?patient={{%LaunchPatient.id}}"
+            "url": "AllergyIntolerance?patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52575",
           "request": {
             "method": "GET",
-            "url": "Condition?patient={{%LaunchPatient.id}}"
+            "url": "Condition?patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52574",
           "request": {
             "method": "GET",
-            "url": "DiagnosticReport?patient={{%LaunchPatient.id}}"
+            "url": "DiagnosticReport?patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52576",
           "request": {
             "method": "GET",
-            "url": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         },
         {
           "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52577",
           "request": {
             "method": "GET",
-            "url": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%LaunchPatient.id}}"
+            "url": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%patient.id}}"
           }
         }
       ]
@@ -198,7 +198,7 @@
       "extension": [
         {
           "url": "name",
-          "valueId": "LaunchPatient"
+          "valueId": "patient"
         },
         {
           "url": "type",
@@ -440,7 +440,7 @@
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
               "valueExpression": {
                 "language": "text/fhirpath",
-                "expression": "today().toString().substring(0,4).toInteger() - %LaunchPatient.birthDate.toString().substring(0,4).toInteger()"
+                "expression": "today().toString().substring(0,4).toInteger() - %patient.birthDate.toString().substring(0,4).toInteger()"
               }
             },
             {
@@ -741,7 +741,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "iif(%LaunchPatient.name.where(use = 'official').exists(),%LaunchPatient.name.where(use = 'official').first().select(given.first() & ' ' & family),%LaunchPatient.name.text.first())"
+                    "expression": "iif(%patient.name.where(use = 'official').exists(),%patient.name.where(use = 'official').first().select(given.first() & ' ' & family),%patient.name.text.first())"
                   }
                 }
               ],
@@ -755,7 +755,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.birthDate"
+                    "expression": "%patient.birthDate"
                   }
                 }
               ],
@@ -769,7 +769,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "today().toString().substring(0,4).toInteger() - %LaunchPatient.birthDate.toString().substring(0,4).toInteger()"
+                    "expression": "today().toString().substring(0,4).toInteger() - %patient.birthDate.toString().substring(0,4).toInteger()"
                   }
                 }
               ],
@@ -783,7 +783,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.gender"
+                    "expression": "%patient.gender"
                   }
                 }
               ],
@@ -813,7 +813,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.extension('http://hl7.org.au/fhir/StructureDefinition/indigenous-status').value"
+                    "expression": "%patient.extension('http://hl7.org.au/fhir/StructureDefinition/indigenous-status').value"
                   }
                 },
                 {
@@ -906,7 +906,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.address.select(line.first() + ', ' + city + ', ' + state + ' ' + postalCode)"
+                    "expression": "%patient.address.select(line.first() + ', ' + city + ', ' + state + ' ' + postalCode)"
                   }
                 }
               ],
@@ -920,7 +920,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.telecom.where(use='home' and system='phone').value"
+                    "expression": "%patient.telecom.where(use='home' and system='phone').value"
                   }
                 }
               ],
@@ -934,7 +934,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.telecom.where(use='mobile' and system='phone').value"
+                    "expression": "%patient.telecom.where(use='mobile' and system='phone').value"
                   }
                 }
               ],
@@ -985,7 +985,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%LaunchPatient.identifier.where(type.coding.code='MC').value.substring(0,10)"
+                        "expression": "%patient.identifier.where(type.coding.code='MC').value.substring(0,10)"
                       }
                     }
                   ],
@@ -999,7 +999,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%LaunchPatient.identifier.where(type.coding.code='MC').value.substring(10)"
+                        "expression": "%patient.identifier.where(type.coding.code='MC').value.substring(10)"
                       }
                     }
                   ],
@@ -1013,7 +1013,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%LaunchPatient.identifier.where(type.coding.code='MC').period.end.toString()"
+                        "expression": "%patient.identifier.where(type.coding.code='MC').period.end.toString()"
                       }
                     }
                   ],
@@ -1029,7 +1029,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%LaunchPatient.identifier.where(type.coding.code='HC' or type.coding.code='PEN').value"
+                    "expression": "%patient.identifier.where(type.coding.code='HC' or type.coding.code='PEN').value"
                   }
                 }
               ],
@@ -2726,7 +2726,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%LaunchPatient.id"
+                        "expression": "%patient.id"
                       }
                     }
                   ],
