@@ -154,6 +154,19 @@ function definePopulationParameters(
  * @author Sean Fong
  */
 function getPopulatedResponse(parameters: Parameters): QuestionnaireResponse | null {
+  // testing express-wrapped sdc-populate
+  fetch('/api', {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: 'POST',
+    body: JSON.stringify(parameters)
+  })
+    .then((res) => res.json())
+    .then((data) => console.log(data))
+    .catch((err) => console.warn(err));
+
   if (isPopulateInputParameters(parameters)) {
     const outputPopParams = populate(parameters);
     return outputPopParams.parameter[0].resource;
