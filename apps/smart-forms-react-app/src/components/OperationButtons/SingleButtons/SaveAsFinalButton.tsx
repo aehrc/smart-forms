@@ -6,6 +6,7 @@ import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import ConfirmSaveAsFinalDialog from '../../Dialogs/ConfirmSaveAsFinalDialog';
+import { QuestionnaireResponseProviderContext } from '../../../App';
 
 interface Props {
   isChip?: boolean;
@@ -27,6 +28,10 @@ function SaveAsFinalButton(props: Props) {
     patient,
     user
   } = props;
+  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const questionnaireResponseIsSaved: boolean =
+    !!questionnaireResponseProvider.questionnaireResponse.authored &&
+    !!questionnaireResponseProvider.questionnaireResponse.author;
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -37,7 +42,9 @@ function SaveAsFinalButton(props: Props) {
   const renderButtonOrChip = !isChip ? (
     <ListItemButton
       disabled={
-        qrHasChanges === false || (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)
+        (qrHasChanges === false ||
+          (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)) &&
+        !questionnaireResponseIsSaved
       }
       onClick={handleClick}>
       <Save sx={{ mr: 2 }} />
@@ -55,7 +62,9 @@ function SaveAsFinalButton(props: Props) {
       label="Save as Final"
       clickable
       disabled={
-        qrHasChanges === false || (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)
+        (qrHasChanges === false ||
+          (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)) &&
+        !questionnaireResponseIsSaved
       }
       onClick={handleClick}
     />
