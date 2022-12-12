@@ -36,8 +36,8 @@ export function prepopulate(
     return;
   }
 
-  // replace all instances of launchPatientId placeholder with patient id
-  prePopQueryBundle = replaceLaunchPatientIdInstances(prePopQueryBundle, patient);
+  // replace all instances of patientId placeholder with patient id
+  prePopQueryBundle = replacePatientIdInstances(prePopQueryBundle, patient);
 
   // perform batch query to CMS FHIR API
   const batchResponsePromise = batchQueryRequest(client, prePopQueryBundle);
@@ -73,16 +73,16 @@ export function getPrePopQueryBundle(contained: FhirResource[]): Bundle | null {
 }
 
 /**
- * Replace LaunchPatientId variable instances in questionnaire with CMS Patient ID
+ * Replace patientId variable instances in questionnaire with CMS Patient ID
  *
  * @author Sean Fong
  */
-function replaceLaunchPatientIdInstances(batchQuery: Bundle, patient: Patient): Bundle {
+function replacePatientIdInstances(batchQuery: Bundle, patient: Patient): Bundle {
   // console.log(batchQuery);
   if (batchQuery.entry) {
     batchQuery.entry.forEach((entry) => {
       if (entry.request && patient.id)
-        entry.request.url = entry.request.url.replace('{{%LaunchPatient.id}}', patient.id);
+        entry.request.url = entry.request.url.replace('{{%patient.id}}', patient.id);
     });
   }
   return { ...batchQuery };

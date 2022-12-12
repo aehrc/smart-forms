@@ -33,7 +33,7 @@ export default function populate(
 
   let initialExpressions = readInitialExpressions(questionnaire);
   initialExpressions = evaluateInitialExpressions(initialExpressions, {
-    LaunchPatient: patient,
+    patient: patient,
     PrePopQuery: query
   });
 
