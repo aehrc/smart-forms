@@ -10,7 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 
 interface Props
@@ -46,7 +46,7 @@ function QItemDateTime(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
         </Grid>
         <Grid item xs={7}>
           <QItemDateTimePicker value={value} onDateTimeChange={handleChange} />

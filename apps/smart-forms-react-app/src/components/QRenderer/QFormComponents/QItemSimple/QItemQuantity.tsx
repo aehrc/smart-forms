@@ -8,7 +8,7 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 
 interface Props
@@ -89,7 +89,7 @@ function QItemQuantity(props: Props) {
       <FormControl>
         <Grid container columnSpacing={6}>
           <Grid item xs={5}>
-            <QItemTypography>{qItem.text}</QItemTypography>
+            <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
           </Grid>
           <Grid item xs={7}>
             {QItemQuantityFields}

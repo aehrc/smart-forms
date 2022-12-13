@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { FormControl, Grid } from '@mui/material';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -48,7 +48,7 @@ function QItemTime(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
         </Grid>
         <Grid item xs={7}>
           <QItemTimePicker value={value} onTimeChange={handleChange} />
