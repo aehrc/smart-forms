@@ -15,7 +15,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
+import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 
 interface Props
@@ -106,7 +106,7 @@ function QItemChoiceAutocomplete(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}

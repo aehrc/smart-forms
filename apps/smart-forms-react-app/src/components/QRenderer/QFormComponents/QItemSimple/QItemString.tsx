@@ -8,8 +8,8 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
+import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -52,7 +52,7 @@ function QItemString(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
         </Grid>
         <Grid item xs={7}>
           {stringInput}
