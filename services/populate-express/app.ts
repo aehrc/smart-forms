@@ -1,5 +1,8 @@
+import populate, { isPopulateInputParameters } from 'sdc-populate';
+import type { OperationOutcome } from 'fhir/r5';
+
 const express = require('express');
-const populate = require('sdc-populate');
+
 const app = express();
 const port = 3001;
 
@@ -7,13 +10,37 @@ app.use(express.json({ limit: '50mb' }));
 
 app.post('/api', (req, res) => {
   const parameters = req.body;
-  if (populate.isPopulateInputParameters(parameters)) {
-    const outputPopParams = populate.default(parameters);
-    res.json(outputPopParams.parameter[0].resource);
+  const operationOutcome: OperationOutcome = { issue: [], resourceType: 'OperationOutcome' };
+
+  if (isPopulateInputParameters(parameters)) {
+    try {
+      const outputPopParams = populate(parameters);
+      res.json(outputPopParams);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        operationOutcome.issue = [
+          {
+            severity: 'error',
+            code: 'exception',
+            details: {
+              text: err.message
+            }
+          }
+        ];
+      }
+      res.status(406).send(operationOutcome);
+    }
   } else {
-    res.status(406).send({
-      message: 'Parameters provided is in an invalid format.'
-    });
+    operationOutcome.issue = [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: {
+          text: 'Parameters provided is in an invalid format.'
+        }
+      }
+    ];
+    res.status(406).send(operationOutcome);
   }
 });
 
