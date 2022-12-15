@@ -1,5 +1,5 @@
 import Recipe from '../resources/recipe.json';
-import type { OperationOutcome, Questionnaire } from 'fhir/r5';
+import type { Questionnaire } from 'fhir/r5';
 import { constructMasterQuestionnaire } from './ConstructMaster';
 import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
 import { createInvalidMasterQuestionnaireOutcome } from './CreateOutcomes';
@@ -10,7 +10,7 @@ import { createInvalidMasterQuestionnaireOutcome } from './CreateOutcomes';
  *
  * @author Sean Fong
  */
-export default function assemble() {
+export default async function assemble() {
   const recipeQuestionnaire = Recipe as Questionnaire;
   const masterQuestionnaire = constructMasterQuestionnaire(recipeQuestionnaire);
   if (!masterQuestionnaire) {
@@ -22,13 +22,5 @@ export default function assemble() {
     return createInvalidMasterQuestionnaireOutcome();
   }
 
-  fetchSubquestionnaires(
-    subquestionnaireCanonicals,
-    (subquestionnaires: Questionnaire[]) => {
-      console.log(subquestionnaires);
-    },
-    (outcome: OperationOutcome) => {
-      return outcome;
-    }
-  );
+  return await fetchSubquestionnaires(subquestionnaireCanonicals);
 }

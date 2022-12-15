@@ -1,4 +1,4 @@
-import type { FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
+import type { FhirResource, Questionnaire } from 'fhir/r5';
 import { client } from 'fhirclient';
 import { createInvalidSubquestionnairesOutcome } from './CreateOutcomes';
 
@@ -20,35 +20,30 @@ export function getCanonicalUrls(masterQuestionnaire: Questionnaire): string[] |
   return subquestionnaireCanonicals;
 }
 
-export function fetchSubquestionnaires(
-  canonicalUrls: string[],
-  assembleSubquestionnaires: { (questionnaires: Questionnaire[]): void },
-  outputError: { (error: OperationOutcome): void }
-) {
+export async function fetchSubquestionnaires(canonicalUrls: string[]) {
+  // Gather all promises to be executed at once
   const promises = [];
   for (const canonicalUrl of canonicalUrls) {
     promises.push(fetchSingleQuestionnaire(canonicalUrl));
   }
 
-  Promise.all(promises).then((resources: Awaited<FhirResource>[]) => {
-    const subquestionnaires = [];
-    for (const resource of resources) {
-      if (resource.resourceType === 'Questionnaire') {
-        subquestionnaires.push(resource);
-      } else {
-        if (resource.resourceType === 'OperationOutcome') {
-          outputError(resource);
-        }
-        outputError(createInvalidSubquestionnairesOutcome());
-      }
-    }
+  const resources = await Promise.all(promises);
 
-    // Proceed to assemble questionnaires if no errors occur
-    assembleSubquestionnaires(subquestionnaires);
-  });
+  const subquestionnaires = [];
+  for (const resource of resources) {
+    if (resource.resourceType !== 'Questionnaire') {
+      return resource.resourceType === 'OperationOutcome'
+        ? resource
+        : createInvalidSubquestionnairesOutcome();
+    } else {
+      subquestionnaires.push(resource);
+    }
+  }
+
+  return subquestionnaires;
 }
 
-async function fetchSingleQuestionnaire(canoncialUrl: string): Promise<Questionnaire> {
+async function fetchSingleQuestionnaire(canoncialUrl: string): Promise<FhirResource> {
   // TODO temporarily specify form server url
   const serverUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
 
