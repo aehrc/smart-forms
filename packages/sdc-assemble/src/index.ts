@@ -2,7 +2,6 @@ import Recipe from '../resources/recipe.json';
 import type { Questionnaire } from 'fhir/r5';
 import { constructMasterQuestionnaire } from './ConstructMaster';
 import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
-import { createInvalidMasterQuestionnaireOutcome } from './CreateOutcomes';
 
 /**
  * Main function of this populate module.
@@ -12,15 +11,14 @@ import { createInvalidMasterQuestionnaireOutcome } from './CreateOutcomes';
  */
 export default async function assemble() {
   const recipeQuestionnaire = Recipe as Questionnaire;
-  const masterQuestionnaire = constructMasterQuestionnaire(recipeQuestionnaire);
-  if (!masterQuestionnaire) {
-    return createInvalidMasterQuestionnaireOutcome();
-  }
 
+  // Construct master questionnaire from recipe
+  const masterQuestionnaire = constructMasterQuestionnaire(recipeQuestionnaire);
+  if (masterQuestionnaire.resourceType === 'OperationOutcome') return masterQuestionnaire;
+
+  // Retrieve subquestionnaires' canonical urls
   const subquestionnaireCanonicals = getCanonicalUrls(masterQuestionnaire);
-  if (!subquestionnaireCanonicals) {
-    return createInvalidMasterQuestionnaireOutcome();
-  }
+  if (!Array.isArray(subquestionnaireCanonicals)) return subquestionnaireCanonicals;
 
   return await fetchSubquestionnaires(subquestionnaireCanonicals);
 }

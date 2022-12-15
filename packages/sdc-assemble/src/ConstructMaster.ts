@@ -1,9 +1,12 @@
-import type { Questionnaire } from 'fhir/r5';
+import type { OperationOutcome, Questionnaire } from 'fhir/r5';
+import { createInvalidMasterQuestionnaireOutcome } from './CreateOutcomes';
 
 export function constructMasterQuestionnaire(
   recipeQuestionnaire: Questionnaire
-): Questionnaire | null {
-  if (!recipeQuestionnaire.item || !recipeQuestionnaire.item[0]) return null;
+): Questionnaire | OperationOutcome {
+  if (!recipeQuestionnaire.item || !recipeQuestionnaire.item[0]) {
+    return createInvalidMasterQuestionnaireOutcome();
+  }
 
   return {
     resourceType: 'Questionnaire',

@@ -1,21 +1,48 @@
-import type { FhirResource, Questionnaire } from 'fhir/r5';
+import type { FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
 import { client } from 'fhirclient';
-import { createInvalidSubquestionnairesOutcome } from './CreateOutcomes';
+import { createInvalidSubquestionnairesOutcome, createOperationOutcome } from './CreateOutcomes';
 
-export function getCanonicalUrls(masterQuestionnaire: Questionnaire): string[] | null {
+export function getCanonicalUrls(masterQuestionnaire: Questionnaire): string[] | OperationOutcome {
   if (
     !masterQuestionnaire.item ||
     !masterQuestionnaire.item[0] ||
     !masterQuestionnaire.item[0].item
   )
-    return null;
+    return createOperationOutcome('Master questionnaire does not have a valid item.');
 
   const subquestionnaireCanonicals = [];
 
   for (const item of masterQuestionnaire.item[0].item) {
-    if (!item.extension || !item.extension[0] || !item.extension[0].valueCanonical) return null;
+    const extensions = item.extension;
+    if (!extensions || !extensions[0]) {
+      return createOperationOutcome(
+        item.text + 'is an invalid item. It does not have any extensions.'
+      );
+    }
 
-    subquestionnaireCanonicals.push(item.extension[0].valueCanonical);
+    let isSubquestionnaire = false;
+    let subquestionnaireCanonicalUrl = '';
+    for (const extension of extensions) {
+      extension.url;
+      if (
+        extension.url ===
+          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire' &&
+        extension.valueCanonical
+      ) {
+        isSubquestionnaire = true;
+        subquestionnaireCanonicalUrl = extension.valueCanonical;
+      }
+    }
+
+    // Check if item is a subquestionnaire or not
+    if (!isSubquestionnaire) {
+      return createOperationOutcome(
+        item.text +
+          'is an invalid item. It does not have an extension that qualifies it to be a subquestionnaire.'
+      );
+    }
+
+    subquestionnaireCanonicals.push(subquestionnaireCanonicalUrl);
   }
   return subquestionnaireCanonicals;
 }
