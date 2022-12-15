@@ -1,4 +1,4 @@
-import Recipe from '../resources/recipe.json';
+import Recipe from './resources/recipe.json';
 import type { Questionnaire } from 'fhir/r5';
 import { constructMasterQuestionnaire } from './ConstructMaster';
 import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
@@ -20,5 +20,8 @@ export default async function assemble() {
   const subquestionnaireCanonicals = getCanonicalUrls(masterQuestionnaire);
   if (!Array.isArray(subquestionnaireCanonicals)) return subquestionnaireCanonicals;
 
-  return await fetchSubquestionnaires(subquestionnaireCanonicals);
+  const subquestionnaires = await fetchSubquestionnaires(subquestionnaireCanonicals);
+  if (!Array.isArray(subquestionnaires)) return subquestionnaires;
+  console.log(subquestionnaires.length);
+  return masterQuestionnaire;
 }

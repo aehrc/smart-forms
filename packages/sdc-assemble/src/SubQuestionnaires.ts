@@ -31,6 +31,7 @@ export function getCanonicalUrls(masterQuestionnaire: Questionnaire): string[] |
       ) {
         isSubquestionnaire = true;
         subquestionnaireCanonicalUrl = extension.valueCanonical;
+        break;
       }
     }
 
@@ -44,6 +45,9 @@ export function getCanonicalUrls(masterQuestionnaire: Questionnaire): string[] |
 
     subquestionnaireCanonicals.push(subquestionnaireCanonicalUrl);
   }
+
+  // remove all subquestionnaire-items from master questionnaire
+  masterQuestionnaire.item[0].item = [];
   return subquestionnaireCanonicals;
 }
 

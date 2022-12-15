@@ -28,14 +28,6 @@ export function constructMasterQuestionnaire(
     publisher: 'CSIRO',
     description:
       'Aboriginal and Torres Strait Islander Health Checks questionnaire formed from an assembled collection of sub-questionnaires. ',
-    item: [
-      {
-        extension: recipeQuestionnaire['item'][0]['extension'],
-        item: [],
-        linkId: recipeQuestionnaire['item'][0]['linkId'],
-        text: recipeQuestionnaire['item'][0]['text'],
-        type: recipeQuestionnaire['item'][0]['type']
-      }
-    ]
+    item: recipeQuestionnaire['item']
   };
 }
