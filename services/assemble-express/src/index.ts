@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const app = express();
 const port = 3002;
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.send('Hello world from assemble-express!');
 });
 

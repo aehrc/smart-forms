@@ -1,5 +1,8 @@
 {
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*",
+    "services/*",
+    "deployment/*"
   ]
 }
