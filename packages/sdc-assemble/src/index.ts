@@ -1,7 +1,7 @@
-import Recipe from './resources/recipe.json';
-import type { Questionnaire } from 'fhir/r5';
-import { constructMasterQuestionnaire } from './ConstructMaster';
+import Master from './resources/masterQuestionnaire2.json';
+import type { OperationOutcome, Questionnaire } from 'fhir/r5';
 import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
+import { createOperationOutcome } from './CreateOutcomes';
 
 /**
  * Main function of this populate module.
@@ -10,18 +10,43 @@ import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
  * @author Sean Fong
  */
 export default async function assemble() {
-  const recipeQuestionnaire = Recipe as Questionnaire;
+  const masterQuestionnaire = Master as Questionnaire;
+  const allCanonicals: string[] = [];
 
-  // Construct master questionnaire from recipe
-  const masterQuestionnaire = constructMasterQuestionnaire(recipeQuestionnaire);
-  if (masterQuestionnaire.resourceType === 'OperationOutcome') return masterQuestionnaire;
+  const assembled = await assembleQuestionnaire({ ...masterQuestionnaire }, allCanonicals);
+  console.log(assembled);
+}
 
-  // Retrieve subquestionnaires' canonical urls
-  const subquestionnaireCanonicals = getCanonicalUrls(masterQuestionnaire);
-  if (!Array.isArray(subquestionnaireCanonicals)) return subquestionnaireCanonicals;
+async function assembleQuestionnaire(
+  parentQuestionnaire: Questionnaire,
+  allCanonicals: string[]
+): Promise<Questionnaire | OperationOutcome> {
+  const canonicals = getCanonicalUrls(parentQuestionnaire, allCanonicals);
+  if (!Array.isArray(canonicals)) return canonicals;
 
-  const subquestionnaires = await fetchSubquestionnaires(subquestionnaireCanonicals);
+  // Exit operation if there are no subquestionnaires to be assembled
+  if (canonicals.length === 0) return parentQuestionnaire;
+
+  // Keep a record of all traversed canonical urls to prevent an infinite loop situation during assembly
+  allCanonicals.push(...canonicals);
+
+  const subquestionnaires = await fetchSubquestionnaires(canonicals);
   if (!Array.isArray(subquestionnaires)) return subquestionnaires;
-  console.log(subquestionnaires.length);
-  return masterQuestionnaire;
+
+  // Recursively assemble subquestionnaires if required
+  for (let subquestionnaire of subquestionnaires) {
+    const assembledSubquestionnaire = await assembleQuestionnaire(subquestionnaire, allCanonicals);
+    if (assembledSubquestionnaire.resourceType === 'Questionnaire') {
+      subquestionnaire = assembledSubquestionnaire;
+    } else {
+      // Prematurely end the operation if there is an error within further assembly operations
+      return assembledSubquestionnaire;
+    }
+  }
+  console.log(subquestionnaires);
+
+  // Begin assembly process for parent questionnaire
+  // Do stuff
+
+  return createOperationOutcome('Development in progress');
 }
