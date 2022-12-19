@@ -1,7 +1,11 @@
 FROM node:19
 
 COPY lib /usr/share/app
-COPY node_modules /usr/share/app/node_modules
+COPY package*.json /usr/share/app
+
+WORKDIR /usr/share/app
+
+RUN npm ci
 
 CMD ["node", "/usr/share/app/index.js"]
 
