@@ -1,7 +1,12 @@
 import Master from './resources/masterQuestionnaire2.json';
-import type { OperationOutcome, Questionnaire } from 'fhir/r5';
+import type { FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
 import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
 import { createOperationOutcome } from './CreateOutcomes';
+import {
+  checkMatchingLanguage,
+  checkProhibitedAttributes,
+  propagateContainedResources
+} from './PropagateItems';
 
 /**
  * Main function of this populate module.
@@ -43,10 +48,19 @@ async function assembleQuestionnaire(
       return assembledSubquestionnaire;
     }
   }
-  console.log(subquestionnaires);
 
   // Begin assembly process for parent questionnaire
-  // Do stuff
+  const prohibitedAttributesOutcome = checkProhibitedAttributes(subquestionnaires);
+  if (prohibitedAttributesOutcome) return prohibitedAttributesOutcome;
+
+  const matchingLanguageOutcome = checkMatchingLanguage(subquestionnaires, parentQuestionnaire);
+  if (matchingLanguageOutcome) return matchingLanguageOutcome;
+
+  const containedResources: Record<string, FhirResource> =
+    propagateContainedResources(subquestionnaires);
+  console.log(containedResources);
+
+  // TODO Do more stuff
 
   return createOperationOutcome('Development in progress');
 }
