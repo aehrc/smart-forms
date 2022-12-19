@@ -5,8 +5,11 @@ import { createOperationOutcome } from './CreateOutcomes';
 import {
   checkMatchingLanguage,
   checkProhibitedAttributes,
-  propagateContainedResources
+  propagateContainedResources,
+  propagateExtensions,
+  propagateItems
 } from './PropagateItems';
+import type { PropagatedExtensions } from './Interfaces';
 
 /**
  * Main function of this populate module.
@@ -56,11 +59,28 @@ async function assembleQuestionnaire(
   const matchingLanguageOutcome = checkMatchingLanguage(subquestionnaires, parentQuestionnaire);
   if (matchingLanguageOutcome) return matchingLanguageOutcome;
 
+  const propagatedItems = propagateItems(subquestionnaires);
+
   const containedResources: Record<string, FhirResource> =
     propagateContainedResources(subquestionnaires);
+
+  const propagatedExtensions = propagateExtensions(subquestionnaires);
+  if (!isPropagatedExtensions(propagatedExtensions)) return propagatedExtensions;
+
+  const { rootLevelExtensions, itemLevelExtensions } = propagatedExtensions;
+
+  console.log(propagatedItems);
   console.log(containedResources);
+  console.log(rootLevelExtensions);
+  console.log(itemLevelExtensions);
 
   // TODO Do more stuff
 
   return createOperationOutcome('Development in progress');
+}
+
+function isPropagatedExtensions(
+  obj: PropagatedExtensions | OperationOutcome
+): obj is PropagatedExtensions {
+  return typeof 'rootLevelExtensions' in obj && typeof 'itemLevelExtensions' in obj;
 }
