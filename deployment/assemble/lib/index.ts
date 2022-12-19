@@ -8,7 +8,11 @@ import {
   TaskDefinition
 } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
-import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import {
+  ApplicationListenerRule,
+  ApplicationProtocol,
+  ListenerCondition
+} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
@@ -45,10 +49,16 @@ export class Assemble extends Construct {
     });
 
     // Create a service to wrap the application task.
-    new ApplicationLoadBalancedFargateService(this, 'SmartFormsAssembleService', {
+    const service = new ApplicationLoadBalancedFargateService(this, 'SmartFormsAssembleService', {
       cluster,
       taskDefinition: taskDefinition,
       protocol: ApplicationProtocol.HTTP
+    });
+    new ApplicationListenerRule(this, 'SmartFormsAssembleListenerRule', {
+      listener: service.listener,
+      targetGroups: [service.targetGroup],
+      priority: 1,
+      conditions: [ListenerCondition.pathPatterns(['/fhir/$assemble'])]
     });
   }
 }

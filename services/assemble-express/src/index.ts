@@ -2,7 +2,7 @@ import express from 'express';
 const app = express();
 const port = 3002;
 
-app.get('/', (_, res) => {
+app.get('/fhir/$assemble', (_, res) => {
   res.send('Hello world from assemble-express!');
 });
 
