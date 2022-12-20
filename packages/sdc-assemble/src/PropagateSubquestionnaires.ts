@@ -6,7 +6,7 @@ import type {
   QuestionnaireItem
 } from 'fhir/r5';
 import { createOperationOutcome } from './CreateOutcomes';
-import type { PropagatedExtensions } from './Interfaces';
+import type { PropagatedExtensions, PropagatedItems } from './Interfaces';
 
 export function checkProhibitedAttributes(
   subquestionnaires: Questionnaire[]
@@ -184,8 +184,9 @@ export function propagateExtensions(
   };
 }
 
-export function propagateItems(subquestionnaires: Questionnaire[]): (QuestionnaireItem[] | null)[] {
+export function propagateSubquestionnaires(subquestionnaires: Questionnaire[]): PropagatedItems {
   const items: (QuestionnaireItem[] | null)[] = [];
+  const linkIds: Set<string> = new Set();
   for (const subquestionnaire of subquestionnaires) {
     if (!subquestionnaire.item) {
       items.push(null);
@@ -194,9 +195,51 @@ export function propagateItems(subquestionnaires: Questionnaire[]): (Questionnai
 
     const subquestionnaireItems = [];
     for (const item of subquestionnaire.item) {
-      subquestionnaireItems.push(item);
+      const resolvedItem = resolveDuplicateLinkIds(item, linkIds);
+      if (resolvedItem) {
+        subquestionnaireItems.push(resolvedItem);
+        linkIds.add(resolvedItem.linkId);
+      } else {
+        subquestionnaireItems.push(item);
+        linkIds.add(item.linkId);
+      }
     }
     items.push(subquestionnaireItems);
   }
-  return items;
+  return { items, linkIds };
+}
+
+export function resolveDuplicateLinkIds(
+  qItem: QuestionnaireItem,
+  linkIds: Set<string>
+): QuestionnaireItem | null {
+  const items = qItem.item;
+  if (items && items.length > 0) {
+    // iterate through items of item recursively
+    const resolvedItems: QuestionnaireItem[] = [];
+    items.forEach((item) => {
+      const resolvedItem = resolveDuplicateLinkIds(item, linkIds);
+      if (resolvedItem) {
+        resolvedItems.push(resolvedItem);
+        linkIds.add(resolvedItem.linkId);
+      } else {
+        resolvedItems.push(item);
+        linkIds.add(item.linkId);
+      }
+    });
+    qItem.item = resolvedItems;
+
+    if (linkIds.has(qItem.linkId)) {
+      qItem.linkId = 'linkIdPrefix' + qItem.linkId;
+    }
+    return qItem;
+  }
+
+  // Add linkIdPrefix to linkId if it's a duplicate
+  if (linkIds.has(qItem.linkId)) {
+    qItem.linkId = 'linkIdPrefix' + qItem.linkId;
+    return qItem;
+  }
+
+  return null;
 }

@@ -7,8 +7,8 @@ import {
   checkProhibitedAttributes,
   propagateContainedResources,
   propagateExtensions,
-  propagateItems
-} from './PropagateItems';
+  propagateSubquestionnaires
+} from './PropagateSubquestionnaires';
 import type { PropagatedExtensions } from './Interfaces';
 
 /**
@@ -59,7 +59,7 @@ async function assembleQuestionnaire(
   const matchingLanguageOutcome = checkMatchingLanguage(subquestionnaires, parentQuestionnaire);
   if (matchingLanguageOutcome) return matchingLanguageOutcome;
 
-  const propagatedItems = propagateItems(subquestionnaires);
+  const { items, linkIds } = propagateSubquestionnaires(subquestionnaires);
 
   const containedResources: Record<string, FhirResource> =
     propagateContainedResources(subquestionnaires);
@@ -69,12 +69,12 @@ async function assembleQuestionnaire(
 
   const { rootLevelExtensions, itemLevelExtensions } = propagatedExtensions;
 
-  console.log(propagatedItems);
+  console.log('------------------');
+  console.log(items);
+  console.log(linkIds);
   console.log(containedResources);
   console.log(rootLevelExtensions);
   console.log(itemLevelExtensions);
-
-  // TODO Do more stuff
 
   return createOperationOutcome('Development in progress');
 }
@@ -82,5 +82,5 @@ async function assembleQuestionnaire(
 function isPropagatedExtensions(
   obj: PropagatedExtensions | OperationOutcome
 ): obj is PropagatedExtensions {
-  return typeof 'rootLevelExtensions' in obj && typeof 'itemLevelExtensions' in obj;
+  return 'rootLevelExtensions' in obj && 'itemLevelExtensions' in obj;
 }
