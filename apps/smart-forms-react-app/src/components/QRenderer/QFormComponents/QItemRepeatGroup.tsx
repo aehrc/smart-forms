@@ -15,7 +15,7 @@ import {
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
-import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItrmRepeat.styles';
+import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

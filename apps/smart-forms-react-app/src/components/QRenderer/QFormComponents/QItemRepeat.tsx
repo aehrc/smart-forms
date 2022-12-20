@@ -12,7 +12,7 @@ import { createQrItem } from '../../../functions/QrItemFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
 import { QItemLabelMarkdown } from '../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
-import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItrmRepeat.styles';
+import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;

@@ -1,18 +1,15 @@
 import { Stack, styled, Tooltip } from '@mui/material';
 
 export const RepeatDeleteTooltip = styled(Tooltip)(() => ({
-  marginLeft: '8px',
-  display: 'none'
+  marginLeft: '8px'
 }));
 
 export const RepeatItemContainerStack = styled(Stack)(() => ({
   alignItems: 'center',
-  paddingBottom: '16px',
-  '&:hover': { '& .repeat-item-delete': { display: 'flex' } }
+  paddingBottom: '16px'
 }));
 
 export const RepeatGroupContainerStack = styled(Stack)(() => ({
   alignItems: 'center',
-  paddingBottom: '16px',
-  '&:hover': { '& .repeat-group-delete': { display: 'flex' } }
+  paddingBottom: '16px'
 }));
