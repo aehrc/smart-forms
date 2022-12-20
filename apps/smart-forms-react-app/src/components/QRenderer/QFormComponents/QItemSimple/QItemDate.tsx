@@ -10,8 +10,8 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import dayjs, { Dayjs } from 'dayjs';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,7 +46,7 @@ function QItemDate(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           <QItemDatePicker value={value} onDateChange={handleChange} />

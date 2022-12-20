@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl } from '@mui/material';
 import { QuestionnaireItem } from 'fhir/r5';
-import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props {
   qItem: QuestionnaireItem;
@@ -12,7 +12,7 @@ function QItemDisplay(props: Props) {
 
   return (
     <FormControl>
-      <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
+      <QItemLabel qItem={qItem} />
     </FormControl>
   );
 }

@@ -5,7 +5,6 @@ import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { FormControl, Grid } from '@mui/material';
-import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -14,6 +13,7 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,7 +48,7 @@ function QItemTime(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           <QItemTimePicker value={value} onTimeChange={handleChange} />

@@ -4815,6 +4815,10 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
                   "valueString": "Assessment of chronic disease associated with ageing"
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                  "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n    <img src=\"https://ouch-cdn2.icons8.com/41V9zKB1cIFAg482Wv1T6bcRVpphosPLspH5EH9eO8I/rs:fit:256:256/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvMjEv/ZGUxZjQyNzEtZDU2/MS00ZDgwLTkzYmEt/NTFiOGZlZjZiMDM2/LnBuZw.png\" alt=\"Car\" />\n  <p>Document conversation about age-appropriate healthy eating, which could include:</p>\n  <ul>\n    <li>Current diet</li>\n    <li>Transition to solids</li>\n    <li>\n      Dietary recommendations re fruit and vegetable intake, iron-rich foods, avoiding sugary drinks\n    </li>\n  </ul>\n</div>\n"
                 }
               ],
               "item": [
