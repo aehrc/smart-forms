@@ -1,5 +1,4 @@
-import { FormGroup, RadioGroup, styled } from '@mui/material';
-import MuiMarkdown from 'mui-markdown';
+import { FormGroup, RadioGroup, styled, Typography } from '@mui/material';
 
 export const QFormGroup = styled(FormGroup)(() => ({
   marginBottom: '4px'
@@ -9,6 +8,6 @@ export const QRadioGroup = styled(RadioGroup)(() => ({
   marginBottom: '4px'
 }));
 
-export const QItemLabelMarkdown = styled(MuiMarkdown)(() => ({
+export const QItemTypography = styled(Typography)(() => ({
   marginTop: '4px'
 }));

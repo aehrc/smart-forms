@@ -10,10 +10,9 @@ function Preview() {
   const questionnaire = questionnaireProvider.questionnaire;
   const qResponse = questionnaireResponseProvider.questionnaireResponse;
 
-  const test = qrToHTML(questionnaire, qResponse);
-  const parsed = parse(test);
+  const parsedHTML = parse(qrToHTML(questionnaire, qResponse));
 
-  return <>{parsed}</>;
+  return <>{parsedHTML}</>;
 }
 
 export default Preview;

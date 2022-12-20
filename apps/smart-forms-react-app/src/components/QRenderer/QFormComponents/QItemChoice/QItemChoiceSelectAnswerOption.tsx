@@ -8,8 +8,8 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
-import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -67,7 +67,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerOption}

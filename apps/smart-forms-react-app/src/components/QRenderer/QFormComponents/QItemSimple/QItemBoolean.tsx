@@ -8,8 +8,8 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
-import { QItemLabelMarkdown } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -47,7 +47,7 @@ function QItemBoolean(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabelMarkdown>{qItem.text}</QItemLabelMarkdown>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           <FormControlLabel
