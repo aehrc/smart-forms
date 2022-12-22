@@ -1,6 +1,7 @@
 import type {
   Questionnaire,
   QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -103,7 +104,7 @@ function readQuestionnaireItem(
       return {
         linkId: qItem.linkId,
         text: qItem.text,
-        answer: getAnswerValues(initialValues)
+        answer: getAnswerValues(initialValues, qItem)
       };
     }
   }
@@ -115,8 +116,16 @@ function readQuestionnaireItem(
  *
  * @author Sean Fong
  */
-function getAnswerValues(initialValues: any[]) {
+function getAnswerValues(initialValues: any[], qItem: QuestionnaireItem) {
   return initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
+    if (qItem.answerOption) {
+      const answerOption = qItem.answerOption.find(
+        (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value
+      );
+
+      if (answerOption) return answerOption;
+    }
+
     if (typeof value === 'boolean') {
       return { valueBoolean: value };
     } else if (typeof value === 'object') {
