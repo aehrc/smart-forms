@@ -76,7 +76,6 @@ export function isEnabledAnswerTypeSwitcher(
   } else if (enableWhen['answerTime'] && answer.valueTime) {
     return answerOperatorSwitcher(enableWhen.answerTime, answer.valueTime, enableWhen.operator);
   } else if (enableWhen['answerString'] && answer.valueString) {
-    console.log('valueString');
     return answerOperatorSwitcher(enableWhen.answerString, answer.valueString, enableWhen.operator);
   } else if (enableWhen['answerCoding']?.code && answer.valueCoding?.code) {
     return answerOperatorSwitcher(
