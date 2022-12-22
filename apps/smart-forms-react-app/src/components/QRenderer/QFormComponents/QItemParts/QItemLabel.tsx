@@ -16,11 +16,11 @@ function QItemLabel(props: Props) {
   if (xHtmlString) {
     return <>{parse(xHtmlString)}</>;
   } else {
-    return (
-      <>
-        <QItemTypography>{qItem.text}</QItemTypography>
-      </>
-    );
+    if (qItem.type === 'group') {
+      return <>{qItem.text}</>;
+    } else {
+      return <QItemTypography>{qItem.text}</QItemTypography>;
+    }
   }
 }
 
