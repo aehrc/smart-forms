@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, IconButton, Stack } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -16,6 +16,8 @@ import {
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
+import QItemLabel from './QItemParts/QItemLabel';
+import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -72,9 +74,9 @@ function QItemRepeatGroup(props: Props) {
 
   return (
     <Card elevation={groupCardElevation} sx={{ mb: 6, p: 4 }}>
-      <Typography variant="h6" sx={{ mb: 4 }}>
-        {qItem.text}
-      </Typography>
+      <QGroupHeadingTypography variant="h6" sx={{ mb: 4 }}>
+        <QItemLabel qItem={qItem} />
+      </QGroupHeadingTypography>
       {repeatAnswerItems.map((answerItem, index) => {
         const singleQrItem: QuestionnaireResponseItem = answerItem
           ? { ...cleanQrItem, item: answerItem.item }
