@@ -24,6 +24,7 @@
     "assemble": "^0.1.0",
     "aws-cdk-lib": "2.39.0",
     "constructs": "^10.0.0",
+    "forms-server": "^0.1.0",
     "source-map-support": "^0.5.21"
   }
 }

@@ -1,34 +1,25 @@
-// import * as cdk from 'aws-cdk-lib';
-import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
   AwsLogDriver,
   Cluster,
   Compatibility,
   ContainerImage,
+  FargateService,
   TaskDefinition
 } from 'aws-cdk-lib/aws-ecs';
-import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
-import {
-  ApplicationListenerRule,
-  ApplicationProtocol,
-  ListenerCondition
-} from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
-
 export interface AssembleProps {
-  // Define construct properties here
+  cluster: Cluster;
 }
 
 export class Assemble extends Construct {
-  constructor(scope: Construct, id: string, props: AssembleProps = {}) {
-    super(scope, id);
+  containerName = 'assemble';
+  containerPort = 3002;
+  service: FargateService;
 
-    // Create a new VPC and cluster that will be used to run the service.
-    const vpc = new Vpc(this, 'SmartFormsVpc', { maxAzs: 2 });
-    const cluster = new Cluster(this, 'SmartFormsCluster', { vpc: vpc });
+  constructor(scope: Construct, id: string, { cluster }: AssembleProps) {
+    super(scope, id);
 
     // Create a task definition that contains both the application and cache containers.
     const taskDefinition = new TaskDefinition(this, 'SmartFormsAssembleTaskDefinition', {
@@ -39,26 +30,18 @@ export class Assemble extends Construct {
 
     // Create the cache container.
     taskDefinition.addContainer('SmartFormsAssembleContainer', {
-      containerName: 'assemble',
+      containerName: this.containerName,
       image: ContainerImage.fromRegistry('aehrc/smart-forms-assemble:latest'),
-      portMappings: [{ containerPort: 3002 }],
+      portMappings: [{ containerPort: this.containerPort }],
       logging: AwsLogDriver.awsLogs({
         streamPrefix: 'smart-forms-assemble',
         logRetention: RetentionDays.ONE_MONTH
       })
     });
 
-    // Create a service to wrap the application task.
-    const service = new ApplicationLoadBalancedFargateService(this, 'SmartFormsAssembleService', {
+    this.service = new FargateService(this, 'SmartFormsAssembleService', {
       cluster,
-      taskDefinition: taskDefinition,
-      protocol: ApplicationProtocol.HTTP
-    });
-    new ApplicationListenerRule(this, 'SmartFormsAssembleListenerRule', {
-      listener: service.listener,
-      targetGroups: [service.targetGroup],
-      priority: 1,
-      conditions: [ListenerCondition.pathPatterns(['/fhir/$assemble'])]
+      taskDefinition
     });
   }
 }
