@@ -4,6 +4,7 @@ import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Cluster } from 'aws-cdk-lib/aws-ecs';
 import {
   ApplicationLoadBalancer,
+  ApplicationProtocol,
   ApplicationTargetGroup,
   ListenerAction,
   ListenerCondition
@@ -37,6 +38,7 @@ export class CsiroStack extends cdk.Stack {
     const assembleTargetGroup = new ApplicationTargetGroup(this, 'CsiroAssembleTargetGroup', {
       vpc,
       port: assemble.containerPort,
+      protocol: ApplicationProtocol.HTTP,
       targets: [assembleTarget],
       healthCheck: { path: '/fhir/$assemble' }
     });
@@ -54,6 +56,7 @@ export class CsiroStack extends cdk.Stack {
     const formsServerTargetGroup = new ApplicationTargetGroup(this, 'CsiroFormsServerTargetGroup', {
       vpc,
       port: formsServer.containerPort,
+      protocol: ApplicationProtocol.HTTP,
       targets: [formsServerTarget],
       healthCheck: { path: '/fhir/metadata' }
     });
