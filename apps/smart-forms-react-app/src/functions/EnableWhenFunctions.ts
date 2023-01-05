@@ -45,7 +45,9 @@ export function isEnabledAnswerTypeSwitcher(
   enableWhen: QuestionnaireItemEnableWhen,
   answer: QuestionnaireResponseItemAnswer
 ): boolean {
-  if (enableWhen['answerBoolean'] !== undefined && answer.valueBoolean !== undefined) {
+  if (enableWhen['answerBoolean'] !== undefined && enableWhen.operator === 'exists') {
+    return answerOperatorSwitcher(enableWhen.answerBoolean, answer, enableWhen.operator);
+  } else if (enableWhen['answerBoolean'] !== undefined && answer.valueBoolean !== undefined) {
     return answerOperatorSwitcher(
       enableWhen.answerBoolean,
       answer.valueBoolean,
@@ -98,13 +100,14 @@ export function isEnabledAnswerTypeSwitcher(
  */
 function answerOperatorSwitcher(
   expected: boolean | string | number | Quantity,
-  value: boolean | string | number | Quantity,
+  value: boolean | string | number | Quantity | QuestionnaireResponseItemAnswer,
   operator: QuestionnaireItemEnableWhen['operator']
 ): boolean {
   // FIXME runs even when the linked textbox is not changed
   switch (operator) {
     case 'exists':
-      return true;
+      // check if value is an object and contains any answerValues
+      return typeof value === 'object' && Object.keys(value).length !== 0;
     case '=':
       return value === expected;
     case '!=':

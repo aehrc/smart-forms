@@ -17,6 +17,7 @@ import RendererOperationButtons from '../OperationButtons/RendererOperationButto
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import FormBodyInvalid from './FormBodyInvalid';
 import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
+import QTitle from './QFormComponents/QItemParts/QTitle';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -103,7 +104,9 @@ function Form(props: Props) {
               </SideBarGrid>
               <MainGrid item xs={12} lg={10.25}>
                 <MainGridContainerBox>
-                  <MainGridHeadingTypography>{questionnaire.title}</MainGridHeadingTypography>
+                  <MainGridHeadingTypography>
+                    <QTitle questionnaire={questionnaire} />
+                  </MainGridHeadingTypography>
                   <ChipBar>
                     <RendererOperationButtons
                       isChip={true}
