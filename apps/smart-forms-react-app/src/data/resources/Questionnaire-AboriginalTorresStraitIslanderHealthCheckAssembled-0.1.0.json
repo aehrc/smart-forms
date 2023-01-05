@@ -3,11 +3,7 @@
   "id": "715-Assembled",
   "meta": {
     "versionId": "1",
-    "lastUpdated": "2022-11-11T13:48:11.432429"
-  },
-  "text": {
-    "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><b>Assembled 715</b></div>"
+    "lastUpdated": "2022-12-20T10:21:06.649970"
   },
   "contained": [
     {
@@ -960,6 +956,112 @@
     },
     {
       "resourceType": "ValueSet",
+      "id": "condition-clinical",
+      "meta": {
+        "profile": [
+          "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
+        ]
+      },
+      "status": "draft",
+      "name": "ConditionClinicalStatusCodes",
+      "title": "Condition Clinical Status Codes",
+      "description": "Preferred value set for Condition Clinical Status.",
+      "version": "4.3.0",
+      "url": "http://hl7.org/fhir/ValueSet/condition-clinical",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-wg",
+          "valueCode": "pc"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status",
+          "valueCode": "trial-use"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm",
+          "valueInteger": 3
+        }
+      ],
+      "identifier": [
+        {
+          "system": "urn:ietf:rfc:3986",
+          "value": "urn:oid:2.16.840.1.113883.4.642.3.164"
+        }
+      ],
+      "experimental": false,
+      "publisher": "FHIR Project team",
+      "contact": [
+        {
+          "telecom": [
+            {
+              "system": "url",
+              "value": "http://hl7.org/fhir"
+            }
+          ]
+        }
+      ],
+      "expansion": {
+        "identifier": "5d4bed14-061a-42c4-853d-e6a624c4f483",
+        "timestamp": "2022-10-20T09:32:48+10:00",
+        "total": 6,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/condition-clinical|4.0.1"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "active",
+            "display": "Active"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "inactive",
+            "display": "Inactive"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "recurrence",
+            "display": "Recurrence"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "relapse",
+            "display": "Relapse"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "remission",
+            "display": "Remission"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "resolved",
+            "display": "Resolved"
+          }
+        ]
+      },
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
       "id": "AboriginalTorresStraitIslander",
       "status": "active",
       "name": "AboriginalTorresStraitIslander",
@@ -1115,6 +1217,91 @@
   ],
   "extension": [
     {
+      "url": "http://keepmyvalueset.hack",
+      "extension": [
+        {
+          "url": "1",
+          "valueReference": {
+            "reference": "#YesNoNA"
+          }
+        },
+        {
+          "url": "2",
+          "valueReference": {
+            "reference": "#YesNo"
+          }
+        },
+        {
+          "url": "3",
+          "valueReference": {
+            "reference": "#MedicalHistory"
+          }
+        },
+        {
+          "url": "4",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListInfants"
+          }
+        },
+        {
+          "url": "5",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListPrimarySchool"
+          }
+        },
+        {
+          "url": "6",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListAdolescents"
+          }
+        },
+        {
+          "url": "7",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListAdultsAndOlderPeople"
+          }
+        },
+        {
+          "url": "8",
+          "valueReference": {
+            "reference": "#AboriginalTorresStraitIslander"
+          }
+        },
+        {
+          "url": "9",
+          "valueReference": {
+            "reference": "#condition-clinical"
+          }
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries",
+      "valueReference": {
+        "reference": "#PrePopQuery"
+      }
+    },
+    {
       "extension": [
         {
           "url": "name",
@@ -1133,16 +1320,11 @@
         }
       ],
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries",
-      "valueReference": {
-        "reference": "#PrePopQuery"
-      }
     }
   ],
-  "url": "http://www.health.gov.au/assessments/mbs/715-Assembled",
-  "name": "MBS715 Assembled",
+  "url": "http://www.health.gov.au/assessments/mbs/715",
+  "version": "0.1.0",
+  "name": "AboriginalTorresStraitIslanderHealthCheckAssembled",
   "title": "Aboriginal and Torres Strait Islander Health Check (Assembled)",
   "_title": {
     "extension": [{
@@ -1156,9 +1338,9 @@
   "subjectType": [
     "Patient"
   ],
-  "date": "2022-11-11T13:48:11.432429",
-  "publisher": "aehrc",
-  "description": "Aboriginal and Torres Strait Islander Health Checks questionnaire formed from an assembled collection of sub-questionnaires",
+  "date": "2022-12-20T10:21:06.649970",
+  "publisher": "CSIRO",
+  "description": "Aboriginal and Torres Strait Islander Health Checks questionnaire formed from an assembled collection of sub-questionnaires.",
   "item": [
     {
       "extension": [
@@ -1394,6 +1576,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "item": [
@@ -1461,6 +1647,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "d1e1ab3d-1c6c-430b-8ae7-af56b8f0af55",
@@ -1488,6 +1678,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "7fa8bc57-f3f9-4ddc-bf9b-12a9b9885dbd",
@@ -1517,6 +1711,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "c72933c7-349f-4fef-94ff-c424c69da6f3",
@@ -1568,6 +1766,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "057483ce-f265-46df-a1c5-7a18d492c1ba",
@@ -1795,7 +1997,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "iif(today().toString().substring(4,4).toInteger > %patient.birthDate.toString().substring(4,4).toInteger, today().toString().substring(0,4).toInteger() - %patient.birthDate.toString().substring(0,4).toInteger(), today().toString().substring(0,4).toInteger() - %patient.birthDate.toString().substring(0,4).toInteger() - 1)"
+                    "expression": "iif(today().toString().select(substring(5,2) & substring(8,2)).toInteger() > %patient.birthDate.toString().select(substring(5,2) & substring(8,2)).toInteger(), today().toString().substring(0,4).toInteger() - %patient.birthDate.toString().substring(0,4).toInteger(), today().toString().substring(0,4).toInteger() - %patient.birthDate.toString().substring(0,4).toInteger() - 1)"
                   }
                 }
               ],
@@ -2176,7 +2378,7 @@
                   "linkId": "aa35d559-f45b-4d35-9453-dd02e4a790f3",
                   "text": "Relationship to child",
                   "type": "string",
-                  "repeats": true,
+                  "repeats": false,
                   "enableWhen": [
                     {
                       "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -2189,7 +2391,7 @@
                   "linkId": "27099697-d6d1-42c0-bb0a-5e9ff7372a96",
                   "text": "Relationship to patient",
                   "type": "string",
-                  "repeats": true,
+                  "repeats": false,
                   "enableWhen": [
                     {
                       "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -2324,6 +2526,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "83814495-3a81-43f4-88df-42186cce516a",
@@ -2344,6 +2550,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "e63547c6-1623-412f-963f-5f1ebf23563f",
@@ -2373,6 +2583,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "7165c072-e3d8-4564-9d1d-d17f6807787c",
@@ -2424,6 +2638,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "924b4500-53ac-4c4e-831b-7ab5569ff981",
@@ -2468,6 +2686,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "e90b436b-2751-4e07-a40c-adfe951b6528",
@@ -2541,6 +2763,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "a08271f1-194b-4fe9-91f9-4f3398858eb0",
@@ -2592,6 +2818,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "d05558fb-a3cc-4bd6-b803-b672b36b9c51",
@@ -2643,6 +2873,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "41210be5-d441-4c44-b9c2-8dd94a44cbb4",
@@ -2679,6 +2913,10 @@
                               }
                             ]
                           }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                          "valueCode": "horizontal"
                         }
                       ],
                       "linkId": "036eace9-ea83-46ec-9d01-f2093f710816",
@@ -2713,6 +2951,10 @@
                               }
                             ]
                           }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                          "valueCode": "horizontal"
                         }
                       ],
                       "linkId": "b0632039-c12b-4748-9e94-52073590c0ba",
@@ -2877,6 +3119,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "2655e0e1-fe4b-431e-87af-30d4ff1aca76",
@@ -2897,6 +3143,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "a30d0101-06ce-4481-b142-9fa2c091fe4f",
@@ -3079,7 +3329,7 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "code": "check-box",
+                        "code": "radio-button",
                         "system": "http://hl7.org/fhir/questionnaire-item-control"
                       }
                     ]
@@ -3089,7 +3339,7 @@
               "linkId": "033db7b3-80da-43e2-9838-88f3d51e5913",
               "text": "Problems",
               "type": "choice",
-              "repeats": false,
+              "repeats": true,
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -3116,7 +3366,7 @@
               "linkId": "384ab440-10ed-4ac1-89da-cd7d24f87a95",
               "text": "Problems",
               "type": "choice",
-              "repeats": false,
+              "repeats": true,
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -3149,7 +3399,7 @@
               "linkId": "c24ae0d2-8932-4b87-9b7e-a644b5eb2874",
               "text": "Problems",
               "type": "choice",
-              "repeats": false,
+              "repeats": true,
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -3182,7 +3432,7 @@
               "linkId": "bba27ef5-05c5-4e9c-bc9f-cf42091e99cb",
               "text": "Problems",
               "type": "choice",
-              "repeats": false,
+              "repeats": true,
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -3230,6 +3480,129 @@
               "repeats": false
             },
             {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "gtable",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "item": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.code.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
+                      }
+                    }
+                  ],
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "type": "open-choice",
+                  "answerValueSet": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistory"
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "drop-down",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.clinicalStatus.coding.code"
+                      }
+                    }
+                  ],
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "type": "choice",
+                  "answerValueSet": "#condition-clinical"
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.onsetDateTime"
+                      }
+                    }
+                  ],
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "type": "dateTime"
+                },
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%PrePopQuery.entry[21].resource.entry.resource.recordedDate"
+                      }
+                    }
+                  ],
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "type": "dateTime"
+                }
+              ],
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "type": "group",
+              "repeats": true
+            },
+            {
               "linkId": "62774152-8a6e-4449-af9f-87bdce8b9bf5",
               "text": "Health priorities, actions and follow-up",
               "type": "text",
@@ -3274,6 +3647,10 @@
                   }
                 },
                 {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                },
+                {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
                   "valueString": "Does your child take any regular medications?"
                 }
@@ -3303,6 +3680,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 },
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
@@ -3566,6 +3947,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "e7297156-cfed-4437-b877-c345f744168b",
@@ -3720,6 +4105,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "062f5234-686a-4bf3-afcd-3fcd988afd6c",
@@ -3857,6 +4246,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "a7542da8-aad6-4a80-8b5b-806ca11d68d2",
@@ -3901,6 +4294,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "6f73d1ee-dd8e-419a-9142-ede367200e3b",
@@ -4329,6 +4726,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "0cd9e27b-1e98-41af-917b-0c6ee21c0819",
@@ -4370,6 +4771,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "4a81afc0-f0da-49e1-b8cc-c19cb0f5f4e9",
@@ -4411,6 +4816,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "aaead1e2-ea54-4979-be0a-647e61ab59a9",
@@ -4491,6 +4900,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "4c68ff3e-0e73-4ea2-b295-5057deaa590e",
@@ -4683,6 +5096,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "e29701be-2b79-471d-a42e-7e3830459080",
@@ -4727,6 +5144,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "06a67326-9e3d-4c4c-b271-af5b168d077c",
@@ -4822,10 +5243,6 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
                   "valueString": "Assessment of chronic disease associated with ageing"
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
-                  "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n    <img src=\"https://ouch-cdn2.icons8.com/41V9zKB1cIFAg482Wv1T6bcRVpphosPLspH5EH9eO8I/rs:fit:256:256/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9wbmcvMjEv/ZGUxZjQyNzEtZDU2/MS00ZDgwLTkzYmEt/NTFiOGZlZjZiMDM2/LnBuZw.png\" alt=\"Car\" />\n  <p>Document conversation about age-appropriate healthy eating, which could include:</p>\n  <ul>\n    <li>Current diet</li>\n    <li>Transition to solids</li>\n    <li>\n      Dietary recommendations re fruit and vegetable intake, iron-rich foods, avoiding sugary drinks\n    </li>\n  </ul>\n</div>\n"
                 }
               ],
               "item": [
@@ -4933,7 +5350,7 @@
                 }
               ],
               "linkId": "ed15e82b-803a-4d21-9344-9110b57b2313",
-              "text": "Cervical screening (age \u00e2\u2030\u00a474 years)",
+              "text": "Cervical screening (age <=74 years)",
               "type": "group",
               "repeats": false
             },
@@ -4983,7 +5400,7 @@
                 }
               ],
               "linkId": "17ff5354-fe9c-429c-a752-c27a871d4ee7",
-              "text": "Breast screening (age \u00e2\u2030\u00a474 years)",
+              "text": "Breast screening (age <=74 years)",
               "type": "group",
               "repeats": false
             },
@@ -5033,7 +5450,7 @@
                 }
               ],
               "linkId": "bb5d56e3-efb9-45fe-854d-e4550b327d26",
-              "text": "Bowel cancer screening (age \u00e2\u2030\u00a474 years)",
+              "text": "Bowel cancer screening (age <=74 years)",
               "type": "group",
               "repeats": false
             },
@@ -5091,6 +5508,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "e2942894-5537-47a6-ab43-06eb6761f9b5",
@@ -5118,6 +5539,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "69d92a26-95ac-4556-94da-5b0e09940bfd",
@@ -5251,6 +5676,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "646302e9-d384-4943-99bc-11e638641703",
@@ -5302,6 +5731,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "6dc96b26-cbc5-4434-8f6b-0260196311c2",
@@ -5419,6 +5852,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "12a41538-5dbd-4c1d-af69-52c59c48b1a9",
@@ -5503,6 +5940,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "304d0332-9bfd-42dc-a4be-a5122596fb89",
@@ -5567,6 +6008,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "465eacce-f9ee-4022-9186-89065cf01ce2",
@@ -5592,7 +6037,7 @@
                   ]
                 }
               ],
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf5",
+              "linkId": "e24d487b-3dd4-4a6d-a58e-85dfa8ce3f36",
               "text": "Screen time concerns",
               "type": "group",
               "repeats": false,
@@ -5631,6 +6076,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "08320c7a-831b-4237-95e2-d79aee155b90",
@@ -5656,7 +6105,7 @@
                   ]
                 }
               ],
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf6",
+              "linkId": "e9b6ac74-d810-4350-8b41-8ea2e4bd14fc",
               "text": "Physical activity or screen time concerns",
               "type": "group",
               "repeats": false,
@@ -5734,7 +6183,7 @@
               "enableBehavior": "all"
             },
             {
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf7",
+              "linkId": "ccbd7fbf-0d40-4cb3-82b3-ad2c7cc7bba2",
               "text": "Health priorities, actions and follow-up",
               "type": "text",
               "repeats": false
@@ -5794,6 +6243,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "b30d5d21-c6d6-4bb3-aab4-0fdee80b3093",
@@ -5819,7 +6272,7 @@
                   ]
                 }
               ],
-              "linkId": "8c5e737f-820b-47a4-8c8a-27ce1eb18cf8",
+              "linkId": "015d986f-89cf-45b0-a753-9a3ab0c4b05b",
               "text": "Physical activity concerns",
               "type": "group",
               "repeats": false
@@ -5981,7 +6434,7 @@
                       "valueCoding": {
                         "code": "48031000119106",
                         "system": "http://snomed.info/sct",
-                        "display": "Quit \u00e2\u2030\u00a512 months"
+                        "display": "Quit >=12 months"
                       }
                     },
                     {
@@ -6146,6 +6599,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "a233c01e-a72e-474b-9a26-bab1504491fa",
@@ -6228,6 +6685,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "1d20138a-caf3-4c43-9693-04c08d37a84a",
@@ -6324,6 +6785,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "e56e79e5-8fbb-43f0-b2a3-018b55750bd0",
@@ -6489,6 +6954,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "1c40a720-bdb7-4386-a9f6-be82b7349bf7",
@@ -6533,6 +7002,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "64fd0f79-7e09-4934-905d-9bff6715f9ba",
@@ -6623,6 +7096,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "bc49ee24-62a8-4252-a5ee-9c68bfed601c",
@@ -6650,6 +7127,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "6286346d-c805-4519-8e82-bf364a215c58",
@@ -6911,6 +7392,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "f982c374-f023-4e68-8968-1f1f5d3969ae",
@@ -6962,6 +7447,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "06c150f8-4d54-4d10-aeff-2ef7567b6812",
@@ -7013,6 +7502,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "b326271b-e9b1-45a0-b899-125364833702",
@@ -7064,6 +7557,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "3e53edc7-c90e-4681-a006-b7a05b91a02c",
@@ -7160,7 +7657,7 @@
                           "linkId": "dedfc83e-7451-404d-bd24-97b1254304eb",
                           "text": "Left ear",
                           "type": "open-choice",
-                          "repeats": false,
+                          "repeats": true,
                           "answerOption": [
                             {
                               "valueString": "Clear and intact"
@@ -7215,7 +7712,7 @@
                           "linkId": "23daa784-4476-447f-8aa2-42933b4490d9",
                           "text": "Right ear",
                           "type": "open-choice",
-                          "repeats": false,
+                          "repeats": true,
                           "answerOption": [
                             {
                               "valueString": "Clear and intact"
@@ -7285,7 +7782,7 @@
                           "linkId": "079df9c5-234c-4129-8769-800dab47a59a",
                           "text": "Left ear",
                           "type": "open-choice",
-                          "repeats": false,
+                          "repeats": true,
                           "answerOption": [
                             {
                               "valueString": "Clear and intact"
@@ -7328,7 +7825,7 @@
                           "linkId": "ce1fc869-a412-4aea-aa53-36e794a14519",
                           "text": "Right ear",
                           "type": "open-choice",
-                          "repeats": false,
+                          "repeats": true,
                           "answerOption": [
                             {
                               "valueString": "Clear and intact"
@@ -7449,6 +7946,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "e4cf4f15-7eed-4aa1-9f9d-61ccd659685c",
@@ -7476,6 +7977,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "cb287506-9a64-4ee8-8f24-ba7cb77756f3",
@@ -7540,6 +8045,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "ffe81bde-608f-4e3f-98ae-39d0b9884dcc",
@@ -7636,6 +8145,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "829de3f8-eea9-4139-8a18-47c16182ac9e",
@@ -7663,6 +8176,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "353f528b-3518-4fb3-a0bd-3ed5ae6b036a",
@@ -7721,6 +8238,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "80e4349f-6d89-4017-8632-9a947e50e947",
@@ -7878,6 +8399,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "69a4a459-196b-4931-8336-ea76ab3fccd1",
@@ -7889,8 +8414,8 @@
             {
               "linkId": "08e8ca54-9af8-4028-be83-aab20bccecc3",
               "text": "Immunisations due",
-              "type": "text",
-              "repeats": false
+              "type": "string",
+              "repeats": true
             },
             {
               "item": [
@@ -7906,6 +8431,10 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
                     }
                   ],
                   "linkId": "9f5787e6-8ece-46a4-8d67-e7c3e14daf18",
@@ -8165,6 +8694,7 @@
               "text": "BMI",
               "type": "decimal",
               "repeats": false,
+              "readOnly": true,
               "enableWhen": [
                 {
                   "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
@@ -8438,7 +8968,7 @@
             },
             {
               "linkId": "6c69ee91-f777-494c-bf09-d963773cd4ae",
-              "text": "Newborn examination (if indicated, infant aged \u00e2\u2030\u00a46 weeks)",
+              "text": "Newborn examination (if indicated, infant aged <=6 weeks)",
               "type": "text",
               "repeats": false,
               "enableWhen": [
@@ -8720,7 +9250,9 @@
               ],
               "linkId": "ca830916-e2ee-4b24-a4c1-13eee23f8733",
               "text": "Cardiovascular disease risk calculated result",
-              "type": "integer"
+              "type": "integer",
+              "repeats": false,
+              "readOnly": true
             },
             {
               "linkId": "f8022f3f-21fe-42c0-8abd-95f24e2e37e5",
@@ -8844,9 +9376,49 @@
           ],
           "item": [
             {
-              "linkId": "ea87929f-5d49-4492-b384-696ebeb5b51b",
+              "linkId": "30532ad8-3465-4bdd-97ed-ec5664f9d733",
+              "text": "Patient priorities and goals: What does the parent/carer say are the important things that have come out of this health check?",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 5
+                }
+              ]
+            },
+            {
+              "linkId": "6aa0a113-4d33-4f6b-9899-fa249674075a",
+              "text": "Patient priorities and goals: What does the parent/carer and child say are the important things that have come out of this health check?",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 12
+                },
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 5
+                }
+              ],
+              "enableBehavior": "all"
+            },
+            {
+              "linkId": "71c19d58-a8ae-43ba-8b96-463c108c75dc",
               "text": "Patient priorities and goals: What does the patient say are the important things that have come out of this health check?",
-              "type": "text"
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 12
+                }
+              ]
             },
             {
               "extension": [
@@ -8866,10 +9438,141 @@
                   "valueString": "Other"
                 }
               ],
-              "linkId": "583ffc2e-9d70-4245-b30c-5183e75e05b3",
+              "linkId": "d0e58402-a08a-49ca-b2ca-9f4bbdb89da0",
               "text": "Brief intervention: advice and information provided during health check",
               "type": "open-choice",
-              "repeats": false,
+              "repeats": true,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 5
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueString": "Sugary drinks"
+                },
+                {
+                  "valueString": "Screen use"
+                },
+                {
+                  "valueString": "Healthy eating, including breastfeeding"
+                },
+                {
+                  "valueString": "Environmental exposure to harmful elements eg tobacco smoke"
+                },
+                {
+                  "valueString": "Physical activity and exercise"
+                },
+                {
+                  "valueString": "Sun protection"
+                },
+                {
+                  "valueString": "Parenting advice"
+                },
+                {
+                  "valueString": "Safe sleeping practices"
+                },
+                {
+                  "valueString": "Developmental milestones - including language and hearing"
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "check-box",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                  "valueString": "Other"
+                }
+              ],
+              "linkId": "0f70dec3-c1f2-4b36-b1f6-bd7f5743d5f8",
+              "text": "Brief intervention: advice and information provided during health check",
+              "type": "open-choice",
+              "repeats": true,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 12
+                },
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 5
+                }
+              ],
+              "enableBehavior": "all",
+              "answerOption": [
+                {
+                  "valueString": "Healthy eating"
+                },
+                {
+                  "valueString": "Screen use"
+                },
+                {
+                  "valueString": "Sun protection"
+                },
+                {
+                  "valueString": "Environmental exposure to harmful elements (e.g. tobacco smoke)"
+                },
+                {
+                  "valueString": "Sugary drinks"
+                },
+                {
+                  "valueString": "Physical activity and exercise"
+                },
+                {
+                  "valueString": "Parenting advice"
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "check-box",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                  "valueString": "Other"
+                }
+              ],
+              "linkId": "eaed9770-95f4-4c6a-b06c-d573427a2616",
+              "text": "Brief intervention: advice and information provided during health check",
+              "type": "open-choice",
+              "repeats": true,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 24
+                },
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 12
+                }
+              ],
+              "enableBehavior": "all",
               "answerOption": [
                 {
                   "valueString": "Healthy eating"
@@ -8896,6 +9599,130 @@
                   "valueString": "Safe sex/contraception"
                 },
                 {
+                  "valueString": "Care of teeth and gums"
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "check-box",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                  "valueString": "Other"
+                }
+              ],
+              "linkId": "25f27e83-fcf0-49c8-86c1-e285e201a043",
+              "text": "Brief intervention: advice and information provided during health check",
+              "type": "open-choice",
+              "repeats": true,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 49
+                },
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 24
+                }
+              ],
+              "enableBehavior": "all",
+              "answerOption": [
+                {
+                  "valueString": "Healthy eating"
+                },
+                {
+                  "valueString": "Screen use"
+                },
+                {
+                  "valueString": "Physical activity and exercise"
+                },
+                {
+                  "valueString": "Mental health and wellbeing"
+                },
+                {
+                  "valueString": "Carer support"
+                },
+                {
+                  "valueString": "Safety/risky behaviours"
+                },
+                {
+                  "valueString": "Smoking cessation"
+                },
+                {
+                  "valueString": "Substance use/harm minimisation"
+                },
+                {
+                  "valueString": "Safe sex/contraception"
+                },
+                {
+                  "valueString": "Oral and dental health"
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "check-box",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                  "valueString": "Other"
+                }
+              ],
+              "linkId": "2657da9c-a27e-4939-af7a-08a19b9ab6f7",
+              "text": "Brief intervention: advice and information provided during health check",
+              "type": "open-choice",
+              "repeats": true,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 49
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueString": "Healthy eating"
+                },
+                {
+                  "valueString": "Physical activity and exercise"
+                },
+                {
+                  "valueString": "Mental health and wellbeing"
+                },
+                {
+                  "valueString": "Carer support"
+                },
+                {
+                  "valueString": "Smoking cessation"
+                },
+                {
+                  "valueString": "Substance use/harm minimisation"
+                },
+                {
+                  "valueString": "Social support and services"
+                },
+                {
                   "valueString": "Oral and dental health"
                 }
               ]
@@ -8913,14 +9740,40 @@
             {
               "item": [
                 {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "instructions",
+                            "system": "http://hl7.org/fhir/questionnaire-display-category"
+                          }
+                        ]
+                      }
+                    }
+                  ],
                   "linkId": "b4110a63-8547-4aa2-84c6-c1f64f0d24da",
                   "text": "Consider what follow-up appointments can be made at the time of the health check.",
                   "type": "display",
                   "repeats": false
                 },
                 {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "instructions",
+                            "system": "http://hl7.org/fhir/questionnaire-display-category"
+                          }
+                        ]
+                      }
+                    }
+                  ],
                   "linkId": "c47cfd7e-0f15-4dd9-bd53-bb62851b677c",
-                  "text": "Reminder: MBS Items 10987 and 81300-81360 are available to support follow up of health checks.",
+                  "text": "Reminder: MBS follow up items for clients at risk of or with chronic disease are available to support follow-up of health checks",
                   "type": "display",
                   "repeats": false
                 },
@@ -8948,6 +9801,226 @@
                       "text": "Who",
                       "type": "open-choice",
                       "repeats": false,
+                      "enableWhen": [
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": "<=",
+                          "answerInteger": 5
+                        }
+                      ],
+                      "answerOption": [
+                        {
+                          "valueString": "GP follow-up"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Worker follow-up"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Practitioner follow-up"
+                        },
+                        {
+                          "valueString": "Practice nurse follow-up"
+                        },
+                        {
+                          "valueString": "Child health nurse"
+                        },
+                        {
+                          "valueString": "Dentist"
+                        },
+                        {
+                          "valueString": "Paediatrician"
+                        },
+                        {
+                          "valueString": "Audiology"
+                        },
+                        {
+                          "valueString": "Speech pathology"
+                        },
+                        {
+                          "valueString": "Mental health"
+                        },
+                        {
+                          "valueString": "Early intervention (development) services"
+                        },
+                        {
+                          "valueString": "Parenting programs/support services"
+                        }
+                      ]
+                    },
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                          "valueCodeableConcept": {
+                            "coding": [
+                              {
+                                "code": "drop-down",
+                                "system": "http://hl7.org/fhir/questionnaire-item-control"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                          "valueString": "Other"
+                        }
+                      ],
+                      "linkId": "f97f211a-ef2a-49a3-aef7-c4e9cd08aa2a",
+                      "text": "Who",
+                      "type": "open-choice",
+                      "repeats": false,
+                      "enableWhen": [
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": "<=",
+                          "answerInteger": 12
+                        },
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": ">",
+                          "answerInteger": 5
+                        }
+                      ],
+                      "enableBehavior": "all",
+                      "answerOption": [
+                        {
+                          "valueString": "GP follow-up"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Worker follow-up"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Practitioner follow-up"
+                        },
+                        {
+                          "valueString": "Practice nurse follow-up"
+                        },
+                        {
+                          "valueString": "Dentist"
+                        },
+                        {
+                          "valueString": "Paediatrician"
+                        },
+                        {
+                          "valueString": "Audiology"
+                        },
+                        {
+                          "valueString": "Speech pathology"
+                        },
+                        {
+                          "valueString": "Mental health"
+                        },
+                        {
+                          "valueString": "Parenting programs/support services"
+                        }
+                      ]
+                    },
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                          "valueCodeableConcept": {
+                            "coding": [
+                              {
+                                "code": "drop-down",
+                                "system": "http://hl7.org/fhir/questionnaire-item-control"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                          "valueString": "Other"
+                        }
+                      ],
+                      "linkId": "07cfe077-ba93-4f93-b2a5-027023faa33b",
+                      "text": "Who",
+                      "type": "open-choice",
+                      "repeats": false,
+                      "enableWhen": [
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": "<=",
+                          "answerInteger": 24
+                        },
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": ">",
+                          "answerInteger": 12
+                        }
+                      ],
+                      "enableBehavior": "all",
+                      "answerOption": [
+                        {
+                          "valueString": "GP follow-up"
+                        },
+                        {
+                          "valueString": "GP review of results of investigations"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Worker follow-up"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Practitioner follow-up"
+                        },
+                        {
+                          "valueString": "Practice nurse follow-up"
+                        },
+                        {
+                          "valueString": "Dentist"
+                        },
+                        {
+                          "valueString": "Paediatrician"
+                        },
+                        {
+                          "valueString": "Audiology"
+                        },
+                        {
+                          "valueString": "Speech pathology"
+                        },
+                        {
+                          "valueString": "Parenting programs/support services"
+                        },
+                        {
+                          "valueString": "Social and emotional wellbeing/mental health"
+                        }
+                      ]
+                    },
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                          "valueCodeableConcept": {
+                            "coding": [
+                              {
+                                "code": "drop-down",
+                                "system": "http://hl7.org/fhir/questionnaire-item-control"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                          "valueString": "Other"
+                        }
+                      ],
+                      "linkId": "a525c370-d8c3-4764-ab3a-bf62081725e0",
+                      "text": "Who",
+                      "type": "open-choice",
+                      "repeats": false,
+                      "enableWhen": [
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": "<=",
+                          "answerInteger": 49
+                        },
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": ">",
+                          "answerInteger": 24
+                        }
+                      ],
+                      "enableBehavior": "all",
                       "answerOption": [
                         {
                           "valueString": "GP follow-up"
@@ -8991,6 +10064,86 @@
                       ]
                     },
                     {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                          "valueCodeableConcept": {
+                            "coding": [
+                              {
+                                "code": "drop-down",
+                                "system": "http://hl7.org/fhir/questionnaire-item-control"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel",
+                          "valueString": "Other"
+                        }
+                      ],
+                      "linkId": "d68d9693-48d3-4663-9dbb-dd3a7aec5278",
+                      "text": "Who",
+                      "type": "open-choice",
+                      "repeats": false,
+                      "enableWhen": [
+                        {
+                          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                          "operator": ">",
+                          "answerInteger": 49
+                        }
+                      ],
+                      "answerOption": [
+                        {
+                          "valueString": "GP follow-up"
+                        },
+                        {
+                          "valueString": "GP review of results of investigations"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Worker follow-up"
+                        },
+                        {
+                          "valueString": "Aboriginal and/or Torres Strait Islander Health Practitioner follow-up"
+                        },
+                        {
+                          "valueString": "Practice nurse follow-up"
+                        },
+                        {
+                          "valueString": "Dentist"
+                        },
+                        {
+                          "valueString": "Medication review"
+                        },
+                        {
+                          "valueString": "Geriatrician"
+                        },
+                        {
+                          "valueString": "Smoking cessation"
+                        },
+                        {
+                          "valueString": "Audiologist"
+                        },
+                        {
+                          "valueString": "Dietician"
+                        },
+                        {
+                          "valueString": "Physiotherapist or exercise program"
+                        },
+                        {
+                          "valueString": "Optometrist"
+                        },
+                        {
+                          "valueString": "Podiatrist"
+                        },
+                        {
+                          "valueString": "Social and emotional wellbeing/mental health"
+                        },
+                        {
+                          "valueString": "Social support and services"
+                        }
+                      ]
+                    },
+                    {
                       "linkId": "0ef84b09-ca34-44c2-96d1-fcbbea0bae66",
                       "text": "When",
                       "type": "date",
@@ -8999,8 +10152,29 @@
                           "question": "4044d0b4-94b2-4a89-b826-a14614298511",
                           "operator": "exists",
                           "answerBoolean": true
+                        },
+                        {
+                          "question": "f97f211a-ef2a-49a3-aef7-c4e9cd08aa2a",
+                          "operator": "exists",
+                          "answerBoolean": true
+                        },
+                        {
+                          "question": "07cfe077-ba93-4f93-b2a5-027023faa33b",
+                          "operator": "exists",
+                          "answerBoolean": true
+                        },
+                        {
+                          "question": "a525c370-d8c3-4764-ab3a-bf62081725e0",
+                          "operator": "exists",
+                          "answerBoolean": true
+                        },
+                        {
+                          "question": "d68d9693-48d3-4663-9dbb-dd3a7aec5278",
+                          "operator": "exists",
+                          "answerBoolean": true
                         }
                       ],
+                      "enableBehavior": "any",
                       "repeats": false
                     }
                   ],
@@ -9012,7 +10186,8 @@
               ],
               "linkId": "5760a1f9-d725-4b9e-b74d-50800615a689",
               "text": "Follow-up",
-              "type": "group"
+              "type": "group",
+              "repeats": false
             },
             {
               "item": [
@@ -9039,7 +10214,8 @@
                   "linkId": "fece6a3c-f8f1-4592-a166-5ea5a3c60c8e",
                   "definition": "http://aehrc.com/fhir/StructureDefinition/AUPrimaryCareFollowUp#CarePlan.title",
                   "text": "Recall",
-                  "type": "text"
+                  "type": "text",
+                  "repeats": false
                 }
               ],
               "linkId": "a400fe69-c99f-47ed-bee1-083c3e4be467",
@@ -9048,19 +10224,70 @@
               "repeats": true
             },
             {
-              "linkId": "7202e1d0-c5eb-4613-9c03-414610054784",
+              "linkId": "5a0c98f8-5349-4045-9ba0-27a4f35630b9",
+              "text": "Parent/carer actions",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 5
+                }
+              ]
+            },
+            {
+              "linkId": "cde03bf0-182a-4998-a37e-7b3f22786617",
+              "text": "Parent/patient actions",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 12
+                },
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 5
+                }
+              ],
+              "enableBehavior": "all"
+            },
+            {
+              "linkId": "51ff0c15-312a-45ce-a25a-6c6a4bf0e17e",
               "text": "Patient actions",
-              "type": "text"
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 12
+                }
+              ]
             },
             {
               "extension": [
                 {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
-                  "valueString": "Patient copy of health check"
+                  "valueString": "Copy of health check"
                 }
               ],
               "linkId": "8176151f-6d86-45eb-91b1-12458d75a181",
-              "text": "Patient has been offered a copy of this health check including details of follow-up and future appointments",
+              "text": "A copy of this health check has been offerered - including details of follow-up and future appointments",
               "type": "choice",
               "repeats": false,
               "answerOption": [
@@ -9076,7 +10303,7 @@
               ]
             }
           ],
-          "linkId": "7c158125-129f-4fce-9557-32dd372c92c7",
+          "linkId": "16971bd2-5494-483d-9713-eda182c47f02",
           "text": "Finalising the health check",
           "type": "group",
           "repeats": false
