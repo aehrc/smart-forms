@@ -73,7 +73,7 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <Card elevation={groupCardElevation} sx={{ mb: 6, p: 4 }}>
+    <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: 3.5 }}>
       <QGroupHeadingTypography variant="h6" sx={{ mb: 4 }}>
         <QItemLabel qItem={qItem} />
       </QGroupHeadingTypography>
