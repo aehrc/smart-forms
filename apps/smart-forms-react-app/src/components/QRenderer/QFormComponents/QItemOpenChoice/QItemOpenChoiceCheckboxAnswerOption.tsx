@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { FormControl, Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
@@ -14,10 +10,10 @@ import {
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel';
-import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { updateQrOpenChoiceCheckboxAnswers } from '../../../../functions/OpenChoiceFunctions';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -37,19 +33,35 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   const [openLabelValue, setOpenLabelValue] = useState<string>('');
   const [openLabelChecked, setOpenLabelChecked] = useState<boolean>(false);
 
-  function handleCheckedChange(changedValue: string) {
-    setOpenLabelChecked(false);
+  function handleValueChange(
+    changedOptionValue: string | null,
+    changedOpenLabelValue: string | null
+  ) {
     const answerOptions = qItem.answerOption;
     if (!answerOptions) return null;
 
-    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
-      changedValue,
-      answers,
-      answerOptions,
-      qrOpenChoiceCheckbox,
-      CheckBoxOptionType.AnswerOption,
-      repeats
-    );
+    let updatedQrChoiceCheckbox: QuestionnaireResponseItem | null = null;
+    if (changedOptionValue) {
+      updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
+        changedOptionValue,
+        null,
+        answers,
+        answerOptions,
+        qrOpenChoiceCheckbox,
+        CheckBoxOptionType.AnswerOption,
+        repeats
+      );
+    } else if (changedOpenLabelValue) {
+      updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
+        null,
+        changedOpenLabelValue,
+        answers,
+        answerOptions,
+        qrOpenChoiceCheckbox,
+        CheckBoxOptionType.AnswerOption,
+        repeats
+      );
+    }
 
     if (updatedQrChoiceCheckbox) {
       onQrItemChange(updatedQrChoiceCheckbox);
@@ -68,7 +80,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer) === JSON.stringify(option)
               )}
-              onCheckedChange={handleCheckedChange}
+              onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
             />
           );
         } else if (option['valueString']) {
@@ -78,7 +90,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
               value={option.valueString}
               label={option.valueString}
               isChecked={answers.some((answer) => answer.valueString === option.valueString)}
-              onCheckedChange={handleCheckedChange}
+              onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
             />
           );
         } else if (option['valueInteger']) {
@@ -88,7 +100,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
               isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
-              onCheckedChange={handleCheckedChange}
+              onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
             />
           );
         }
@@ -100,13 +112,11 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
           label={openLabelText}
           isChecked={openLabelChecked}
           onCheckedChange={(checked) => {
-            const updatedAnswer: QuestionnaireResponseItemAnswer = { valueString: openLabelValue };
-            onQrItemChange({ ...qrOpenChoiceCheckbox, answer: [updatedAnswer] });
+            handleValueChange(null, openLabelValue);
             setOpenLabelChecked(checked);
           }}
           onInputChange={(input) => {
-            const updatedAnswer: QuestionnaireResponseItemAnswer = { valueString: input };
-            onQrItemChange({ ...qrOpenChoiceCheckbox, answer: [updatedAnswer] });
+            handleValueChange(null, input);
             setOpenLabelValue(input);
           }}
         />
