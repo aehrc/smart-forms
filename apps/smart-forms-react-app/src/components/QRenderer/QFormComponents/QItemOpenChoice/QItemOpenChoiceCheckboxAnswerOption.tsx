@@ -114,9 +114,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
     </QFormGroup>
   );
 
-  const renderQItemChoiceCheckbox = repeats ? (
-    <>{openChoiceCheckbox}</>
-  ) : (
+  return (
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -129,7 +127,6 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
       </Grid>
     </FormControl>
   );
-  return <>{renderQItemChoiceCheckbox}</>;
 }
 
 export default QItemOpenChoiceCheckboxAnswerOption;
