@@ -7,6 +7,8 @@ import type {
 } from 'fhir/r5';
 import { createOperationOutcome } from './CreateOutcomes';
 import type { PropagatedExtensions, PropagatedItems } from './Interfaces';
+import { resolveDuplicateLinkIds } from './ResolveDuplicateLinkIds';
+import { resolveDuplicateEnableWhenQuestions } from './ResolveDuplicateEnableWhenQuestions';
 
 export function checkProhibitedAttributes(
   subquestionnaires: Questionnaire[]
@@ -76,6 +78,32 @@ export function propagateContainedResources(
   }
   return containedResources;
 }
+
+// TODO Commemnting this piece of code out in the case where we need to resolve duplicate contained resources.
+// TODO At the moment multiple subquestionnaires contains same references to a contained resource for convenience
+// Usage:
+// if (containedResources[resourceId]) {
+//   const prefixedResourceId = assignResourceIdPrefix(resourceId, containedResources);
+//   containedResources[prefixedResourceId] = resource;
+// } else {
+//   containedResources[resourceId] = resource;
+// }
+//
+// function assignResourceIdPrefix(
+//   resourceId: string,
+//   containedResources: Record<string, FhirResource>
+// ) {
+//   const linkIdPrefix = 'linkIdPrefix';
+//   let prefixedId = linkIdPrefix + '-' + resourceId;
+//
+//   // Increment prefixCount on linkIdPrefix until it is not a duplicate
+//   let prefixCount = 0;
+//   while (containedResources[prefixedId]) {
+//     prefixCount++;
+//     prefixedId = linkIdPrefix + '-' + prefixCount.toString() + '-' + resourceId;
+//   }
+//   return prefixedId;
+// }
 
 export function propagateExtensions(
   subquestionnaires: Questionnaire[]
@@ -193,9 +221,11 @@ export function propagateSubquestionnaires(subquestionnaires: Questionnaire[]): 
       continue;
     }
 
-    const subquestionnaireItems = [];
+    // Resolve duplicate linkIds in items recursively by prepending linkIdPrefixes to duplicate linkIds
+    let subquestionnaireItems = [];
+    const duplicateLinkIds: Record<string, string> = {};
     for (const item of subquestionnaire.item) {
-      const resolvedItem = resolveDuplicateLinkIds(item, linkIds);
+      const resolvedItem = resolveDuplicateLinkIds(item, linkIds, duplicateLinkIds);
       if (resolvedItem) {
         subquestionnaireItems.push(resolvedItem);
         linkIds.add(resolvedItem.linkId);
@@ -204,42 +234,19 @@ export function propagateSubquestionnaires(subquestionnaires: Questionnaire[]): 
         linkIds.add(item.linkId);
       }
     }
+
+    // Prepend linkIdPrefix to EnableWhen.question of linked items with duplicate linkIds recursively
+    if (duplicateLinkIds && Object.keys(duplicateLinkIds).length > 0) {
+      // console.log(duplicateLinkIds);
+      const newSubquestionnaireItems: QuestionnaireItem[] = [];
+      for (const item of subquestionnaireItems) {
+        const resolvedItem = resolveDuplicateEnableWhenQuestions(item, duplicateLinkIds);
+        newSubquestionnaireItems.push(resolvedItem);
+      }
+      subquestionnaireItems = [...newSubquestionnaireItems];
+    }
+
     items.push(subquestionnaireItems);
   }
   return { items, linkIds };
-}
-
-export function resolveDuplicateLinkIds(
-  qItem: QuestionnaireItem,
-  linkIds: Set<string>
-): QuestionnaireItem | null {
-  const items = qItem.item;
-  if (items && items.length > 0) {
-    // iterate through items of item recursively
-    const resolvedItems: QuestionnaireItem[] = [];
-    items.forEach((item) => {
-      const resolvedItem = resolveDuplicateLinkIds(item, linkIds);
-      if (resolvedItem) {
-        resolvedItems.push(resolvedItem);
-        linkIds.add(resolvedItem.linkId);
-      } else {
-        resolvedItems.push(item);
-        linkIds.add(item.linkId);
-      }
-    });
-    qItem.item = resolvedItems;
-
-    if (linkIds.has(qItem.linkId)) {
-      qItem.linkId = 'linkIdPrefix' + qItem.linkId;
-    }
-    return qItem;
-  }
-
-  // Add linkIdPrefix to linkId if it's a duplicate
-  if (linkIds.has(qItem.linkId)) {
-    qItem.linkId = 'linkIdPrefix' + qItem.linkId;
-    return qItem;
-  }
-
-  return null;
 }
