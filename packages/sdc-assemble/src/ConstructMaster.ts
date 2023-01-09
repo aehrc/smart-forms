@@ -1,11 +1,11 @@
 import type { OperationOutcome, Questionnaire } from 'fhir/r5';
-import { createInvalidMasterQuestionnaireOutcome } from './CreateOutcomes';
+import { createOperationOutcome } from './CreateOutcomes';
 
 export function constructMasterQuestionnaire(
   recipeQuestionnaire: Questionnaire
 ): Questionnaire | OperationOutcome {
   if (!recipeQuestionnaire.item || !recipeQuestionnaire.item[0]) {
-    return createInvalidMasterQuestionnaireOutcome();
+    return createOperationOutcome('Master questionnaire does not have a valid item.');
   }
 
   return {
