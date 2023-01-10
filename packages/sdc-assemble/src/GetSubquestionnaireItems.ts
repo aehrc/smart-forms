@@ -140,7 +140,7 @@ export function getExtensions(
             for (const ext of extension.extension) {
               if (ext.url === 'name') {
                 if (ext.valueCoding && ext.valueCoding.code) {
-                  launchContexts[ext.valueCoding.code] = ext;
+                  launchContexts[ext.valueCoding.code] = extension;
                   break;
                 }
               }

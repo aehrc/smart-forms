@@ -5,11 +5,13 @@ import { createOperationOutcome } from './CreateOutcomes';
 import {
   checkMatchingLanguage,
   checkProhibitedAttributes,
-  propagateContainedResources,
-  propagateExtensions,
-  propagateSubquestionnaires
-} from './PropagateSubquestionnaires';
-import type { PropagatedExtensions } from './Interfaces';
+  getContainedResources,
+  getExtensions,
+  getSubquestionnaireItems,
+  isValidExtensions,
+  mergeExtensionsIntoItems
+} from './GetSubquestionnaireItems';
+import { propagateSubquestionnaireItems } from './PropagateSubquestionnaireItems';
 
 /**
  * Main function of this populate module.
@@ -59,28 +61,28 @@ async function assembleQuestionnaire(
   const matchingLanguageOutcome = checkMatchingLanguage(subquestionnaires, parentQuestionnaire);
   if (matchingLanguageOutcome) return matchingLanguageOutcome;
 
-  const { items, linkIds } = propagateSubquestionnaires(subquestionnaires);
+  // Get items
+  const { items, linkIds } = getSubquestionnaireItems(subquestionnaires);
 
-  const containedResources: Record<string, FhirResource> =
-    propagateContainedResources(subquestionnaires);
+  // Get contained resources
+  const containedResources: Record<string, FhirResource> = getContainedResources(subquestionnaires);
 
-  const propagatedExtensions = propagateExtensions(subquestionnaires);
-  if (!isPropagatedExtensions(propagatedExtensions)) return propagatedExtensions;
+  // Get extensions
+  const extensions = getExtensions(subquestionnaires);
+  if (!isValidExtensions(extensions)) return extensions;
+  const { rootLevelExtensions, itemLevelExtensions } = extensions;
 
-  const { rootLevelExtensions, itemLevelExtensions } = propagatedExtensions;
+  // Merge item-level extensions into items
+  const itemsWithExtensions = mergeExtensionsIntoItems(items, itemLevelExtensions);
 
-  console.log('------------------');
-  console.log(items);
-  console.log(linkIds);
-  console.log(containedResources);
-  console.log(rootLevelExtensions);
-  console.log(itemLevelExtensions);
+  // propagate items, contained resources and extensions into parent questionnaire
+  parentQuestionnaire = propagateSubquestionnaireItems(
+    parentQuestionnaire,
+    itemsWithExtensions,
+    containedResources,
+    rootLevelExtensions
+  );
+  console.log(parentQuestionnaire);
 
   return createOperationOutcome('Development in progress');
-}
-
-function isPropagatedExtensions(
-  obj: PropagatedExtensions | OperationOutcome
-): obj is PropagatedExtensions {
-  return 'rootLevelExtensions' in obj && 'itemLevelExtensions' in obj;
 }
