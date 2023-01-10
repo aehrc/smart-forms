@@ -62,7 +62,7 @@ export function checkMatchingLanguage(
   return null;
 }
 
-export function propagateContainedResources(
+export function getContainedResources(
   subquestionnaires: Questionnaire[]
 ): Record<string, FhirResource> {
   const containedResources: Record<string, FhirResource> = {};
@@ -105,7 +105,7 @@ export function propagateContainedResources(
 //   return prefixedId;
 // }
 
-export function propagateExtensions(
+export function getExtensions(
   subquestionnaires: Questionnaire[]
 ): PropagatedExtensions | OperationOutcome {
   const rootLevelExtensions: Extension[] = [];
@@ -212,7 +212,13 @@ export function propagateExtensions(
   };
 }
 
-export function propagateSubquestionnaires(subquestionnaires: Questionnaire[]): PropagatedItems {
+export function isValidExtensions(
+  obj: PropagatedExtensions | OperationOutcome
+): obj is PropagatedExtensions {
+  return 'rootLevelExtensions' in obj && 'itemLevelExtensions' in obj;
+}
+
+export function getSubquestionnaireItems(subquestionnaires: Questionnaire[]): PropagatedItems {
   const items: (QuestionnaireItem[] | null)[] = [];
   const linkIds: Set<string> = new Set();
   for (const subquestionnaire of subquestionnaires) {
@@ -249,4 +255,32 @@ export function propagateSubquestionnaires(subquestionnaires: Questionnaire[]): 
     items.push(subquestionnaireItems);
   }
   return { items, linkIds };
+}
+
+export function mergeExtensionsIntoItems(
+  items: (QuestionnaireItem[] | null)[],
+  itemLevelExtensions: (Extension[] | null)[]
+): (QuestionnaireItem[] | null)[] {
+  const newItems: (QuestionnaireItem[] | null)[] = [];
+  for (let i = 0; i < items.length; i++) {
+    const subquestionnaireItems = items[i];
+    if (!subquestionnaireItems) {
+      newItems.push(null);
+      continue;
+    }
+
+    const newSubquestionnaireItems: QuestionnaireItem[] = [];
+    for (const qItem of subquestionnaireItems) {
+      const extensions = itemLevelExtensions[i];
+      if (extensions) {
+        const qItemExtensions: Extension[] = qItem.extension ? qItem.extension : [];
+        qItemExtensions.push(...extensions);
+        qItem.extension = qItemExtensions;
+      }
+
+      newSubquestionnaireItems.push(qItem);
+    }
+    newItems.push(newSubquestionnaireItems);
+  }
+  return newItems;
 }
