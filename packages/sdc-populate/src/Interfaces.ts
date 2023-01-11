@@ -15,7 +15,12 @@ export interface InitialExpression {
 }
 
 export interface PopulateInputParameters extends Parameters {
-  parameter: [QuestionnaireParameter, SubjectParameter, ContextParameter];
+  parameter: [
+    QuestionnaireParameter,
+    SubjectParameter,
+    LaunchPatientParameter,
+    PrePopQueryParameter
+  ];
 }
 
 export interface QuestionnaireParameter extends ParametersParameter {
@@ -28,20 +33,54 @@ export interface SubjectParameter extends ParametersParameter {
   valueReference: Reference;
 }
 
-export interface ContextParameter extends ParametersParameter {
+export interface LaunchPatientParameter extends ParametersParameter {
   name: 'context';
-  part: [ContextPatientParameter, ContextQueryParameter];
+  part: [
+    {
+      name: 'name';
+      valueString: 'LaunchPatient';
+    },
+    {
+      name: 'content';
+      resource: Patient;
+    }
+  ];
 }
 
-export interface ContextPatientParameter extends ParametersParameter {
-  name: 'context.patient';
+export interface PrePopQueryParameter extends ParametersParameter {
+  name: 'context';
+  part: [
+    {
+      name: 'name';
+      valueString: 'PrePopQuery';
+    },
+    {
+      name: 'content';
+      resource: Bundle;
+    }
+  ];
+}
+
+export interface LaunchPatientName extends ParametersParameter {
+  name: 'name';
+  valueString: 'LaunchPatient';
+}
+
+export interface LaunchPatientContent extends ParametersParameter {
+  name: 'content';
   resource: Patient;
 }
 
-export interface ContextQueryParameter extends ParametersParameter {
-  name: 'context.query';
+export interface PrePopQueryName extends ParametersParameter {
+  name: 'name';
+  valueString: 'PrePopQuery';
+}
+
+export interface PrePopQueryContent extends ParametersParameter {
+  name: 'content';
   resource: Bundle;
 }
+
 export interface PopulateOutputParameters extends Parameters {
   parameter: [ResponseParameter];
 }
