@@ -1,17 +1,6 @@
-import Master from './resources/masterQuestionnaire2.json';
-import type { FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
-import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
-import { createOperationOutcome } from './CreateOutcomes';
-import {
-  checkMatchingLanguage,
-  checkProhibitedAttributes,
-  getContainedResources,
-  getExtensions,
-  getSubquestionnaireItems,
-  isValidExtensions,
-  mergeExtensionsIntoItems
-} from './GetSubquestionnaireItems';
-import { propagateSubquestionnaireItems } from './PropagateSubquestionnaireItems';
+import Master from './resources/master-questionnaire.json';
+import type { OperationOutcome, Questionnaire } from 'fhir/r5';
+import { assembleQuestionnaire } from './AssembleQuestionnaire';
 
 /**
  * Main function of this populate module.
@@ -19,70 +8,9 @@ import { propagateSubquestionnaireItems } from './PropagateSubquestionnaireItems
  *
  * @author Sean Fong
  */
-export default async function assemble() {
+export default async function assemble(): Promise<Questionnaire | OperationOutcome> {
   const masterQuestionnaire = Master as Questionnaire;
   const allCanonicals: string[] = [];
 
-  const assembled = await assembleQuestionnaire({ ...masterQuestionnaire }, allCanonicals);
-  console.log(assembled);
-}
-
-async function assembleQuestionnaire(
-  parentQuestionnaire: Questionnaire,
-  allCanonicals: string[]
-): Promise<Questionnaire | OperationOutcome> {
-  const canonicals = getCanonicalUrls(parentQuestionnaire, allCanonicals);
-  if (!Array.isArray(canonicals)) return canonicals;
-
-  // Exit operation if there are no subquestionnaires to be assembled
-  if (canonicals.length === 0) return parentQuestionnaire;
-
-  // Keep a record of all traversed canonical urls to prevent an infinite loop situation during assembly
-  allCanonicals.push(...canonicals);
-
-  const subquestionnaires = await fetchSubquestionnaires(canonicals);
-  if (!Array.isArray(subquestionnaires)) return subquestionnaires;
-
-  // Recursively assemble subquestionnaires if required
-  for (let subquestionnaire of subquestionnaires) {
-    const assembledSubquestionnaire = await assembleQuestionnaire(subquestionnaire, allCanonicals);
-    if (assembledSubquestionnaire.resourceType === 'Questionnaire') {
-      subquestionnaire = assembledSubquestionnaire;
-    } else {
-      // Prematurely end the operation if there is an error within further assembly operations
-      return assembledSubquestionnaire;
-    }
-  }
-
-  // Begin assembly process for parent questionnaire
-  const prohibitedAttributesOutcome = checkProhibitedAttributes(subquestionnaires);
-  if (prohibitedAttributesOutcome) return prohibitedAttributesOutcome;
-
-  const matchingLanguageOutcome = checkMatchingLanguage(subquestionnaires, parentQuestionnaire);
-  if (matchingLanguageOutcome) return matchingLanguageOutcome;
-
-  // Get items
-  const { items, linkIds } = getSubquestionnaireItems(subquestionnaires);
-
-  // Get contained resources
-  const containedResources: Record<string, FhirResource> = getContainedResources(subquestionnaires);
-
-  // Get extensions
-  const extensions = getExtensions(subquestionnaires);
-  if (!isValidExtensions(extensions)) return extensions;
-  const { rootLevelExtensions, itemLevelExtensions } = extensions;
-
-  // Merge item-level extensions into items
-  const itemsWithExtensions = mergeExtensionsIntoItems(items, itemLevelExtensions);
-
-  // propagate items, contained resources and extensions into parent questionnaire
-  parentQuestionnaire = propagateSubquestionnaireItems(
-    parentQuestionnaire,
-    itemsWithExtensions,
-    containedResources,
-    rootLevelExtensions
-  );
-  console.log(parentQuestionnaire);
-
-  return createOperationOutcome('Development in progress');
+  return await assembleQuestionnaire({ ...masterQuestionnaire }, allCanonicals);
 }
