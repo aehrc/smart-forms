@@ -12,5 +12,5 @@ export default async function assemble(): Promise<Questionnaire | OperationOutco
   const masterQuestionnaire = Master as Questionnaire;
   const allCanonicals: string[] = [];
 
-  return await assembleQuestionnaire({ ...masterQuestionnaire }, allCanonicals);
+  return await assembleQuestionnaire(masterQuestionnaire, allCanonicals);
 }
