@@ -37,5 +37,5 @@ export function isPrePopQueryName(parameter: ParametersParameter): parameter is 
 export function isPrePopQueryContent(
   parameter: ParametersParameter
 ): parameter is PrePopQueryContent {
-  return parameter.name === 'content' && parameter.resource?.resourceType === 'Patient';
+  return parameter.name === 'content' && parameter.resource?.resourceType === 'Bundle';
 }

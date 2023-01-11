@@ -56,11 +56,12 @@ export function isPopulateInputParameters(
 
   const subjectPresent = !!parameters.parameter?.find(isSubjectParameter);
 
-  const launchPatientPresent = !!parameters.parameter?.find((parameter: ParametersParameter) => {
-    parameter.name === 'context' &&
+  const launchPatientPresent = !!parameters.parameter?.find(
+    (parameter: ParametersParameter) =>
+      parameter.name === 'context' &&
       parameter.part?.find(isLaunchPatientName) &&
-      parameter.part?.find(isLaunchPatientContent);
-  });
+      parameter.part?.find(isLaunchPatientContent)
+  );
 
   const prePopQueryPresent = !!parameters.parameter?.find(
     (parameter: ParametersParameter) =>
