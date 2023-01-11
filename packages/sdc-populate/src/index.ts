@@ -9,8 +9,10 @@ import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateParameters';
 import type { Parameters, ParametersParameter } from 'fhir/r5';
 import {
-  isContextPatientParameter,
-  isContextQueryParameter,
+  isLaunchPatientContent,
+  isLaunchPatientName,
+  isPrePopQueryContent,
+  isPrePopQueryName,
   isQuestionnaireParameter,
   isSubjectParameter
 } from './TypePredicates';
@@ -28,13 +30,13 @@ export default function populate(
 
   const questionnaire = parameterArr[0].resource;
   const subject = parameterArr[1].valueReference;
-  const patient = parameterArr[2].part[0].resource;
-  const query = parameterArr[2].part[1].resource;
+  const launchPatient = parameterArr[2].part[1].resource;
+  const prePopQuery = parameterArr[3].part[1].resource;
 
   let initialExpressions = readInitialExpressions(questionnaire);
   initialExpressions = evaluateInitialExpressions(initialExpressions, {
-    patient: patient,
-    PrePopQuery: query
+    patient: launchPatient,
+    PrePopQuery: prePopQuery
   });
 
   const questionnaireResponse = constructResponse(questionnaire, subject, initialExpressions);
@@ -54,15 +56,18 @@ export function isPopulateInputParameters(
 
   const subjectPresent = !!parameters.parameter?.find(isSubjectParameter);
 
-  const contextPatientPresent = !!parameters.parameter?.find(
+  const launchPatientPresent = !!parameters.parameter?.find((parameter: ParametersParameter) => {
+    parameter.name === 'context' &&
+      parameter.part?.find(isLaunchPatientName) &&
+      parameter.part?.find(isLaunchPatientContent);
+  });
+
+  const prePopQueryPresent = !!parameters.parameter?.find(
     (parameter: ParametersParameter) =>
-      parameter.name === 'context' && parameter.part?.find(isContextPatientParameter)
+      parameter.name === 'context' &&
+      parameter.part?.find(isPrePopQueryName) &&
+      parameter.part?.find(isPrePopQueryContent)
   );
 
-  const contextQueryPresent = !!parameters.parameter?.find(
-    (parameter: ParametersParameter) =>
-      parameter.name === 'context' && parameter.part?.find(isContextQueryParameter)
-  );
-
-  return questionnairePresent && subjectPresent && contextPatientPresent && contextQueryPresent;
+  return questionnairePresent && subjectPresent && launchPatientPresent && prePopQueryPresent;
 }

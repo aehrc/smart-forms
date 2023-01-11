@@ -135,11 +135,24 @@ function definePopulationParameters(
         name: 'context',
         part: [
           {
-            name: 'patient',
-            resource: patient
+            name: 'name',
+            valueString: 'LaunchPatient'
           },
           {
-            name: 'query',
+            name: 'content',
+            resource: patient
+          }
+        ]
+      },
+      {
+        name: 'context',
+        part: [
+          {
+            name: 'name',
+            valueString: 'PrePopQuery'
+          },
+          {
+            name: 'content',
             resource: batchResponse
           }
         ]

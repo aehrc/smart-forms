@@ -1,7 +1,9 @@
 import type { ParametersParameter } from 'fhir/r5';
 import type {
-  ContextPatientParameter,
-  ContextQueryParameter,
+  LaunchPatientContent,
+  LaunchPatientName,
+  PrePopQueryContent,
+  PrePopQueryName,
   QuestionnaireParameter,
   SubjectParameter
 } from './Interfaces';
@@ -13,17 +15,27 @@ export function isQuestionnaireParameter(
 }
 
 export function isSubjectParameter(parameter: ParametersParameter): parameter is SubjectParameter {
-  return parameter.name === 'subject' && parameter.valueReference !== null;
+  return parameter.name === 'subject' && parameter.valueReference !== undefined;
 }
 
-export function isContextPatientParameter(
+export function isLaunchPatientName(
   parameter: ParametersParameter
-): parameter is ContextPatientParameter {
-  return parameter.name === 'patient' && parameter.resource?.resourceType === 'Patient';
+): parameter is LaunchPatientName {
+  return parameter.name === 'name' && parameter.valueString === 'LaunchPatient';
 }
 
-export function isContextQueryParameter(
+export function isLaunchPatientContent(
   parameter: ParametersParameter
-): parameter is ContextQueryParameter {
-  return parameter.name === 'query' && parameter.resource?.resourceType === 'Bundle';
+): parameter is LaunchPatientContent {
+  return parameter.name === 'content' && parameter.resource?.resourceType === 'Patient';
+}
+
+export function isPrePopQueryName(parameter: ParametersParameter): parameter is PrePopQueryName {
+  return parameter.name === 'name' && parameter.valueString === 'PrePopQuery';
+}
+
+export function isPrePopQueryContent(
+  parameter: ParametersParameter
+): parameter is PrePopQueryContent {
+  return parameter.name === 'content' && parameter.resource?.resourceType === 'Patient';
 }
