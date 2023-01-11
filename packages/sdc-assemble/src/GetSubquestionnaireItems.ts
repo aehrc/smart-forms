@@ -6,7 +6,7 @@ import type {
   QuestionnaireItem
 } from 'fhir/r5';
 import { createOperationOutcome } from './CreateOutcomes';
-import type { PropagatedExtensions, PropagatedItems } from './Interfaces';
+import type { PropagatedExtensions } from './Interfaces';
 import { resolveDuplicateLinkIds } from './ResolveDuplicateLinkIds';
 import { resolveDuplicateEnableWhenQuestions } from './ResolveDuplicateEnableWhenQuestions';
 
@@ -79,7 +79,7 @@ export function getContainedResources(
   return containedResources;
 }
 
-// TODO Commemnting this piece of code out in the case where we need to resolve duplicate contained resources.
+// TODO Commenting this piece of code out in the case where we need to resolve duplicate contained resources.
 // TODO At the moment multiple subquestionnaires contains same references to a contained resource for convenience
 // Usage:
 // if (containedResources[resourceId]) {
@@ -218,7 +218,9 @@ export function isValidExtensions(
   return 'rootLevelExtensions' in obj && 'itemLevelExtensions' in obj;
 }
 
-export function getSubquestionnaireItems(subquestionnaires: Questionnaire[]): PropagatedItems {
+export function getSubquestionnaireItems(
+  subquestionnaires: Questionnaire[]
+): (QuestionnaireItem[] | null)[] {
   const items: (QuestionnaireItem[] | null)[] = [];
   const linkIds: Set<string> = new Set();
   for (const subquestionnaire of subquestionnaires) {
@@ -243,7 +245,6 @@ export function getSubquestionnaireItems(subquestionnaires: Questionnaire[]): Pr
 
     // Prepend linkIdPrefix to EnableWhen.question of linked items with duplicate linkIds recursively
     if (duplicateLinkIds && Object.keys(duplicateLinkIds).length > 0) {
-      // console.log(duplicateLinkIds);
       const newSubquestionnaireItems: QuestionnaireItem[] = [];
       for (const item of subquestionnaireItems) {
         const resolvedItem = resolveDuplicateEnableWhenQuestions(item, duplicateLinkIds);
@@ -254,7 +255,7 @@ export function getSubquestionnaireItems(subquestionnaires: Questionnaire[]): Pr
 
     items.push(subquestionnaireItems);
   }
-  return { items, linkIds };
+  return items;
 }
 
 export function mergeExtensionsIntoItems(
