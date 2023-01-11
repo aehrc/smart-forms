@@ -23,17 +23,18 @@ export function propagateSubquestionnaireItems(
   // Propagate items
   const questionnaireItems: QuestionnaireItem[] = [];
   for (let i = 0; i < parentQuestionnaireForm.item.length; i++) {
-    const itemFromParentQuestionnaire = parentQuestionnaireForm.item[i];
-    if (!itemFromParentQuestionnaire) continue;
+    const itemFromParent = parentQuestionnaireForm.item[i];
+    if (!itemFromParent) continue;
 
     const itemsFromSubquestionnaire = itemsFromSubquestionnaires[i];
     if (itemsFromSubquestionnaire) {
       questionnaireItems.push(...itemsFromSubquestionnaire);
     } else {
-      questionnaireItems.push(itemFromParentQuestionnaire);
+      questionnaireItems.push(itemFromParent);
     }
   }
-  parentQuestionnaire.item = questionnaireItems;
+  parentQuestionnaireForm.item = questionnaireItems;
+  parentQuestionnaire.item[0] = parentQuestionnaireForm;
 
   // Propagate contained resources
   const containedResources: FhirResource[] = parentQuestionnaire.contained
@@ -41,7 +42,7 @@ export function propagateSubquestionnaireItems(
     : [];
 
   // Replace duplicate contained resources from subquestionnaires with resources from parent
-  if (containedResources.length > 0) {
+  if (containedResources && containedResources.length > 0) {
     for (const resource of containedResources) {
       const resourceId = resource.id;
       if (resourceId && containedResourcesFromSubquestionnaires[resourceId]) {
@@ -51,8 +52,7 @@ export function propagateSubquestionnaireItems(
   }
 
   // Merge in contained resources from subquestionnaires
-  containedResources.push(...Object.values(containedResourcesFromSubquestionnaires));
-  parentQuestionnaire.contained = containedResources;
+  parentQuestionnaire.contained = [...Object.values(containedResourcesFromSubquestionnaires)];
 
   // Propagate root-level extensions
   const extensions: Extension[] = [];
@@ -60,10 +60,10 @@ export function propagateSubquestionnaireItems(
     extensions.push(...rootLevelExtensions);
   } else {
     const cqfLibraryAndLaunchContexts: Extension[] = [];
-    const extensionsFromParentQuestionnaire = parentQuestionnaire.extension;
+    const extensionsFromParent = parentQuestionnaire.extension;
 
     // Propagate cqf-library extension
-    const cqfLibraryFromParent = extensionsFromParentQuestionnaire.find(
+    const cqfLibraryFromParent = extensionsFromParent.find(
       (extension: Extension) =>
         extension.url === 'http://hl7.org/fhir/StructureDefinition/cqf-library'
     );
@@ -85,7 +85,7 @@ export function propagateSubquestionnaireItems(
     // Propagate launchContext extensions
     let mergedLaunchContexts: Record<string, Extension> = {};
     mergedLaunchContexts = mergeLaunchContextsFromExtensions(
-      extensionsFromParentQuestionnaire,
+      extensionsFromParent,
       mergedLaunchContexts
     );
 
@@ -97,7 +97,7 @@ export function propagateSubquestionnaireItems(
     cqfLibraryAndLaunchContexts.push(...Object.values(mergedLaunchContexts));
 
     // Filter initial cqfLibrary and LaunchContext extensions from parent extensions before merging new extensions
-    const initialExtensions = extensionsFromParentQuestionnaire.filter(
+    const initialExtensions = extensionsFromParent.filter(
       (extension: Extension) =>
         !(
           extension.url === 'http://hl7.org/fhir/StructureDefinition/cqf-library' ||
