@@ -12,9 +12,10 @@ import {
 import { propagateSubquestionnaireItems } from './PropagateSubquestionnaireItems';
 
 export async function assembleQuestionnaire(
-  parentQuestionnaire: Questionnaire,
+  questionnaire: Questionnaire,
   allCanonicals: string[]
 ): Promise<Questionnaire | OperationOutcome> {
+  const parentQuestionnaire = JSON.parse(JSON.stringify(questionnaire));
   const canonicals = getCanonicalUrls(parentQuestionnaire, allCanonicals);
   if (!Array.isArray(canonicals)) return canonicals;
 
@@ -60,12 +61,10 @@ export async function assembleQuestionnaire(
   const itemsWithExtensions = mergeExtensionsIntoItems(items, itemLevelExtensions);
 
   // propagate items, contained resources and extensions into parent questionnaire
-  parentQuestionnaire = propagateSubquestionnaireItems(
+  return propagateSubquestionnaireItems(
     parentQuestionnaire,
     itemsWithExtensions,
     containedResources,
     rootLevelExtensions
   );
-
-  return parentQuestionnaire;
 }
