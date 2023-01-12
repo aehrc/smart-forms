@@ -1,6 +1,11 @@
-import type { OperationOutcome, Parameters, Questionnaire } from 'fhir/r5';
+import type { Parameters } from 'fhir/r5';
 import { assembleQuestionnaire } from './AssembleQuestionnaire';
-import type { AssembleInputParameters } from './Interfaces';
+import type {
+  AssembleInputParameters,
+  AssembleOutputParameters,
+  AssembleOutputParametersWithIssues
+} from './Interfaces';
+import { createOutputParameters } from './CreateOutputParameters';
 import { isQuestionnaireParameter } from './TypePredicates';
 
 /**
@@ -11,12 +16,13 @@ import { isQuestionnaireParameter } from './TypePredicates';
  */
 export default async function assemble(
   parameters: AssembleInputParameters
-): Promise<Questionnaire | OperationOutcome> {
+): Promise<AssembleOutputParameters | AssembleOutputParametersWithIssues> {
   const masterQuestionnaire = parameters.parameter[0].resource;
-  // const masterQuestionnaire = Master as Questionnaire;
   const allCanonicals: string[] = [];
 
-  return await assembleQuestionnaire(masterQuestionnaire, allCanonicals);
+  const assembledResult = await assembleQuestionnaire(masterQuestionnaire, allCanonicals);
+
+  return createOutputParameters(assembledResult);
 }
 
 export function isAssembleInputParameters(
