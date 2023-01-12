@@ -102,7 +102,10 @@ export function propagateSubquestionnaireItems(
         !(
           extension.url === 'http://hl7.org/fhir/StructureDefinition/cqf-library' ||
           extension.url ===
-            'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext'
+            'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' ||
+          (extension.url ===
+            'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation' &&
+            extension.valueCode === 'assemble-root')
         )
     );
     extensions.push(...initialExtensions, ...cqfLibraryAndLaunchContexts);
