@@ -1,6 +1,7 @@
-import type { OperationOutcome, Questionnaire } from 'fhir/r5';
+import type { OperationOutcome, Parameters, Questionnaire } from 'fhir/r5';
 import { assembleQuestionnaire } from './AssembleQuestionnaire';
 import type { AssembleInputParameters } from './Interfaces';
+import { isQuestionnaireParameter } from './TypePredicates';
 
 /**
  * Main function of this populate module.
@@ -16,4 +17,10 @@ export default async function assemble(
   const allCanonicals: string[] = [];
 
   return await assembleQuestionnaire(masterQuestionnaire, allCanonicals);
+}
+
+export function isAssembleInputParameters(
+  parameters: Parameters
+): parameters is AssembleInputParameters {
+  return !!parameters.parameter?.find(isQuestionnaireParameter);
 }
