@@ -1,6 +1,6 @@
-import Master from './resources/master-questionnaire.json';
 import type { OperationOutcome, Questionnaire } from 'fhir/r5';
 import { assembleQuestionnaire } from './AssembleQuestionnaire';
+import type { AssembleInputParameters } from './Interfaces';
 
 /**
  * Main function of this populate module.
@@ -8,8 +8,11 @@ import { assembleQuestionnaire } from './AssembleQuestionnaire';
  *
  * @author Sean Fong
  */
-export default async function assemble(): Promise<Questionnaire | OperationOutcome> {
-  const masterQuestionnaire = Master as Questionnaire;
+export default async function assemble(
+  parameters: AssembleInputParameters
+): Promise<Questionnaire | OperationOutcome> {
+  const masterQuestionnaire = parameters.parameter[0].resource;
+  // const masterQuestionnaire = Master as Questionnaire;
   const allCanonicals: string[] = [];
 
   return await assembleQuestionnaire(masterQuestionnaire, allCanonicals);
