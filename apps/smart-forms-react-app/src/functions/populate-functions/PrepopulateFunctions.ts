@@ -9,6 +9,7 @@ import {
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
+import { getXFhirQueryVariables } from './PopulateXFhirQueryFunctions';
 
 /**
  * Prepopulate form from CMS patient data
@@ -29,6 +30,8 @@ export function populateQuestionnaire(
     exitSpinner();
     return;
   }
+
+  const xFhirQueryVariables = getXFhirQueryVariables(questionnaire);
 
   let prePopQueryBundle = getPrePopQueryBundle(questionnaire.contained);
   if (!prePopQueryBundle) {

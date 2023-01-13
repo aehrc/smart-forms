@@ -5,7 +5,7 @@ import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import RendererBody from './RendererBody';
-import { populateQuestionnaire } from '../../functions/PrepopulateFunctions';
+import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
 
 function Renderer() {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
