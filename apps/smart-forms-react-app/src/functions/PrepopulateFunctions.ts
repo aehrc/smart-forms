@@ -15,7 +15,7 @@ import populate, { isPopulateInputParameters } from 'sdc-populate';
  *
  * @author Sean Fong
  */
-export function prepopulate(
+export function populateQuestionnaire(
   client: Client,
   questionnaire: Questionnaire,
   patient: Patient,

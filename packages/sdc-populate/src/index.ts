@@ -6,7 +6,7 @@ import type {
 import { readInitialExpressions } from './ReadInitialExpressions';
 import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
 import { constructResponse } from './ConstructQuestionnaireResponse';
-import { createOutputParameters } from './CreateParameters';
+import { createOutputParameters } from './CreateOutputParameters';
 import type { Parameters, ParametersParameter } from 'fhir/r5';
 import {
   isLaunchPatientContent,
