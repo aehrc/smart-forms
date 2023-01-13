@@ -5,11 +5,12 @@ import { RoundButton } from '../StyledComponents/Buttons.styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { PageType } from '../../interfaces/Enums';
 import { FullHeightCard } from '../StyledComponents/Card.styles';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Questionnaire } from 'fhir/r5';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 interface Props {
   searchInput: string;
@@ -34,10 +35,15 @@ function PickerQuestionnaireCard(props: Props) {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
+  const launch = useContext(LaunchContext);
 
   function handleCreateNewResponseButtonClick() {
     if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
-      questionnaireProvider.setQuestionnaire(selectedQuestionnaire, questionnaireSourceIsLocal);
+      questionnaireProvider.setQuestionnaire(
+        selectedQuestionnaire,
+        questionnaireSourceIsLocal,
+        launch.fhirClient
+      );
       if (selectedQuestionnaire.item && selectedQuestionnaire.item.length > 0) {
         questionnaireResponseProvider.setQuestionnaireResponse(
           createQuestionnaireResponse(selectedQuestionnaire.id, selectedQuestionnaire.item[0])
