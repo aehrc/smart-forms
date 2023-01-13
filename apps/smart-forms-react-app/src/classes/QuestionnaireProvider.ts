@@ -3,6 +3,12 @@ import { CalculatedExpression, EnableWhenItemProperties } from '../interfaces/In
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
 import { getCalculatedExpression } from '../functions/ItemControlFunctions';
 import { QuestionnaireSource } from '../interfaces/Enums';
+import {
+  assembleQuestionnaire,
+  assemblyIsRequired,
+  updateAssembledQuestionnaire
+} from '../functions/AssembleFunctions';
+import Client from 'fhirclient/lib/Client';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
@@ -24,7 +30,17 @@ export class QuestionnaireProvider {
     this.containedValueSets = {};
   }
 
-  setQuestionnaire(questionnaire: Questionnaire, questionnaireSourceIsLocal: boolean) {
+  async setQuestionnaire(
+    client: Client,
+    questionnaire: Questionnaire,
+    questionnaireSourceIsLocal: boolean
+  ) {
+    // Assemble questionnaire if its not assembled
+    if (assemblyIsRequired(questionnaire)) {
+      questionnaire = await assembleQuestionnaire(questionnaire);
+      await updateAssembledQuestionnaire(client, questionnaire);
+    }
+
     this.questionnaire = questionnaire;
     this.source = questionnaireSourceIsLocal
       ? QuestionnaireSource.Local
