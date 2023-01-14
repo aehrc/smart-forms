@@ -1,6 +1,5 @@
 import {
   Bundle,
-  FhirResource,
   Parameters,
   Patient,
   Practitioner,
@@ -9,14 +8,15 @@ import {
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
-import { getXFhirQueryVariables } from './PopulateXFhirQueryFunctions';
+import { getXFhirQueryVariables } from './VariablePopulateFunctions';
+import { getBatchResponseFromPrePopQuery, getPrePopQuery } from './PrePopQueryPopulateFunctions';
 
 /**
- * Prepopulate form from CMS patient data
+ * Pre-populate questionnaire from CMS patient data to form a populated questionnaireReponse
  *
  * @author Sean Fong
  */
-export function populateQuestionnaire(
+export async function populateQuestionnaire(
   client: Client,
   questionnaire: Questionnaire,
   patient: Patient,
@@ -26,69 +26,32 @@ export function populateQuestionnaire(
   },
   exitSpinner: { (): void }
 ) {
-  if (!questionnaire.contained || questionnaire.contained.length === 0) {
+  const prePopQuery = getPrePopQuery(questionnaire);
+  const variables = getXFhirQueryVariables(questionnaire);
+
+  if (!(variables && prePopQuery)) {
     exitSpinner();
     return;
   }
 
-  const xFhirQueryVariables = getXFhirQueryVariables(questionnaire);
+  // Retrieve a batch response containing the CMS data to be populated
+  const batchResponse = await getBatchResponseFromPrePopQuery(client, patient, prePopQuery);
 
-  let prePopQueryBundle = getPrePopQueryBundle(questionnaire.contained);
-  if (!prePopQueryBundle) {
-    exitSpinner();
-    return;
-  }
+  // Define and check parameters which satisfies the inputParameters of the populate function
+  const inputParameters = definePopulationParameters(questionnaire, patient, batchResponse);
 
-  // replace all instances of patientId placeholder with patient id
-  prePopQueryBundle = replacePatientIdInstances(prePopQueryBundle, patient);
+  // Perform population if parameters satisfies input parameters
+  if (isPopulateInputParameters(inputParameters)) {
+    const outputParameters = populate(inputParameters);
+    const questionnaireResponse = outputParameters.parameter[0].resource;
 
-  // perform batch query to CMS FHIR API
-  const batchResponsePromise = batchQueryRequest(client, prePopQueryBundle);
-  batchResponsePromise
-    .then((batchResponse) => {
-      const parameters = definePopulationParameters(questionnaire, patient, batchResponse);
-      const populatedResponse = getPopulatedResponse(parameters);
-      if (populatedResponse) {
-        populateForm(populatedResponse, batchResponse);
-      } else {
-        exitSpinner();
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-      exitSpinner();
-    });
-}
-
-/**
- * Get prepopulation query bundle from the questionnaire
- *
- * @author Sean Fong
- */
-export function getPrePopQueryBundle(contained: FhirResource[]): Bundle | null {
-  for (const entry of contained) {
-    if (entry.resourceType === 'Bundle' && entry.id === 'PrePopQuery') {
-      return entry as Bundle;
+    if (outputParameters.parameter[1]) {
+      console.error(outputParameters.parameter[1].resource);
     }
+    populateForm(questionnaireResponse, batchResponse);
+  } else {
+    exitSpinner();
   }
-
-  return null;
-}
-
-/**
- * Replace patientId variable instances in questionnaire with CMS Patient ID
- *
- * @author Sean Fong
- */
-function replacePatientIdInstances(batchQuery: Bundle, patient: Patient): Bundle {
-  // console.log(batchQuery);
-  if (batchQuery.entry) {
-    batchQuery.entry.forEach((entry) => {
-      if (entry.request && patient.id)
-        entry.request.url = entry.request.url.replace('{{%patient.id}}', patient.id);
-    });
-  }
-  return { ...batchQuery };
 }
 
 /**
@@ -96,7 +59,7 @@ function replacePatientIdInstances(batchQuery: Bundle, patient: Patient): Bundle
  *
  * @author Sean Fong
  */
-function batchQueryRequest(client: Client, bundle: Bundle): Promise<Bundle> {
+export function getBatchResponse(client: Client, bundle: Bundle): Promise<Bundle> {
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json+fhir; charset=UTF-8'
@@ -115,7 +78,7 @@ function batchQueryRequest(client: Client, bundle: Bundle): Promise<Bundle> {
  *
  * @author Sean Fong
  */
-function definePopulationParameters(
+export function definePopulationParameters(
   questionnaire: Questionnaire,
   patient: Patient,
   batchResponse: Bundle
@@ -162,18 +125,4 @@ function definePopulationParameters(
       }
     ]
   };
-}
-
-/**
- * Attempt population request to obtain populated questionnaireResponse
- *
- * @author Sean Fong
- */
-function getPopulatedResponse(parameters: Parameters): QuestionnaireResponse | null {
-  if (isPopulateInputParameters(parameters)) {
-    const outputPopParams = populate(parameters);
-    return outputPopParams.parameter[0].resource;
-  }
-
-  return null;
 }
