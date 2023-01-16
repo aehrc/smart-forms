@@ -10,8 +10,9 @@ import {
   PropsWithRepeatsAttribute
 } from '../../../../interfaces/Interfaces';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
-import { QItemTypography, QRadioGroup } from '../../../StyledComponents/Item.styles';
+import { QRadioGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -76,7 +77,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}

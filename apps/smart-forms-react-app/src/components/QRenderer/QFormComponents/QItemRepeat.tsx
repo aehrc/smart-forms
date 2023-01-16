@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, IconButton, Stack, Tooltip } from '@mui/material';
+import { Box, Button, Grid, IconButton, Stack } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
 import QItemSwitcher from './QItemSwitcher';
@@ -10,8 +10,9 @@ import {
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
-import { QItemTypography } from '../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
+import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
+import QItemLabel from './QItemParts/QItemLabel';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -67,7 +68,7 @@ function QItemRepeat(props: Props) {
     <>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {repeatAnswers.map((answer, index) => {
@@ -75,7 +76,7 @@ function QItemRepeat(props: Props) {
 
             return (
               <React.Fragment key={index}>
-                <Stack direction="row" sx={{ pb: 2 }} alignItems="center">
+                <RepeatItemContainerStack direction="row">
                   <Box sx={{ flexGrow: 1 }}>
                     <QItemSwitcher
                       qItem={qItem}
@@ -85,20 +86,18 @@ function QItemRepeat(props: Props) {
                         handleAnswersChange(newQrItem, index)
                       }></QItemSwitcher>
                   </Box>
-                  <Box sx={{ ml: 1 }}>
-                    <Tooltip title="Delete item">
-                      <span>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          disabled={!answer}
-                          onClick={() => deleteAnswer(index)}>
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                  </Box>
-                </Stack>
+                  <RepeatDeleteTooltip className="repeat-item-delete" title="Delete item">
+                    <span>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        disabled={!answer}
+                        onClick={() => deleteAnswer(index)}>
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </RepeatDeleteTooltip>
+                </RepeatItemContainerStack>
               </React.Fragment>
             );
           })}

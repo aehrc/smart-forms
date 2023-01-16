@@ -9,8 +9,8 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -69,7 +69,7 @@ function QItemInteger(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           <TextField

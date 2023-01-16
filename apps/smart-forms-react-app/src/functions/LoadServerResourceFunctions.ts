@@ -146,7 +146,7 @@ export function getInitialQuestionnaireFromResponse(
 
 /**
  * FOR TESTING ONLY
- * Loads local questionnaires and returns them as an array of questionnaireResponses
+ * Loads local questionnaires and returns them as an array of questionnaires
  *
  * To add local questionnaires to list:
  * 1. Move questionnaire file to src/data/resources

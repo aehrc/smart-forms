@@ -136,3 +136,22 @@ export function getDecimalPrecision(qItem: QuestionnaireItem): number | null {
   }
   return null;
 }
+
+/**
+ * Check if the extension has a url for xhtml rendering
+ *
+ * @author Sean Fong
+ */
+export function getXHtmlString(qItem: QuestionnaireItem): string | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
+  );
+
+  if (itemControl) {
+    if (itemControl.valueString) {
+      return itemControl.valueString;
+    }
+  }
+  return null;
+}

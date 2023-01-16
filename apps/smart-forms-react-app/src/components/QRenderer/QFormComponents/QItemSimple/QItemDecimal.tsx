@@ -9,10 +9,10 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -104,7 +104,7 @@ function QItemDecimal(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {decimalInput}

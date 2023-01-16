@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Card, IconButton, Stack } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -15,6 +15,9 @@ import {
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { hideQItem } from '../../../functions/QItemFunctions';
+import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
+import QItemLabel from './QItemParts/QItemLabel';
+import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -70,22 +73,17 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <Card elevation={groupCardElevation} sx={{ mb: 6, p: 4 }}>
-      <Typography variant="h6" sx={{ mb: 4 }}>
-        {qItem.text}
-      </Typography>
+    <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: 3.5 }}>
+      <QGroupHeadingTypography variant="h6" sx={{ mb: 4 }}>
+        <QItemLabel qItem={qItem} />
+      </QGroupHeadingTypography>
       {repeatAnswerItems.map((answerItem, index) => {
         const singleQrItem: QuestionnaireResponseItem = answerItem
           ? { ...cleanQrItem, item: answerItem.item }
           : { ...cleanQrItem };
 
         return (
-          <Stack
-            key={index}
-            direction="row"
-            justifyContent="end"
-            alignItems="center"
-            sx={{ pb: 2 }}>
+          <RepeatGroupContainerStack key={index} direction="row" justifyContent="end">
             <Box sx={{ flexGrow: 1 }}>
               <QItemGroup
                 qItem={qItem}
@@ -97,20 +95,18 @@ function QItemRepeatGroup(props: Props) {
                 }></QItemGroup>
             </Box>
 
-            <Box sx={{ ml: 1 }}>
-              <Tooltip title="Delete group">
-                <span>
-                  <IconButton
-                    size="small"
-                    color="error"
-                    disabled={!answerItem}
-                    onClick={() => deleteAnswerItem(index)}>
-                    <Delete />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Box>
-          </Stack>
+            <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
+              <span>
+                <IconButton
+                  size="small"
+                  color="error"
+                  disabled={!answerItem}
+                  onClick={() => deleteAnswerItem(index)}>
+                  <Delete />
+                </IconButton>
+              </span>
+            </RepeatDeleteTooltip>
+          </RepeatGroupContainerStack>
         );
       })}
 

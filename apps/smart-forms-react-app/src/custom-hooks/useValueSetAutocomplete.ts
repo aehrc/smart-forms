@@ -16,6 +16,7 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
       return;
     }
 
+    answerValueSetUrl += answerValueSetUrl[answerValueSetUrl.length - 1] !== '&' ? '&' : '';
     const fullUrl = answerValueSetUrl + 'filter=' + newInput + '&count=' + maxlist;
     const cachedAnswerOptions = AnswerValueSet.cache[fullUrl];
     if (cachedAnswerOptions) {

@@ -12,8 +12,8 @@ import {
 } from 'fhir/r5';
 import { getAnswerOptionLabel } from '../../../../functions/OpenChoiceFunctions';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
-import { QItemTypography } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -78,7 +78,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
     <FormControl>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemTypography>{qItem.text}</QItemTypography>
+          <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openOpenChoiceSelectAnswerOption}

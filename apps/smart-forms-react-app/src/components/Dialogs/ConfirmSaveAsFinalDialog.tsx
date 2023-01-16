@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { PageType } from '../../interfaces/Enums';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
-import { QuestionnaireResponseProviderContext } from '../../App';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 
@@ -35,6 +35,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     patient,
     user
   } = props;
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
 
@@ -61,7 +62,13 @@ function ConfirmSaveAsFinalDialog(props: Props) {
             setIsSaving(true);
             questionnaireResponse.status = 'completed';
             questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-            saveQuestionnaireResponse(fhirClient, patient, user, questionnaireResponse)
+            saveQuestionnaireResponse(
+              fhirClient,
+              patient,
+              user,
+              questionnaireProvider.questionnaire,
+              questionnaireResponse
+            )
               .then(() => {
                 removeQrHasChanges();
                 pageSwitcher.goToPage(PageType.Picker);

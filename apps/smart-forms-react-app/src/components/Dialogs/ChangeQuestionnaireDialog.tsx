@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { PageType } from '../../interfaces/Enums';
 import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
-import { QuestionnaireResponseProviderContext } from '../../App';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
@@ -24,6 +24,7 @@ export interface Props {
 
 function ChangeQuestionnaireDialog(props: Props) {
   const { dialogOpen, closeDialog, removeQrHasChanges, questionnaireResponse } = props;
+  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
   const launchContext = React.useContext(LaunchContext);
@@ -62,6 +63,7 @@ function ChangeQuestionnaireDialog(props: Props) {
                 launchContext.fhirClient,
                 launchContext.patient,
                 launchContext.user,
+                questionnaireProvider.questionnaire,
                 questionnaireResponse
               )
                 .then(() => {
