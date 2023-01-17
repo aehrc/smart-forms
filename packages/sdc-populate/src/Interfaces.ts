@@ -29,8 +29,8 @@ export type PopulateInputParametersDoubleBundle = [
   QuestionnaireParameter,
   SubjectParameter,
   LaunchPatientContextParameter,
-  ResourceBundleContextParameter,
-  ResourceBundleContextParameter
+  PrePopQueryContextParameter,
+  VariablesContextParameter
 ];
 
 export interface QuestionnaireParameter extends ParametersParameter {

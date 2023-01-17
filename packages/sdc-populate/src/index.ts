@@ -1,7 +1,10 @@
 import type {
+  InitialExpression,
   PopulateInputParameters,
   PopulateOutputParameters,
-  PopulateOutputParametersWithIssues
+  PopulateOutputParametersWithIssues,
+  PrePopQueryContextParameter,
+  VariablesContextParameter
 } from './Interfaces';
 import { readInitialExpressions } from './ReadInitialExpressions';
 import { addVariablesToContext } from './VariableProcessing';
@@ -33,22 +36,19 @@ export default function populate(
   const questionnaire = params[0].resource;
   const subject = params[1].valueReference;
   const launchPatient = params[2].part[1].resource;
-  const batchResponse = params[3].part[1].resource;
-
-  const contentName = params[3].part[0].valueString;
 
   let initialExpressions = readInitialExpressions(questionnaire);
   let context: Record<string, any> = {
     patient: launchPatient
   };
 
-  // Add PrePopQuery and variables to context if present
-  if (contentName === 'PrePopQuery') {
-    context['PrePopQuery'] = batchResponse;
-  }
-
-  if (contentName === 'Variables') {
-    context = addVariablesToContext(initialExpressions, context, batchResponse);
+  // Add PrePopQuery and variables to context
+  if (params.length === 5) {
+    for (const param of [params[3], params[4]]) {
+      context = getContextContent(param, context, initialExpressions);
+    }
+  } else {
+    context = getContextContent(params[3], context, initialExpressions);
   }
 
   // Perform evaluate of initialExpressions based on context
@@ -57,6 +57,25 @@ export default function populate(
   const questionnaireResponse = constructResponse(questionnaire, subject, initialExpressions);
 
   return createOutputParameters(questionnaireResponse);
+}
+
+function getContextContent(
+  param: PrePopQueryContextParameter | VariablesContextParameter,
+  context: Record<string, any>,
+  initialExpressions: Record<string, InitialExpression>
+) {
+  const contextName = param.part[0].valueString;
+  const contextContent = param.part[1].resource;
+
+  switch (contextName) {
+    case 'PrePopQuery':
+      context['PrePopQuery'] = contextContent;
+      break;
+    case 'Variables':
+      context = addVariablesToContext(initialExpressions, context, contextContent);
+      break;
+  }
+  return context;
 }
 
 /**
