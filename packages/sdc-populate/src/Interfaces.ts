@@ -19,7 +19,7 @@ export interface PopulateInputParameters extends Parameters {
     QuestionnaireParameter,
     SubjectParameter,
     LaunchPatientParameter,
-    PrePopQueryParameter
+    PrePopQueryParameter | VariablesParameter
   ];
 }
 
@@ -53,6 +53,20 @@ export interface PrePopQueryParameter extends ParametersParameter {
     {
       name: 'name';
       valueString: 'PrePopQuery';
+    },
+    {
+      name: 'content';
+      resource: Bundle;
+    }
+  ];
+}
+
+export interface VariablesParameter extends ParametersParameter {
+  name: 'context';
+  part: [
+    {
+      name: 'name';
+      valueString: 'Variables';
     },
     {
       name: 'content';

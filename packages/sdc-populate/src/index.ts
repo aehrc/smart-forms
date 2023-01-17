@@ -4,18 +4,20 @@ import type {
   PopulateOutputParametersWithIssues
 } from './Interfaces';
 import { readInitialExpressions } from './ReadInitialExpressions';
-import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
+import { addVariablesToContext } from './VariableProcessing';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateOutputParameters';
 import type { Parameters, ParametersParameter } from 'fhir/r5';
 import {
   isLaunchPatientContent,
   isLaunchPatientName,
-  isPrePopQueryContent,
   isPrePopQueryName,
+  isPrePopQueryOrVariablesContent,
   isQuestionnaireParameter,
-  isSubjectParameter
+  isSubjectParameter,
+  isVariablesName
 } from './TypePredicates';
+import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
 
 /**
  * Main function of this populate module.
@@ -26,18 +28,31 @@ import {
 export default function populate(
   parameters: PopulateInputParameters
 ): PopulateOutputParameters | PopulateOutputParametersWithIssues {
-  const parameterArr = parameters.parameter;
+  const params = parameters.parameter;
 
-  const questionnaire = parameterArr[0].resource;
-  const subject = parameterArr[1].valueReference;
-  const launchPatient = parameterArr[2].part[1].resource;
-  const prePopQuery = parameterArr[3].part[1].resource;
+  const questionnaire = params[0].resource;
+  const subject = params[1].valueReference;
+  const launchPatient = params[2].part[1].resource;
+  const batchResponse = params[3].part[1].resource;
+
+  const contentName = params[3].part[0].valueString;
 
   let initialExpressions = readInitialExpressions(questionnaire);
-  initialExpressions = evaluateInitialExpressions(initialExpressions, {
-    patient: launchPatient,
-    PrePopQuery: prePopQuery
-  });
+  let context: Record<string, any> = {
+    patient: launchPatient
+  };
+
+  // Add PrePopQuery and variables to context if present
+  if (contentName === 'PrePopQuery') {
+    context['PrePopQuery'] = batchResponse;
+  }
+
+  if (contentName === 'Variables') {
+    context = addVariablesToContext(initialExpressions, context, batchResponse);
+  }
+
+  // Perform evaluate of initialExpressions based on context
+  initialExpressions = evaluateInitialExpressions(initialExpressions, context);
 
   const questionnaireResponse = constructResponse(questionnaire, subject, initialExpressions);
 
@@ -67,8 +82,20 @@ export function isPopulateInputParameters(
     (parameter: ParametersParameter) =>
       parameter.name === 'context' &&
       parameter.part?.find(isPrePopQueryName) &&
-      parameter.part?.find(isPrePopQueryContent)
+      parameter.part?.find(isPrePopQueryOrVariablesContent)
   );
 
-  return questionnairePresent && subjectPresent && launchPatientPresent && prePopQueryPresent;
+  const variablesPresent = !!parameters.parameter?.find(
+    (parameter: ParametersParameter) =>
+      parameter.name === 'context' &&
+      parameter.part?.find(isVariablesName) &&
+      parameter.part?.find(isPrePopQueryOrVariablesContent)
+  );
+
+  return (
+    questionnairePresent &&
+    subjectPresent &&
+    launchPatientPresent &&
+    (prePopQueryPresent || variablesPresent)
+  );
 }
