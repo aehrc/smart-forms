@@ -45,9 +45,8 @@ function Renderer() {
         questionnaire,
         patient,
         user,
-        (qResponse, batchResponse) => {
+        (qResponse) => {
           questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
-          questionnaireResponseProvider.setBatchResponse(batchResponse);
           setSpinner({ ...spinner, isLoading: false });
         },
         () => {

@@ -1,7 +1,14 @@
-import { Bundle, BundleEntry, Extension, Patient, Questionnaire } from 'fhir/r5';
+import {
+  Bundle,
+  BundleEntry,
+  Extension,
+  ParametersParameter,
+  Patient,
+  Questionnaire
+} from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import UUID from 'uuidjs';
-import { getBatchResponse } from './PrepopulateFunctions';
+import { constructContextParameters, getBatchResponse } from './PrepopulateFunctions';
 
 /**
  * Filter x-fhir-query variables from questionnaire's extensions needed for population
@@ -19,20 +26,27 @@ export function getXFhirQueryVariables(questionnaire: Questionnaire): Extension[
 }
 
 /**
- * Retrieve a batch response from the x-fhir-queries defined in the questionnaire's extensions
+ * Construct variables context parameter from x-fhir-queries defined in the questionnaire's extensions
  *
  * @author Sean Fong
  */
-export function getBatchResponseFromVariables(
+export async function constructVariablesContextParameters(
   client: Client,
   patient: Patient,
   variables: Extension[]
-): Promise<Bundle> {
+): Promise<ParametersParameter> {
   // replace all instances of patientId placeholder with patient id
   variables = replacePatientIdInstances(variables, patient);
 
+  // construct and perform batch query to CMS
   const batchQuery = constructBatchQuery(variables);
-  return getBatchResponse(client, batchQuery);
+  let batchResponse = await getBatchResponse(client, batchQuery);
+
+  // Assign original names of variables to batch response variables
+  batchResponse = assignVariableNamesToBundleResources(batchResponse, variables);
+
+  // construct context parameters for PrePopQuery
+  return constructContextParameters('Variables', batchResponse);
 }
 
 /**
@@ -80,4 +94,15 @@ function constructBatchQuery(variables: Extension[]): Bundle {
     type: 'batch',
     entry: entries
   };
+}
+
+function assignVariableNamesToBundleResources(bundle: Bundle, variables: Extension[]): Bundle {
+  bundle.entry?.forEach((entry, i) => {
+    const variable = variables[i];
+    if (entry.resource && variable && variable.valueExpression) {
+      entry.resource.id = variable.valueExpression.name;
+    }
+  });
+
+  return bundle;
 }

@@ -1,6 +1,6 @@
-import { Bundle, Patient, Questionnaire } from 'fhir/r5';
+import { Bundle, ParametersParameter, Patient, Questionnaire } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
-import { getBatchResponse } from './PrepopulateFunctions';
+import { constructContextParameters, getBatchResponse } from './PrepopulateFunctions';
 
 /**
  * Get pre-population query bundle from the questionnaire's contained resources
@@ -20,17 +20,23 @@ export function getPrePopQuery(questionnaire: Questionnaire): Bundle | null {
 }
 
 /**
- * Retrieve a batch response from PrePopQuery defined in the questionnaire's contained resources
+ * Construct PrePopQuery context parameter from PrePopQuery bundle defined in the questionnaire's contained resources
  *
  * @author Sean Fong
  */
-export function getBatchResponseFromPrePopQuery(
+export async function constructPrePopQueryContextParameters(
   client: Client,
   patient: Patient,
   prePopQuery: Bundle
-): Promise<Bundle> {
+): Promise<ParametersParameter> {
+  // replace all instances of patientId placeholder with patient id
   prePopQuery = replacePatientIdInstances(prePopQuery, patient);
-  return getBatchResponse(client, prePopQuery);
+
+  // perform batch query to CMS
+  const batchResponse = await getBatchResponse(client, prePopQuery);
+
+  // construct context parameters for PrePopQuery
+  return constructContextParameters('PrePopQuery', batchResponse);
 }
 
 /**

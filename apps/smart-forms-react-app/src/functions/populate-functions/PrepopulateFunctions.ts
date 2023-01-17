@@ -1,6 +1,7 @@
 import {
   Bundle,
   Parameters,
+  ParametersParameter,
   Patient,
   Practitioner,
   Questionnaire,
@@ -8,8 +9,14 @@ import {
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
-import { getXFhirQueryVariables } from './VariablePopulateFunctions';
-import { getBatchResponseFromPrePopQuery, getPrePopQuery } from './PrePopQueryPopulateFunctions';
+import {
+  constructVariablesContextParameters,
+  getXFhirQueryVariables
+} from './VariablePopulateFunctions';
+import {
+  constructPrePopQueryContextParameters,
+  getPrePopQuery
+} from './PrePopQueryPopulateFunctions';
 
 /**
  * Pre-populate questionnaire from CMS patient data to form a populated questionnaireReponse
@@ -22,23 +29,34 @@ export async function populateQuestionnaire(
   patient: Patient,
   user: Practitioner,
   populateForm: {
-    (questionnaireResponse: QuestionnaireResponse, batchResponse: Bundle): void;
+    (questionnaireResponse: QuestionnaireResponse): void;
   },
   exitSpinner: { (): void }
 ) {
   const prePopQuery = getPrePopQuery(questionnaire);
   const variables = getXFhirQueryVariables(questionnaire);
 
-  if (!(variables && prePopQuery)) {
+  if (!(prePopQuery || variables)) {
     exitSpinner();
     return;
   }
 
-  // Retrieve a batch response containing the CMS data to be populated
-  const batchResponse = await getBatchResponseFromPrePopQuery(client, patient, prePopQuery);
+  // Define population input parameters from PrePopQuery and x-fhir-query variables
+  const inputParameters = definePopulationParameters(questionnaire, patient);
 
-  // Define and check parameters which satisfies the inputParameters of the populate function
-  const inputParameters = definePopulationParameters(questionnaire, patient, batchResponse);
+  if (prePopQuery) {
+    const prePopQueryContext = await constructPrePopQueryContextParameters(
+      client,
+      patient,
+      prePopQuery
+    );
+    inputParameters.parameter?.push(prePopQueryContext);
+  }
+
+  if (variables) {
+    const variablesContext = await constructVariablesContextParameters(client, patient, variables);
+    inputParameters.parameter?.push(variablesContext);
+  }
 
   // Perform population if parameters satisfies input parameters
   if (isPopulateInputParameters(inputParameters)) {
@@ -48,7 +66,7 @@ export async function populateQuestionnaire(
     if (outputParameters.parameter[1]) {
       console.error(outputParameters.parameter[1].resource);
     }
-    populateForm(questionnaireResponse, batchResponse);
+    populateForm(questionnaireResponse);
   } else {
     exitSpinner();
   }
@@ -74,15 +92,11 @@ export function getBatchResponse(client: Client, bundle: Bundle): Promise<Bundle
 }
 
 /**
- * Define prepopulation request parameters
+ * Define population input parameters without any batch response contexts
  *
  * @author Sean Fong
  */
-export function definePopulationParameters(
-  questionnaire: Questionnaire,
-  patient: Patient,
-  batchResponse: Bundle
-): Parameters {
+function definePopulationParameters(questionnaire: Questionnaire, patient: Patient): Parameters {
   return {
     resourceType: 'Parameters',
     parameter: [
@@ -109,19 +123,22 @@ export function definePopulationParameters(
             resource: patient
           }
         ]
+      }
+    ]
+  };
+}
+
+export function constructContextParameters(name: string, resource: Bundle): ParametersParameter {
+  return {
+    name: 'context',
+    part: [
+      {
+        name: 'name',
+        valueString: name
       },
       {
-        name: 'context',
-        part: [
-          {
-            name: 'name',
-            valueString: 'PrePopQuery'
-          },
-          {
-            name: 'content',
-            resource: batchResponse
-          }
-        ]
+        name: 'content',
+        resource: resource
       }
     ]
   };
