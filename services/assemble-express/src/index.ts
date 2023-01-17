@@ -1,21 +1,17 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import assemble, { isAssembleInputParameters } from 'sdc-assemble';
-import { createOperationOutcome } from 'sdc-assemble/lib/CreateOutcomes';
+import assemble, { createOperationOutcome, isAssembleInputParameters } from 'sdc-assemble';
 
 const app = express();
 const port = 3002;
 
 app.use(express.json());
-app.use(express.urlencoded());
-
-const jsonParser = bodyParser.json();
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/healthcheck', (_, res) => {
   res.send('This service is healthy!');
 });
 
-app.post('/fhir/\\$assemble', jsonParser, (req, res) => {
+app.post('/fhir/\\$assemble', (req, res) => {
   const parameters = req.body;
   if (isAssembleInputParameters(req.body)) {
     assemble(parameters)
