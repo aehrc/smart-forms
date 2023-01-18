@@ -38,8 +38,11 @@ function Renderer() {
     const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item?.[0].item;
 
     // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
-    if (questionnaire.contained && (!qrFormItem || qrFormItem.length === 0)) {
-      // obtain questionnaireResponse for prepopulation
+    if (
+      (questionnaire.contained || questionnaire.extension) &&
+      (!qrFormItem || qrFormItem.length === 0)
+    ) {
+      // obtain questionnaireResponse for pre-population
       populateQuestionnaire(
         client,
         questionnaire,
