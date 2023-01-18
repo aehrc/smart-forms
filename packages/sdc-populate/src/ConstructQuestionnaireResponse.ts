@@ -116,7 +116,10 @@ function readQuestionnaireItem(
  *
  * @author Sean Fong
  */
-function getAnswerValues(initialValues: any[], qItem: QuestionnaireItem) {
+function getAnswerValues(
+  initialValues: any[],
+  qItem: QuestionnaireItem
+): QuestionnaireResponseItemAnswer[] {
   return initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
     if (qItem.answerOption) {
       const answerOption = qItem.answerOption.find(
@@ -141,11 +144,11 @@ function getAnswerValues(initialValues: any[], qItem: QuestionnaireItem) {
 }
 
 /**
- * Check if a answer is a date
+ * Check if an answer is a date in the format YYYY-MM-DD
  *
  * @author Sean Fong
  */
-function checkIsDate(value: any) {
+export function checkIsDate(value: string): boolean {
   const hasDateHyphens = value[4] === '-' && value[7] === '-';
   const hasYear = /^-?\d+$/.test(value.slice(0, 4));
   const hasMonth = /^-?\d+$/.test(value.slice(5, 7));
