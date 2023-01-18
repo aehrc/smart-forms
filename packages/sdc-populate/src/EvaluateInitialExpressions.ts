@@ -38,7 +38,7 @@ export function evaluateInitialExpressions(
 }
 
 /**
- * Check if the expression contains any unimplemented functions and remove them from the expression
+ * Check if the fhirpath expression contains any unimplemented functions and remove them from the expression
  *
  * @author Sean Fong
  */
@@ -51,7 +51,7 @@ export function removeUnimplementedFunction(
     if (foundFnIndex === -1) continue;
 
     const openingBracketIndex = foundFnIndex + fnName.length + 1;
-    const closingBracketIndex = findClosingBracketMatchIndex(expression, openingBracketIndex);
+    const closingBracketIndex = findMatchingClosingBracketIndex(expression, openingBracketIndex);
     return expression.slice(0, foundFnIndex - 1) + expression.slice(closingBracketIndex);
   }
   return expression;
@@ -62,7 +62,7 @@ export function removeUnimplementedFunction(
  *
  * @author Sean Fong
  */
-export function findClosingBracketMatchIndex(str: string, startPosition: number) {
+export function findMatchingClosingBracketIndex(str: string, startPosition: number) {
   if (str[startPosition] != '(') {
     throw new Error("No '(' at index " + startPosition);
   }
