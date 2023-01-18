@@ -15,8 +15,16 @@ export function constructVariableMap(bundle: Bundle): Record<string, Bundle> {
 }
 
 function getVariableName(expression: string): string | null {
-  const regExp = /%[A-Za-z]+/;
-  return expression.match(regExp)?.toString() ?? null;
+  const regExp = /%[a-zA-Z0-9]+/;
+  let match = expression.match(regExp)?.toString();
+
+  // Remove '%' character from variable name
+  if (match) {
+    match = match.slice(1);
+    return match;
+  }
+
+  return null;
 }
 
 export function addVariablesToContext(
