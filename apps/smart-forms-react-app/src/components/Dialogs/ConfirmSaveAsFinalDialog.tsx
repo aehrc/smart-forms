@@ -10,10 +10,12 @@ import {
 import React, { useState } from 'react';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { PageType } from '../../interfaces/Enums';
-import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
+import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import { EnableWhenChecksContext } from '../QRenderer/Form';
 
 export interface Props {
   dialogOpen: boolean;
@@ -39,7 +41,41 @@ function ConfirmSaveAsFinalDialog(props: Props) {
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = React.useContext(PageSwitcherContext);
 
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+
   const [isSaving, setIsSaving] = useState(false);
+
+  function handleSave() {
+    let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
+    questionnaireResponseToSave = removeHiddenAnswers(
+      questionnaireProvider.questionnaire,
+      questionnaireResponseToSave,
+      enableWhenContext,
+      enableWhenChecksContext
+    );
+
+    setIsSaving(true);
+    questionnaireResponseToSave.status = 'completed';
+    saveQuestionnaireResponse(
+      fhirClient,
+      patient,
+      user,
+      questionnaireProvider.questionnaire,
+      questionnaireResponseToSave
+    )
+      .then((savedResponse) => {
+        questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
+        removeQrHasChanges();
+        pageSwitcher.goToPage(PageType.Picker);
+        handleClose();
+        setIsSaving(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        handleClose();
+      });
+  }
 
   function handleClose() {
     closeDialog();
@@ -58,28 +94,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
         <Button
           disabled={isSaving}
           endIcon={isSaving ? <CircularProgress size={20} /> : null}
-          onClick={() => {
-            setIsSaving(true);
-            questionnaireResponse.status = 'completed';
-            questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-            saveQuestionnaireResponse(
-              fhirClient,
-              patient,
-              user,
-              questionnaireProvider.questionnaire,
-              questionnaireResponse
-            )
-              .then(() => {
-                removeQrHasChanges();
-                pageSwitcher.goToPage(PageType.Picker);
-                handleClose();
-                setIsSaving(false);
-              })
-              .catch((error) => {
-                console.log(error);
-                handleClose();
-              });
-          }}>
+          onClick={handleSave}>
           Save as final
         </Button>
       </DialogActions>
