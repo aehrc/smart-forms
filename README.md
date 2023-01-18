@@ -49,7 +49,7 @@ npm start
 
 ### Running on SMART EHR (the preferred way)
 
-1. Open https://launch.smarthealthit.org/index.html in a browser.
+1. Open https://launch.smarthealthit.org/ in a browser.
 2. Set the **App Launch URL** at the bottom of the page as ```http://localhost:3000/launch``` and launch app.
 
 ![img.png](launch.png)
