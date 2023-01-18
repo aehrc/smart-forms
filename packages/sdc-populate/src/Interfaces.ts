@@ -15,13 +15,23 @@ export interface InitialExpression {
 }
 
 export interface PopulateInputParameters extends Parameters {
-  parameter: [
-    QuestionnaireParameter,
-    SubjectParameter,
-    LaunchPatientParameter,
-    PrePopQueryParameter
-  ];
+  parameter: PopulateInputParametersSingleBundle | PopulateInputParametersDoubleBundle;
 }
+
+export type PopulateInputParametersSingleBundle = [
+  QuestionnaireParameter,
+  SubjectParameter,
+  LaunchPatientContextParameter,
+  ResourceBundleContextParameter
+];
+
+export type PopulateInputParametersDoubleBundle = [
+  QuestionnaireParameter,
+  SubjectParameter,
+  LaunchPatientContextParameter,
+  PrePopQueryContextParameter,
+  VariablesContextParameter
+];
 
 export interface QuestionnaireParameter extends ParametersParameter {
   name: 'questionnaire';
@@ -33,7 +43,7 @@ export interface SubjectParameter extends ParametersParameter {
   valueReference: Reference;
 }
 
-export interface LaunchPatientParameter extends ParametersParameter {
+export interface LaunchPatientContextParameter extends ParametersParameter {
   name: 'context';
   part: [
     {
@@ -47,12 +57,30 @@ export interface LaunchPatientParameter extends ParametersParameter {
   ];
 }
 
-export interface PrePopQueryParameter extends ParametersParameter {
+export type ResourceBundleContextParameter =
+  | PrePopQueryContextParameter
+  | VariablesContextParameter;
+
+export interface PrePopQueryContextParameter extends ParametersParameter {
   name: 'context';
   part: [
     {
       name: 'name';
       valueString: 'PrePopQuery';
+    },
+    {
+      name: 'content';
+      resource: Bundle;
+    }
+  ];
+}
+
+export interface VariablesContextParameter extends ParametersParameter {
+  name: 'context';
+  part: [
+    {
+      name: 'name';
+      valueString: 'Variables';
     },
     {
       name: 'content';

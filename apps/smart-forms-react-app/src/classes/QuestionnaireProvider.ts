@@ -31,14 +31,17 @@ export class QuestionnaireProvider {
   }
 
   async setQuestionnaire(
-    client: Client,
     questionnaire: Questionnaire,
-    questionnaireSourceIsLocal: boolean
+    questionnaireSourceIsLocal: boolean,
+    client: Client | null
   ) {
     // Assemble questionnaire if its not assembled
     if (assemblyIsRequired(questionnaire)) {
       questionnaire = await assembleQuestionnaire(questionnaire);
-      await updateAssembledQuestionnaire(client, questionnaire);
+
+      if (client) {
+        await updateAssembledQuestionnaire(client, questionnaire);
+      }
     }
 
     this.questionnaire = questionnaire;

@@ -40,7 +40,7 @@ function Auth() {
             .then((response) => {
               const questionnaire = getInitialQuestionnaireFromResponse(response);
               if (questionnaire) {
-                questionnaireProvider.setQuestionnaire(questionnaire, false);
+                questionnaireProvider.setQuestionnaire(questionnaire, false, client);
               }
               setQuestionnaireIsLoading(false);
             })
