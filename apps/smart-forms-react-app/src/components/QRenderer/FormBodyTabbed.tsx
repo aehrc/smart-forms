@@ -8,7 +8,7 @@ import QItemGroup from './QFormComponents/QItemGroup';
 import { isTab } from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import { getShortText } from '../../functions/ItemControlFunctions';
-import { hideQItem } from '../../functions/QItemFunctions';
+import { isHidden } from '../../functions/QItemFunctions';
 import ListItemText from '@mui/material/ListItemText';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 
@@ -42,7 +42,7 @@ function FormBodyTabbed(props: Props) {
               <Box sx={{ flexGrow: 1 }}>
                 <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }}>
                   {qFormItems.map((qItem, index) => {
-                    if (!isTab(qItem) || hideQItem(qItem)) return null;
+                    if (!isTab(qItem) || isHidden(qItem)) return null;
                     return (
                       <ListItemButton
                         key={qItem.linkId}

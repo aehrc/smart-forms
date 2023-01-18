@@ -25,7 +25,7 @@ import {
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { Add, Delete } from '@mui/icons-material';
 import { RepeatDeleteTooltip } from './QItemRepeat.styles';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
 import QItemGroupTableRow from './QItemGroupTableRow';
 
 interface Props
@@ -51,7 +51,7 @@ function QItemGroupTable(props: Props) {
     setTableRows(qrTableRows);
   }, [qrItem]);
 
-  if (hideQItem(qItem)) return null;
+  if (isHidden(qItem)) return null;
 
   function handleRowsChange(newQrRow: QuestionnaireResponseItem, index: number) {
     const rowsTemp = [...tableRows];

@@ -14,7 +14,7 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
@@ -42,7 +42,7 @@ function QItemRepeatGroup(props: Props) {
     setRepeatAnswerItems(qrRepeatAnswerItems);
   }, [qrItem]);
 
-  if (hideQItem(qItem)) return null;
+  if (isHidden(qItem)) return null;
 
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
     const answerItemsTemp = [...repeatAnswerItems];

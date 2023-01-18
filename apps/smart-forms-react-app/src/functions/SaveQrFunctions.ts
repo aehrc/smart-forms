@@ -11,14 +11,14 @@ import Client from 'fhirclient/lib/Client';
 import { constructName } from './LaunchContextFunctions';
 import dayjs from 'dayjs';
 import { qrToHTML } from './PreviewFunctions';
-import { hideQItem } from './QItemFunctions';
+import { isHidden } from './QItemFunctions';
 
 /**
  * Sends a request to client CMS to write back a completed questionnaireResponse
  *
  * @author Sean Fong
  */
-export async function saveQuestionnaireResponse(
+export function saveQuestionnaireResponse(
   client: Client,
   patient: Patient,
   user: Practitioner,
@@ -32,13 +32,13 @@ export async function saveQuestionnaireResponse(
 
   let requestUrl = 'QuestionnaireResponse';
   let method = 'POST';
-  let questionnaireResponseBody: QuestionnaireResponse = { ...questionnaireResponse };
+  let questionnaireResponseToSave: QuestionnaireResponse = { ...questionnaireResponse };
 
   if (questionnaireResponse.id) {
     requestUrl += '/' + questionnaireResponse.id;
     method = 'PUT';
   } else {
-    questionnaireResponseBody = {
+    questionnaireResponseToSave = {
       ...questionnaireResponse,
       text: {
         status: 'generated',
@@ -58,12 +58,10 @@ export async function saveQuestionnaireResponse(
     };
   }
 
-  questionnaireResponseBody = removeHiddenAnswers(questionnaire, questionnaireResponseBody);
-
   return client.request({
     url: requestUrl,
     method: method,
-    body: JSON.stringify(questionnaireResponseBody),
+    body: JSON.stringify(questionnaireResponseToSave),
     headers: headers
   });
 }
@@ -100,7 +98,7 @@ function readQuestionnaireResponseItem(
 ): QuestionnaireResponseItem | null {
   const qItems = qItem.item;
   if (qItems && qItems.length > 0) {
-    if (hideQItem(qItem)) return null;
+    if (isHidden(qItem)) return null;
 
     const qrItems = qrItem.item;
     const qrAnswerItems = qrItem.answer;
@@ -141,5 +139,5 @@ function readQuestionnaireResponseItem(
     return qrItem;
   }
 
-  return hideQItem(qItem) ? null : { ...qrItem };
+  return isHidden(qItem) ? null : { ...qrItem };
 }

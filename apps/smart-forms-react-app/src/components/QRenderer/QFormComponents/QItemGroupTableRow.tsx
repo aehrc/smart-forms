@@ -4,7 +4,7 @@ import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import QItemSwitcher from './QItemSwitcher';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
 import { TableCell } from '@mui/material';
 
@@ -16,7 +16,7 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemGroupTableRow(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  if (hideQItem(qItem)) return null;
+  if (isHidden(qItem)) return null;
 
   const qItemsIndexMap = mapQItemsIndex(qItem);
 

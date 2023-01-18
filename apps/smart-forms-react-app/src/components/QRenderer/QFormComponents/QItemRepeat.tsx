@@ -9,7 +9,7 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
@@ -40,7 +40,7 @@ function QItemRepeat(props: Props) {
     }
   }, [qrItem]);
 
-  if (hideQItem(qItem)) return null;
+  if (isHidden(qItem)) return null;
 
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const answersTemp = [...repeatAnswers];

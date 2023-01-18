@@ -32,7 +32,6 @@ function SaveAsDraftButton(props: Props) {
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
 
   function handleClick() {
-    questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
     saveQuestionnaireResponse(
       fhirClient,
       patient,

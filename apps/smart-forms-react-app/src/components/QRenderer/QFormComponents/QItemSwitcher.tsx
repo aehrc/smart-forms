@@ -18,7 +18,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,7 +43,7 @@ function QItemSwitcher(props: Props) {
     onQrItemChange(newQrItem);
   }
 
-  if (hideQItem(qItem)) return null;
+  if (isHidden(qItem)) return null;
 
   switch (qItem.type) {
     case QItemType.String:

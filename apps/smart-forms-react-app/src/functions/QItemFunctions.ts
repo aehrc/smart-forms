@@ -1,5 +1,9 @@
 import { QuestionnaireItem } from 'fhir/r5';
-import { isHidden, isSpecificDisplayCategory, isSpecificItemControl } from './ItemControlFunctions';
+import {
+  hasHiddenExtension,
+  isSpecificDisplayCategory,
+  isSpecificItemControl
+} from './ItemControlFunctions';
 import React from 'react';
 import { EnableWhenContext } from '../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../components/QRenderer/Form';
@@ -60,11 +64,11 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
  *
  * @author Sean Fong
  */
-export function hideQItem(qItem: QuestionnaireItem): boolean {
+export function isHidden(qItem: QuestionnaireItem): boolean {
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
-  if (isHidden(qItem)) return true;
+  if (hasHiddenExtension(qItem)) return true;
 
   // only for testing
   if (enableWhenChecksContext) {

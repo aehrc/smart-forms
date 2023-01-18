@@ -11,7 +11,7 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
-import { hideQItem, isRepeatItemAndNotCheckbox } from '../../../functions/QItemFunctions';
+import { isHidden, isRepeatItemAndNotCheckbox } from '../../../functions/QItemFunctions';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
 import { isSpecificItemControl } from '../../../functions/ItemControlFunctions';
 import QItemGroupTable from './QItemGroupTable';
@@ -28,7 +28,7 @@ interface Props
 function QItemGroup(props: Props) {
   const { qItem, qrItem, repeats, groupCardElevation, onQrItemChange } = props;
 
-  if (hideQItem(qItem)) return null;
+  if (isHidden(qItem)) return null;
 
   const qItemsIndexMap = mapQItemsIndex(qItem);
 
