@@ -17,12 +17,4 @@ export class QuestionnaireResponseProvider {
   setQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
     this.questionnaireResponse = questionnaireResponse;
   }
-
-  setBatchResponse(batchResponse: Bundle) {
-    this.batchResponse = batchResponse;
-  }
-
-  clearQuestionnaireResponse() {
-    this.questionnaireResponse = cleanQResponse;
-  }
 }

@@ -18,7 +18,8 @@ import {
   PropsWithQrItemChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
+import { EnableWhenChecksContext } from '../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -35,6 +36,9 @@ interface Props
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, repeats, onQrItemChange } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     if (newQrItem.answer) {
@@ -42,8 +46,6 @@ function QItemSwitcher(props: Props) {
     }
     onQrItemChange(newQrItem);
   }
-
-  if (hideQItem(qItem)) return null;
 
   switch (qItem.type) {
     case QItemType.String:

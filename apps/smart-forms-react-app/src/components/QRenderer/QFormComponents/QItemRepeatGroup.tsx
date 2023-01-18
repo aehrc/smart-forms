@@ -14,10 +14,12 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenChecksContext } from '../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -29,6 +31,9 @@ interface Props
 
 function QItemRepeatGroup(props: Props) {
   const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
+
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
@@ -42,7 +47,7 @@ function QItemRepeatGroup(props: Props) {
     setRepeatAnswerItems(qrRepeatAnswerItems);
   }, [qrItem]);
 
-  if (hideQItem(qItem)) return null;
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
     const answerItemsTemp = [...repeatAnswerItems];

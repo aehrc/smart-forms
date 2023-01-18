@@ -4,9 +4,11 @@ import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import QItemSwitcher from './QItemSwitcher';
-import { hideQItem } from '../../../functions/QItemFunctions';
+import { isHidden } from '../../../functions/QItemFunctions';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
 import { TableCell } from '@mui/material';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenChecksContext } from '../Form';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -16,7 +18,10 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemGroupTableRow(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  if (hideQItem(qItem)) return null;
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   const qItemsIndexMap = mapQItemsIndex(qItem);
 
