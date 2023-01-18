@@ -12,6 +12,7 @@ import { constructName } from './LaunchContextFunctions';
 import dayjs from 'dayjs';
 import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
+import { EnableWhenContextType } from '../interfaces/ContextTypes';
 
 /**
  * Sends a request to client CMS to write back a completed questionnaireResponse
@@ -68,7 +69,9 @@ export function saveQuestionnaireResponse(
 
 export function removeHiddenAnswers(
   questionnaire: Questionnaire,
-  questionnaireResponse: QuestionnaireResponse
+  questionnaireResponse: QuestionnaireResponse,
+  enableWhenContext: EnableWhenContextType,
+  enableWhenChecksEnabled: boolean
 ): QuestionnaireResponse {
   const questionnaireItem = questionnaire.item;
   const questionnaireResponseItem = questionnaireResponse.item;
@@ -83,7 +86,12 @@ export function removeHiddenAnswers(
 
   questionnaireResponseItem.forEach((qrItem, i) => {
     const qItem = questionnaireItem[i];
-    const newQrForm = readQuestionnaireResponseItem(qItem, qrItem);
+    const newQrForm = readQuestionnaireResponseItem(
+      qItem,
+      qrItem,
+      enableWhenContext,
+      enableWhenChecksEnabled
+    );
     if (newQrForm && questionnaireResponse.item) {
       questionnaireResponse.item[i] = { ...newQrForm };
     }
@@ -94,11 +102,13 @@ export function removeHiddenAnswers(
 
 function readQuestionnaireResponseItem(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem
+  qrItem: QuestionnaireResponseItem,
+  enableWhenContext: EnableWhenContextType,
+  enableWhenChecksEnabled: boolean
 ): QuestionnaireResponseItem | null {
   const qItems = qItem.item;
   if (qItems && qItems.length > 0) {
-    if (isHidden(qItem)) return null;
+    if (isHidden(qItem, enableWhenContext, enableWhenChecksEnabled)) return null;
 
     const qrItems = qrItem.item;
     const qrAnswerItems = qrItem.answer;
@@ -106,7 +116,12 @@ function readQuestionnaireResponseItem(
       const newQrItems: QuestionnaireResponseItem[] = [];
       for (let i = 0, j = 0; i < qItems.length; i++) {
         if (qrItems[j] && qItems[i].linkId === qrItems[j].linkId) {
-          const newQrItem = readQuestionnaireResponseItem(qItems[i], qrItems[j]);
+          const newQrItem = readQuestionnaireResponseItem(
+            qItems[i],
+            qrItems[j],
+            enableWhenContext,
+            enableWhenChecksEnabled
+          );
           if (newQrItem) {
             newQrItems.push(newQrItem);
           }
@@ -123,7 +138,12 @@ function readQuestionnaireResponseItem(
         if (repeatAnswer && repeatAnswer.item && repeatAnswer.item.length > 0) {
           for (let i = 0, j = 0; i < qItems.length; i++) {
             if (repeatAnswer.item[j] && qItems[i].linkId === repeatAnswer.item[j].linkId) {
-              const newQrItem = readQuestionnaireResponseItem(qItems[i], repeatAnswer.item[j]);
+              const newQrItem = readQuestionnaireResponseItem(
+                qItems[i],
+                repeatAnswer.item[j],
+                enableWhenContext,
+                enableWhenChecksEnabled
+              );
               if (newQrItem) {
                 newRepeatAnswerItems.push(newQrItem);
               }
@@ -139,5 +159,5 @@ function readQuestionnaireResponseItem(
     return qrItem;
   }
 
-  return isHidden(qItem) ? null : { ...qrItem };
+  return isHidden(qItem, enableWhenContext, enableWhenChecksEnabled) ? null : { ...qrItem };
 }

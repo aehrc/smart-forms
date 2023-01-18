@@ -13,6 +13,8 @@ import { isHidden } from '../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenChecksContext } from '../Form';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -21,6 +23,9 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 
 function QItemRepeat(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
+
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
@@ -40,7 +45,7 @@ function QItemRepeat(props: Props) {
     }
   }, [qrItem]);
 
-  if (isHidden(qItem)) return null;
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const answersTemp = [...repeatAnswers];

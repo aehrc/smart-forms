@@ -27,6 +27,8 @@ import { Add, Delete } from '@mui/icons-material';
 import { RepeatDeleteTooltip } from './QItemRepeat.styles';
 import { isHidden } from '../../../functions/QItemFunctions';
 import QItemGroupTableRow from './QItemGroupTableRow';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenChecksContext } from '../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -37,6 +39,9 @@ interface Props
 
 function QItemGroupTable(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
+
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
   if (!qItem.item || qItem.item.length === 0) return null;
   const cleanQrItem = createQrItem(qItem);
@@ -51,7 +56,7 @@ function QItemGroupTable(props: Props) {
     setTableRows(qrTableRows);
   }, [qrItem]);
 
-  if (isHidden(qItem)) return null;
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   function handleRowsChange(newQrRow: QuestionnaireResponseItem, index: number) {
     const rowsTemp = [...tableRows];
