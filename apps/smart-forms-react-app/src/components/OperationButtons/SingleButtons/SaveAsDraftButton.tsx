@@ -4,9 +4,11 @@ import { SaveAs } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
-import { saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
+import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
 import Client from 'fhirclient/lib/Client';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenChecksContext } from '../../QRenderer/Form';
 
 interface Props {
   isChip?: boolean;
@@ -31,17 +33,27 @@ function SaveAsDraftButton(props: Props) {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
 
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+
   function handleClick() {
-    questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+    let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
+    questionnaireResponseToSave = removeHiddenAnswers(
+      questionnaireProvider.questionnaire,
+      questionnaireResponseToSave,
+      enableWhenContext,
+      enableWhenChecksContext
+    );
+
     saveQuestionnaireResponse(
       fhirClient,
       patient,
       user,
       questionnaireProvider.questionnaire,
-      questionnaireResponse
+      questionnaireResponseToSave
     )
-      .then((response) => {
-        questionnaireResponseProvider.setQuestionnaireResponse(response);
+      .then((savedResponse) => {
+        questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
         removeQrHasChanges();
       })
       .catch((error) => console.log(error));

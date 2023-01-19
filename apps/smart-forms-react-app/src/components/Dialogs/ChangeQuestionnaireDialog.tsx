@@ -10,10 +10,12 @@ import {
 import React, { useState } from 'react';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { PageType } from '../../interfaces/Enums';
-import { saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
+import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import { EnableWhenChecksContext } from '../QRenderer/Form';
 
 export interface Props {
   dialogOpen: boolean;
@@ -26,10 +28,44 @@ function ChangeQuestionnaireDialog(props: Props) {
   const { dialogOpen, closeDialog, removeQrHasChanges, questionnaireResponse } = props;
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+
   const pageSwitcher = React.useContext(PageSwitcherContext);
   const launchContext = React.useContext(LaunchContext);
 
   const [isSaving, setIsSaving] = useState(false);
+
+  function handleSave() {
+    if (launchContext.fhirClient && launchContext.patient && launchContext.user) {
+      let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
+      questionnaireResponseToSave = removeHiddenAnswers(
+        questionnaireProvider.questionnaire,
+        questionnaireResponseToSave,
+        enableWhenContext,
+        enableWhenChecksContext
+      );
+
+      setIsSaving(true);
+      saveQuestionnaireResponse(
+        launchContext.fhirClient,
+        launchContext.patient,
+        launchContext.user,
+        questionnaireProvider.questionnaire,
+        questionnaireResponseToSave
+      )
+        .then((savedResponse) => {
+          questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
+          removeQrHasChanges();
+          pageSwitcher.goToPage(PageType.Picker);
+          handleClose();
+          setIsSaving(false);
+        })
+        .catch((error) => console.log(error));
+    } else {
+      handleClose();
+    }
+  }
 
   function handleClose() {
     closeDialog();
@@ -55,28 +91,7 @@ function ChangeQuestionnaireDialog(props: Props) {
         <Button
           disabled={isSaving}
           endIcon={isSaving ? <CircularProgress size={20} /> : null}
-          onClick={() => {
-            if (launchContext.fhirClient && launchContext.patient && launchContext.user) {
-              setIsSaving(true);
-              questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
-              saveQuestionnaireResponse(
-                launchContext.fhirClient,
-                launchContext.patient,
-                launchContext.user,
-                questionnaireProvider.questionnaire,
-                questionnaireResponse
-              )
-                .then(() => {
-                  removeQrHasChanges();
-                  pageSwitcher.goToPage(PageType.Picker);
-                  handleClose();
-                  setIsSaving(false);
-                })
-                .catch((error) => console.log(error));
-            } else {
-              handleClose();
-            }
-          }}>
+          onClick={handleSave}>
           Save and proceed
         </Button>
       </DialogActions>

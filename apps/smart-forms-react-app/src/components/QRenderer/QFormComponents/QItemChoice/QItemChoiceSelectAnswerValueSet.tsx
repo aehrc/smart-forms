@@ -50,6 +50,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         getOptionLabel={(option) => `${option.display}`}
         value={valueCoding ?? null}
         onChange={handleChange}
+        sx={{ maxWidth: 202 }}
         renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
       />
     ) : serverError ? (

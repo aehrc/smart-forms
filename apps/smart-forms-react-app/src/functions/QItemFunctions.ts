@@ -1,11 +1,13 @@
 import { QuestionnaireItem } from 'fhir/r5';
-import { isHidden, isSpecificDisplayCategory, isSpecificItemControl } from './ItemControlFunctions';
-import React from 'react';
-import { EnableWhenContext } from '../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../components/QRenderer/Form';
+import {
+  hasHiddenExtension,
+  isSpecificDisplayCategory,
+  isSpecificItemControl
+} from './ItemControlFunctions';
 import { getChoiceControlType } from './ChoiceFunctions';
 import { QItemChoiceControl, QItemOpenChoiceControl } from '../interfaces/Enums';
 import { getOpenChoiceControlType } from './OpenChoiceFunctions';
+import { EnableWhenContextType } from '../interfaces/ContextTypes';
 
 /**
  * Get text display prompt for items with itemControlCode prompt and has a prompt childItem
@@ -60,14 +62,15 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
  *
  * @author Sean Fong
  */
-export function hideQItem(qItem: QuestionnaireItem): boolean {
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
-
-  if (isHidden(qItem)) return true;
+export function isHidden(
+  qItem: QuestionnaireItem,
+  enableWhenContext: EnableWhenContextType,
+  enableWhenChecksEnabled: boolean
+): boolean {
+  if (hasHiddenExtension(qItem)) return true;
 
   // only for testing
-  if (enableWhenChecksContext) {
+  if (enableWhenChecksEnabled) {
     if (!enableWhenContext.checkItemIsEnabled(qItem.linkId)) return true; // preserve this line in final build
   }
 

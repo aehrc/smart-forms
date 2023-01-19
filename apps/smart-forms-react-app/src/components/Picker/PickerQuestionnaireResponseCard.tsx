@@ -49,7 +49,11 @@ function PickerQuestionnaireResponseCard(props: Props) {
       );
 
       if (selectedQuestionnaire) {
-        questionnaireProvider.setQuestionnaire(selectedQuestionnaire, questionnaireSourceIsLocal);
+        questionnaireProvider.setQuestionnaire(
+          selectedQuestionnaire,
+          questionnaireSourceIsLocal,
+          launch.fhirClient
+        );
         pageSwitcher.goToPage(PageType.ResponsePreview);
       } else {
         const questionnaireReference =
@@ -60,7 +64,11 @@ function PickerQuestionnaireResponseCard(props: Props) {
           setViewResponseButtonLoading(true);
           loadQuestionnaireFromResponse(launch.fhirClient, questionnaireReference)
             .then((questionnaire) => {
-              questionnaireProvider.setQuestionnaire(questionnaire, questionnaireSourceIsLocal);
+              questionnaireProvider.setQuestionnaire(
+                questionnaire,
+                questionnaireSourceIsLocal,
+                launch.fhirClient
+              );
               setViewResponseButtonLoading(false);
               pageSwitcher.goToPage(PageType.ResponsePreview);
             })

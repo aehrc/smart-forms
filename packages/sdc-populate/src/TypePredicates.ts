@@ -34,7 +34,11 @@ export function isPrePopQueryName(parameter: ParametersParameter): parameter is 
   return parameter.name === 'name' && parameter.valueString === 'PrePopQuery';
 }
 
-export function isPrePopQueryContent(
+export function isVariablesName(parameter: ParametersParameter): parameter is PrePopQueryName {
+  return parameter.name === 'name' && parameter.valueString === 'Variables';
+}
+
+export function isPrePopQueryOrVariablesContent(
   parameter: ParametersParameter
 ): parameter is PrePopQueryContent {
   return parameter.name === 'content' && parameter.resource?.resourceType === 'Bundle';

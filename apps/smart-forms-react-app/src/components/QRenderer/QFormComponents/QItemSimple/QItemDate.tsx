@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { FormControl, Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -12,6 +12,7 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FixedSizeTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -73,7 +74,7 @@ function QItemDatePicker(props: QItemDatePickerProps) {
         inputFormat="DD/MM/YYYY"
         value={value}
         onChange={onDateChange}
-        renderInput={(params) => <TextField {...params} />}
+        renderInput={(params) => <FixedSizeTextField {...params} />}
       />
     </LocalizationProvider>
   );

@@ -26,7 +26,7 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
         fontSize: 14
       },
       subtitle2: {
-        fontSize: 13
+        fontSize: 12
       }
     },
     palette: {

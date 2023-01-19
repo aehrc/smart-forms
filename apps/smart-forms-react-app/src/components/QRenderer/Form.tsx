@@ -104,7 +104,7 @@ function Form(props: Props) {
               </SideBarGrid>
               <MainGrid item xs={12} lg={10.25}>
                 <MainGridContainerBox>
-                  <MainGridHeadingTypography>
+                  <MainGridHeadingTypography variant="h1">
                     <QTitle questionnaire={questionnaire} />
                   </MainGridHeadingTypography>
                   <ChipBar>

@@ -69,6 +69,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       options={answerOptions}
       getOptionLabel={(option) => getAnswerOptionLabel(option)}
       onChange={handleChange}
+      sx={{ maxWidth: 202 }}
       renderInput={(params) => <TextField {...params} />}
     />
   );

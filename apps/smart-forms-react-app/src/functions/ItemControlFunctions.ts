@@ -68,7 +68,7 @@ export function getShortText(qItem: QuestionnaireItem): string | null {
  *
  * @author Sean Fong
  */
-export function isHidden(qItem: QuestionnaireItem): boolean {
+export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
