@@ -1,0 +1,341 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "715AssessmentInvestigations",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular"
+    ]
+  },
+  "url": "http://www.health.gov.au/assessments/mbs/715/715AssessmentInvestigations",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation",
+      "valueCode": "assemble-child"
+    },
+    {
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ],
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries",
+      "valueReference": {
+        "reference": "#PrePopQuery"
+      }
+    }
+  ],
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "tab",
+                "system": "https://aehrc.csiro.au/fhir/CodeSystem/QuestionnaireItemControlExtended"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "918f7f32-cdaf-4742-b33a-8254eda2d8bd",
+      "text": "Investigations",
+      "type": "group",
+      "repeats": false,
+      "enableWhen": [
+        {
+          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+          "operator": ">=",
+          "answerInteger": 12
+        }
+      ],
+      "item": [
+        {
+          "linkId": "740cbc59-08e3-41e8-bc00-de22c1ad45a0",
+          "text": "Full blood count, HbA1c or blood glucose level, serum lipids, Kidney function including eGFR, Liver function tests, ACR",
+          "type": "text",
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": ">=",
+              "answerInteger": 18
+            }
+          ]
+        },
+        {
+          "linkId": "73e1e470-5c41-4644-b279-03f57bde036d",
+          "text": "Chlamydia, gonorrhoea: <=30, first void urine (male and female) and/or endocervical swab or self-administered vaginal swab (female) or throat and anal swab (men who have sex with men [MSM])",
+          "type": "text",
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<=",
+              "answerInteger": 30
+            }
+          ]
+        },
+        {
+          "linkId": "77847d34-103e-497d-a7d5-f62cbaf4f698",
+          "text": "Syphilis (endemic areas, MSM, others at high risk)",
+          "type": "text",
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<=",
+              "answerInteger": 49
+            }
+          ]
+        },
+        {
+          "linkId": "4aa47bda-d740-4294-9466-52b1be2ec15b",
+          "text": "Trichomoniasis (<=30, male and female, remote areas and other endemic areas, first void urine and/or endocervical swab or self-administered vaginal swab)",
+          "type": "text",
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<=",
+              "answerInteger": 30
+            }
+          ]
+        },
+        {
+          "linkId": "b919de86-d81c-470d-8cb2-9caa4f8d3a42",
+          "text": "Blood-borne virus screening: HBV if status not known/not recorded on file, HCV if risk factors, HIV if risk factors",
+          "type": "text"
+        },
+        {
+          "linkId": "96a8d946-6078-4c85-9de8-3bf18d2c8150",
+          "text": "Health priorities, actions and follow-up",
+          "type": "text",
+          "repeats": false
+        }
+      ]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "PrePopQuery",
+      "type": "batch",
+      "entry": [
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52553",
+          "request": {
+            "method": "GET",
+            "url": "FamilyMemberHistory?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52554",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52555",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52556",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8280-0&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52557",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52558",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52559",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=39156-5&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52560",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=85354-9&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52561",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52562",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160625004&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52563",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=smoking-date-started&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52564",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=229819007&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52565",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52566",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=228308009&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52567",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=1373041000168105&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52568",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52569",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=60621009&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52570",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=absolute-cvd-risk&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52571",
+          "request": {
+            "method": "GET",
+            "url": "Immunization?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52572",
+          "request": {
+            "method": "GET",
+            "url": "MedicationStatement?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52573",
+          "request": {
+            "method": "GET",
+            "url": "AllergyIntolerance?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52575",
+          "request": {
+            "method": "GET",
+            "url": "Condition?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52574",
+          "request": {
+            "method": "GET",
+            "url": "DiagnosticReport?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52576",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52577",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:12f24514-437e-40d8-b5c3-bfe8ecb4995d",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=9843-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        }
+      ]
+    }
+  ],
+  "name": "715AssessmentInvestigations",
+  "title": "715 Assessment Investigations",
+  "status": "draft",
+  "experimental": true,
+  "subjectType": [
+    "Patient"
+  ],
+  "date": "2022-05-24",
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "code": "AU",
+          "system": "urn:iso:std:iso:3166"
+        }
+      ]
+    }
+  ]
+}

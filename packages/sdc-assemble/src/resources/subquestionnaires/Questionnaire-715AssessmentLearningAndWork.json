@@ -1,0 +1,506 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "715AssessmentLearningAndWork",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular"
+    ]
+  },
+  "url": "http://www.health.gov.au/assessments/mbs/715/715AssessmentLearningAndWork",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation",
+      "valueCode": "assemble-child"
+    },
+    {
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ],
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries",
+      "valueReference": {
+        "reference": "#PrePopQuery"
+      }
+    }
+  ],
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "tab",
+                "system": "https://aehrc.csiro.au/fhir/CodeSystem/QuestionnaireItemControlExtended"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "0cd9e27b-1e98-41af-917b-0c6ee21c0819",
+              "text": "Are you studying at school/uni?",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "#YesNoNA"
+            },
+            {
+              "linkId": "18bdfa42-9845-4c6e-b737-843b14d54641",
+              "text": "Details",
+              "type": "text",
+              "repeats": false
+            }
+          ],
+          "linkId": "0e30e9b4-ec83-44ea-88ab-47963e52a2d7",
+          "text": "Learning",
+          "type": "group",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<",
+              "answerInteger": 25
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "4a81afc0-f0da-49e1-b8cc-c19cb0f5f4e9",
+              "text": "Are you studying?",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "#YesNoNA"
+            },
+            {
+              "linkId": "1c648524-558e-4d24-bd83-c9f5cd35e97b",
+              "text": "Details",
+              "type": "text",
+              "repeats": false
+            }
+          ],
+          "linkId": "c0ba8a79-a9c5-40cc-b0c2-041e736784e9",
+          "text": "Learning",
+          "type": "group",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": ">=",
+              "answerInteger": 25
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "aaead1e2-ea54-4979-be0a-647e61ab59a9",
+              "text": "Are you working?",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "#YesNoNA"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+                  "valueString": "Details"
+                }
+              ],
+              "linkId": "749a4e1e-35ab-4f37-ab28-cb3f0830bb2a",
+              "text": "Details (occupation including occupational hazards, study, training, disability, etc)",
+              "type": "text",
+              "repeats": false
+            }
+          ],
+          "linkId": "ccf6f0b0-57ae-473e-9929-2a09184c8a14",
+          "text": "Work",
+          "type": "group",
+          "repeats": false
+        },
+        {
+          "linkId": "3569e514-a74b-4343-b31b-3395e58d991a",
+          "text": "Health priorities, actions and follow-up",
+          "type": "text",
+          "repeats": false
+        }
+      ],
+      "linkId": "5437e30d-8a0a-4785-974e-00a10d2a1df0",
+      "text": "Learning And Work",
+      "type": "group",
+      "repeats": false,
+      "enableWhen": [
+        {
+          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+          "operator": ">",
+          "answerInteger": 12
+        },
+        {
+          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+          "operator": "<",
+          "answerInteger": 50
+        }
+      ],
+      "enableBehavior": "all"
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "tab",
+                "system": "https://aehrc.csiro.au/fhir/CodeSystem/QuestionnaireItemControlExtended"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "4c68ff3e-0e73-4ea2-b295-5057deaa590e",
+              "text": "Are you working?",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "#YesNo"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+                  "valueString": "Details"
+                }
+              ],
+              "linkId": "794fc001-6799-4a51-9a80-f2ed7c685a42",
+              "text": "Details (occupation including occupational hazards, study, training, disability, etc)",
+              "type": "text",
+              "repeats": false
+            }
+          ],
+          "linkId": "2bfc99a5-677c-4aea-a1ad-c37a181a3733",
+          "text": "Work",
+          "type": "group",
+          "repeats": false
+        },
+        {
+          "linkId": "ed6f7800-e22a-4639-9d11-faf845513500",
+          "text": "Health priorities, actions and follow-up",
+          "type": "text",
+          "repeats": false
+        }
+      ],
+      "linkId": "dec713ae-246a-4961-95c9-0626bfebfed2",
+      "text": "Work",
+      "type": "group",
+      "repeats": false,
+      "enableWhen": [
+        {
+          "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+          "operator": ">=",
+          "answerInteger": 50
+        }
+      ]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "PrePopQuery",
+      "type": "batch",
+      "entry": [
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52553",
+          "request": {
+            "method": "GET",
+            "url": "FamilyMemberHistory?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52554",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52555",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52556",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8280-0&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52557",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52558",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52559",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=39156-5&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52560",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=85354-9&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52561",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52562",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160625004&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52563",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=smoking-date-started&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52564",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=229819007&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52565",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52566",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=228308009&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52567",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=1373041000168105&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52568",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52569",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=60621009&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52570",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=absolute-cvd-risk&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52571",
+          "request": {
+            "method": "GET",
+            "url": "Immunization?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52572",
+          "request": {
+            "method": "GET",
+            "url": "MedicationStatement?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52573",
+          "request": {
+            "method": "GET",
+            "url": "AllergyIntolerance?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52575",
+          "request": {
+            "method": "GET",
+            "url": "Condition?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52574",
+          "request": {
+            "method": "GET",
+            "url": "DiagnosticReport?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52576",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52577",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:12f24514-437e-40d8-b5c3-bfe8ecb4995d",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=9843-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        }
+      ]
+    }
+  ],
+  "name": "715AssessmentLearningAndWork",
+  "title": "715 Assessment Learning And Work",
+  "status": "draft",
+  "experimental": true,
+  "subjectType": [
+    "Patient"
+  ],
+  "date": "2022-05-24",
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "code": "AU",
+          "system": "urn:iso:std:iso:3166"
+        }
+      ]
+    }
+  ]
+}

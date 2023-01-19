@@ -1,0 +1,673 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "715AssessmentHealthyEating",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular"
+    ]
+  },
+  "url": "http://www.health.gov.au/assessments/mbs/715/715AssessmentHealthyEating",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation",
+      "valueCode": "assemble-child"
+    },
+    {
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ],
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries",
+      "valueReference": {
+        "reference": "#PrePopQuery"
+      }
+    }
+  ],
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "tab",
+                "system": "https://aehrc.csiro.au/fhir/CodeSystem/QuestionnaireItemControlExtended"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "e2942894-5537-47a6-ab43-06eb6761f9b5",
+              "text": "Is there anything that you are worried about with your child's feeding/eating?",
+              "type": "choice",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": "<=",
+                  "answerInteger": 5
+                }
+              ],
+              "answerValueSet": "#YesNo"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "69d92a26-95ac-4556-94da-5b0e09940bfd",
+              "text": "Is there anything that you are worried about with your child's eating?",
+              "type": "choice",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                  "operator": ">",
+                  "answerInteger": 5
+                }
+              ],
+              "answerValueSet": "#YesNo"
+            },
+            {
+              "linkId": "f6907808-3e42-4206-9bf8-ca4082ea4814",
+              "text": "Details",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "e2942894-5537-47a6-ab43-06eb6761f9b5",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "Y",
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0136"
+                  }
+                },
+                {
+                  "question": "69d92a26-95ac-4556-94da-5b0e09940bfd",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "Y",
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0136"
+                  }
+                }
+              ],
+              "enableBehavior": "any"
+            }
+          ],
+          "linkId": "9ac8c78d-9c36-4bf5-8c6e-e48109902dfa",
+          "text": "Child eating concerns",
+          "type": "group",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<=",
+              "answerInteger": 12
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "prompt",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "87f4277a-0af8-4bb9-ba2d-cb4e4f3a4548",
+              "text": "Details",
+              "type": "display"
+            }
+          ],
+          "linkId": "ff6a46e6-0812-4718-a854-489b24805925",
+          "text": "Breastfeeding history",
+          "type": "text",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<=",
+              "answerInteger": 5
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "prompt",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "1792a4b0-640f-4d41-8704-c069179539bb",
+              "text": "Details",
+              "type": "display"
+            }
+          ],
+          "linkId": "b5f748d2-1874-4949-a7df-6e233f03135d",
+          "text": "Bottle feeding history",
+          "type": "text",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<=",
+              "answerInteger": 5
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "646302e9-d384-4943-99bc-11e638641703",
+              "text": "Do you have any worries about your diet or weight?",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "#YesNo"
+            },
+            {
+              "linkId": "1d5c3354-6780-4b6a-b9af-7a17b0386781",
+              "text": "Details",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "646302e9-d384-4943-99bc-11e638641703",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "Y",
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0136"
+                  }
+                }
+              ]
+            }
+          ],
+          "linkId": "9266b946-74b3-4fc2-91ce-df557692e600",
+          "text": "Diet or weight concerns",
+          "type": "group",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": ">",
+              "answerInteger": 12
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "6dc96b26-cbc5-4434-8f6b-0260196311c2",
+              "text": "Have you lost weight without trying to in the last three months?",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "#YesNo"
+            },
+            {
+              "linkId": "ce71f016-c5e4-4121-abe5-fe0c974c1bba",
+              "text": "Details",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "6dc96b26-cbc5-4434-8f6b-0260196311c2",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "Y",
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0136"
+                  }
+                }
+              ]
+            }
+          ],
+          "linkId": "c4c51d01-7acf-4551-a652-82f9fdf58a6d",
+          "text": "Unintended weight loss",
+          "type": "group",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": ">=",
+              "answerInteger": 50
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "prompt",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "d3c0033f-20d0-40ab-b4d5-6eb3f67be492",
+              "text": "details",
+              "type": "display"
+            }
+          ],
+          "linkId": "9f6adf74-f240-41a2-a509-d216d5308911",
+          "text": "Document conversation about age-appropriate healthy eating, which could include:\n- current diet\n- transition to solids\n- dietary recommendations re fruit and vegetable intake, iron-rich foods, avoiding sugary drinks",
+          "type": "text",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": "<=",
+              "answerInteger": 5
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "prompt",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "579a1e9e-c679-4411-b78f-0468cd45e1a2",
+              "text": "details",
+              "type": "display"
+            }
+          ],
+          "linkId": "7a22a4c4-6611-4687-af00-37c80c3f8fc0",
+          "text": "Document conversation about health eating which could include:\n- current diet including food and drinks\n- recommendations about fruit and vegetable intake, water as the main drink, avoiding sugary drinks, avoiding highly processed foods (including supermarket-bought and take-away like KFC, Maccas, etc)",
+          "type": "text",
+          "repeats": false,
+          "enableWhen": [
+            {
+              "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "operator": ">",
+              "answerInteger": 5
+            }
+          ]
+        },
+        {
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "linkId": "12a41538-5dbd-4c1d-af69-52c59c48b1a9",
+              "text": "Are there any issues about availability of food?",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "#YesNo"
+            },
+            {
+              "linkId": "92908e91-9453-4d22-99eb-23dad580c1cb",
+              "text": "Details",
+              "type": "text",
+              "repeats": false,
+              "enableWhen": [
+                {
+                  "question": "12a41538-5dbd-4c1d-af69-52c59c48b1a9",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "Y",
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0136"
+                  }
+                }
+              ]
+            }
+          ],
+          "linkId": "71e39493-f0b0-4074-934b-604155b349e1",
+          "text": "Food availability issues",
+          "type": "group",
+          "repeats": false
+        },
+        {
+          "linkId": "301789b0-8c6a-470d-8787-0ac6597e3bea",
+          "text": "Health priorities, actions and follow-up",
+          "type": "text",
+          "repeats": false
+        }
+      ],
+      "linkId": "ae7a3801-9491-4b1f-820c-678236d18f56",
+      "text": "Healthy eating",
+      "type": "group",
+      "repeats": false
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "PrePopQuery",
+      "type": "batch",
+      "entry": [
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52553",
+          "request": {
+            "method": "GET",
+            "url": "FamilyMemberHistory?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52554",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52555",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52556",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8280-0&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52557",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52558",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52559",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=39156-5&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52560",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=85354-9&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52561",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52562",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160625004&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52563",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=smoking-date-started&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52564",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=229819007&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52565",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52566",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=228308009&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52567",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=1373041000168105&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52568",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=160573003&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52569",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=60621009&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52570",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=absolute-cvd-risk&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52571",
+          "request": {
+            "method": "GET",
+            "url": "Immunization?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52572",
+          "request": {
+            "method": "GET",
+            "url": "MedicationStatement?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52573",
+          "request": {
+            "method": "GET",
+            "url": "AllergyIntolerance?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52575",
+          "request": {
+            "method": "GET",
+            "url": "Condition?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52574",
+          "request": {
+            "method": "GET",
+            "url": "DiagnosticReport?patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52576",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:38a25157-b8e4-42e4-9525-7954fed52577",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "fullUrl": "urn:uuid:12f24514-437e-40d8-b5c3-bfe8ecb4995d",
+          "request": {
+            "method": "GET",
+            "url": "Observation?code=9843-4&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        }
+      ]
+    }
+  ],
+  "name": "715AssessmentHealthyEating",
+  "title": "715 Assessment Healthy Eating",
+  "status": "draft",
+  "experimental": true,
+  "subjectType": [
+    "Patient"
+  ],
+  "date": "2022-05-24",
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "code": "AU",
+          "system": "urn:iso:std:iso:3166"
+        }
+      ]
+    }
+  ]
+}
