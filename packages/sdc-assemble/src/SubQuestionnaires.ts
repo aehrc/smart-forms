@@ -1,6 +1,6 @@
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r5';
 import { client } from 'fhirclient';
-import { createOperationOutcome } from './CreateOutcomes';
+import { createOperationOutcome } from './index';
 
 import SQ715AboutTheHealthCheck from './resources/subquestionnaires/Questionnaire-715AboutTheHealthCheck.json';
 import SQ715Consent from './resources/subquestionnaires/Questionnaire-715Consent.json';

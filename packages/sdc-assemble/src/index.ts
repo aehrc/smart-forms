@@ -1,4 +1,4 @@
-import type { Parameters } from 'fhir/r5';
+import type { OperationOutcome, Parameters } from 'fhir/r5';
 import { assembleQuestionnaire } from './AssembleQuestionnaire';
 import type {
   AssembleInputParameters,
@@ -29,4 +29,22 @@ export function isAssembleInputParameters(
   parameters: Parameters
 ): parameters is AssembleInputParameters {
   return !!parameters.parameter?.find(isQuestionnaireParameter);
+}
+
+/**
+ * Return an OperationOutcome with a supplied errorMessage
+ *
+ * @author Sean Fong
+ */
+export function createOperationOutcome(errorMessage: string): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: { text: errorMessage }
+      }
+    ]
+  };
 }
