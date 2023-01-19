@@ -73,6 +73,7 @@ function QItemChoiceAutocomplete(props: Props) {
         clearOnEscape
         onChange={handleValueChange}
         filterOptions={(x) => x}
+        sx={{ maxWidth: 202 }}
         renderInput={(params) => (
           <TextField
             {...params}

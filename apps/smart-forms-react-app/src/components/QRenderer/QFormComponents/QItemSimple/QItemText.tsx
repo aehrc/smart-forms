@@ -38,6 +38,7 @@ function QItemText(props: Props) {
       label={getTextDisplayPrompt(qItem)}
       fullWidth
       multiline
+      minRows={3}
     />
   );
 

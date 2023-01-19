@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FormControl, Grid, InputAdornment, OutlinedInput } from '@mui/material';
+import { FormControl, Grid, InputAdornment } from '@mui/material';
 
 import {
   CalculatedExpression,
@@ -13,6 +13,7 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FixedSizeOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -84,7 +85,7 @@ function QItemDecimal(props: Props) {
   }
 
   const decimalInput = (
-    <OutlinedInput
+    <FixedSizeOutlinedInput
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
