@@ -56,6 +56,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
         onChange={handleValueChange}
         onInputChange={(event, newValue) => handleValueChange(event, newValue)}
+        sx={{ maxWidth: 202 }}
         renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
       />
       {serverError ? (
