@@ -4,8 +4,10 @@
   "description": "Performs prepopulation functionality from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/",
   "main": "lib/index.js",
   "scripts": {
-    "test": "jest --config ./jest.config.ts",
-    "watch": "tsc --watch"
+    "prepare": "npm run compile",
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "test": "jest --config ./jest.config.ts"
   },
   "author": "Sean Fong",
   "license": "ISC",
