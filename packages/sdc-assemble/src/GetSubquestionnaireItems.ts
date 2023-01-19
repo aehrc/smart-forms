@@ -5,7 +5,7 @@ import type {
   Questionnaire,
   QuestionnaireItem
 } from 'fhir/r5';
-import { createOperationOutcome } from './CreateOutcomes';
+import { createOperationOutcome } from './index';
 import type { PropagatedExtensions } from './Interfaces';
 import { resolveDuplicateLinkIds } from './ResolveDuplicateLinkIds';
 import { resolveDuplicateEnableWhenQuestions } from './ResolveDuplicateEnableWhenQuestions';
