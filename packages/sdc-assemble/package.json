@@ -4,7 +4,8 @@
   "description": "Performs assembly on modular forms from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/modular.html",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
+    "prepare": "npm run compile",
+    "compile": "tsc",
     "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
