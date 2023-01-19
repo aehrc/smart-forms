@@ -10,5 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sean Fong",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/fhir": "^0.0.35",
+    "fhirclient": "^2.5.2"
+  }
 }

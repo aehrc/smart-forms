@@ -22,7 +22,7 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "dayjs": "^1.11.5",
-    "fhirclient": "^2.5.1",
+    "fhirclient": "^2.5.2",
     "fhirpath": "^3.0.0",
     "html-react-parser": "^3.0.4",
     "lodash": "^4.17.21",
