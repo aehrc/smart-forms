@@ -11,7 +11,6 @@ import * as FHIR from 'fhirclient';
 export function getValueSetPromise(
   qItem: QuestionnaireItem,
   fullUrl: string,
-  values: string[],
   valueSetPromiseMap: Record<string, ValueSetPromise>
 ) {
   const ontoserver = process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
@@ -23,8 +22,7 @@ export function getValueSetPromise(
   valueSetPromiseMap[qItem.linkId] = {
     promise: FHIR.client({ serverUrl: ontoserver }).request({
       url: 'ValueSet/$expand?url=' + valueSetUrl
-    }),
-    values: values
+    })
   };
 }
 
@@ -92,15 +90,22 @@ function readQuestionnaireResponseItem(
   }
 
   const valueSetPromise = valueSetPromises[qrItem.linkId];
-  if (valueSetPromise && valueSetPromise.valueSet) {
+  if (valueSetPromise && valueSetPromise.valueSet && qrItem.answer) {
+    const answers = qrItem.answer;
     const valueSet = valueSetPromise.valueSet;
-    const values = valueSetPromise.values;
 
     const newAnswers: QuestionnaireResponseItemAnswer[] = [];
-    for (const value of values) {
-      newAnswers.push(getCodingFromValueSet(value, valueSet));
+    for (const answer of answers) {
+      const valueString = answer.valueString;
+
+      if (valueString) {
+        // Use string values to obtain valueCodings in valueSet
+        newAnswers.push(getCodingFromValueSet(valueString, valueSet));
+      } else {
+        // Skip if answer isn't a valueString
+        newAnswers.push(answer);
+      }
     }
-    console.log({ ...qrItem, answer: newAnswers });
     return { ...qrItem, answer: newAnswers };
   }
 

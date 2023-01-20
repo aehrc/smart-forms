@@ -17,7 +17,6 @@ export interface InitialExpression {
 
 export interface ValueSetPromise {
   promise: Promise<ValueSet>;
-  values: string[];
   valueSet?: ValueSet;
 }
 

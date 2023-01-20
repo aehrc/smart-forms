@@ -112,7 +112,7 @@ function readQuestionnaireItem(
 
       if (expandRequired && qItem.answerValueSet) {
         const valueSetUrl = qItem.answerValueSet;
-        getValueSetPromise(qItem, valueSetUrl, initialValues, valueSetPromises);
+        getValueSetPromise(qItem, valueSetUrl, valueSetPromises);
       }
 
       return {
