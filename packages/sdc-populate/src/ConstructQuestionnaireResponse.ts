@@ -8,7 +8,7 @@ import type {
   Reference
 } from 'fhir/r5';
 import type { InitialExpression, ValueSetPromise } from './Interfaces';
-import { getValueSetPromise, resolvePromises } from './ProcessValueSets';
+import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './ProcessValueSets';
 
 const cleanQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -39,6 +39,7 @@ export async function constructResponse(
 
   qrForm = readQuestionnaire(questionnaire, qrForm, initialExpressions, valueSetPromises);
   valueSetPromises = await resolvePromises(valueSetPromises);
+  qrForm = addValueSetAnswers(qrForm, valueSetPromises);
 
   questionnaireResponse.questionnaire = 'Questionnaire/' + questionnaire.id;
   questionnaireResponse.item = [qrForm];
@@ -107,10 +108,17 @@ function readQuestionnaireItem(
     const initialValues = initialExpression.value;
 
     if (initialValues && initialValues.length) {
+      const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
+
+      if (expandRequired && qItem.answerValueSet) {
+        const valueSetUrl = qItem.answerValueSet;
+        getValueSetPromise(qItem, valueSetUrl, initialValues, valueSetPromises);
+      }
+
       return {
         linkId: qItem.linkId,
         text: qItem.text,
-        answer: getAnswerValues(initialValues, qItem, valueSetPromises)
+        answer: newValues
       };
     }
   }
@@ -124,10 +132,10 @@ function readQuestionnaireItem(
  */
 function getAnswerValues(
   initialValues: any[],
-  qItem: QuestionnaireItem,
-  valueSetPromises: Record<string, ValueSetPromise>
-): QuestionnaireResponseItemAnswer[] {
-  return initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
+  qItem: QuestionnaireItem
+): { newValues: QuestionnaireResponseItemAnswer[]; expandRequired: boolean } {
+  let expandRequired = false;
+  const newValues = initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
     if (qItem.answerOption) {
       const answerOption = qItem.answerOption.find(
         (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value
@@ -147,13 +155,13 @@ function getAnswerValues(
     } else {
       // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
       if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
-        const valueSetUrl = qItem.answerValueSet;
-        getValueSetPromise(qItem, valueSetUrl, value, valueSetPromises);
+        expandRequired = true;
       }
 
       return { valueString: value };
     }
   });
+  return { newValues, expandRequired };
 }
 
 /**

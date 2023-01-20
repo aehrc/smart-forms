@@ -15,6 +15,12 @@ export interface InitialExpression {
   value: any[] | undefined;
 }
 
+export interface ValueSetPromise {
+  promise: Promise<ValueSet>;
+  values: string[];
+  valueSet?: ValueSet;
+}
+
 export interface PopulateInputParameters extends Parameters {
   parameter: PopulateInputParametersSingleBundle | PopulateInputParametersDoubleBundle;
 }
@@ -126,10 +132,4 @@ export interface ResponseParameter extends ParametersParameter {
 export interface IssuesParameter extends ParametersParameter {
   name: 'issues';
   resource: OperationOutcome;
-}
-
-export interface ValueSetPromise {
-  promise: Promise<ValueSet>;
-  value: string;
-  valueSet?: ValueSet;
 }
