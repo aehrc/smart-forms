@@ -6,7 +6,8 @@ import type {
   Patient,
   Questionnaire,
   QuestionnaireResponse,
-  Reference
+  Reference,
+  ValueSet
 } from 'fhir/r5';
 
 export interface InitialExpression {
@@ -125,4 +126,9 @@ export interface ResponseParameter extends ParametersParameter {
 export interface IssuesParameter extends ParametersParameter {
   name: 'issues';
   resource: OperationOutcome;
+}
+
+export interface ValueSetPromise {
+  promise: Promise<ValueSet>;
+  value: string;
 }
