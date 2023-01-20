@@ -21,3 +21,24 @@ export function getValueSetPromise(
     value: value
   };
 }
+
+export async function resolvePromises(
+  valueSetPromises: Record<string, ValueSetPromise>
+): Promise<Record<string, ValueSetPromise>> {
+  const newValueSetPromises: Record<string, ValueSetPromise> = {};
+
+  const valueSetPromiseKeys = Object.keys(valueSetPromises);
+  const valueSetPromiseValues = Object.values(valueSetPromises);
+  const promises = valueSetPromiseValues.map((valueSetPromise) => valueSetPromise.promise);
+  const valueSets = await Promise.all(promises);
+
+  for (const [i, valueSet] of valueSets.entries()) {
+    const key = valueSetPromiseKeys[i];
+    const valueSetPromise = valueSetPromiseValues[i];
+    if (key && valueSetPromise) {
+      valueSetPromise.valueSet = valueSet;
+      newValueSetPromises[key] = valueSetPromise;
+    }
+  }
+  return newValueSetPromises;
+}

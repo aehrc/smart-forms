@@ -8,7 +8,7 @@ import type {
   Reference
 } from 'fhir/r5';
 import type { InitialExpression, ValueSetPromise } from './Interfaces';
-import { getValueSetPromise } from './ProcessValueSets';
+import { getValueSetPromise, resolvePromises } from './ProcessValueSets';
 
 const cleanQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -20,13 +20,13 @@ const cleanQuestionnaireResponse: QuestionnaireResponse = {
  *
  * @author Sean Fong
  */
-export function constructResponse(
+export async function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
   initialExpressions: Record<string, InitialExpression>
-): QuestionnaireResponse {
+): Promise<QuestionnaireResponse> {
   const questionnaireResponse = cleanQuestionnaireResponse;
-  const valueSetPromises: Record<string, ValueSetPromise> = {};
+  let valueSetPromises: Record<string, ValueSetPromise> = {};
 
   if (!questionnaire.item) return questionnaireResponse;
   const qForm = questionnaire.item[0];
@@ -36,8 +36,9 @@ export function constructResponse(
     linkId: qForm.linkId,
     text: qForm.text
   };
+
   qrForm = readQuestionnaire(questionnaire, qrForm, initialExpressions, valueSetPromises);
-  console.log(valueSetPromises);
+  valueSetPromises = await resolvePromises(valueSetPromises);
 
   questionnaireResponse.questionnaire = 'Questionnaire/' + questionnaire.id;
   questionnaireResponse.item = [qrForm];

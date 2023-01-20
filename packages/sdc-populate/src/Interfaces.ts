@@ -131,4 +131,5 @@ export interface IssuesParameter extends ParametersParameter {
 export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   value: string;
+  valueSet?: ValueSet;
 }
