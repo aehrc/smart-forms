@@ -7,7 +7,8 @@ import type {
   QuestionnaireResponseItemAnswer,
   Reference
 } from 'fhir/r5';
-import type { InitialExpression } from './Interfaces';
+import type { InitialExpression, ValueSetPromise } from './Interfaces';
+import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './ProcessValueSets';
 
 const cleanQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -19,12 +20,13 @@ const cleanQuestionnaireResponse: QuestionnaireResponse = {
  *
  * @author Sean Fong
  */
-export function constructResponse(
+export async function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
   initialExpressions: Record<string, InitialExpression>
-): QuestionnaireResponse {
+): Promise<QuestionnaireResponse> {
   const questionnaireResponse = cleanQuestionnaireResponse;
+  let valueSetPromises: Record<string, ValueSetPromise> = {};
 
   if (!questionnaire.item) return questionnaireResponse;
   const qForm = questionnaire.item[0];
@@ -34,7 +36,10 @@ export function constructResponse(
     linkId: qForm.linkId,
     text: qForm.text
   };
-  qrForm = readQuestionnaire(questionnaire, qrForm, initialExpressions);
+
+  qrForm = readQuestionnaire(questionnaire, qrForm, initialExpressions, valueSetPromises);
+  valueSetPromises = await resolvePromises(valueSetPromises);
+  qrForm = addValueSetAnswers(qrForm, valueSetPromises);
 
   questionnaireResponse.questionnaire = 'Questionnaire/' + questionnaire.id;
   questionnaireResponse.item = [qrForm];
@@ -48,15 +53,16 @@ export function constructResponse(
  *
  * @author Sean Fong
  */
-export function readQuestionnaire(
+function readQuestionnaire(
   questionnaire: Questionnaire,
   qrForm: QuestionnaireResponseItem,
-  initialExpressions: Record<string, InitialExpression>
+  initialExpressions: Record<string, InitialExpression>,
+  valueSetPromises: Record<string, ValueSetPromise>
 ): QuestionnaireResponseItem {
   if (!questionnaire.item) return qrForm;
 
   questionnaire.item.forEach((item) => {
-    const newQrForm = readQuestionnaireItem(item, qrForm, initialExpressions);
+    const newQrForm = readQuestionnaireItem(item, qrForm, initialExpressions, valueSetPromises);
     if (newQrForm) {
       qrForm = { ...newQrForm };
     }
@@ -72,7 +78,8 @@ export function readQuestionnaire(
 function readQuestionnaireItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
-  initialExpressions: Record<string, InitialExpression>
+  initialExpressions: Record<string, InitialExpression>,
+  valueSetPromises: Record<string, ValueSetPromise>
 ): QuestionnaireResponseItem | null {
   const items = qItem.item;
 
@@ -81,7 +88,7 @@ function readQuestionnaireItem(
     const qrItems: QuestionnaireResponseItem[] = [];
 
     items.forEach((item) => {
-      const newQrItem = readQuestionnaireItem(item, qrItem, initialExpressions);
+      const newQrItem = readQuestionnaireItem(item, qrItem, initialExpressions, valueSetPromises);
       if (newQrItem) {
         qrItems.push(newQrItem);
       }
@@ -101,10 +108,17 @@ function readQuestionnaireItem(
     const initialValues = initialExpression.value;
 
     if (initialValues && initialValues.length) {
+      const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
+
+      if (expandRequired && qItem.answerValueSet) {
+        const valueSetUrl = qItem.answerValueSet;
+        getValueSetPromise(qItem, valueSetUrl, valueSetPromises);
+      }
+
       return {
         linkId: qItem.linkId,
         text: qItem.text,
-        answer: getAnswerValues(initialValues, qItem)
+        answer: newValues
       };
     }
   }
@@ -119,8 +133,9 @@ function readQuestionnaireItem(
 function getAnswerValues(
   initialValues: any[],
   qItem: QuestionnaireItem
-): QuestionnaireResponseItemAnswer[] {
-  return initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
+): { newValues: QuestionnaireResponseItemAnswer[]; expandRequired: boolean } {
+  let expandRequired = false;
+  const newValues = initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
     if (qItem.answerOption) {
       const answerOption = qItem.answerOption.find(
         (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value
@@ -138,9 +153,15 @@ function getAnswerValues(
     } else if (checkIsDate(value)) {
       return { valueDate: value };
     } else {
+      // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
+      if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
+        expandRequired = true;
+      }
+
       return { valueString: value };
     }
   });
+  return { newValues, expandRequired };
 }
 
 /**

@@ -60,7 +60,7 @@ export async function populateQuestionnaire(
 
   // Perform population if parameters satisfies input parameters
   if (isPopulateInputParameters(inputParameters)) {
-    const outputParameters = populate(inputParameters);
+    const outputParameters = await populate(inputParameters);
     const questionnaireResponse = outputParameters.parameter[0].resource;
 
     if (outputParameters.parameter[1]) {

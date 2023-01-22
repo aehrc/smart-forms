@@ -28,9 +28,9 @@ import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
  *
  * @author Sean Fong
  */
-export default function populate(
+export default async function populate(
   parameters: PopulateInputParameters
-): PopulateOutputParameters | PopulateOutputParametersWithIssues {
+): Promise<PopulateOutputParameters | PopulateOutputParametersWithIssues> {
   const params = parameters.parameter;
 
   const questionnaire = params[0].resource;
@@ -56,7 +56,7 @@ export default function populate(
 
   const questionnaireResponse = constructResponse(questionnaire, subject, initialExpressions);
 
-  return createOutputParameters(questionnaireResponse);
+  return createOutputParameters(await questionnaireResponse);
 }
 
 function getContextContent(

@@ -6,12 +6,18 @@ import type {
   Patient,
   Questionnaire,
   QuestionnaireResponse,
-  Reference
+  Reference,
+  ValueSet
 } from 'fhir/r5';
 
 export interface InitialExpression {
   expression: string;
   value: any[] | undefined;
+}
+
+export interface ValueSetPromise {
+  promise: Promise<ValueSet>;
+  valueSet?: ValueSet;
 }
 
 export interface PopulateInputParameters extends Parameters {
