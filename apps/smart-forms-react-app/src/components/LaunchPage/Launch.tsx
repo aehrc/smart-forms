@@ -25,7 +25,8 @@ function Launch() {
     client_id: clientId,
     scope: scope,
     launch: launch ?? undefined,
-    redirect_uri: redirectUri
+    redirect_uri: redirectUri,
+    pkceMode: 'required'
   });
 
   return (
