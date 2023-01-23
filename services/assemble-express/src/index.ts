@@ -7,8 +7,10 @@ const port = 3002;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/healthcheck', (_, res) => {
-  res.send('This service is healthy!');
+app.get('/fhir/\\$assemble', (_, res) => {
+  res.send(
+    'This service is healthy!\nPerform a POST request to the same path for questionnaire assembly.'
+  );
 });
 
 app.post('/fhir/\\$assemble', (req, res) => {
@@ -28,5 +30,5 @@ app.post('/fhir/\\$assemble', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Assemble Express app listening on port ${port}`);
 });

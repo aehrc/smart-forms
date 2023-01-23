@@ -25,7 +25,7 @@ export class Assemble extends Construct {
     const taskDefinition = new TaskDefinition(this, 'SmartFormsAssembleTaskDefinition', {
       compatibility: Compatibility.FARGATE,
       cpu: '256',
-      memoryMiB: '512'
+      memoryMiB: '1024'
     });
 
     // Create the cache container.
