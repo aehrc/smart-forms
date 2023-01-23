@@ -34,7 +34,7 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
     return (
       <PickerAlert severity="error">
         <AlertTitle>CMS not connected</AlertTitle>
-        Application not launched from CMS, unable to fetch responses.
+        Application not launched from CMS or has failed authorisation, unable to fetch responses.
       </PickerAlert>
     );
   } else if (questionnaireSourceIsLocal) {
