@@ -1,5 +1,6 @@
 import express from 'express';
 import assemble, { createOperationOutcome, isAssembleInputParameters } from 'sdc-assemble';
+import { createLightship } from 'lightship';
 
 const app = express();
 const port = 3002;
@@ -27,6 +28,20 @@ app.post('/fhir/\\$assemble', (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+// @ts-ignore
+const lightship = await createLightship();
+
+const server = app
+  .listen(port, () => {
+    // Lightship default state is "SERVER_IS_NOT_READY". Therefore, you must signal
+    // that the server is now ready to accept connections.
+    lightship.signalReady();
+    console.log(`Assemble express app listening on port ${port}`);
+  })
+  .on('error', () => {
+    lightship.shutdown();
+  });
+
+lightship.registerShutdownHandler(() => {
+  server.close();
 });
