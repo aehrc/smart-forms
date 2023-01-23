@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.ts",
+  "type": "module",
   "scripts": {
     "compile": "tsc",
     "start": "node lib/index.js",

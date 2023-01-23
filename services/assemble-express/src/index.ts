@@ -1,16 +1,14 @@
 import express from 'express';
 import assemble, { createOperationOutcome, isAssembleInputParameters } from 'sdc-assemble';
-import { createLightship } from 'lightship';
+import lightshipPkg from 'lightship';
+
+const { createLightship } = lightshipPkg;
 
 const app = express();
 const port = 3002;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.get('/healthcheck', (_, res) => {
-  res.send('This service is healthy!');
-});
 
 app.post('/fhir/\\$assemble', (req, res) => {
   const parameters = req.body;
@@ -28,7 +26,6 @@ app.post('/fhir/\\$assemble', (req, res) => {
   }
 });
 
-// @ts-ignore
 const lightship = await createLightship();
 
 const server = app
