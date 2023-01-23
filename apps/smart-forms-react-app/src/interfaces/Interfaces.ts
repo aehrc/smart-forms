@@ -38,3 +38,8 @@ export interface EnableWhenLinkedItem {
   enableWhen: QuestionnaireItemEnableWhen;
   answer?: QuestionnaireResponseItemAnswer[];
 }
+
+export interface AuthFailDialog {
+  dialogOpen: boolean | null;
+  errorMessage: string;
+}
