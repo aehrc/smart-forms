@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, IconButton, Stack } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
+  PropsWithQrRepeatGroupChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
@@ -17,31 +17,27 @@ import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styl
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 
-interface Props
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
 }
 
 function QItemRepeatGroup(props: Props) {
-  const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
+  const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
-  const qrRepeatGroupHolder = qrItem ? qrItem : cleanQrItem;
-  const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] = qrRepeatGroupHolder['item']
-    ? qrRepeatGroupHolder.item
-    : [undefined];
+  const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
+    qrItems.length > 0 ? qrItems : [undefined];
 
   const [repeatGroups, setRepeatGroups] = useState(qrRepeatGroups);
 
   useEffect(() => {
     setRepeatGroups(qrRepeatGroups);
-  }, [qrItem]);
+  }, [qrItems]);
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
@@ -50,7 +46,11 @@ function QItemRepeatGroup(props: Props) {
     const repeatGroupsTemp = [...repeatGroups];
 
     if (newQrGroupItems) {
-      repeatGroupsTemp[index] = { linkId: newQrGroup.linkId, item: newQrGroupItems };
+      repeatGroupsTemp[index] = {
+        linkId: newQrGroup.linkId,
+        text: newQrGroup.text,
+        item: newQrGroupItems
+      };
     }
     updateAnswerItems(repeatGroupsTemp);
   }
@@ -68,10 +68,10 @@ function QItemRepeatGroup(props: Props) {
   function updateAnswerItems(updatedRepeatGroups: (QuestionnaireResponseItem | undefined)[]) {
     setRepeatGroups([...updatedRepeatGroups]);
 
-    const groupsWithValues = updatedRepeatGroups.flatMap((singleGroup) =>
-      singleGroup ? [{ ...singleGroup, text: qrRepeatGroupHolder.text }] : []
+    const groupsWithValues: QuestionnaireResponseItem[] = updatedRepeatGroups.flatMap(
+      (singleGroup) => (singleGroup ? [singleGroup] : [])
     );
-    onQrItemChange({ ...qrRepeatGroupHolder, item: groupsWithValues });
+    onQrRepeatGroupChange(groupsWithValues);
   }
 
   return (

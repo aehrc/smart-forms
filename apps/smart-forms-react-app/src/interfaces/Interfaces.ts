@@ -1,11 +1,16 @@
 import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
+  QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 
 export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
+}
+
+export interface PropsWithQrRepeatGroupChangeHandler {
+  onQrRepeatGroupChange: (qrItems: QuestionnaireResponseItem[]) => unknown;
 }
 
 export interface PropsWithRepeatsAttribute {

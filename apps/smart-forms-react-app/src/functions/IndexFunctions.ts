@@ -12,6 +12,7 @@ export function getQrItemsIndex(
   qItems: QuestionnaireItem[],
   qrItems: QuestionnaireResponseItem[]
 ): QuestionnaireResponseItem[] {
+  // TODO we need to fix this up to store repeatGroups
   // generate a <linkId, QrItem> dictionary
   const qrItemsDict = qrItems.reduce((mapping: Record<string, QuestionnaireResponseItem>, item) => {
     mapping[item.linkId] = { ...item };

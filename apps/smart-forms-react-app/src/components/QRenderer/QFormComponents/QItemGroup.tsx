@@ -54,6 +54,15 @@ function QItemGroup(props: Props) {
     onQrItemChange(qrGroup);
   }
 
+  function handleQrRepeatGroupChange(newQrRepeatGroup: QuestionnaireResponseItem[]) {
+    const qrGroup: QuestionnaireResponseItem = { ...group };
+    if (newQrRepeatGroup[0]) {
+      updateLinkedItem(newQrRepeatGroup[0], qrGroup, qItemsIndexMap);
+      setGroup(qrGroup);
+      onQrItemChange(qrGroup);
+    }
+  }
+
   if (qItems && qrItems) {
     const qrItemsByIndex = getQrItemsIndex(qItems, qrItems);
 
@@ -88,10 +97,10 @@ function QItemGroup(props: Props) {
                     <Box key={qItem.linkId} sx={{ my: 2 }}>
                       <QItemRepeatGroup
                         qItem={qItem}
-                        qrItem={qrItem}
+                        qrItems={[qrItem]}
                         repeats={true}
                         groupCardElevation={groupCardElevation + 1}
-                        onQrItemChange={handleQrItemChange}
+                        onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
                     </Box>
                   );

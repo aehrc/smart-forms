@@ -25,6 +25,13 @@ function FormBodyUntabbed(props: Props) {
     onQrItemChange(qrForm);
   }
 
+  function handleQrRepeatGroupChange(newQrRepeatGroup: QuestionnaireResponseItem[]) {
+    if (newQrRepeatGroup[0]) {
+      updateLinkedItem(newQrRepeatGroup[0], qrForm, indexMap);
+      onQrItemChange(qrForm);
+    }
+  }
+
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
 
@@ -42,10 +49,10 @@ function FormBodyUntabbed(props: Props) {
                   <Box key={qItem.linkId} sx={{ my: 3 }}>
                     <QItemRepeatGroup
                       qItem={qItem}
-                      qrItem={qrItem}
+                      qrItems={[qrItem]}
                       repeats={true}
                       groupCardElevation={3}
-                      onQrItemChange={handleQrItemChange}></QItemRepeatGroup>
+                      onQrRepeatGroupChange={handleQrRepeatGroupChange}></QItemRepeatGroup>
                   </Box>
                 );
               } else {
