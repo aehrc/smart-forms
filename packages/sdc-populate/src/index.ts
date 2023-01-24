@@ -54,9 +54,9 @@ export default async function populate(
   // Perform evaluate of initialExpressions based on context
   initialExpressions = evaluateInitialExpressions(initialExpressions, context);
 
-  const questionnaireResponse = constructResponse(questionnaire, subject, initialExpressions);
+  const questionnaireResponse = await constructResponse(questionnaire, subject, initialExpressions);
 
-  return createOutputParameters(await questionnaireResponse);
+  return createOutputParameters(questionnaireResponse);
 }
 
 function getContextContent(
