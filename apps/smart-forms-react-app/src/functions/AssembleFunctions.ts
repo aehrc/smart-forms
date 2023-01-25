@@ -30,8 +30,8 @@ export async function assembleQuestionnaire(questionnaire: Questionnaire): Promi
     if (outputAssembleParams.parameter[0].resource.resourceType === 'Questionnaire') {
       return outputAssembleParams.parameter[0].resource;
     } else {
-      console.log('Assemble fail');
-      console.log(outputAssembleParams.parameter[0].resource);
+      console.warn('Assemble fail');
+      console.warn(outputAssembleParams.parameter[0].resource);
     }
   }
 
