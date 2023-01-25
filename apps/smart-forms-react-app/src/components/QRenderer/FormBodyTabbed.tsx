@@ -32,12 +32,12 @@ function FormBodyTabbed(props: Props) {
   const qrFormItems = qrForm.item;
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    updateLinkedItem(qrItem, qrForm, indexMap);
+    updateLinkedItem(qrItem, null, qrForm, indexMap);
     onQrItemChange(qrForm);
   }
 
   if (qFormItems && qrFormItems) {
-    const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems);
+    const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems, indexMap);
 
     return (
       <Grid container spacing={2}>
@@ -77,7 +77,7 @@ function FormBodyTabbed(props: Props) {
             {qFormItems.map((qItem, i) => {
               const qrItem = qrFormItemsByIndex[i];
 
-              if (isTab(qItem)) {
+              if (isTab(qItem) && !Array.isArray(qrItem)) {
                 return (
                   <TabPanel key={qItem.linkId} sx={{ p: 0 }} value={(i + 1).toString()}>
                     <QItemGroup

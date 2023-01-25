@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  PropsWithQrItemChangeHandler,
+  PropsWithQrRepeatGroupChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import {
   Button,
   IconButton,
@@ -30,39 +26,42 @@ import QItemGroupTableRow from './QItemGroupTableRow';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 
-interface Props
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItems: QuestionnaireResponseItem[];
 }
 
 function QItemGroupTable(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItems, onQrRepeatGroupChange } = props;
 
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
-  if (!qItem.item || qItem.item.length === 0) return null;
   const cleanQrItem = createQrItem(qItem);
-  const qrTable = qrItem ? qrItem : cleanQrItem;
-  const qrTableRows: (QuestionnaireResponseItemAnswer | undefined)[] = qrTable['answer']
-    ? qrTable.answer
-    : [undefined];
+  const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =
+    qrItems.length > 0 ? qrItems : [undefined];
 
-  const [tableRows, setTableRows] = useState(qrTableRows);
+  const [tableRows, setTableRows] = useState(qrGroupTableRows);
 
   useEffect(() => {
-    setTableRows(qrTableRows);
-  }, [qrItem]);
+    setTableRows(qrGroupTableRows);
+  }, [qrItems]);
+
+  // Check if there are columns within the group table
+  if (!qItem.item || qItem.item.length === 0) return null;
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   function handleRowsChange(newQrRow: QuestionnaireResponseItem, index: number) {
+    const newQrRowItems = newQrRow.item;
     const rowsTemp = [...tableRows];
 
     if (newQrRow.item) {
-      rowsTemp[index] = { item: newQrRow.item };
+      rowsTemp[index] = {
+        linkId: newQrRow.linkId,
+        text: newQrRow.text,
+        item: newQrRowItems
+      };
     }
     updateRows(rowsTemp);
   }
@@ -77,11 +76,11 @@ function QItemGroupTable(props: Props) {
     updateRows(rowsTemp);
   }
 
-  function updateRows(updatedRows: (QuestionnaireResponseItemAnswer | undefined)[]) {
+  function updateRows(updatedRows: (QuestionnaireResponseItem | undefined)[]) {
     setTableRows([...updatedRows]);
 
-    const rowsWithValues = updatedRows.flatMap((rows) => (rows ? [rows] : []));
-    onQrItemChange({ ...qrTable, answer: rowsWithValues });
+    const rowsWithValues = updatedRows.flatMap((singleRow) => (singleRow ? [singleRow] : []));
+    onQrRepeatGroupChange(rowsWithValues);
   }
 
   // Generate item labels as table headers
