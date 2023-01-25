@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react';
+import React, { SyntheticEvent, useEffect } from 'react';
 import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import {
@@ -29,6 +29,13 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   }
 
   const { options, serverError } = useValueSetOptions(qItem);
+
+  // Check and remove populated answer if it is a string
+  useEffect(() => {
+    if (qrChoiceSelect['answer'] && qrChoiceSelect['answer'][0].valueString) {
+      onQrItemChange(createQrItem(qItem));
+    }
+  }, []);
 
   function handleChange(event: SyntheticEvent<Element, Event>, newValue: Coding | null) {
     if (newValue) {
