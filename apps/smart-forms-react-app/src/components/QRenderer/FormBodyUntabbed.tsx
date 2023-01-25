@@ -8,7 +8,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import QItemRepeatGroup from './QFormComponents/QItemRepeatGroup';
 import QItemRepeat from './QFormComponents/QItemRepeat';
-import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
+import { PropsWithQrItemChangeHandler, QrRepeatGroup } from '../../interfaces/Interfaces';
 import { isSpecificItemControl } from '../../functions/ItemControlFunctions';
 import QItemGroupTable from './QFormComponents/QItemGroupTable';
 import { isRepeatItemAndNotCheckbox } from '../../functions/QItemFunctions';
@@ -27,8 +27,8 @@ function FormBodyUntabbed(props: Props) {
     onQrItemChange(qrForm);
   }
 
-  function handleQrRepeatGroupChange(newQrRepeatGroup: QuestionnaireResponseItem[]) {
-    updateLinkedItem(null, newQrRepeatGroup, qrForm, qItemsIndexMap);
+  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
+    updateLinkedItem(null, qrRepeatGroup, qrForm, qItemsIndexMap);
     onQrItemChange(qrForm);
   }
 

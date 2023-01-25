@@ -80,7 +80,7 @@ function QItemGroupTable(props: Props) {
     setTableRows([...updatedRows]);
 
     const rowsWithValues = updatedRows.flatMap((singleRow) => (singleRow ? [singleRow] : []));
-    onQrRepeatGroupChange(rowsWithValues);
+    onQrRepeatGroupChange({ linkId: qItem.linkId, qrItems: rowsWithValues });
   }
 
   // Generate item labels as table headers

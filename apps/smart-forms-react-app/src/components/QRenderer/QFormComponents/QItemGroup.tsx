@@ -9,7 +9,8 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithRepeatsAttribute,
+  QrRepeatGroup
 } from '../../../interfaces/Interfaces';
 import { isHidden, isRepeatItemAndNotCheckbox } from '../../../functions/QItemFunctions';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
@@ -54,9 +55,9 @@ function QItemGroup(props: Props) {
     onQrItemChange(qrGroup);
   }
 
-  function handleQrRepeatGroupChange(newQrRepeatGroup: QuestionnaireResponseItem[]) {
+  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
     const qrGroup: QuestionnaireResponseItem = { ...group };
-    updateLinkedItem(null, newQrRepeatGroup, qrGroup, qItemsIndexMap);
+    updateLinkedItem(null, qrRepeatGroup, qrGroup, qItemsIndexMap);
     setGroup(qrGroup);
     onQrItemChange(qrGroup);
   }

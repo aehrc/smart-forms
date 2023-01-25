@@ -7,7 +7,7 @@ import {
 } from 'fhir/r5';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { CalculatedExpression } from '../interfaces/Interfaces';
+import { CalculatedExpression, QrRepeatGroup } from '../interfaces/Interfaces';
 
 /**
  * Create a questionnaireResponse from a given questionnaire fprm item
@@ -99,7 +99,7 @@ export function createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseIte
  */
 export function updateLinkedItem(
   newQrItem: QuestionnaireResponseItem | null,
-  newQrItems: QuestionnaireResponseItem[] | null,
+  newQrRepeatGroup: QrRepeatGroup | null,
   qrGroup: QuestionnaireResponseItem,
   qItemsIndexMap: Record<string, number>
 ): void {
@@ -142,12 +142,13 @@ export function updateLinkedItem(
           }
         }
       }
-    } else if (newQrItems) {
+    } else if (newQrRepeatGroup) {
+      const newQrItems = newQrRepeatGroup.qrItems;
       if (qrGroup.item.length === 0) {
         qrGroup.item.push(...newQrItems);
       } else {
         // Get actual sequence index of qrItems within qrGroup
-        const newQrItemIndex = qItemsIndexMap[newQrItems[0].linkId];
+        const newQrItemIndex = qItemsIndexMap[newQrRepeatGroup.linkId];
 
         for (let i = 0; i < qrItemsRealIndexArr.length; i++) {
           // TODO need to break down these into individual functions

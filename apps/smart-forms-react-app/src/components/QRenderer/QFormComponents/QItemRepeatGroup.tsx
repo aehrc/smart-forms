@@ -71,7 +71,7 @@ function QItemRepeatGroup(props: Props) {
     const groupsWithValues: QuestionnaireResponseItem[] = updatedRepeatGroups.flatMap(
       (singleGroup) => (singleGroup ? [singleGroup] : [])
     );
-    onQrRepeatGroupChange(groupsWithValues);
+    onQrRepeatGroupChange({ linkId: qItem.linkId, qrItems: groupsWithValues });
   }
 
   return (

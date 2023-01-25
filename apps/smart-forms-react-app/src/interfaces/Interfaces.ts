@@ -10,7 +10,7 @@ export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
 }
 
 export interface PropsWithQrRepeatGroupChangeHandler {
-  onQrRepeatGroupChange: (qrItems: QuestionnaireResponseItem[]) => unknown;
+  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
 }
 
 export interface PropsWithRepeatsAttribute {
@@ -47,4 +47,9 @@ export interface EnableWhenLinkedItem {
 export interface AuthFailDialog {
   dialogOpen: boolean | null;
   errorMessage: string;
+}
+
+export interface QrRepeatGroup {
+  linkId: string;
+  qrItems: QuestionnaireResponseItem[];
 }
