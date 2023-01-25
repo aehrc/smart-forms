@@ -2,17 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, IconButton, Stack } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
+  PropsWithQrRepeatGroupChangeHandler,
   PropsWithRepeatsAttribute
 } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
 import QItemGroup from './QItemGroup';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { isHidden } from '../../../functions/QItemFunctions';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
@@ -21,60 +17,61 @@ import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styl
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 
-interface Props
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
 }
 
 function QItemRepeatGroup(props: Props) {
-  const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
+  const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
-  const qrRepeat = qrItem ? qrItem : cleanQrItem;
-  const qrRepeatAnswerItems: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
-    ? qrRepeat.answer
-    : [undefined];
+  const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
+    qrItems.length > 0 ? qrItems : [undefined];
 
-  const [repeatAnswerItems, setRepeatAnswerItems] = useState(qrRepeatAnswerItems);
+  const [repeatGroups, setRepeatGroups] = useState(qrRepeatGroups);
 
   useEffect(() => {
-    setRepeatAnswerItems(qrRepeatAnswerItems);
-  }, [qrItem]);
+    setRepeatGroups(qrRepeatGroups);
+  }, [qrItems]);
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
-    const answerItemsTemp = [...repeatAnswerItems];
+    const newQrGroupItems = newQrGroup.item;
+    const repeatGroupsTemp = [...repeatGroups];
 
-    if (newQrGroup.item) {
-      answerItemsTemp[index] = { item: newQrGroup.item };
+    if (newQrGroupItems) {
+      repeatGroupsTemp[index] = {
+        linkId: newQrGroup.linkId,
+        text: newQrGroup.text,
+        item: newQrGroupItems
+      };
     }
-    updateAnswerItems(answerItemsTemp);
+    updateAnswerItems(repeatGroupsTemp);
   }
 
   function deleteAnswerItem(index: number) {
-    const answerItemsTemp = [...repeatAnswerItems];
-    if (answerItemsTemp.length === 1) {
-      answerItemsTemp[0] = undefined;
+    const repeatGroupsTemp = [...repeatGroups];
+    if (repeatGroupsTemp.length === 1) {
+      repeatGroupsTemp[0] = undefined;
     } else {
-      answerItemsTemp.splice(index, 1);
+      repeatGroupsTemp.splice(index, 1);
     }
-    updateAnswerItems(answerItemsTemp);
+    updateAnswerItems(repeatGroupsTemp);
   }
 
-  function updateAnswerItems(updatedAnswerItems: (QuestionnaireResponseItemAnswer | undefined)[]) {
-    setRepeatAnswerItems([...updatedAnswerItems]);
+  function updateAnswerItems(updatedRepeatGroups: (QuestionnaireResponseItem | undefined)[]) {
+    setRepeatGroups([...updatedRepeatGroups]);
 
-    const answersWithValues = updatedAnswerItems.flatMap((answerItems) =>
-      answerItems ? [answerItems] : []
+    const groupsWithValues: QuestionnaireResponseItem[] = updatedRepeatGroups.flatMap(
+      (singleGroup) => (singleGroup ? [singleGroup] : [])
     );
-    onQrItemChange({ ...qrRepeat, answer: answersWithValues });
+    onQrRepeatGroupChange({ linkId: qItem.linkId, qrItems: groupsWithValues });
   }
 
   return (
@@ -82,9 +79,9 @@ function QItemRepeatGroup(props: Props) {
       <QGroupHeadingTypography variant="h6" sx={{ mb: 4 }}>
         <QItemLabel qItem={qItem} />
       </QGroupHeadingTypography>
-      {repeatAnswerItems.map((answerItem, index) => {
-        const singleQrItem: QuestionnaireResponseItem = answerItem
-          ? { ...cleanQrItem, item: answerItem.item }
+      {repeatGroups.map((singleGroup, index) => {
+        const singleQrGroup: QuestionnaireResponseItem = singleGroup
+          ? { ...cleanQrItem, item: singleGroup.item }
           : { ...cleanQrItem };
 
         return (
@@ -92,7 +89,7 @@ function QItemRepeatGroup(props: Props) {
             <Box sx={{ flexGrow: 1 }}>
               <QItemGroup
                 qItem={qItem}
-                qrItem={singleQrItem}
+                qrItem={singleQrGroup}
                 repeats={true}
                 groupCardElevation={groupCardElevation + 1}
                 onQrItemChange={(newQrGroup) =>
@@ -105,7 +102,7 @@ function QItemRepeatGroup(props: Props) {
                 <IconButton
                   size="small"
                   color="error"
-                  disabled={!answerItem}
+                  disabled={!singleGroup}
                   onClick={() => deleteAnswerItem(index)}>
                   <Delete />
                 </IconButton>
@@ -119,8 +116,8 @@ function QItemRepeatGroup(props: Props) {
         <Button
           variant="contained"
           startIcon={<Add />}
-          disabled={!repeatAnswerItems[repeatAnswerItems.length - 1]}
-          onClick={() => setRepeatAnswerItems([...repeatAnswerItems, undefined])}>
+          disabled={!repeatGroups[repeatGroups.length - 1]}
+          onClick={() => setRepeatGroups([...repeatGroups, undefined])}>
           Add Item
         </Button>
       </Stack>

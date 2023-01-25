@@ -56,7 +56,7 @@ function SaveAsDraftButton(props: Props) {
         questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
         removeQrHasChanges();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   }
 
   const renderButtonOrChip = !isChip ? (

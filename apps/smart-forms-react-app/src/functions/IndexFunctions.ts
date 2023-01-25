@@ -1,4 +1,6 @@
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import { isRepeatItemAndNotCheckbox } from './QItemFunctions';
+import { QItemType } from '../interfaces/Enums';
 
 /**
  * Generate an array of QuestionnaireResponseItems corresponding to its QuestionnaireItem indexes an array.
@@ -10,19 +12,54 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
  */
 export function getQrItemsIndex(
   qItems: QuestionnaireItem[],
-  qrItems: QuestionnaireResponseItem[]
-): QuestionnaireResponseItem[] {
-  // generate a <linkId, QrItem> dictionary
-  const qrItemsDict = qrItems.reduce((mapping: Record<string, QuestionnaireResponseItem>, item) => {
-    mapping[item.linkId] = { ...item };
-    return mapping;
-  }, {});
+  qrItems: QuestionnaireResponseItem[],
+  qItemsIndexMap: Record<string, number>
+): (QuestionnaireResponseItem | QuestionnaireResponseItem[])[] {
+  // Generate a <linkId, QrItem OR QrItems> dictionary
+  const qrItemsCollected: Record<string, QuestionnaireResponseItem | QuestionnaireResponseItem[]> =
+    {};
+  for (const qrItem of qrItems) {
+    const linkId = qrItem.linkId;
 
-  // generate an array of QuestionnaireResponseItems corresponding to its QuestionnaireItem indexes an array.
-  return qItems.reduce((mapping: QuestionnaireResponseItem[], item, i) => {
-    mapping[i] = qrItemsDict[item.linkId];
-    return mapping;
-  }, []);
+    // If item already exists, it has multiple qrItems and is therefore a repeat group
+    if (qrItemsCollected[linkId]) {
+      let storedValue = qrItemsCollected[linkId];
+
+      // Create an array out of initial stored value if it is not an array initially
+      if (!Array.isArray(storedValue)) {
+        storedValue = [storedValue];
+      }
+
+      // Push new qrItem into array
+      storedValue.push(qrItem);
+      qrItemsCollected[linkId] = storedValue;
+    } else {
+      const qItemIndex = qItemsIndexMap[linkId];
+
+      // Assign either a qrItem array or a single qrItem based on whether it is a repeatGroup or not
+      qrItemsCollected[linkId] =
+        isRepeatItemAndNotCheckbox(qItems[qItemIndex]) &&
+        qItems[qItemIndex].type === QItemType.Group
+          ? [qrItem]
+          : qrItem;
+    }
+  }
+
+  // Generate an array of QuestionnaireResponseItems corresponding to its QuestionnaireItem indexes in sequence
+  // Qitems with no answers has a default value of undefined
+  return qItems.reduce(
+    (mapping: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[], qItem, i) => {
+      const qrItemOrItems = qrItemsCollected[qItem.linkId];
+      // If qItem is a repeat group, default its value to an array instead of undefined
+      if (isRepeatItemAndNotCheckbox(qItem) && qItem.type === QItemType.Group) {
+        mapping[i] = qrItemOrItems ? qrItemsCollected[qItem.linkId] : [];
+      } else {
+        mapping[i] = qrItemsCollected[qItem.linkId];
+      }
+      return mapping;
+    },
+    []
+  );
 }
 
 /**

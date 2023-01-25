@@ -37,30 +37,32 @@ function QItemGroupTableRow(props: Props) {
 
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
-    updateLinkedItem(newQrRowItem, qrRow, qItemsIndexMap);
+    updateLinkedItem(newQrRowItem, null, qrRow, qItemsIndexMap);
     setRow(qrRow);
     onQrItemChange(qrRow);
   }
 
   if (!rowItems || !rowQrItems) return null;
 
-  const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems);
+  const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
 
   return (
     <>
       {rowItems.map((rowItem, index) => {
         const qrItem = qrItemsByIndex[index];
 
-        return (
-          <TableCell key={index}>
-            <QItemSwitcher
-              key={qItem.linkId}
-              qItem={rowItem}
-              qrItem={qrItem}
-              repeats={true}
-              onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
-          </TableCell>
-        );
+        if (!Array.isArray(qrItem)) {
+          return (
+            <TableCell key={index}>
+              <QItemSwitcher
+                key={qItem.linkId}
+                qItem={rowItem}
+                qrItem={qrItem}
+                repeats={true}
+                onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
+            </TableCell>
+          );
+        }
       })}
     </>
   );

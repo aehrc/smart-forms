@@ -72,7 +72,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
         setIsSaving(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         handleClose();
       });
   }

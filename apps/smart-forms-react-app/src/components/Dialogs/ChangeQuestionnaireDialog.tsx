@@ -61,7 +61,7 @@ function ChangeQuestionnaireDialog(props: Props) {
           handleClose();
           setIsSaving(false);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     } else {
       handleClose();
     }

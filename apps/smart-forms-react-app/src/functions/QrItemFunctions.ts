@@ -7,7 +7,7 @@ import {
 } from 'fhir/r5';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { CalculatedExpression } from '../interfaces/Interfaces';
+import { CalculatedExpression, QrRepeatGroup } from '../interfaces/Interfaces';
 
 /**
  * Create a questionnaireResponse from a given questionnaire fprm item
@@ -92,25 +92,30 @@ export function createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseIte
 }
 
 /**
- * Updates the QuestionnaireResponseItem group by adding/removing
- * a new/modified child QuestionnaireResponseItem into/from a qrGroup
+ * Updates the QuestionnaireResponseItem group by adding/removing a new/modified child QuestionnaireResponseItem into/from a qrGroup
+ * Takes either a single newQrItem or an array of newQrItems
  *
  * @author Sean Fong
  */
 export function updateLinkedItem(
-  newQrItem: QuestionnaireResponseItem,
+  newQrItem: QuestionnaireResponseItem | null,
+  newQrRepeatGroup: QrRepeatGroup | null,
   qrGroup: QuestionnaireResponseItem,
   qItemsIndexMap: Record<string, number>
 ): void {
   if (qrGroup['item']) {
+    // Get actual sequence indexes of qrItems present within a qrGroup
+    // e.g. qrGroup has 4 fields but only the 2nd and 3rd field have values - resulting array is [1, 2]
     const qrItemsRealIndexArr = qrGroup.item.map((qrItem) => qItemsIndexMap[qrItem.linkId]);
 
-    if (newQrItem.linkId in qItemsIndexMap) {
+    if (newQrItem && newQrItem.linkId in qItemsIndexMap) {
       if (qrGroup.item.length === 0) {
         qrGroup.item.push(newQrItem);
       } else {
+        // Get actual sequence index of qrItem within qrGroup
         const newQrItemIndex = qItemsIndexMap[newQrItem.linkId];
         for (let i = 0; i < qrItemsRealIndexArr.length; i++) {
+          // Add qrItem at the end of qrGroup if it is larger than the other indexes
           if (newQrItemIndex > qrItemsRealIndexArr[i]) {
             if (i === qrItemsRealIndexArr.length - 1) {
               qrGroup.item.push(newQrItem);
@@ -118,6 +123,7 @@ export function updateLinkedItem(
             continue;
           }
 
+          // Replace or delete qrItem at its supposed position if its index is already present within qrGroup
           if (newQrItemIndex === qrItemsRealIndexArr[i]) {
             if (newQrItem.item?.length || newQrItem.answer?.length) {
               // newQrItem has answer value
@@ -128,8 +134,71 @@ export function updateLinkedItem(
             }
             break;
           }
+
+          // Add qrItem at its supposed position if its index is not present within qrGroup
           if (newQrItemIndex < qrItemsRealIndexArr[i]) {
             qrGroup.item.splice(i, 0, newQrItem);
+            break;
+          }
+        }
+      }
+    } else if (newQrRepeatGroup) {
+      const newQrItems = newQrRepeatGroup.qrItems;
+      if (qrGroup.item.length === 0) {
+        qrGroup.item.push(...newQrItems);
+      } else {
+        // Get actual sequence index of qrItems within qrGroup
+        const newQrItemIndex = qItemsIndexMap[newQrRepeatGroup.linkId];
+
+        for (let i = 0; i < qrItemsRealIndexArr.length; i++) {
+          // TODO need to break down these into individual functions
+          // Add qrItem at the end of qrGroup if it is larger than the other indexes
+          if (newQrItemIndex > qrItemsRealIndexArr[i]) {
+            if (i === qrItemsRealIndexArr.length - 1) {
+              qrGroup.item.push(...newQrItems);
+            }
+            continue;
+          }
+
+          // Replace or delete qrItem at its supposed position if its index is already present within qrGroup
+          if (newQrItemIndex === qrItemsRealIndexArr[i]) {
+            // Get number of repeatGroupItems with the same linkId present in qrGroup
+            let repeatGroupItemCount = 0;
+            while (newQrItemIndex === qrItemsRealIndexArr[i + repeatGroupItemCount]) {
+              repeatGroupItemCount++;
+            }
+
+            if (newQrItems.length === repeatGroupItemCount) {
+              for (let j = 0; j < newQrItems.length; j++) {
+                qrGroup.item[i + j] = newQrItems[j];
+              }
+              break;
+            } else if (newQrItems.length > repeatGroupItemCount) {
+              for (let j = 0, k = repeatGroupItemCount; j < newQrItems.length; j++, k--) {
+                if (k > 0) {
+                  qrGroup.item[i + j] = newQrItems[j];
+                } else {
+                  qrGroup.item.splice(i + j, 0, newQrItems[j]);
+                }
+              }
+              break;
+            } else if (newQrItems.length < repeatGroupItemCount) {
+              for (let j = 0; j < repeatGroupItemCount; j++) {
+                if (j <= newQrItems.length - 1) {
+                  qrGroup.item[i + j] = newQrItems[j];
+                } else {
+                  qrGroup.item.splice(i + j, 1);
+                }
+              }
+              break;
+            }
+          }
+
+          // Add qrItem at its supposed position if its index is not present within qrGroup
+          if (newQrItemIndex < qrItemsRealIndexArr[i]) {
+            for (let j = 0; j < newQrItems.length; j++) {
+              qrGroup.item.splice(i + j, 0, newQrItems[j]);
+            }
             break;
           }
         }

@@ -1,11 +1,16 @@
 import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
+  QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 
 export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
+}
+
+export interface PropsWithQrRepeatGroupChangeHandler {
+  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
 }
 
 export interface PropsWithRepeatsAttribute {
@@ -42,4 +47,9 @@ export interface EnableWhenLinkedItem {
 export interface AuthFailDialog {
   dialogOpen: boolean | null;
   errorMessage: string;
+}
+
+export interface QrRepeatGroup {
+  linkId: string;
+  qrItems: QuestionnaireResponseItem[];
 }

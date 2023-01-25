@@ -27,7 +27,7 @@ export class AnswerValueSet {
         setAnswerOptions(response);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         displayError(error);
       });
   }
