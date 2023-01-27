@@ -1264,13 +1264,19 @@
         {
           "url": "8",
           "valueReference": {
-            "reference": "#AboriginalTorresStraitIslander"
+            "reference": "#condition-clinical"
           }
         },
         {
           "url": "9",
           "valueReference": {
-            "reference": "#condition-clinical"
+            "reference": "#AboriginalTorresStraitIslander"
+          }
+        },
+        {
+          "url": "10",
+          "valueReference": {
+            "reference": "#PrimaryCarerParentGrandparent"
           }
         }
       ]
