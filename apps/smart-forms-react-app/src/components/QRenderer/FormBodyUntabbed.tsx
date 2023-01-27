@@ -56,7 +56,7 @@ function FormBodyUntabbed(props: Props) {
                       <QItemGroupTable
                         qItem={qItem}
                         qrItems={qrItems}
-                        repeats={true}
+                        groupCardElevation={3}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
                     </Box>
@@ -93,7 +93,7 @@ function FormBodyUntabbed(props: Props) {
                         <QItemGroupTable
                           qItem={qItem}
                           qrItems={[]}
-                          repeats={true}
+                          groupCardElevation={3}
                           onQrRepeatGroupChange={handleQrRepeatGroupChange}
                         />
                       </Box>

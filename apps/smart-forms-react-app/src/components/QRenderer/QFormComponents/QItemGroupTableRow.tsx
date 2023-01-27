@@ -6,9 +6,9 @@ import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFuncti
 import QItemSwitcher from './QItemSwitcher';
 import { isHidden } from '../../../functions/QItemFunctions';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
-import { TableCell } from '@mui/material';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
+import { FirstTableCell, StandardTableCell } from '../../StyledComponents/Table.styles';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -52,16 +52,29 @@ function QItemGroupTableRow(props: Props) {
         const qrItem = qrItemsByIndex[index];
 
         if (!Array.isArray(qrItem)) {
-          return (
-            <TableCell key={index}>
-              <QItemSwitcher
-                key={qItem.linkId}
-                qItem={rowItem}
-                qrItem={qrItem}
-                repeats={true}
-                onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
-            </TableCell>
-          );
+          if (index === 0) {
+            return (
+              <FirstTableCell key={index}>
+                <QItemSwitcher
+                  key={qItem.linkId}
+                  qItem={rowItem}
+                  qrItem={qrItem}
+                  repeats={true}
+                  onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
+              </FirstTableCell>
+            );
+          } else {
+            return (
+              <StandardTableCell key={index} numOfColumns={rowItems.length}>
+                <QItemSwitcher
+                  key={qItem.linkId}
+                  qItem={rowItem}
+                  qrItem={qrItem}
+                  repeats={true}
+                  onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
+              </StandardTableCell>
+            );
+          }
         }
       })}
     </>

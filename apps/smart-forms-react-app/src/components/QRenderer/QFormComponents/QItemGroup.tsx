@@ -91,7 +91,7 @@ function QItemGroup(props: Props) {
                     <QItemGroupTable
                       qItem={qItem}
                       qrItems={qrItems}
-                      repeats={true}
+                      groupCardElevation={groupCardElevation + 1}
                       onQrRepeatGroupChange={handleQrRepeatGroupChange}
                     />
                   </Box>
@@ -128,7 +128,7 @@ function QItemGroup(props: Props) {
                       <QItemGroupTable
                         qItem={qItem}
                         qrItems={[]}
-                        repeats={true}
+                        groupCardElevation={groupCardElevation + 1}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
                     </Box>

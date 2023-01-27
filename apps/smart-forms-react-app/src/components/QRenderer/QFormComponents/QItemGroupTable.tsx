@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import {
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithRepeatsAttribute
-} from '../../../interfaces/Interfaces';
+import { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import {
+  Box,
   Button,
+  Divider,
   IconButton,
   Paper,
   Stack,
@@ -16,23 +15,26 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { createQrItem } from '../../../functions/QrItemFunctions';
 import { Add, Delete } from '@mui/icons-material';
-import { RepeatDeleteTooltip } from './QItemRepeat.styles';
 import { isHidden } from '../../../functions/QItemFunctions';
 import QItemGroupTableRow from './QItemGroupTableRow';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
+import { DeleteButtonTableCell, HeaderTableCell } from '../../StyledComponents/Table.styles';
+import QItemLabel from './QItemParts/QItemLabel';
 
-interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAttribute {
+interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
+  groupCardElevation: number;
 }
 
 function QItemGroupTable(props: Props) {
-  const { qItem, qrItems, onQrRepeatGroupChange } = props;
+  const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
@@ -87,14 +89,18 @@ function QItemGroupTable(props: Props) {
   const itemLabels: string[] = qItem.item.map((item) => (item.text ? item.text : ''));
 
   return (
-    <>
-      <Typography sx={{ mb: 1.5 }}>{qItem.text}</Typography>
-      <TableContainer component={Paper} sx={{ mb: 2 }}>
+    <Box sx={{ my: 3.5 }}>
+      <Typography fontSize={13} variant="h6">
+        <QItemLabel qItem={qItem} />
+      </Typography>
+      <Divider sx={{ my: 1 }} light />
+      <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
           <caption>
             <Stack direction="row" justifyContent="end">
               <Button
                 variant="contained"
+                size="small"
                 startIcon={<Add />}
                 onClick={() => setTableRows([...tableRows, undefined])}>
                 Add Row
@@ -104,7 +110,7 @@ function QItemGroupTable(props: Props) {
           <TableHead>
             <TableRow>
               {itemLabels.map((itemLabel) => (
-                <TableCell key={itemLabel}>{itemLabel}</TableCell>
+                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
               ))}
               <TableCell />
             </TableRow>
@@ -121,22 +127,22 @@ function QItemGroupTable(props: Props) {
                     qrItem={singleQrRow}
                     onQrItemChange={(newQrGroup) => handleRowsChange(newQrGroup, index)}
                   />
-                  <TableCell>
-                    <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
+                  <DeleteButtonTableCell>
+                    <Tooltip title="Delete item">
                       <span>
                         <IconButton size="small" color="error" onClick={() => deleteRow(index)}>
                           <Delete />
                         </IconButton>
                       </span>
-                    </RepeatDeleteTooltip>
-                  </TableCell>
+                    </Tooltip>
+                  </DeleteButtonTableCell>
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Box>
   );
 }
 
