@@ -114,6 +114,7 @@ export function updateLinkedItem(
       } else {
         // Get actual sequence index of qrItem within qrGroup
         const newQrItemIndex = qItemsIndexMap[newQrItem.linkId];
+
         for (let i = 0; i < qrItemsRealIndexArr.length; i++) {
           // Add qrItem at the end of qrGroup if it is larger than the other indexes
           if (newQrItemIndex > qrItemsRealIndexArr[i]) {
@@ -142,7 +143,7 @@ export function updateLinkedItem(
           }
         }
       }
-    } else if (newQrRepeatGroup) {
+    } else if (newQrRepeatGroup && newQrRepeatGroup.linkId in qItemsIndexMap) {
       const newQrItems = newQrRepeatGroup.qrItems;
       if (qrGroup.item.length === 0) {
         qrGroup.item.push(...newQrItems);
@@ -151,7 +152,6 @@ export function updateLinkedItem(
         const newQrItemIndex = qItemsIndexMap[newQrRepeatGroup.linkId];
 
         for (let i = 0; i < qrItemsRealIndexArr.length; i++) {
-          // TODO need to break down these into individual functions
           // Add qrItem at the end of qrGroup if it is larger than the other indexes
           if (newQrItemIndex > qrItemsRealIndexArr[i]) {
             if (i === qrItemsRealIndexArr.length - 1) {
@@ -162,18 +162,21 @@ export function updateLinkedItem(
 
           // Replace or delete qrItem at its supposed position if its index is already present within qrGroup
           if (newQrItemIndex === qrItemsRealIndexArr[i]) {
-            // Get number of repeatGroupItems with the same linkId present in qrGroup
+            // Get number of repeatGroupItems that has the same linkId present in qrGroup
             let repeatGroupItemCount = 0;
             while (newQrItemIndex === qrItemsRealIndexArr[i + repeatGroupItemCount]) {
               repeatGroupItemCount++;
             }
 
+            // Replace each repeat group qrItem with their new counterparts
             if (newQrItems.length === repeatGroupItemCount) {
               for (let j = 0; j < newQrItems.length; j++) {
                 qrGroup.item[i + j] = newQrItems[j];
               }
               break;
             } else if (newQrItems.length > repeatGroupItemCount) {
+              // Replace each repeat group qrItem with their new counterparts,
+              // followed by adding an extra newQrItem behind the newly replaced qrItems
               for (let j = 0, k = repeatGroupItemCount; j < newQrItems.length; j++, k--) {
                 if (k > 0) {
                   qrGroup.item[i + j] = newQrItems[j];
@@ -183,6 +186,8 @@ export function updateLinkedItem(
               }
               break;
             } else if (newQrItems.length < repeatGroupItemCount) {
+              // Replace each repeat group qrItem with their new counterparts (except the last one),
+              // followed by deleting the last newQrItem which wasn't replaced
               for (let j = 0; j < repeatGroupItemCount; j++) {
                 if (j <= newQrItems.length - 1) {
                   qrGroup.item[i + j] = newQrItems[j];
