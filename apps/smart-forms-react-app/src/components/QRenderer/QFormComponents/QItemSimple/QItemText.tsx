@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -10,6 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -34,7 +35,6 @@ function QItemText(props: Props) {
       id={qItem.linkId}
       value={valueText}
       onChange={handleChange}
-      sx={{ mb: repeats ? 0 : 2 }} // mb:4 is MUI default value
       label={getTextDisplayPrompt(qItem)}
       fullWidth
       multiline
@@ -45,7 +45,7 @@ function QItemText(props: Props) {
   const renderQItemText = repeats ? (
     <>{textInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -55,7 +55,7 @@ function QItemText(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemText}</>;

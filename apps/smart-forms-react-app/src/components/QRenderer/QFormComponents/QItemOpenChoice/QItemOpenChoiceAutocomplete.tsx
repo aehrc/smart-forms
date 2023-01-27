@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Autocomplete, CircularProgress, FormControl, Grid, Typography } from '@mui/material';
+import { Autocomplete, CircularProgress, Grid, Typography } from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
@@ -11,6 +11,7 @@ import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocom
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -81,7 +82,6 @@ function QItemOpenChoiceAutocomplete(props: Props) {
             {...params}
             label={valueAutocomplete ? '' : 'Search...'}
             onChange={handleInputChange}
-            sx={{ ...(repeats && { mb: 0 }) }}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -105,7 +105,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   const renderQItemOpenChoiceAutocomplete = repeats ? (
     <>{openChoiceAutocomplete}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -115,7 +115,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemOpenChoiceAutocomplete}</>;
 }

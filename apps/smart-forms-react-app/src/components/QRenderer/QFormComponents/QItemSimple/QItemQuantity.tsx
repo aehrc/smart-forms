@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -11,6 +11,7 @@ import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -88,7 +89,7 @@ function QItemQuantity(props: Props) {
     return <>{QItemQuantityFields}</>;
   } else {
     return (
-      <FormControl>
+      <FullWidthFormComponentBox>
         <Grid container columnSpacing={6}>
           <Grid item xs={5}>
             <QItemLabel qItem={qItem} />
@@ -98,7 +99,7 @@ function QItemQuantity(props: Props) {
             <QItemDisplayInstructions qItem={qItem} />
           </Grid>
         </Grid>
-      </FormControl>
+      </FullWidthFormComponentBox>
     );
   }
 }

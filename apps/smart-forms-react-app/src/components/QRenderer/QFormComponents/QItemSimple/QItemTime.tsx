@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
-import { FormControl, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -14,6 +14,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,7 +46,7 @@ function QItemTime(props: Props) {
   const renderQItemTime = repeats ? (
     <QItemTimePicker value={value} onTimeChange={handleChange} />
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -55,7 +56,7 @@ function QItemTime(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemTime}</>;
 }

@@ -6,7 +6,7 @@ export const RepeatDeleteTooltip = styled(Tooltip)(() => ({
 
 export const RepeatItemContainerStack = styled(Stack)(() => ({
   alignItems: 'center',
-  paddingBottom: 4
+  paddingBottom: 8
 }));
 
 export const RepeatGroupContainerStack = styled(Stack)(() => ({

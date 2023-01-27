@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -10,6 +10,7 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/Cho
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -64,7 +65,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   const renderQItemChoiceSelectAnswerOption = repeats ? (
     <>{choiceSelectAnswerOption}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -74,7 +75,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceSelectAnswerOption}</>;
 }

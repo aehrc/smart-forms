@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FormControl, Grid, InputAdornment } from '@mui/material';
+import { Grid, InputAdornment } from '@mui/material';
 
 import {
   CalculatedExpression,
@@ -14,6 +14,7 @@ import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions'
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -90,7 +91,6 @@ function QItemDecimal(props: Props) {
       value={input}
       onChange={handleChange}
       disabled={!!calculatedExpression}
-      sx={{ mb: repeats ? 0 : 2 }}
       fullWidth
       inputProps={{
         inputMode: 'numeric',
@@ -103,7 +103,7 @@ function QItemDecimal(props: Props) {
   const renderQItemDecimal = repeats ? (
     <>{decimalInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -113,7 +113,7 @@ function QItemDecimal(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemDecimal}</>;
 }

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { FormControl, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -44,7 +45,7 @@ function QItemDate(props: Props) {
   const renderQItemDate = repeats ? (
     <QItemDatePicker value={value} onDateChange={handleChange} />
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -54,7 +55,7 @@ function QItemDate(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemDate}</>;

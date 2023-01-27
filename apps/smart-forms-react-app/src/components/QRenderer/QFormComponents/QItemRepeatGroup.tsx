@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, IconButton, Stack } from '@mui/material';
+import { Box, Button, Card, Divider, IconButton, Stack } from '@mui/material';
 
 import {
   PropsWithQrRepeatGroupChangeHandler,
@@ -75,10 +75,11 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: 3.5 }}>
-      <QGroupHeadingTypography variant="h6" sx={{ mb: 4 }}>
+    <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
+      <QGroupHeadingTypography variant="h6">
         <QItemLabel qItem={qItem} />
       </QGroupHeadingTypography>
+      <Divider sx={{ mt: 1, mb: 1.5 }} light />
       {repeatGroups.map((singleGroup, index) => {
         const singleQrGroup: QuestionnaireResponseItem = singleGroup
           ? { ...cleanQrItem, item: singleGroup.item }

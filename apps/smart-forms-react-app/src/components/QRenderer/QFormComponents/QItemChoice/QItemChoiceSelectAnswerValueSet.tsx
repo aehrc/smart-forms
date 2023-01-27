@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useEffect } from 'react';
-import { Autocomplete, FormControl, Grid, Typography } from '@mui/material';
+import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -11,6 +11,7 @@ import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -76,7 +77,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   const renderQItemChoiceSelectAnswerValueSet = repeats ? (
     <>{choiceSelectAnswerValueSet}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -86,7 +87,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceSelectAnswerValueSet}</>;
 }

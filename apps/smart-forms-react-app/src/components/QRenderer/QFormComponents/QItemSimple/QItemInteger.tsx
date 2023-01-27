@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { FormControl, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -12,6 +12,7 @@ import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -63,7 +64,7 @@ function QItemInteger(props: Props) {
       id={qItem.linkId}
       value={valueInteger}
       onChange={handleChange}
-      sx={{ mb: 0 }}
+      // sx={{ mb: 0 }}
       fullWidth
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
     />
@@ -72,7 +73,7 @@ function QItemInteger(props: Props) {
   const renderQItemInteger = repeats ? (
     <>{integerInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -82,7 +83,7 @@ function QItemInteger(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemInteger}</>;

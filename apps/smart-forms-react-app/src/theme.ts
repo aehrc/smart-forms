@@ -48,19 +48,6 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
         light: '#eafaf1',
         dark: '#abebc6'
       }
-    },
-    components: {
-      MuiFormControl: {
-        defaultProps: {
-          fullWidth: true
-        },
-        styleOverrides: {
-          root: {
-            marginTop: 4,
-            marginBottom: 8
-          }
-        }
-      }
     }
   });
 };

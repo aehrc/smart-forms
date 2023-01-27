@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Autocomplete, FormControl, Grid, Typography } from '@mui/material';
+import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -11,6 +11,7 @@ import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -58,9 +59,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         freeSolo
         autoHighlight
         fullWidth
-        renderInput={(params) => (
-          <StandardTextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />
-        )}
+        renderInput={(params) => <StandardTextField {...params} />}
       />
       {serverError ? (
         <Typography variant="subtitle2">
@@ -73,7 +72,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   const renderQItemOpenChoiceSelectAnswerValueSet = repeats ? (
     <>{openChoiceSelectAnswerValueSet}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -83,7 +82,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemOpenChoiceSelectAnswerValueSet}</>;
 }

@@ -88,6 +88,8 @@ function QItemGroupTable(props: Props) {
   // Generate item labels as table headers
   const itemLabels: string[] = qItem.item.map((item) => (item.text ? item.text : ''));
 
+  // TODO instead of using formcontrol, use a box instead of all
+  // TODO pass a table param to all and just fill whole thing
   return (
     <Box sx={{ my: 3.5 }}>
       <Typography fontSize={13} variant="h6">
