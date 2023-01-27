@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { FormControl, Grid } from '@mui/material';
@@ -14,6 +13,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -74,7 +74,7 @@ function QItemTimePicker(props: QItemTimePickerProps) {
         showToolbar
         value={value}
         onChange={onTimeChange}
-        renderInput={(params) => <TextField {...params} />}
+        renderInput={(params) => <StandardTextField fullWidth {...params} />}
       />
     </LocalizationProvider>
   );

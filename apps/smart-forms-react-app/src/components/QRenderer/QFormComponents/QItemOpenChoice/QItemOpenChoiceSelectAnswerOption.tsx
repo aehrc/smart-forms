@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Autocomplete, FormControl, Grid, TextField } from '@mui/material';
+import { Autocomplete, FormControl, Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -14,6 +14,7 @@ import { getAnswerOptionLabel } from '../../../../functions/OpenChoiceFunctions'
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -63,14 +64,14 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   const openOpenChoiceSelectAnswerOption = (
     <Autocomplete
       id={qItem.id}
-      freeSolo
-      autoHighlight
       value={valueSelect ?? null}
       options={answerOptions}
       getOptionLabel={(option) => getAnswerOptionLabel(option)}
       onChange={handleChange}
-      sx={{ maxWidth: 202 }}
-      renderInput={(params) => <TextField {...params} />}
+      freeSolo
+      autoHighlight
+      fullWidth
+      renderInput={(params) => <StandardTextField {...params} />}
     />
   );
   const renderQItemOpenChoiceAutocomplete = repeats ? (

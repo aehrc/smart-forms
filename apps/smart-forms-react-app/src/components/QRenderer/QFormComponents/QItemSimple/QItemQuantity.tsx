@@ -10,6 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -68,10 +69,11 @@ function QItemQuantity(props: Props) {
   const QItemQuantityFields = (
     <Grid container columnSpacing={1}>
       <Grid item xs={6}>
-        <TextField
+        <StandardTextField
           type="number"
           id={qItem.linkId}
           value={valueQuantity}
+          fullWidth
           onChange={handleValueChange}
         />
       </Grid>

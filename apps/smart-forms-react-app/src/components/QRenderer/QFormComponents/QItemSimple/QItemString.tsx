@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { FormControl, Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -10,6 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -35,7 +36,8 @@ function QItemString(props: Props) {
   }
 
   const stringInput = (
-    <TextField
+    <StandardTextField
+      fullWidth
       error={hasError}
       id={qItem.linkId}
       value={valueString}

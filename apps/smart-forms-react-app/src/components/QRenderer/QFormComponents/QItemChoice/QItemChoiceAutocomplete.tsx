@@ -1,12 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import {
-  Autocomplete,
-  CircularProgress,
-  FormControl,
-  Grid,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Autocomplete, CircularProgress, FormControl, Grid, Typography } from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
@@ -17,6 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -37,10 +31,10 @@ function QItemChoiceAutocomplete(props: Props) {
   const answerValueSetUrl = qItem.answerValueSet;
   if (!answerValueSetUrl) return null;
 
-  const maxlist = 10;
+  const maxList = 10;
 
   const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
-    useValueSetAutocomplete(answerValueSetUrl, maxlist);
+    useValueSetAutocomplete(answerValueSetUrl, maxList);
 
   function handleValueChange(event: SyntheticEvent<Element, Event>, newValue: Coding | null) {
     if (newValue) {
@@ -62,7 +56,6 @@ function QItemChoiceAutocomplete(props: Props) {
     <>
       <Autocomplete
         id={qItem.id}
-        autoHighlight
         value={valueCoding ?? null}
         options={options}
         noOptionsText={'No results'}
@@ -71,11 +64,12 @@ function QItemChoiceAutocomplete(props: Props) {
         loading={loading}
         loadingText={'Fetching results...'}
         clearOnEscape
+        autoHighlight
+        fullWidth
         onChange={handleValueChange}
         filterOptions={(x) => x}
-        sx={{ maxWidth: 202 }}
         renderInput={(params) => (
-          <TextField
+          <StandardTextField
             {...params}
             label={valueCoding ? '' : 'Search...'}
             onChange={handleInputChange}

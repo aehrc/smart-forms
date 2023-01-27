@@ -36,12 +36,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   }
 
   const choiceSelectAnswerOption = (
-    <Select
-      id={qItem.id}
-      name={qItem.text}
-      value={valueSelect}
-      sx={{ maxWidth: 202 }}
-      onChange={handleChange}>
+    <Select id={qItem.id} name={qItem.text} value={valueSelect} fullWidth onChange={handleChange}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (

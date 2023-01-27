@@ -13,7 +13,7 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
-import { FixedSizeOutlinedInput } from '../../../StyledComponents/Textfield.styles';
+import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -85,12 +85,13 @@ function QItemDecimal(props: Props) {
   }
 
   const decimalInput = (
-    <FixedSizeOutlinedInput
+    <StandardOutlinedInput
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
       disabled={!!calculatedExpression}
       sx={{ mb: repeats ? 0 : 2 }}
+      fullWidth
       inputProps={{
         inputMode: 'numeric',
         pattern: '[0-9]*'

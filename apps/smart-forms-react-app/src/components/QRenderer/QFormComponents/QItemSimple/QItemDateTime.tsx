@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
-import { FixedSizeTextField } from '../../../StyledComponents/Textfield.styles';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -74,7 +74,7 @@ function QItemDateTimePicker(props: QItemDateTimePickerProps) {
         showToolbar
         value={value}
         onChange={onDateTimeChange}
-        renderInput={(params) => <FixedSizeTextField {...params} />}
+        renderInput={(params) => <StandardTextField fullWidth {...params} />}
       />
     </LocalizationProvider>
   );

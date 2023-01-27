@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { Autocomplete, FormControl, Grid, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -10,6 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,15 +50,17 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     <>
       <Autocomplete
         id={qItem.id}
-        freeSolo
-        autoHighlight
         value={valueSelect ?? null}
         options={options}
         getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
         onChange={handleValueChange}
         onInputChange={(event, newValue) => handleValueChange(event, newValue)}
-        sx={{ maxWidth: 202 }}
-        renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
+        freeSolo
+        autoHighlight
+        fullWidth
+        renderInput={(params) => (
+          <StandardTextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />
+        )}
       />
       {serverError ? (
         <Typography variant="subtitle2">

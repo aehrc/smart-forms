@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { FormControl, Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -11,6 +11,7 @@ import { CalcExpressionContext } from '../../Form';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -30,7 +31,7 @@ function QItemInteger(props: Props) {
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
   useEffect(() => {
-    // if integer item is an enableWhen linked question and it does not have an answer yet
+    // if integer item is an enableWhen linked question, and it does not have an answer yet
     // set default answer to 0 - to trigger enableWhen == 0
     if (qItem.linkId in enableWhenLinkMap && !qrInteger['answer']) {
       onQrItemChange({ ...qrInteger, answer: [{ valueInteger: 0 }] });
@@ -57,14 +58,19 @@ function QItemInteger(props: Props) {
     onQrItemChange(qrInteger);
   }
 
-  const renderQItemInteger = repeats ? (
-    <TextField
+  const integerInput = (
+    <StandardTextField
       id={qItem.linkId}
       value={valueInteger}
       onChange={handleChange}
       sx={{ mb: 0 }}
+      fullWidth
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
     />
+  );
+
+  const renderQItemInteger = repeats ? (
+    <>{integerInput}</>
   ) : (
     <FormControl>
       <Grid container columnSpacing={6}>
@@ -72,13 +78,7 @@ function QItemInteger(props: Props) {
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <TextField
-            id={qItem.linkId}
-            value={valueInteger}
-            onChange={handleChange}
-            sx={{ mb: 0 }}
-            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-          />
+          {integerInput}
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>

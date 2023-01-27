@@ -1,5 +1,6 @@
 import React from 'react';
-import { Checkbox, FormControlLabel, TextField } from '@mui/material';
+import { Checkbox, FormControlLabel } from '@mui/material';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props {
   value: string | null;
@@ -27,7 +28,12 @@ function QItemCheckboxSingleWithOpenLabel(props: Props) {
         label={label + ':'}
         sx={{ mr: 3 }}
       />
-      <TextField disabled={!isChecked} value={value} onChange={handleInputChange} />
+      <StandardTextField
+        disabled={!isChecked}
+        value={value}
+        onChange={handleInputChange}
+        fullWidth
+      />
     </>
   );
 }

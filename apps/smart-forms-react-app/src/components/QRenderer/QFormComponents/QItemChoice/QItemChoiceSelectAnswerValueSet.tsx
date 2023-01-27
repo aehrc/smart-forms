@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useEffect } from 'react';
-import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { Autocomplete, FormControl, Grid, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
@@ -10,6 +10,7 @@ import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -52,13 +53,15 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     options.length > 0 ? (
       <Autocomplete
         id={qItem.id}
-        autoHighlight
         options={options}
         getOptionLabel={(option) => `${option.display}`}
         value={valueCoding ?? null}
         onChange={handleChange}
-        sx={{ maxWidth: 202 }}
-        renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
+        autoHighlight
+        fullWidth
+        renderInput={(params) => (
+          <StandardTextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />
+        )}
       />
     ) : serverError ? (
       <Typography variant="subtitle2">

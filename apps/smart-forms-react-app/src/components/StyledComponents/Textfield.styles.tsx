@@ -1,9 +1,10 @@
 import { OutlinedInput, styled, TextField } from '@mui/material';
 
-export const FixedSizeTextField = styled(TextField)(() => ({
-  maxWidth: '202px'
+// Always use this accompanied by the TextField prop fullWidth
+export const StandardTextField = styled(TextField)(() => ({
+  maxWidth: 280
 }));
 
-export const FixedSizeOutlinedInput = styled(OutlinedInput)(() => ({
-  maxWidth: '202px'
+export const StandardOutlinedInput = styled(OutlinedInput)(() => ({
+  maxWidth: 280
 }));
