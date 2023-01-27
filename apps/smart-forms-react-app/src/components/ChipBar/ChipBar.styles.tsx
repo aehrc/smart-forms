@@ -14,6 +14,6 @@ export const ChipBarBox = styled(Box)(({ theme }) => ({
 }));
 
 export const OperationChip = styled(Chip)(() => ({
-  paddingLeft: '4px',
-  paddingRight: '4px'
+  paddingLeft: 4,
+  paddingRight: 4
 }));
