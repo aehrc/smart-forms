@@ -43,7 +43,7 @@ function FormBodyTabbed(props: Props) {
       <Grid container spacing={2}>
         <TabContext value={tabIndex.toString()}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
-            <Card sx={{ p: 1, mb: 2 }}>
+            <Card sx={{ p: 0.75, mb: 2 }}>
               <Box sx={{ flexGrow: 1 }}>
                 <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }}>
                   {qFormItems.map((qItem, index) => {
