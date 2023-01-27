@@ -9,7 +9,9 @@ interface Props {
 function QItemChoiceRadioSingle(props: Props) {
   const { value, label } = props;
 
-  return <FormControlLabel value={value} control={<Radio />} label={label} sx={{ mr: 3 }} />;
+  return (
+    <FormControlLabel value={value} control={<Radio size="small" />} label={label} sx={{ mr: 3 }} />
+  );
 }
 
 export default QItemChoiceRadioSingle;
