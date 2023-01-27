@@ -60,7 +60,7 @@ function FormBodyTabbed(props: Props) {
                         onClick={() => setTabIndex(index + 1)}>
                         <ListItemText
                           primary={
-                            <Typography fontSize={12} variant="h6">
+                            <Typography variant="subtitle2">
                               {getShortText(qItem) ?? qItem.text}
                             </Typography>
                           }

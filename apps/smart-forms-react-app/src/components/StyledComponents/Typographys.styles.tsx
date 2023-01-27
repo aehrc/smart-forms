@@ -7,7 +7,7 @@ export const SideBarOverlineTypography = styled(Typography)(() => ({
 }));
 
 export const QGroupHeadingTypography = styled(Typography)(() => ({
-  fontSize: 16
+  fontSize: 15
 }));
 
 export const MainGridHeadingTypography = styled(Typography)(() => ({

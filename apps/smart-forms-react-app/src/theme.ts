@@ -23,10 +23,10 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
   return createTheme({
     typography: {
       body1: {
-        fontSize: 14
+        fontSize: 13
       },
       subtitle2: {
-        fontSize: 12
+        fontSize: 11.5
       }
     },
     palette: {
