@@ -42,3 +42,8 @@ export type PageSwitcherContextType = {
   currentPage: PageType;
   goToPage: (page: PageType) => unknown;
 };
+
+export type SideBarContextType = {
+  isExpanded: boolean;
+  setIsExpanded: (sideBarActive: boolean) => unknown;
+};

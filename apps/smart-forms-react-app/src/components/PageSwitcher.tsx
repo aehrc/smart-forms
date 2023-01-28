@@ -6,6 +6,7 @@ import Renderer from './QRenderer/Renderer';
 import { QuestionnaireProviderContext } from '../App';
 import NavBar from './NavBar/NavBar';
 import ResponsePreview from './Preview/ResponsePreview';
+import SideBarContextProvider from '../custom-contexts/SideBarContext';
 
 function PageSwitcher() {
   const pageSwitcher = React.useContext(PageSwitcherContext);
@@ -31,7 +32,9 @@ function PageSwitcher() {
   return (
     <>
       <NavBar />
-      <RenderPage />
+      <SideBarContextProvider>
+        <RenderPage />
+      </SideBarContextProvider>
     </>
   );
 }
