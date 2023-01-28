@@ -1,7 +1,6 @@
 import * as React from 'react';
-import Divider from '@mui/material/Divider';
-import { Box } from '@mui/material';
-import OrganisationLogo from '../OrganisationLogo';
+import { Box, Divider } from '@mui/material';
+import SideBarBottom from './SideBarBottom';
 import { SideBarCard, SideBarListBox } from './SideBar.styles';
 import { SideBarOverlineTypography } from '../StyledComponents/Typographys.styles';
 import { SecondaryNonSelectableList } from '../StyledComponents/Lists.styles';
@@ -12,13 +11,13 @@ function SideBar(props: { children: React.ReactNode }) {
   return (
     <SideBarCard>
       <SideBarListBox>
-        <Box sx={{ my: 1 }}>
+        <Box sx={{ m: 1 }}>
           <SideBarOverlineTypography variant="overline">Operations</SideBarOverlineTypography>
           <SecondaryNonSelectableList disablePadding>{children}</SecondaryNonSelectableList>
         </Box>
         <Box sx={{ flexGrow: 1 }}></Box>
         <Divider />
-        <OrganisationLogo />
+        <SideBarBottom />
       </SideBarListBox>
     </SideBarCard>
   );

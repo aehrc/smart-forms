@@ -1,8 +1,6 @@
 import { Box, Card, styled } from '@mui/material';
 
 export const SideBarListBox = styled(Box)(() => ({
-  paddingLeft: 8,
-  paddingRight: 8,
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
