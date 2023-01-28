@@ -3,11 +3,9 @@ import dayjs from 'dayjs';
 import { Box } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
 import { constructName } from '../../functions/LaunchContextFunctions';
-import { QuestionnaireActiveContext } from '../../custom-contexts/QuestionnaireActiveContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { NavBarTitleTypography, NavToolBar } from './NavBar.styles';
 import NavBarPatientUserDetails from './NavBarPatientUserDetails';
-import { QuestionnaireProviderContext } from '../../App';
 
 const patientData: PatientData = {
   name: '',
@@ -20,8 +18,6 @@ const userData: UserData = {
 };
 
 function NavBar() {
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireActive = useContext(QuestionnaireActiveContext);
   const launchContext = useContext(LaunchContext);
 
   const patient = launchContext.patient;
@@ -44,11 +40,7 @@ function NavBar() {
     <>
       <NavToolBar variant="dense">
         <Box>
-          <NavBarTitleTypography>
-            {questionnaireActive.questionnaireActive
-              ? questionnaireProvider.questionnaire.title
-              : 'SMART Health Checks'}
-          </NavBarTitleTypography>
+          <NavBarTitleTypography>SMART Forms</NavBarTitleTypography>
         </Box>
         <Box sx={{ flexGrow: 1 }} />
         <NavBarPatientUserDetails patientData={patientData} userData={userData} />
