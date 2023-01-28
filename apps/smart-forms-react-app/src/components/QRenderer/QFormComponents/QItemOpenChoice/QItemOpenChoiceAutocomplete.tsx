@@ -3,8 +3,9 @@ import { Autocomplete, CircularProgress, Grid, Typography } from '@mui/material'
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
@@ -15,13 +16,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoiceAutocomplete(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
   let valueAutocomplete: Coding | string | undefined;
@@ -82,6 +84,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
             {...params}
             label={valueAutocomplete ? '' : 'Search...'}
             onChange={handleInputChange}
+            isTabled={isTabled}
             InputProps={{
               ...params.InputProps,
               endAdornment: (

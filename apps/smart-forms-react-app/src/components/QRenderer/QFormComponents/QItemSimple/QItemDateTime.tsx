@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -17,13 +18,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDateTime(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const qrDateTime = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDateTime : null;
@@ -43,7 +45,7 @@ function QItemDateTime(props: Props) {
   }
 
   const renderQItemDateTime = isRepeated ? (
-    <QItemDateTimePicker value={value} onDateTimeChange={handleChange} />
+    <QItemDateTimePicker value={value} onDateTimeChange={handleChange} isTabled={isTabled} />
   ) : (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
@@ -51,7 +53,7 @@ function QItemDateTime(props: Props) {
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <QItemDateTimePicker value={value} onDateTimeChange={handleChange} />
+          <QItemDateTimePicker value={value} onDateTimeChange={handleChange} isTabled={isTabled} />
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
@@ -61,13 +63,13 @@ function QItemDateTime(props: Props) {
   return <>{renderQItemDateTime}</>;
 }
 
-interface QItemDateTimePickerProps {
+interface QItemDateTimePickerProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
   onDateTimeChange: (newValue: Dayjs | null) => unknown;
 }
 
 function QItemDateTimePicker(props: QItemDateTimePickerProps) {
-  const { value, onDateTimeChange } = props;
+  const { value, onDateTimeChange, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -75,7 +77,7 @@ function QItemDateTimePicker(props: QItemDateTimePickerProps) {
         showToolbar
         value={value}
         onChange={onDateTimeChange}
-        renderInput={(params) => <StandardTextField fullWidth {...params} />}
+        renderInput={(params) => <StandardTextField fullWidth isTabled={isTabled} {...params} />}
       />
     </LocalizationProvider>
   );

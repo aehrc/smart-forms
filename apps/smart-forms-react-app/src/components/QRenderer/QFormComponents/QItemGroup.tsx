@@ -8,8 +8,8 @@ import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import {
-  PropsWithQrItemChangeHandler,
   PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler,
   QrRepeatGroup
 } from '../../../interfaces/Interfaces';
 import { isHidden, isRepeatItemAndNotCheckbox } from '../../../functions/QItemFunctions';
@@ -178,6 +178,7 @@ function QItemGroup(props: Props) {
                   qItem={qItem}
                   qrItem={qrItem}
                   isRepeated={false}
+                  isTabled={false}
                   onQrItemChange={handleQrItemChange}></QItemSwitcher>
               );
             }

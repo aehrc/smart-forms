@@ -3,8 +3,9 @@ import { Grid } from '@mui/material';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -17,13 +18,14 @@ import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDate(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const qrDate = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrDate['answer'] ? qrDate['answer'][0].valueDate : null;
@@ -43,7 +45,7 @@ function QItemDate(props: Props) {
   }
 
   const renderQItemDate = isRepeated ? (
-    <QItemDatePicker value={value} onDateChange={handleChange} />
+    <QItemDatePicker value={value} onDateChange={handleChange} isTabled={isTabled} />
   ) : (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
@@ -51,7 +53,7 @@ function QItemDate(props: Props) {
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <QItemDatePicker value={value} onDateChange={handleChange} />
+          <QItemDatePicker value={value} onDateChange={handleChange} isTabled={isTabled} />
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
@@ -61,13 +63,13 @@ function QItemDate(props: Props) {
   return <>{renderQItemDate}</>;
 }
 
-interface QItemDatePickerProps {
+interface QItemDatePickerProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
   onDateChange: (newValue: Dayjs | null) => unknown;
 }
 
 function QItemDatePicker(props: QItemDatePickerProps) {
-  const { value, onDateChange } = props;
+  const { value, onDateChange, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -75,7 +77,7 @@ function QItemDatePicker(props: QItemDatePickerProps) {
         inputFormat="DD/MM/YYYY"
         value={value}
         onChange={onDateChange}
-        renderInput={(params) => <StandardTextField fullWidth {...params} />}
+        renderInput={(params) => <StandardTextField fullWidth isTabled={isTabled} {...params} />}
       />
     </LocalizationProvider>
   );

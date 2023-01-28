@@ -2,8 +2,9 @@ import React, { useContext, useEffect } from 'react';
 import { Grid, TextField } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -15,13 +16,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemQuantity(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   let qrQuantity = qrItem ? qrItem : createQrItem(qItem);
@@ -75,6 +77,7 @@ function QItemQuantity(props: Props) {
           id={qItem.linkId}
           value={valueQuantity}
           fullWidth
+          isTabled={isTabled}
           onChange={handleValueChange}
         />
       </Grid>

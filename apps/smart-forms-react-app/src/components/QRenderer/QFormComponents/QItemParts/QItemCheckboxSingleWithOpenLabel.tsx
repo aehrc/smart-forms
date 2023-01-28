@@ -33,6 +33,7 @@ function QItemCheckboxSingleWithOpenLabel(props: Props) {
         value={value}
         onChange={handleInputChange}
         fullWidth
+        isTabled={false}
       />
     </>
   );

@@ -2,8 +2,9 @@ import React, { SyntheticEvent } from 'react';
 import { Autocomplete, Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import {
   QuestionnaireItem,
@@ -19,13 +20,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoiceSelectAnswerOption(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
@@ -72,7 +74,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       freeSolo
       autoHighlight
       fullWidth
-      renderInput={(params) => <StandardTextField {...params} />}
+      renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
     />
   );
   const renderQItemOpenChoiceAutocomplete = isRepeated ? (

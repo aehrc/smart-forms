@@ -3,8 +3,9 @@ import { Grid, InputAdornment } from '@mui/material';
 
 import {
   CalculatedExpression,
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -18,13 +19,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDecimal(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   const precision = getDecimalPrecision(qItem);
@@ -92,6 +94,7 @@ function QItemDecimal(props: Props) {
       onChange={handleChange}
       disabled={!!calculatedExpression}
       fullWidth
+      isTabled={isTabled}
       inputProps={{
         inputMode: 'numeric',
         pattern: '[0-9]*'

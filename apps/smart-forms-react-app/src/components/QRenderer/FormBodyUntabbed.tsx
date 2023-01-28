@@ -142,6 +142,7 @@ function FormBodyUntabbed(props: Props) {
                     qItem={qItem}
                     qrItem={qrItem}
                     isRepeated={false}
+                    isTabled={false}
                     onQrItemChange={handleQrItemChange}></QItemSwitcher>
                 );
               }

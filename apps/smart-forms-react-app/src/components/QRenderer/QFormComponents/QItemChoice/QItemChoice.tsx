@@ -9,20 +9,22 @@ import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import { getChoiceControlType, getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioAnswerValueSet from './QItemChoiceRadioAnswerValueSet';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import QItemChoiceCheckboxAnswerValueSet from './QItemChoiceCheckboxAnswerValueSet';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoice(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
 
   switch (getChoiceControlType(qItem)) {
@@ -76,6 +78,7 @@ function QItemChoice(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -86,6 +89,7 @@ function QItemChoice(props: Props) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );

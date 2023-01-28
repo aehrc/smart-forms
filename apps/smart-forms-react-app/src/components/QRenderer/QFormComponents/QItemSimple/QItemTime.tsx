@@ -6,8 +6,9 @@ import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -18,13 +19,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemTime(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const qrTime = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrTime['answer'] ? qrTime['answer'][0].valueTime : null;
@@ -44,7 +46,7 @@ function QItemTime(props: Props) {
   }
 
   const renderQItemTime = isRepeated ? (
-    <QItemTimePicker value={value} onTimeChange={handleChange} />
+    <QItemTimePicker value={value} onTimeChange={handleChange} isTabled={isTabled} />
   ) : (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
@@ -52,7 +54,7 @@ function QItemTime(props: Props) {
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <QItemTimePicker value={value} onTimeChange={handleChange} />
+          <QItemTimePicker value={value} onTimeChange={handleChange} isTabled={isTabled} />
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
@@ -61,13 +63,13 @@ function QItemTime(props: Props) {
   return <>{renderQItemTime}</>;
 }
 
-interface QItemTimePickerProps {
+interface QItemTimePickerProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
   onTimeChange: (newValue: Dayjs | null) => unknown;
 }
 
 function QItemTimePicker(props: QItemTimePickerProps) {
-  const { value, onTimeChange } = props;
+  const { value, onTimeChange, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -75,7 +77,7 @@ function QItemTimePicker(props: QItemTimePickerProps) {
         showToolbar
         value={value}
         onChange={onTimeChange}
-        renderInput={(params) => <StandardTextField fullWidth {...params} />}
+        renderInput={(params) => <StandardTextField fullWidth isTabled={isTabled} {...params} />}
       />
     </LocalizationProvider>
   );

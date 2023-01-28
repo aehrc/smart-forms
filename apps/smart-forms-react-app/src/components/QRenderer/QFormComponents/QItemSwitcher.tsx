@@ -15,15 +15,17 @@ import QItemTime from './QItemSimple/QItemTime';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/Interfaces';
 import { isHidden } from '../../../functions/QItemFunctions';
 import { EnableWhenChecksContext } from '../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
@@ -34,7 +36,7 @@ interface Props
  * @author Sean Fong
  */
 function QItemSwitcher(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
@@ -54,6 +56,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -72,6 +75,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -81,6 +85,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -90,6 +95,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -110,6 +116,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -119,6 +126,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -128,6 +136,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -143,6 +152,7 @@ function QItemSwitcher(props: Props) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
+            isTabled={isTabled}
             onQrItemChange={handleQrItemChange}
           />
         );
@@ -156,6 +166,7 @@ function QItemSwitcher(props: Props) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
+            isTabled={isTabled}
             onQrItemChange={handleQrItemChange}
           />
         );

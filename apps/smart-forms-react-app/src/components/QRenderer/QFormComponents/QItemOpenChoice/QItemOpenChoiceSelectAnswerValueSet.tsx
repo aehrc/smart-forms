@@ -2,8 +2,9 @@ import React, { SyntheticEvent } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -15,13 +16,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
@@ -59,7 +61,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         freeSolo
         autoHighlight
         fullWidth
-        renderInput={(params) => <StandardTextField {...params} />}
+        renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
       />
       {serverError ? (
         <Typography variant="subtitle2">
