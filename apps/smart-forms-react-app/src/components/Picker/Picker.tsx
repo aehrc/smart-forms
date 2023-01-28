@@ -36,19 +36,13 @@ function Picker() {
     refreshQuestionnaireList
   } = usePicker(launch);
 
-  console.log(sideBar);
   return (
     <Grid container>
-      {sideBar.isExpanded ? (
-        <SideBarGrid item xs={12} lg={1.75}>
-          <SideBar>
-            <PickerOperationButtons refreshQuestionnaireList={refreshQuestionnaireList} />
-          </SideBar>
-        </SideBarGrid>
-      ) : (
-        <SideBarGrid item xs={12} lg={0.5} />
-      )}
-
+      <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
+        <SideBar>
+          <PickerOperationButtons refreshQuestionnaireList={refreshQuestionnaireList} />
+        </SideBar>
+      </SideBarGrid>
       <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
           <Stack direction="row" gap={8}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItemButton, Typography } from '@mui/material';
+import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import { Save } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
@@ -7,6 +7,8 @@ import Client from 'fhirclient/lib/Client';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import ConfirmSaveAsFinalDialog from '../../Dialogs/ConfirmSaveAsFinalDialog';
 import { QuestionnaireResponseProviderContext } from '../../../App';
+import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
+import { SideBarContext } from '../../../custom-contexts/SideBarContext';
 
 interface Props {
   isChip?: boolean;
@@ -29,6 +31,8 @@ function SaveAsFinalButton(props: Props) {
     user
   } = props;
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const sideBar = React.useContext(SideBarContext);
+
   const questionnaireResponseIsSaved: boolean =
     !!questionnaireResponseProvider.questionnaireResponse.authored &&
     !!questionnaireResponseProvider.questionnaireResponse.author;
@@ -39,7 +43,9 @@ function SaveAsFinalButton(props: Props) {
     setDialogOpen(true);
   }
 
-  const renderButtonOrChip = !isChip ? (
+  const buttonTitle = 'Save as Final';
+
+  const renderButton = (
     <ListItemButton
       disabled={
         (qrHasChanges === false ||
@@ -51,15 +57,17 @@ function SaveAsFinalButton(props: Props) {
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
-            Save as Final
+            {buttonTitle}
           </Typography>
         }
       />
     </ListItemButton>
-  ) : (
+  );
+
+  const renderChip = (
     <OperationChip
       icon={<Save fontSize="small" />}
-      label="Save as Final"
+      label={buttonTitle}
       clickable
       disabled={
         (qrHasChanges === false ||
@@ -69,9 +77,28 @@ function SaveAsFinalButton(props: Props) {
       onClick={handleClick}
     />
   );
+
+  const renderIconButton = (
+    <Box>
+      <Tooltip title={buttonTitle} placement="right">
+        <span>
+          <SideBarIconButton
+            disabled={
+              (qrHasChanges === false ||
+                (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)) &&
+              !questionnaireResponseIsSaved
+            }
+            onClick={handleClick}>
+            <Save fontSize="small" />
+          </SideBarIconButton>
+        </span>
+      </Tooltip>
+    </Box>
+  );
+
   return (
     <>
-      {renderButtonOrChip}
+      {isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}
       <ConfirmSaveAsFinalDialog
         dialogOpen={dialogOpen}
         closeDialog={() => setDialogOpen(false)}

@@ -18,6 +18,7 @@ import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import FormBodyInvalid from './FormBodyInvalid';
 import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 import QTitle from './QFormComponents/QItemParts/QTitle';
+import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -48,6 +49,7 @@ function Form(props: Props) {
   const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
   const enableWhen = React.useContext(EnableWhenContext);
+  const sideBar = React.useContext(SideBarContext);
 
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
@@ -92,7 +94,7 @@ function Form(props: Props) {
         <ContainedValueSetContext.Provider value={containedValueSets}>
           <EnableWhenChecksContext.Provider value={enableWhenStatus}>
             <Grid container>
-              <SideBarGrid item xs={12} lg={1.75}>
+              <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
                 <SideBar>
                   <RendererOperationButtons
                     qrHasChanges={qrHasChanges}
@@ -102,7 +104,7 @@ function Form(props: Props) {
                   />
                 </SideBar>
               </SideBarGrid>
-              <MainGrid item xs={12} lg={10.25}>
+              <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
                 <MainGridContainerBox>
                   <MainGridHeadingTypography variant="h1">
                     <QTitle questionnaire={questionnaire} />

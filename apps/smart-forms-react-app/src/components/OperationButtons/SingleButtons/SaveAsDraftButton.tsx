@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItemButton, Typography } from '@mui/material';
+import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import { SaveAs } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
@@ -9,6 +9,8 @@ import Client from 'fhirclient/lib/Client';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../../QRenderer/Form';
+import { SideBarContext } from '../../../custom-contexts/SideBarContext';
+import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
 
 interface Props {
   isChip?: boolean;
@@ -35,6 +37,7 @@ function SaveAsDraftButton(props: Props) {
 
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const sideBar = React.useContext(SideBarContext);
 
   function handleClick() {
     let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
@@ -59,27 +62,44 @@ function SaveAsDraftButton(props: Props) {
       .catch((error) => console.error(error));
   }
 
-  const renderButtonOrChip = !isChip ? (
+  const buttonTitle = 'Save as Draft';
+
+  const renderButton = (
     <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
       <SaveAs sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
-            Save as Draft
+            {buttonTitle}
           </Typography>
         }
       />
     </ListItemButton>
-  ) : (
+  );
+
+  const renderChip = (
     <OperationChip
       icon={<SaveAs fontSize="small" />}
-      label="Save as Draft"
+      label={buttonTitle}
       clickable
       disabled={!qrHasChanges}
       onClick={handleClick}
     />
   );
-  return <>{renderButtonOrChip}</>;
+
+  const renderIconButton = (
+    <Box>
+      <Tooltip title={buttonTitle} placement="right">
+        <span>
+          <SideBarIconButton disabled={!qrHasChanges} onClick={handleClick}>
+            <SaveAs fontSize="small" />
+          </SideBarIconButton>
+        </span>
+      </Tooltip>
+    </Box>
+  );
+
+  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default SaveAsDraftButton;

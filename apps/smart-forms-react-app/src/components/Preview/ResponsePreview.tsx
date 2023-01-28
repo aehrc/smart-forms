@@ -9,8 +9,11 @@ import ResponsePreviewOperationButtons from '../OperationButtons/ResponsePreview
 import { useReactToPrint } from 'react-to-print';
 import PrintPreviewButton from '../OperationButtons/SingleButtons/PrintPreviewButton';
 import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
+import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function ResponsePreview() {
+  const sideBar = React.useContext(SideBarContext);
+
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current
@@ -18,13 +21,13 @@ function ResponsePreview() {
 
   return (
     <Grid container>
-      <SideBarGrid item xs={12} lg={1.75}>
+      <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
         <SideBar>
           <ResponsePreviewOperationButtons />
           <PrintPreviewButton handlePrint={handlePrint} />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item xs={12} lg={10.25}>
+      <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
           <MainGridHeadingTypography>Response Preview</MainGridHeadingTypography>
           <ChipBar>

@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../../data/images/CSIRO_Logo.png';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Tooltip } from '@mui/material';
 import {
   OrganisationLogoBox,
   SideBarExpandButtonBox,
@@ -30,9 +30,13 @@ function SideBarBottom() {
 
       <Grid item xs={4}>
         <SideBarExpandButtonBox>
-          <SideBarIconButton onClick={() => sideBar.setIsExpanded(!sideBar.isExpanded)}>
-            <KeyboardDoubleArrowLeft fontSize="small" />
-          </SideBarIconButton>
+          <Tooltip title="Collapse Sidebar" placement="right">
+            <span>
+              <SideBarIconButton onClick={() => sideBar.setIsExpanded(!sideBar.isExpanded)}>
+                <KeyboardDoubleArrowLeft fontSize="small" />
+              </SideBarIconButton>
+            </span>
+          </Tooltip>
         </SideBarExpandButtonBox>
       </Grid>
     </Grid>
