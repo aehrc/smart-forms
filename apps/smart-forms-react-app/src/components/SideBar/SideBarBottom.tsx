@@ -20,8 +20,8 @@ function SideBarBottom() {
           <Box
             component="img"
             sx={{
-              maxHeight: { xs: 40 },
-              maxWidth: { xs: 40 }
+              maxHeight: { xs: 35 },
+              maxWidth: { xs: 35 }
             }}
             src={logo}
           />
@@ -30,9 +30,7 @@ function SideBarBottom() {
 
       <Grid item xs={4}>
         <SideBarExpandButtonBox>
-          <SideBarIconButton
-            size="small"
-            onClick={() => sideBar.setIsExpanded(!sideBar.isExpanded)}>
+          <SideBarIconButton onClick={() => sideBar.setIsExpanded(!sideBar.isExpanded)}>
             <KeyboardDoubleArrowLeft fontSize="small" />
           </SideBarIconButton>
         </SideBarExpandButtonBox>

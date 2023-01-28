@@ -3,7 +3,7 @@ import { Box, IconButton, styled } from '@mui/material';
 export const OrganisationLogoBox = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'center',
-  padding: 10
+  padding: 9
 }));
 
 export const SideBarExpandButtonBox = styled(Box)(() => ({
