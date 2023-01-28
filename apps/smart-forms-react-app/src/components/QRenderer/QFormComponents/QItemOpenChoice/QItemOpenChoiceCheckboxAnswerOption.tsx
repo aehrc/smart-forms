@@ -5,7 +5,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
@@ -18,14 +18,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: QItemChoiceOrientation;
 }
 
 function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
-  const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrOpenChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrOpenChoiceCheckbox['answer'] ? qrOpenChoiceCheckbox['answer'] : [];
@@ -50,7 +50,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
         answerOptions,
         qrOpenChoiceCheckbox,
         CheckBoxOptionType.AnswerOption,
-        repeats
+        isRepeated
       );
     } else if (changedOpenLabelValue) {
       updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
@@ -60,7 +60,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
         answerOptions,
         qrOpenChoiceCheckbox,
         CheckBoxOptionType.AnswerOption,
-        repeats
+        isRepeated
       );
     }
 

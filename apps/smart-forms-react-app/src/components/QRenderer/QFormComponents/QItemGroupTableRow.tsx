@@ -59,7 +59,7 @@ function QItemGroupTableRow(props: Props) {
                   key={qItem.linkId}
                   qItem={rowItem}
                   qrItem={qrItem}
-                  repeats={true}
+                  isRepeated={true}
                   onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
               </FirstTableCell>
             );
@@ -70,7 +70,7 @@ function QItemGroupTableRow(props: Props) {
                   key={qItem.linkId}
                   qItem={rowItem}
                   qrItem={qrItem}
-                  repeats={true}
+                  isRepeated={true}
                   onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
               </StandardTableCell>
             );

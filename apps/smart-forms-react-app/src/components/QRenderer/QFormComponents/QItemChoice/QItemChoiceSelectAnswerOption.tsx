@@ -3,7 +3,7 @@ import { Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
@@ -14,13 +14,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoiceSelectAnswerOption(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const qrChoiceSelect = qrItem ? qrItem : createQrItem(qItem);
   const valueSelect = getQrChoiceValue(qrChoiceSelect);
@@ -62,7 +62,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
     </Select>
   );
 
-  const renderQItemChoiceSelectAnswerOption = repeats ? (
+  const renderQItemChoiceSelectAnswerOption = isRepeated ? (
     <>{choiceSelectAnswerOption}</>
   ) : (
     <FullWidthFormComponentBox>

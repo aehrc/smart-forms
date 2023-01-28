@@ -13,9 +13,13 @@ export interface PropsWithQrRepeatGroupChangeHandler {
   onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
 }
 
-export interface PropsWithRepeatsAttribute {
-  repeats: boolean;
+export interface PropsWithIsRepeatedAttribute {
+  isRepeated: boolean;
 }
+
+// export interface PropsWithIsTabledAttribute {
+//   isTabled: boolean;
+// }
 
 export interface PatientData {
   name: string;

@@ -3,7 +3,7 @@ import { Grid, TextField } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -14,13 +14,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemText(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   let qrText = qrItem ? qrItem : createQrItem(qItem);
   const valueText = qrText['answer'] ? qrText['answer'][0].valueString : '';
@@ -42,7 +42,7 @@ function QItemText(props: Props) {
     />
   );
 
-  const renderQItemText = repeats ? (
+  const renderQItemText = isRepeated ? (
     <>{textInput}</>
   ) : (
     <FullWidthFormComponentBox>

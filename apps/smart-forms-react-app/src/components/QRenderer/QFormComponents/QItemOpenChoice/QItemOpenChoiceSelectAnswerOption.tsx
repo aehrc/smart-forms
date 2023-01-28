@@ -3,7 +3,7 @@ import { Autocomplete, Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import {
   QuestionnaireItem,
@@ -19,13 +19,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoiceSelectAnswerOption(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
@@ -75,7 +75,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       renderInput={(params) => <StandardTextField {...params} />}
     />
   );
-  const renderQItemOpenChoiceAutocomplete = repeats ? (
+  const renderQItemOpenChoiceAutocomplete = isRepeated ? (
     <>{openOpenChoiceSelectAnswerOption}</>
   ) : (
     <FullWidthFormComponentBox>

@@ -3,7 +3,7 @@ import { Grid, TextField } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -15,13 +15,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemQuantity(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   let qrQuantity = qrItem ? qrItem : createQrItem(qItem);
@@ -85,7 +85,7 @@ function QItemQuantity(props: Props) {
     </Grid>
   );
 
-  if (repeats) {
+  if (isRepeated) {
     return <>{QItemQuantityFields}</>;
   } else {
     return (

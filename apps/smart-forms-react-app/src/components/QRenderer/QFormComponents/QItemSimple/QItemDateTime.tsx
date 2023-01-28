@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -17,13 +17,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDateTime(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const qrDateTime = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDateTime : null;
@@ -42,7 +42,7 @@ function QItemDateTime(props: Props) {
     }
   }
 
-  const renderQItemDateTime = repeats ? (
+  const renderQItemDateTime = isRepeated ? (
     <QItemDateTimePicker value={value} onDateTimeChange={handleChange} />
   ) : (
     <FullWidthFormComponentBox>

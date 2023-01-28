@@ -83,7 +83,7 @@ function FormBodyTabbed(props: Props) {
                     <QItemGroup
                       qItem={qItem}
                       qrItem={qrItem}
-                      repeats={qItem.repeats ?? false}
+                      isRepeated={qItem.repeats ?? false}
                       groupCardElevation={2}
                       onQrItemChange={handleQrGroupChange}></QItemGroup>
                   </TabPanel>

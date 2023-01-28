@@ -2,8 +2,8 @@ import React from 'react';
 import { Grid, Typography } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -18,14 +18,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: QItemChoiceOrientation;
 }
 
 function QItemChoiceCheckboxAnswerValueSet(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
@@ -41,7 +41,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
       options,
       qrChoiceCheckbox,
       CheckBoxOptionType.AnswerValueSet,
-      repeats
+      isRepeated
     );
 
     if (updatedQrChoiceCheckbox) {

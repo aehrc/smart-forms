@@ -4,7 +4,7 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -17,13 +17,13 @@ import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDate(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const qrDate = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrDate['answer'] ? qrDate['answer'][0].valueDate : null;
@@ -42,7 +42,7 @@ function QItemDate(props: Props) {
     }
   }
 
-  const renderQItemDate = repeats ? (
+  const renderQItemDate = isRepeated ? (
     <QItemDatePicker value={value} onDateChange={handleChange} />
   ) : (
     <FullWidthFormComponentBox>

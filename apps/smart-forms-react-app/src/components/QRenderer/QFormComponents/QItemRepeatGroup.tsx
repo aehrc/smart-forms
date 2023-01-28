@@ -3,7 +3,7 @@ import { Box, Button, Card, Divider, IconButton, Stack } from '@mui/material';
 
 import {
   PropsWithQrRepeatGroupChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../interfaces/Interfaces';
 import { Add, Delete } from '@mui/icons-material';
 import QItemGroup from './QItemGroup';
@@ -17,7 +17,7 @@ import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styl
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 
-interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAttribute {
+interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
@@ -91,7 +91,7 @@ function QItemRepeatGroup(props: Props) {
               <QItemGroup
                 qItem={qItem}
                 qrItem={singleQrGroup}
-                repeats={true}
+                isRepeated={true}
                 groupCardElevation={groupCardElevation + 1}
                 onQrItemChange={(newQrGroup) =>
                   handleAnswerItemsChange(newQrGroup, index)

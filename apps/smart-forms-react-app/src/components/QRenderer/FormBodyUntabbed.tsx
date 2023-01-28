@@ -67,7 +67,7 @@ function FormBodyUntabbed(props: Props) {
                       <QItemRepeatGroup
                         qItem={qItem}
                         qrItems={qrItems}
-                        repeats={true}
+                        isRepeated={true}
                         groupCardElevation={3}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
@@ -104,7 +104,7 @@ function FormBodyUntabbed(props: Props) {
                         <QItemRepeatGroup
                           qItem={qItem}
                           qrItems={[]}
-                          repeats={true}
+                          isRepeated={true}
                           groupCardElevation={3}
                           onQrRepeatGroupChange={handleQrRepeatGroupChange}
                         />
@@ -130,7 +130,7 @@ function FormBodyUntabbed(props: Props) {
                     <QItemGroup
                       qItem={qItem}
                       qrItem={qrItem}
-                      repeats={false}
+                      isRepeated={false}
                       groupCardElevation={3}
                       onQrItemChange={handleQrItemChange}></QItemGroup>
                   </Box>
@@ -141,7 +141,7 @@ function FormBodyUntabbed(props: Props) {
                     key={qItem.linkId}
                     qItem={qItem}
                     qrItem={qrItem}
-                    repeats={false}
+                    isRepeated={false}
                     onQrItemChange={handleQrItemChange}></QItemSwitcher>
                 );
               }

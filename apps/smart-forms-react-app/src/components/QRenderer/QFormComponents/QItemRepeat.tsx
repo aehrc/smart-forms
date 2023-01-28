@@ -86,7 +86,7 @@ function QItemRepeat(props: Props) {
                     <QItemSwitcher
                       qItem={qItem}
                       qrItem={singleQrItem}
-                      repeats={qItem.repeats ?? false}
+                      isRepeated={qItem.repeats ?? false}
                       onQrItemChange={(newQrItem) =>
                         handleAnswersChange(newQrItem, index)
                       }></QItemSwitcher>

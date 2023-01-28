@@ -7,7 +7,7 @@ import { Grid } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -18,13 +18,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemTime(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const qrTime = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrTime['answer'] ? qrTime['answer'][0].valueTime : null;
@@ -43,7 +43,7 @@ function QItemTime(props: Props) {
     }
   }
 
-  const renderQItemTime = repeats ? (
+  const renderQItemTime = isRepeated ? (
     <QItemTimePicker value={value} onTimeChange={handleChange} />
   ) : (
     <FullWidthFormComponentBox>

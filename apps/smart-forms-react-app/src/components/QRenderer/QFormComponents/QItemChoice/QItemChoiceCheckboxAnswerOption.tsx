@@ -6,7 +6,7 @@ import QItemChoiceCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
@@ -16,14 +16,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface QItemChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: QItemChoiceOrientation;
 }
 
 function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
-  const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
@@ -38,7 +38,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
       answerOptions,
       qrChoiceCheckbox,
       CheckBoxOptionType.AnswerOption,
-      repeats
+      isRepeated
     );
 
     if (updatedQrChoiceCheckbox) {

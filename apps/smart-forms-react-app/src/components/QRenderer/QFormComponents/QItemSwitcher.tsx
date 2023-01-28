@@ -16,14 +16,14 @@ import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../interfaces/Interfaces';
 import { isHidden } from '../../../functions/QItemFunctions';
 import { EnableWhenChecksContext } from '../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
@@ -34,7 +34,7 @@ interface Props
  * @author Sean Fong
  */
 function QItemSwitcher(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
 
@@ -53,7 +53,7 @@ function QItemSwitcher(props: Props) {
         <QItemString
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -62,7 +62,7 @@ function QItemSwitcher(props: Props) {
         <QItemBoolean
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -71,7 +71,7 @@ function QItemSwitcher(props: Props) {
         <QItemTime
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -80,7 +80,7 @@ function QItemSwitcher(props: Props) {
         <QItemDate
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -89,7 +89,7 @@ function QItemSwitcher(props: Props) {
         <QItemDateTime
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -98,7 +98,7 @@ function QItemSwitcher(props: Props) {
         <QItemText
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -109,7 +109,7 @@ function QItemSwitcher(props: Props) {
         <QItemInteger
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -118,7 +118,7 @@ function QItemSwitcher(props: Props) {
         <QItemDecimal
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -127,7 +127,7 @@ function QItemSwitcher(props: Props) {
         <QItemQuantity
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={handleQrItemChange}
         />
       );
@@ -142,7 +142,7 @@ function QItemSwitcher(props: Props) {
           <QItemChoice
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
             onQrItemChange={handleQrItemChange}
           />
         );
@@ -155,7 +155,7 @@ function QItemSwitcher(props: Props) {
           <QItemOpenChoice
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
             onQrItemChange={handleQrItemChange}
           />
         );

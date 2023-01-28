@@ -3,7 +3,7 @@ import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -15,13 +15,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoiceSelectAnswerValueSet(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const qrChoiceSelect = qrItem ? qrItem : createQrItem(qItem);
 
@@ -60,9 +60,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         onChange={handleChange}
         autoHighlight
         fullWidth
-        renderInput={(params) => (
-          <StandardTextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />
-        )}
+        renderInput={(params) => <StandardTextField {...params} />}
       />
     ) : serverError ? (
       <Typography variant="subtitle2">
@@ -74,7 +72,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
       </Typography>
     );
 
-  const renderQItemChoiceSelectAnswerValueSet = repeats ? (
+  const renderQItemChoiceSelectAnswerValueSet = isRepeated ? (
     <>{choiceSelectAnswerValueSet}</>
   ) : (
     <FullWidthFormComponentBox>

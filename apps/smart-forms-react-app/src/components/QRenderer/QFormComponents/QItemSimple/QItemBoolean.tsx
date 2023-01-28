@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -14,13 +14,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemBoolean(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
@@ -39,11 +39,15 @@ function QItemBoolean(props: Props) {
     onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: event.target.checked }] });
   }
 
-  const renderQItemBoolean = repeats ? (
+  const booleanInput = (
     <FormControlLabel
-      control={<Checkbox checked={valueBoolean} onChange={handleChange} sx={{ mb: 0 }} />}
+      control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
       label=""
     />
+  );
+
+  const renderQItemBoolean = isRepeated ? (
+    <>{booleanInput}</>
   ) : (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
@@ -51,10 +55,7 @@ function QItemBoolean(props: Props) {
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <FormControlLabel
-            control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
-            label=""
-          />
+          {booleanInput}
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>

@@ -4,7 +4,7 @@ import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
@@ -15,13 +15,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoiceAutocomplete(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
   const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
   let valueCoding: Coding | undefined;
@@ -95,7 +95,7 @@ function QItemChoiceAutocomplete(props: Props) {
     </>
   );
 
-  const renderQItemChoiceAutocomplete = repeats ? (
+  const renderQItemChoiceAutocomplete = isRepeated ? (
     <>{choiceAutocomplete}</>
   ) : (
     <FullWidthFormComponentBox>

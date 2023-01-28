@@ -7,20 +7,20 @@ import QItemOpenChoiceAutocomplete from './QItemOpenChoiceAutocomplete';
 import { getOpenChoiceControlType } from '../../../../functions/OpenChoiceFunctions';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
 import QItemOpenChoiceCheckboxAnswerOption from './QItemOpenChoiceCheckboxAnswerOption';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoice(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
 
   switch (getOpenChoiceControlType(qItem)) {
@@ -29,7 +29,7 @@ function QItemOpenChoice(props: Props) {
         <QItemOpenChoiceCheckboxAnswerOption
           qItem={qItem}
           qrItem={qrItem}
-          repeats={qItem['repeats'] ?? false}
+          isRepeated={qItem['repeats'] ?? false}
           onQrItemChange={onQrItemChange}
           orientation={orientation}
         />
@@ -39,7 +39,7 @@ function QItemOpenChoice(props: Props) {
         <QItemOpenChoiceAutocomplete
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -49,7 +49,7 @@ function QItemOpenChoice(props: Props) {
           <QItemOpenChoiceSelectAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -58,7 +58,7 @@ function QItemOpenChoice(props: Props) {
           <QItemOpenChoiceSelectAnswerOption
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
             onQrItemChange={onQrItemChange}
           />
         );

@@ -7,7 +7,7 @@ import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { QRadioGroup } from '../../../StyledComponents/Item.styles';
@@ -17,14 +17,14 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: QItemChoiceOrientation;
 }
 
 function QItemChoiceRadioAnswerValueSet(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrChoiceRadio = qrItem ? qrItem : createQrItem(qItem);
 
@@ -72,7 +72,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
       </Typography>
     );
 
-  const renderQItemChoiceRadio = repeats ? (
+  const renderQItemChoiceRadio = isRepeated ? (
     <>{choiceRadio}</>
   ) : (
     <FullWidthFormComponentBox>

@@ -2,8 +2,8 @@ import React, { useContext, useEffect } from 'react';
 import { Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -16,13 +16,13 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemInteger(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
   const enableWhenContext = React.useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
@@ -64,13 +64,12 @@ function QItemInteger(props: Props) {
       id={qItem.linkId}
       value={valueInteger}
       onChange={handleChange}
-      // sx={{ mb: 0 }}
       fullWidth
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
     />
   );
 
-  const renderQItemInteger = repeats ? (
+  const renderQItemInteger = isRepeated ? (
     <>{integerInput}</>
   ) : (
     <FullWidthFormComponentBox>
