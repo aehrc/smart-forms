@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { AssignmentReturn } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { PageType } from '../../../interfaces/Enums';
 import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContext';
@@ -25,7 +25,7 @@ function BackToPickerButton(props: Props) {
 
   const renderButton = (
     <ListItemButton onClick={handleClick}>
-      <ArrowBack sx={{ mr: 2 }} />
+      <AssignmentReturn sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -38,7 +38,7 @@ function BackToPickerButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<ArrowBack fontSize="small" />}
+      icon={<AssignmentReturn fontSize="small" />}
       label={buttonTitle}
       clickable
       onClick={handleClick}
@@ -46,11 +46,11 @@ function BackToPickerButton(props: Props) {
   );
 
   const renderIconButton = (
-    <Box>
+    <Box sx={{ m: 0.5 }}>
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={handleClick}>
-            <ArrowBack fontSize="small" />
+            <AssignmentReturn />
           </SideBarIconButton>
         </span>
       </Tooltip>

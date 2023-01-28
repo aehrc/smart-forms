@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { ChangeCircle } from '@mui/icons-material';
+import { AssignmentReturn } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { PageType, QuestionnaireSource } from '../../../interfaces/Enums';
 import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContext';
@@ -40,7 +40,7 @@ function ChangeQuestionnaireButton(props: Props) {
 
   const renderButton = (
     <ListItemButton onClick={handleClick}>
-      <ChangeCircle sx={{ mr: 2 }} />
+      <AssignmentReturn sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -53,7 +53,7 @@ function ChangeQuestionnaireButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<ChangeCircle fontSize="small" />}
+      icon={<AssignmentReturn fontSize="small" />}
       label={buttonTitle}
       clickable
       onClick={handleClick}
@@ -61,11 +61,11 @@ function ChangeQuestionnaireButton(props: Props) {
   );
 
   const renderIconButton = (
-    <Box>
+    <Box sx={{ m: 0.5 }}>
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={handleClick}>
-            <ChangeCircle fontSize="small" />
+            <AssignmentReturn />
           </SideBarIconButton>
         </span>
       </Tooltip>

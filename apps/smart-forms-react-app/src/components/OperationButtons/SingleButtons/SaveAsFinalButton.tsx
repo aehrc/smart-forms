@@ -79,7 +79,7 @@ function SaveAsFinalButton(props: Props) {
   );
 
   const renderIconButton = (
-    <Box>
+    <Box sx={{ m: 0.5 }}>
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton
@@ -89,7 +89,7 @@ function SaveAsFinalButton(props: Props) {
               !questionnaireResponseIsSaved
             }
             onClick={handleClick}>
-            <Save fontSize="small" />
+            <Save />
           </SideBarIconButton>
         </span>
       </Tooltip>

@@ -88,11 +88,11 @@ function SaveAsDraftButton(props: Props) {
   );
 
   const renderIconButton = (
-    <Box>
+    <Box sx={{ m: 0.5 }}>
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton disabled={!qrHasChanges} onClick={handleClick}>
-            <SaveAs fontSize="small" />
+            <SaveAs />
           </SideBarIconButton>
         </span>
       </Tooltip>

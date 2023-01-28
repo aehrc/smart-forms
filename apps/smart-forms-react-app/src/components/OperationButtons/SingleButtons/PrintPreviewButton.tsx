@@ -40,11 +40,11 @@ function PrintPreviewButton(props: Props) {
   );
 
   const renderIconButton = (
-    <Box>
+    <Box sx={{ m: 0.5 }}>
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={handlePrint}>
-            <Print fontSize="small" />
+            <Print />
           </SideBarIconButton>
         </span>
       </Tooltip>

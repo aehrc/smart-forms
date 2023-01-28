@@ -39,11 +39,11 @@ function RefreshQuestionnaireListButton(props: Props) {
   );
 
   const renderIconButton = (
-    <Box>
+    <Box sx={{ m: 0.5 }}>
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={refreshQuestionnaireList}>
-            <Sync fontSize="small" />
+            <Sync />
           </SideBarIconButton>
         </span>
       </Tooltip>
