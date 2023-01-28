@@ -1,7 +1,7 @@
 import React from 'react';
 import CSIROLogo from '../../data/images/CSIRO_Logo.png';
 import { Box, Grid, IconButton } from '@mui/material';
-import { ListExpandButtonBox, OrganisationLogoBox } from './SideBarBottom.styles';
+import { OrganisationLogoBox, SideBarExpandButtonBox } from './SideBarBottom.styles';
 import { KeyboardDoubleArrowLeft } from '@mui/icons-material';
 
 function SideBarBottom() {
@@ -22,11 +22,11 @@ function SideBarBottom() {
       </Grid>
 
       <Grid item xs={4}>
-        <ListExpandButtonBox>
+        <SideBarExpandButtonBox>
           <IconButton size="small" onClick={() => console.log()}>
             <KeyboardDoubleArrowLeft fontSize="small" />
           </IconButton>
-        </ListExpandButtonBox>
+        </SideBarExpandButtonBox>
       </Grid>
     </Grid>
   );

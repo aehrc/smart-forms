@@ -6,7 +6,7 @@ export const OrganisationLogoBox = styled(Box)(() => ({
   padding: 10
 }));
 
-export const ListExpandButtonBox = styled(Box)(() => ({
+export const SideBarExpandButtonBox = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'end',
   padding: 3
