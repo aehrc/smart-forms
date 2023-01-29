@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import logo from '../../data/images/CSIRO_Logo.png';
 import { Box, Grid, Tooltip } from '@mui/material';
 import {
@@ -10,7 +10,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function SideBarBottom() {
-  const sideBar = React.useContext(SideBarContext);
+  const sideBar = useContext(SideBarContext);
 
   return (
     <Grid container alignItems="center">

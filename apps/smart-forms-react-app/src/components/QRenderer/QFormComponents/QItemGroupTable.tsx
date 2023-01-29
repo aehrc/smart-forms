@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -37,8 +37,8 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler {
 function QItemGroupTable(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
   const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =

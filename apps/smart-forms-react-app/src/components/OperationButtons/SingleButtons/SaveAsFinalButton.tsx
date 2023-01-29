@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import ListItemText from '@mui/material/ListItemText';
@@ -30,14 +30,14 @@ function SaveAsFinalButton(props: Props) {
     patient,
     user
   } = props;
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
-  const sideBar = React.useContext(SideBarContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const sideBar = useContext(SideBarContext);
 
   const questionnaireResponseIsSaved: boolean =
     !!questionnaireResponseProvider.questionnaireResponse.authored &&
     !!questionnaireResponseProvider.questionnaireResponse.author;
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   function handleClick() {
     setDialogOpen(true);

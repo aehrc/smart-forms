@@ -25,7 +25,7 @@ interface Props
 
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   const calculatedExpressions = useContext(CalcExpressionContext);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import SideBar from '../SideBar/SideBar';
@@ -8,7 +8,7 @@ import ChipBar from '../ChipBar/ChipBar';
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function FormBodyInvalid() {
-  const sideBar = React.useContext(SideBarContext);
+  const sideBar = useContext(SideBarContext);
 
   return (
     <Grid container>

@@ -7,7 +7,7 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { PageType } from '../../interfaces/Enums';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
@@ -26,13 +26,13 @@ export interface Props {
 
 function ChangeQuestionnaireDialog(props: Props) {
   const { dialogOpen, closeDialog, removeQrHasChanges, questionnaireResponse } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const pageSwitcher = React.useContext(PageSwitcherContext);
-  const launchContext = React.useContext(LaunchContext);
+  const pageSwitcher = useContext(PageSwitcherContext);
+  const launchContext = useContext(LaunchContext);
 
   const [isSaving, setIsSaving] = useState(false);
 

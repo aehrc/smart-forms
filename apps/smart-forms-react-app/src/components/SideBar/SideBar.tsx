@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { Box, Divider, Stack } from '@mui/material';
 import SideBarBottom from './SideBarBottom';
 import { SideBarCard, SideBarListBox } from './SideBar.styles';
@@ -10,7 +10,7 @@ import SideBarBottomCollapsed from './SideBarBottomCollapsed';
 function SideBar(props: { children: React.ReactNode }) {
   const { children } = props;
 
-  const sideBar = React.useContext(SideBarContext);
+  const sideBar = useContext(SideBarContext);
 
   return (
     <SideBarCard>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Divider, Grid, Paper } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
@@ -19,8 +19,8 @@ interface Props {
 }
 function FormPreview(props: Props) {
   const { questionnaireResponse, qrHasChanges, removeQrHasChanges, togglePreviewMode } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const sideBar = React.useContext(SideBarContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const sideBar = useContext(SideBarContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;

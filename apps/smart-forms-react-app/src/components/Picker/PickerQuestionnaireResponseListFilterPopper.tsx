@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { Box, IconButton, List, ListItemButton, Popover, Tooltip, Typography } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';

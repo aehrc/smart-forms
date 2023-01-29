@@ -35,8 +35,8 @@ function PickerQuestionnaireResponseCard(props: Props) {
     onQrSelectedIndexChange,
     onQrSortByParamChange
   } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
   const pageSwitcher = useContext(PageSwitcherContext);
   const launch = useContext(LaunchContext);
 

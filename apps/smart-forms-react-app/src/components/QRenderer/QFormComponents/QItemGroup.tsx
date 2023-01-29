@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Card, Divider } from '@mui/material';
 import { QItemType } from '../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
@@ -32,8 +32,8 @@ interface Props
 function QItemGroup(props: Props) {
   const { qItem, qrItem, isRepeated, groupCardElevation, onQrItemChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 

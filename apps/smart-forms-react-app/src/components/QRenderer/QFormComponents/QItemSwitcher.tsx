@@ -1,6 +1,6 @@
 import { QItemType } from '../../../interfaces/Enums';
 import QItemString from './QItemSimple/QItemString';
-import React from 'react';
+import React, { useContext } from 'react';
 import QItemBoolean from './QItemSimple/QItemBoolean';
 import QItemDate from './QItemSimple/QItemDate';
 import QItemText from './QItemSimple/QItemText';
@@ -37,8 +37,8 @@ interface Props
  */
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 

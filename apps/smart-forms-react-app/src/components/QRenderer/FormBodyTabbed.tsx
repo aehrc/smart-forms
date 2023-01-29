@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Card, Grid, ListItemButton, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
@@ -24,8 +24,8 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function FormBodyTabbed(props: Props) {
   const { qForm, qrForm, tabIndex, setTabIndex, onQrItemChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
   const qFormItems = qForm.item;

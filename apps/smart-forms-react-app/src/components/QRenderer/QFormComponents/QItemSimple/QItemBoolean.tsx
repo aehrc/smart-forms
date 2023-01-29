@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 
 import {
@@ -21,7 +21,7 @@ interface Props
 
 function QItemBoolean(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
-  const enableWhenContext = React.useContext(EnableWhenContext);
+  const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   const qrBoolean = qrItem ? qrItem : createQrItem(qItem);

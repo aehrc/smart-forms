@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
@@ -31,7 +31,7 @@ function QItemDate(props: Props) {
   const answerValue = qrDate['answer'] ? qrDate['answer'][0].valueDate : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 
-  const [value, setValue] = React.useState<Dayjs | null>(answerValueDayJs);
+  const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
 
   useEffect(() => {
     setValue(answerValueDayJs);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 import ListItemText from '@mui/material/ListItemText';
@@ -12,7 +12,7 @@ interface Props {
 }
 function RefreshQuestionnaireListButton(props: Props) {
   const { isChip, refreshQuestionnaireList } = props;
-  const sideBar = React.useContext(SideBarContext);
+  const sideBar = useContext(SideBarContext);
 
   const buttonTitle = 'Refresh Questionnaires';
 

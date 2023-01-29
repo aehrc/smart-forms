@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
@@ -14,8 +14,8 @@ interface Props {
 
 function EditResponseButton(props: Props) {
   const { isChip } = props;
-  const pageSwitcher = React.useContext(PageSwitcherContext);
-  const sideBar = React.useContext(SideBarContext);
+  const pageSwitcher = useContext(PageSwitcherContext);
+  const sideBar = useContext(SideBarContext);
 
   function handleClick() {
     pageSwitcher.goToPage(PageType.Renderer);

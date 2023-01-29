@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import ListItemText from '@mui/material/ListItemText';
@@ -21,12 +21,12 @@ interface Props {
 
 function ChangeQuestionnaireButton(props: Props) {
   const { isChip, qrHasChanges, removeQrHasChanges, questionnaireResponse } = props;
-  const pageSwitcher = React.useContext(PageSwitcherContext);
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const fhirClient = React.useContext(LaunchContext).fhirClient;
-  const sideBar = React.useContext(SideBarContext);
+  const pageSwitcher = useContext(PageSwitcherContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const fhirClient = useContext(LaunchContext).fhirClient;
+  const sideBar = useContext(SideBarContext);
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   function handleClick() {
     if (qrHasChanges && fhirClient && questionnaireProvider.source === QuestionnaireSource.Remote) {

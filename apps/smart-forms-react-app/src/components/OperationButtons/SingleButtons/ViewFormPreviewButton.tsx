@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ListItemText from '@mui/material/ListItemText';
@@ -13,7 +13,7 @@ interface Props {
 
 function ViewFormPreviewButton(props: Props) {
   const { isChip, togglePreviewMode } = props;
-  const sideBar = React.useContext(SideBarContext);
+  const sideBar = useContext(SideBarContext);
 
   function handleClick() {
     togglePreviewMode();

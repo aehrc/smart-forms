@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../functions/PreviewFunctions';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
@@ -7,11 +7,11 @@ import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../QRenderer/Form';
 
 function Preview() {
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   let qResponse = questionnaireResponseProvider.questionnaireResponse;

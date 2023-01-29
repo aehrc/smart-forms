@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { SideBarContextType } from '../interfaces/ContextTypes';
 
 export const SideBarContext = React.createContext<SideBarContextType>({
@@ -8,7 +8,7 @@ export const SideBarContext = React.createContext<SideBarContextType>({
 
 function SideBarContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
-  const [isExpanded, setIsExpanded] = React.useState<boolean>(true);
+  const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
   const sideBarContext: SideBarContextType = {
     isExpanded,

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { QuestionnaireActiveContextType } from '../interfaces/ContextTypes';
 
 export const QuestionnaireActiveContext = React.createContext<QuestionnaireActiveContextType>({
@@ -8,7 +8,7 @@ export const QuestionnaireActiveContext = React.createContext<QuestionnaireActiv
 
 function QuestionnaireActiveContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
-  const [questionnaireActive, setQuestionnaireActive] = React.useState<boolean>(false);
+  const [questionnaireActive, setQuestionnaireActive] = useState<boolean>(false);
 
   const questionnaireActiveContext: QuestionnaireActiveContextType = {
     questionnaireActive: questionnaireActive,

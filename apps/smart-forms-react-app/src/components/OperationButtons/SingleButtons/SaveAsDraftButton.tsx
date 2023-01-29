@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import ListItemText from '@mui/material/ListItemText';
@@ -32,12 +32,12 @@ function SaveAsDraftButton(props: Props) {
     patient,
     user
   } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
-  const sideBar = React.useContext(SideBarContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
+  const sideBar = useContext(SideBarContext);
 
   function handleClick() {
     let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));

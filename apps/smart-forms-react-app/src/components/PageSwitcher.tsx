@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { PageSwitcherContext } from '../custom-contexts/PageSwitcherContext';
 import { PageType } from '../interfaces/Enums';
 import Picker from './Picker/Picker';
@@ -9,8 +9,8 @@ import ResponsePreview from './Preview/ResponsePreview';
 import SideBarContextProvider from '../custom-contexts/SideBarContext';
 
 function PageSwitcher() {
-  const pageSwitcher = React.useContext(PageSwitcherContext);
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const pageSwitcher = useContext(PageSwitcherContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   useEffect(() => {
     if (!questionnaireProvider.questionnaire.item) {

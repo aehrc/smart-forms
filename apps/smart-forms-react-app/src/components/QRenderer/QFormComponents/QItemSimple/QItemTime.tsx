@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
@@ -32,7 +31,7 @@ function QItemTime(props: Props) {
   const answerValue = qrTime['answer'] ? qrTime['answer'][0].valueTime : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 
-  const [value, setValue] = React.useState<Dayjs | null>(answerValueDayJs);
+  const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
 
   useEffect(() => {
     setValue(answerValueDayJs);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Divider, Grid } from '@mui/material';
 import FormBodyUntabbed from './FormBodyUntabbed';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
@@ -46,10 +46,10 @@ function Form(props: Props) {
     updateQuestionnaireResponse,
     clearQuestionnaireResponse
   } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
-  const enableWhen = React.useContext(EnableWhenContext);
-  const sideBar = React.useContext(SideBarContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const enableWhen = useContext(EnableWhenContext);
+  const sideBar = useContext(SideBarContext);
 
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
@@ -59,8 +59,8 @@ function Form(props: Props) {
   );
 
   // states only for testing
-  const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
-  const [hideQResponse, setHideQResponse] = React.useState(true);
+  const [enableWhenStatus, setEnableWhenStatus] = useState(true);
+  const [hideQResponse, setHideQResponse] = useState(true);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;

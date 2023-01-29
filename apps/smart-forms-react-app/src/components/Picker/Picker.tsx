@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Divider, Grid, Stack } from '@mui/material';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { PickerSearchField } from './Picker.styles';
@@ -15,8 +15,8 @@ import { MainGridHeadingTypography } from '../StyledComponents/Typographys.style
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function Picker() {
-  const launch = React.useContext(LaunchContext);
-  const sideBar = React.useContext(SideBarContext);
+  const launch = useContext(LaunchContext);
+  const sideBar = useContext(SideBarContext);
 
   const {
     searchInput,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Button, Card, Divider, IconButton, Stack } from '@mui/material';
 
 import {
@@ -27,8 +27,8 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeated
 function QItemRepeatGroup(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =

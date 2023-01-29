@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { LaunchContextType } from '../interfaces/ContextTypes';
 import Client from 'fhirclient/lib/Client';
 import { Patient, Practitioner } from 'fhir/r5';
@@ -14,9 +14,9 @@ export const LaunchContext = React.createContext<LaunchContextType>({
 
 function LaunchContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
-  const [client, setClient] = React.useState<Client | null>(null);
-  const [patient, setPatient] = React.useState<Patient | null>(null);
-  const [user, setUser] = React.useState<Practitioner | null>(null);
+  const [client, setClient] = useState<Client | null>(null);
+  const [patient, setPatient] = useState<Patient | null>(null);
+  const [user, setUser] = useState<Practitioner | null>(null);
 
   const launchContext: LaunchContextType = {
     fhirClient: client,

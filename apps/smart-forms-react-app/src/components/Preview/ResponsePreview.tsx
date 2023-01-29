@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Box, Divider, Grid, Paper } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
@@ -12,7 +12,7 @@ import { MainGridHeadingTypography } from '../StyledComponents/Typographys.style
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function ResponsePreview() {
-  const sideBar = React.useContext(SideBarContext);
+  const sideBar = useContext(SideBarContext);
 
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({

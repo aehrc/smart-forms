@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import PrintIcon from '@mui/icons-material/Print';
 import ListItemText from '@mui/material/ListItemText';
@@ -13,7 +13,7 @@ interface Props {
 
 function PrintPreviewButton(props: Props) {
   const { handlePrint, isChip } = props;
-  const sideBar = React.useContext(SideBarContext);
+  const sideBar = useContext(SideBarContext);
 
   const buttonTitle = 'Print Preview';
 
