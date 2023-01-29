@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Divider, Grid } from '@mui/material';
+import { Divider, Grid } from '@mui/material';
 import FormBodyUntabbed from './FormBodyUntabbed';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
@@ -88,7 +88,7 @@ function Form(props: Props) {
     updateQuestionnaireResponse(newQuestionnaireResponse);
   }
 
-  if (qForm.item && qrForm.item) {
+  if (qForm.item) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
         <ContainedValueSetContext.Provider value={containedValueSets}>
@@ -135,18 +135,6 @@ function Form(props: Props) {
                         onQrFormChange(newQrForm);
                       }}></FormBodyUntabbed>
                   )}
-
-                  <Box sx={{ pb: 2 }}>
-                    <ChipBar>
-                      <RendererOperationButtons
-                        isChip={true}
-                        qrHasChanges={qrHasChanges}
-                        removeQrHasChanges={removeQrHasChanges}
-                        togglePreviewMode={togglePreviewMode}
-                        questionnaireResponse={questionnaireResponse}
-                      />
-                    </ChipBar>
-                  </Box>
                 </MainGridContainerBox>
               </MainGrid>
             </Grid>
