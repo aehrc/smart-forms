@@ -19,7 +19,14 @@ function FormBodyInvalid() {
       </SideBarGrid>
       <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
-          <Typography fontSize={24}>Questionnaire does not have a form item.</Typography>
+          <Typography fontSize={16} variant="h6">
+            Oops, the form renderer is unable to render this questionnaire.
+          </Typography>
+          <Typography fontSize={14}>
+            {
+              "This questionnaire either lacks a top-level group item, or the group item doesn't have any items."
+            }
+          </Typography>
           <ChipBar>
             <InvalidQuestionnaireOperationButtons isChip={true} />
           </ChipBar>

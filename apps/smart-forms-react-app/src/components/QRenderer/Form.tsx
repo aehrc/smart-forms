@@ -63,7 +63,7 @@ function Form(props: Props) {
   const [hideQResponse, setHideQResponse] = useState(true);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  if (!questionnaire.item || !questionnaireResponse.item) return null;
+  if (!questionnaire.item || !questionnaireResponse.item) return <FormBodyInvalid />;
 
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
