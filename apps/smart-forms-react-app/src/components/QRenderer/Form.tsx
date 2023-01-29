@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Divider, Grid } from '@mui/material';
-import FormBodyUntabbed from './FormBodyUntabbed';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
@@ -19,6 +18,7 @@ import FormBodyInvalid from './FormBodyInvalid';
 import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 import QTitle from './QFormComponents/QItemParts/QTitle';
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
+import QItemGroup from './QFormComponents/QItemGroup';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -88,7 +88,7 @@ function Form(props: Props) {
     updateQuestionnaireResponse(newQuestionnaireResponse);
   }
 
-  if (qForm.item) {
+  if (qForm.item && qrForm.item) {
     return (
       <CalcExpressionContext.Provider value={calculatedExpressions}>
         <ContainedValueSetContext.Provider value={containedValueSets}>
@@ -128,12 +128,14 @@ function Form(props: Props) {
                       onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                     />
                   ) : (
-                    <FormBodyUntabbed
-                      qForm={qForm}
-                      qrForm={qrForm}
-                      onQrItemChange={(newQrForm) => {
-                        onQrFormChange(newQrForm);
-                      }}></FormBodyUntabbed>
+                    // If form is untabbed, it is rendered as a regular group
+                    <QItemGroup
+                      qItem={qForm}
+                      qrItem={qrForm}
+                      groupCardElevation={3}
+                      onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                      isRepeated={false}
+                    />
                   )}
                 </MainGridContainerBox>
               </MainGrid>
