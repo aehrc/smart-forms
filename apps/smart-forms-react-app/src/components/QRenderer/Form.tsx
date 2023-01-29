@@ -106,7 +106,7 @@ function Form(props: Props) {
               </SideBarGrid>
               <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
                 <MainGridContainerBox>
-                  <MainGridHeadingTypography variant="h1">
+                  <MainGridHeadingTypography>
                     <QTitle questionnaire={questionnaire} />
                   </MainGridHeadingTypography>
                   <ChipBar>
@@ -132,7 +132,7 @@ function Form(props: Props) {
                     <QItemGroup
                       qItem={qForm}
                       qrItem={qrForm}
-                      groupCardElevation={3}
+                      groupCardElevation={1}
                       onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                       isRepeated={false}
                     />

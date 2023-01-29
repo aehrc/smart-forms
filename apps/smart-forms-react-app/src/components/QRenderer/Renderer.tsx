@@ -54,7 +54,7 @@ function Renderer() {
         },
         () => {
           setSpinner({ ...spinner, isLoading: false });
-          console.warn('fail to populate');
+          console.warn('Population failed');
           // TODO popup questionnaire fail to populate
         }
       );
