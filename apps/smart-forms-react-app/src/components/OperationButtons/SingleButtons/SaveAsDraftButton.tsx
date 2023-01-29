@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { SaveAs } from '@mui/icons-material';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import ListItemText from '@mui/material/ListItemText';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
@@ -66,7 +66,7 @@ function SaveAsDraftButton(props: Props) {
 
   const renderButton = (
     <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
-      <SaveAs sx={{ mr: 2 }} />
+      <SaveAsIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -79,7 +79,7 @@ function SaveAsDraftButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<SaveAs fontSize="small" />}
+      icon={<SaveAsIcon fontSize="small" />}
       label={buttonTitle}
       clickable
       disabled={!qrHasChanges}
@@ -92,7 +92,7 @@ function SaveAsDraftButton(props: Props) {
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton disabled={!qrHasChanges} onClick={handleClick}>
-            <SaveAs />
+            <SaveAsIcon />
           </SideBarIconButton>
         </span>
       </Tooltip>

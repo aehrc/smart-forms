@@ -3,7 +3,7 @@ import { SideBarContext } from '../../custom-contexts/SideBarContext';
 import { Box, Stack, Tooltip } from '@mui/material';
 import logo from '../../data/images/CSIRO_Logo.png';
 import { OrganisationLogoBox, SideBarIconButton } from './SideBarBottom.styles';
-import { KeyboardDoubleArrowRight } from '@mui/icons-material';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 function SideBarBottomCollapsed() {
   const sideBar = React.useContext(SideBarContext);
@@ -25,7 +25,7 @@ function SideBarBottomCollapsed() {
         <Tooltip title="Expand Sidebar" placement="right">
           <span>
             <SideBarIconButton onClick={() => sideBar.setIsExpanded(!sideBar.isExpanded)}>
-              <KeyboardDoubleArrowRight fontSize="small" />
+              <KeyboardDoubleArrowRightIcon fontSize="small" />
             </SideBarIconButton>
           </span>
         </Tooltip>

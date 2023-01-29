@@ -6,7 +6,7 @@ import {
   SideBarExpandButtonBox,
   SideBarIconButton
 } from './SideBarBottom.styles';
-import { KeyboardDoubleArrowLeft } from '@mui/icons-material';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function SideBarBottom() {
@@ -33,7 +33,7 @@ function SideBarBottom() {
           <Tooltip title="Collapse Sidebar" placement="right">
             <span>
               <SideBarIconButton onClick={() => sideBar.setIsExpanded(!sideBar.isExpanded)}>
-                <KeyboardDoubleArrowLeft fontSize="small" />
+                <KeyboardDoubleArrowLeftIcon fontSize="small" />
               </SideBarIconButton>
             </span>
           </Tooltip>

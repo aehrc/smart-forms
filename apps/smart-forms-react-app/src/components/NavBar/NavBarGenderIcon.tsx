@@ -6,14 +6,14 @@ function NavBarGenderIcon(props: { gender: string }) {
   const { gender } = props;
 
   if (gender == 'male') {
-    return <MaleIcon />;
+    return <MaleIcon fontSize="small" />;
   } else if (gender == 'female') {
-    return <FemaleIcon />;
+    return <FemaleIcon fontSize="small" />;
   } else {
     return (
       <>
-        <MaleIcon sx={{ mr: -0.5 }} />
-        <FemaleIcon />
+        <MaleIcon fontSize="small" sx={{ mr: -0.5 }} />
+        <FemaleIcon fontSize="small" />
       </>
     );
   }

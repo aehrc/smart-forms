@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { Save } from '@mui/icons-material';
+import SaveIcon from '@mui/icons-material/Save';
 import ListItemText from '@mui/material/ListItemText';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
@@ -53,7 +53,7 @@ function SaveAsFinalButton(props: Props) {
         !questionnaireResponseIsSaved
       }
       onClick={handleClick}>
-      <Save sx={{ mr: 2 }} />
+      <SaveIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -66,7 +66,7 @@ function SaveAsFinalButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<Save fontSize="small" />}
+      icon={<SaveIcon fontSize="small" />}
       label={buttonTitle}
       clickable
       disabled={
@@ -89,7 +89,7 @@ function SaveAsFinalButton(props: Props) {
               !questionnaireResponseIsSaved
             }
             onClick={handleClick}>
-            <Save />
+            <SaveIcon />
           </SideBarIconButton>
         </span>
       </Tooltip>

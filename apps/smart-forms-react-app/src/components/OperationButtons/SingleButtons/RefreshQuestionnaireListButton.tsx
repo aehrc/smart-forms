@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { Sync } from '@mui/icons-material';
+import SyncIcon from '@mui/icons-material/Sync';
 import ListItemText from '@mui/material/ListItemText';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
@@ -18,7 +18,7 @@ function RefreshQuestionnaireListButton(props: Props) {
 
   const renderButton = (
     <ListItemButton onClick={refreshQuestionnaireList}>
-      <Sync sx={{ mr: 2 }} />
+      <SyncIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -31,7 +31,7 @@ function RefreshQuestionnaireListButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<Sync fontSize="small" />}
+      icon={<SyncIcon fontSize="small" />}
       label={buttonTitle}
       clickable
       onClick={refreshQuestionnaireList}
@@ -43,7 +43,7 @@ function RefreshQuestionnaireListButton(props: Props) {
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={refreshQuestionnaireList}>
-            <Sync />
+            <SyncIcon />
           </SideBarIconButton>
         </span>
       </Tooltip>

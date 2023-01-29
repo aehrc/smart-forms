@@ -19,7 +19,8 @@ import {
   Typography
 } from '@mui/material';
 import { createQrItem } from '../../../functions/QrItemFunctions';
-import { Add, Delete } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { isHidden } from '../../../functions/QItemFunctions';
 import QItemGroupTableRow from './QItemGroupTableRow';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
@@ -103,7 +104,7 @@ function QItemGroupTable(props: Props) {
               <Button
                 variant="contained"
                 size="small"
-                startIcon={<Add />}
+                startIcon={<AddIcon />}
                 onClick={() => setTableRows([...tableRows, undefined])}>
                 Add Row
               </Button>
@@ -133,7 +134,7 @@ function QItemGroupTable(props: Props) {
                     <Tooltip title="Delete item">
                       <span>
                         <IconButton size="small" color="error" onClick={() => deleteRow(index)}>
-                          <Delete />
+                          <DeleteIcon />
                         </IconButton>
                       </span>
                     </Tooltip>

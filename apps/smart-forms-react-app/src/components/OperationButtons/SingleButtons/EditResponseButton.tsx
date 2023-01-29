@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
 import ListItemText from '@mui/material/ListItemText';
 import { PageType } from '../../../interfaces/Enums';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
@@ -25,7 +25,7 @@ function EditResponseButton(props: Props) {
 
   const renderButton = (
     <ListItemButton onClick={handleClick}>
-      <Edit sx={{ mr: 2 }} />
+      <EditIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -38,7 +38,7 @@ function EditResponseButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<Edit fontSize="small" />}
+      icon={<EditIcon fontSize="small" />}
       label={buttonTitle}
       clickable
       onClick={handleClick}
@@ -50,7 +50,7 @@ function EditResponseButton(props: Props) {
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={handleClick}>
-            <Edit />
+            <EditIcon />
           </SideBarIconButton>
         </span>
       </Tooltip>

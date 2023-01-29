@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, Divider, IconButton, Stack } from '@mui/material';
 
 import {
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/Interfaces';
-import { Add, Delete } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import QItemGroup from './QItemGroup';
 
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -105,7 +106,7 @@ function QItemRepeatGroup(props: Props) {
                   color="error"
                   disabled={!singleGroup}
                   onClick={() => deleteAnswerItem(index)}>
-                  <Delete />
+                  <DeleteIcon />
                 </IconButton>
               </span>
             </RepeatDeleteTooltip>
@@ -116,7 +117,7 @@ function QItemRepeatGroup(props: Props) {
       <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
         <Button
           variant="contained"
-          startIcon={<Add />}
+          startIcon={<AddIcon />}
           disabled={!repeatGroups[repeatGroups.length - 1]}
           onClick={() => setRepeatGroups([...repeatGroups, undefined])}>
           Add Item

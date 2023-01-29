@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ListItemText from '@mui/material/ListItemText';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
@@ -23,7 +23,7 @@ function ContinueEditingButton(props: Props) {
 
   const renderButton = (
     <ListItemButton onClick={handleClick}>
-      <ArrowBack sx={{ mr: 2 }} />
+      <ArrowBackIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -36,7 +36,7 @@ function ContinueEditingButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<ArrowBack fontSize="small" />}
+      icon={<ArrowBackIcon fontSize="small" />}
       label={buttonTitle}
       clickable
       onClick={handleClick}
@@ -48,7 +48,7 @@ function ContinueEditingButton(props: Props) {
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={handleClick}>
-            <ArrowBack />
+            <ArrowBackIcon />
           </SideBarIconButton>
         </span>
       </Tooltip>

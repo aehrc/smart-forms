@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
-import { Print } from '@mui/icons-material';
+import PrintIcon from '@mui/icons-material/Print';
 import ListItemText from '@mui/material/ListItemText';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { SideBarContext } from '../../../custom-contexts/SideBarContext';
@@ -19,7 +19,7 @@ function PrintPreviewButton(props: Props) {
 
   const renderButton = (
     <ListItemButton onClick={handlePrint}>
-      <Print sx={{ mr: 2 }} />
+      <PrintIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
@@ -32,7 +32,7 @@ function PrintPreviewButton(props: Props) {
 
   const renderChip = (
     <OperationChip
-      icon={<Print fontSize="small" />}
+      icon={<PrintIcon fontSize="small" />}
       label={buttonTitle}
       clickable
       onClick={handlePrint}
@@ -44,7 +44,7 @@ function PrintPreviewButton(props: Props) {
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton onClick={handlePrint}>
-            <Print />
+            <PrintIcon />
           </SideBarIconButton>
         </span>
       </Tooltip>
