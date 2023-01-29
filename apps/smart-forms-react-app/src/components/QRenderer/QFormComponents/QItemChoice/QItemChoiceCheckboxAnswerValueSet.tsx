@@ -1,9 +1,9 @@
 import React from 'react';
-import { FormControl, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -14,17 +14,18 @@ import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: QItemChoiceOrientation;
 }
 
 function QItemChoiceCheckboxAnswerValueSet(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
@@ -40,7 +41,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
       options,
       qrChoiceCheckbox,
       CheckBoxOptionType.AnswerValueSet,
-      repeats
+      isRepeated
     );
 
     if (updatedQrChoiceCheckbox) {
@@ -76,7 +77,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
     );
 
   return (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -86,7 +87,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 }
 

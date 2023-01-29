@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerValueSetCodings } from '../../../../functions/ChoiceFunctions';
@@ -7,23 +7,24 @@ import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { QRadioGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: QItemChoiceOrientation;
 }
 
 function QItemChoiceRadioAnswerValueSet(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrChoiceRadio = qrItem ? qrItem : createQrItem(qItem);
 
@@ -71,10 +72,10 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
       </Typography>
     );
 
-  const renderQItemChoiceRadio = repeats ? (
+  const renderQItemChoiceRadio = isRepeated ? (
     <>{choiceRadio}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -84,7 +85,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceRadio}</>;
 }

@@ -1,5 +1,5 @@
-import { Stack } from '@mui/material';
 import React from 'react';
+import { Stack } from '@mui/material';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
 import { NavBarPatientDetailsTypography, NavBarPatientUserDataBox } from './NavBar.styles';
 import NavBarPatientDetails from './NavBarPatientDetails';
@@ -20,7 +20,7 @@ function NavBarPatientUserDetails(props: Props) {
         <NavBarPatientDetails patientData={patientData} />
 
         <Stack direction="row" alignItems="center" spacing={1}>
-          <MedicalServicesIcon />
+          <MedicalServicesIcon fontSize="small" />
           <NavBarPatientDetailsTypography>
             {userData.name === '' ? 'No User' : userData.name}
           </NavBarPatientDetailsTypography>

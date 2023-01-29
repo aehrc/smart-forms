@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { cleanQrItem } from '../../functions/QrItemFunctions';
 import { QuestionnaireResponseProviderContext } from '../../App';
@@ -7,7 +7,7 @@ import FormPreview from '../Preview/FormPreview';
 import QRSavedSnackbar from './QRSavedSnackbar';
 
 function RendererBody() {
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
     questionnaireResponseProvider.questionnaireResponse

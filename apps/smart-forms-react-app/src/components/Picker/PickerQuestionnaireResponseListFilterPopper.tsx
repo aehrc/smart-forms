@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import { Box, IconButton, List, ListItemButton, Popover, Tooltip, Typography } from '@mui/material';
-import { FilterList } from '@mui/icons-material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import ListItemText from '@mui/material/ListItemText';
 import { QrSortParam } from '../../interfaces/Enums';
 
@@ -19,7 +19,7 @@ function PickerQuestionnaireResponseListFilterPopper(props: Props) {
           <div>
             <Tooltip title="Filter responses">
               <IconButton size={'small'} sx={{ mr: 0.5 }} {...bindTrigger(popupState)}>
-                <FilterList fontSize={'small'} />
+                <FilterListIcon fontSize="small" />
               </IconButton>
             </Tooltip>
             <Popover

@@ -1,25 +1,26 @@
 import React from 'react';
-import { FormControl, Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoiceSelectAnswerOption(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const qrChoiceSelect = qrItem ? qrItem : createQrItem(qItem);
   const valueSelect = getQrChoiceValue(qrChoiceSelect);
@@ -36,12 +37,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   }
 
   const choiceSelectAnswerOption = (
-    <Select
-      id={qItem.id}
-      name={qItem.text}
-      value={valueSelect}
-      sx={{ maxWidth: 202 }}
-      onChange={handleChange}>
+    <Select id={qItem.id} name={qItem.text} value={valueSelect} fullWidth onChange={handleChange}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
@@ -66,10 +62,10 @@ function QItemChoiceSelectAnswerOption(props: Props) {
     </Select>
   );
 
-  const renderQItemChoiceSelectAnswerOption = repeats ? (
+  const renderQItemChoiceSelectAnswerOption = isRepeated ? (
     <>{choiceSelectAnswerOption}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -79,7 +75,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceSelectAnswerOption}</>;
 }

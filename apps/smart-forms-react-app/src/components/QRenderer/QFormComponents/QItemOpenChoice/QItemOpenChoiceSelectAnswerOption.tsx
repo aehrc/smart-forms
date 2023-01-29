@@ -1,9 +1,10 @@
 import React, { SyntheticEvent } from 'react';
-import { Autocomplete, FormControl, Grid, TextField } from '@mui/material';
+import { Autocomplete, Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import {
   QuestionnaireItem,
@@ -14,16 +15,19 @@ import { getAnswerOptionLabel } from '../../../../functions/OpenChoiceFunctions'
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoiceSelectAnswerOption(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
@@ -63,20 +67,20 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   const openOpenChoiceSelectAnswerOption = (
     <Autocomplete
       id={qItem.id}
-      freeSolo
-      autoHighlight
       value={valueSelect ?? null}
       options={answerOptions}
       getOptionLabel={(option) => getAnswerOptionLabel(option)}
       onChange={handleChange}
-      sx={{ maxWidth: 202 }}
-      renderInput={(params) => <TextField {...params} />}
+      freeSolo
+      autoHighlight
+      fullWidth
+      renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
     />
   );
-  const renderQItemOpenChoiceAutocomplete = repeats ? (
+  const renderQItemOpenChoiceAutocomplete = isRepeated ? (
     <>{openOpenChoiceSelectAnswerOption}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -86,7 +90,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemOpenChoiceAutocomplete}</>;
 }

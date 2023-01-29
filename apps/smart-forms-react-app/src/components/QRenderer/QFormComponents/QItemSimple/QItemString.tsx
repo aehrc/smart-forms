@@ -1,25 +1,29 @@
 import React from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemString(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   let qrString = qrItem ? qrItem : createQrItem(qItem);
   const valueString = qrString['answer'] ? qrString['answer'][0].valueString : '';
@@ -35,21 +39,22 @@ function QItemString(props: Props) {
   }
 
   const stringInput = (
-    <TextField
+    <StandardTextField
+      fullWidth
+      isTabled={isTabled}
       error={hasError}
       id={qItem.linkId}
       value={valueString}
       onChange={handleChange}
-      sx={{ mb: repeats ? 0 : 2 }} // mb:4 is MUI default value
       label={getTextDisplayPrompt(qItem)}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
     />
   );
 
-  const renderQItemString = repeats ? (
+  const renderQItemString = isRepeated ? (
     <>{stringInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -59,7 +64,7 @@ function QItemString(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemString}</>;

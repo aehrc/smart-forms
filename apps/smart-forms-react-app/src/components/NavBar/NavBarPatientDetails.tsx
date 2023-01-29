@@ -16,7 +16,7 @@ function NavBarPatientDetails(props: Props) {
   if (patientData.name === '') {
     return (
       <Stack direction="row" alignItems="center" spacing={1}>
-        <AccountCircleIcon />
+        <AccountCircleIcon fontSize="small" />
         <NavBarPatientDetailsTypography>No Patient</NavBarPatientDetailsTypography>
       </Stack>
     );
@@ -24,7 +24,7 @@ function NavBarPatientDetails(props: Props) {
     return (
       <Stack direction="row" spacing={2}>
         <Stack direction="row" alignItems="center" spacing={1}>
-          <AccountCircleIcon />
+          <AccountCircleIcon fontSize="small" />
           <NavBarPatientDetailsTypography>{patientData.name}</NavBarPatientDetailsTypography>
         </Stack>
         <Stack direction="row" spacing={2}>
@@ -33,7 +33,7 @@ function NavBarPatientDetails(props: Props) {
             <NavBarPatientDetailsTypography>{patientData.gender}</NavBarPatientDetailsTypography>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
-            <EventIcon />
+            <EventIcon fontSize="small" />
             <NavBarPatientDetailsTypography>
               {patientData.dateOfBirth}
             </NavBarPatientDetailsTypography>

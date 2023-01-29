@@ -1,25 +1,29 @@
 import React, { SyntheticEvent } from 'react';
-import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
@@ -49,15 +53,15 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     <>
       <Autocomplete
         id={qItem.id}
-        freeSolo
-        autoHighlight
         value={valueSelect ?? null}
         options={options}
         getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
         onChange={handleValueChange}
         onInputChange={(event, newValue) => handleValueChange(event, newValue)}
-        sx={{ maxWidth: 202 }}
-        renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
+        freeSolo
+        autoHighlight
+        fullWidth
+        renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
       />
       {serverError ? (
         <Typography variant="subtitle2">
@@ -67,10 +71,10 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     </>
   );
 
-  const renderQItemOpenChoiceSelectAnswerValueSet = repeats ? (
+  const renderQItemOpenChoiceSelectAnswerValueSet = isRepeated ? (
     <>{openChoiceSelectAnswerValueSet}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -80,7 +84,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemOpenChoiceSelectAnswerValueSet}</>;
 }

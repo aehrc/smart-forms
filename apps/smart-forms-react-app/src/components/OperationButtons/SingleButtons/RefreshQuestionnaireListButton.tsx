@@ -1,8 +1,10 @@
-import React from 'react';
-import { ListItemButton, Typography } from '@mui/material';
-import { Sync } from '@mui/icons-material';
+import React, { useContext } from 'react';
+import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
+import SyncIcon from '@mui/icons-material/Sync';
 import ListItemText from '@mui/material/ListItemText';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
+import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
+import { SideBarContext } from '../../../custom-contexts/SideBarContext';
 
 interface Props {
   isChip?: boolean;
@@ -10,27 +12,45 @@ interface Props {
 }
 function RefreshQuestionnaireListButton(props: Props) {
   const { isChip, refreshQuestionnaireList } = props;
+  const sideBar = useContext(SideBarContext);
 
-  const renderButtonOrChip = !isChip ? (
+  const buttonTitle = 'Refresh Questionnaires';
+
+  const renderButton = (
     <ListItemButton onClick={refreshQuestionnaireList}>
-      <Sync sx={{ mr: 2 }} />
+      <SyncIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
-            Refresh Questionnaires
+            {buttonTitle}
           </Typography>
         }
       />
     </ListItemButton>
-  ) : (
+  );
+
+  const renderChip = (
     <OperationChip
-      icon={<Sync fontSize="small" />}
-      label="Refresh Questionnaires"
+      icon={<SyncIcon fontSize="small" />}
+      label={buttonTitle}
       clickable
       onClick={refreshQuestionnaireList}
     />
   );
-  return <>{renderButtonOrChip}</>;
+
+  const renderIconButton = (
+    <Box sx={{ m: 0.5 }}>
+      <Tooltip title={buttonTitle} placement="right">
+        <span>
+          <SideBarIconButton onClick={refreshQuestionnaireList}>
+            <SyncIcon />
+          </SideBarIconButton>
+        </span>
+      </Tooltip>
+    </Box>
+  );
+
+  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default RefreshQuestionnaireListButton;

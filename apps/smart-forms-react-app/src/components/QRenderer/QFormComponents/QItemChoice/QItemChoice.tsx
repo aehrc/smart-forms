@@ -9,20 +9,22 @@ import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import { getChoiceControlType, getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioAnswerValueSet from './QItemChoiceRadioAnswerValueSet';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import QItemChoiceCheckboxAnswerValueSet from './QItemChoiceCheckboxAnswerValueSet';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoice(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
 
   switch (getChoiceControlType(qItem)) {
@@ -32,7 +34,7 @@ function QItemChoice(props: Props) {
           <QItemChoiceRadioAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />
@@ -42,7 +44,7 @@ function QItemChoice(props: Props) {
           <QItemChoiceRadioAnswerOption
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />
@@ -54,7 +56,7 @@ function QItemChoice(props: Props) {
           <QItemChoiceCheckboxAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
-            repeats={qItem['repeats'] ?? false}
+            isRepeated={qItem['repeats'] ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />
@@ -64,7 +66,7 @@ function QItemChoice(props: Props) {
           <QItemChoiceCheckboxAnswerOption
             qItem={qItem}
             qrItem={qrItem}
-            repeats={qItem['repeats'] ?? false}
+            isRepeated={qItem['repeats'] ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />
@@ -75,7 +77,8 @@ function QItemChoice(props: Props) {
         <QItemChoiceAutocomplete
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -85,7 +88,8 @@ function QItemChoice(props: Props) {
           <QItemChoiceSelectAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -94,7 +98,7 @@ function QItemChoice(props: Props) {
           <QItemChoiceSelectAnswerOption
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
             onQrItemChange={onQrItemChange}
           />
         );

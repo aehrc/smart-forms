@@ -1,25 +1,26 @@
 import React from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 
 import {
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemText(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   let qrText = qrItem ? qrItem : createQrItem(qItem);
   const valueText = qrText['answer'] ? qrText['answer'][0].valueString : '';
@@ -34,7 +35,6 @@ function QItemText(props: Props) {
       id={qItem.linkId}
       value={valueText}
       onChange={handleChange}
-      sx={{ mb: repeats ? 0 : 2 }} // mb:4 is MUI default value
       label={getTextDisplayPrompt(qItem)}
       fullWidth
       multiline
@@ -42,10 +42,10 @@ function QItemText(props: Props) {
     />
   );
 
-  const renderQItemText = repeats ? (
+  const renderQItemText = isRepeated ? (
     <>{textInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -55,7 +55,7 @@ function QItemText(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemText}</>;

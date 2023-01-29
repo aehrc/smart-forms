@@ -1,6 +1,6 @@
-import React from 'react';
-import { ListItemButton, Typography } from '@mui/material';
-import { SaveAs } from '@mui/icons-material';
+import React, { useContext } from 'react';
+import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import ListItemText from '@mui/material/ListItemText';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
@@ -9,6 +9,8 @@ import Client from 'fhirclient/lib/Client';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../../QRenderer/Form';
+import { SideBarContext } from '../../../custom-contexts/SideBarContext';
+import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
 
 interface Props {
   isChip?: boolean;
@@ -30,11 +32,12 @@ function SaveAsDraftButton(props: Props) {
     patient,
     user
   } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
+  const sideBar = useContext(SideBarContext);
 
   function handleClick() {
     let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
@@ -59,27 +62,44 @@ function SaveAsDraftButton(props: Props) {
       .catch((error) => console.error(error));
   }
 
-  const renderButtonOrChip = !isChip ? (
+  const buttonTitle = 'Save as Draft';
+
+  const renderButton = (
     <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
-      <SaveAs sx={{ mr: 2 }} />
+      <SaveAsIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
-            Save as Draft
+            {buttonTitle}
           </Typography>
         }
       />
     </ListItemButton>
-  ) : (
+  );
+
+  const renderChip = (
     <OperationChip
-      icon={<SaveAs fontSize="small" />}
-      label="Save as Draft"
+      icon={<SaveAsIcon fontSize="small" />}
+      label={buttonTitle}
       clickable
       disabled={!qrHasChanges}
       onClick={handleClick}
     />
   );
-  return <>{renderButtonOrChip}</>;
+
+  const renderIconButton = (
+    <Box sx={{ m: 0.5 }}>
+      <Tooltip title={buttonTitle} placement="right">
+        <span>
+          <SideBarIconButton disabled={!qrHasChanges} onClick={handleClick}>
+            <SaveAsIcon />
+          </SideBarIconButton>
+        </span>
+      </Tooltip>
+    </Box>
+  );
+
+  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default SaveAsDraftButton;

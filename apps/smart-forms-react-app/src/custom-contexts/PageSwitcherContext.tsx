@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { PageType } from '../interfaces/Enums';
 import { PageSwitcherContextType } from '../interfaces/ContextTypes';
 
@@ -9,7 +9,7 @@ export const PageSwitcherContext = React.createContext<PageSwitcherContextType>(
 
 function PageSwitcherContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
-  const [currentPage, goToPage] = React.useState<PageType>(PageType.Renderer);
+  const [currentPage, goToPage] = useState<PageType>(PageType.Renderer);
 
   const pageSwitcherContext: PageSwitcherContextType = {
     currentPage: currentPage,

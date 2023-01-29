@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Divider, Grid, Stack } from '@mui/material';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { PickerSearchField } from './Picker.styles';
@@ -12,9 +12,11 @@ import SideBar from '../SideBar/SideBar';
 import ChipBar from '../ChipBar/ChipBar';
 import PickerOperationButtons from '../OperationButtons/PickerOperationButtons';
 import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
+import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function Picker() {
-  const launch = React.useContext(LaunchContext);
+  const launch = useContext(LaunchContext);
+  const sideBar = useContext(SideBarContext);
 
   const {
     searchInput,
@@ -36,14 +38,14 @@ function Picker() {
 
   return (
     <Grid container>
-      <SideBarGrid item xs={12} lg={1.75}>
+      <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
         <SideBar>
           <PickerOperationButtons refreshQuestionnaireList={refreshQuestionnaireList} />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item xs={12} lg={10.25}>
+      <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
-          <Stack direction="row" gap={8}>
+          <Stack direction="row" gap={8} alignItems="center">
             <MainGridHeadingTypography>Questionnaires</MainGridHeadingTypography>
 
             <PickerSearchField

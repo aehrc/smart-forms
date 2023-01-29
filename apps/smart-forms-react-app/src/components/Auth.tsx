@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { oauth2 } from 'fhirclient';
 import { LaunchContext } from '../custom-contexts/LaunchContext';
 import { getPatient, getUser } from '../functions/LaunchFunctions';
@@ -15,8 +15,8 @@ import ProgressSpinner from './ProgressSpinner';
 import { AuthFailDialog } from '../interfaces/Interfaces';
 
 function Auth() {
-  const launchContext = React.useContext(LaunchContext);
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const launchContext = useContext(LaunchContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
   const [questionnaireIsLoading, setQuestionnaireIsLoading] = useState<boolean>(true);

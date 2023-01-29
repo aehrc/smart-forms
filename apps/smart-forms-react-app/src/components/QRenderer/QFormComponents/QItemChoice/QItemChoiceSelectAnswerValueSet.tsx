@@ -1,25 +1,29 @@
 import React, { SyntheticEvent, useEffect } from 'react';
-import { Autocomplete, FormControl, Grid, TextField, Typography } from '@mui/material';
+import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoiceSelectAnswerValueSet(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const qrChoiceSelect = qrItem ? qrItem : createQrItem(qItem);
 
@@ -52,13 +56,13 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     options.length > 0 ? (
       <Autocomplete
         id={qItem.id}
-        autoHighlight
         options={options}
         getOptionLabel={(option) => `${option.display}`}
         value={valueCoding ?? null}
         onChange={handleChange}
-        sx={{ maxWidth: 202 }}
-        renderInput={(params) => <TextField {...params} sx={{ ...(repeats && { mb: 0 }) }} />}
+        autoHighlight
+        fullWidth
+        renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
       />
     ) : serverError ? (
       <Typography variant="subtitle2">
@@ -70,10 +74,10 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
       </Typography>
     );
 
-  const renderQItemChoiceSelectAnswerValueSet = repeats ? (
+  const renderQItemChoiceSelectAnswerValueSet = isRepeated ? (
     <>{choiceSelectAnswerValueSet}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -83,7 +87,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceSelectAnswerValueSet}</>;
 }

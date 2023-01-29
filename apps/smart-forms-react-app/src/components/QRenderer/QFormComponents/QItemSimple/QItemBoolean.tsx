@@ -1,26 +1,27 @@
-import React, { useEffect } from 'react';
-import { Checkbox, FormControl, FormControlLabel, Grid } from '@mui/material';
+import React, { useContext, useEffect } from 'react';
+import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemBoolean(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
-  const enableWhenContext = React.useContext(EnableWhenContext);
+  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   const qrBoolean = qrItem ? qrItem : createQrItem(qItem);
@@ -38,26 +39,27 @@ function QItemBoolean(props: Props) {
     onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: event.target.checked }] });
   }
 
-  const renderQItemBoolean = repeats ? (
+  const booleanInput = (
     <FormControlLabel
-      control={<Checkbox checked={valueBoolean} onChange={handleChange} sx={{ mb: 0 }} />}
+      control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
       label=""
     />
+  );
+
+  const renderQItemBoolean = isRepeated ? (
+    <>{booleanInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <FormControlLabel
-            control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
-            label=""
-          />
+          {booleanInput}
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemBoolean}</>;

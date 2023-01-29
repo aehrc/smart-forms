@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, IconButton, Stack } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { Box, Button, Card, Divider, IconButton, Stack } from '@mui/material';
 
 import {
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/Interfaces';
-import { Add, Delete } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import QItemGroup from './QItemGroup';
 
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -17,7 +18,7 @@ import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styl
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 
-interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAttribute {
+interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
@@ -26,8 +27,8 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAtt
 function QItemRepeatGroup(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
@@ -75,10 +76,11 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: 3.5 }}>
-      <QGroupHeadingTypography variant="h6" sx={{ mb: 4 }}>
+    <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
+      <QGroupHeadingTypography variant="h6">
         <QItemLabel qItem={qItem} />
       </QGroupHeadingTypography>
+      <Divider sx={{ mt: 1, mb: 1.5 }} light />
       {repeatGroups.map((singleGroup, index) => {
         const singleQrGroup: QuestionnaireResponseItem = singleGroup
           ? { ...cleanQrItem, item: singleGroup.item }
@@ -90,7 +92,7 @@ function QItemRepeatGroup(props: Props) {
               <QItemGroup
                 qItem={qItem}
                 qrItem={singleQrGroup}
-                repeats={true}
+                isRepeated={true}
                 groupCardElevation={groupCardElevation + 1}
                 onQrItemChange={(newQrGroup) =>
                   handleAnswerItemsChange(newQrGroup, index)
@@ -104,7 +106,7 @@ function QItemRepeatGroup(props: Props) {
                   color="error"
                   disabled={!singleGroup}
                   onClick={() => deleteAnswerItem(index)}>
-                  <Delete />
+                  <DeleteIcon />
                 </IconButton>
               </span>
             </RepeatDeleteTooltip>
@@ -115,7 +117,7 @@ function QItemRepeatGroup(props: Props) {
       <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
         <Button
           variant="contained"
-          startIcon={<Add />}
+          startIcon={<AddIcon />}
           disabled={!repeatGroups[repeatGroups.length - 1]}
           onClick={() => setRepeatGroups([...repeatGroups, undefined])}>
           Add Item

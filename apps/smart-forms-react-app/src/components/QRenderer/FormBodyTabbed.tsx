@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Card, Grid, ListItemButton, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
@@ -24,8 +24,8 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function FormBodyTabbed(props: Props) {
   const { qForm, qrForm, tabIndex, setTabIndex, onQrItemChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
   const qFormItems = qForm.item;
@@ -43,7 +43,7 @@ function FormBodyTabbed(props: Props) {
       <Grid container spacing={2}>
         <TabContext value={tabIndex.toString()}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
-            <Card sx={{ p: 1, mb: 2 }}>
+            <Card sx={{ p: 0.75, mb: 2 }}>
               <Box sx={{ flexGrow: 1 }}>
                 <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }}>
                   {qFormItems.map((qItem, index) => {
@@ -60,7 +60,7 @@ function FormBodyTabbed(props: Props) {
                         onClick={() => setTabIndex(index + 1)}>
                         <ListItemText
                           primary={
-                            <Typography fontSize={12} variant="h6">
+                            <Typography variant="subtitle2">
                               {getShortText(qItem) ?? qItem.text}
                             </Typography>
                           }
@@ -83,8 +83,8 @@ function FormBodyTabbed(props: Props) {
                     <QItemGroup
                       qItem={qItem}
                       qrItem={qrItem}
-                      repeats={qItem.repeats ?? false}
-                      groupCardElevation={2}
+                      isRepeated={qItem.repeats ?? false}
+                      groupCardElevation={1}
                       onQrItemChange={handleQrGroupChange}></QItemGroup>
                   </TabPanel>
                 );

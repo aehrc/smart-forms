@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import {
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithRepeatsAttribute
-} from '../../../interfaces/Interfaces';
+import { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import {
+  Box,
   Button,
+  Divider,
   IconButton,
   Paper,
   Stack,
@@ -16,26 +15,30 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { createQrItem } from '../../../functions/QrItemFunctions';
-import { Add, Delete } from '@mui/icons-material';
-import { RepeatDeleteTooltip } from './QItemRepeat.styles';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { isHidden } from '../../../functions/QItemFunctions';
 import QItemGroupTableRow from './QItemGroupTableRow';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
+import { DeleteButtonTableCell, HeaderTableCell } from '../../StyledComponents/Table.styles';
+import QItemLabel from './QItemParts/QItemLabel';
 
-interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithRepeatsAttribute {
+interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
+  groupCardElevation: number;
 }
 
 function QItemGroupTable(props: Props) {
-  const { qItem, qrItems, onQrRepeatGroupChange } = props;
+  const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
   const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =
@@ -86,16 +89,22 @@ function QItemGroupTable(props: Props) {
   // Generate item labels as table headers
   const itemLabels: string[] = qItem.item.map((item) => (item.text ? item.text : ''));
 
+  // TODO instead of using formcontrol, use a box instead of all
+  // TODO pass a table param to all and just fill whole thing
   return (
-    <>
-      <Typography sx={{ mb: 1.5 }}>{qItem.text}</Typography>
-      <TableContainer component={Paper} sx={{ mb: 2 }}>
+    <Box sx={{ my: 3.5 }}>
+      <Typography fontSize={13} variant="h6">
+        <QItemLabel qItem={qItem} />
+      </Typography>
+      <Divider sx={{ my: 1 }} light />
+      <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
           <caption>
             <Stack direction="row" justifyContent="end">
               <Button
                 variant="contained"
-                startIcon={<Add />}
+                size="small"
+                startIcon={<AddIcon />}
                 onClick={() => setTableRows([...tableRows, undefined])}>
                 Add Row
               </Button>
@@ -104,7 +113,7 @@ function QItemGroupTable(props: Props) {
           <TableHead>
             <TableRow>
               {itemLabels.map((itemLabel) => (
-                <TableCell key={itemLabel}>{itemLabel}</TableCell>
+                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
               ))}
               <TableCell />
             </TableRow>
@@ -121,22 +130,22 @@ function QItemGroupTable(props: Props) {
                     qrItem={singleQrRow}
                     onQrItemChange={(newQrGroup) => handleRowsChange(newQrGroup, index)}
                   />
-                  <TableCell>
-                    <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
+                  <DeleteButtonTableCell>
+                    <Tooltip title="Delete item">
                       <span>
                         <IconButton size="small" color="error" onClick={() => deleteRow(index)}>
-                          <Delete />
+                          <DeleteIcon />
                         </IconButton>
                       </span>
-                    </RepeatDeleteTooltip>
-                  </TableCell>
+                    </Tooltip>
+                  </DeleteButtonTableCell>
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Box>
   );
 }
 

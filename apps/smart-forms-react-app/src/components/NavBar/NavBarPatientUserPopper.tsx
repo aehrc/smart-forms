@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
 import {
   NavBarPatientUserDataIconButton,
@@ -7,8 +7,10 @@ import {
 } from './NavBar.styles';
 import { List, ListItem, Popover, Stack, Tooltip } from '@mui/material';
 import NavBarGenderIcon from './NavBarGenderIcon';
-import { AccountCircle, Event, MedicalServices } from '@mui/icons-material/';
 import { PatientData, UserData } from '../../interfaces/Interfaces';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import EventIcon from '@mui/icons-material/Event';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 
 interface Props {
   patientData: PatientData;
@@ -25,7 +27,7 @@ function NavBarPatientUserPopper(props: Props) {
           <div>
             <Tooltip title="View patient and user details">
               <NavBarPatientUserDataIconButton {...bindTrigger(popupState)}>
-                <AccountCircle />
+                <AccountCircleIcon fontSize="small" />
               </NavBarPatientUserDataIconButton>
             </Tooltip>
             <Popover
@@ -42,7 +44,7 @@ function NavBarPatientUserPopper(props: Props) {
                 <List>
                   <ListItem>
                     <Stack direction="row" alignItems="center" spacing={1.5}>
-                      <AccountCircle />
+                      <AccountCircleIcon fontSize="small" />
                       <PatientDetailsDialogTypography>
                         {patientData.name}
                       </PatientDetailsDialogTypography>
@@ -58,7 +60,7 @@ function NavBarPatientUserPopper(props: Props) {
                   </ListItem>
                   <ListItem>
                     <Stack direction="row" alignItems="center" spacing={1.5}>
-                      <Event />
+                      <EventIcon fontSize="small" />
                       <PatientDetailsDialogTypography>
                         {patientData.dateOfBirth}
                       </PatientDetailsDialogTypography>
@@ -66,7 +68,7 @@ function NavBarPatientUserPopper(props: Props) {
                   </ListItem>
                   <ListItem>
                     <Stack direction="row" alignItems="center" spacing={1.5}>
-                      <MedicalServices />
+                      <MedicalServicesIcon fontSize="small" />
                       <PatientDetailsDialogTypography>
                         {userData.name}
                       </PatientDetailsDialogTypography>

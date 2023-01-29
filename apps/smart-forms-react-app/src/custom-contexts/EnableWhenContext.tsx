@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { EnableWhenItems } from '../interfaces/Interfaces';
 import { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r5';
@@ -20,8 +20,8 @@ export const EnableWhenContext = React.createContext<EnableWhenContextType>({
 
 function EnableWhenContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
-  const [enableWhenItems, setEnableWhenItems] = React.useState<EnableWhenItems>({});
-  const [linkedQuestionsMap, setLinkedQuestionsMap] = React.useState<Record<string, string[]>>({});
+  const [enableWhenItems, setEnableWhenItems] = useState<EnableWhenItems>({});
+  const [linkedQuestionsMap, setLinkedQuestionsMap] = useState<Record<string, string[]>>({});
 
   const enableWhenContext: EnableWhenContextType = {
     items: enableWhenItems,

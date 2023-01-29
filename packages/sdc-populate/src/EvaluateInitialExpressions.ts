@@ -29,7 +29,15 @@ export function evaluateInitialExpressions(
       }
 
       // Evaluate expression by LaunchPatient or PrePopQuery
-      initialExpression.value = fhirpath.evaluate({}, expression, context, fhirpath_r4_model);
+      try {
+        initialExpression.value = fhirpath.evaluate({}, expression, context, fhirpath_r4_model);
+      } catch (e) {
+        if (e instanceof Error) {
+          console.error('Error: Population attempted but failed. Details below:');
+          console.error(e);
+        }
+        return initialExpressions;
+      }
       initialExpressions[linkId] = initialExpression;
     }
   }

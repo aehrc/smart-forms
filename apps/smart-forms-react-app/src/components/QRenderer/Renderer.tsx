@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ProgressSpinner from '../ProgressSpinner';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
@@ -8,9 +8,9 @@ import RendererBody from './RendererBody';
 import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
 
 function Renderer() {
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
-  const launch = React.useContext(LaunchContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const launch = useContext(LaunchContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item) return null;
@@ -54,7 +54,7 @@ function Renderer() {
         },
         () => {
           setSpinner({ ...spinner, isLoading: false });
-          console.warn('fail to populate');
+          console.warn('Population failed');
           // TODO popup questionnaire fail to populate
         }
       );

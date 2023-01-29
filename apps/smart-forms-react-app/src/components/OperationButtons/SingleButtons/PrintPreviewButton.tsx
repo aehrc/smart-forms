@@ -1,8 +1,10 @@
-import React from 'react';
-import { ListItemButton, Typography } from '@mui/material';
-import { Print } from '@mui/icons-material';
+import React, { useContext } from 'react';
+import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
+import PrintIcon from '@mui/icons-material/Print';
 import ListItemText from '@mui/material/ListItemText';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
+import { SideBarContext } from '../../../custom-contexts/SideBarContext';
+import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
 
 interface Props {
   handlePrint: () => unknown;
@@ -11,28 +13,45 @@ interface Props {
 
 function PrintPreviewButton(props: Props) {
   const { handlePrint, isChip } = props;
+  const sideBar = useContext(SideBarContext);
 
-  const renderButtonOrChip = !isChip ? (
+  const buttonTitle = 'Print Preview';
+
+  const renderButton = (
     <ListItemButton onClick={handlePrint}>
-      <Print sx={{ mr: 2 }} />
+      <PrintIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
           <Typography fontSize={12} variant="h6">
-            Print Preview
+            {buttonTitle}
           </Typography>
         }
       />
     </ListItemButton>
-  ) : (
+  );
+
+  const renderChip = (
     <OperationChip
-      icon={<Print fontSize="small" />}
-      label="Print Preview"
+      icon={<PrintIcon fontSize="small" />}
+      label={buttonTitle}
       clickable
       onClick={handlePrint}
     />
   );
 
-  return <>{renderButtonOrChip}</>;
+  const renderIconButton = (
+    <Box sx={{ m: 0.5 }}>
+      <Tooltip title={buttonTitle} placement="right">
+        <span>
+          <SideBarIconButton onClick={handlePrint}>
+            <PrintIcon />
+          </SideBarIconButton>
+        </span>
+      </Tooltip>
+    </Box>
+  );
+
+  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default PrintPreviewButton;

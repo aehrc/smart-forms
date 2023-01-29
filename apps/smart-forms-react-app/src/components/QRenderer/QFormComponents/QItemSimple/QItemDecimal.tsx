@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FormControl, Grid, InputAdornment } from '@mui/material';
+import { Grid, InputAdornment } from '@mui/material';
 
 import {
   CalculatedExpression,
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -13,17 +14,19 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
-import { FixedSizeOutlinedInput } from '../../../StyledComponents/Textfield.styles';
+import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDecimal(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   const precision = getDecimalPrecision(qItem);
@@ -85,12 +88,13 @@ function QItemDecimal(props: Props) {
   }
 
   const decimalInput = (
-    <FixedSizeOutlinedInput
+    <StandardOutlinedInput
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
       disabled={!!calculatedExpression}
-      sx={{ mb: repeats ? 0 : 2 }}
+      fullWidth
+      isTabled={isTabled}
       inputProps={{
         inputMode: 'numeric',
         pattern: '[0-9]*'
@@ -99,10 +103,10 @@ function QItemDecimal(props: Props) {
     />
   );
 
-  const renderQItemDecimal = repeats ? (
+  const renderQItemDecimal = isRepeated ? (
     <>{decimalInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -112,7 +116,7 @@ function QItemDecimal(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemDecimal}</>;
 }

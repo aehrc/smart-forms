@@ -1,7 +1,7 @@
 import React from 'react';
-import { FormControl } from '@mui/material';
 import { QuestionnaireItem } from 'fhir/r5';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props {
   qItem: QuestionnaireItem;
@@ -11,9 +11,9 @@ function QItemDisplay(props: Props) {
   const { qItem } = props;
 
   return (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <QItemLabel qItem={qItem} />
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 }
 

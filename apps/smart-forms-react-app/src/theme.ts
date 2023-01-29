@@ -23,10 +23,10 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
   return createTheme({
     typography: {
       body1: {
-        fontSize: 14
+        fontSize: 13
       },
       subtitle2: {
-        fontSize: 12
+        fontSize: 11.5
       }
     },
     palette: {
@@ -47,19 +47,6 @@ const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
         main: '#d5f5e3',
         light: '#eafaf1',
         dark: '#abebc6'
-      }
-    },
-    components: {
-      MuiFormControl: {
-        defaultProps: {
-          fullWidth: true
-        },
-        styleOverrides: {
-          root: {
-            marginTop: 4,
-            marginBottom: 8
-          }
-        }
       }
     }
   });

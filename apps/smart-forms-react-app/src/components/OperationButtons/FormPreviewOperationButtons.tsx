@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ChangeQuestionnaireButton from './SingleButtons/ChangeQuestionnaireButton';
 import SaveAsDraftButton from './SingleButtons/SaveAsDraftButton';
 import SaveAsFinalButton from './SingleButtons/SaveAsFinalButton';
@@ -20,8 +20,8 @@ function FormPreviewOperationButtons(props: Props) {
   const { isChip, qrHasChanges, removeQrHasChanges, togglePreviewMode, questionnaireResponse } =
     props;
 
-  const launch = React.useContext(LaunchContext);
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const launch = useContext(LaunchContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
   return (
     <>
       <ChangeQuestionnaireButton

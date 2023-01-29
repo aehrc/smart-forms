@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Button, Grid, IconButton, Stack } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
-import { Add, Delete } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import QItemSwitcher from './QItemSwitcher';
 import {
   QuestionnaireItem,
@@ -24,8 +25,8 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function QItemRepeat(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const cleanQrItem = createQrItem(qItem);
   const qrRepeat = qrItem ? qrItem : cleanQrItem;
@@ -86,7 +87,8 @@ function QItemRepeat(props: Props) {
                     <QItemSwitcher
                       qItem={qItem}
                       qrItem={singleQrItem}
-                      repeats={qItem.repeats ?? false}
+                      isRepeated={qItem.repeats ?? false}
+                      isTabled={false}
                       onQrItemChange={(newQrItem) =>
                         handleAnswersChange(newQrItem, index)
                       }></QItemSwitcher>
@@ -98,7 +100,7 @@ function QItemRepeat(props: Props) {
                         color="error"
                         disabled={!answer}
                         onClick={() => deleteAnswer(index)}>
-                        <Delete fontSize="small" />
+                        <DeleteIcon fontSize="small" />
                       </IconButton>
                     </span>
                   </RepeatDeleteTooltip>
@@ -110,10 +112,10 @@ function QItemRepeat(props: Props) {
         </Grid>
       </Grid>
 
-      <Stack direction="row" justifyContent="end" sx={{ mb: 3 }}>
+      <Stack direction="row" justifyContent="end" sx={{ mt: 1, mb: 3 }}>
         <Button
           variant="contained"
-          startIcon={<Add />}
+          startIcon={<AddIcon />}
           disabled={!repeatAnswers[repeatAnswers.length - 1]}
           onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}>
           Add Item

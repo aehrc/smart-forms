@@ -2,12 +2,12 @@ import { styled, Typography } from '@mui/material';
 
 export const SideBarOverlineTypography = styled(Typography)(() => ({
   fontSize: 10,
-  marginLeft: '16px',
-  marginTop: '8px'
+  marginLeft: 16,
+  marginTop: 8
 }));
 
 export const QGroupHeadingTypography = styled(Typography)(() => ({
-  fontSize: 16
+  fontSize: 15
 }));
 
 export const MainGridHeadingTypography = styled(Typography)(() => ({

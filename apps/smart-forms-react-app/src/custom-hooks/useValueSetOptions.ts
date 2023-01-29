@@ -1,11 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Coding, QuestionnaireItem, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
 import { ContainedValueSetContext } from '../components/QRenderer/Form';
 
 function useValueSetOptions(qItem: QuestionnaireItem) {
-  const containedValueSetContext = React.useContext(ContainedValueSetContext);
-  const [options, setOptions] = useState<Coding[]>([]);
+  const containedValueSetContext = useContext(ContainedValueSetContext);
+
+  const valueSetUrl = qItem.answerValueSet;
+  if (!valueSetUrl) {
+    return { options: [], serverError: null };
+  }
+
+  let answerOptions: Coding[] = [];
+
+  // set options from cached answer options if present
+  const cachedAnswerOptions = AnswerValueSet.cache[valueSetUrl];
+  if (cachedAnswerOptions) {
+    answerOptions = cachedAnswerOptions;
+  } else if (valueSetUrl.startsWith('#')) {
+    // set options from contained valueSet if present
+    const reference = valueSetUrl.slice(1);
+    const valueSet = containedValueSetContext[reference];
+    if (valueSet) {
+      getValueSetOptions(valueSetUrl, valueSet);
+    }
+  }
+
+  const [options, setOptions] = useState<Coding[]>(answerOptions);
   const [serverError, setServerError] = useState<Error | null>(null);
 
   // get options from answerValueSet on render
@@ -13,26 +34,11 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
     const valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl) return;
 
-    // set options from cached answer options if present
-    const cachedAnswerOptions = AnswerValueSet.cache[valueSetUrl];
-    if (cachedAnswerOptions) {
-      setOptions(cachedAnswerOptions);
-      return;
-    }
-
-    if (valueSetUrl.startsWith('#')) {
-      // get options from referenced valueSet
-      const reference = valueSetUrl.slice(1);
-      const valueSet = containedValueSetContext[reference];
-      if (valueSet) {
-        setOptionsFromValueSet(valueSetUrl, valueSet);
-      }
-    } else {
-      // get options from terminology server
+    if (!cachedAnswerOptions || !valueSetUrl.startsWith('#')) {
       AnswerValueSet.expand(
         valueSetUrl,
         (valueSet: ValueSet) => {
-          setOptionsFromValueSet(valueSetUrl, valueSet);
+          setOptions(getValueSetOptions(valueSetUrl, valueSet));
         },
         (error: Error) => {
           setServerError(error);
@@ -41,16 +47,17 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
     }
   }, [qItem]);
 
-  function setOptionsFromValueSet(valueSetUrl: string, valueSet: ValueSet) {
-    const contains = valueSet.expansion?.contains;
-    if (contains) {
-      const answerOptions = AnswerValueSet.getValueCodings(contains);
-      AnswerValueSet.cache[valueSetUrl] = answerOptions;
-      setOptions(answerOptions);
-    }
-  }
-
   return { options, serverError };
+}
+
+function getValueSetOptions(valueSetUrl: string, valueSet: ValueSet): Coding[] {
+  const contains = valueSet.expansion?.contains;
+  if (contains) {
+    const answerOptions = AnswerValueSet.getValueCodings(contains);
+    AnswerValueSet.cache[valueSetUrl] = answerOptions;
+    return answerOptions;
+  }
+  return [];
 }
 
 export default useValueSetOptions;

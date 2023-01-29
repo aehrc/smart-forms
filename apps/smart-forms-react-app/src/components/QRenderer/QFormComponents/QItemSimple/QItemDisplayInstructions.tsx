@@ -13,7 +13,7 @@ function QItemDisplayInstructions(props: Props) {
   const displayInstructions = getTextDisplayInstructions(qItem);
 
   const renderQItemDisplayInstructions = displayInstructions ? (
-    <Box sx={{ color: 'text.secondary', textTransform: 'capitalize', mb: 2 }}>
+    <Box sx={{ color: 'text.secondary', textTransform: 'capitalize', mb: 1 }}>
       <Typography variant="caption" fontSize={10.5}>
         {displayInstructions}
       </Typography>

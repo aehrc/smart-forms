@@ -7,7 +7,7 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { PageType } from '../../interfaces/Enums';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
@@ -37,12 +37,12 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     patient,
     user
   } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
-  const pageSwitcher = React.useContext(PageSwitcherContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const pageSwitcher = useContext(PageSwitcherContext);
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const [isSaving, setIsSaving] = useState(false);
 

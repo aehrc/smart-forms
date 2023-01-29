@@ -1,8 +1,8 @@
 import { Box, IconButton, styled, Toolbar, Typography } from '@mui/material';
 
 export const NavToolBar = styled(Toolbar)(({ theme }) => ({
-  paddingTop: '8px',
-  paddingBottom: '8px',
+  paddingTop: 8,
+  paddingBottom: 8,
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.common.white
 }));
@@ -21,8 +21,8 @@ export const NavBarPatientUserDataIconButton = styled(IconButton)(({ theme }) =>
   [theme.breakpoints.up('lg')]: {
     display: 'none'
   },
-  paddingTop: '4px',
-  paddingBottom: '4px'
+  paddingTop: 4,
+  paddingBottom: 4
 }));
 
 export const NavBarPopUpBox = styled(Box)(({ theme }) => ({

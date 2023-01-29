@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Divider, Grid, Paper } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
@@ -9,6 +9,7 @@ import { QuestionnaireProviderContext } from '../../App';
 import FormPreviewOperationButtons from '../OperationButtons/FormPreviewOperationButtons';
 import ChipBar from '../ChipBar/ChipBar';
 import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
+import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 interface Props {
   questionnaireResponse: QuestionnaireResponse;
@@ -18,7 +19,8 @@ interface Props {
 }
 function FormPreview(props: Props) {
   const { questionnaireResponse, qrHasChanges, removeQrHasChanges, togglePreviewMode } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const sideBar = useContext(SideBarContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;
@@ -29,7 +31,7 @@ function FormPreview(props: Props) {
   if (qForm.item && qrForm.item) {
     return (
       <Grid container>
-        <SideBarGrid item xs={12} lg={1.75}>
+        <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
           <SideBar>
             <FormPreviewOperationButtons
               togglePreviewMode={togglePreviewMode}
@@ -39,7 +41,7 @@ function FormPreview(props: Props) {
             />
           </SideBar>
         </SideBarGrid>
-        <MainGrid item xs={12} lg={10.25}>
+        <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
           <MainGridContainerBox>
             <MainGridHeadingTypography>Preview</MainGridHeadingTypography>
             <ChipBar>

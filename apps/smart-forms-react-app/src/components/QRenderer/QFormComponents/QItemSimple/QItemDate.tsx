@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
-import { FormControl, Grid } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Grid } from '@mui/material';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -12,23 +14,24 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
-import { FixedSizeTextField } from '../../../StyledComponents/Textfield.styles';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemDate(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   const qrDate = qrItem ? qrItem : createQrItem(qItem);
   const answerValue = qrDate['answer'] ? qrDate['answer'][0].valueDate : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 
-  const [value, setValue] = React.useState<Dayjs | null>(answerValueDayJs);
+  const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
 
   useEffect(() => {
     setValue(answerValueDayJs);
@@ -41,32 +44,32 @@ function QItemDate(props: Props) {
     }
   }
 
-  const renderQItemDate = repeats ? (
-    <QItemDatePicker value={value} onDateChange={handleChange} />
+  const renderQItemDate = isRepeated ? (
+    <QItemDatePicker value={value} onDateChange={handleChange} isTabled={isTabled} />
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <QItemDatePicker value={value} onDateChange={handleChange} />
+          <QItemDatePicker value={value} onDateChange={handleChange} isTabled={isTabled} />
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemDate}</>;
 }
 
-interface QItemDatePickerProps {
+interface QItemDatePickerProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
   onDateChange: (newValue: Dayjs | null) => unknown;
 }
 
 function QItemDatePicker(props: QItemDatePickerProps) {
-  const { value, onDateChange } = props;
+  const { value, onDateChange, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -74,7 +77,7 @@ function QItemDatePicker(props: QItemDatePickerProps) {
         inputFormat="DD/MM/YYYY"
         value={value}
         onChange={onDateChange}
-        renderInput={(params) => <FixedSizeTextField {...params} />}
+        renderInput={(params) => <StandardTextField fullWidth isTabled={isTabled} {...params} />}
       />
     </LocalizationProvider>
   );

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Card, Divider } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { Card, Divider } from '@mui/material';
 import { QItemType } from '../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
@@ -8,8 +8,8 @@ import QItemRepeat from './QItemRepeat';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import {
+  PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute,
   QrRepeatGroup
 } from '../../../interfaces/Interfaces';
 import { isHidden, isRepeatItemAndNotCheckbox } from '../../../functions/QItemFunctions';
@@ -19,20 +19,21 @@ import QItemGroupTable from './QItemGroupTable';
 import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
+import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
 }
 
 function QItemGroup(props: Props) {
-  const { qItem, qrItem, repeats, groupCardElevation, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, groupCardElevation, onQrItemChange } = props;
 
-  const enableWhenContext = React.useContext(EnableWhenContext);
-  const enableWhenChecksContext = React.useContext(EnableWhenChecksContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
@@ -67,8 +68,8 @@ function QItemGroup(props: Props) {
       getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
     return (
-      <Card elevation={groupCardElevation} sx={{ py: 3, px: 3.5, mb: repeats ? 0 : 3.5 }}>
-        {repeats ? null : (
+      <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
+        {isRepeated ? null : (
           <>
             <QGroupHeadingTypography variant="h6">
               <QItemLabel qItem={qItem} />
@@ -87,26 +88,26 @@ function QItemGroup(props: Props) {
             if (qItem.repeats && qItem.type === QItemType.Group) {
               if (isSpecificItemControl(qItem, 'gtable')) {
                 return (
-                  <Box key={qItem.linkId} sx={{ my: 2 }}>
+                  <QGroupContainerBox key={qItem.linkId}>
                     <QItemGroupTable
                       qItem={qItem}
                       qrItems={qrItems}
-                      repeats={true}
-                      onQrRepeatGroupChange={handleQrRepeatGroupChange}
-                    />
-                  </Box>
-                );
-              } else {
-                return (
-                  <Box key={qItem.linkId} sx={{ my: 2 }}>
-                    <QItemRepeatGroup
-                      qItem={qItem}
-                      qrItems={qrItems}
-                      repeats={true}
                       groupCardElevation={groupCardElevation + 1}
                       onQrRepeatGroupChange={handleQrRepeatGroupChange}
                     />
-                  </Box>
+                  </QGroupContainerBox>
+                );
+              } else {
+                return (
+                  <QGroupContainerBox key={qItem.linkId}>
+                    <QItemRepeatGroup
+                      qItem={qItem}
+                      qrItems={qrItems}
+                      isRepeated={true}
+                      groupCardElevation={groupCardElevation + 1}
+                      onQrRepeatGroupChange={handleQrRepeatGroupChange}
+                    />
+                  </QGroupContainerBox>
                 );
               }
             } else {
@@ -124,26 +125,26 @@ function QItemGroup(props: Props) {
                 // their qrItem should always be undefined
                 if (isSpecificItemControl(qItem, 'gtable')) {
                   return (
-                    <Box key={qItem.linkId} sx={{ my: 2 }}>
+                    <QGroupContainerBox key={qItem.linkId}>
                       <QItemGroupTable
                         qItem={qItem}
                         qrItems={[]}
-                        repeats={true}
-                        onQrRepeatGroupChange={handleQrRepeatGroupChange}
-                      />
-                    </Box>
-                  );
-                } else {
-                  return (
-                    <Box key={qItem.linkId} sx={{ my: 2 }}>
-                      <QItemRepeatGroup
-                        qItem={qItem}
-                        qrItems={[]}
-                        repeats={true}
                         groupCardElevation={groupCardElevation + 1}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
-                    </Box>
+                    </QGroupContainerBox>
+                  );
+                } else {
+                  return (
+                    <QGroupContainerBox key={qItem.linkId}>
+                      <QItemRepeatGroup
+                        qItem={qItem}
+                        qrItems={[]}
+                        isRepeated={true}
+                        groupCardElevation={groupCardElevation + 1}
+                        onQrRepeatGroupChange={handleQrRepeatGroupChange}
+                      />
+                    </QGroupContainerBox>
                   );
                 }
               } else {
@@ -161,14 +162,14 @@ function QItemGroup(props: Props) {
             // if qItem is not a repeating question or is a checkbox
             if (qItem.type === QItemType.Group) {
               return (
-                <Box key={qItem.linkId} sx={{ my: 2 }}>
+                <QGroupContainerBox key={qItem.linkId}>
                   <QItemGroup
                     qItem={qItem}
                     qrItem={qrItem}
-                    repeats={false}
+                    isRepeated={false}
                     groupCardElevation={groupCardElevation + 1}
                     onQrItemChange={handleQrItemChange}></QItemGroup>
-                </Box>
+                </QGroupContainerBox>
               );
             } else {
               return (
@@ -176,7 +177,8 @@ function QItemGroup(props: Props) {
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItem={qrItem}
-                  repeats={false}
+                  isRepeated={false}
+                  isTabled={false}
                   onQrItemChange={handleQrItemChange}></QItemSwitcher>
               );
             }

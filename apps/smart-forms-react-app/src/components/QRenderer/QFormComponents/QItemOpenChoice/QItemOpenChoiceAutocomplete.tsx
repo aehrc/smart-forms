@@ -1,32 +1,29 @@
 import React, { SyntheticEvent } from 'react';
-import {
-  Autocomplete,
-  CircularProgress,
-  FormControl,
-  Grid,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Autocomplete, CircularProgress, Grid, Typography } from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoiceAutocomplete(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
 
   let valueAutocomplete: Coding | string | undefined;
@@ -38,10 +35,10 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   const answerValueSetUrl = qItem.answerValueSet;
   if (!answerValueSetUrl) return null;
 
-  const maxlist = 10;
+  const maxList = 10;
 
   const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
-    useValueSetAutocomplete(answerValueSetUrl, maxlist);
+    useValueSetAutocomplete(answerValueSetUrl, maxList);
 
   function handleValueChange(
     event: SyntheticEvent<Element, Event>,
@@ -70,8 +67,6 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     <>
       <Autocomplete
         id={qItem.id}
-        freeSolo
-        autoHighlight
         value={valueAutocomplete ?? null}
         options={options}
         noOptionsText={'No results'}
@@ -79,15 +74,17 @@ function QItemOpenChoiceAutocomplete(props: Props) {
         loading={loading}
         loadingText={'Fetching results...'}
         clearOnEscape
+        freeSolo
+        autoHighlight
+        fullWidth
         onChange={handleValueChange}
         filterOptions={(x) => x}
-        sx={{ maxWidth: 202 }}
         renderInput={(params) => (
-          <TextField
+          <StandardTextField
             {...params}
             label={valueAutocomplete ? '' : 'Search...'}
             onChange={handleInputChange}
-            sx={{ ...(repeats && { mb: 0 }) }}
+            isTabled={isTabled}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -108,10 +105,10 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     </>
   );
 
-  const renderQItemOpenChoiceAutocomplete = repeats ? (
+  const renderQItemOpenChoiceAutocomplete = isRepeated ? (
     <>{openChoiceAutocomplete}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -121,7 +118,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
   return <>{renderQItemOpenChoiceAutocomplete}</>;
 }

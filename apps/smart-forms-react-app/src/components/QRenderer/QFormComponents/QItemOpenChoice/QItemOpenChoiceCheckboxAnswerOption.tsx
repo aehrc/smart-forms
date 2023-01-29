@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { FormControl, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { getOpenLabelText } from '../../../../functions/ItemControlFunctions';
@@ -14,17 +14,18 @@ import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { updateQrOpenChoiceCheckboxAnswers } from '../../../../functions/OpenChoiceFunctions';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: QItemChoiceOrientation;
 }
 
 function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
-  const { qItem, qrItem, repeats, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrOpenChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
   const answers = qrOpenChoiceCheckbox['answer'] ? qrOpenChoiceCheckbox['answer'] : [];
@@ -49,7 +50,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
         answerOptions,
         qrOpenChoiceCheckbox,
         CheckBoxOptionType.AnswerOption,
-        repeats
+        isRepeated
       );
     } else if (changedOpenLabelValue) {
       updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
@@ -59,7 +60,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
         answerOptions,
         qrOpenChoiceCheckbox,
         CheckBoxOptionType.AnswerOption,
-        repeats
+        isRepeated
       );
     }
 
@@ -125,7 +126,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   );
 
   return (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -135,7 +136,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 }
 

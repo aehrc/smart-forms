@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Divider, Grid } from '@mui/material';
-import FormBodyUntabbed from './FormBodyUntabbed';
+import React, { useContext, useEffect, useState } from 'react';
+import { Divider, Grid } from '@mui/material';
 import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
@@ -18,6 +17,8 @@ import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import FormBodyInvalid from './FormBodyInvalid';
 import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 import QTitle from './QFormComponents/QItemParts/QTitle';
+import { SideBarContext } from '../../custom-contexts/SideBarContext';
+import QItemGroup from './QFormComponents/QItemGroup';
 
 export const CalcExpressionContext = React.createContext<Record<string, CalculatedExpression>>({});
 export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
@@ -45,9 +46,10 @@ function Form(props: Props) {
     updateQuestionnaireResponse,
     clearQuestionnaireResponse
   } = props;
-  const questionnaireProvider = React.useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = React.useContext(QuestionnaireResponseProviderContext);
-  const enableWhen = React.useContext(EnableWhenContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const enableWhen = useContext(EnableWhenContext);
+  const sideBar = useContext(SideBarContext);
 
   const [calculatedExpressions, setCalculatedExpressions] = useState<
     Record<string, CalculatedExpression>
@@ -57,11 +59,11 @@ function Form(props: Props) {
   );
 
   // states only for testing
-  const [enableWhenStatus, setEnableWhenStatus] = React.useState(true);
-  const [hideQResponse, setHideQResponse] = React.useState(true);
+  const [enableWhenStatus, setEnableWhenStatus] = useState(true);
+  const [hideQResponse, setHideQResponse] = useState(true);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  if (!questionnaire.item || !questionnaireResponse.item) return null;
+  if (!questionnaire.item || !questionnaireResponse.item) return <FormBodyInvalid />;
 
   const qForm = questionnaire.item[0];
   const qrForm = questionnaireResponse.item[0];
@@ -92,7 +94,7 @@ function Form(props: Props) {
         <ContainedValueSetContext.Provider value={containedValueSets}>
           <EnableWhenChecksContext.Provider value={enableWhenStatus}>
             <Grid container>
-              <SideBarGrid item xs={12} lg={1.75}>
+              <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
                 <SideBar>
                   <RendererOperationButtons
                     qrHasChanges={qrHasChanges}
@@ -102,9 +104,9 @@ function Form(props: Props) {
                   />
                 </SideBar>
               </SideBarGrid>
-              <MainGrid item xs={12} lg={10.25}>
+              <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
                 <MainGridContainerBox>
-                  <MainGridHeadingTypography variant="h1">
+                  <MainGridHeadingTypography>
                     <QTitle questionnaire={questionnaire} />
                   </MainGridHeadingTypography>
                   <ChipBar>
@@ -126,25 +128,15 @@ function Form(props: Props) {
                       onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                     />
                   ) : (
-                    <FormBodyUntabbed
-                      qForm={qForm}
-                      qrForm={qrForm}
-                      onQrItemChange={(newQrForm) => {
-                        onQrFormChange(newQrForm);
-                      }}></FormBodyUntabbed>
+                    // If form is untabbed, it is rendered as a regular group
+                    <QItemGroup
+                      qItem={qForm}
+                      qrItem={qrForm}
+                      groupCardElevation={1}
+                      onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                      isRepeated={false}
+                    />
                   )}
-
-                  <Box sx={{ pb: 2 }}>
-                    <ChipBar>
-                      <RendererOperationButtons
-                        isChip={true}
-                        qrHasChanges={qrHasChanges}
-                        removeQrHasChanges={removeQrHasChanges}
-                        togglePreviewMode={togglePreviewMode}
-                        questionnaireResponse={questionnaireResponse}
-                      />
-                    </ChipBar>
-                  </Box>
                 </MainGridContainerBox>
               </MainGrid>
             </Grid>

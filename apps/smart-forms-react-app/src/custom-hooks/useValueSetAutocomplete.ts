@@ -3,7 +3,7 @@ import { Coding, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
 import { debounce } from 'lodash';
 
-function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
+function useValueSetAutocomplete(answerValueSetUrl: string, maxList: number) {
   const [options, setOptions] = useState<Coding[]>([]);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<Error | null>(null);
@@ -17,7 +17,7 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxlist: number) {
     }
 
     answerValueSetUrl += answerValueSetUrl[answerValueSetUrl.length - 1] !== '&' ? '&' : '';
-    const fullUrl = answerValueSetUrl + 'filter=' + newInput + '&count=' + maxlist;
+    const fullUrl = answerValueSetUrl + 'filter=' + newInput + '&count=' + maxList;
     const cachedAnswerOptions = AnswerValueSet.cache[fullUrl];
     if (cachedAnswerOptions) {
       // set options from cached answer options

@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
@@ -11,17 +12,20 @@ import { CalcExpressionContext } from '../../Form';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemInteger(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
-  const enableWhenContext = React.useContext(EnableWhenContext);
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   const calculatedExpressions = useContext(CalcExpressionContext);
@@ -30,7 +34,7 @@ function QItemInteger(props: Props) {
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
   useEffect(() => {
-    // if integer item is an enableWhen linked question and it does not have an answer yet
+    // if integer item is an enableWhen linked question, and it does not have an answer yet
     // set default answer to 0 - to trigger enableWhen == 0
     if (qItem.linkId in enableWhenLinkMap && !qrInteger['answer']) {
       onQrItemChange({ ...qrInteger, answer: [{ valueInteger: 0 }] });
@@ -57,32 +61,31 @@ function QItemInteger(props: Props) {
     onQrItemChange(qrInteger);
   }
 
-  const renderQItemInteger = repeats ? (
-    <TextField
+  const integerInput = (
+    <StandardTextField
       id={qItem.linkId}
       value={valueInteger}
       onChange={handleChange}
-      sx={{ mb: 0 }}
+      fullWidth
+      isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
     />
+  );
+
+  const renderQItemInteger = isRepeated ? (
+    <>{integerInput}</>
   ) : (
-    <FormControl>
+    <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <TextField
-            id={qItem.linkId}
-            value={valueInteger}
-            onChange={handleChange}
-            sx={{ mb: 0 }}
-            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-          />
+          {integerInput}
           <QItemDisplayInstructions qItem={qItem} />
         </Grid>
       </Grid>
-    </FormControl>
+    </FullWidthFormComponentBox>
   );
 
   return <>{renderQItemInteger}</>;

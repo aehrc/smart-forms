@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import './App.css';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
@@ -14,9 +14,10 @@ const questionnaireProvider = new QuestionnaireProvider();
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
 
 export const QuestionnaireProviderContext =
-  React.createContext<QuestionnaireProvider>(questionnaireProvider);
-export const QuestionnaireResponseProviderContext =
-  React.createContext<QuestionnaireResponseProvider>(questionnaireResponseProvider);
+  createContext<QuestionnaireProvider>(questionnaireProvider);
+export const QuestionnaireResponseProviderContext = createContext<QuestionnaireResponseProvider>(
+  questionnaireResponseProvider
+);
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

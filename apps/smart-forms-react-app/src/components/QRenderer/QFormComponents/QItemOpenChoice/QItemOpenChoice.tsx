@@ -6,21 +6,23 @@ import QItemOpenChoiceSelectAnswerValueSet from './QItemOpenChoiceSelectAnswerVa
 import QItemOpenChoiceAutocomplete from './QItemOpenChoiceAutocomplete';
 import { getOpenChoiceControlType } from '../../../../functions/OpenChoiceFunctions';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
 import QItemOpenChoiceCheckboxAnswerOption from './QItemOpenChoiceCheckboxAnswerOption';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemOpenChoice(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
 
   switch (getOpenChoiceControlType(qItem)) {
@@ -29,7 +31,7 @@ function QItemOpenChoice(props: Props) {
         <QItemOpenChoiceCheckboxAnswerOption
           qItem={qItem}
           qrItem={qrItem}
-          repeats={qItem['repeats'] ?? false}
+          isRepeated={qItem['repeats'] ?? false}
           onQrItemChange={onQrItemChange}
           orientation={orientation}
         />
@@ -39,7 +41,8 @@ function QItemOpenChoice(props: Props) {
         <QItemOpenChoiceAutocomplete
           qItem={qItem}
           qrItem={qrItem}
-          repeats={repeats}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -49,7 +52,8 @@ function QItemOpenChoice(props: Props) {
           <QItemOpenChoiceSelectAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -58,7 +62,8 @@ function QItemOpenChoice(props: Props) {
           <QItemOpenChoiceSelectAnswerOption
             qItem={qItem}
             qrItem={qrItem}
-            repeats={repeats}
+            isRepeated={isRepeated}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );

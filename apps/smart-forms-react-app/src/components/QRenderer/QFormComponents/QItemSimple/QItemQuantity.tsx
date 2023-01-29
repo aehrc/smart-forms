@@ -1,25 +1,29 @@
 import React, { useContext, useEffect } from 'react';
-import { FormControl, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithRepeatsAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
+import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
+import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithRepeatsAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemQuantity(props: Props) {
-  const { qItem, qrItem, repeats, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   let qrQuantity = qrItem ? qrItem : createQrItem(qItem);
@@ -68,10 +72,12 @@ function QItemQuantity(props: Props) {
   const QItemQuantityFields = (
     <Grid container columnSpacing={1}>
       <Grid item xs={6}>
-        <TextField
+        <StandardTextField
           type="number"
           id={qItem.linkId}
           value={valueQuantity}
+          fullWidth
+          isTabled={isTabled}
           onChange={handleValueChange}
         />
       </Grid>
@@ -82,11 +88,11 @@ function QItemQuantity(props: Props) {
     </Grid>
   );
 
-  if (repeats) {
+  if (isRepeated) {
     return <>{QItemQuantityFields}</>;
   } else {
     return (
-      <FormControl>
+      <FullWidthFormComponentBox>
         <Grid container columnSpacing={6}>
           <Grid item xs={5}>
             <QItemLabel qItem={qItem} />
@@ -96,7 +102,7 @@ function QItemQuantity(props: Props) {
             <QItemDisplayInstructions qItem={qItem} />
           </Grid>
         </Grid>
-      </FormControl>
+      </FullWidthFormComponentBox>
     );
   }
 }
