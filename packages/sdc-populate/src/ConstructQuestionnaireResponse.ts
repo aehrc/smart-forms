@@ -34,7 +34,8 @@ export async function constructResponse(
   if (!qForm) return questionnaireResponse;
   let qrForm: QuestionnaireResponseItem = {
     linkId: qForm.linkId,
-    text: qForm.text
+    text: qForm.text,
+    item: []
   };
 
   qrForm = readQuestionnaire(questionnaire, qrForm, initialExpressions, valueSetPromises);
