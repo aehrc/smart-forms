@@ -54,7 +54,7 @@ function readQuestionnaireResponseItem(
 ) {
   const items = item.item;
   if (items && items.length > 0) {
-    // Group
+    // Render group
     formInHTML += renderGroupHeadingDiv(item, nestedLevel);
     for (let i = 0; i < items.length; i++) {
       formInHTML = readQuestionnaireResponseItem(
@@ -66,7 +66,7 @@ function readQuestionnaireResponseItem(
     }
     formInHTML += renderGroupBottomMargin();
   } else {
-    // Item
+    // Render item
     formInHTML += renderItemDiv(item, nestedLevel, false);
   }
   formInHTML += renderGeneralBottomMargin(nestedLevel, nextItem);
