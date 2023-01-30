@@ -39,7 +39,7 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
     const reference = valueSetUrl.slice(1);
     const valueSet = containedValueSetContext[reference];
     if (valueSet) {
-      getValueSetOptions(valueSetUrl, valueSet);
+      answerOptions = getValueSetOptions(valueSetUrl, valueSet);
     }
   }
 
@@ -51,7 +51,7 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
     const valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl) return;
 
-    if (!cachedAnswerOptions || !valueSetUrl.startsWith('#')) {
+    if (!cachedAnswerOptions && !valueSetUrl.startsWith('#')) {
       AnswerValueSet.expand(
         valueSetUrl,
         (valueSet: ValueSet) => {

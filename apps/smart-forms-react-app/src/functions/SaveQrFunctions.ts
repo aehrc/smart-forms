@@ -21,8 +21,7 @@ import {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItem
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import { constructName } from './LaunchContextFunctions';
@@ -84,25 +83,25 @@ export function saveQuestionnaireResponse(
   });
 }
 
+/**
+ * Recursively go through the questionnaireResponse and remove qrItems whose qItems are hidden in the form
+ *
+ * @author Sean Fong
+ */
 export function removeHiddenAnswers(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
   enableWhenContext: EnableWhenContextType,
   enableWhenChecksEnabled: boolean
 ): QuestionnaireResponse {
-  const questionnaireItem = questionnaire.item;
-  const questionnaireResponseItem = questionnaireResponse.item;
-  if (
-    !questionnaireItem ||
-    questionnaireItem.length === 0 ||
-    !questionnaireResponseItem ||
-    questionnaireResponseItem.length === 0
-  ) {
+  const qFormItem = questionnaire.item;
+  const qrFormItem = questionnaireResponse.item;
+  if (!qFormItem || qFormItem.length === 0 || !qrFormItem || qrFormItem.length === 0) {
     return questionnaireResponse;
   }
 
-  questionnaireResponseItem.forEach((qrItem, i) => {
-    const qItem = questionnaireItem[i];
+  qrFormItem.forEach((qrItem, i) => {
+    const qItem = qFormItem[i];
     const newQrForm = readQuestionnaireResponseItem(
       qItem,
       qrItem,
@@ -124,57 +123,54 @@ function readQuestionnaireResponseItem(
   enableWhenChecksEnabled: boolean
 ): QuestionnaireResponseItem | null {
   const qItems = qItem.item;
+  const qrItems = qrItem.item;
+
+  // Process group items
   if (qItems && qItems.length > 0) {
+    // Return nothing if corresponding qItem is hidden
     if (isHidden(qItem, enableWhenContext, enableWhenChecksEnabled)) return null;
 
-    const qrItems = qrItem.item;
-    const qrAnswerItems = qrItem.answer;
     if (qrItems && qrItems.length > 0) {
       const newQrItems: QuestionnaireResponseItem[] = [];
-      for (let i = 0, j = 0; i < qItems.length; i++) {
-        if (qrItems[j] && qItems[i].linkId === qrItems[j].linkId) {
+
+      // Loop over qItems - but end loop if we either reach the end of qItems or qrItems
+      // Under normal circumstances we will reach the end of both arrays together
+      for (
+        let qItemIndex = 0, qrItemIndex = 0;
+        qItemIndex < qItems.length, qrItemIndex < qrItems.length;
+        qItemIndex++
+      ) {
+        // Save qrItem if linkIds of current qItem and qrItem are the same
+        if (qrItems[qrItemIndex] && qItems[qItemIndex].linkId === qrItems[qrItemIndex].linkId) {
           const newQrItem = readQuestionnaireResponseItem(
-            qItems[i],
-            qrItems[j],
+            qItems[qItemIndex],
+            qrItems[qrItemIndex],
             enableWhenContext,
             enableWhenChecksEnabled
           );
+
           if (newQrItem) {
             newQrItems.push(newQrItem);
           }
-          j++;
+
+          // Decrement qItem index if the next qrItem is an answer from a repeatGroup
+          // Essentially persisting the current qItem linked to be matched up with the next qrItem linkId
+          if (
+            qrItems.length !== qrItemIndex + 1 &&
+            qrItems[qrItemIndex].linkId === qrItems[qrItemIndex + 1].linkId
+          ) {
+            qItemIndex--;
+          }
+
+          // Only Increment qrItem index whenever the current qrItem linkId matches up with the current qItem
+          qrItemIndex++;
         }
       }
       return { ...qrItem, item: newQrItems };
-    } else if (qrAnswerItems && qrAnswerItems.length > 0 && qrAnswerItems[0].item) {
-      const newQrAnswers: QuestionnaireResponseItemAnswer[] = [];
-      for (let a = 0; a < qrAnswerItems.length; a++) {
-        const repeatAnswer = qrAnswerItems[a];
-        const newRepeatAnswerItems: QuestionnaireResponseItem[] = [];
-
-        if (repeatAnswer && repeatAnswer.item && repeatAnswer.item.length > 0) {
-          for (let i = 0, j = 0; i < qItems.length; i++) {
-            if (repeatAnswer.item[j] && qItems[i].linkId === repeatAnswer.item[j].linkId) {
-              const newQrItem = readQuestionnaireResponseItem(
-                qItems[i],
-                repeatAnswer.item[j],
-                enableWhenContext,
-                enableWhenChecksEnabled
-              );
-              if (newQrItem) {
-                newRepeatAnswerItems.push(newQrItem);
-              }
-              j++;
-            }
-          }
-        }
-
-        newQrAnswers.push({ ...repeatAnswer, item: newRepeatAnswerItems });
-      }
-      return { ...qrItem, answer: newQrAnswers };
     }
     return qrItem;
   }
 
+  // Process non-group items
   return isHidden(qItem, enableWhenContext, enableWhenChecksEnabled) ? null : { ...qrItem };
 }
