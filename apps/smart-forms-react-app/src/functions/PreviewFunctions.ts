@@ -70,7 +70,6 @@ function readQuestionnaireResponseItem(
     formInHTML += renderItemDiv(item, nestedLevel);
   }
   formInHTML += renderGeneralBottomMargin(nestedLevel, nextItem);
-  // formInHTML += renderBottomDivider(nestedLevel);
 
   return formInHTML;
 }
