@@ -1,0 +1,16 @@
+{
+  "age": [
+    {
+      "valueInteger": 87
+    }
+  ],
+  "b639a3a8-f476-4cc8-b5c7-f5d2abb23511": [
+    {
+      "valueCoding": {
+        "system": "http://snomed.info/sct",
+        "code": "8517006",
+        "display": "Former smoker"
+      }
+    }
+  ]
+}
