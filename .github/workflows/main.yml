@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build application
-        run: npm run build
+        run: npm run build -w apps/smart-forms-react-app
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run tests
-        run: npm run test
+        run: npm run test -w apps/smart-forms-react-app
       - uses: codecov/codecov-action@v3
   lint:
     name: Lint
@@ -46,6 +46,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run linter
-        run: npm run lint
+        run: npm run lint -w apps/smart-forms-react-app
       - name: Check formatting
-        run: npm run check-formatting
+        run: npm run check-formatting -w apps/smart-forms-react-app
