@@ -70,7 +70,13 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxList: number) {
     []
   );
 
-  return { options, loading, setLoading, searchResultsWithDebounce, serverError };
+  return {
+    options,
+    loading,
+    setLoading,
+    searchResultsWithDebounce,
+    serverError
+  };
 }
 
 export default useValueSetAutocomplete;

@@ -958,9 +958,7 @@
       "resourceType": "ValueSet",
       "id": "condition-clinical",
       "meta": {
-        "profile": [
-          "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
-        ]
+        "profile": ["http://hl7.org/fhir/StructureDefinition/shareablevalueset"]
       },
       "status": "draft",
       "name": "ConditionClinicalStatusCodes",
@@ -1342,9 +1340,7 @@
   },
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2023-01-11T15:36:11.096287",
   "publisher": "CSIRO",
   "description": "Aboriginal and Torres Strait Islander Health Checks questionnaire formed from an assembled collection of sub-questionnaires.",

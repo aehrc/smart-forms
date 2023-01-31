@@ -17,7 +17,10 @@
 
 import { styled, TableCell } from '@mui/material';
 
-export const HeaderTableCell = styled(TableCell)(() => ({ fontSize: 13, lineHeight: 'normal' }));
+export const HeaderTableCell = styled(TableCell)(() => ({
+  fontSize: 13,
+  lineHeight: 'normal'
+}));
 
 export const FirstTableCell = styled(TableCell)(() => ({
   width: '35%',

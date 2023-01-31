@@ -57,9 +57,15 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   ) {
     if (newValue) {
       if (typeof newValue === 'string') {
-        onQrItemChange({ ...qrOpenChoice, answer: [{ valueString: newValue }] });
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ valueString: newValue }]
+        });
       } else {
-        onQrItemChange({ ...qrOpenChoice, answer: [{ valueCoding: newValue }] });
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ valueCoding: newValue }]
+        });
       }
       return;
     }

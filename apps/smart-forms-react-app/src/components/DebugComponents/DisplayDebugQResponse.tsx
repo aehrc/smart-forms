@@ -78,7 +78,10 @@ function DisplayDebugQResponse(props: Props) {
             variant="outlined"
             disabled={displayInfo.name === 'Questionnaire Response'}
             onClick={() =>
-              setDisplayInfo({ name: 'Questionnaire Response', data: questionnaireResponse })
+              setDisplayInfo({
+                name: 'Questionnaire Response',
+                data: questionnaireResponse
+              })
             }>
             QuestionnaireResponse
           </RoundButton>

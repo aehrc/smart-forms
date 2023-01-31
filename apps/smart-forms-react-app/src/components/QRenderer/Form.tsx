@@ -90,7 +90,10 @@ function Form(props: Props) {
   }, []);
 
   function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
-    const newQuestionnaireResponse = { ...questionnaireResponse, item: [newQrForm] };
+    const newQuestionnaireResponse = {
+      ...questionnaireResponse,
+      item: [newQrForm]
+    };
     const updatedCalculatedExpressions = evaluateCalculatedExpressions(
       questionnaire,
       questionnaireResponse,
@@ -168,7 +171,10 @@ function Form(props: Props) {
                     text: 'MBS 715 Cleared',
                     item: []
                   };
-                  clearQuestionnaireResponse({ ...questionnaireResponse, item: [clearQrForm] });
+                  clearQuestionnaireResponse({
+                    ...questionnaireResponse,
+                    item: [clearQrForm]
+                  });
                 }}
                 batchResponse={questionnaireResponseProvider.batchResponse}
               />
