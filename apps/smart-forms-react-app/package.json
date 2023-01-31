@@ -15,7 +15,6 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/date-fns": "^2.6.0",
     "@types/fhir": "^0.0.35",
-    "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.186",
     "@types/marked": "^4.0.8",
     "@types/node": "^16.11.56",
@@ -44,7 +43,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint -c .eslintrc.json .",
+    "check-formatting": "prettier --check ."
   },
   "eslintConfig": {
     "extends": [

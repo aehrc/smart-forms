@@ -9,7 +9,10 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
-  "overrides": [],
+  "overrides": [{
+    "files": [ "*.ts", "*.ts" ],
+    "excludedFiles": [ "*.test.ts", "*.test.ts" ]
+  }],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
