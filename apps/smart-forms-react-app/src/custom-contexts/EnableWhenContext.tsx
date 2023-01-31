@@ -47,9 +47,10 @@ function EnableWhenContextProvider(props: { children: React.ReactNode }) {
       const linkedQuestionsMap = createLinkedQuestionsMap(items);
       const initialAnswers = readInitialAnswers(qrForm, linkedQuestionsMap);
 
-      const updatedItems = initialAnswers
-        ? setInitialAnswers(initialAnswers, items, linkedQuestionsMap)
-        : items;
+      const updatedItems =
+        Object.keys(initialAnswers).length > 0
+          ? setInitialAnswers(initialAnswers, items, linkedQuestionsMap)
+          : items;
 
       setLinkedQuestionsMap(linkedQuestionsMap);
       setEnableWhenItems(updatedItems);

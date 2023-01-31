@@ -151,8 +151,8 @@ function answerOperatorSwitcher(
 export function readInitialAnswers(
   questionnaireResponseForm: QuestionnaireResponseItem,
   linkedQuestionsMap: Record<string, string[]>
-): Record<string, QuestionnaireResponseItemAnswer[]> | null {
-  if (!questionnaireResponseForm.item) return null;
+): Record<string, QuestionnaireResponseItemAnswer[]> {
+  if (!questionnaireResponseForm.item) return {};
 
   const initialValuesMap: Record<string, QuestionnaireResponseItemAnswer[]> = {};
   questionnaireResponseForm.item.forEach((item) => {
@@ -198,7 +198,7 @@ export function setInitialAnswers(
   items: EnableWhenItems,
   linkedQuestionsMap: Record<string, string[]>
 ): EnableWhenItems {
-  let updatedItems = { ...items };
+  let updatedItems = JSON.parse(JSON.stringify(items));
 
   if (initialAnswers) {
     for (const linkId in initialAnswers) {
