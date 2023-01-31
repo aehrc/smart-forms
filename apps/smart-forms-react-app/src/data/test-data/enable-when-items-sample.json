@@ -1,0 +1,230 @@
+{
+  "b7a9e23c-b875-4536-b72d-81d361c18e2c": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "age",
+          "operator": ">",
+          "answerInteger": 12
+        }
+      }
+    ]
+  },
+  "88cafba2-41a7-4097-8181-d22328b1a2d5": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "age",
+          "operator": "<=",
+          "answerInteger": 12
+        }
+      }
+    ]
+  },
+  "8272b807-6751-489f-8f5c-f380e37edd31": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "8272b807-6751-489f-8f5c-f380e37edd30",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "Y"
+          }
+        }
+      }
+    ]
+  },
+  "f9aaa187-ef4d-4aff-a805-9ad2ebe56fe5": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "ee2589d5-e1b0-400d-a2ae-48356e2d011d",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "Y"
+          }
+        }
+      }
+    ]
+  },
+  "650e63e1-3b06-46e6-b2c9-41f67717cacd": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "age",
+          "operator": "<",
+          "answerInteger": 24
+        }
+      }
+    ]
+  },
+  "2b6ea01d-77f3-4fbc-8663-080222f196a6": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "163c34a2-4c95-4afe-8af1-16bb68856635",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "Y"
+          }
+        }
+      }
+    ]
+  },
+  "3fbc6d2d-f217-4521-91a1-4da336dc1394": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "b4172a40-3a20-41f8-a90f-afa7eb174b70",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "Y"
+          }
+        }
+      }
+    ]
+  },
+  "f9f5314b-f9a5-4a09-8b4b-b1ab42144f44": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "b4172a40-3a20-41f8-a90f-afa7eb174b70",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "Y"
+          }
+        }
+      }
+    ]
+  },
+  "9e86387d-1be4-4c26-9047-9dd6b03e1ee0": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "77176002"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "48031000119106"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "8517006"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "735128000"
+          }
+        }
+      }
+    ],
+    "enableBehavior": "any"
+  },
+  "32e71641-f660-4ca2-af99-dff8917f07be": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "77176002"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "48031000119106"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "8517006"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "735128000"
+          }
+        }
+      }
+    ],
+    "enableBehavior": "any"
+  },
+  "51593f4b-316e-4615-8be8-f855283d4783": {
+    "linked": [
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "48031000119106"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "8517006"
+          }
+        }
+      },
+      {
+        "enableWhen": {
+          "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+          "operator": "=",
+          "answerCoding": {
+            "system": "http://snomed.info/sct",
+            "code": "735128000"
+          }
+        }
+      }
+    ],
+    "enableBehavior": "any"
+  }
+}
