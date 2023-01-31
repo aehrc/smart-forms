@@ -39,10 +39,10 @@ function Launch() {
 
   oauth2.authorize({
     iss: iss ?? undefined,
-    client_id: clientId,
+    clientId: clientId,
     scope: scope,
     launch: launch ?? undefined,
-    redirect_uri: redirectUri,
+    redirectUri: redirectUri,
     pkceMode: 'required'
   });
 

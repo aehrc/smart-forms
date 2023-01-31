@@ -62,13 +62,22 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   ) {
     if (newValue) {
       if (typeof newValue === 'string') {
-        onQrItemChange({ ...qrOpenChoice, answer: [{ valueString: newValue }] });
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ valueString: newValue }]
+        });
       } else {
         const option = newValue;
         if (option['valueCoding']) {
-          onQrItemChange({ ...qrOpenChoice, answer: [{ valueCoding: option.valueCoding }] });
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ valueCoding: option.valueCoding }]
+          });
         } else if (option['valueString']) {
-          onQrItemChange({ ...qrOpenChoice, answer: [{ valueString: option.valueString }] });
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ valueString: option.valueString }]
+          });
         } else if (option['valueInteger']) {
           onQrItemChange({
             ...qrOpenChoice,

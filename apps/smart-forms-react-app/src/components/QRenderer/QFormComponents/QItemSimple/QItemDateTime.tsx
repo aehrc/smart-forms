@@ -57,7 +57,10 @@ function QItemDateTime(props: Props) {
   function handleChange(newValue: Dayjs | null | undefined) {
     if (newValue) {
       setValue(newValue);
-      onQrItemChange({ ...qrDateTime, answer: [{ valueDateTime: newValue.format() }] });
+      onQrItemChange({
+        ...qrDateTime,
+        answer: [{ valueDateTime: newValue.format() }]
+      });
     }
   }
 

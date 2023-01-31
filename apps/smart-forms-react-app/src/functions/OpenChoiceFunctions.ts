@@ -83,7 +83,10 @@ export function updateQrOpenChoiceCheckboxAnswers(
     if (isMultiSelection) {
       if (!oldOpenLabelAnswer) {
         // append newOpenLabel if oldOpenLabel doesnt exist
-        return { ...qrChoiceCheckbox, answer: [...answers, newOpenLabelAnswer] };
+        return {
+          ...qrChoiceCheckbox,
+          answer: [...answers, newOpenLabelAnswer]
+        };
       } else {
         // An oldOpenLabel already exists
         // Remove oldOpenLabel from answers
@@ -96,7 +99,10 @@ export function updateQrOpenChoiceCheckboxAnswers(
           return { ...qrChoiceCheckbox, answer: answersWithoutOpenLabel };
         } else {
           // User changes openLabel value
-          return { ...qrChoiceCheckbox, answer: [...answersWithoutOpenLabel, newOpenLabelAnswer] };
+          return {
+            ...qrChoiceCheckbox,
+            answer: [...answersWithoutOpenLabel, newOpenLabelAnswer]
+          };
         }
       }
     } else {

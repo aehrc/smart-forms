@@ -1,0 +1,246 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": "Questionnaire/mbs715",
+  "item": [
+    {
+      "linkId": "715",
+      "text": "MBS 715",
+      "item": [
+        {
+          "linkId": "age",
+          "text": "Age of Patient",
+          "answer": [
+            {
+              "valueInteger": 87
+            }
+          ]
+        },
+        {
+          "linkId": "0db82ad3-fd45-4c0c-a603-9fbe6bbb9aca",
+          "text": "Patient Details",
+          "item": [
+            {
+              "linkId": "2f028ea2-1d0b-4ddb-b1aa-f44c46586e94",
+              "text": "Name",
+              "answer": [
+                {
+                  "valueString": "Benito Lucio"
+                }
+              ]
+            },
+            {
+              "linkId": "3a98ac7a-9313-4222-a853-edd0415bfc49",
+              "text": "Date of birth",
+              "answer": [
+                {
+                  "valueDate": "1936-08-18"
+                }
+              ]
+            },
+            {
+              "linkId": "cbd45ca3-4d0e-4dd1-a0e7-f9642701d05f",
+              "text": "Age",
+              "answer": [
+                {
+                  "valueInteger": 87
+                }
+              ]
+            },
+            {
+              "linkId": "3a98ac7a-9313-4222-a853-edd0415bfc48",
+              "text": "Gender",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "male",
+                    "display": "Male",
+                    "system": "http://hl7.org/fhir/administrative-gender"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "d752f0ee-82f2-4576-a80e-172e2daac4a6",
+              "text": "Address",
+              "answer": [
+                {
+                  "valueString": "320 Ritchie Byway, Boston, Massachusetts 02108"
+                }
+              ]
+            },
+            {
+              "linkId": "3b1511f4-61c3-4536-883c-04f0034e45da",
+              "text": "Home phone",
+              "answer": [
+                {
+                  "valueString": "555-913-5055"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "a5e9f87a-c561-4ffb-b200-9b93b8887d22",
+          "text": "Medical history and current problems",
+          "item": [
+            {
+              "linkId": "a5e9f87a-c561-4ffb-b200-9b93b8887a11",
+              "text": "Relevant medical history, operations, hospital admissions, etc",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "162864005",
+                    "display": "Body mass index 30+ - obesity (finding)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "444814009",
+                    "display": "Viral sinusitis (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "26929004",
+                    "display": "Alzheimer's disease (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "444814009",
+                    "display": "Viral sinusitis (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "62564004",
+                    "display": "Concussion with loss of consciousness"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "444814009",
+                    "display": "Viral sinusitis (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "55822004",
+                    "display": "Hyperlipidemia"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "68496003",
+                    "display": "Polyp of colon"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "14a9fb5f-5b0e-4862-b143-08a11cd3ebf0",
+          "text": "Substance use including tobacco",
+          "item": [
+            {
+              "linkId": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+              "text": "Smoking",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "8517006",
+                    "display": "Former smoker"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "ac1559c8-f03a-43a6-818f-9b31892ec2a7",
+          "text": "Examination",
+          "item": [
+            {
+              "linkId": "29644716-433e-45ec-a805-8043f35a85e1",
+              "text": "Height (cm)",
+              "answer": [
+                {
+                  "valueDecimal": 180.40555187488803
+                }
+              ]
+            },
+            {
+              "linkId": "f5308669-d1f9-49a1-bedd-7420946e7288",
+              "text": "Weight (kg)",
+              "answer": [
+                {
+                  "valueDecimal": 90.87683058634065
+                }
+              ]
+            },
+            {
+              "linkId": "d9306be3-fedf-45ca-8b91-71e6f7f6c6f5",
+              "text": "BMI (kg/^2)",
+              "answer": [
+                {
+                  "valueDecimal": 27.92244055776738
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "7845504e-859d-4834-a264-127bcbee8759",
+          "text": "Absolute cardiovascular risk calculation",
+          "item": [
+            {
+              "linkId": "has-diabetes",
+              "text": "Diabetes",
+              "answer": [
+                {
+                  "valueBoolean": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "7c158125-129f-4fce-9557-32dd372c92c7",
+          "text": "Finalising the health check",
+          "item": [
+            {
+              "linkId": "a400fe69-c99f-47ed-bee1-083c3e4be467",
+              "text": "Recalls entered (eg clinical review, investigations, influenza vaccination, asthma plan/cycle of care, diabetes cycle of care, care plan review, cervical screening)",
+              "item": [
+                {
+                  "linkId": "40e3933d-77bb-40f3-8609-0c38ebb4421e",
+                  "text": "recall-subject",
+                  "answer": [
+                    {
+                      "valueString": "d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "subject": {
+    "type": "Patient",
+    "reference": "Patient/d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e"
+  }
+}

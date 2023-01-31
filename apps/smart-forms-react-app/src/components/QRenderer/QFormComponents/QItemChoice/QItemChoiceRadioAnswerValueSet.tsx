@@ -56,7 +56,10 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     if (options.length > 0) {
       const qrAnswer = findInAnswerValueSetCodings(options, event.target.value);
       if (qrAnswer) {
-        onQrItemChange({ ...qrChoiceRadio, answer: [{ valueCoding: qrAnswer }] });
+        onQrItemChange({
+          ...qrChoiceRadio,
+          answer: [{ valueCoding: qrAnswer }]
+        });
       }
     }
   }

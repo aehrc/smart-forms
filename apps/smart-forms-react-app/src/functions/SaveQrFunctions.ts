@@ -49,7 +49,9 @@ export function saveQuestionnaireResponse(
 
   let requestUrl = 'QuestionnaireResponse';
   let method = 'POST';
-  let questionnaireResponseToSave: QuestionnaireResponse = { ...questionnaireResponse };
+  let questionnaireResponseToSave: QuestionnaireResponse = {
+    ...questionnaireResponse
+  };
 
   if (questionnaireResponse.id) {
     requestUrl += '/' + questionnaireResponse.id;

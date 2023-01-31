@@ -76,7 +76,10 @@ function Auth() {
         // Display auth fail dialog only when app is launched but fail to authorise
         const errorString: string = error.toString();
         if (!errorString.includes("No 'state' parameter found")) {
-          setAuthFailDialog({ dialogOpen: true, errorMessage: error.toString() });
+          setAuthFailDialog({
+            dialogOpen: true,
+            errorMessage: error.toString()
+          });
         }
         console.error(error);
 

@@ -244,7 +244,10 @@ export function evaluateCalculatedExpressions(
   let isUpdated = false;
   const updatedCalculatedExpressions = { ...calculatedExpressions };
   if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
-    const context: any = { questionnaire: questionnaire, resource: questionnaireResponse };
+    const context: any = {
+      questionnaire: questionnaire,
+      resource: questionnaireResponse
+    };
     const qrForm = questionnaireResponse.item[0];
 
     if (variables.length > 0 && qrForm) {
