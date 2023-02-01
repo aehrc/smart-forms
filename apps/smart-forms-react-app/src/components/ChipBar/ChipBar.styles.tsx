@@ -16,16 +16,20 @@
  */
 
 import { Box, Chip, styled } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 export const ChipBarBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
-  '& .MuiButtonBase-root: hover': {
-    transition: '0.2s',
-    color: theme.palette.secondary.dark,
-    backgroundColor: theme.palette.accent2.light,
-    '& .MuiSvgIcon-root': {
-      color: theme.palette.secondary.dark
+  '& .MuiButtonBase-root': {
+    backgroundColor: grey.A200,
+    '&:hover': {
+      transition: '0.2s',
+      color: theme.palette.secondary.dark,
+      backgroundColor: theme.palette.accent2.light,
+      '& .MuiSvgIcon-root': {
+        color: theme.palette.secondary.dark
+      }
     }
   }
 }));
