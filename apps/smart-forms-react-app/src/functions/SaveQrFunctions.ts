@@ -73,7 +73,15 @@ export function saveQuestionnaireResponse(
         type: 'Practitioner',
         display: constructName(user.name)
       },
-      authored: dayjs().format()
+      authored: dayjs().format(),
+      _questionnaire: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/display',
+            valueString: getQuestionnaireName(questionnaire)
+          }
+        ]
+      }
     };
   }
 
@@ -83,6 +91,24 @@ export function saveQuestionnaireResponse(
     body: JSON.stringify(questionnaireResponseToSave),
     headers: headers
   });
+}
+
+function getQuestionnaireName(questionnaire: Questionnaire): string {
+  if (questionnaire.title && questionnaire.title.length < 75) {
+    return questionnaire.title;
+  }
+
+  if (questionnaire.name) {
+    return questionnaire.name;
+  }
+
+  if (questionnaire.item && questionnaire.item.length > 0) {
+    if (questionnaire.item[0].text) {
+      return questionnaire.item[0].text;
+    }
+  }
+
+  return questionnaire.id ? `Unnamed Questionnaire-${questionnaire.id}` : 'Unnamed Questionnaire';
 }
 
 /**

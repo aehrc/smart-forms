@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Coding, Expression, Extension, QuestionnaireItem } from 'fhir/r5';
+import { Coding, Expression, Extension, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r5';
 
 /**
  * Check if the extension has an itemControl code equal to the given itemControlCode
@@ -171,4 +171,26 @@ export function getXHtmlString(qItem: QuestionnaireItem): string | null {
     }
   }
   return null;
+}
+
+/**
+ * Get questionnaire name from questionnaireResponse
+ * If questionnaireResponse does not have a name, fallback to questionnaireResponse questionnaireId
+ *
+ * @author Sean Fong
+ */
+export function getQuestionnaireNameFromResponse(
+  questionnaireResponse: QuestionnaireResponse
+): string {
+  const itemControl = questionnaireResponse._questionnaire?.extension?.find(
+    (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/display'
+  );
+
+  if (itemControl) {
+    if (itemControl.valueString) {
+      return itemControl.valueString;
+    }
+  }
+
+  return questionnaireResponse.id ?? 'Unnamed Response';
 }
