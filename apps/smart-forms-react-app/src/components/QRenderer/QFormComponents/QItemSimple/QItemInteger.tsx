@@ -16,7 +16,7 @@
  */
 
 import React, { useContext, useEffect } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, InputAdornment } from '@mui/material';
 
 import {
   PropsWithIsRepeatedAttribute,
@@ -29,8 +29,9 @@ import { CalcExpressionContext } from '../../Form';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
-import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
+import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,6 +47,8 @@ function QItemInteger(props: Props) {
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   const calculatedExpressions = useContext(CalcExpressionContext);
+
+  const displayUnit = getTextDisplayUnit(qItem);
 
   let qrInteger = qrItem ? qrItem : createQrItem(qItem);
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
@@ -82,13 +85,14 @@ function QItemInteger(props: Props) {
   }
 
   const integerInput = (
-    <StandardTextField
+    <StandardOutlinedInput
       id={qItem.linkId}
       value={valueInteger}
       onChange={handleChange}
       fullWidth
       isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
     />
   );
 
