@@ -61,7 +61,7 @@ export function createQuestionnaireResponse(
  *
  * @author Sean Fong
  */
-export function cleanQrItem(
+export function removeNoAnswerQrItem(
   qrItem: QuestionnaireResponseItem
 ): QuestionnaireResponseItem | undefined {
   const items = qrItem.item;
@@ -70,7 +70,7 @@ export function cleanQrItem(
 
     // only get items with answers
     items.forEach((item) => {
-      const cleanedQrItem = cleanQrItem(item);
+      const cleanedQrItem = removeNoAnswerQrItem(item);
       if (cleanedQrItem) {
         cleanedItems.push(cleanedQrItem);
       }
@@ -101,7 +101,7 @@ export function createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseIt
  *
  * @author Sean Fong
  */
-export function createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+export function createEmptyQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
   return {
     linkId: qItem.linkId,
     text: qItem.text
@@ -244,7 +244,7 @@ export function evaluateCalculatedExpressions(
   let isUpdated = false;
   const updatedCalculatedExpressions = { ...calculatedExpressions };
   if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
-    const context: any = {
+    const context: Context = {
       questionnaire: questionnaire,
       resource: questionnaireResponse
     };

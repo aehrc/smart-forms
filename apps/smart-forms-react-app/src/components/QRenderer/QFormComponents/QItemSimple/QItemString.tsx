@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -42,7 +42,7 @@ interface Props
 function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  let qrString = qrItem ? qrItem : createQrItem(qItem);
+  let qrString = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueString = qrString['answer'] ? qrString['answer'][0].valueString : '';
 
   let hasError = false;

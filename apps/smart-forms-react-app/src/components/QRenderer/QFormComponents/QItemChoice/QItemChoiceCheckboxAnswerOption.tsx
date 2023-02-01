@@ -20,10 +20,10 @@ import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemChoiceCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
@@ -42,7 +42,7 @@ interface QItemChoiceCheckboxProps
 function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
+  const qrChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
 
   function handleCheckedChange(changedValue: string) {

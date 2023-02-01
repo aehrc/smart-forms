@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -42,7 +42,7 @@ interface Props
 function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
+  const qrOpenChoice = qrItem ? qrItem : createEmptyQrItem(qItem);
 
   let valueSelect: Coding | undefined = undefined;
   if (qrOpenChoice['answer']) {
@@ -69,7 +69,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
       }
       return;
     }
-    onQrItemChange(createQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem));
   }
 
   const openChoiceSelectAnswerValueSet = (

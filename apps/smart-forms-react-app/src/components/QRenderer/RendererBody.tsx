@@ -17,7 +17,7 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { QuestionnaireResponse } from 'fhir/r5';
-import { cleanQrItem } from '../../functions/QrItemFunctions';
+import { removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
 import { QuestionnaireResponseProviderContext } from '../../App';
 import Form from './Form';
 import FormPreview from '../Preview/FormPreview';
@@ -39,7 +39,7 @@ function RendererBody() {
     const updatedQResponse = questionnaireResponseProvider.questionnaireResponse;
     if (!updatedQResponse.item) return;
 
-    const qrFormClean = cleanQrItem(updatedQResponse.item[0]);
+    const qrFormClean = removeNoAnswerQrItem(updatedQResponse.item[0]);
     if (qrFormClean) {
       setQuestionnaireResponse({ ...updatedQResponse, item: [qrFormClean] });
     }

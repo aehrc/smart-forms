@@ -19,11 +19,11 @@ import React from 'react';
 import { Grid, TextField } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -39,7 +39,7 @@ interface Props
 function QItemText(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
-  let qrText = qrItem ? qrItem : createQrItem(qItem);
+  let qrText = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueText = qrText['answer'] ? qrText['answer'][0].valueString : '';
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

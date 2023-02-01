@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
@@ -50,7 +50,7 @@ function QItemInteger(props: Props) {
 
   const displayUnit = getTextDisplayUnit(qItem);
 
-  let qrInteger = qrItem ? qrItem : createQrItem(qItem);
+  let qrInteger = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
   useEffect(() => {

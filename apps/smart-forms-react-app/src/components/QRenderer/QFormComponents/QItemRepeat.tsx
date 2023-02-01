@@ -26,7 +26,7 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
-import { createQrItem } from '../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
 import { isHidden } from '../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
@@ -45,8 +45,8 @@ function QItemRepeat(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const cleanQrItem = createQrItem(qItem);
-  const qrRepeat = qrItem ? qrItem : cleanQrItem;
+  const emptyQrItem = createEmptyQrItem(qItem);
+  const qrRepeat = qrItem ? qrItem : emptyQrItem;
   const qrRepeatAnswers: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
     ? qrRepeat.answer
     : [undefined];
@@ -95,7 +95,7 @@ function QItemRepeat(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {repeatAnswers.map((answer, index) => {
-            const singleQrItem = answer ? { ...cleanQrItem, answer: [answer] } : { ...cleanQrItem };
+            const singleQrItem = answer ? { ...emptyQrItem, answer: [answer] } : { ...emptyQrItem };
 
             return (
               <React.Fragment key={index}>

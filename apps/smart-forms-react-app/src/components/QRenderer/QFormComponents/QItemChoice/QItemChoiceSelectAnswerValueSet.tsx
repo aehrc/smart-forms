@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -42,7 +42,7 @@ interface Props
 function QItemChoiceSelectAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrChoiceSelect = qrItem ? qrItem : createQrItem(qItem);
+  const qrChoiceSelect = qrItem ? qrItem : createEmptyQrItem(qItem);
 
   let valueCoding: Coding | undefined;
   if (qrChoiceSelect['answer']) {
@@ -54,7 +54,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   // Check and remove populated answer if it is a string
   useEffect(() => {
     if (qrChoiceSelect['answer'] && qrChoiceSelect['answer'][0].valueString) {
-      onQrItemChange(createQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem));
     }
   }, []);
 
@@ -66,7 +66,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
       });
       return;
     }
-    onQrItemChange(createQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem));
   }
 
   const choiceSelectAnswerValueSet =

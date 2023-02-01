@@ -21,10 +21,10 @@ import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerValueSetCodings } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { QRadioGroup } from '../../../StyledComponents/Item.styles';
@@ -43,7 +43,7 @@ interface Props
 function QItemChoiceRadioAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceRadio = qrItem ? qrItem : createQrItem(qItem);
+  const qrChoiceRadio = qrItem ? qrItem : createEmptyQrItem(qItem);
 
   let valueRadio: string | undefined;
   if (qrChoiceRadio['answer']) {
