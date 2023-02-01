@@ -39,9 +39,9 @@ function RendererBody() {
     const updatedQResponse = questionnaireResponseProvider.questionnaireResponse;
     if (!updatedQResponse.item) return;
 
-    const qrFormClean = removeNoAnswerQrItem(updatedQResponse.item[0]);
-    if (qrFormClean) {
-      setQuestionnaireResponse({ ...updatedQResponse, item: [qrFormClean] });
+    const qrFormCleaned = removeNoAnswerQrItem(updatedQResponse.item[0]);
+    if (qrFormCleaned) {
+      setQuestionnaireResponse({ ...updatedQResponse, item: [qrFormCleaned] });
     }
   }, [questionnaireResponseProvider.questionnaireResponse]);
 

@@ -27,7 +27,7 @@ import type {
 import type { InitialExpression, ValueSetPromise } from './Interfaces';
 import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './ProcessValueSets';
 
-const cleanQuestionnaireResponse: QuestionnaireResponse = {
+const emptyQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
   status: 'in-progress'
 };
@@ -42,7 +42,7 @@ export async function constructResponse(
   subject: Reference,
   initialExpressions: Record<string, InitialExpression>
 ): Promise<QuestionnaireResponse> {
-  const questionnaireResponse = cleanQuestionnaireResponse;
+  const questionnaireResponse = emptyQuestionnaireResponse;
   let valueSetPromises: Record<string, ValueSetPromise> = {};
 
   if (!questionnaire.item) return questionnaireResponse;

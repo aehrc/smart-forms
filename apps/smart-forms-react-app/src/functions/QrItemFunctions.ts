@@ -66,17 +66,17 @@ export function removeNoAnswerQrItem(
 ): QuestionnaireResponseItem | undefined {
   const items = qrItem.item;
   if (items && items.length > 0) {
-    const cleanedItems: QuestionnaireResponseItem[] = [];
+    const itemsCleaned: QuestionnaireResponseItem[] = [];
 
     // only get items with answers
     items.forEach((item) => {
-      const cleanedQrItem = removeNoAnswerQrItem(item);
-      if (cleanedQrItem) {
-        cleanedItems.push(cleanedQrItem);
+      const QrItemCleaned = removeNoAnswerQrItem(item);
+      if (QrItemCleaned) {
+        itemsCleaned.push(QrItemCleaned);
       }
     });
 
-    return cleanedItems.length > 0 ? { ...qrItem, item: cleanedItems } : undefined;
+    return itemsCleaned.length > 0 ? { ...qrItem, item: itemsCleaned } : undefined;
   }
 
   // check answer when qrItem is a single question
