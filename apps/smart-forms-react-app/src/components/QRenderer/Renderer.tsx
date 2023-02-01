@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import ProgressSpinner from '../ProgressSpinner';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
@@ -38,47 +38,46 @@ function Renderer() {
     );
   }
 
-  const [spinner, setSpinner] = useState({
-    isLoading: true,
-    message: 'Populating questionnaire form'
-  });
-
-  useEffect(() => {
-    const client = launch.fhirClient;
-    const patient = launch.patient;
-    const user = launch.user;
-    if (!client || !patient || !user) {
-      setSpinner({ ...spinner, isLoading: false });
-      return;
-    }
-
-    const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item?.[0].item;
-
-    // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
-    if (
-      (questionnaire.contained || questionnaire.extension) &&
-      (!qrFormItem || qrFormItem.length === 0)
-    ) {
-      // obtain questionnaireResponse for pre-population
-      populateQuestionnaire(
-        client,
-        questionnaire,
-        patient,
-        user,
-        (qResponse) => {
-          questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
-          setSpinner({ ...spinner, isLoading: false });
-        },
-        () => {
-          setSpinner({ ...spinner, isLoading: false });
-          console.warn('Population failed');
-          // TODO popup questionnaire fail to populate
+  const client = launch.fhirClient;
+  const patient = launch.patient;
+  const user = launch.user;
+  const spinnerInitialState =
+    client && patient && user
+      ? {
+          isLoading: true,
+          message: 'Populating questionnaire form'
         }
-      );
-    } else {
-      setSpinner({ ...spinner, isLoading: false });
-    }
-  }, []);
+      : { isLoading: false, message: '' };
+
+  const [spinner, setSpinner] = useState(spinnerInitialState);
+
+  // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
+  const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item?.[0].item;
+  if (
+    client &&
+    patient &&
+    user &&
+    spinner.isLoading &&
+    (questionnaire.contained || questionnaire.extension) &&
+    (!qrFormItem || qrFormItem.length === 0)
+  ) {
+    // obtain questionnaireResponse for pre-population
+    populateQuestionnaire(
+      client,
+      questionnaire,
+      patient,
+      user,
+      (qResponse) => {
+        questionnaireResponseProvider.setQuestionnaireResponse(qResponse);
+        setSpinner({ ...spinner, isLoading: false });
+      },
+      () => {
+        setSpinner({ ...spinner, isLoading: false });
+        console.warn('Population failed');
+        // TODO popup questionnaire fail to populate
+      }
+    );
+  }
 
   const RenderPage = () => {
     if (spinner.isLoading) {
