@@ -13,6 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/fhir": "^0.0.35",
-    "fhirclient": "^2.5.2"
+    "axios": "^1.3.0"
   }
 }

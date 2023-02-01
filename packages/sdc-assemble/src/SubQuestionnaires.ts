@@ -16,40 +16,10 @@
  */
 
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r5';
-import { client } from 'fhirclient';
+import axios from 'axios';
 import { createOperationOutcome } from './index';
 
 import SQ715AboutTheHealthCheck from './resources/subquestionnaires/Questionnaire-715AboutTheHealthCheck.json';
-import SQ715Consent from './resources/subquestionnaires/Questionnaire-715Consent.json';
-import SQ715PatientDetails from './resources/subquestionnaires/Questionnaire-715PatientDetails.json';
-import SQ715AssessmentCurrentPriorities from './resources/subquestionnaires/Questionnaire-715AssessmentCurrentPriorities.json';
-import SQ715AssessmentMedicalHistory from './resources/subquestionnaires/Questionnaire-715AssessmentMedicalHistory.json';
-import SQ715AssessmentRegularMedications from './resources/subquestionnaires/Questionnaire-715AssessmentRegularMedications.json';
-import SQ715AssessmentAllergiesAdverseReactions from './resources/subquestionnaires/Questionnaire-715AssessmentAllergiesAdverseReactions.json';
-import SQ715AssessmentFamilyHistory from './resources/subquestionnaires/Questionnaire-715AssessmentFamilyHistory.json';
-import SQ715AssessmentSocialAndEmotionalWellbeing from './resources/subquestionnaires/Questionnaire-715AssessmentSocialAndEmotionalWellbeing.json';
-import SQ715AssessmentSocialHistoryChild from './resources/subquestionnaires/Questionnaire-715AssessmentSocialHistoryChild.json';
-import SQ715AssessmentHomeAndFamily from './resources/subquestionnaires/Questionnaire-715AssessmentHomeAndFamily.json';
-import SQ715AssessmentLearningAndDevelopment from './resources/subquestionnaires/Questionnaire-715AssessmentLearningAndDevelopment.json';
-import SQ715AssessmentLearningAndWork from './resources/subquestionnaires/Questionnaire-715AssessmentLearningAndWork.json';
-import SQ715AssessmentMood from './resources/subquestionnaires/Questionnaire-715AssessmentMood.json';
-import SQ715AssessmentMemoryAndThinking from './resources/subquestionnaires/Questionnaire-715AssessmentMemoryAndThinking.json';
-import SQ715AssessmentChronicDiseaseAgeing from './resources/subquestionnaires/Questionnaire-715AssessmentChronicDiseaseAgeing.json';
-import SQ715AssessmentScreeningPrograms from './resources/subquestionnaires/Questionnaire-715AssessmentScreeningPrograms.json';
-import SQ715AssessmentHealthyEating from './resources/subquestionnaires/Questionnaire-715AssessmentHealthyEating.json';
-import SQ715AssessmentPhysicalActivityAndScreenTime from './resources/subquestionnaires/Questionnaire-715AssessmentPhysicalActivityAndScreenTime.json';
-import SQ715AssessmentSubstanceUse from './resources/subquestionnaires/Questionnaire-715AssessmentSubstanceUse.json';
-import SQ715AssessmentGambling from './resources/subquestionnaires/Questionnaire-715AssessmentGambling.json';
-import SQ715AssessmentSexualHealth from './resources/subquestionnaires/Questionnaire-715AssessmentSexualHealth.json';
-import SQ715AssessmentEyeHealth from './resources/subquestionnaires/Questionnaire-715AssessmentEyeHealth.json';
-import SQ715AssessmentEarHealthAndHearing from './resources/subquestionnaires/Questionnaire-715AssessmentEarHealthAndHearing.json';
-import SQ715AssessmentOralAndDentalHealth from './resources/subquestionnaires/Questionnaire-715AssessmentOralAndDentalHealth.json';
-import SQ715AssessmentSkin from './resources/subquestionnaires/Questionnaire-715AssessmentSkin.json';
-import SQ715AssessmentImmunisation from './resources/subquestionnaires/Questionnaire-715AssessmentImmunisation.json';
-import SQ715AssessmentExamination from './resources/subquestionnaires/Questionnaire-715AssessmentExamination.json';
-import SQ715AssessmentAbsoluteCVDRiskCalculation from './resources/subquestionnaires/Questionnaire-715AssessmentAbsoluteCVDRiskCalculation.json';
-import SQ715AssessmentInvestigations from './resources/subquestionnaires/Questionnaire-715AssessmentInvestigations.json';
-import SQ715FinalisingHealthCheck from './resources/subquestionnaires/Questionnaire-715FinalisingHealthCheck.json';
 
 export function getCanonicalUrls(
   parentQuestionnaire: Questionnaire,
@@ -105,26 +75,25 @@ export function getCanonicalUrls(
 }
 
 export async function fetchSubquestionnaires(canonicalUrls: string[]) {
-  // ONLY FOR TESTING
-  const subquestionnairesSourceIsLocal = true; // change this to false to use remote subquestionnaires
-  if (subquestionnairesSourceIsLocal) {
-    return loadSubquestionnairesFromLocal();
-  }
-
   // Gather all promises to be executed at once
-  const promises = [];
+  const promises: Promise<any>[] = [];
 
-  // Test on a single questionnaire
-  if (canonicalUrls[0]) {
-    promises.push(fetchQuestionnaireByCanonical(canonicalUrls[0]));
+  for (const canonicalUrl of canonicalUrls) {
+    promises.push(fetchQuestionnaireByCanonical(canonicalUrl));
   }
 
-  // Fetch all questionnaires
-  // for (const canonicalUrl of canonicalUrls) {
-  //   promises.push(fetchQuestionnaireByCanonical(canonicalUrl));
-  // }
-
-  const resources = await Promise.all(promises);
+  const resources: (OperationOutcome | Bundle)[] = [];
+  try {
+    const responses = await axios.all(promises);
+    for (const response of responses) {
+      const { data }: { data: Bundle | OperationOutcome } = response;
+      resources.push(data);
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      return createOperationOutcome(err.message);
+    }
+  }
 
   const subquestionnaires = [];
   for (const [i, resource] of resources.entries()) {
@@ -141,18 +110,19 @@ export async function fetchSubquestionnaires(canonicalUrls: string[]) {
     } else {
       return resource.resourceType === 'OperationOutcome'
         ? resource
-        : createOperationOutcome('Unable to fetch questionnaire ' + canonicalUrls[i] + '.');
+        : createOperationOutcome(
+            'Bundle received while fetching questionnaire ' + canonicalUrls[i] + ' is invalid.'
+          );
     }
   }
 
   return subquestionnaires;
 }
 
-async function fetchQuestionnaireByCanonical(
-  canonicalUrl: string
-): Promise<Bundle | OperationOutcome> {
+async function fetchQuestionnaireByCanonical(canonicalUrl: string): Promise<any> {
   // TODO temporarily specify form server url
-  const serverUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
+  const serverUrl =
+    'http://csiro-csiro-1d9bm4gf9damh-2033064964.ap-southeast-2.elb.amazonaws.com/fhir';
 
   const headers = {
     'Cache-Control': 'no-cache',
@@ -163,8 +133,7 @@ async function fetchQuestionnaireByCanonical(
   // FIXME version search i.e. "|0.1.0" doesnt work on SMART Health IT, remove version temporarily
   const canonicalUrlWithoutVersion = canonicalUrl.slice(0, -6);
 
-  return client(serverUrl).request({
-    url: `Questionnaire?url=${canonicalUrlWithoutVersion}`,
+  return axios.get(`${serverUrl}/Questionnaire?url=${canonicalUrlWithoutVersion}`, {
     method: 'GET',
     headers: headers
   });
@@ -199,39 +168,7 @@ async function fetchQuestionnaireByCanonical(
  * @author Sean Fong
  */
 export function loadSubquestionnairesFromLocal() {
-  const subquestionnaires = [
-    SQ715AboutTheHealthCheck,
-    SQ715Consent,
-    SQ715PatientDetails,
-    SQ715AssessmentCurrentPriorities,
-    SQ715AssessmentMedicalHistory,
-    SQ715AssessmentRegularMedications,
-    SQ715AssessmentAllergiesAdverseReactions,
-    SQ715AssessmentFamilyHistory,
-    SQ715AssessmentSocialAndEmotionalWellbeing,
-    SQ715AssessmentSocialHistoryChild,
-    SQ715AssessmentHomeAndFamily,
-    SQ715AssessmentLearningAndDevelopment,
-    SQ715AssessmentLearningAndWork,
-    SQ715AssessmentMood,
-    SQ715AssessmentMemoryAndThinking,
-    SQ715AssessmentChronicDiseaseAgeing,
-    SQ715AssessmentScreeningPrograms,
-    SQ715AssessmentHealthyEating,
-    SQ715AssessmentPhysicalActivityAndScreenTime,
-    SQ715AssessmentSubstanceUse,
-    SQ715AssessmentGambling,
-    SQ715AssessmentSexualHealth,
-    SQ715AssessmentEyeHealth,
-    SQ715AssessmentEarHealthAndHearing,
-    SQ715AssessmentOralAndDentalHealth,
-    SQ715AssessmentSkin,
-    SQ715AssessmentImmunisation,
-    SQ715AssessmentExamination,
-    SQ715AssessmentAbsoluteCVDRiskCalculation,
-    SQ715AssessmentInvestigations,
-    SQ715FinalisingHealthCheck
-  ] as Questionnaire[];
+  const subquestionnaires = [SQ715AboutTheHealthCheck] as Questionnaire[];
 
   return subquestionnaires;
 }
