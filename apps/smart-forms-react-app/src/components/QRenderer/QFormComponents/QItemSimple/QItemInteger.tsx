@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -32,6 +32,7 @@ import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
+import { debounce } from 'lodash';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -52,6 +53,8 @@ function QItemInteger(props: Props) {
 
   let qrInteger = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
+
+  const [input, setInput] = useState<number | undefined>(valueInteger);
 
   useEffect(() => {
     // if integer item is an enableWhen linked question, and it does not have an answer yet
@@ -74,20 +77,30 @@ function QItemInteger(props: Props) {
   }, [calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    let input = event.target.value;
+    let newInput = event.target.value;
 
     const hasNumber = /\d/;
-    if (!hasNumber.test(input)) {
-      input = '0';
+    if (!hasNumber.test(newInput)) {
+      newInput = '0';
     }
-    qrInteger = { ...qrInteger, answer: [{ valueInteger: parseInt(input) }] };
-    onQrItemChange(qrInteger);
+
+    const inputNumber = parseInt(newInput);
+    setInput(inputNumber);
+    updateQrItemWithDebounce(inputNumber);
   }
+
+  const updateQrItemWithDebounce = useCallback(
+    debounce((inputNumber: number) => {
+      qrInteger = { ...qrInteger, answer: [{ valueInteger: inputNumber }] };
+      onQrItemChange(qrInteger);
+    }, 500),
+    []
+  );
 
   const integerInput = (
     <StandardOutlinedInput
       id={qItem.linkId}
-      value={valueInteger}
+      value={input}
       onChange={handleChange}
       fullWidth
       isTabled={isTabled}

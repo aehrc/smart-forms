@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Grid } from '@mui/material';
 
 import {
@@ -30,6 +30,7 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import { debounce } from 'lodash';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,15 +46,26 @@ function QItemString(props: Props) {
   let qrString = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueString = qrString['answer'] ? qrString['answer'][0].valueString : '';
 
+  const [input, setInput] = useState<string | undefined>(valueString);
+
   let hasError = false;
   if (qItem.maxLength && valueString) {
     hasError = valueString.length > qItem.maxLength;
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    qrString = { ...qrString, answer: [{ valueString: event.target.value }] };
-    onQrItemChange(qrString);
+    const newInput = event.target.value;
+    setInput(newInput);
+    UpdateQrItemWithDebounce(newInput);
   }
+
+  const UpdateQrItemWithDebounce = useCallback(
+    debounce((input: string) => {
+      qrString = { ...qrString, answer: [{ valueString: input }] };
+      onQrItemChange(qrString);
+    }, 500),
+    []
+  );
 
   const stringInput = (
     <StandardTextField
@@ -61,7 +73,7 @@ function QItemString(props: Props) {
       isTabled={isTabled}
       error={hasError}
       id={qItem.linkId}
-      value={valueString}
+      value={input}
       onChange={handleChange}
       label={getTextDisplayPrompt(qItem)}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
