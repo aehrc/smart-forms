@@ -25,6 +25,7 @@ import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import PendingIcon from '@mui/icons-material/Pending';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { PickerAlert } from '../StyledComponents/Alert.styles';
+import { getQuestionnaireNameFromResponse } from '../../functions/ItemControlFunctions';
 
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
@@ -101,7 +102,7 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
             )}
             <ListItemText
               primary={
-                questionnaireResponse.item?.[0].text +
+                getQuestionnaireNameFromResponse(questionnaireResponse) +
                 ' - by ' +
                 questionnaireResponse.author?.display +
                 ' (' +
