@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -44,7 +44,7 @@ interface Props
 function QItemDateTime(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrDateTime = qrItem ? qrItem : createQrItem(qItem);
+  const qrDateTime = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answerValue = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDateTime : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 

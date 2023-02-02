@@ -35,7 +35,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { createQrItem } from '../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { isHidden } from '../../../functions/QItemFunctions';
@@ -57,7 +57,7 @@ function QItemGroupTable(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const cleanQrItem = createQrItem(qItem);
+  const emptyQrItem = createEmptyQrItem(qItem);
   const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
 
@@ -138,8 +138,8 @@ function QItemGroupTable(props: Props) {
           <TableBody>
             {tableRows.map((row, index) => {
               const singleQrRow: QuestionnaireResponseItem = row
-                ? { ...cleanQrItem, item: row.item }
-                : { ...cleanQrItem };
+                ? { ...emptyQrItem, item: row.item }
+                : { ...emptyQrItem };
               return (
                 <TableRow key={index}>
                   <QItemGroupTableRow

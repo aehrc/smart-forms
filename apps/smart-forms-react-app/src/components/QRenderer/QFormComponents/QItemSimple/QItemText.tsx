@@ -15,19 +15,20 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Grid, TextField } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import { debounce } from 'lodash';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -39,18 +40,29 @@ interface Props
 function QItemText(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
-  let qrText = qrItem ? qrItem : createQrItem(qItem);
+  let qrText = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueText = qrText['answer'] ? qrText['answer'][0].valueString : '';
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    qrText = { ...qrText, answer: [{ valueString: e.target.value }] };
-    onQrItemChange(qrText);
+  const [input, setInput] = useState<string | undefined>(valueText);
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const newInput = event.target.value;
+    setInput(newInput);
+    UpdateQrItemWithDebounce(newInput);
   }
+
+  const UpdateQrItemWithDebounce = useCallback(
+    debounce((input: string) => {
+      qrText = { ...qrText, answer: [{ valueString: input }] };
+      onQrItemChange(qrText);
+    }, 500),
+    []
+  );
 
   const textInput = (
     <TextField
       id={qItem.linkId}
-      value={valueText}
+      value={input}
       onChange={handleChange}
       label={getTextDisplayPrompt(qItem)}
       fullWidth

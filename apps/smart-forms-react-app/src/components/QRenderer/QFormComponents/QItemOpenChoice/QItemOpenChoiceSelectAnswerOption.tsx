@@ -29,7 +29,7 @@ import {
   QuestionnaireResponseItem
 } from 'fhir/r5';
 import { getAnswerOptionLabel } from '../../../../functions/OpenChoiceFunctions';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
@@ -49,7 +49,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
-  const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
+  const qrOpenChoice = qrItem ? qrItem : createEmptyQrItem(qItem);
 
   let valueSelect: QuestionnaireItemAnswerOption | undefined = undefined;
   if (qrOpenChoice['answer']) {
@@ -87,7 +87,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       }
       return;
     }
-    onQrItemChange(createQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem));
   }
 
   const openOpenChoiceSelectAnswerOption = (

@@ -75,7 +75,7 @@ function Form(props: Props) {
     questionnaireProvider.containedValueSets
   );
 
-  // states only for testing
+  // These states below are only for debugging purposes
   const [enableWhenStatus, setEnableWhenStatus] = useState(true);
   const [hideQResponse, setHideQResponse] = useState(true);
 

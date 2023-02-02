@@ -19,12 +19,12 @@ import React from 'react';
 import { Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
@@ -39,7 +39,7 @@ interface Props
 function QItemChoiceSelectAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
-  const qrChoiceSelect = qrItem ? qrItem : createQrItem(qItem);
+  const qrChoiceSelect = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueSelect = getQrChoiceValue(qrChoiceSelect);
 
   function handleChange(e: SelectChangeEvent) {
@@ -50,7 +50,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
         return;
       }
     }
-    onQrItemChange(createQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem));
   }
 
   const choiceSelectAnswerOption = (

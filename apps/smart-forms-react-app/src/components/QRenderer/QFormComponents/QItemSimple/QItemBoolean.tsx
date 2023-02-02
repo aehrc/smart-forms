@@ -23,7 +23,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -41,7 +41,7 @@ function QItemBoolean(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
-  const qrBoolean = qrItem ? qrItem : createQrItem(qItem);
+  const qrBoolean = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
 
   useEffect(() => {

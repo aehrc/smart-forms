@@ -23,7 +23,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
@@ -44,7 +44,7 @@ interface Props
 function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
+  const qrChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
 
   const { options, serverError } = useValueSetOptions(qItem);

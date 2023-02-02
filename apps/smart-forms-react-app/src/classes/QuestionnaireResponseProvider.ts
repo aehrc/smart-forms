@@ -17,7 +17,7 @@
 
 import { Bundle, QuestionnaireResponse } from 'fhir/r5';
 
-const cleanQResponse: QuestionnaireResponse = {
+const emptyQResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
   status: 'in-progress'
 };
@@ -27,7 +27,7 @@ export class QuestionnaireResponseProvider {
   batchResponse: Bundle | null;
 
   constructor() {
-    this.questionnaireResponse = cleanQResponse;
+    this.questionnaireResponse = emptyQResponse;
     this.batchResponse = null;
   }
 

@@ -27,7 +27,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import QItemGroup from './QItemGroup';
 
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
 import { isHidden } from '../../../functions/QItemFunctions';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
@@ -47,7 +47,7 @@ function QItemRepeatGroup(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const cleanQrItem = createQrItem(qItem);
+  const emptyQrItem = createEmptyQrItem(qItem);
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
 
@@ -100,8 +100,8 @@ function QItemRepeatGroup(props: Props) {
       <Divider sx={{ mt: 1, mb: 1.5 }} light />
       {repeatGroups.map((singleGroup, index) => {
         const singleQrGroup: QuestionnaireResponseItem = singleGroup
-          ? { ...cleanQrItem, item: singleGroup.item }
-          : { ...cleanQrItem };
+          ? { ...emptyQrItem, item: singleGroup.item }
+          : { ...emptyQrItem };
 
         return (
           <RepeatGroupContainerStack key={index} direction="row" justifyContent="end">

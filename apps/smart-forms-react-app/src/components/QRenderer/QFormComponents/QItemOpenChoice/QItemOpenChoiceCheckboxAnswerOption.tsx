@@ -19,7 +19,7 @@ import React, { useState } from 'react';
 import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
@@ -44,7 +44,7 @@ interface QItemOpenChoiceCheckboxProps
 function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrOpenChoiceCheckbox = qrItem ? qrItem : createQrItem(qItem);
+  const qrOpenChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answers = qrOpenChoiceCheckbox['answer'] ? qrOpenChoiceCheckbox['answer'] : [];
 
   const openLabelText = getOpenLabelText(qItem);
