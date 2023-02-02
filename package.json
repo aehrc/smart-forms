@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "lint": "eslint -c .eslintrc.json .",
+    "check-formatting": "prettier --check ."
+  },
   "workspaces": [
     "apps/*",
     "packages/*",
