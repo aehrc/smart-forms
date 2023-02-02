@@ -26,7 +26,6 @@ import {
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
-import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
@@ -44,8 +43,6 @@ interface Props
 
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   const calculatedExpressions = useContext(CalcExpressionContext);
 
@@ -55,14 +52,6 @@ function QItemInteger(props: Props) {
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
   const [input, setInput] = useState<number | undefined>(valueInteger);
-
-  useEffect(() => {
-    // if integer item is an enableWhen linked question, and it does not have an answer yet
-    // set default answer to 0 - to trigger enableWhen == 0
-    if (qItem.linkId in enableWhenLinkMap && !qrInteger['answer']) {
-      onQrItemChange({ ...qrInteger, answer: [{ valueInteger: 0 }] });
-    }
-  }, []);
 
   useEffect(() => {
     const expression = calculatedExpressions[qItem.linkId];
