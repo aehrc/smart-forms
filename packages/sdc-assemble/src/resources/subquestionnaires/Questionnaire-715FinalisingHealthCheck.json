@@ -1185,9 +1185,7 @@
   "title": "715 Finalising the Health Check",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

@@ -283,9 +283,7 @@
   "title": "715 Assessment Allergies/Adverse Reactions",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

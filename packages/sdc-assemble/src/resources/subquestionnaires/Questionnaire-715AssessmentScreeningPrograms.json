@@ -427,9 +427,7 @@
   "title": "715 Assessment Screening Programs",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

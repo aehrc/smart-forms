@@ -436,9 +436,7 @@
   "title": "715 Assessment Oral And Dental Health",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

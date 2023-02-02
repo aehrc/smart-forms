@@ -365,9 +365,7 @@
   "title": "715 Assessment Social And Emotional Wellbeing",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

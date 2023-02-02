@@ -12,7 +12,7 @@
   "overrides": [
     {
       "files": ["*.ts", "*.ts"],
-      "excludedFiles": ["*.test.ts", "*.test.ts"]
+      "excludedFiles": ["*.test.ts"]
     }
   ],
   "parser": "@typescript-eslint/parser",

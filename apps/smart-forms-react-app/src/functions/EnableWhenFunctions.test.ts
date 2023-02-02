@@ -63,12 +63,12 @@ describe('update enable when items by setting initial answers', () => {
   const linkedQuestionsMap = linkedQuestionsMapSample as Record<string, string[]>;
   const initialAnswers = initialAnswersSample as Record<string, QuestionnaireResponseItemAnswer[]>;
 
-  test('passing an empty initial answers object should cause updated answers to be equal to enable when items ', () => {
+  test('passing an empty initial answers object should cause updated answers to be equal to enable when items', () => {
     const updatedAnswers = setInitialAnswers({}, enableWhenItems, linkedQuestionsMap);
     expect(updatedAnswers).toEqual(enableWhenItems);
   });
 
-  test('passing an non-empty initial answers object should cause updated answers to be from enable when items ', () => {
+  test('passing an non-empty initial answers object should cause updated answers to be from enable when items', () => {
     const updatedAnswers = setInitialAnswers(initialAnswers, enableWhenItems, linkedQuestionsMap);
     expect(updatedAnswers).not.toEqual(enableWhenItems);
   });
