@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -43,7 +43,7 @@ function QItemQuantity(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const calculatedExpressions = useContext(CalcExpressionContext);
 
-  let qrQuantity = qrItem ? qrItem : createQrItem(qItem);
+  let qrQuantity = qrItem ? qrItem : createEmptyQrItem(qItem);
   let valueQuantity: number | undefined = 0.0;
   let unitQuantity: string | undefined = '';
 

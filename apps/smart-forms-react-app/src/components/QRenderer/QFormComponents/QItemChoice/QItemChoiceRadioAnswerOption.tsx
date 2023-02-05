@@ -21,7 +21,7 @@ import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
@@ -42,7 +42,7 @@ interface Props
 function QItemChoiceRadioAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceRadio = qrItem ? qrItem : createQrItem(qItem);
+  const qrChoiceRadio = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueRadio = getQrChoiceValue(qrChoiceRadio);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

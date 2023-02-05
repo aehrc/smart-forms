@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -25,7 +25,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
@@ -33,6 +33,7 @@ import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import { debounce } from 'lodash';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -52,7 +53,7 @@ function QItemDecimal(props: Props) {
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
 
-  const qrDecimal = qrItem ? qrItem : createQrItem(qItem);
+  let qrDecimal = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
 
   const [input, setInput] = useState('0');
@@ -101,11 +102,16 @@ function QItemDecimal(props: Props) {
     }
 
     setInput(parsedInput);
-    onQrItemChange({
-      ...qrDecimal,
-      answer: [{ valueDecimal: parseFloat(input) }]
-    });
+    updateQrItemWithDebounce(input);
   }
+
+  const updateQrItemWithDebounce = useCallback(
+    debounce((input: string) => {
+      qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] };
+      onQrItemChange(qrDecimal);
+    }, 500),
+    []
+  );
 
   const decimalInput = (
     <StandardOutlinedInput

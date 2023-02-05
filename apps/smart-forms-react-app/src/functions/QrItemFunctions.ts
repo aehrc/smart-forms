@@ -61,22 +61,22 @@ export function createQuestionnaireResponse(
  *
  * @author Sean Fong
  */
-export function cleanQrItem(
+export function removeNoAnswerQrItem(
   qrItem: QuestionnaireResponseItem
 ): QuestionnaireResponseItem | undefined {
   const items = qrItem.item;
   if (items && items.length > 0) {
-    const cleanedItems: QuestionnaireResponseItem[] = [];
+    const itemsCleaned: QuestionnaireResponseItem[] = [];
 
     // only get items with answers
     items.forEach((item) => {
-      const cleanedQrItem = cleanQrItem(item);
-      if (cleanedQrItem) {
-        cleanedItems.push(cleanedQrItem);
+      const QrItemCleaned = removeNoAnswerQrItem(item);
+      if (QrItemCleaned) {
+        itemsCleaned.push(QrItemCleaned);
       }
     });
 
-    return cleanedItems.length > 0 ? { ...qrItem, item: cleanedItems } : undefined;
+    return itemsCleaned.length > 0 ? { ...qrItem, item: itemsCleaned } : undefined;
   }
 
   // check answer when qrItem is a single question
@@ -101,7 +101,7 @@ export function createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseIt
  *
  * @author Sean Fong
  */
-export function createQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+export function createEmptyQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
   return {
     linkId: qItem.linkId,
     text: qItem.text

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -24,14 +24,14 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
-import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
+import { debounce } from 'lodash';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,23 +43,15 @@ interface Props
 
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
   const calculatedExpressions = useContext(CalcExpressionContext);
 
   const displayUnit = getTextDisplayUnit(qItem);
 
-  let qrInteger = qrItem ? qrItem : createQrItem(qItem);
+  let qrInteger = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
-  useEffect(() => {
-    // if integer item is an enableWhen linked question, and it does not have an answer yet
-    // set default answer to 0 - to trigger enableWhen == 0
-    if (qItem.linkId in enableWhenLinkMap && !qrInteger['answer']) {
-      onQrItemChange({ ...qrInteger, answer: [{ valueInteger: 0 }] });
-    }
-  }, []);
+  const [input, setInput] = useState<number | undefined>(valueInteger);
 
   useEffect(() => {
     const expression = calculatedExpressions[qItem.linkId];
@@ -73,20 +65,30 @@ function QItemInteger(props: Props) {
   }, [calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    let input = event.target.value;
+    let newInput = event.target.value;
 
     const hasNumber = /\d/;
-    if (!hasNumber.test(input)) {
-      input = '0';
+    if (!hasNumber.test(newInput)) {
+      newInput = '0';
     }
-    qrInteger = { ...qrInteger, answer: [{ valueInteger: parseInt(input) }] };
-    onQrItemChange(qrInteger);
+
+    const inputNumber = parseInt(newInput);
+    setInput(inputNumber);
+    updateQrItemWithDebounce(inputNumber);
   }
+
+  const updateQrItemWithDebounce = useCallback(
+    debounce((inputNumber: number) => {
+      qrInteger = { ...qrInteger, answer: [{ valueInteger: inputNumber }] };
+      onQrItemChange(qrInteger);
+    }, 500),
+    []
+  );
 
   const integerInput = (
     <StandardOutlinedInput
       id={qItem.linkId}
-      value={valueInteger}
+      value={input}
       onChange={handleChange}
       fullWidth
       isTabled={isTabled}

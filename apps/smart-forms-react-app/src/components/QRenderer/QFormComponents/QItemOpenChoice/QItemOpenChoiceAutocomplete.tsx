@@ -24,7 +24,7 @@ import {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -41,7 +41,7 @@ interface Props
 
 function QItemOpenChoiceAutocomplete(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const qrOpenChoice = qrItem ? qrItem : createQrItem(qItem);
+  const qrOpenChoice = qrItem ? qrItem : createEmptyQrItem(qItem);
 
   let valueAutocomplete: Coding | string | undefined;
   if (qrOpenChoice['answer']) {

@@ -27,7 +27,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
@@ -44,7 +44,7 @@ interface Props
 function QItemTime(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrTime = qrItem ? qrItem : createQrItem(qItem);
+  const qrTime = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answerValue = qrTime['answer'] ? qrTime['answer'][0].valueTime : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 
