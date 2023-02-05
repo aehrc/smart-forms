@@ -24,9 +24,14 @@ export const PageSwitcherContext = React.createContext<PageSwitcherContextType>(
   goToPage: () => void 0
 });
 
-function PageSwitcherContextProvider(props: { children: React.ReactNode }) {
-  const { children } = props;
-  const [currentPage, goToPage] = useState<PageType>(PageType.Renderer);
+function PageSwitcherContextProvider(props: {
+  children: React.ReactNode;
+  questionnairePresent: boolean;
+}) {
+  const { children, questionnairePresent } = props;
+  const [currentPage, goToPage] = useState<PageType>(
+    questionnairePresent ? PageType.Renderer : PageType.Picker
+  );
 
   const pageSwitcherContext: PageSwitcherContextType = {
     currentPage: currentPage,

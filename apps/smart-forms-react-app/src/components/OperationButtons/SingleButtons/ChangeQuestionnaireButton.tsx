@@ -19,15 +19,13 @@ import React, { useContext, useState } from 'react';
 import { Box, ListItemButton, Tooltip, Typography } from '@mui/material';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import ListItemText from '@mui/material/ListItemText';
-import { PageType, QuestionnaireSource } from '../../../interfaces/Enums';
 import { PageSwitcherContext } from '../../../custom-contexts/PageSwitcherContext';
 import ChangeQuestionnaireDialog from '../../Dialogs/ChangeQuestionnaireDialog';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { QuestionnaireResponse } from 'fhir/r5';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
-import { QuestionnaireProviderContext } from '../../../App';
 import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
 import { SideBarContext } from '../../../custom-contexts/SideBarContext';
+import { PageType } from '../../../interfaces/Enums';
 
 interface Props {
   isChip?: boolean;
@@ -39,14 +37,12 @@ interface Props {
 function ChangeQuestionnaireButton(props: Props) {
   const { isChip, qrHasChanges, removeQrHasChanges, questionnaireResponse } = props;
   const pageSwitcher = useContext(PageSwitcherContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const fhirClient = useContext(LaunchContext).fhirClient;
   const sideBar = useContext(SideBarContext);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
   function handleClick() {
-    if (qrHasChanges && fhirClient && questionnaireProvider.source === QuestionnaireSource.Remote) {
+    if (qrHasChanges) {
       setDialogOpen(true);
     } else {
       pageSwitcher.goToPage(PageType.Picker);

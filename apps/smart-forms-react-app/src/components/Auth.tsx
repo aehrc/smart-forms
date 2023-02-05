@@ -105,7 +105,8 @@ function Auth() {
     );
   } else {
     return (
-      <PageSwitcherContextProvider>
+      <PageSwitcherContextProvider
+        questionnairePresent={!!questionnaireProvider.questionnaire.item}>
         <PageSwitcher />
       </PageSwitcherContextProvider>
     );

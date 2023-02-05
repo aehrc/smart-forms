@@ -35,19 +35,24 @@ import {
 import { QrSortParam } from '../interfaces/Enums';
 
 function usePicker(launch: LaunchContextType) {
+  const [questionnaireSourceIsLocal, setQuestionnaireSourceIsLocal] = useState(!launch.fhirClient);
+
+  const initialQuestionnaires = questionnaireSourceIsLocal ? loadQuestionnairesFromLocal() : [];
+  const initialQuestionnaireIsSearching = !questionnaireSourceIsLocal;
+
   const [searchInput, setSearchInput] = useState<string>('');
-  const [questionnaireIsSearching, setQuestionnaireIsSearching] = useState(true);
+  const [questionnaireIsSearching, setQuestionnaireIsSearching] = useState(
+    initialQuestionnaireIsSearching
+  );
   const [questionnaireResponseIsSearching, setQuestionnaireResponseIsSearching] = useState(true);
 
-  const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
+  const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>(initialQuestionnaires);
   const [questionnaireResponses, setQuestionnaireResponses] = useState<QuestionnaireResponse[]>([]);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [selectedQuestionnaireIndex, setSelectedQuestionnaireIndex] = useState<number | null>(null);
   const [selectedQuestionnaireResponseIndex, setSelectedQuestionnaireResponseIndex] = useState<
     number | null
   >(null);
-
-  const [questionnaireSourceIsLocal, setQuestionnaireSourceIsLocal] = useState(!launch.fhirClient);
 
   // determine if questionnaires are fetched from local or remote
   useEffect(() => {
