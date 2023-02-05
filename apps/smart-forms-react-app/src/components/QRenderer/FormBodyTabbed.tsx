@@ -105,6 +105,8 @@ function FormBodyTabbed(props: Props) {
                       onQrItemChange={handleQrGroupChange}></QItemGroup>
                   </TabPanel>
                 );
+              } else {
+                return <></>;
               }
             })}
           </Grid>

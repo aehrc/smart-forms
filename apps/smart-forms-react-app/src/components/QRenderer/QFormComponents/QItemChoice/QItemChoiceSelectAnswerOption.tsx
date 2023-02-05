@@ -19,8 +19,8 @@ import React from 'react';
 import { Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
@@ -74,6 +74,8 @@ function QItemChoiceSelectAnswerOption(props: Props) {
               {option.valueInteger}
             </MenuItem>
           );
+        } else {
+          return <></>;
         }
       })}
     </Select>

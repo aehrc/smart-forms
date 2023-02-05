@@ -23,8 +23,8 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/Cho
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QRadioGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
@@ -86,6 +86,8 @@ function QItemChoiceRadioAnswerOption(props: Props) {
               label={option.valueInteger.toString()}
             />
           );
+        } else {
+          return <></>;
         }
       })}
     </QRadioGroup>
