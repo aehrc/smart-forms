@@ -22,8 +22,8 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemChoiceCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { createQrItem } from '../../../../functions/QrItemFunctions';
 import {
-  PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
@@ -98,6 +98,8 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
               onCheckedChange={handleCheckedChange}
             />
           );
+        } else {
+          return null;
         }
       })}
     </QFormGroup>

@@ -106,7 +106,7 @@ function FormBodyTabbed(props: Props) {
                   </TabPanel>
                 );
               } else {
-                return <></>;
+                return null;
               }
             })}
           </Grid>

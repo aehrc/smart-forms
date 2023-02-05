@@ -24,22 +24,22 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
   const containedValueSetContext = useContext(ContainedValueSetContext);
 
   const valueSetUrl = qItem.answerValueSet;
-  if (!valueSetUrl) {
-    return { options: [], serverError: null };
-  }
 
   let answerOptions: Coding[] = [];
+  let cachedAnswerOptions: Coding[] | undefined;
 
   // set options from cached answer options if present
-  const cachedAnswerOptions = AnswerValueSet.cache[valueSetUrl];
-  if (cachedAnswerOptions) {
-    answerOptions = cachedAnswerOptions;
-  } else if (valueSetUrl.startsWith('#')) {
-    // set options from contained valueSet if present
-    const reference = valueSetUrl.slice(1);
-    const valueSet = containedValueSetContext[reference];
-    if (valueSet) {
-      answerOptions = getValueSetOptions(valueSetUrl, valueSet);
+  if (valueSetUrl) {
+    cachedAnswerOptions = AnswerValueSet.cache[valueSetUrl];
+    if (cachedAnswerOptions) {
+      answerOptions = cachedAnswerOptions;
+    } else if (valueSetUrl.startsWith('#')) {
+      // set options from contained valueSet if present
+      const reference = valueSetUrl.slice(1);
+      const valueSet = containedValueSetContext[reference];
+      if (valueSet) {
+        answerOptions = getValueSetOptions(valueSetUrl, valueSet);
+      }
     }
   }
 

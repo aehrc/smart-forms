@@ -87,7 +87,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
             />
           );
         } else {
-          return <></>;
+          return null;
         }
       })}
     </QRadioGroup>

@@ -244,7 +244,7 @@ export function evaluateCalculatedExpressions(
   let isUpdated = false;
   const updatedCalculatedExpressions = { ...calculatedExpressions };
   if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
-    const context: any = {
+    const context: Record<string, any> = {
       questionnaire: questionnaire,
       resource: questionnaireResponse
     };
@@ -272,7 +272,7 @@ export function evaluateCalculatedExpressions(
         );
 
         if (result.length > 0) {
-          if (calculatedExpressions[linkId].value != result[0]) {
+          if (calculatedExpressions[linkId].value !== result[0]) {
             isUpdated = true;
             updatedCalculatedExpressions[linkId].value = result[0];
           }

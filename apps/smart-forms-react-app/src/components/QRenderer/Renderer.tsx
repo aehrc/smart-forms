@@ -30,12 +30,13 @@ function Renderer() {
   const launch = useContext(LaunchContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  if (!questionnaire.item) return null;
 
   if (!questionnaireResponseProvider.questionnaireResponse.item) {
-    questionnaireResponseProvider.setQuestionnaireResponse(
-      createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
-    );
+    if (questionnaire.item) {
+      questionnaireResponseProvider.setQuestionnaireResponse(
+        createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
+      );
+    }
   }
 
   const [spinner, setSpinner] = useState({

@@ -38,8 +38,6 @@ function QItemGroupTableRow(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
-
   const qItemsIndexMap = mapQItemsIndex(qItem);
 
   const rowItems = qItem.item;
@@ -50,7 +48,7 @@ function QItemGroupTableRow(props: Props) {
 
   useEffect(() => {
     setRow(qrRowFromProps);
-  }, [qrItem]);
+  }, [qrRowFromProps]);
 
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
@@ -59,6 +57,7 @@ function QItemGroupTableRow(props: Props) {
     onQrItemChange(qrRow);
   }
 
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
   if (!rowItems || !rowQrItems) return null;
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
@@ -94,6 +93,8 @@ function QItemGroupTableRow(props: Props) {
               </StandardTableCell>
             );
           }
+        } else {
+          return null;
         }
       })}
     </>

@@ -165,7 +165,7 @@ function readQuestionnaireResponseItem(
       // Under normal circumstances we will reach the end of both arrays together
       for (
         let qItemIndex = 0, qrItemIndex = 0;
-        qItemIndex < qItems.length, qrItemIndex < qrItems.length;
+        qItemIndex < qItems.length || qrItemIndex < qrItems.length;
         qItemIndex++
       ) {
         // Save qrItem if linkIds of current qItem and qrItem are the same

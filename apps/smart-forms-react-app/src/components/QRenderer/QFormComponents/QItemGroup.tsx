@@ -52,10 +52,6 @@ function QItemGroup(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
-
-  const qItemsIndexMap = mapQItemsIndex(qItem);
-
   const qItems = qItem.item;
   const groupFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
   const qrItems = groupFromProps.item;
@@ -64,7 +60,11 @@ function QItemGroup(props: Props) {
 
   useEffect(() => {
     setGroup(groupFromProps);
-  }, [qrItem]);
+  }, [groupFromProps]);
+
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+
+  const qItemsIndexMap = mapQItemsIndex(qItem);
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     const qrGroup: QuestionnaireResponseItem = { ...group };
@@ -130,6 +130,7 @@ function QItemGroup(props: Props) {
             } else {
               // It is an issue if qItem entered this decision is neither
               console.warn('Some items are not rendered');
+              return null;
             }
           } else {
             // Process qrItemOrItems as a single qrItem
@@ -174,10 +175,8 @@ function QItemGroup(props: Props) {
                   />
                 );
               }
-            }
-
-            // if qItem is not a repeating question or is a checkbox
-            if (qItem.type === QItemType.Group) {
+            } else if (qItem.type === QItemType.Group) {
+              // if qItem is not a repeating question or is a checkbox
               return (
                 <QGroupContainerBox key={qItem.linkId}>
                   <QItemGroup
