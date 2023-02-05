@@ -53,11 +53,7 @@ function ChangeQuestionnaireDialog(props: Props) {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const isLaunched: boolean = !!(
-    launchContext.fhirClient &&
-    launchContext.patient &&
-    launchContext.user
-  );
+  const isLaunched = !!(launchContext.fhirClient && launchContext.patient && launchContext.user);
 
   function handleSave() {
     if (launchContext.fhirClient && launchContext.patient && launchContext.user) {
