@@ -3,6 +3,11 @@
     "browser": true,
     "es2021": true
   },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -15,7 +20,7 @@
       "excludedFiles": ["*.test.ts"]
     }
   ],
-  "ignorePatterns": ["*.config.js"],
+  "ignorePatterns": ["*.config.js", "*.bin.ts"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",

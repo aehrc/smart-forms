@@ -57,11 +57,10 @@ function QItemQuantity(props: Props) {
     const expression = calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
-      qrQuantity = {
+      onQrItemChange({
         ...qrQuantity,
         answer: [{ valueQuantity: { value: expression.value, unit: unitQuantity } }]
-      };
-      onQrItemChange(qrQuantity);
+      });
     }
   }, [calculatedExpressions]);
 
