@@ -2,7 +2,7 @@
   "name": "assemble-express",
   "version": "1.0.0",
   "description": "",
-  "main": "app.ts",
+  "main": "src/index.ts",
   "scripts": {
     "compile": "tsc",
     "start": "node lib/index.js",

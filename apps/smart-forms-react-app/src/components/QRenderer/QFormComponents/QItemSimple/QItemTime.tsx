@@ -52,7 +52,7 @@ function QItemTime(props: Props) {
 
   useEffect(() => {
     setValue(answerValueDayJs);
-  }, [answerValue]);
+  }, [answerValueDayJs]);
 
   function handleChange(newValue: Dayjs | null | undefined) {
     if (newValue) {

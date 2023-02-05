@@ -74,6 +74,8 @@ function QItemChoiceSelectAnswerOption(props: Props) {
               {option.valueInteger}
             </MenuItem>
           );
+        } else {
+          return null;
         }
       })}
     </Select>

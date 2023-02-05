@@ -12,7 +12,6 @@ This repository contains the Smart Forms React app and a module containing funct
 
 **This project is still ongoing development and should only be used for testing purposes only.**
 
-
 ## Setup Development Environment
 
 ### Prerequisites
@@ -50,11 +49,11 @@ npm start
 ### Running on SMART EHR (the preferred way)
 
 1. Open https://launch.smarthealthit.org/ in a browser.
-2. Set the **App Launch URL** at the bottom of the page as ```http://localhost:3000/launch``` and launch app.
+2. Set the **App Launch URL** at the bottom of the page as `http://localhost:3000/launch` and launch app.
 
 ![img.png](launch.png)
 
-3. Alternatively, launch a specified questionnaire directly to launch a questionnaire directly with ```http://localhost:3000/launch?questionnaireUrl={questionnaire.url}``` with questionnaire.url being the absolute URI of the questionnaire: https://hl7.org/FHIR/questionnaire-definitions.html#Questionnaire.url
+3. Alternatively, launch a specified questionnaire directly to launch a questionnaire directly with `http://localhost:3000/launch?questionnaireUrl={questionnaire.url}` with questionnaire.url being the absolute URI of the questionnaire: https://hl7.org/FHIR/questionnaire-definitions.html#Questionnaire.url
 
 ![img.png](launch-with-questionnaire.png)
 
@@ -63,5 +62,3 @@ npm start
 This method of running the app does not allow you to save responses as it is not connected to a CMS client.
 
 1. Open http://localhost:3000 in a browser.
-
-

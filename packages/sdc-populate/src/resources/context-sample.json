@@ -142,12 +142,8 @@
       {
         "use": "official",
         "family": "Lucio",
-        "given": [
-          "Benito"
-        ],
-        "prefix": [
-          "Mr."
-        ]
+        "given": ["Benito"],
+        "prefix": ["Mr."]
       }
     ],
     "telecom": [
@@ -176,9 +172,7 @@
             ]
           }
         ],
-        "line": [
-          "320 Ritchie Byway"
-        ],
+        "line": ["320 Ritchie Byway"],
         "city": "Boston",
         "state": "Massachusetts",
         "postalCode": "02108",
@@ -211,7 +205,7 @@
       }
     ]
   },
-  "PrePopQuery2" : {
+  "PrePopQuery2": {
     "resourceType": "Bundle",
     "id": "PrePopQuery2",
     "meta": {

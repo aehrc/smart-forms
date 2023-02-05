@@ -57,11 +57,10 @@ function QItemInteger(props: Props) {
     const expression = calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
-      qrInteger = {
+      onQrItemChange({
         ...qrInteger,
         answer: [{ valueInteger: expression.value }]
-      };
-      onQrItemChange(qrInteger);
+      });
     }
   }, [calculatedExpressions]);
 

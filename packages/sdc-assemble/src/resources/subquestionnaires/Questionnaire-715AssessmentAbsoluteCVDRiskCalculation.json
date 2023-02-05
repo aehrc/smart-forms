@@ -506,9 +506,7 @@
   "title": "715 Assessment Absolute Cardiovascular Disease Risk Calculation",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

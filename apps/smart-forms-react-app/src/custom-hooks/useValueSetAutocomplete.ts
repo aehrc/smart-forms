@@ -20,7 +20,7 @@ import { Coding, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
 import { debounce } from 'lodash';
 
-function useValueSetAutocomplete(answerValueSetUrl: string, maxList: number) {
+function useValueSetAutocomplete(answerValueSetUrl: string | undefined, maxList: number) {
   const [options, setOptions] = useState<Coding[]>([]);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<Error | null>(null);
@@ -32,6 +32,8 @@ function useValueSetAutocomplete(answerValueSetUrl: string, maxList: number) {
       setLoading(false);
       return;
     }
+
+    if (!answerValueSetUrl) return null;
 
     answerValueSetUrl += answerValueSetUrl[answerValueSetUrl.length - 1] !== '&' ? '&' : '';
     const fullUrl = answerValueSetUrl + 'filter=' + newInput + '&count=' + maxList;

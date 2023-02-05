@@ -98,6 +98,8 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
               onCheckedChange={handleCheckedChange}
             />
           );
+        } else {
+          return null;
         }
       })}
     </QFormGroup>

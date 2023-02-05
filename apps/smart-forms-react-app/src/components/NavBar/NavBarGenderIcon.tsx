@@ -22,9 +22,9 @@ import React from 'react';
 function NavBarGenderIcon(props: { gender: string }) {
   const { gender } = props;
 
-  if (gender == 'male') {
+  if (gender === 'male') {
     return <MaleIcon fontSize="small" />;
-  } else if (gender == 'female') {
+  } else if (gender === 'female') {
     return <FemaleIcon fontSize="small" />;
   } else {
     return (

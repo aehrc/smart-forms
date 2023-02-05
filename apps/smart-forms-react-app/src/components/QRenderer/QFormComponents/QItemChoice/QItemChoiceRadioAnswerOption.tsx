@@ -86,6 +86,8 @@ function QItemChoiceRadioAnswerOption(props: Props) {
               label={option.valueInteger.toString()}
             />
           );
+        } else {
+          return null;
         }
       })}
     </QRadioGroup>

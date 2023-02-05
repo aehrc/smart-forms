@@ -50,12 +50,12 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   }
 
   const answerValueSetUrl = qItem.answerValueSet;
-  if (!answerValueSetUrl) return null;
-
   const maxList = 10;
 
   const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
     useValueSetAutocomplete(answerValueSetUrl, maxList);
+
+  if (!answerValueSetUrl) return null;
 
   function handleValueChange(
     event: SyntheticEvent<Element, Event>,

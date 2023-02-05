@@ -791,9 +791,7 @@
   "title": "715 Assessment Ear Health And Hearing",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

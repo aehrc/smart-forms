@@ -1034,9 +1034,7 @@
       "resourceType": "ValueSet",
       "id": "condition-clinical",
       "meta": {
-        "profile": [
-          "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
-        ]
+        "profile": ["http://hl7.org/fhir/StructureDefinition/shareablevalueset"]
       },
       "status": "draft",
       "name": "ConditionClinicalStatusCodes",
@@ -1232,9 +1230,7 @@
   "title": "715 About The Health Check",
   "status": "draft",
   "experimental": true,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2022-05-24",
   "jurisdiction": [
     {

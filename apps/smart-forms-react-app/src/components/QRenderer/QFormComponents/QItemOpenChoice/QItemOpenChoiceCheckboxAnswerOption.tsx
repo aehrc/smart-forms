@@ -121,6 +121,8 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
               onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
             />
           );
+        } else {
+          return null;
         }
       })}
 
