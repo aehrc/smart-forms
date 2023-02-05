@@ -79,6 +79,10 @@ function Form(props: Props) {
   const [enableWhenStatus, setEnableWhenStatus] = useState(true);
   const [hideQResponse, setHideQResponse] = useState(true);
 
+  let qrForm: QuestionnaireResponseItem = {
+    linkId: ''
+  };
+
   useEffect(() => {
     enableWhen.setItems(questionnaireProvider.enableWhenItems, qrForm);
   }, []);
@@ -87,7 +91,7 @@ function Form(props: Props) {
   if (!questionnaire.item || !questionnaireResponse.item) return <FormBodyInvalid />;
 
   const qForm = questionnaire.item[0];
-  const qrForm = questionnaireResponse.item[0];
+  qrForm = questionnaireResponse.item[0];
 
   function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
     const newQuestionnaireResponse = {
