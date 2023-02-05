@@ -53,6 +53,12 @@ function ChangeQuestionnaireDialog(props: Props) {
 
   const [isSaving, setIsSaving] = useState(false);
 
+  const isLaunched: boolean = !!(
+    launchContext.fhirClient &&
+    launchContext.patient &&
+    launchContext.user
+  );
+
   function handleSave() {
     if (launchContext.fhirClient && launchContext.patient && launchContext.user) {
       let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
@@ -103,14 +109,16 @@ function ChangeQuestionnaireDialog(props: Props) {
             pageSwitcher.goToPage(PageType.Picker);
             handleClose();
           }}>
-          Proceed without saving
+          {isLaunched ? 'Proceed without saving' : 'Proceed'}
         </Button>
-        <Button
-          disabled={isSaving}
-          endIcon={isSaving ? <CircularProgress size={20} /> : null}
-          onClick={handleSave}>
-          Save and proceed
-        </Button>
+        {isLaunched ? (
+          <Button
+            disabled={isSaving}
+            endIcon={isSaving ? <CircularProgress size={20} /> : null}
+            onClick={handleSave}>
+            Save and proceed
+          </Button>
+        ) : null}
       </DialogActions>
     </Dialog>
   );
