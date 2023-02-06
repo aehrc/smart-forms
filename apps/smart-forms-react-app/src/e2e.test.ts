@@ -1,11 +1,16 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 describe('Redirection to Auth page from Launch page', () => {
   let browser: Browser;
   let page: Page;
 
-  const launchUrl = 'http://localhost:3000/launch';
-  const authUrl = 'http://localhost:3000/';
+  const appUrl = process.env.APP_URL ?? 'http://localhost:3000';
+
+  const launchUrl = appUrl + '/launch';
+  const authUrl = appUrl + '/';
 
   beforeAll(async () => {
     browser = await puppeteer.launch();
