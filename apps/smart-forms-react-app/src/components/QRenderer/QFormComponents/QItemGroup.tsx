@@ -85,122 +85,119 @@ function QItemGroup(props: Props) {
       getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
     return (
-      <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
-        {isRepeated ? null : (
-          <>
-            <QGroupHeadingTypography variant="h6">
-              <QItemLabel qItem={qItem} />
-            </QGroupHeadingTypography>
-            <Divider sx={{ mt: 1, mb: 1.5 }} light />
-          </>
-        )}
-        {qItems.map((qItem: QuestionnaireItem, i) => {
-          const qrItemOrItems = qrItemsByIndex[i];
+      <QGroupContainerBox key={qItem.linkId}>
+        <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
+          {isRepeated ? null : (
+            <>
+              <QGroupHeadingTypography variant="h6">
+                <QItemLabel qItem={qItem} />
+              </QGroupHeadingTypography>
+              <Divider sx={{ mt: 1, mb: 1.5 }} light />
+            </>
+          )}
+          {qItems.map((qItem: QuestionnaireItem, i) => {
+            const qrItemOrItems = qrItemsByIndex[i];
 
-          // Process qrItemOrItems as an qrItem array
-          if (Array.isArray(qrItemOrItems)) {
-            const qrItems = qrItemOrItems;
+            // Process qrItemOrItems as an qrItem array
+            if (Array.isArray(qrItemOrItems)) {
+              const qrItems = qrItemOrItems;
 
-            // qItem should always be either a repeatGroup or a groupTable item
-            if (qItem.repeats && qItem.type === QItemType.Group) {
-              if (isSpecificItemControl(qItem, 'gtable')) {
-                return (
-                  <QGroupContainerBox key={qItem.linkId}>
+              // qItem should always be either a repeatGroup or a groupTable item
+              if (qItem.repeats && qItem.type === QItemType.Group) {
+                if (isSpecificItemControl(qItem, 'gtable')) {
+                  return (
                     <QItemGroupTable
+                      key={qItem.linkId}
                       qItem={qItem}
                       qrItems={qrItems}
                       groupCardElevation={groupCardElevation + 1}
                       onQrRepeatGroupChange={handleQrRepeatGroupChange}
                     />
-                  </QGroupContainerBox>
-                );
-              } else {
-                return (
-                  <QGroupContainerBox key={qItem.linkId}>
+                  );
+                } else {
+                  return (
                     <QItemRepeatGroup
+                      key={qItem.linkId}
                       qItem={qItem}
                       qrItems={qrItems}
                       isRepeated={true}
                       groupCardElevation={groupCardElevation + 1}
                       onQrRepeatGroupChange={handleQrRepeatGroupChange}
                     />
-                  </QGroupContainerBox>
-                );
+                  );
+                }
+              } else {
+                // It is an issue if qItem entered this decision is neither
+                console.warn('Some items are not rendered');
+                return null;
               }
             } else {
-              // It is an issue if qItem entered this decision is neither
-              console.warn('Some items are not rendered');
-              return null;
-            }
-          } else {
-            // Process qrItemOrItems as a single qrItem
-            // if qItem is a repeating question
-            const qrItem = qrItemOrItems;
+              // Process qrItemOrItems as a single qrItem
+              // if qItem is a repeating question
+              const qrItem = qrItemOrItems;
 
-            if (isRepeatItemAndNotCheckbox(qItem)) {
-              if (qItem.type === QItemType.Group) {
-                // If qItem is RepeatGroup or a groupTable item in this decision branch,
-                // their qrItem should always be undefined
-                if (isSpecificItemControl(qItem, 'gtable')) {
-                  return (
-                    <QGroupContainerBox key={qItem.linkId}>
+              if (isRepeatItemAndNotCheckbox(qItem)) {
+                if (qItem.type === QItemType.Group) {
+                  // If qItem is RepeatGroup or a groupTable item in this decision branch,
+                  // their qrItem should always be undefined
+                  if (isSpecificItemControl(qItem, 'gtable')) {
+                    return (
                       <QItemGroupTable
+                        key={qItem.linkId}
                         qItem={qItem}
                         qrItems={[]}
                         groupCardElevation={groupCardElevation + 1}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
-                    </QGroupContainerBox>
-                  );
-                } else {
-                  return (
-                    <QGroupContainerBox key={qItem.linkId}>
+                    );
+                  } else {
+                    return (
                       <QItemRepeatGroup
+                        key={qItem.linkId}
                         qItem={qItem}
                         qrItems={[]}
                         isRepeated={true}
                         groupCardElevation={groupCardElevation + 1}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
-                    </QGroupContainerBox>
+                    );
+                  }
+                } else {
+                  return (
+                    <QItemRepeat
+                      key={i}
+                      qItem={qItem}
+                      qrItem={qrItem}
+                      onQrItemChange={handleQrItemChange}
+                    />
                   );
                 }
-              } else {
+              } else if (qItem.type === QItemType.Group) {
+                // if qItem is not a repeating question or is a checkbox
                 return (
-                  <QItemRepeat
-                    key={i}
-                    qItem={qItem}
-                    qrItem={qrItem}
-                    onQrItemChange={handleQrItemChange}
-                  />
-                );
-              }
-            } else if (qItem.type === QItemType.Group) {
-              // if qItem is not a repeating question or is a checkbox
-              return (
-                <QGroupContainerBox key={qItem.linkId}>
                   <QItemGroup
+                    key={qItem.linkId}
                     qItem={qItem}
                     qrItem={qrItem}
                     isRepeated={false}
                     groupCardElevation={groupCardElevation + 1}
                     onQrItemChange={handleQrItemChange}></QItemGroup>
-                </QGroupContainerBox>
-              );
-            } else {
-              return (
-                <QItemSwitcher
-                  key={qItem.linkId}
-                  qItem={qItem}
-                  qrItem={qrItem}
-                  isRepeated={false}
-                  isTabled={false}
-                  onQrItemChange={handleQrItemChange}></QItemSwitcher>
-              );
+                );
+              } else {
+                return (
+                  <QItemSwitcher
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    isRepeated={false}
+                    isTabled={false}
+                    onQrItemChange={handleQrItemChange}></QItemSwitcher>
+                );
+              }
             }
-          }
-        })}
-      </Card>
+          })}
+        </Card>
+      </QGroupContainerBox>
     );
   } else {
     return <div>Unable to load group</div>;
