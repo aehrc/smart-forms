@@ -52,7 +52,7 @@ function QItemDecimal(props: Props) {
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
 
-  let qrDecimal = qrItem ? qrItem : createEmptyQrItem(qItem);
+  const qrDecimal = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
 
   const [input, setInput] = useState('0');
