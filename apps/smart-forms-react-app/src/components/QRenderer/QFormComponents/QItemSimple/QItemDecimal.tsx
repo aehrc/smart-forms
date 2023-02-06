@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -33,7 +33,6 @@ import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
-import { debounce } from 'lodash';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -102,16 +101,8 @@ function QItemDecimal(props: Props) {
     }
 
     setInput(parsedInput);
-    updateQrItemWithDebounce(input);
+    onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] });
   }
-
-  const updateQrItemWithDebounce = useCallback(
-    debounce((input: string) => {
-      qrDecimal = { ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] };
-      onQrItemChange(qrDecimal);
-    }, 500),
-    []
-  );
 
   const decimalInput = (
     <StandardOutlinedInput
