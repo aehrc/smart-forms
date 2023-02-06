@@ -1437,7 +1437,7 @@
           "linkId": "f6a708b2-043f-4cdb-9213-1894f6fce911",
           "text": "Relevant family history (including diabetes, heart disease, cancer, mental health)",
           "type": "group",
-          "repeats": true,
+          "repeats": false,
           "item": [
             {
               "extension": [
