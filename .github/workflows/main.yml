@@ -36,12 +36,11 @@ jobs:
   cypress-test:
     name: Cypress Tests
     runs-on: ubuntu-latest
+    environment: SMART Forms Workflow
     steps:
       - uses: actions/checkout@v3
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5
-        env:
-          CI: false
         with:
           build: npm run build -w apps/smart-forms-react-app
           start: npm start -w apps/smart-forms-react-app
