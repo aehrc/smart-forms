@@ -73,7 +73,9 @@ function PickerQuestionnaireCard(props: Props) {
 
   return (
     <FullHeightCard>
-      <SideBarOverlineTypography variant="overline">Questionnaires</SideBarOverlineTypography>
+      <SideBarOverlineTypography variant="overline" data-test="picker-card-heading-questionnaires">
+        Questionnaires
+      </SideBarOverlineTypography>
       <PickerQuestionnaireCardContent
         searchInput={searchInput}
         questionnaires={questionnaires}

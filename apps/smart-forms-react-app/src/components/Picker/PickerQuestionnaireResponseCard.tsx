@@ -98,7 +98,7 @@ function PickerQuestionnaireResponseCard(props: Props) {
   return (
     <FullHeightCard>
       <Box display="flex" flexDirection="row" sx={{ ml: 2, mr: 1.5, mt: 1 }}>
-        <Typography variant="overline" fontSize={10}>
+        <Typography variant="overline" fontSize={10} data-test="picker-card-heading-responses">
           Responses
         </Typography>
         {questionnaireResponses.length > 0 && !questionnaireResponseIsSearching ? (

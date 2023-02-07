@@ -67,7 +67,7 @@ function PickerQuestionnaireCardContent(props: Props) {
     return (
       <>
         {searchInput === '' && !questionnaireSourceIsLocal ? (
-          <PickerAlert severity="info" sx={{ mb: 1 }}>
+          <PickerAlert severity="info" sx={{ mb: 1 }} data-test="picker-alert-refine">
             Looking for something else? Refine your search in the search bar above.
           </PickerAlert>
         ) : null}
