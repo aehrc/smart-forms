@@ -77,6 +77,7 @@ function QItemString(props: Props) {
       onChange={handleChange}
       label={getTextDisplayPrompt(qItem)}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
+      data-test="q-item-string-field"
     />
   );
 

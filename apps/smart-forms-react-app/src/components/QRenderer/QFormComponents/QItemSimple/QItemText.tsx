@@ -68,6 +68,7 @@ function QItemText(props: Props) {
       fullWidth
       multiline
       minRows={3}
+      data-test="q-item-text-field"
     />
   );
 
