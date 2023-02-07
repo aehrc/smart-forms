@@ -76,6 +76,7 @@ function Picker() {
               sx={{ display: { xs: 'none', md: 'flex' } }}
               label="Search Questionnaires"
               autoFocus
+              data-test="picker-search-field-desktop"
             />
           </Stack>
 
@@ -90,6 +91,7 @@ function Picker() {
             sx={{ display: { xs: 'flex', md: 'none' } }}
             label="Search Questionnaires"
             autoFocus
+            data-test="picker-search-field-mobile"
           />
           <ChipBar>
             <PickerOperationButtons

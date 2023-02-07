@@ -62,7 +62,11 @@ function FormBodyTabbed(props: Props) {
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
             <Card sx={{ p: 0.75, mb: 2 }}>
               <Box sx={{ flexGrow: 1 }}>
-                <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }}>
+                <PrimarySelectableList
+                  dense
+                  disablePadding
+                  sx={{ my: 0.5 }}
+                  data-test="renderer-tab-list">
                   {qFormItems.map((qItem, index) => {
                     if (
                       !isTab(qItem) ||
@@ -96,7 +100,11 @@ function FormBodyTabbed(props: Props) {
 
               if (isTab(qItem) && !Array.isArray(qrItem)) {
                 return (
-                  <TabPanel key={qItem.linkId} sx={{ p: 0 }} value={(i + 1).toString()}>
+                  <TabPanel
+                    key={qItem.linkId}
+                    sx={{ p: 0 }}
+                    value={(i + 1).toString()}
+                    data-test="renderer-tab-panel">
                     <QItemGroup
                       qItem={qItem}
                       qrItem={qrItem}
