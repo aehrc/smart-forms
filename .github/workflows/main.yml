@@ -47,9 +47,10 @@ jobs:
         run: npm ci
       - name: Run Cypress tests
         uses: cypress-io/github-action@v5
-        with:
-          build: CI=false npm run build -w apps/smart-forms-react-app
-          start: npm start -w apps/smart-forms-react-app
+      - name: Build application
+        run: CI=false npm run build -w apps/smart-forms-react-app
+      - name: Start application
+        run: npm start -w apps/smart-forms-react-app
   lint:
     name: Lint
     runs-on: ubuntu-latest
