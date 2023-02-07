@@ -48,7 +48,8 @@
     "test:e2e": "jest --config ./jest-puppeteer.config.ts",
     "eject": "react-scripts eject",
     "lint": "eslint -c .eslintrc.json .",
-    "check-formatting": "prettier --check ."
+    "check-formatting": "prettier --check .",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -81,7 +82,8 @@
     "jest": "^29.4.1",
     "ts-jest": "^29.0.5",
     "puppeteer": "^19.6.3",
-    "jest-puppeteer": "^7.0.0"
+    "jest-puppeteer": "^7.0.0",
+    "cypress": "^12.5.1"
   },
   "lint": "eslint .",
   "lint:fix": "eslint --fix",
