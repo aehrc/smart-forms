@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v5 -w apps/smart-forms-react-app
       - name: Build application
         run: CI=false npm run build -w apps/smart-forms-react-app
       - name: Start application
