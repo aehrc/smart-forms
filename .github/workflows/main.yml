@@ -18,8 +18,8 @@ jobs:
         run: npm ci
       - name: Build application
         run: CI=false npm run build -w apps/smart-forms-react-app
-  test:
-    name: Test
+  jest-test:
+    name: Jest Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -30,11 +30,26 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-        env:
-          APP_URL: 3000
-      - name: Run tests
+      - name: Run jest tests
         run: npm run test -w apps/smart-forms-react-app
       - uses: codecov/codecov-action@v3
+  cypress-test:
+    name: Cypress Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          build: npm run build -w apps/smart-forms-react-app
+          start: npm start -w apps/smart-forms-react-app
   lint:
     name: Lint
     runs-on: ubuntu-latest
