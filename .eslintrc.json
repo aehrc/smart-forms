@@ -16,8 +16,7 @@
   ],
   "overrides": [
     {
-      "files": ["*.ts", "*.ts"],
-      "excludedFiles": ["*.test.ts"]
+      "files": ["*.ts", "*.ts"]
     }
   ],
   "ignorePatterns": ["*.config.js", "*.bin.ts"],
@@ -28,6 +27,7 @@
   },
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
     "react/react-in-jsx-scope": "off",
     "prettier/prettier": [
       "error",
