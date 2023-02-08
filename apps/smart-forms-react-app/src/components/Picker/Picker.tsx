@@ -63,7 +63,7 @@ function Picker() {
       <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
           <Stack direction="row" gap={8} alignItems="center">
-            <MainGridHeadingTypography>Questionnaires</MainGridHeadingTypography>
+            <MainGridHeadingTypography variant="h1">Questionnaires</MainGridHeadingTypography>
 
             <PickerSearchField
               fullWidth
@@ -76,6 +76,7 @@ function Picker() {
               sx={{ display: { xs: 'none', md: 'flex' } }}
               label="Search Questionnaires"
               autoFocus
+              data-test="picker-search-field-desktop"
             />
           </Stack>
 
@@ -90,6 +91,7 @@ function Picker() {
             sx={{ display: { xs: 'flex', md: 'none' } }}
             label="Search Questionnaires"
             autoFocus
+            data-test="picker-search-field-mobile"
           />
           <ChipBar>
             <PickerOperationButtons

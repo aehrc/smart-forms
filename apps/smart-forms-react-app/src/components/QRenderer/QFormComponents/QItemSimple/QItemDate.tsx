@@ -97,7 +97,14 @@ function QItemDatePicker(props: QItemDatePickerProps) {
         inputFormat="DD/MM/YYYY"
         value={value}
         onChange={onDateChange}
-        renderInput={(params) => <StandardTextField fullWidth isTabled={isTabled} {...params} />}
+        renderInput={(params) => (
+          <StandardTextField
+            fullWidth
+            isTabled={isTabled}
+            {...params}
+            data-test="q-item-date-field"
+          />
+        )}
       />
     </LocalizationProvider>
   );

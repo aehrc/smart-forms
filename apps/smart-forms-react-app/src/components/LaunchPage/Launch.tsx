@@ -37,14 +37,18 @@ function Launch() {
     'launch/patient patient/*.read offline_access openid fhirUser';
   const redirectUri = window.location.origin + '/';
 
-  oauth2.authorize({
-    iss: iss ?? undefined,
-    clientId: clientId,
-    scope: scope,
-    launch: launch ?? undefined,
-    redirectUri: redirectUri,
-    pkceMode: 'required'
-  });
+  if (iss && launch) {
+    oauth2.authorize({
+      iss: iss,
+      clientId: clientId,
+      scope: scope,
+      launch: launch,
+      redirectUri: redirectUri,
+      pkceMode: 'required'
+    });
+  } else {
+    window.location.replace('/');
+  }
 
   return (
     <>

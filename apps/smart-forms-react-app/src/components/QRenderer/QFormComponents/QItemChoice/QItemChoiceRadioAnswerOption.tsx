@@ -60,7 +60,8 @@ function QItemChoiceRadioAnswerOption(props: Props) {
       name={qItem.text}
       id={qItem.id}
       onChange={handleChange}
-      value={valueRadio}>
+      value={valueRadio}
+      data-test="q-item-radio-group">
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (

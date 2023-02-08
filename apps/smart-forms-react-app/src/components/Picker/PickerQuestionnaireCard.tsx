@@ -73,7 +73,9 @@ function PickerQuestionnaireCard(props: Props) {
 
   return (
     <FullHeightCard>
-      <SideBarOverlineTypography variant="overline">Questionnaires</SideBarOverlineTypography>
+      <SideBarOverlineTypography variant="overline" data-test="picker-card-heading-questionnaires">
+        Questionnaires
+      </SideBarOverlineTypography>
       <PickerQuestionnaireCardContent
         searchInput={searchInput}
         questionnaires={questionnaires}
@@ -89,7 +91,8 @@ function PickerQuestionnaireCard(props: Props) {
           endIcon={<ArrowForwardIcon />}
           disabled={typeof selectedQuestionnaireIndex !== 'number'}
           onClick={handleCreateNewResponseButtonClick}
-          sx={{ m: 1.5, textTransform: 'Capitalize' }}>
+          sx={{ m: 1.5, textTransform: 'Capitalize' }}
+          data-test="button-create-response">
           Create new response
         </RoundButton>
       </Box>

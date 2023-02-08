@@ -130,7 +130,7 @@ function Form(props: Props) {
               </SideBarGrid>
               <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
                 <MainGridContainerBox>
-                  <MainGridHeadingTypography variant="h6">
+                  <MainGridHeadingTypography variant="h1" data-test="renderer-heading">
                     <QTitle questionnaire={questionnaire} />
                   </MainGridHeadingTypography>
                   <ChipBar>

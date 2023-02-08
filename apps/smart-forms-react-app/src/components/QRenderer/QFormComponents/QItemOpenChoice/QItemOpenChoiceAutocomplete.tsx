@@ -111,6 +111,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
                 </>
               )
             }}
+            data-test="q-item-open-choice-autocomplete"
           />
         )}
       />
