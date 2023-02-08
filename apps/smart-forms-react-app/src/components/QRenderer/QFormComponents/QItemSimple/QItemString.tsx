@@ -84,7 +84,7 @@ function QItemString(props: Props) {
   const renderQItemString = isRepeated ? (
     <>{stringInput}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-string-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

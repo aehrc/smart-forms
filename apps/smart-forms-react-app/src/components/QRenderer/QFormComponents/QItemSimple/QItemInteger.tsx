@@ -119,7 +119,7 @@ function QItemInteger(props: Props) {
   const renderQItemInteger = isRepeated ? (
     <>{integerInput}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-integer-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

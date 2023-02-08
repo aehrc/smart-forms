@@ -84,7 +84,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   const renderQItemChoiceSelectAnswerOption = isRepeated ? (
     <>{choiceSelectAnswerOption}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

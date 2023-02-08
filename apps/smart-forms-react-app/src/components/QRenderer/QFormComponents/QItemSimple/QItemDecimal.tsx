@@ -151,7 +151,7 @@ function QItemDecimal(props: Props) {
   const renderQItemDecimal = isRepeated ? (
     <>{decimalInput}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-decimal-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

@@ -67,7 +67,7 @@ function QItemDate(props: Props) {
   const renderQItemDate = isRepeated ? (
     <QItemDatePicker value={value} onDateChange={handleChange} isTabled={isTabled} />
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-date-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

@@ -70,7 +70,7 @@ function QItemBoolean(props: Props) {
   const renderQItemBoolean = isRepeated ? (
     <>{booleanInput}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-boolean-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
