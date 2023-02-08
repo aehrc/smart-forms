@@ -134,7 +134,7 @@ function QItemRepeat(props: Props) {
         </Grid>
       </Grid>
 
-      <Stack direction="row" justifyContent="end" sx={{ mt: 1, mb: 3 }}>
+      <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
