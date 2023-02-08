@@ -57,6 +57,7 @@ function QItemInteger(props: Props) {
     const expression = calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
+      setInput(expression.value);
       onQrItemChange({
         ...qrInteger,
         answer: [{ valueInteger: expression.value }]
@@ -81,7 +82,7 @@ function QItemInteger(props: Props) {
     debounce((inputNumber: number) => {
       qrInteger = { ...qrInteger, answer: [{ valueInteger: inputNumber }] };
       onQrItemChange(qrInteger);
-    }, 500),
+    }, 200),
     []
   );
 
@@ -94,6 +95,7 @@ function QItemInteger(props: Props) {
       isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
       endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      data-test="q-item-integer-field"
     />
   );
 
