@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 
 import {
@@ -44,15 +44,19 @@ function QItemBoolean(props: Props) {
   const qrBoolean = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
 
+  const [isChecked, setIsChecked] = useState(valueBoolean);
+
   useEffect(() => {
     // if boolean item is an enableWhen linked question and it does not have an answer yet
     // set default answer to false - to trigger enableWhen == false
     if (qItem.linkId in enableWhenLinkMap && !qrBoolean['answer']) {
+      setIsChecked(false);
       onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: false }] });
     }
   }, []);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setIsChecked(event.target.checked);
     onQrItemChange({
       ...qrBoolean,
       answer: [{ valueBoolean: event.target.checked }]
@@ -60,10 +64,7 @@ function QItemBoolean(props: Props) {
   }
 
   const booleanInput = (
-    <FormControlLabel
-      control={<Checkbox checked={valueBoolean} onChange={handleChange} />}
-      label=""
-    />
+    <FormControlLabel control={<Checkbox checked={isChecked} onChange={handleChange} />} label="" />
   );
 
   const renderQItemBoolean = isRepeated ? (
