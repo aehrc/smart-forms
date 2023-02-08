@@ -29,28 +29,26 @@ type Props = {
 function RendererDebugBar(props: Props) {
   const { hideQResponse, toggleHideQResponse, enableWhenStatus, toggleEnableWhenStatus } = props;
   return (
-    <>
-      <DebugBarContainerBox>
-        <FormControlLabel
-          control={
-            <Switch
-              onChange={(event) => toggleHideQResponse(event.target.checked)}
-              checked={hideQResponse}
-            />
-          }
-          label={<Typography variant="subtitle2">Hide Debug QResponse</Typography>}
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              onChange={(event) => toggleEnableWhenStatus(event.target.checked)}
-              checked={enableWhenStatus}
-            />
-          }
-          label={<Typography variant="subtitle2">EnableWhen checks</Typography>}
-        />
-      </DebugBarContainerBox>
-    </>
+    <DebugBarContainerBox>
+      <FormControlLabel
+        control={
+          <Switch
+            onChange={(event) => toggleHideQResponse(event.target.checked)}
+            checked={hideQResponse}
+          />
+        }
+        label={<Typography variant="subtitle2">Hide Debug QResponse</Typography>}
+      />
+      <FormControlLabel
+        control={
+          <Switch
+            onChange={(event) => toggleEnableWhenStatus(event.target.checked)}
+            checked={enableWhenStatus}
+          />
+        }
+        label={<Typography variant="subtitle2">EnableWhen checks</Typography>}
+      />
+    </DebugBarContainerBox>
   );
 }
 

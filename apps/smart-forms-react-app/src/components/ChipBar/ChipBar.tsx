@@ -23,7 +23,7 @@ function ChipBar(props: { children: React.ReactNode }) {
   const { children } = props;
 
   return (
-    <Box sx={{ display: { xs: 'block', lg: 'none' } }}>
+    <Box sx={{ display: { xs: 'block', lg: 'none' } }} data-test="chip-bar-box">
       <ChipBarBox gap={1}>{children}</ChipBarBox>
     </Box>
   );

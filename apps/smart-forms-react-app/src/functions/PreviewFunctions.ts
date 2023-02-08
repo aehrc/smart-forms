@@ -28,7 +28,7 @@ export function qrToHTML(
 ) {
   if (!questionnaireResponse.item) return '';
 
-  const title = `<div style="font-size:24px; font-weight: bold">${questionnaire.title}</div><hr />`;
+  const title = `<div style="font-size:24px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
   const qrForm = qrFormToHTML(questionnaireResponse.item[0]);
 
   return `<div>${title + qrForm}</div>`;
@@ -78,19 +78,18 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
   if (!item.answer) return '';
 
   let qrItemAnswer = '';
-  let qrItemRender = '';
 
   item.answer.forEach((answer) => {
     const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
 
-    qrItemAnswer += `<div>${
+    qrItemAnswer += `<div data-test="response-item-answer">${
       answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
     }</div>`;
+  });
 
-    qrItemRender = `<div style="flex:40%;">${item.text}</div>
+  const qrItemRender = `<div style="flex:40%;" data-test="response-item-text">${item.text}</div>
                         <div style="flex: 10%;"></div>
                         <div style="flex: 50%;" >${qrItemAnswer}</div>`;
-  });
 
   return `<div style="margin-top: ${
     nestedLevel === 0 ? '20px' : '10px'
@@ -100,7 +99,7 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
 function renderGroupHeadingDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
   return `<div style="font-size: ${
     nestedLevel === 0 ? '18px' : '16px'
-  }; font-weight: bold; margin-top: 15px">${item.text}</div>`;
+  }; font-weight: bold; margin-top: 15px" data-test="response-group-heading">${item.text}</div>`;
 }
 
 function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer): string {
