@@ -64,12 +64,11 @@ function QItemDecimal(props: Props) {
 
   useEffect(() => {
     if (calculatedExpression && calculatedExpression.value) {
-      const precision = getDecimalPrecision(qItem);
       const value = precision
         ? parseFloat(calculatedExpression.value.toFixed(precision))
         : calculatedExpression.value;
 
-      setInput(value.toString());
+      setInput(precision ? value.toFixed(precision) : value.toString());
       onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
     }
   }, [calculatedExpressions]);
