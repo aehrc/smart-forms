@@ -95,7 +95,7 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <QGroupContainerBox key={qItem.linkId}>
+    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
       <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
         <QGroupHeadingTypography variant="h6">
           <QItemLabel qItem={qItem} />

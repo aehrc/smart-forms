@@ -85,7 +85,10 @@ function QItemGroup(props: Props) {
       getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
     return (
-      <QGroupContainerBox key={qItem.linkId}>
+      <QGroupContainerBox
+        key={qItem.linkId}
+        cardElevation={groupCardElevation}
+        isRepeated={isRepeated}>
         <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
           {isRepeated ? null : (
             <>

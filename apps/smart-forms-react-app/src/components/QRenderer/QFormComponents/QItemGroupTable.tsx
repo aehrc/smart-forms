@@ -108,7 +108,7 @@ function QItemGroupTable(props: Props) {
   const itemLabels: string[] = qItem.item.map((item) => (item.text ? item.text : ''));
 
   return (
-    <QGroupContainerBox key={qItem.linkId}>
+    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={false}>
       <Box sx={{ my: 3.5 }}>
         <Typography fontSize={13} variant="h6">
           <QItemLabel qItem={qItem} />

@@ -25,9 +25,11 @@ export const MainGridContainerBox = styled(Box)(() => ({
   gap: 12
 }));
 
-export const QGroupContainerBox = styled(Box)(() => ({
-  marginTop: 18,
-  marginBottom: 18
+export const QGroupContainerBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'cardElevation' && prop !== 'isRepeated'
+})<{ cardElevation: number; isRepeated: boolean }>(({ cardElevation, isRepeated }) => ({
+  marginTop: cardElevation === 1 || isRepeated ? 0 : 18,
+  marginBottom: cardElevation === 1 || isRepeated ? 0 : 18
 }));
 
 export const FullWidthFormComponentBox = styled(Box)(() => ({
