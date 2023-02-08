@@ -36,17 +36,17 @@ describe('populate form', () => {
       .contains('Patient Details')
       .click();
 
-    cy.getByData('q-item-string-field').eq(0).find('input').should('have.value', 'Benito Lucio');
-    cy.getByData('q-item-date-field').eq(0).find('input').should('have.value', '18/08/1936');
+    cy.getByData('q-item-string-box').eq(0).find('input').should('have.value', 'Benito Lucio');
+    cy.getByData('q-item-date-box').eq(0).find('input').should('have.value', '18/08/1936');
 
     cy.getByData('q-item-radio-group').eq(0).find('input').eq(0).should('be.checked');
     cy.getByData('q-item-radio-group').eq(0).find('input').eq(1).should('not.be.checked');
 
-    cy.getByData('q-item-text-field')
+    cy.getByData('q-item-text-box')
       .eq(0)
       .find('textarea')
       .should('have.value', '320 Ritchie Byway, Boston, Massachusetts 02108');
-    cy.getByData('q-item-string-field').eq(1).find('input').should('have.value', '555-913-5055');
+    cy.getByData('q-item-string-box').eq(1).find('input').should('have.value', '555-913-5055');
   });
 
   it('repeat items in Medical history tab have expected populated answers', () => {
