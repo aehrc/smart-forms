@@ -63,7 +63,7 @@ function QItemString(props: Props) {
     debounce((input: string) => {
       qrString = { ...qrString, answer: [{ valueString: input }] };
       onQrItemChange(qrString);
-    }, 500),
+    }, 300),
     []
   );
 

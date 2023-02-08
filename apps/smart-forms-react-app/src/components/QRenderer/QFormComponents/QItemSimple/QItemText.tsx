@@ -55,7 +55,7 @@ function QItemText(props: Props) {
     debounce((input: string) => {
       qrText = { ...qrText, answer: [{ valueString: input }] };
       onQrItemChange(qrText);
-    }, 500),
+    }, 300),
     []
   );
 

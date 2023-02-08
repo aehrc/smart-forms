@@ -68,7 +68,7 @@ function useValueSetAutocomplete(answerValueSetUrl: string | undefined, maxList:
   const searchResultsWithDebounce = useCallback(
     debounce((input: string) => {
       fetchNewOptions(input);
-    }, 500),
+    }, 300),
     []
   );
 
