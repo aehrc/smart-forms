@@ -16,7 +16,7 @@
  */
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Grid, InputAdornment } from '@mui/material';
+import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import {
   CalculatedExpression,
@@ -34,6 +34,7 @@ import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -61,6 +62,7 @@ function QItemDecimal(props: Props) {
   }
 
   const [input, setInput] = useState(initialInput);
+  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
     if (calculatedExpression && calculatedExpression.value) {
@@ -68,8 +70,15 @@ function QItemDecimal(props: Props) {
         ? parseFloat(calculatedExpression.value.toFixed(precision))
         : calculatedExpression.value;
 
-      setInput(precision ? value.toFixed(precision) : value.toString());
-      onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
+      if (value !== parseFloat(input)) {
+        setCalExpIsCalculating(true);
+        setTimeout(() => {
+          setCalExpIsCalculating(false);
+        }, 500);
+
+        setInput(precision ? value.toFixed(precision) : value.toString());
+        onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
+      }
     }
   }, [calculatedExpressions]);
 
@@ -127,7 +136,14 @@ function QItemDecimal(props: Props) {
         inputMode: 'numeric',
         pattern: '[0-9]*'
       }}
-      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      endAdornment={
+        <InputAdornment position={'end'}>
+          <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
+            <CheckIcon color="success" fontSize="small" />
+          </Fade>
+          {displayUnit}
+        </InputAdornment>
+      }
       data-test="q-item-decimal-field"
     />
   );
