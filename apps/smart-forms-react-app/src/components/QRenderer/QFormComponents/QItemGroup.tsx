@@ -60,7 +60,7 @@ function QItemGroup(props: Props) {
 
   useEffect(() => {
     setGroup(groupFromProps);
-  }, [groupFromProps]);
+  }, [qrItem]);
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
