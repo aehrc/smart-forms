@@ -33,10 +33,11 @@ import { EnableWhenContextType } from '../interfaces/ContextTypes';
  */
 export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
   if (qItem.item) {
-    const childItem = qItem.item[0];
-    if (childItem.type === 'display' && isSpecificItemControl(childItem, 'prompt')) {
-      const promptText = `${childItem.text}`;
-      return promptText[0].toUpperCase() + promptText.substring(1);
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'prompt')) {
+        const promptText = `${childItem.text}`;
+        return promptText[0].toUpperCase() + promptText.substring(1);
+      }
     }
   }
   return '';
@@ -49,9 +50,10 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
  */
 export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
   if (qItem.item) {
-    const childItem = qItem.item[0];
-    if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
-      return `${childItem.text}`;
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
+        return `${childItem.text}`;
+      }
     }
   }
   return '';
@@ -64,9 +66,10 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
  */
 export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
   if (qItem.item) {
-    const childItem = qItem.item[0];
-    if (childItem.type === 'display' && isSpecificDisplayCategory(childItem, 'instructions')) {
-      return `${childItem.text}`;
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificDisplayCategory(childItem, 'instructions')) {
+        return `${childItem.text}`;
+      }
     }
   }
   return '';
