@@ -34,6 +34,7 @@ import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 import { TransitionGroup } from 'react-transition-group';
+import { FullWidthFormComponentBox } from '../../StyledComponents/Boxes.styles';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -89,7 +90,7 @@ function QItemRepeat(props: Props) {
   }
 
   return (
-    <>
+    <FullWidthFormComponentBox data-test="q-item-repeat-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -139,11 +140,12 @@ function QItemRepeat(props: Props) {
           variant="contained"
           startIcon={<AddIcon />}
           disabled={!repeatAnswers[repeatAnswers.length - 1]}
-          onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}>
+          onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}
+          data-test="button-add-repeat-item">
           Add Item
         </Button>
       </Stack>
-    </>
+    </FullWidthFormComponentBox>
   );
 }
 

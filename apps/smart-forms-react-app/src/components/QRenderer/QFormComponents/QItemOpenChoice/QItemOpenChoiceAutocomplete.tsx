@@ -111,7 +111,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
                 </>
               )
             }}
-            data-test="q-item-open-choice-autocomplete"
+            data-test="q-item-open-choice-autocomplete-field"
           />
         )}
       />
@@ -126,7 +126,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   const renderQItemOpenChoiceAutocomplete = isRepeated ? (
     <>{openChoiceAutocomplete}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-open-choice-autocomplete-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

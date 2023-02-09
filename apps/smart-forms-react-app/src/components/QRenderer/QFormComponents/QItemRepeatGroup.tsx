@@ -143,7 +143,8 @@ function QItemRepeatGroup(props: Props) {
             variant="contained"
             startIcon={<AddIcon />}
             disabled={!repeatGroups[repeatGroups.length - 1]}
-            onClick={() => setRepeatGroups([...repeatGroups, undefined])}>
+            onClick={() => setRepeatGroups([...repeatGroups, undefined])}
+            data-test="button-add-repeat-group">
             Add Item
           </Button>
         </Stack>
