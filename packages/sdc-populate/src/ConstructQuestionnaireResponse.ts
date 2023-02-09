@@ -59,7 +59,7 @@ export async function constructResponse(
   valueSetPromises = await resolvePromises(valueSetPromises);
   qrForm = addValueSetAnswers(qrForm, valueSetPromises);
 
-  questionnaireResponse.questionnaire = 'Questionnaire/' + questionnaire.id;
+  questionnaireResponse.questionnaire = questionnaire.url;
   questionnaireResponse.item = [qrForm];
   questionnaireResponse.subject = subject;
 
