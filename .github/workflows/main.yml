@@ -45,6 +45,7 @@ jobs:
           build: npm run build -w apps/smart-forms-react-app
           start: npm start -w apps/smart-forms-react-app
           wait-on: 'http://localhost:3000'
+      - uses: codecov/codecov-action@v3
   lint:
     name: Lint
     runs-on: ubuntu-latest
