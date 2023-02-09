@@ -56,29 +56,29 @@ describe('populate form', () => {
       .contains('Medical history and current problems')
       .click();
 
-    cy.getByData('q-item-open-choice-autocomplete')
+    cy.getByData('q-item-open-choice-autocomplete-field')
       .eq(0)
       .find('input')
       .should('have.value', 'Body mass index 30+ - obesity (finding)');
-    cy.getByData('q-item-open-choice-autocomplete')
+    cy.getByData('q-item-open-choice-autocomplete-field')
       .eq(1)
       .find('input')
       .should('have.value', 'Viral sinusitis (disorder)');
-    cy.getByData('q-item-open-choice-autocomplete')
+    cy.getByData('q-item-open-choice-autocomplete-field')
       .eq(2)
       .find('input')
       .should('have.value', "Alzheimer's disease (disorder)");
-    cy.getByData('q-item-open-choice-autocomplete')
+    cy.getByData('q-item-open-choice-autocomplete-field')
       .eq(3)
       .find('input')
       .should('have.value', 'Viral sinusitis (disorder)');
-    cy.getByData('q-item-open-choice-autocomplete')
+    cy.getByData('q-item-open-choice-autocomplete-field')
       .eq(7)
       .find('input')
       .should('have.value', 'Polyp of colon');
   });
 
-  it.only('form preview has the expected populated answers', () => {
+  it('form preview has the expected populated answers', () => {
     cy.getByData('chip-bar-box').find('.MuiButtonBase-root').eq(1).click();
 
     cy.getByData('response-item-text').eq(0).contains('Name');
