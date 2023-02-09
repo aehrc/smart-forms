@@ -69,7 +69,8 @@ function SaveAsFinalButton(props: Props) {
           (typeof qrHasChanges !== 'boolean' && qrHasChanges !== undefined)) &&
         !questionnaireResponseIsSaved
       }
-      onClick={handleClick}>
+      onClick={handleClick}
+      data-test="button-save-as-final">
       <SaveIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
@@ -92,11 +93,12 @@ function SaveAsFinalButton(props: Props) {
         !questionnaireResponseIsSaved
       }
       onClick={handleClick}
+      data-test="chip-save-as-final"
     />
   );
 
   const renderIconButton = (
-    <Box sx={{ m: 0.5 }}>
+    <Box sx={{ m: 0.5 }} data-test="icon-button-save-as-final-box">
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton

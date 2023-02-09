@@ -16,7 +16,7 @@
  */
 
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Button, Card, Divider, IconButton, Stack } from '@mui/material';
+import { Box, Button, Card, Collapse, Divider, IconButton, Stack } from '@mui/material';
 
 import {
   PropsWithIsRepeatedAttribute,
@@ -35,6 +35,7 @@ import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styl
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
+import { TransitionGroup } from 'react-transition-group';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -94,51 +95,56 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <QGroupContainerBox key={qItem.linkId}>
+    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
       <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
         <QGroupHeadingTypography variant="h6">
           <QItemLabel qItem={qItem} />
         </QGroupHeadingTypography>
         <Divider sx={{ mt: 1, mb: 1.5 }} light />
-        {repeatGroups.map((singleGroup, index) => {
-          const singleQrGroup: QuestionnaireResponseItem = singleGroup
-            ? { ...emptyQrItem, item: singleGroup.item }
-            : { ...emptyQrItem };
+        <TransitionGroup>
+          {repeatGroups.map((singleGroup, index) => {
+            const singleQrGroup: QuestionnaireResponseItem = singleGroup
+              ? { ...emptyQrItem, item: singleGroup.item }
+              : { ...emptyQrItem };
 
-          return (
-            <RepeatGroupContainerStack key={index} direction="row" justifyContent="end">
-              <Box sx={{ flexGrow: 1 }}>
-                <QItemGroup
-                  qItem={qItem}
-                  qrItem={singleQrGroup}
-                  isRepeated={true}
-                  groupCardElevation={groupCardElevation + 1}
-                  onQrItemChange={(newQrGroup) =>
-                    handleAnswerItemsChange(newQrGroup, index)
-                  }></QItemGroup>
-              </Box>
+            return (
+              <Collapse key={index}>
+                <RepeatGroupContainerStack direction="row" justifyContent="end">
+                  <Box sx={{ flexGrow: 1 }}>
+                    <QItemGroup
+                      qItem={qItem}
+                      qrItem={singleQrGroup}
+                      isRepeated={true}
+                      groupCardElevation={groupCardElevation + 1}
+                      onQrItemChange={(newQrGroup) =>
+                        handleAnswerItemsChange(newQrGroup, index)
+                      }></QItemGroup>
+                  </Box>
 
-              <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
-                <span>
-                  <IconButton
-                    size="small"
-                    color="error"
-                    disabled={!singleGroup}
-                    onClick={() => deleteAnswerItem(index)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </span>
-              </RepeatDeleteTooltip>
-            </RepeatGroupContainerStack>
-          );
-        })}
+                  <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
+                    <span>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        disabled={!singleGroup}
+                        onClick={() => deleteAnswerItem(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </span>
+                  </RepeatDeleteTooltip>
+                </RepeatGroupContainerStack>
+              </Collapse>
+            );
+          })}
+        </TransitionGroup>
 
         <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             disabled={!repeatGroups[repeatGroups.length - 1]}
-            onClick={() => setRepeatGroups([...repeatGroups, undefined])}>
+            onClick={() => setRepeatGroups([...repeatGroups, undefined])}
+            data-test="button-add-repeat-group">
             Add Item
           </Button>
         </Stack>

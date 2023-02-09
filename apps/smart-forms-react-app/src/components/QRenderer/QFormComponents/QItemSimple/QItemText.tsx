@@ -55,7 +55,7 @@ function QItemText(props: Props) {
     debounce((input: string) => {
       qrText = { ...qrText, answer: [{ valueString: input }] };
       onQrItemChange(qrText);
-    }, 500),
+    }, 300),
     []
   );
 
@@ -75,7 +75,7 @@ function QItemText(props: Props) {
   const renderQItemText = isRepeated ? (
     <>{textInput}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-text-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

@@ -41,7 +41,7 @@ function DisplayDebugQResponse(props: Props) {
     if (displayInfo.name === 'Questionnaire Response') {
       setDisplayInfo({ ...displayInfo, data: questionnaireResponse });
     }
-  }, [questionnaireResponse, displayInfo]);
+  }, [questionnaireResponse]);
 
   return (
     <Box sx={{ pt: 6 }}>

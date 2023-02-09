@@ -16,7 +16,7 @@
  */
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Grid, InputAdornment } from '@mui/material';
+import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import {
   PropsWithIsRepeatedAttribute,
@@ -32,6 +32,7 @@ import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.style
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 import { debounce } from 'lodash';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -52,15 +53,25 @@ function QItemInteger(props: Props) {
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
   const [input, setInput] = useState<number | undefined>(valueInteger);
+  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
     const expression = calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
-      onQrItemChange({
-        ...qrInteger,
-        answer: [{ valueInteger: expression.value }]
-      });
+      // only update questionnaireResponse if calculated value is different from current value
+      if (input !== expression.value) {
+        setCalExpIsCalculating(true);
+        setTimeout(() => {
+          setCalExpIsCalculating(false);
+        }, 500);
+
+        setInput(expression.value);
+        onQrItemChange({
+          ...qrInteger,
+          answer: [{ valueInteger: expression.value }]
+        });
+      }
     }
   }, [calculatedExpressions]);
 
@@ -81,7 +92,7 @@ function QItemInteger(props: Props) {
     debounce((inputNumber: number) => {
       qrInteger = { ...qrInteger, answer: [{ valueInteger: inputNumber }] };
       onQrItemChange(qrInteger);
-    }, 500),
+    }, 200),
     []
   );
 
@@ -93,14 +104,22 @@ function QItemInteger(props: Props) {
       fullWidth
       isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      endAdornment={
+        <InputAdornment position={'end'}>
+          <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
+            <CheckIcon color="success" fontSize="small" />
+          </Fade>
+          {displayUnit}
+        </InputAdornment>
+      }
+      data-test="q-item-integer-field"
     />
   );
 
   const renderQItemInteger = isRepeated ? (
     <>{integerInput}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-integer-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

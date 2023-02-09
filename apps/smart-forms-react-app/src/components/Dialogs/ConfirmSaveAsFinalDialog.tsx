@@ -99,7 +99,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
   }
 
   return (
-    <Dialog open={dialogOpen} onClose={handleClose}>
+    <Dialog open={dialogOpen} onClose={handleClose} data-test="dialog-confirm-save">
       <DialogTitle>Confirm save</DialogTitle>
       <DialogContent>
         <DialogContentText>

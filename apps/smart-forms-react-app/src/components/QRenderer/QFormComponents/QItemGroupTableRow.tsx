@@ -48,7 +48,7 @@ function QItemGroupTableRow(props: Props) {
 
   useEffect(() => {
     setRow(qrRowFromProps);
-  }, [qrRowFromProps]);
+  }, [qrItem]);
 
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };

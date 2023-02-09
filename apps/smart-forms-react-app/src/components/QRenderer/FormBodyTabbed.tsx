@@ -16,7 +16,7 @@
  */
 
 import React, { useContext } from 'react';
-import { Box, Card, Grid, ListItemButton, Typography } from '@mui/material';
+import { Box, Card, Collapse, Grid, ListItemButton, Typography } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
 import { TabContext, TabPanel } from '@mui/lab';
@@ -30,6 +30,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from './Form';
+import { TransitionGroup } from 'react-transition-group';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
@@ -67,28 +68,32 @@ function FormBodyTabbed(props: Props) {
                   disablePadding
                   sx={{ my: 0.5 }}
                   data-test="renderer-tab-list">
-                  {qFormItems.map((qItem, index) => {
-                    if (
-                      !isTab(qItem) ||
-                      isHidden(qItem, enableWhenContext, enableWhenChecksContext)
-                    )
-                      return null;
-                    return (
-                      <ListItemButton
-                        key={qItem.linkId}
-                        selected={tabIndex.toString() === (index + 1).toString()}
-                        sx={{ my: 0.5 }}
-                        onClick={() => setTabIndex(index + 1)}>
-                        <ListItemText
-                          primary={
-                            <Typography variant="subtitle2">
-                              {getShortText(qItem) ?? qItem.text}
-                            </Typography>
-                          }
-                        />
-                      </ListItemButton>
-                    );
-                  })}
+                  <TransitionGroup>
+                    {qFormItems.map((qItem, index) => {
+                      if (
+                        !isTab(qItem) ||
+                        isHidden(qItem, enableWhenContext, enableWhenChecksContext)
+                      ) {
+                        return null;
+                      }
+                      return (
+                        <Collapse key={qItem.linkId}>
+                          <ListItemButton
+                            selected={tabIndex.toString() === (index + 1).toString()}
+                            sx={{ my: 0.5 }}
+                            onClick={() => setTabIndex(index + 1)}>
+                            <ListItemText
+                              primary={
+                                <Typography variant="subtitle2">
+                                  {getShortText(qItem) ?? qItem.text}
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
+                        </Collapse>
+                      );
+                    })}
+                  </TransitionGroup>
                 </PrimarySelectableList>
               </Box>
             </Card>

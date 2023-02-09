@@ -106,7 +106,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   const renderQItemOpenChoiceAutocomplete = isRepeated ? (
     <>{openOpenChoiceSelectAnswerOption}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-open-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

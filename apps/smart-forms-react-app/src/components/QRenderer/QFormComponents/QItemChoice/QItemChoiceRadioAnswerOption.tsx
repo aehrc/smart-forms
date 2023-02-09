@@ -97,7 +97,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
   const renderQItemChoiceRadio = isRepeated ? (
     <>{choiceRadio}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

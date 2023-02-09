@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
-import { Grid, InputAdornment } from '@mui/material';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import {
   CalculatedExpression,
@@ -33,6 +33,8 @@ import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import { debounce } from 'lodash';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -54,23 +56,29 @@ function QItemDecimal(props: Props) {
 
   const qrDecimal = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
+  let initialInput = '0';
+  if (valueDecimal) {
+    initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
+  }
 
-  const [input, setInput] = useState('0');
-
-  useEffect(() => {
-    if (valueDecimal && parseFloat(input) !== valueDecimal) {
-      setInput(precision ? valueDecimal.toFixed(precision) : valueDecimal.toString());
-    }
-  }, [valueDecimal]);
+  const [input, setInput] = useState(initialInput);
+  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
     if (calculatedExpression && calculatedExpression.value) {
-      const precision = getDecimalPrecision(qItem);
       const value = precision
         ? parseFloat(calculatedExpression.value.toFixed(precision))
         : calculatedExpression.value;
 
-      onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
+      if (value !== parseFloat(input)) {
+        setCalExpIsCalculating(true);
+        setTimeout(() => {
+          setCalExpIsCalculating(false);
+        }, 500);
+
+        setInput(precision ? value.toFixed(precision) : value.toString());
+        onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
+      }
     }
   }, [calculatedExpressions]);
 
@@ -101,8 +109,20 @@ function QItemDecimal(props: Props) {
     }
 
     setInput(parsedInput);
-    onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: parseFloat(input) }] });
+    updateQrItemWithDebounce(parsedInput);
   }
+
+  const updateQrItemWithDebounce = useCallback(
+    debounce((input: string) => {
+      onQrItemChange({
+        ...qrDecimal,
+        answer: precision
+          ? [{ valueDecimal: parseFloat(parseFloat(input).toFixed(precision)) }]
+          : [{ valueDecimal: parseFloat(input) }]
+      });
+    }, 200),
+    []
+  );
 
   const decimalInput = (
     <StandardOutlinedInput
@@ -116,14 +136,22 @@ function QItemDecimal(props: Props) {
         inputMode: 'numeric',
         pattern: '[0-9]*'
       }}
-      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      endAdornment={
+        <InputAdornment position={'end'}>
+          <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
+            <CheckIcon color="success" fontSize="small" />
+          </Fade>
+          {displayUnit}
+        </InputAdornment>
+      }
+      data-test="q-item-decimal-field"
     />
   );
 
   const renderQItemDecimal = isRepeated ? (
     <>{decimalInput}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-decimal-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
