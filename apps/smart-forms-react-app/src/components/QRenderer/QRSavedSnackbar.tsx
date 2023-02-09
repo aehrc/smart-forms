@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Snackbar } from '@mui/material';
+
 interface Props {
   isDisplayed: boolean;
 }
@@ -44,8 +45,16 @@ function QRSavedSnackbar(props: Props) {
   };
 
   return (
-    <Snackbar open={open} autoHideDuration={4500} onClose={handleClose}>
-      <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+    <Snackbar
+      open={open}
+      autoHideDuration={4500}
+      onClose={handleClose}
+      data-test="snackbar-response-saved">
+      <Alert
+        onClose={handleClose}
+        severity="success"
+        sx={{ width: '100%' }}
+        data-test="alert-response-saved">
         Response saved!
       </Alert>
     </Snackbar>

@@ -82,7 +82,7 @@ function SaveAsDraftButton(props: Props) {
   const buttonTitle = 'Save as Draft';
 
   const renderButton = (
-    <ListItemButton disabled={!qrHasChanges} onClick={handleClick}>
+    <ListItemButton disabled={!qrHasChanges} onClick={handleClick} data-test="button-save-as-draft">
       <SaveAsIcon sx={{ mr: 2 }} />
       <ListItemText
         primary={
@@ -101,11 +101,12 @@ function SaveAsDraftButton(props: Props) {
       clickable
       disabled={!qrHasChanges}
       onClick={handleClick}
+      data-test="chip-save-as-draft"
     />
   );
 
   const renderIconButton = (
-    <Box sx={{ m: 0.5 }}>
+    <Box sx={{ m: 0.5 }} data-test="icon-button-save-as-draft-box">
       <Tooltip title={buttonTitle} placement="right">
         <span>
           <SideBarIconButton disabled={!qrHasChanges} onClick={handleClick}>
