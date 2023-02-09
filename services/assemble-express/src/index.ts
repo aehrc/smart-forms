@@ -24,18 +24,18 @@ const port = 3002;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/fhir/\\$assemble', (_, res) => {
+app.get('/fhir/Questionnaire/\\$assemble', (_, res) => {
   res.send(
     'This service is healthy!\nPerform a POST request to the same path for questionnaire assembly.'
   );
 });
 
-app.post('/fhir/\\$assemble', (req, res) => {
+app.post('/fhir/Questionnaire/\\$assemble', (req, res) => {
   const parameters = req.body;
   if (isAssembleInputParameters(req.body)) {
     assemble(parameters)
       .then((outputParams) => {
-        res.json(outputParams.parameter[0].resource);
+        res.json(outputParams);
       })
       .catch((err) => res.status(400).json(err));
   } else {

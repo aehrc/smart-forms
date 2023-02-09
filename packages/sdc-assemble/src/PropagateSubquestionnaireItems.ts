@@ -37,6 +37,9 @@ export function propagateSubquestionnaireItems(
     return parentQuestionnaire;
   }
 
+  // Add [version]-assembled attribute
+  parentQuestionnaire.version = `${parentQuestionnaire.version}-assembled`;
+
   // Propagate items
   const questionnaireItems: QuestionnaireItem[] = [];
   for (let i = 0; i < parentQuestionnaireForm.item.length; i++) {
