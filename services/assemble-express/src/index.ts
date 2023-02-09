@@ -35,7 +35,7 @@ app.post('/fhir/Questionnaire/\\$assemble', (req, res) => {
   if (isAssembleInputParameters(req.body)) {
     assemble(parameters)
       .then((outputParams) => {
-        res.json(outputParams.parameter[0].resource);
+        res.json(outputParams);
       })
       .catch((err) => res.status(400).json(err));
   } else {
