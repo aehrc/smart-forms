@@ -50,37 +50,6 @@ describe('component behaviour', () => {
     });
   });
 
-  context('integer component', () => {
-    const itemText = 'Age';
-    const input = '60';
-
-    it('reflects changes in questionnaire response on input', () => {
-      cy.getByData('q-item-integer-box')
-        .should('include.text', itemText)
-        .find('input')
-        .eq(0)
-        .should('have.value', '60');
-
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(input);
-    });
-
-    it('removes changes in questionnaire response on clearing field', () => {
-      cy.getByData('q-item-integer-box')
-        .should('include.text', itemText)
-        .find('input')
-        .eq(0)
-        .clear();
-
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').should('not.have.text', itemText);
-      cy.getByData('response-item-answer').should('not.have.text', input);
-    });
-  });
-
   context('boolean component', () => {
     const itemText = 'No fixed address';
 
@@ -115,6 +84,196 @@ describe('component behaviour', () => {
 
       cy.getByData('response-item-text').contains(itemText);
       cy.getByData('response-item-answer').contains('False');
+    });
+  });
+
+  context('date picker component', () => {
+    const itemText = 'Date of birth';
+    const validInput = '02022000';
+    const invalidInput = '0202200';
+    const expectedAnswer = '2000-02-02';
+
+    it('reflects changes in questionnaire response on inputting correct date', () => {
+      cy.getByData('q-item-date-box')
+        .should('include.text', itemText)
+        .find('input')
+        .eq(0)
+        .type(validInput);
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').contains(itemText);
+      cy.getByData('response-item-answer').contains(expectedAnswer);
+    });
+
+    it('reflects changes in questionnaire response on inputting invalid date', () => {
+      cy.getByData('q-item-date-box')
+        .should('include.text', itemText)
+        .find('input')
+        .eq(0)
+        .type(invalidInput);
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').contains(itemText);
+      cy.getByData('response-item-answer').contains('Invalid Date');
+    });
+
+    it('removes changes in questionnaire response on clearing field', () => {
+      cy.getByData('q-item-date-box')
+        .should('include.text', itemText)
+        .find('input')
+        .eq(0)
+        .type(validInput)
+        .clear();
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').should('not.have.text', itemText);
+      cy.getByData('response-item-answer').should('not.have.text', expectedAnswer);
+    });
+  });
+
+  context('date time picker component', () => {
+    const itemText = 'Onset Date';
+    const validInput = '020820230400AM';
+    const invalidInput = '02022000';
+    const expectedAnswer = '2023-02-08T04:00:00+10:30';
+
+    beforeEach(() => {
+      cy.getByData('renderer-tab-list')
+        .find('.MuiButtonBase-root')
+        .contains('Medical history and current problems')
+        .click();
+    });
+
+    it('reflects changes in questionnaire response on inputting correct datetime', () => {
+      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput);
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').contains(itemText);
+      cy.getByData('response-item-answer').contains(expectedAnswer);
+    });
+
+    it('reflects changes in questionnaire response on inputting invalid datetime', () => {
+      cy.getByData('q-item-date-time-field').find('input').eq(0).type(invalidInput);
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').contains(itemText);
+      cy.getByData('response-item-answer').contains('Invalid Date');
+    });
+
+    it('removes changes in questionnaire response on clearing field', () => {
+      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput).clear();
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').should('not.have.text', itemText);
+      cy.getByData('response-item-answer').should('not.have.text', expectedAnswer);
+    });
+  });
+
+  context('text component', () => {
+    const itemText = 'Details';
+    const input = 'Some details';
+
+    it('reflects changes in questionnaire response on input', () => {
+      cy.getByData('q-item-text-box')
+        .should('include.text', itemText)
+        .find('textarea')
+        .eq(0)
+        .type(input);
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').contains(itemText);
+      cy.getByData('response-item-answer').contains(input);
+    });
+
+    it('removes changes in questionnaire response on clearing field', () => {
+      cy.getByData('q-item-text-box')
+        .should('include.text', itemText)
+        .find('textarea')
+        .eq(0)
+        .type(input)
+        .clear();
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').should('not.have.text', itemText);
+      cy.getByData('response-item-answer').should('not.have.text', input);
+    });
+  });
+
+  context('integer component', () => {
+    const itemText = 'Age';
+    const input = '60';
+
+    it('reflects changes in questionnaire response on input', () => {
+      cy.getByData('q-item-integer-box')
+        .should('include.text', itemText)
+        .find('input')
+        .eq(0)
+        .should('have.value', '60');
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').contains(itemText);
+      cy.getByData('response-item-answer').contains(input);
+    });
+
+    it('removes changes in questionnaire response on clearing field', () => {
+      cy.getByData('q-item-integer-box')
+        .should('include.text', itemText)
+        .find('input')
+        .eq(0)
+        .clear();
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').should('not.have.text', itemText);
+      cy.getByData('response-item-answer').should('not.have.text', input);
+    });
+  });
+
+  context('decimal component', () => {
+    const itemText = 'Height';
+    const input = '180';
+
+    beforeEach(() => {
+      cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Examination').click();
+    });
+
+    it('reflects changes in questionnaire response on input', () => {
+      cy.getByData('q-item-decimal-box')
+        .should('include.text', itemText)
+        .find('input')
+        .eq(0)
+        .type(input)
+        .wait(200);
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').contains(itemText);
+      cy.getByData('response-item-answer').contains(input);
+    });
+
+    it('removes changes in questionnaire response on clearing field', () => {
+      cy.getByData('q-item-decimal-box')
+        .should('include.text', itemText)
+        .find('input')
+        .eq(0)
+        .type(input)
+        .wait(200)
+        .clear()
+        .wait(200);
+
+      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+      cy.getByData('response-item-text').should('not.have.text', itemText);
+      cy.getByData('response-item-answer').should('not.have.text', input);
     });
   });
 });
