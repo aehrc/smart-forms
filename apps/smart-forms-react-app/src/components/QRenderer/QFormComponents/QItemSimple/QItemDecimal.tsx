@@ -25,7 +25,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
@@ -54,7 +54,7 @@ function QItemDecimal(props: Props) {
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
 
-  const qrDecimal = qrItem ? qrItem : createEmptyQrItem(qItem);
+  const qrDecimal = qrItem ? qrItem : createEmptyQrItemWithUnit(qItem, displayUnit);
   const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
   let initialInput = '0';
   if (valueDecimal) {

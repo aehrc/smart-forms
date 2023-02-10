@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -49,7 +49,7 @@ function QItemInteger(props: Props) {
 
   const displayUnit = getTextDisplayUnit(qItem);
 
-  let qrInteger = qrItem ? qrItem : createEmptyQrItem(qItem);
+  let qrInteger = qrItem ? qrItem : createEmptyQrItemWithUnit(qItem, displayUnit);
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
   const [input, setInput] = useState<number | undefined>(valueInteger);

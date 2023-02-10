@@ -109,6 +109,21 @@ export function createEmptyQrItem(qItem: QuestionnaireItem): QuestionnaireRespon
 }
 
 /**
+ * Create an empty qrItem from a given qItem with its display unit
+ *
+ * @author Sean Fong
+ */
+export function createEmptyQrItemWithUnit(
+  qItem: QuestionnaireItem,
+  unit: string
+): QuestionnaireResponseItem {
+  return {
+    linkId: qItem.linkId,
+    text: unit !== '' ? `${qItem.text} (${unit})` : qItem.text
+  };
+}
+
+/**
  * Updates the QuestionnaireResponseItem group by adding/removing a new/modified child QuestionnaireResponseItem into/from a qrGroup
  * Takes either a single newQrItem or an array of newQrItems
  *
