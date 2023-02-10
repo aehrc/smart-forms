@@ -100,7 +100,7 @@ describe('component behaviour', () => {
       cy.getByData('response-item-answer').contains('True');
     });
 
-    it.only('removes changes in questionnaire response on clearing field', () => {
+    it('removes changes in questionnaire response on clearing field', () => {
       cy.getByData('q-item-boolean-box')
         .should('include.text', itemText)
         .find('input')
