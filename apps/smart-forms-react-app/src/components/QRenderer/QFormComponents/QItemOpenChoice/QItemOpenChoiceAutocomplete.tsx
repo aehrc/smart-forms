@@ -30,6 +30,7 @@ import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,6 +50,10 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     valueAutocomplete = answer.valueCoding ? answer.valueCoding : answer.valueString;
   }
 
+  if (!valueAutocomplete) {
+    valueAutocomplete = '';
+  }
+
   const answerValueSetUrl = qItem.answerValueSet;
   const maxList = 10;
 
@@ -61,14 +66,24 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     event: SyntheticEvent<Element, Event>,
     newValue: Coding | string | null
   ) {
-    if (newValue) {
+    if (newValue === null) {
+      newValue = '';
+    }
+
+    if (typeof newValue === 'string') {
+      if (newValue !== '') {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ valueString: newValue }]
+        });
+      } else {
+        onQrItemChange(createEmptyQrItem(qItem));
+      }
+    } else {
       onQrItemChange({
         ...qrOpenChoice,
-        answer: [
-          typeof newValue === 'string' ? { valueString: newValue } : { valueCoding: newValue }
-        ]
+        answer: [{ valueCoding: newValue }]
       });
-      return;
     }
   }
 
@@ -84,7 +99,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     <>
       <Autocomplete
         id={qItem.id}
-        value={valueAutocomplete ?? null}
+        value={valueAutocomplete}
         options={options}
         noOptionsText={'No results'}
         getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
@@ -99,11 +114,18 @@ function QItemOpenChoiceAutocomplete(props: Props) {
         renderInput={(params) => (
           <StandardTextField
             {...params}
-            label={valueAutocomplete ? '' : 'Search...'}
             onChange={handleInputChange}
             isTabled={isTabled}
             InputProps={{
               ...params.InputProps,
+              startAdornment: (
+                <>
+                  {!valueAutocomplete || valueAutocomplete === '' ? (
+                    <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  ) : null}
+                  {params.InputProps.startAdornment}
+                </>
+              ),
               endAdornment: (
                 <>
                   {loading ? <CircularProgress color="inherit" size={20} /> : null}

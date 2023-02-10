@@ -53,15 +53,16 @@ function QItemRepeat(props: Props) {
     ? qrRepeat.answer
     : [undefined];
 
-  const [repeatAnswers, setRepeatAnswers] = useState([...qrRepeatAnswers, undefined]);
+  let initialRepeatAnswers = [...qrRepeatAnswers];
+  if (initialRepeatAnswers[initialRepeatAnswers.length - 1] !== undefined) {
+    initialRepeatAnswers.push(undefined);
+  }
+
+  const [repeatAnswers, setRepeatAnswers] = useState(initialRepeatAnswers);
 
   useEffect(() => {
-    const firstRepeatItem = repeatAnswers[0];
-    const lastRepeatItem = repeatAnswers[repeatAnswers.length - 1];
-    if (lastRepeatItem === undefined && firstRepeatItem !== undefined) {
-      setRepeatAnswers([...qrRepeatAnswers, undefined]);
-    } else {
-      setRepeatAnswers(qrRepeatAnswers);
+    if (repeatAnswers.length === 0) {
+      setRepeatAnswers([undefined]);
     }
   }, [qrItem]);
 
@@ -84,8 +85,8 @@ function QItemRepeat(props: Props) {
   }
 
   function updateAnswers(updatedAnswers: (QuestionnaireResponseItemAnswer | undefined)[]) {
+    setRepeatAnswers(updatedAnswers);
     const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));
-    setRepeatAnswers(answersWithValues);
     onQrItemChange({ ...qrRepeat, answer: answersWithValues });
   }
 
