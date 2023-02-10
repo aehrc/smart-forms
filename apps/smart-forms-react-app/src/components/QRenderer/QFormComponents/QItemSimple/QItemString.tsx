@@ -43,7 +43,7 @@ interface Props
 function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  let qrString = qrItem ? qrItem : createEmptyQrItem(qItem);
+  const qrString = qrItem ? qrItem : createEmptyQrItem(qItem);
   const valueString = qrString['answer'] ? qrString['answer'][0].valueString : '';
 
   const [input, setInput] = useState<string | undefined>(valueString);

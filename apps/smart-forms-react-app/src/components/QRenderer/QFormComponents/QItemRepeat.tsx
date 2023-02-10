@@ -53,7 +53,7 @@ function QItemRepeat(props: Props) {
     ? qrRepeat.answer
     : [undefined];
 
-  let initialRepeatAnswers = [...qrRepeatAnswers];
+  const initialRepeatAnswers = [...qrRepeatAnswers];
   if (initialRepeatAnswers[initialRepeatAnswers.length - 1] !== undefined) {
     initialRepeatAnswers.push(undefined);
   }
