@@ -30,6 +30,7 @@ import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -78,7 +79,7 @@ function QItemChoiceAutocomplete(props: Props) {
         id={qItem.id}
         value={valueCoding ?? null}
         options={options}
-        noOptionsText={'No results'}
+        noOptionsText={'Try typing something else?'}
         getOptionLabel={(option) => `${option.display}`}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         loading={loading}
@@ -91,11 +92,17 @@ function QItemChoiceAutocomplete(props: Props) {
         renderInput={(params) => (
           <StandardTextField
             {...params}
-            label={valueCoding ? '' : 'Search...'}
             onChange={handleInputChange}
             isTabled={isTabled}
             InputProps={{
               ...params.InputProps,
+
+              startAdornment: (
+                <>
+                  {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
+                  {params.InputProps.startAdornment}
+                </>
+              ),
               endAdornment: (
                 <>
                   {loading ? <CircularProgress color="inherit" size={20} /> : null}
