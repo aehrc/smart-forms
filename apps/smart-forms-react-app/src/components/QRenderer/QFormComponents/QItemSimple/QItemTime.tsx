@@ -58,6 +58,8 @@ function QItemTime(props: Props) {
     if (newValue) {
       setValue(newValue);
       onQrItemChange({ ...qrTime, answer: [{ valueTime: newValue.format() }] });
+    } else {
+      onQrItemChange(createEmptyQrItem(qItem));
     }
   }
 

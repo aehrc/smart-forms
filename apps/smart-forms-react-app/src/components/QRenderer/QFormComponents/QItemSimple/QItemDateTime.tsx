@@ -61,6 +61,8 @@ function QItemDateTime(props: Props) {
         ...qrDateTime,
         answer: [{ valueDateTime: newValue.format() }]
       });
+    } else {
+      onQrItemChange(createEmptyQrItem(qItem));
     }
   }
 
