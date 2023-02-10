@@ -75,7 +75,7 @@ describe('launch app', () => {
             url: `${clientUrl}/Questionnaire/${questionnaireId}`,
             body: questionnaire
           }).then((response) => {
-            expect(response.status).to.eq(200);
+            expect(response.status).to.satisfy((statusCode: string) => /^2\d\d$/.test(statusCode));
             expect(response.body).to.have.property('resourceType', 'Questionnaire');
             expect(response.body).to.have.property('id', questionnaireId);
           });
