@@ -1,4 +1,4 @@
-describe('component behaviour', () => {
+describe('simple component behaviour', () => {
   const launchPage = 'http://localhost:3000/launch';
 
   beforeEach(() => {
