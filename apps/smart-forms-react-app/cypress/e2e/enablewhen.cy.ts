@@ -3,13 +3,16 @@ describe('enable when in original 715 questionnaire', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(0).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
   });
 
   it('reveal and hide items within a single tab', () => {
-    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').eq(1).contains('Consent').click();
+    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Consent').click();
 
     cy.getByData('q-item-choice-radio-answer-option-box').eq(0).find('input').eq(0).check();
     cy.getByData('q-item-string-box').eq(0).find('p').should('have.text', 'Who/details');
@@ -24,7 +27,10 @@ describe('enable when in assembled 715 questionnaire', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(4).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
+      .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
   });
@@ -61,16 +67,11 @@ describe('enable when in assembled 715 questionnaire', () => {
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(2)
       .contains('Patient Details')
       .click();
     cy.getByData('q-item-integer-box').eq(0).find('input').type('10');
 
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .eq(17)
-      .contains('Examination')
-      .click();
+    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Examination').click();
 
     cy.getByData('q-item-decimal-box').eq(2).find('p').should('have.text', 'Head circumference');
   });

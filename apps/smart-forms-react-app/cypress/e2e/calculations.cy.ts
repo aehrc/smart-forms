@@ -10,15 +10,14 @@ describe('calculations via variables', () => {
     const heightInCm = 180;
     const bmi = weightInKg / Math.pow(heightInCm / 100, 2);
 
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(0).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
 
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .eq(18)
-      .contains('Examination')
-      .click();
+    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Examination').click();
 
     cy.getByData('q-item-decimal-box').eq(0).find('input').type(heightInCm.toString());
     cy.getByData('q-item-decimal-box').eq(1).find('input').type(weightInKg.toString());
@@ -36,13 +35,15 @@ describe('calculations via variables', () => {
     const hdlCholesterol = 4;
 
     // Use assembled 715 questionnaire
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(4).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
+      .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(2)
       .contains('Patient Details')
       .click();
 
@@ -50,7 +51,6 @@ describe('calculations via variables', () => {
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(25)
       .contains('Absolute cardiovascular risk calculation')
       .click();
 
@@ -67,7 +67,6 @@ describe('calculations via variables', () => {
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(17)
       .contains('Substance use, including tobacco')
       .click();
 
@@ -75,7 +74,6 @@ describe('calculations via variables', () => {
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(25)
       .contains('Absolute cardiovascular risk calculation')
       .click();
     cy.getByData('q-item-integer-box').eq(0).find('input').should('have.value', '13');

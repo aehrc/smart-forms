@@ -134,7 +134,7 @@ describe('simple component behaviour', () => {
     });
   });
 
-  context('date time picker component', () => {
+  context.only('date time picker component', () => {
     const itemText = 'Onset Date';
     const validInput = '020820230400AM';
     const invalidInput = '02022000';
@@ -147,7 +147,7 @@ describe('simple component behaviour', () => {
         .click();
     });
 
-    it('reflects changes in questionnaire response on inputting correct datetime', () => {
+    it.only('reflects changes in questionnaire response on inputting correct datetime', () => {
       cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();

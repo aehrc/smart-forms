@@ -22,7 +22,10 @@ describe('save response', () => {
       .type('Aboriginal and Torres Strait Islander health check');
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(0).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .click();
     cy.getByData('button-create-response').click();
 
     cy.wait('@populating').its('response.statusCode').should('eq', 200);
@@ -75,7 +78,10 @@ describe('view response', () => {
       .type('Aboriginal and Torres Strait Islander health check');
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(0).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .click();
   });
 
   it.only('view draft response', () => {
