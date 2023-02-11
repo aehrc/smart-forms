@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Grid, Typography } from '@mui/material';
 
 import {
@@ -94,7 +94,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
     );
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -108,4 +108,4 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   );
 }
 
-export default QItemChoiceCheckboxAnswerValueSet;
+export default memo(QItemChoiceCheckboxAnswerValueSet);

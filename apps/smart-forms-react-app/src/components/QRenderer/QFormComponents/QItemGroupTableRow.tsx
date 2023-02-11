@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -101,4 +101,4 @@ function QItemGroupTableRow(props: Props) {
   );
 }
 
-export default QItemGroupTableRow;
+export default memo(QItemGroupTableRow);

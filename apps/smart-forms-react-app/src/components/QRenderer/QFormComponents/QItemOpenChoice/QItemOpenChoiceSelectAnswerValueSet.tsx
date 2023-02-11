@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { SyntheticEvent } from 'react';
+import React, { memo, SyntheticEvent } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
@@ -112,4 +112,4 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   return <>{renderQItemOpenChoiceSelectAnswerValueSet}</>;
 }
 
-export default QItemOpenChoiceSelectAnswerValueSet;
+export default memo(QItemOpenChoiceSelectAnswerValueSet);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -95,7 +95,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
   const renderQItemChoiceRadio = isRepeated ? (
     <>{choiceRadio}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -110,4 +110,4 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
   return <>{renderQItemChoiceRadio}</>;
 }
 
-export default QItemChoiceRadioAnswerValueSet;
+export default memo(QItemChoiceRadioAnswerValueSet);

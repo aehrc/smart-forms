@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { Grid } from '@mui/material';
 
 import {
@@ -56,10 +56,10 @@ function QItemString(props: Props) {
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
     setInput(newInput);
-    UpdateQrItemWithDebounce(newInput);
+    updateQrItemWithDebounce(newInput);
   }
 
-  const UpdateQrItemWithDebounce = useCallback(
+  const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       if (input !== '') {
         onQrItemChange({ ...qrString, answer: [{ valueString: input }] });
@@ -103,4 +103,4 @@ function QItemString(props: Props) {
   return <>{renderQItemString}</>;
 }
 
-export default QItemString;
+export default memo(QItemString);

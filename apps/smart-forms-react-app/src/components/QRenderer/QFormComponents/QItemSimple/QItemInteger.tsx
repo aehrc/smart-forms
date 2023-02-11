@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -135,4 +135,4 @@ function QItemInteger(props: Props) {
   return <>{renderQItemInteger}</>;
 }
 
-export default QItemInteger;
+export default memo(QItemInteger);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -166,4 +166,4 @@ function QItemDecimal(props: Props) {
   return <>{renderQItemDecimal}</>;
 }
 
-export default QItemDecimal;
+export default memo(QItemDecimal);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
@@ -112,4 +112,4 @@ function QItemDatePicker(props: QItemDatePickerProps) {
   );
 }
 
-export default QItemDate;
+export default memo(QItemDate);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { QuestionnaireItem } from 'fhir/r5';
 import { getXHtmlString } from '../../../../functions/ItemControlFunctions';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
@@ -42,4 +42,4 @@ function QItemLabel(props: Props) {
   }
 }
 
-export default QItemLabel;
+export default memo(QItemLabel);

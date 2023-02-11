@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { SyntheticEvent, useEffect } from 'react';
+import React, { memo, SyntheticEvent, useEffect } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
@@ -109,4 +109,4 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   return <>{renderQItemChoiceSelectAnswerValueSet}</>;
 }
 
-export default QItemChoiceSelectAnswerValueSet;
+export default memo(QItemChoiceSelectAnswerValueSet);

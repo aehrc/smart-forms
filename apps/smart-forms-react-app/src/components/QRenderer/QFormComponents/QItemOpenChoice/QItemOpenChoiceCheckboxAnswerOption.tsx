@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -159,4 +159,4 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   );
 }
 
-export default QItemOpenChoiceCheckboxAnswerOption;
+export default memo(QItemOpenChoiceCheckboxAnswerOption);

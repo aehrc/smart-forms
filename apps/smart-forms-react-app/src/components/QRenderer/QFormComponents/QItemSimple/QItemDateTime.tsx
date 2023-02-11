@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {
@@ -112,4 +112,4 @@ function QItemDateTimePicker(props: QItemDateTimePickerProps) {
   );
 }
 
-export default QItemDateTime;
+export default memo(QItemDateTime);
