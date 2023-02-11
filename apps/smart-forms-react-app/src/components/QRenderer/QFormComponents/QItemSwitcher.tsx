@@ -17,7 +17,7 @@
 
 import { QItemType } from '../../../interfaces/Enums';
 import QItemString from './QItemSimple/QItemString';
-import React, { useContext } from 'react';
+import React, { memo, useCallback, useContext } from 'react';
 import QItemBoolean from './QItemSimple/QItemBoolean';
 import QItemDate from './QItemSimple/QItemDate';
 import QItemText from './QItemSimple/QItemText';
@@ -57,14 +57,14 @@ function QItemSwitcher(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
-
-  function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+  const handleQrItemChange = useCallback((newQrItem: QuestionnaireResponseItem) => {
     if (newQrItem.answer) {
       enableWhenContext.updateItem(qItem.linkId, newQrItem.answer);
     }
     onQrItemChange(newQrItem);
-  }
+  }, []);
+
+  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
   switch (qItem.type) {
     case QItemType.String:
@@ -193,4 +193,4 @@ function QItemSwitcher(props: Props) {
   }
 }
 
-export default QItemSwitcher;
+export default memo(QItemSwitcher);
