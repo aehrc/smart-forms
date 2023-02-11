@@ -19,7 +19,8 @@ describe('save response', () => {
     cy.getByData('picker-search-field-desktop')
       .find('input')
       .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander health check');
+      .type('Aboriginal and Torres Strait Islander health check')
+      .wait(50);
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
     cy.getByData('picker-questionnaire-list')
@@ -41,7 +42,7 @@ describe('save response', () => {
 
       cy.getByData('chip-save-as-draft').should('be.visible').should('have.class', 'Mui-disabled');
       cy.getByData('alert-response-saved').should('not.be.visible');
-      cy.getByData('q-item-radio-group').eq(0).find('input').eq(0).check();
+      cy.getByData('q-item-radio-group').eq(0).find('input').eq(0).check().wait(50);
       cy.getByData('chip-save-as-draft').click();
 
       cy.wait('@savingResponse');
@@ -51,7 +52,7 @@ describe('save response', () => {
 
     it('saving a response as final', () => {
       cy.getByData('chip-save-as-final').should('be.visible').should('have.class', 'Mui-disabled');
-      cy.getByData('q-item-radio-group').eq(0).find('input').eq(0).check();
+      cy.getByData('q-item-radio-group').eq(0).find('input').eq(0).check().wait(50);
       cy.getByData('chip-save-as-final').click();
       cy.getByData('dialog-confirm-save').find('button').contains('Save as final').click();
     });
@@ -75,7 +76,8 @@ describe('view response', () => {
     cy.getByData('picker-search-field-desktop')
       .find('input')
       .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander health check');
+      .type('Aboriginal and Torres Strait Islander health check')
+      .wait(50);
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
     cy.getByData('picker-questionnaire-list')

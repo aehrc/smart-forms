@@ -19,7 +19,8 @@ describe('populate form', () => {
     cy.getByData('picker-search-field-desktop')
       .find('input')
       .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander health check');
+      .type('Aboriginal and Torres Strait Islander health check')
+      .wait(50);
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
     cy.getByData('picker-questionnaire-list')

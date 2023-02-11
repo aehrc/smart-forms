@@ -28,7 +28,8 @@ describe('repeat items in original 715 questionnaire', () => {
       .eq(0)
       .getByData('q-item-open-choice-autocomplete-field')
       .eq(0)
-      .type('diabetes');
+      .type('diabetes')
+      .wait(50);
 
     cy.wait('@ontoserverExpand');
 
@@ -36,7 +37,8 @@ describe('repeat items in original 715 questionnaire', () => {
       .eq(0)
       .getByData('q-item-open-choice-autocomplete-field')
       .eq(0)
-      .type('{enter}');
+      .type('{enter}')
+      .wait(50);
 
     cy.getByData('q-item-repeat-box').getByData('button-add-repeat-item').should('not.be.disabled');
   });

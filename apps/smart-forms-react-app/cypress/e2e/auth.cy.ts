@@ -69,7 +69,6 @@ describe('launch app', () => {
 
         // PUT questionnaire if it doesn't already exist
         if (response.body.total === 0) {
-          console.log(response.body.total);
           cy.request({
             method: 'PUT',
             url: `${clientUrl}/Questionnaire/${questionnaireId}`,

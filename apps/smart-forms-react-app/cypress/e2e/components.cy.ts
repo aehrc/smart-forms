@@ -27,7 +27,8 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('input')
         .eq(0)
-        .type(input);
+        .type(input)
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -41,7 +42,9 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .type(input)
-        .clear();
+        .wait(50)
+        .clear()
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -61,6 +64,7 @@ describe('simple component behaviour', () => {
         .should('not.be.checked')
         .wait(100)
         .check()
+        .wait(50)
         .should('be.checked');
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
@@ -77,8 +81,10 @@ describe('simple component behaviour', () => {
         .should('not.be.checked')
         .wait(100)
         .check()
+        .wait(50)
         .should('be.checked')
-        .uncheck();
+        .uncheck()
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -98,7 +104,8 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('input')
         .eq(0)
-        .type(validInput);
+        .type(validInput)
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -111,7 +118,8 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('input')
         .eq(0)
-        .type(invalidInput);
+        .type(invalidInput)
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -125,7 +133,9 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .type(validInput)
-        .clear();
+        .wait(50)
+        .clear()
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -148,7 +158,7 @@ describe('simple component behaviour', () => {
     });
 
     it.only('reflects changes in questionnaire response on inputting correct datetime', () => {
-      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput);
+      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput).wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -157,7 +167,7 @@ describe('simple component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on inputting invalid datetime', () => {
-      cy.getByData('q-item-date-time-field').find('input').eq(0).type(invalidInput);
+      cy.getByData('q-item-date-time-field').find('input').eq(0).type(invalidInput).wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -166,7 +176,13 @@ describe('simple component behaviour', () => {
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
-      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput).clear();
+      cy.getByData('q-item-date-time-field')
+        .find('input')
+        .eq(0)
+        .type(validInput)
+        .wait(50)
+        .clear()
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -184,7 +200,8 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('textarea')
         .eq(0)
-        .type(input);
+        .type(input)
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -198,7 +215,9 @@ describe('simple component behaviour', () => {
         .find('textarea')
         .eq(0)
         .type(input)
-        .clear();
+        .wait(50)
+        .clear()
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -229,7 +248,8 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('input')
         .eq(0)
-        .clear();
+        .clear()
+        .wait(50);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
