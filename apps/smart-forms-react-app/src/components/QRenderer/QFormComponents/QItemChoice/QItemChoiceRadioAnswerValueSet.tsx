@@ -26,11 +26,11 @@ import {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
-import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import { QRadioGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import useValueSetCodings from '../../../../custom-hooks/useValueSetCodings';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -50,11 +50,11 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     valueRadio = qrChoiceRadio['answer'][0].valueCoding?.code;
   }
 
-  const { options, serverError } = useValueSetOptions(qItem);
+  const { codings, serverError } = useValueSetCodings(qItem);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    if (options.length > 0) {
-      const qrAnswer = findInAnswerValueSetCodings(options, event.target.value);
+    if (codings.length > 0) {
+      const qrAnswer = findInAnswerValueSetCodings(codings, event.target.value);
       if (qrAnswer) {
         onQrItemChange({
           ...qrChoiceRadio,
@@ -65,19 +65,19 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
   }
 
   const choiceRadio =
-    options.length > 0 ? (
+    codings.length > 0 ? (
       <QRadioGroup
         row={orientation === QItemChoiceOrientation.Horizontal}
         name={qItem.text}
         id={qItem.id}
         onChange={handleChange}
         value={valueRadio ?? null}>
-        {options.map((option) => {
+        {codings.map((coding) => {
           return (
             <QItemChoiceRadioSingle
-              key={option.code ?? ''}
-              value={option.code ?? ''}
-              label={option.display ?? `${option.code}`}
+              key={coding.code ?? ''}
+              value={coding.code ?? ''}
+              label={coding.display ?? `${coding.code}`}
             />
           );
         })}

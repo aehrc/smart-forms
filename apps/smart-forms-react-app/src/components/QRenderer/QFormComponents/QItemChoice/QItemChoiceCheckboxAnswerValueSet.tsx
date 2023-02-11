@@ -24,7 +24,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
+import useValueSetCodings from '../../../../custom-hooks/useValueSetCodings';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
@@ -47,15 +47,15 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   const qrChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
 
-  const { options, serverError } = useValueSetOptions(qItem);
+  const { codings, serverError } = useValueSetCodings(qItem);
 
   function handleCheckedChange(changedValue: string) {
-    if (options.length < 1) return null;
+    if (codings.length < 1) return null;
 
     const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
       changedValue,
       answers,
-      options,
+      codings,
       qrChoiceCheckbox,
       CheckBoxOptionType.AnswerValueSet,
       isRepeated
@@ -67,16 +67,16 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   }
 
   const choiceCheckbox =
-    options.length > 0 ? (
+    codings.length > 0 ? (
       <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
-        {options.map((option) => {
+        {codings.map((coding) => {
           return (
             <QItemCheckboxSingle
-              key={option.code ?? ''}
-              value={option.code ?? ''}
-              label={option.display ?? `${option.code}`}
+              key={coding.code ?? ''}
+              value={coding.code ?? ''}
+              label={coding.display ?? `${coding.code}`}
               isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(option)
+                (answer) => JSON.stringify(answer) === JSON.stringify(coding)
               )}
               onCheckedChange={handleCheckedChange}
             />

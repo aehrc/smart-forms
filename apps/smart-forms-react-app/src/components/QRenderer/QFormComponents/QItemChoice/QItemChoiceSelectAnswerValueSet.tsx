@@ -25,11 +25,11 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import useValueSetCodings from '../../../../custom-hooks/useValueSetCodings';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,7 +49,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     valueCoding = qrChoiceSelect['answer'][0].valueCoding;
   }
 
-  const { options, serverError } = useValueSetOptions(qItem);
+  const { codings, serverError } = useValueSetCodings(qItem);
 
   // Check and remove populated answer if it is a string
   useEffect(() => {
@@ -70,10 +70,10 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   }
 
   const choiceSelectAnswerValueSet =
-    options.length > 0 ? (
+    codings.length > 0 ? (
       <Autocomplete
         id={qItem.id}
-        options={options}
+        options={codings}
         getOptionLabel={(option) => `${option.display}`}
         value={valueCoding ?? null}
         onChange={handleChange}
