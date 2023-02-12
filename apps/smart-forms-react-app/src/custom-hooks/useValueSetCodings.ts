@@ -16,7 +16,7 @@
  */
 
 import { useContext, useEffect, useState } from 'react';
-import { Coding, QuestionnaireItem, QuestionnaireItemAnswerOption, ValueSet } from 'fhir/r5';
+import { Coding, QuestionnaireItem, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
 import { ContainedValueSetContext } from '../components/QRenderer/Form';
 
@@ -77,14 +77,6 @@ function getValueSetOptions(valueSetUrl: string, valueSet: ValueSet): Coding[] {
     return answerOptions;
   }
   return [];
-}
-
-export function mapCodingsToOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
-  return codings.map((coding) => {
-    return {
-      valueCoding: coding
-    };
-  });
 }
 
 export default useValueSetCodings;
