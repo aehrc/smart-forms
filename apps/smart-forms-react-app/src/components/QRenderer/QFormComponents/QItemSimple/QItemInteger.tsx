@@ -49,7 +49,7 @@ function QItemInteger(props: Props) {
 
   const displayUnit = getTextDisplayUnit(qItem);
 
-  let qrInteger = qrItem ? qrItem : createEmptyQrItemWithUnit(qItem, displayUnit);
+  const qrInteger = qrItem ? qrItem : createEmptyQrItemWithUnit(qItem, displayUnit);
   const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
 
   const [input, setInput] = useState<number | undefined>(valueInteger);
@@ -90,10 +90,9 @@ function QItemInteger(props: Props) {
 
   const updateQrItemWithDebounce = useCallback(
     debounce((inputNumber: number) => {
-      qrInteger = { ...qrInteger, answer: [{ valueInteger: inputNumber }] };
-      onQrItemChange(qrInteger);
+      onQrItemChange({ ...qrInteger, answer: [{ valueInteger: inputNumber }] });
     }, 200),
-    []
+    [onQrItemChange, qrInteger]
   );
 
   const integerInput = (

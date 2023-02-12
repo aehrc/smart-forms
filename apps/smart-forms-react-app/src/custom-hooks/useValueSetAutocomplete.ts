@@ -69,7 +69,7 @@ function useValueSetAutocomplete(answerValueSetUrl: string | undefined, maxList:
     debounce((input: string) => {
       fetchNewOptions(input);
     }, 300),
-    []
+    [fetchNewOptions]
   );
 
   return {

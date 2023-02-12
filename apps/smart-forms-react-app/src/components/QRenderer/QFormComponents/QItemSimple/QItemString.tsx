@@ -67,7 +67,7 @@ function QItemString(props: Props) {
         onQrItemChange(createEmptyQrItem(qItem));
       }
     }, 300),
-    []
+    [onQrItemChange, qrString]
   );
 
   const stringInput = (

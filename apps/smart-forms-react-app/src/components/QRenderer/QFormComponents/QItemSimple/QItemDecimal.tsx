@@ -121,7 +121,7 @@ function QItemDecimal(props: Props) {
           : [{ valueDecimal: parseFloat(input) }]
       });
     }, 200),
-    []
+    [onQrItemChange, precision, qrDecimal]
   );
 
   const decimalInput = (

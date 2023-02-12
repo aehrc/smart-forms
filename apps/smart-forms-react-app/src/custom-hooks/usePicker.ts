@@ -116,7 +116,7 @@ function usePicker(launch: LaunchContextType) {
           });
       }
     }, 500),
-    []
+    [launch.fhirClient]
   );
 
   function selectQuestionnaireByIndex(index: number) {
