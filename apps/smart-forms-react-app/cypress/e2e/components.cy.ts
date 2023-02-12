@@ -144,7 +144,7 @@ describe('simple component behaviour', () => {
     });
   });
 
-  context.only('date time picker component', () => {
+  context('date time picker component', () => {
     const itemText = 'Onset Date';
     const validInput = '020820230400AM';
     const invalidInput = '02022000';
@@ -157,8 +157,8 @@ describe('simple component behaviour', () => {
         .click();
     });
 
-    it.only('reflects changes in questionnaire response on inputting correct datetime', () => {
-      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput).wait(50);
+    it('reflects changes in questionnaire response on inputting correct datetime', () => {
+      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput).wait(200);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -167,7 +167,7 @@ describe('simple component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on inputting invalid datetime', () => {
-      cy.getByData('q-item-date-time-field').find('input').eq(0).type(invalidInput).wait(50);
+      cy.getByData('q-item-date-time-field').find('input').eq(0).type(invalidInput).wait(200);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
@@ -180,9 +180,9 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .type(validInput)
-        .wait(50)
+        .wait(200)
         .clear()
-        .wait(50);
+        .wait(200);
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 

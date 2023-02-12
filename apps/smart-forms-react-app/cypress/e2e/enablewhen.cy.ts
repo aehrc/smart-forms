@@ -127,7 +127,7 @@ describe('enable when in assembled 715 questionnaire', () => {
     );
   });
 
-  it.only('reveal/hide items with enableBehavior=any, only one of the multiple conditions has to be satisfied', () => {
+  it('reveal/hide items with enableBehavior=any, only one of the multiple conditions has to be satisfied', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .contains('Patient Details')

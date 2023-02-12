@@ -86,7 +86,7 @@ describe('view response', () => {
       .click();
   });
 
-  it.only('view draft response', () => {
+  it('view draft response', () => {
     cy.getByData('picker-questionnaire-list');
   });
 });

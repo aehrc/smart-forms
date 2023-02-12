@@ -54,12 +54,12 @@ function QItemDecimal(props: Props) {
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
 
+  let initialInput = '0';
   let valueDecimal = 0.0;
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueDecimal) {
     valueDecimal = qrItem.answer[0].valueDecimal;
+    initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
-
-  const initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
 
   const [input, setInput] = useState(initialInput);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
