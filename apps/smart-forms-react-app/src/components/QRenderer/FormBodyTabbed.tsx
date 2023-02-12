@@ -45,12 +45,9 @@ function FormBodyTabbed(props: Props) {
     onQrItemChange(qrForm);
   }
 
-  const updateTabIndex = useCallback(
-    (newTabIndex: number) => {
-      setTabIndex(newTabIndex);
-    },
-    [setTabIndex]
-  );
+  const updateTabIndex = useCallback((newTabIndex: number) => {
+    setTabIndex(newTabIndex);
+  }, []);
 
   if (qFormItems && qrFormItems) {
     const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems, indexMap);
