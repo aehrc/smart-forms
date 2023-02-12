@@ -40,10 +40,12 @@ interface Props
 function QItemText(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
-  const qrText = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const valueText = qrText['answer'] ? qrText['answer'][0].valueString : '';
+  let valueText = '';
+  if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
+    valueText = qrItem.answer[0].valueString;
+  }
 
-  const [input, setInput] = useState<string | undefined>(valueText);
+  const [input, setInput] = useState<string>(valueText);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
@@ -54,12 +56,12 @@ function QItemText(props: Props) {
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       if (input !== '') {
-        onQrItemChange({ ...qrText, answer: [{ valueString: input }] });
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueString: input }] });
       } else {
         onQrItemChange(createEmptyQrItem(qItem));
       }
     }, 300),
-    [onQrItemChange, qrText]
+    [onQrItemChange, qItem]
   );
 
   const textInput = (

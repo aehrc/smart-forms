@@ -54,12 +54,12 @@ function QItemDecimal(props: Props) {
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
 
-  const qrDecimal = qrItem ? qrItem : createEmptyQrItemWithUnit(qItem, displayUnit);
-  const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
-  let initialInput = '0';
-  if (valueDecimal) {
-    initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
+  let valueDecimal = 0.0;
+  if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueDecimal) {
+    valueDecimal = qrItem.answer[0].valueDecimal;
   }
+
+  const initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
 
   const [input, setInput] = useState(initialInput);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
@@ -77,7 +77,10 @@ function QItemDecimal(props: Props) {
         }, 500);
 
         setInput(precision ? value.toFixed(precision) : value.toString());
-        onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
+        onQrItemChange({
+          ...createEmptyQrItemWithUnit(qItem, displayUnit),
+          answer: [{ valueDecimal: value }]
+        });
       }
     }
   }, [calculatedExpressions]);
@@ -115,13 +118,13 @@ function QItemDecimal(props: Props) {
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       onQrItemChange({
-        ...qrDecimal,
+        ...createEmptyQrItemWithUnit(qItem, displayUnit),
         answer: precision
           ? [{ valueDecimal: parseFloat(parseFloat(input).toFixed(precision)) }]
           : [{ valueDecimal: parseFloat(input) }]
       });
     }, 200),
-    [onQrItemChange, precision, qrDecimal]
+    [onQrItemChange, qItem, displayUnit, precision]
   );
 
   const decimalInput = (

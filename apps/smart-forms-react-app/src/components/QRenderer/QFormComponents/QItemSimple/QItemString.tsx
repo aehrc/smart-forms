@@ -43,10 +43,12 @@ interface Props
 function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrString = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const valueString = qrString['answer'] ? qrString['answer'][0].valueString : '';
+  let valueString = '';
+  if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
+    valueString = qrItem.answer[0].valueString;
+  }
 
-  const [input, setInput] = useState<string | undefined>(valueString);
+  const [input, setInput] = useState<string>(valueString);
 
   let hasError = false;
   if (qItem.maxLength && valueString) {
@@ -62,12 +64,12 @@ function QItemString(props: Props) {
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       if (input !== '') {
-        onQrItemChange({ ...qrString, answer: [{ valueString: input }] });
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueString: input }] });
       } else {
         onQrItemChange(createEmptyQrItem(qItem));
       }
     }, 300),
-    [onQrItemChange, qrString]
+    [onQrItemChange, qItem]
   );
 
   const stringInput = (
