@@ -24,9 +24,11 @@ describe('choice component behaviour', () => {
         .contains('Patient Details')
         .click();
 
-      cy.getByData('q-item-integer-box').should('include.text', 'Age').find('input').type('60');
-
-      cy.getByData('q-item-integer-box').should('include.text', 'Age').find('input').type('60');
+      cy.getByData('q-item-integer-box')
+        .should('include.text', 'Age')
+        .find('input')
+        .type('60')
+        .wait(50);
 
       cy.getByData('renderer-tab-list')
         .find('.MuiButtonBase-root')
@@ -41,6 +43,7 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
+        .wait(50)
         .should('be.checked');
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
@@ -56,6 +59,7 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
+        .wait(50)
         .should('be.checked');
 
       cy.getByData('q-item-choice-radio-answer-value-set-box')
@@ -64,6 +68,7 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexSecondRadioToBeChecked)
         .check()
+        .wait(50)
         .should('be.checked');
 
       cy.getByData('q-item-choice-radio-answer-value-set-box')
@@ -110,6 +115,7 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexFirstRadioToBeChecked)
           .check()
+          .wait(50)
           .should('be.checked');
 
         cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
@@ -125,6 +131,7 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexFirstRadioToBeChecked)
           .check()
+          .wait(50)
           .should('be.checked');
 
         cy.getByData('q-item-choice-radio-answer-value-set-box')
@@ -133,6 +140,7 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexSecondRadioToBeChecked)
           .check()
+          .wait(50)
           .should('be.checked');
 
         cy.getByData('q-item-choice-radio-answer-value-set-box')
@@ -150,12 +158,12 @@ describe('choice component behaviour', () => {
     }
   );
 
-  context.only(
+  context(
     'choice checkbox answer value set component which uses contained value sets with repeats',
     () => {
       const itemText = 'Parents/primary carer/s';
-      const indexFirstRadioToBeChecked = 0;
-      const indexSecondRadioToBeChecked = 2;
+      const indexFirstCheckboxToBeChecked = 0;
+      const indexSecondCheckboxToBeChecked = 2;
       const expectedAnswerFirst = 'Mother';
       const expectedAnswerSecond = 'Grandparent';
 
@@ -169,16 +177,18 @@ describe('choice component behaviour', () => {
           .should('include.text', 'Age')
           .find('input')
           .eq(0)
-          .type('10');
+          .type('10')
+          .wait(50);
       });
 
-      it.only('reflects changes in questionnaire response on selection of first checkbox', () => {
+      it('reflects changes in questionnaire response on selection of first checkbox', () => {
         cy.getByData('q-item-choice-checkbox-answer-value-set-box')
           .should('include.text', itemText)
           .eq(0)
           .find('input')
-          .eq(indexFirstRadioToBeChecked)
+          .eq(indexFirstCheckboxToBeChecked)
           .check()
+          .wait(50)
           .should('be.checked');
 
         cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
@@ -192,16 +202,18 @@ describe('choice component behaviour', () => {
           .should('include.text', itemText)
           .eq(0)
           .find('input')
-          .eq(indexFirstRadioToBeChecked)
+          .eq(indexFirstCheckboxToBeChecked)
           .check()
+          .wait(50)
           .should('be.checked');
 
-        cy.getByData('q-item-choice-radio-answer-value-set-box')
+        cy.getByData('q-item-choice-checkbox-answer-value-set-box')
           .should('include.text', itemText)
           .eq(0)
           .find('input')
-          .eq(indexSecondRadioToBeChecked)
+          .eq(indexSecondCheckboxToBeChecked)
           .check()
+          .wait(50)
           .should('be.checked');
 
         cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
@@ -210,12 +222,19 @@ describe('choice component behaviour', () => {
         cy.getByData('response-item-answer').contains(expectedAnswerSecond);
         cy.getByData('response-item-answer').contains(expectedAnswerSecond);
 
-        cy.getByData('q-item-choice-radio-answer-value-set-box')
+        cy.getByData('chip-bar-box')
+          .find('.MuiButtonBase-root')
+          .contains('Continue Editing')
+          .click()
+          .wait(100);
+
+        cy.getByData('q-item-choice-checkbox-answer-value-set-box')
           .should('include.text', itemText)
           .eq(0)
           .find('input')
-          .eq(indexSecondRadioToBeChecked)
-          .check()
+          .eq(indexSecondCheckboxToBeChecked)
+          .uncheck()
+          .wait(50)
           .should('not.be.checked');
 
         cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();

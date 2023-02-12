@@ -123,37 +123,27 @@ export function getQrChoiceValue(qrChoice: QuestionnaireResponseItem): string {
 export function updateQrCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
-  answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
+  answerOptions: QuestionnaireItemAnswerOption[],
   qrChoiceCheckbox: QuestionnaireResponseItem,
   checkboxOptionType: CheckBoxOptionType,
   isMultiSelection: boolean
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
-  const newAnswer =
-    checkboxOptionType === CheckBoxOptionType.AnswerOption
-      ? findInAnswerOptions(answerOptions, changedValue)
-      : findInAnswerValueSetCodings(answerOptions, changedValue);
+  const newAnswer = findInAnswerOptions(answerOptions, changedValue);
   if (!newAnswer) return null;
 
   if (isMultiSelection && answers.length > 0) {
-    // check if new answer exists in existing qrAnswers
-    let qrAnswers = answers;
-    const newAnswerInAnswers =
-      checkboxOptionType === CheckBoxOptionType.AnswerOption
-        ? findInAnswerOptions(qrAnswers, changedValue)
-        : findInAnswerValueSetCodings(qrAnswers, changedValue);
+    // check and filter if new answer exists in existing qrAnswers
+    const updatedAnswers = answers.filter(
+      (answer) => JSON.stringify(answer) !== JSON.stringify(newAnswer)
+    );
 
-    if (newAnswerInAnswers) {
-      // remove new answer from qrAnswers
-      qrAnswers = qrAnswers.filter(
-        (answer) => JSON.stringify(answer) !== JSON.stringify(newAnswerInAnswers)
-      );
-    } else {
-      // add new answer to qrAnswers
-      qrAnswers.push(newAnswer);
+    // new answer is not present in existing answers, so we add it to the array
+    if (updatedAnswers.length === answers.length) {
+      updatedAnswers.push(newAnswer);
     }
 
-    return { ...qrChoiceCheckbox, answer: qrAnswers };
+    return { ...qrChoiceCheckbox, answer: updatedAnswers };
   } else {
     return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
       ? { ...qrChoiceCheckbox, answer: [] }
@@ -182,4 +172,17 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrien
     }
   }
   return QItemChoiceOrientation.Vertical;
+}
+
+/**
+ * Converts an array of codings to an array of valueCodings which can use the QuestionnaireItemAnswerOption type
+ *
+ * @author Sean Fong
+ */
+export function mapCodingsToOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
+  return codings.map((coding) => {
+    return {
+      valueCoding: coding
+    };
+  });
 }

@@ -26,7 +26,10 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import useValueSetCodings from '../../../../custom-hooks/useValueSetCodings';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import { updateQrCheckboxAnswers } from '../../../../functions/ChoiceFunctions';
+import {
+  mapCodingsToOptions,
+  updateQrCheckboxAnswers
+} from '../../../../functions/ChoiceFunctions';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
@@ -55,7 +58,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
     const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
       changedValue,
       answers,
-      codings,
+      mapCodingsToOptions(codings),
       qrChoiceCheckbox,
       CheckBoxOptionType.AnswerValueSet,
       isRepeated
@@ -76,7 +79,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
               value={coding.code ?? ''}
               label={coding.display ?? `${coding.code}`}
               isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(coding)
+                (answer) => JSON.stringify(answer.valueCoding) === JSON.stringify(coding)
               )}
               onCheckedChange={handleCheckedChange}
             />
