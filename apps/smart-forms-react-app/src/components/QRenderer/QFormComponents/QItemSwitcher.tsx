@@ -57,12 +57,15 @@ function QItemSwitcher(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const handleQrItemChange = useCallback((newQrItem: QuestionnaireResponseItem) => {
-    if (newQrItem.answer) {
-      enableWhenContext.updateItem(qItem.linkId, newQrItem.answer);
-    }
-    onQrItemChange(newQrItem);
-  }, []);
+  const handleQrItemChange = useCallback(
+    (newQrItem: QuestionnaireResponseItem) => {
+      if (newQrItem.answer) {
+        enableWhenContext.updateItem(qItem.linkId, newQrItem.answer);
+      }
+      onQrItemChange(newQrItem);
+    },
+    [enableWhenContext, onQrItemChange, qItem.linkId]
+  );
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
 
