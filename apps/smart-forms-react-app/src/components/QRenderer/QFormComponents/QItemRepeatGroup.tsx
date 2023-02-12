@@ -53,13 +53,8 @@ function QItemRepeatGroup(props: Props) {
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
 
-  const initialRepeatGroups = [...qrRepeatGroups];
-  if (initialRepeatGroups[initialRepeatGroups.length - 1] !== undefined) {
-    initialRepeatGroups.push(undefined);
-  }
-
-  const [repeatGroups, setRepeatGroups] = useState(initialRepeatGroups);
-  const [groupIds, setGroupIds] = useState(initialRepeatGroups.map(() => nanoid()));
+  const [repeatGroups, setRepeatGroups] = useState(qrRepeatGroups);
+  const [groupIds, setGroupIds] = useState(qrRepeatGroups.map(() => nanoid()));
 
   useEffect(() => {
     if (qrRepeatGroups.length === 0) {
