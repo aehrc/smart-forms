@@ -192,7 +192,7 @@ describe('simple component behaviour', () => {
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
       cy.getByData('response-item-text').should('not.have.text', itemText);
-      cy.getByData('response-item-answer').should('not.have.text', expectedAnswer);
+      cy.getByData('response-item-answer').should('not.have.text', expectedAnswerWithoutTimeZone);
     });
   });
 
