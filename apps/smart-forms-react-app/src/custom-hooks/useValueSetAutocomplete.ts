@@ -25,44 +25,48 @@ function useValueSetAutocomplete(answerValueSetUrl: string | undefined, maxList:
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<Error | null>(null);
 
-  function fetchNewOptions(newInput: string) {
-    // make no changes if input is less than 2 characters long
-    if (newInput.length < 2) {
-      setOptions([]);
-      setLoading(false);
-      return;
-    }
+  const fetchNewOptions = useCallback(
+    (newInput: string) => {
+      // make no changes if input is less than 2 characters long
+      if (newInput.length < 2) {
+        setOptions([]);
+        setLoading(false);
+        return;
+      }
 
-    if (!answerValueSetUrl) return null;
+      if (!answerValueSetUrl) return null;
 
-    answerValueSetUrl += answerValueSetUrl[answerValueSetUrl.length - 1] !== '&' ? '&' : '';
-    const fullUrl = answerValueSetUrl + 'filter=' + newInput + '&count=' + maxList;
-    const cachedAnswerOptions = AnswerValueSet.cache[fullUrl];
-    if (cachedAnswerOptions) {
-      // set options from cached answer options
-      setOptions(cachedAnswerOptions);
-      setLoading(false);
-    } else {
-      // expand valueSet, then set and cache answer options
-      AnswerValueSet.expand(
-        fullUrl,
-        (newOptions: ValueSet) => {
-          const contains = newOptions.expansion?.contains;
-          if (contains) {
-            const answerOptions = AnswerValueSet.getValueCodings(contains);
-            AnswerValueSet.cache[fullUrl] = answerOptions;
-            setOptions(answerOptions);
-          } else {
-            setOptions([]);
+      const UrlWithTrailingAmpersand =
+        answerValueSetUrl + (answerValueSetUrl[answerValueSetUrl.length - 1] !== '&' ? '&' : '');
+      const fullUrl = UrlWithTrailingAmpersand + 'filter=' + newInput + '&count=' + maxList;
+      const cachedAnswerOptions = AnswerValueSet.cache[fullUrl];
+      if (cachedAnswerOptions) {
+        // set options from cached answer options
+        setOptions(cachedAnswerOptions);
+        setLoading(false);
+      } else {
+        // expand valueSet, then set and cache answer options
+        AnswerValueSet.expand(
+          fullUrl,
+          (newOptions: ValueSet) => {
+            const contains = newOptions.expansion?.contains;
+            if (contains) {
+              const answerOptions = AnswerValueSet.getValueCodings(contains);
+              AnswerValueSet.cache[fullUrl] = answerOptions;
+              setOptions(answerOptions);
+            } else {
+              setOptions([]);
+            }
+            setLoading(false);
+          },
+          (error: Error) => {
+            setServerError(error);
           }
-          setLoading(false);
-        },
-        (error: Error) => {
-          setServerError(error);
-        }
-      );
-    }
-  }
+        );
+      }
+    },
+    [answerValueSetUrl, maxList]
+  );
 
   // search questionnaires from input with delay
   const searchResultsWithDebounce = useCallback(

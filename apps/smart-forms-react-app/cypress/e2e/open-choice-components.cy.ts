@@ -11,7 +11,7 @@ describe('open choice component behaviour', () => {
     cy.getByData('renderer-heading').should('be.visible');
   });
 
-  // TODO implement open-choice radio component answeroption with open-label
+  // TODO implement open-choice radio component answerOption with open-label
 
   context('open choice checkbox answer option component with repeats', () => {
     const itemText = 'Brief intervention: advice and information provided during health check';
@@ -208,9 +208,107 @@ describe('open choice component behaviour', () => {
       cy.getByData('response-item-answer').should('not.contain.text', openLabelInput);
     });
 
-    // context('open choice autocomplete component', () => {
-    //
-    // })
+    context('open choice autocomplete component', () => {
+      const itemText = 'Other relevant medical history, operations, hospital admissions, etc';
+      const ontoserverExpandUrl =
+        'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://aehrc.csiro.au/fhir/ValueSet/MedicalHistory&filter=';
+      const trailingUrlWithCount = '&count=10';
+      const firstInputToBeSearched = 'Diabetes';
+      const secondInputToBeSearched = 'stone';
+
+      beforeEach(() => {
+        cy.getByData('renderer-tab-list')
+          .find('.MuiButtonBase-root')
+          .contains('Patient Details')
+          .click();
+
+        cy.getByData('q-item-integer-box')
+          .should('include.text', 'Age')
+          .find('input')
+          .eq(0)
+          .type('50')
+          .wait(50);
+
+        cy.getByData('renderer-tab-list')
+          .find('.MuiButtonBase-root')
+          .contains('Medical history and current problems')
+          .click();
+      });
+
+      it('reflects changes in questionnaire response on selection of autocompleted input', () => {
+        cy.intercept(ontoserverExpandUrl + firstInputToBeSearched + trailingUrlWithCount).as(
+          'ontoserverExpand'
+        );
+
+        cy.getByData('q-item-open-choice-autocomplete-field')
+          .eq(0)
+          .find('input')
+          .eq(0)
+          .type(firstInputToBeSearched)
+          .wait(50);
+        cy.wait('@ontoserverExpand');
+
+        cy.getByData('q-item-open-choice-autocomplete-field')
+          .eq(0)
+          .find('input')
+          .eq(0)
+          .should('have.value', firstInputToBeSearched)
+          .click()
+          .type('{enter}')
+          .should('contain.value', firstInputToBeSearched);
+
+        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+        cy.getByData('response-item-text').contains(itemText);
+        cy.getByData('response-item-answer').contains(firstInputToBeSearched);
+      });
+
+      it('reflects changes in questionnaire response on change of input and autocompleted input', () => {
+        cy.intercept(ontoserverExpandUrl + firstInputToBeSearched + trailingUrlWithCount).as(
+          'firstOntoserverExpand'
+        );
+        cy.intercept(ontoserverExpandUrl + secondInputToBeSearched + trailingUrlWithCount).as(
+          'secondOntoserverExpand'
+        );
+
+        cy.getByData('q-item-open-choice-autocomplete-field')
+          .eq(0)
+          .find('input')
+          .eq(0)
+          .type(firstInputToBeSearched)
+          .wait(50);
+        cy.wait('@firstOntoserverExpand');
+
+        cy.getByData('q-item-open-choice-autocomplete-field')
+          .eq(0)
+          .find('input')
+          .eq(0)
+          .should('have.value', firstInputToBeSearched)
+          .click()
+          .type('{enter}')
+          .wait(50)
+          .should('contain.value', firstInputToBeSearched)
+          .clear()
+          .wait(50)
+          .type(secondInputToBeSearched)
+          .wait(50);
+        cy.wait('@secondOntoserverExpand');
+
+        cy.getByData('q-item-open-choice-autocomplete-field')
+          .eq(0)
+          .find('input')
+          .eq(0)
+          .should('have.value', secondInputToBeSearched)
+          .click()
+          .type('{enter}')
+          .should('contain.value', secondInputToBeSearched);
+
+        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+
+        cy.getByData('response-item-text').contains(itemText);
+        cy.getByData('response-item-answer').contains(secondInputToBeSearched);
+      });
+    });
   });
 });
 
