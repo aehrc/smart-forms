@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -112,4 +112,4 @@ function QItemChoiceRadioAnswerOption(props: Props) {
   return <>{renderQItemChoiceRadio}</>;
 }
 
-export default QItemChoiceRadioAnswerOption;
+export default memo(QItemChoiceRadioAnswerOption);

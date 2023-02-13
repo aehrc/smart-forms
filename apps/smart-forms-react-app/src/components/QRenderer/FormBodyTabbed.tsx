@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import React, { useContext } from 'react';
-import { Box, Card, Collapse, Grid, ListItemButton, Typography } from '@mui/material';
+import React, { useCallback } from 'react';
+import { Grid } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
 import { TabContext, TabPanel } from '@mui/lab';
@@ -24,13 +24,7 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../functions/IndexFunctions'
 import QItemGroup from './QFormComponents/QItemGroup';
 import { isTab } from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
-import { getShortText } from '../../functions/ItemControlFunctions';
-import { isHidden } from '../../functions/QItemFunctions';
-import ListItemText from '@mui/material/ListItemText';
-import { PrimarySelectableList } from '../StyledComponents/Lists.styles';
-import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from './Form';
-import { TransitionGroup } from 'react-transition-group';
+import FormBodyTabList from './Tabs/FormBodyTabList';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
@@ -42,9 +36,6 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 function FormBodyTabbed(props: Props) {
   const { qForm, qrForm, tabIndex, setTabIndex, onQrItemChange } = props;
 
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
-
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
@@ -54,6 +45,10 @@ function FormBodyTabbed(props: Props) {
     onQrItemChange(qrForm);
   }
 
+  const updateTabIndex = useCallback((newTabIndex: number) => {
+    setTabIndex(newTabIndex);
+  }, []);
+
   if (qFormItems && qrFormItems) {
     const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems, indexMap);
 
@@ -61,42 +56,11 @@ function FormBodyTabbed(props: Props) {
       <Grid container spacing={2}>
         <TabContext value={tabIndex.toString()}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
-            <Card sx={{ p: 0.75, mb: 2 }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <PrimarySelectableList
-                  dense
-                  disablePadding
-                  sx={{ my: 0.5 }}
-                  data-test="renderer-tab-list">
-                  <TransitionGroup>
-                    {qFormItems.map((qItem, index) => {
-                      if (
-                        !isTab(qItem) ||
-                        isHidden(qItem, enableWhenContext, enableWhenChecksContext)
-                      ) {
-                        return null;
-                      }
-                      return (
-                        <Collapse key={qItem.linkId}>
-                          <ListItemButton
-                            selected={tabIndex.toString() === (index + 1).toString()}
-                            sx={{ my: 0.5 }}
-                            onClick={() => setTabIndex(index + 1)}>
-                            <ListItemText
-                              primary={
-                                <Typography variant="subtitle2">
-                                  {getShortText(qItem) ?? qItem.text}
-                                </Typography>
-                              }
-                            />
-                          </ListItemButton>
-                        </Collapse>
-                      );
-                    })}
-                  </TransitionGroup>
-                </PrimarySelectableList>
-              </Box>
-            </Card>
+            <FormBodyTabList
+              qFormItems={qFormItems}
+              tabIndex={tabIndex}
+              updateTabIndex={updateTabIndex}
+            />
           </Grid>
 
           <Grid item xs={12} md={8.5} lg={9} xl={9.25}>

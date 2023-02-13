@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -24,7 +24,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
@@ -49,10 +49,12 @@ function QItemInteger(props: Props) {
 
   const displayUnit = getTextDisplayUnit(qItem);
 
-  let qrInteger = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const valueInteger = qrInteger['answer'] ? qrInteger['answer'][0].valueInteger : 0;
+  let valueInteger = 0;
+  if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueInteger) {
+    valueInteger = qrItem.answer[0].valueInteger;
+  }
 
-  const [input, setInput] = useState<number | undefined>(valueInteger);
+  const [input, setInput] = useState<number>(valueInteger);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
@@ -68,7 +70,7 @@ function QItemInteger(props: Props) {
 
         setInput(expression.value);
         onQrItemChange({
-          ...qrInteger,
+          ...createEmptyQrItemWithUnit(qItem, displayUnit),
           answer: [{ valueInteger: expression.value }]
         });
       }
@@ -90,10 +92,12 @@ function QItemInteger(props: Props) {
 
   const updateQrItemWithDebounce = useCallback(
     debounce((inputNumber: number) => {
-      qrInteger = { ...qrInteger, answer: [{ valueInteger: inputNumber }] };
-      onQrItemChange(qrInteger);
+      onQrItemChange({
+        ...createEmptyQrItemWithUnit(qItem, displayUnit),
+        answer: [{ valueInteger: inputNumber }]
+      });
     }, 200),
-    []
+    [onQrItemChange, qItem, displayUnit]
   );
 
   const integerInput = (
@@ -135,4 +139,4 @@ function QItemInteger(props: Props) {
   return <>{renderQItemInteger}</>;
 }
 
-export default QItemInteger;
+export default memo(QItemInteger);

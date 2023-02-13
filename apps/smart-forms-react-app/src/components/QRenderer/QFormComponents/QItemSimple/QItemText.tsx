@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { Grid, TextField } from '@mui/material';
 
 import {
@@ -40,23 +40,28 @@ interface Props
 function QItemText(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
-  let qrText = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const valueText = qrText['answer'] ? qrText['answer'][0].valueString : '';
+  let valueText = '';
+  if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
+    valueText = qrItem.answer[0].valueString;
+  }
 
-  const [input, setInput] = useState<string | undefined>(valueText);
+  const [input, setInput] = useState<string>(valueText);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
     setInput(newInput);
-    UpdateQrItemWithDebounce(newInput);
+    updateQrItemWithDebounce(newInput);
   }
 
-  const UpdateQrItemWithDebounce = useCallback(
+  const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
-      qrText = { ...qrText, answer: [{ valueString: input }] };
-      onQrItemChange(qrText);
+      if (input !== '') {
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueString: input }] });
+      } else {
+        onQrItemChange(createEmptyQrItem(qItem));
+      }
     }, 300),
-    []
+    [onQrItemChange, qItem]
   );
 
   const textInput = (
@@ -91,4 +96,4 @@ function QItemText(props: Props) {
   return <>{renderQItemText}</>;
 }
 
-export default QItemText;
+export default memo(QItemText);

@@ -39,7 +39,8 @@
     "typescript": "^4.7.4",
     "uuidjs": "^4.2.13",
     "web-vitals": "^2.1.4",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "nanoid": "^4.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

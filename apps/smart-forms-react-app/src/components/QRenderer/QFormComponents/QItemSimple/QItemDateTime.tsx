@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {
@@ -61,13 +61,15 @@ function QItemDateTime(props: Props) {
         ...qrDateTime,
         answer: [{ valueDateTime: newValue.format() }]
       });
+    } else {
+      onQrItemChange(createEmptyQrItem(qItem));
     }
   }
 
   const renderQItemDateTime = isRepeated ? (
     <QItemDateTimePicker value={value} onDateTimeChange={handleChange} isTabled={isTabled} />
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-date-time-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
@@ -97,10 +99,17 @@ function QItemDateTimePicker(props: QItemDateTimePickerProps) {
         showToolbar
         value={value}
         onChange={onDateTimeChange}
-        renderInput={(params) => <StandardTextField fullWidth isTabled={isTabled} {...params} />}
+        renderInput={(params) => (
+          <StandardTextField
+            fullWidth
+            isTabled={isTabled}
+            {...params}
+            data-test="q-item-date-time-field"
+          />
+        )}
       />
     </LocalizationProvider>
   );
 }
 
-export default QItemDateTime;
+export default memo(QItemDateTime);

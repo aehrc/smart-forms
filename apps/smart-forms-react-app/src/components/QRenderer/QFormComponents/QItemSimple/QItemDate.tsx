@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
@@ -61,6 +61,8 @@ function QItemDate(props: Props) {
         ...qrDate,
         answer: [{ valueDate: newValue.format('YYYY-MM-DD') }]
       });
+    } else {
+      onQrItemChange(createEmptyQrItem(qItem));
     }
   }
 
@@ -110,4 +112,4 @@ function QItemDatePicker(props: QItemDatePickerProps) {
   );
 }
 
-export default QItemDate;
+export default memo(QItemDate);

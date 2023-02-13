@@ -104,7 +104,7 @@ function renderGroupHeadingDiv(item: QuestionnaireResponseItem, nestedLevel: num
 
 function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer): string {
   if (answer.valueBoolean !== undefined) return `${answer.valueBoolean}`;
-  else if (answer.valueDecimal) return `${answer.valueDecimal}`;
+  else if (answer.valueDecimal !== undefined) return `${answer.valueDecimal}`;
   else if (answer.valueInteger !== undefined) return `${answer.valueInteger}`;
   else if (answer.valueDate) return `${answer.valueDate}`;
   else if (answer.valueDateTime) return `${answer.valueDateTime}`;

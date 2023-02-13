@@ -35,6 +35,7 @@ import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 import { TransitionGroup } from 'react-transition-group';
 import { FullWidthFormComponentBox } from '../../StyledComponents/Boxes.styles';
+import { nanoid } from 'nanoid';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -47,21 +48,23 @@ function QItemRepeat(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const emptyQrItem = createEmptyQrItem(qItem);
-  const qrRepeat = qrItem ? qrItem : emptyQrItem;
+  const qrRepeat = qrItem ?? createEmptyQrItem(qItem);
   const qrRepeatAnswers: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
     ? qrRepeat.answer
     : [undefined];
 
-  const [repeatAnswers, setRepeatAnswers] = useState([...qrRepeatAnswers, undefined]);
+  const initialRepeatAnswers = [...qrRepeatAnswers];
+  if (initialRepeatAnswers[initialRepeatAnswers.length - 1] !== undefined) {
+    initialRepeatAnswers.push(undefined);
+  }
+
+  const [repeatAnswers, setRepeatAnswers] = useState(initialRepeatAnswers);
+  const [answerIds, setAnswerIds] = useState(initialRepeatAnswers.map(() => nanoid()));
 
   useEffect(() => {
-    const firstRepeatItem = repeatAnswers[0];
-    const lastRepeatItem = repeatAnswers[repeatAnswers.length - 1];
-    if (lastRepeatItem === undefined && firstRepeatItem !== undefined) {
-      setRepeatAnswers([...qrRepeatAnswers, undefined]);
-    } else {
-      setRepeatAnswers(qrRepeatAnswers);
+    if (repeatAnswers.length === 0) {
+      setRepeatAnswers([undefined]);
+      setAnswerIds([nanoid()]);
     }
   }, [qrItem]);
 
@@ -70,22 +73,30 @@ function QItemRepeat(props: Props) {
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const answersTemp = [...repeatAnswers];
     answersTemp[index] = newQrItem.answer ? newQrItem.answer[0] : undefined;
-    updateAnswers(answersTemp);
+    updateAnswers(answersTemp, [...answerIds]);
   }
 
   function deleteAnswer(index: number) {
     const answersTemp = [...repeatAnswers];
+    const idsTemp = [...answerIds];
     if (answersTemp.length === 1) {
       answersTemp[0] = undefined;
+      idsTemp[0] = nanoid();
     } else {
       answersTemp.splice(index, 1);
+      idsTemp.splice(index, 1);
     }
-    updateAnswers(answersTemp);
+    updateAnswers(answersTemp, idsTemp);
   }
 
-  function updateAnswers(updatedAnswers: (QuestionnaireResponseItemAnswer | undefined)[]) {
+  function updateAnswers(
+    updatedAnswers: (QuestionnaireResponseItemAnswer | undefined)[],
+    updatedIds: string[]
+  ) {
+    setRepeatAnswers(updatedAnswers);
+    setAnswerIds(updatedIds);
+
     const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));
-    setRepeatAnswers(answersWithValues);
     onQrItemChange({ ...qrRepeat, answer: answersWithValues });
   }
 
@@ -99,11 +110,11 @@ function QItemRepeat(props: Props) {
           <TransitionGroup>
             {repeatAnswers.map((answer, index) => {
               const singleQrItem = answer
-                ? { ...emptyQrItem, answer: [answer] }
-                : { ...emptyQrItem };
+                ? { ...createEmptyQrItem(qItem), answer: [answer] }
+                : createEmptyQrItem(qItem);
 
               return (
-                <Collapse key={index}>
+                <Collapse key={answerIds[index]}>
                   <RepeatItemContainerStack direction="row">
                     <Box sx={{ flexGrow: 1 }}>
                       <QItemSwitcher
@@ -140,7 +151,10 @@ function QItemRepeat(props: Props) {
           variant="contained"
           startIcon={<AddIcon />}
           disabled={!repeatAnswers[repeatAnswers.length - 1]}
-          onClick={() => setRepeatAnswers([...repeatAnswers, undefined])}
+          onClick={() => {
+            setRepeatAnswers([...repeatAnswers, undefined]);
+            setAnswerIds([...answerIds, nanoid()]);
+          }}
           data-test="button-add-repeat-item">
           Add Item
         </Button>

@@ -69,13 +69,12 @@ describe('launch app', () => {
 
         // PUT questionnaire if it doesn't already exist
         if (response.body.total === 0) {
-          console.log(response.body.total);
           cy.request({
             method: 'PUT',
             url: `${clientUrl}/Questionnaire/${questionnaireId}`,
             body: questionnaire
           }).then((response) => {
-            expect(response.status).to.eq(200);
+            expect(response.status).to.satisfy((statusCode: string) => /^2\d\d$/.test(statusCode));
             expect(response.body).to.have.property('resourceType', 'Questionnaire');
             expect(response.body).to.have.property('id', questionnaireId);
           });

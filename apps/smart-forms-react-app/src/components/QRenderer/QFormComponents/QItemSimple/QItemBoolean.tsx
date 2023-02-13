@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 
 import {
@@ -86,4 +86,4 @@ function QItemBoolean(props: Props) {
   return <>{renderQItemBoolean}</>;
 }
 
-export default QItemBoolean;
+export default memo(QItemBoolean);

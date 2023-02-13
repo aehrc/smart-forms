@@ -3,18 +3,31 @@ describe('enable when in original 715 questionnaire', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(0).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
   });
 
   it('reveal and hide items within a single tab', () => {
-    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').eq(1).contains('Consent').click();
+    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Consent').click();
 
-    cy.getByData('q-item-choice-radio-answer-option-box').eq(0).find('input').eq(0).check();
+    cy.getByData('q-item-choice-radio-answer-option-box')
+      .eq(0)
+      .find('input')
+      .eq(0)
+      .check()
+      .wait(50);
     cy.getByData('q-item-string-box').eq(0).find('p').should('have.text', 'Who/details');
 
-    cy.getByData('q-item-choice-radio-answer-option-box').eq(0).find('input').eq(1).check();
+    cy.getByData('q-item-choice-radio-answer-option-box')
+      .eq(0)
+      .find('input')
+      .eq(1)
+      .check()
+      .wait(50);
     cy.getByData('q-item-string-box').eq(0).find('p').should('have.text', 'Doctor');
   });
 });
@@ -24,29 +37,32 @@ describe('enable when in assembled 715 questionnaire', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(4).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
+      .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
+
+    cy.getByData('renderer-tab-list')
+      .find('.MuiButtonBase-root')
+      .should('be.visible')
+      .should('have.length', 1);
+
+    cy.getByData('renderer-tab-list')
+      .find('.MuiButtonBase-root')
+      .contains('Patient Details')
+      .click();
+    cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
   });
 
   it('reveal and hide tabs', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .should('be.visible')
-      .should('have.length', 15);
-
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('60');
-
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .should('be.visible')
       .should('have.length', 28);
 
-    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4');
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4').wait(50);
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
@@ -61,16 +77,11 @@ describe('enable when in assembled 715 questionnaire', () => {
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(2)
       .contains('Patient Details')
       .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('10');
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50).type('10').wait(50);
 
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .eq(17)
-      .contains('Examination')
-      .click();
+    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Examination').click();
 
     cy.getByData('q-item-decimal-box').eq(2).find('p').should('have.text', 'Head circumference');
   });
@@ -90,7 +101,7 @@ describe('enable when in assembled 715 questionnaire', () => {
       .find('.MuiButtonBase-root')
       .contains('Patient Details')
       .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('6');
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50).type('6').wait(50);
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
@@ -108,7 +119,7 @@ describe('enable when in assembled 715 questionnaire', () => {
       .find('.MuiButtonBase-root')
       .contains('Patient Details')
       .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4');
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4').wait(50);
 
     cy.getByData('q-item-text-box').should(
       'not.include.text',
@@ -116,13 +127,7 @@ describe('enable when in assembled 715 questionnaire', () => {
     );
   });
 
-  it.only('reveal/hide items with enableBehavior=any, only one of the multiple conditions has to be satisfied', () => {
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('60');
-
+  it('reveal/hide items with enableBehavior=any, only one of the multiple conditions has to be satisfied', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .contains('Finalising the health check')
@@ -133,7 +138,8 @@ describe('enable when in assembled 715 questionnaire', () => {
     cy.getByData('q-item-open-choice-select-answer-option-box')
       .should('include.text', 'Who')
       .find('input')
-      .type('gp{enter}');
+      .type('gp{enter}')
+      .wait(50);
 
     cy.getByData('q-item-date-box').should('exist').should('include.text', 'When');
   });

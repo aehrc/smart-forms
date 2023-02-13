@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext } from 'react';
+import React, { memo, useContext } from 'react';
 import logo from '../../data/images/CSIRO_Logo.png';
 import { Box, Grid, Tooltip } from '@mui/material';
 import {
@@ -60,4 +60,4 @@ function SideBarBottom() {
   );
 }
 
-export default SideBarBottom;
+export default memo(SideBarBottom);

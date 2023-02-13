@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { SyntheticEvent } from 'react';
+import React, { memo, SyntheticEvent } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
@@ -25,11 +25,11 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import useValueSetOptions from '../../../../custom-hooks/useValueSetOptions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import useValueSetCodings from '../../../../custom-hooks/useValueSetCodings';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,7 +49,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     valueSelect = qrOpenChoice['answer'][0].valueCoding;
   }
 
-  const { options, serverError } = useValueSetOptions(qItem);
+  const { codings, serverError } = useValueSetCodings(qItem);
 
   function handleValueChange(
     event: SyntheticEvent<Element, Event>,
@@ -77,7 +77,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
       <Autocomplete
         id={qItem.id}
         value={valueSelect ?? null}
-        options={options}
+        options={codings}
         getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
         onChange={handleValueChange}
         onInputChange={(event, newValue) => handleValueChange(event, newValue)}
@@ -112,4 +112,4 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   return <>{renderQItemOpenChoiceSelectAnswerValueSet}</>;
 }
 
-export default QItemOpenChoiceSelectAnswerValueSet;
+export default memo(QItemOpenChoiceSelectAnswerValueSet);

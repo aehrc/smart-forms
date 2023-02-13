@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { memo, useContext, useEffect } from 'react';
 import { Grid, TextField } from '@mui/material';
 
 import {
@@ -123,4 +123,4 @@ function QItemQuantity(props: Props) {
   }
 }
 
-export default QItemQuantity;
+export default memo(QItemQuantity);

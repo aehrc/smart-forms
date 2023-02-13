@@ -36,6 +36,7 @@ import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import { TransitionGroup } from 'react-transition-group';
+import { nanoid } from 'nanoid';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -49,14 +50,17 @@ function QItemRepeatGroup(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const emptyQrItem = createEmptyQrItem(qItem);
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
 
   const [repeatGroups, setRepeatGroups] = useState(qrRepeatGroups);
+  const [groupIds, setGroupIds] = useState(qrRepeatGroups.map(() => nanoid()));
 
   useEffect(() => {
-    setRepeatGroups(qrRepeatGroups);
+    if (qrRepeatGroups.length === 0) {
+      setRepeatGroups([undefined]);
+      setGroupIds([nanoid()]);
+    }
   }, [qrItems]);
 
   if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
@@ -72,21 +76,28 @@ function QItemRepeatGroup(props: Props) {
         item: newQrGroupItems
       };
     }
-    updateAnswerItems(repeatGroupsTemp);
+    updateAnswerItems(repeatGroupsTemp, [...groupIds]);
   }
 
   function deleteAnswerItem(index: number) {
     const repeatGroupsTemp = [...repeatGroups];
+    const idsTemp = [...groupIds];
     if (repeatGroupsTemp.length === 1) {
       repeatGroupsTemp[0] = undefined;
+      idsTemp[0] = nanoid();
     } else {
       repeatGroupsTemp.splice(index, 1);
+      idsTemp.splice(index, 1);
     }
-    updateAnswerItems(repeatGroupsTemp);
+    updateAnswerItems(repeatGroupsTemp, idsTemp);
   }
 
-  function updateAnswerItems(updatedRepeatGroups: (QuestionnaireResponseItem | undefined)[]) {
+  function updateAnswerItems(
+    updatedRepeatGroups: (QuestionnaireResponseItem | undefined)[],
+    updatedIds: string[]
+  ) {
     setRepeatGroups([...updatedRepeatGroups]);
+    setGroupIds([...updatedIds]);
 
     const groupsWithValues: QuestionnaireResponseItem[] = updatedRepeatGroups.flatMap(
       (singleGroup) => (singleGroup ? [singleGroup] : [])
@@ -104,11 +115,11 @@ function QItemRepeatGroup(props: Props) {
         <TransitionGroup>
           {repeatGroups.map((singleGroup, index) => {
             const singleQrGroup: QuestionnaireResponseItem = singleGroup
-              ? { ...emptyQrItem, item: singleGroup.item }
-              : { ...emptyQrItem };
+              ? { ...createEmptyQrItem(qItem), item: singleGroup.item }
+              : createEmptyQrItem(qItem);
 
             return (
-              <Collapse key={index}>
+              <Collapse key={groupIds[index]}>
                 <RepeatGroupContainerStack direction="row" justifyContent="end">
                   <Box sx={{ flexGrow: 1 }}>
                     <QItemGroup
@@ -143,7 +154,10 @@ function QItemRepeatGroup(props: Props) {
             variant="contained"
             startIcon={<AddIcon />}
             disabled={!repeatGroups[repeatGroups.length - 1]}
-            onClick={() => setRepeatGroups([...repeatGroups, undefined])}
+            onClick={() => {
+              setRepeatGroups([...repeatGroups, undefined]);
+              setGroupIds([...groupIds, nanoid()]);
+            }}
             data-test="button-add-repeat-group">
             Add Item
           </Button>

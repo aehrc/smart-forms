@@ -74,6 +74,8 @@ export function saveQuestionnaireResponse(
         display: constructName(user.name)
       },
       authored: dayjs().format(),
+      // FIXME plugging this in because SMART Health IT stopped support canonical references?
+      questionnaire: `Questionnaire/${questionnaire.id}`,
       _questionnaire: {
         extension: [
           {

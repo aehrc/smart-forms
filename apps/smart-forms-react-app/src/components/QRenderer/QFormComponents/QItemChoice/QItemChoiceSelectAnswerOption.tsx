@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Grid, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import {
@@ -99,4 +99,4 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   return <>{renderQItemChoiceSelectAnswerOption}</>;
 }
 
-export default QItemChoiceSelectAnswerOption;
+export default memo(QItemChoiceSelectAnswerOption);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import {
@@ -25,7 +25,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
 import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
@@ -54,10 +54,10 @@ function QItemDecimal(props: Props) {
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
 
-  const qrDecimal = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const valueDecimal = qrDecimal['answer'] ? qrDecimal['answer'][0].valueDecimal : 0.0;
   let initialInput = '0';
-  if (valueDecimal) {
+  let valueDecimal = 0.0;
+  if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueDecimal) {
+    valueDecimal = qrItem.answer[0].valueDecimal;
     initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
 
@@ -77,7 +77,10 @@ function QItemDecimal(props: Props) {
         }, 500);
 
         setInput(precision ? value.toFixed(precision) : value.toString());
-        onQrItemChange({ ...qrDecimal, answer: [{ valueDecimal: value }] });
+        onQrItemChange({
+          ...createEmptyQrItemWithUnit(qItem, displayUnit),
+          answer: [{ valueDecimal: value }]
+        });
       }
     }
   }, [calculatedExpressions]);
@@ -115,13 +118,13 @@ function QItemDecimal(props: Props) {
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       onQrItemChange({
-        ...qrDecimal,
+        ...createEmptyQrItemWithUnit(qItem, displayUnit),
         answer: precision
           ? [{ valueDecimal: parseFloat(parseFloat(input).toFixed(precision)) }]
           : [{ valueDecimal: parseFloat(input) }]
       });
     }, 200),
-    []
+    [onQrItemChange, qItem, displayUnit, precision]
   );
 
   const decimalInput = (
@@ -166,4 +169,4 @@ function QItemDecimal(props: Props) {
   return <>{renderQItemDecimal}</>;
 }
 
-export default QItemDecimal;
+export default memo(QItemDecimal);

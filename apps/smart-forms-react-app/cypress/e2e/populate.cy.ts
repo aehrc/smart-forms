@@ -19,10 +19,14 @@ describe('populate form', () => {
     cy.getByData('picker-search-field-desktop')
       .find('input')
       .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander health check');
+      .type('Aboriginal and Torres Strait Islander health check')
+      .wait(50);
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
-    cy.getByData('picker-questionnaire-list').find('.MuiButtonBase-root').eq(0).click();
+    cy.getByData('picker-questionnaire-list')
+      .find('.MuiButtonBase-root')
+      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .click();
     cy.getByData('button-create-response').click();
 
     cy.wait('@populating').its('response.statusCode').should('eq', 200);
@@ -32,7 +36,6 @@ describe('populate form', () => {
   it('form items in Patient Details tab have expected populated answers', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(2)
       .contains('Patient Details')
       .click();
 
@@ -52,7 +55,6 @@ describe('populate form', () => {
   it('repeat items in Medical history tab have expected populated answers', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
-      .eq(4)
       .contains('Medical history and current problems')
       .click();
 
@@ -79,7 +81,7 @@ describe('populate form', () => {
   });
 
   it('form preview has the expected populated answers', () => {
-    cy.getByData('chip-bar-box').find('.MuiButtonBase-root').eq(1).click();
+    cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
     cy.getByData('response-item-text').eq(0).contains('Name');
     cy.getByData('response-item-answer').eq(0).contains('Benito Lucio');

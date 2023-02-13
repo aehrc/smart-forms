@@ -20,30 +20,31 @@ import { Coding, QuestionnaireItem, ValueSet } from 'fhir/r5';
 import { AnswerValueSet } from '../classes/AnswerValueSet';
 import { ContainedValueSetContext } from '../components/QRenderer/Form';
 
-function useValueSetOptions(qItem: QuestionnaireItem) {
+function useValueSetCodings(qItem: QuestionnaireItem) {
   const containedValueSetContext = useContext(ContainedValueSetContext);
 
   const valueSetUrl = qItem.answerValueSet;
 
-  let answerOptions: Coding[] = [];
-  let cachedAnswerOptions: Coding[] | undefined;
+  let initialCodings: Coding[] = [];
+  let cachedCodings: Coding[] | undefined;
 
   // set options from cached answer options if present
   if (valueSetUrl) {
-    cachedAnswerOptions = AnswerValueSet.cache[valueSetUrl];
-    if (cachedAnswerOptions) {
-      answerOptions = cachedAnswerOptions;
+    cachedCodings = AnswerValueSet.cache[valueSetUrl];
+    if (cachedCodings) {
+      initialCodings = cachedCodings;
     } else if (valueSetUrl.startsWith('#')) {
       // set options from contained valueSet if present
       const reference = valueSetUrl.slice(1);
       const valueSet = containedValueSetContext[reference];
       if (valueSet) {
-        answerOptions = getValueSetOptions(valueSetUrl, valueSet);
+        initialCodings = getValueSetOptions(valueSetUrl, valueSet);
       }
     }
   }
 
-  const [options, setOptions] = useState<Coding[]>(answerOptions);
+  const [codings, setCodings] = useState<Coding[]>(initialCodings);
+
   const [serverError, setServerError] = useState<Error | null>(null);
 
   // get options from answerValueSet on render
@@ -51,11 +52,12 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
     const valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl) return;
 
-    if (!cachedAnswerOptions && !valueSetUrl.startsWith('#')) {
+    if (!cachedCodings && !valueSetUrl.startsWith('#')) {
       AnswerValueSet.expand(
         valueSetUrl,
         (valueSet: ValueSet) => {
-          setOptions(getValueSetOptions(valueSetUrl, valueSet));
+          const codings = getValueSetOptions(valueSetUrl, valueSet);
+          setCodings(codings);
         },
         (error: Error) => {
           setServerError(error);
@@ -64,7 +66,7 @@ function useValueSetOptions(qItem: QuestionnaireItem) {
     }
   }, [qItem]);
 
-  return { options, serverError };
+  return { codings, serverError };
 }
 
 function getValueSetOptions(valueSetUrl: string, valueSet: ValueSet): Coding[] {
@@ -77,4 +79,4 @@ function getValueSetOptions(valueSetUrl: string, valueSet: ValueSet): Coding[] {
   return [];
 }
 
-export default useValueSetOptions;
+export default useValueSetCodings;
