@@ -455,7 +455,7 @@ describe('choice component behaviour', () => {
     });
   });
 
-  context.only(
+  context(
     'choice dropdown component which requires expansion of value sets via external urls',
     () => {
       const itemText = 'State';

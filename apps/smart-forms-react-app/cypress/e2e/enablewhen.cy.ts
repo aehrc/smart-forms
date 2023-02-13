@@ -43,20 +43,20 @@ describe('enable when in assembled 715 questionnaire', () => {
       .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
-  });
 
-  it('reveal and hide tabs', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .should('be.visible')
-      .should('have.length', 15);
+      .should('have.length', 1);
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .contains('Patient Details')
       .click();
     cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
+  });
 
+  it('reveal and hide tabs', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .should('be.visible')
@@ -79,7 +79,7 @@ describe('enable when in assembled 715 questionnaire', () => {
       .find('.MuiButtonBase-root')
       .contains('Patient Details')
       .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('10').wait(50);
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50).type('10').wait(50);
 
     cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Examination').click();
 
@@ -101,7 +101,7 @@ describe('enable when in assembled 715 questionnaire', () => {
       .find('.MuiButtonBase-root')
       .contains('Patient Details')
       .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('6').wait(50);
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50).type('6').wait(50);
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
@@ -128,12 +128,6 @@ describe('enable when in assembled 715 questionnaire', () => {
   });
 
   it('reveal/hide items with enableBehavior=any, only one of the multiple conditions has to be satisfied', () => {
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
-
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .contains('Finalising the health check')

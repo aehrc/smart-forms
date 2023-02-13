@@ -158,7 +158,12 @@ describe('simple component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on inputting correct datetime', () => {
-      cy.getByData('q-item-date-time-field').find('input').eq(0).type(validInput).wait(200);
+      cy.getByData('q-item-date-time-field')
+        .find('input')
+        .eq(0)
+        .type(validInput)
+        .wait(300)
+        .should('have.value', '02/08/2023 04:00 AM');
 
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
