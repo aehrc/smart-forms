@@ -30,20 +30,20 @@ function Renderer() {
   const launch = useContext(LaunchContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
+  const questionnaireResponse = questionnaireResponseProvider.questionnaireResponse;
 
-  if (!questionnaireResponseProvider.questionnaireResponse.item) {
-    if (questionnaire.item) {
-      questionnaireResponseProvider.setQuestionnaireResponse(
-        createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
-      );
-    }
+  // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
+  if (questionnaire.item && !questionnaireResponse.item) {
+    questionnaireResponseProvider.setQuestionnaireResponse(
+      createQuestionnaireResponse(questionnaire.id, questionnaire.item[0])
+    );
   }
 
   const client = launch.fhirClient;
   const patient = launch.patient;
   const user = launch.user;
   const spinnerInitialState =
-    client && patient && user
+    client && patient && user && !questionnaireResponse.id
       ? {
           isLoading: true,
           message: 'Populating questionnaire form'
@@ -52,15 +52,20 @@ function Renderer() {
 
   const [spinner, setSpinner] = useState(spinnerInitialState);
 
-  // if questionnaire has a contained attribute OR questionnaireResponse does not have a form item
-  const qrFormItem = questionnaireResponseProvider.questionnaireResponse.item?.[0].item;
+  // Perform pre-population if all the following requirements are fufilled:
+  // 1. App is connected to a CMS
+  // 2. Pre-pop queries exist in the form of contained resources or extensions
+  // 3. QuestionnaireResponse does not have answer items
+  // 4. QuestionnaireResponse is not from a saved draft response
+  const qrFormItem = questionnaireResponse.item?.[0].item;
   if (
     client &&
     patient &&
     user &&
     spinner.isLoading &&
     (questionnaire.contained || questionnaire.extension) &&
-    (!qrFormItem || qrFormItem.length === 0)
+    (!qrFormItem || qrFormItem.length === 0) &&
+    !questionnaireResponse.id
   ) {
     // obtain questionnaireResponse for pre-population
     populateQuestionnaire(
