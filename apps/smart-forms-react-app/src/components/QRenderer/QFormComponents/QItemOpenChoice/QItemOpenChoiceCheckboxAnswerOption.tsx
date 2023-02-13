@@ -30,7 +30,10 @@ import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleW
 import { QFormGroup } from '../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
-import { updateQrOpenChoiceCheckboxAnswers } from '../../../../functions/OpenChoiceFunctions';
+import {
+  getOldOpenLabelAnswer,
+  updateQrOpenChoiceCheckboxAnswers
+} from '../../../../functions/OpenChoiceFunctions';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 
 interface QItemOpenChoiceCheckboxProps
@@ -46,16 +49,26 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
 
   const qrOpenChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answers = qrOpenChoiceCheckbox['answer'] ? qrOpenChoiceCheckbox['answer'] : [];
+  const answerOptions = qItem.answerOption;
 
   const openLabelText = getOpenLabelText(qItem);
-  const [openLabelValue, setOpenLabelValue] = useState<string>('');
-  const [openLabelChecked, setOpenLabelChecked] = useState<boolean>(false);
+
+  let initialOpenLabelValue = '';
+  let initialOpenLabelChecked = false;
+  if (answerOptions) {
+    const oldLabelAnswer = getOldOpenLabelAnswer(answers, answerOptions);
+    if (oldLabelAnswer && oldLabelAnswer.valueString) {
+      initialOpenLabelValue = oldLabelAnswer.valueString;
+      initialOpenLabelChecked = true;
+    }
+  }
+  const [openLabelValue, setOpenLabelValue] = useState<string>(initialOpenLabelValue);
+  const [openLabelChecked, setOpenLabelChecked] = useState<boolean>(initialOpenLabelChecked);
 
   function handleValueChange(
     changedOptionValue: string | null,
     changedOpenLabelValue: string | null
   ) {
-    const answerOptions = qItem.answerOption;
     if (!answerOptions) return null;
 
     let updatedQrChoiceCheckbox: QuestionnaireResponseItem | null = null;
@@ -69,7 +82,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
         CheckBoxOptionType.AnswerOption,
         isRepeated
       );
-    } else if (changedOpenLabelValue) {
+    } else if (changedOpenLabelValue !== null) {
       updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
         null,
         changedOpenLabelValue,
@@ -145,7 +158,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   );
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />

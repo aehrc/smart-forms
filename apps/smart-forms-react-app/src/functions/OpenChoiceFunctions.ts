@@ -69,7 +69,7 @@ export function updateQrOpenChoiceCheckboxAnswers(
         ? { ...qrChoiceCheckbox, answer: [] }
         : { ...qrChoiceCheckbox, answer: [newAnswer] };
     }
-  } else if (changedOpenLabelAnswer) {
+  } else if (changedOpenLabelAnswer !== null) {
     const newOpenLabelAnswer = { valueString: changedOpenLabelAnswer };
     const oldOpenLabelAnswer: QuestionnaireResponseItemAnswer | null = getOldOpenLabelAnswer(
       answers,
@@ -77,7 +77,11 @@ export function updateQrOpenChoiceCheckboxAnswers(
     );
 
     if (answers.length === 0) {
-      return { ...qrChoiceCheckbox, answer: [newOpenLabelAnswer] };
+      if (changedOpenLabelAnswer === '') {
+        return { linkId: qrChoiceCheckbox.linkId, text: qrChoiceCheckbox.text };
+      } else {
+        return { ...qrChoiceCheckbox, answer: [newOpenLabelAnswer] };
+      }
     }
 
     if (isMultiSelection) {
@@ -94,9 +98,16 @@ export function updateQrOpenChoiceCheckboxAnswers(
           (answer) => JSON.stringify(answer) !== JSON.stringify(oldOpenLabelAnswer)
         );
 
-        if (JSON.stringify(newOpenLabelAnswer) === JSON.stringify(oldOpenLabelAnswer)) {
-          // User unchecks openLabel checkbox
-          return { ...qrChoiceCheckbox, answer: answersWithoutOpenLabel };
+        if (
+          JSON.stringify(newOpenLabelAnswer) === JSON.stringify(oldOpenLabelAnswer) ||
+          changedOpenLabelAnswer === ''
+        ) {
+          // User unchecks openLabel checkbox or clears field
+          if (answersWithoutOpenLabel.length > 0) {
+            return { ...qrChoiceCheckbox, answer: answersWithoutOpenLabel };
+          } else {
+            return { linkId: qrChoiceCheckbox.linkId, text: qrChoiceCheckbox.text };
+          }
         } else {
           // User changes openLabel value
           return {

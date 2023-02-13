@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Checkbox, FormControlLabel } from '@mui/material';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 
 interface Props {
@@ -39,7 +39,7 @@ function QItemCheckboxSingleWithOpenLabel(props: Props) {
   }
 
   return (
-    <>
+    <Box data-test="q-item-checkbox-open-label-box">
       <FormControlLabel
         control={<Checkbox checked={isChecked} onChange={handleCheckedChange} />}
         label={label + ':'}
@@ -51,8 +51,9 @@ function QItemCheckboxSingleWithOpenLabel(props: Props) {
         onChange={handleInputChange}
         fullWidth
         isTabled={false}
+        data-test="q-item-checkbox-open-label-field"
       />
-    </>
+    </Box>
   );
 }
 
