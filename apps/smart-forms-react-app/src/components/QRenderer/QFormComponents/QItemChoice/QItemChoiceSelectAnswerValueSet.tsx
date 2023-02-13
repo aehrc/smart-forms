@@ -79,7 +79,13 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         onChange={handleChange}
         autoHighlight
         fullWidth
-        renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
+        renderInput={(params) => (
+          <StandardTextField
+            isTabled={isTabled}
+            {...params}
+            data-test="q-item-choice-dropdown-answer-value-set-field"
+          />
+        )}
       />
     ) : serverError ? (
       <Typography variant="subtitle2">
@@ -94,7 +100,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   const renderQItemChoiceSelectAnswerValueSet = isRepeated ? (
     <>{choiceSelectAnswerValueSet}</>
   ) : (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-choice-dropdown-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <QItemLabel qItem={qItem} />
