@@ -148,7 +148,7 @@ describe('simple component behaviour', () => {
     const itemText = 'Onset Date';
     const validInput = '020820230400AM';
     const invalidInput = '02022000';
-    const expectedAnswer = '2023-02-08T04:00:00+10:30';
+    const expectedAnswerWithoutTimeZone = '2023-02-08T04:00:00';
 
     beforeEach(() => {
       cy.getByData('renderer-tab-list')
@@ -168,7 +168,7 @@ describe('simple component behaviour', () => {
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
       cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswer);
+      cy.getByData('response-item-answer').contains(expectedAnswerWithoutTimeZone);
     });
 
     it('reflects changes in questionnaire response on inputting invalid datetime', () => {
