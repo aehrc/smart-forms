@@ -29,6 +29,7 @@ import dayjs from 'dayjs';
 import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
 import { EnableWhenContextType } from '../interfaces/ContextTypes';
+import { removeNoAnswerQrItem } from './QrItemFunctions';
 
 /**
  * Sends a request to client CMS to write back a completed questionnaireResponse
@@ -49,19 +50,26 @@ export function saveQuestionnaireResponse(
 
   let requestUrl = 'QuestionnaireResponse';
   let method = 'POST';
-  let questionnaireResponseToSave: QuestionnaireResponse = {
-    ...questionnaireResponse
-  };
+  let questionnaireResponseToSave: QuestionnaireResponse = JSON.parse(
+    JSON.stringify(questionnaireResponse)
+  );
 
-  if (questionnaireResponse.id) {
-    requestUrl += '/' + questionnaireResponse.id;
+  if (questionnaireResponseToSave.item && questionnaireResponseToSave.item.length > 0) {
+    const qrFormCleaned = removeNoAnswerQrItem(questionnaireResponseToSave.item[0]);
+    if (qrFormCleaned) {
+      questionnaireResponseToSave.item[0] = qrFormCleaned;
+    }
+  }
+
+  if (questionnaireResponseToSave.id) {
+    requestUrl += '/' + questionnaireResponseToSave.id;
     method = 'PUT';
   } else {
     questionnaireResponseToSave = {
-      ...questionnaireResponse,
+      ...questionnaireResponseToSave,
       text: {
         status: 'generated',
-        div: qrToHTML(questionnaire, questionnaireResponse)
+        div: qrToHTML(questionnaire, questionnaireResponseToSave)
       },
       subject: {
         reference: `Patient/${patient.id}`,
