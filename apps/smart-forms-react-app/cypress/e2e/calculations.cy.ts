@@ -19,8 +19,8 @@ describe('calculations via variables', () => {
 
     cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Examination').click();
 
-    cy.getByData('q-item-decimal-box').eq(0).find('input').type(heightInCm.toString()).wait(50);
-    cy.getByData('q-item-decimal-box').eq(1).find('input').type(weightInKg.toString()).wait(50);
+    cy.getByData('q-item-decimal-box').eq(0).find('input').type(heightInCm.toString()).wait(200);
+    cy.getByData('q-item-decimal-box').eq(1).find('input').type(weightInKg.toString()).wait(200);
     cy.getByData('q-item-decimal-box')
       .eq(2)
       .find('input')
@@ -54,15 +54,23 @@ describe('calculations via variables', () => {
       .contains('Absolute cardiovascular risk calculation')
       .click();
 
-    cy.getByData('q-item-decimal-box').eq(0).find('input').type(systolicBP.toString()).wait(50);
-    cy.getByData('q-item-decimal-box').eq(1).find('input').type(totCholesterol.toString()).wait(50);
-    cy.getByData('q-item-decimal-box').eq(2).find('input').type(hdlCholesterol.toString()).wait(50);
+    cy.getByData('q-item-decimal-box').eq(0).find('input').type(systolicBP.toString()).wait(200);
+    cy.getByData('q-item-decimal-box')
+      .eq(1)
+      .find('input')
+      .type(totCholesterol.toString())
+      .wait(200);
+    cy.getByData('q-item-decimal-box')
+      .eq(2)
+      .find('input')
+      .type(hdlCholesterol.toString())
+      .wait(200);
     cy.getByData('q-item-integer-box').eq(0).find('input').should('have.value', '2');
 
-    cy.getByData('q-item-boolean-box').eq(0).find('input').check().wait(50);
+    cy.getByData('q-item-boolean-box').eq(0).find('input').check().wait(200);
     cy.getByData('q-item-integer-box').eq(0).find('input').should('have.value', '4');
 
-    cy.getByData('q-item-boolean-box').eq(1).find('input').check().wait(50);
+    cy.getByData('q-item-boolean-box').eq(1).find('input').check().wait(200);
     cy.getByData('q-item-integer-box').eq(0).find('input').should('have.value', '7');
 
     cy.getByData('renderer-tab-list')
