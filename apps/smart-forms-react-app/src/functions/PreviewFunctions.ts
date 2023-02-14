@@ -81,10 +81,14 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
 
   item.answer.forEach((answer) => {
     const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
-
-    qrItemAnswer += `<div data-test="response-item-answer">${
-      answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
-    }</div>`;
+    if (answerValueInString === '') {
+      qrItemAnswer +=
+        '<div style="color: red;" data-test="response-item-answer">Undefined answer</div>';
+    } else {
+      qrItemAnswer += `<div data-test="response-item-answer">${
+        answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
+      }</div>`;
+    }
   });
 
   const qrItemRender = `<div style="flex:40%;" data-test="response-item-text">${item.text}</div>
