@@ -1,38 +1,4 @@
-describe('enable when in original 715 questionnaire', () => {
-  const launchPage = 'http://localhost:3000/launch';
-
-  beforeEach(() => {
-    cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
-      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
-      .click();
-    cy.getByData('button-create-response').click();
-    cy.getByData('renderer-heading').should('be.visible');
-  });
-
-  it('reveal and hide items within a single tab', () => {
-    cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Consent').click();
-
-    cy.getByData('q-item-choice-radio-answer-option-box')
-      .eq(0)
-      .find('input')
-      .eq(0)
-      .check()
-      .wait(50);
-    cy.getByData('q-item-string-box').eq(0).find('p').should('have.text', 'Who/details');
-
-    cy.getByData('q-item-choice-radio-answer-option-box')
-      .eq(0)
-      .find('input')
-      .eq(1)
-      .check()
-      .wait(50);
-    cy.getByData('q-item-string-box').eq(0).find('p').should('have.text', 'Doctor');
-  });
-});
-
-describe('enable when in assembled 715 questionnaire', () => {
+describe('enable when functionality', () => {
   const launchPage = 'http://localhost:3000/launch';
 
   beforeEach(() => {
@@ -54,6 +20,31 @@ describe('enable when in assembled 715 questionnaire', () => {
       .contains('Patient Details')
       .click();
     cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
+  });
+
+  it('reveal and hide items within a single tab', () => {
+    cy.getByData('renderer-tab-list')
+      .find('.MuiButtonBase-root')
+      .contains('Healthy eating')
+      .click();
+
+    cy.getByData('q-item-choice-radio-answer-value-set-box')
+      .should('include.text', 'Do you have any worries about your diet or weight?')
+      .find('input')
+      .eq(0)
+      .check()
+      .wait(50);
+
+    cy.getByData('q-item-text-box').should('include.text', 'Details');
+
+    cy.getByData('q-item-choice-radio-answer-value-set-box')
+      .should('include.text', 'Do you have any worries about your diet or weight?')
+      .find('input')
+      .eq(1)
+      .check()
+      .wait(50);
+
+    cy.getByData('q-item-text-box').should('include.text', 'Details').should('be.hidden');
   });
 
   it('reveal and hide tabs', () => {
