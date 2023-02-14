@@ -40,7 +40,10 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
   const qrChoiceSelect = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const valueSelect = getQrChoiceValue(qrChoiceSelect);
+  let valueSelect = getQrChoiceValue(qrChoiceSelect);
+  if (valueSelect === null) {
+    valueSelect = '';
+  }
 
   function handleChange(e: SelectChangeEvent) {
     if (qItem.answerOption) {

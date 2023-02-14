@@ -101,18 +101,21 @@ export function findInAnswerValueSetCodings(
  *
  * @author Sean Fong
  */
-export function getQrChoiceValue(qrChoice: QuestionnaireResponseItem): string {
+export function getQrChoiceValue(
+  qrChoice: QuestionnaireResponseItem,
+  returnNull?: boolean
+): string | null {
   if (qrChoice['answer']) {
     const answer = qrChoice['answer'][0];
     if (answer['valueCoding']) {
       return answer.valueCoding.code ? answer.valueCoding.code : '';
-    } else if (answer['valueString']) {
+    } else if (answer['valueString'] !== undefined) {
       return answer.valueString;
     } else if (answer['valueInteger']) {
       return answer.valueInteger.toString();
     }
   }
-  return '';
+  return returnNull ? null : '';
 }
 
 /**
