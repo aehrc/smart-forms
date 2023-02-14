@@ -6,7 +6,7 @@ describe('navigating picker', () => {
   it('selecting a questionnaire and creating a new response', () => {
     cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
     cy.intercept(
-      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20health%20check`
+      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
     cy.intercept({
       method: 'POST',
@@ -20,13 +20,13 @@ describe('navigating picker', () => {
     cy.getByData('picker-search-field-desktop')
       .find('input')
       .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander health check')
+      .type('Aboriginal and Torres Strait Islander Health Check')
       .wait(50);
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
     cy.getByData('picker-questionnaire-list')
       .find('.MuiButtonBase-root')
-      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
 

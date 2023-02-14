@@ -6,7 +6,7 @@ describe('save response', () => {
   beforeEach(() => {
     cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
     cy.intercept(
-      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20health%20check`
+      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
     cy.intercept({
       method: 'POST',
@@ -19,13 +19,13 @@ describe('save response', () => {
     cy.getByData('picker-search-field-desktop')
       .find('input')
       .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander health check')
+      .type('Aboriginal and Torres Strait Islander Health Check')
       .wait(50);
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
     cy.getByData('picker-questionnaire-list')
       .find('.MuiButtonBase-root')
-      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
 
@@ -42,7 +42,13 @@ describe('save response', () => {
 
       cy.getByData('chip-save-as-draft').should('be.visible').should('have.class', 'Mui-disabled');
       cy.getByData('alert-response-saved').should('not.be.visible');
-      cy.getByData('q-item-radio-group').eq(0).find('input').eq(0).check().wait(50);
+
+      cy.getByData('renderer-tab-list')
+        .find('.MuiButtonBase-root')
+        .contains('Patient Details')
+        .click();
+      cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
+
       cy.getByData('chip-save-as-draft').click();
 
       cy.wait('@savingResponse');
@@ -52,7 +58,13 @@ describe('save response', () => {
 
     it('saving a response as final', () => {
       cy.getByData('chip-save-as-final').should('be.visible').should('have.class', 'Mui-disabled');
-      cy.getByData('q-item-radio-group').eq(0).find('input').eq(0).check().wait(50);
+
+      cy.getByData('renderer-tab-list')
+        .find('.MuiButtonBase-root')
+        .contains('Patient Details')
+        .click();
+      cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
+
       cy.getByData('chip-save-as-final').click();
       cy.getByData('dialog-confirm-save').find('button').contains('Save as final').click();
     });
@@ -67,7 +79,7 @@ describe('view response', () => {
   beforeEach(() => {
     cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
     cy.intercept(
-      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20health%20check`
+      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
 
     cy.visit(launchUrl);
@@ -76,13 +88,13 @@ describe('view response', () => {
     cy.getByData('picker-search-field-desktop')
       .find('input')
       .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander health check')
+      .type('Aboriginal and Torres Strait Islander Health Check')
       .wait(50);
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
     cy.getByData('picker-questionnaire-list')
       .find('.MuiButtonBase-root')
-      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
   });
 

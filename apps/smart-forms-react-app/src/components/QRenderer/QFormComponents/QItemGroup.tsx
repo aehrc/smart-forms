@@ -88,7 +88,8 @@ function QItemGroup(props: Props) {
       <QGroupContainerBox
         key={qItem.linkId}
         cardElevation={groupCardElevation}
-        isRepeated={isRepeated}>
+        isRepeated={isRepeated}
+        data-test="q-item-group-box">
         <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
           {isRepeated ? null : (
             <>

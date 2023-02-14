@@ -1,4 +1,4 @@
-describe('repeat items in original 715 questionnaire', () => {
+describe('repeat items functionality', () => {
   const launchPage = 'http://localhost:3000/launch';
   const ontoserverExpandRegex = new RegExp(
     /^https:\/\/r4\.ontoserver\.csiro\.au\/fhir\/ValueSet\/\$expand\?url=.*$/
@@ -8,10 +8,16 @@ describe('repeat items in original 715 questionnaire', () => {
     cy.visit(launchPage);
     cy.getByData('picker-questionnaire-list')
       .find('.MuiButtonBase-root')
-      .contains('Aboriginal and Torres Strait Islander health check – Adults (25–49 years)')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
     cy.getByData('renderer-heading').should('be.visible');
+
+    cy.getByData('renderer-tab-list')
+      .find('.MuiButtonBase-root')
+      .contains('Patient Details')
+      .click();
+    cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
   });
 
   it('add button is disabled if there is no input in the last field', () => {

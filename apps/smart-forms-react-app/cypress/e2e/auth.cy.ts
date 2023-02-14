@@ -1,4 +1,4 @@
-import Q715 from '../../src/data/resources/715.R4.json';
+import Q715Assembled from '../../src/data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 
 describe('launch app', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
@@ -45,8 +45,8 @@ describe('launch app', () => {
 
   context('launch with authorisation with a questionnaire url parameter', () => {
     const questionnaireUrl = 'http://www.health.gov.au/assessments/mbs/715';
-    const questionnaireId = 'mbs715';
-    const questionnaire = Q715;
+    const questionnaireId = 'AboriginalTorresStraitIslanderHealthCheck';
+    const questionnaire = Q715Assembled;
     const launchUrl =
       'http://localhost:3000/launch?questionnaireUrl=http%3A%2F%2Fwww.health.gov.au%2Fassessments%2Fmbs%2F715&iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
 
