@@ -36,6 +36,7 @@ describe('launch app', () => {
 
       cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
       cy.wait('@fetchQuestionnaireResponse').its('response.statusCode').should('eq', 200);
+      cy.wait(200);
       cy.getByData('picker-card-heading-questionnaires').contains('Questionnaires');
       cy.getByData('picker-card-heading-responses').contains('Responses');
       cy.getByData('picker-alert-refine').find('.MuiAlert-message').contains('Refine your search');
