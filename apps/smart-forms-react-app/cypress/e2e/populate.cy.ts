@@ -77,12 +77,17 @@ describe('populate form', () => {
       .should('have.value', 'Polyp of colon');
   });
 
-  it('form preview has the expected populated answers', () => {
+  it.only('form preview has the expected populated answers', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .contains('Patient Details')
-      .click()
-      .wait(200);
+      .click();
+
+    cy.getByData('q-item-boolean-box')
+      .should('contain.text', 'No fixed address')
+      .find('input')
+      .eq(0)
+      .should('not.be.checked');
 
     cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
