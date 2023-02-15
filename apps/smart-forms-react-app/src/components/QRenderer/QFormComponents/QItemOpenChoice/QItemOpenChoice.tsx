@@ -29,6 +29,7 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
 import QItemOpenChoiceCheckboxAnswerOption from './QItemOpenChoiceCheckboxAnswerOption';
+import QItemOpenChoiceRadioAnswerOption from './QItemOpenChoiceRadioAnswerOption';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,6 +47,16 @@ function QItemOpenChoice(props: Props) {
     case QItemOpenChoiceControl.Checkbox:
       return (
         <QItemOpenChoiceCheckboxAnswerOption
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={qItem['repeats'] ?? false}
+          onQrItemChange={onQrItemChange}
+          orientation={orientation}
+        />
+      );
+    case QItemOpenChoiceControl.Radio:
+      return (
+        <QItemOpenChoiceRadioAnswerOption
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={qItem['repeats'] ?? false}

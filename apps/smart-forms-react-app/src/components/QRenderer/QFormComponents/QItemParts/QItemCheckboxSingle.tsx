@@ -30,9 +30,7 @@ function QItemCheckboxSingle(props: Props) {
 
   return (
     <FormControlLabel
-      control={
-        <Checkbox size="small" checked={isChecked} onChange={() => onCheckedChange(value)} />
-      }
+      control={<Checkbox checked={isChecked} onChange={() => onCheckedChange(value)} />}
       label={label}
       sx={{ mr: 3 }}
     />

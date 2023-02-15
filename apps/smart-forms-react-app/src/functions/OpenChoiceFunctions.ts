@@ -150,6 +150,8 @@ export function getOpenChoiceControlType(qItem: QuestionnaireItem) {
     return QItemOpenChoiceControl.Autocomplete;
   } else if (isSpecificItemControl(qItem, 'check-box')) {
     return QItemOpenChoiceControl.Checkbox;
+  } else if (isSpecificItemControl(qItem, 'radio-button')) {
+    return QItemOpenChoiceControl.Radio;
   } else {
     return QItemOpenChoiceControl.Select;
   }
