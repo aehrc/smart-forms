@@ -25,7 +25,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks","@typescript-eslint"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
     "react/react-in-jsx-scope": "off",
