@@ -21,6 +21,8 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
+import dayjs from 'dayjs';
+import moment from 'moment';
 
 export function qrToHTML(
   questionnaire: Questionnaire,
@@ -110,8 +112,12 @@ function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer):
   if (answer.valueBoolean !== undefined) return `${answer.valueBoolean}`;
   else if (answer.valueDecimal !== undefined) return `${answer.valueDecimal}`;
   else if (answer.valueInteger !== undefined) return `${answer.valueInteger}`;
-  else if (answer.valueDate) return `${answer.valueDate}`;
-  else if (answer.valueDateTime) return `${answer.valueDateTime}`;
+  else if (answer.valueDate)
+    return answer.valueDate ? dayjs(answer.valueDate).format('DD/MM/YYYY') : '';
+  else if (answer.valueDateTime)
+    return answer.valueDateTime
+      ? moment(answer.valueDateTime, 'YYYY-MM-DDTHH:mm:ssZ').format('MMMM D, YYYY h:mm A')
+      : '';
   else if (answer.valueTime) return `${answer.valueTime}`;
   else if (answer.valueString) return `${answer.valueString}`;
   else if (answer.valueCoding?.code) {

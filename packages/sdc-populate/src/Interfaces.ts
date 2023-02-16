@@ -32,6 +32,16 @@ export interface InitialExpression {
   value: any[] | undefined;
 }
 
+export interface ItemPopulationContext {
+  name: string;
+  expression: string;
+}
+
+export interface PopulationExpressions {
+  initialExpressions: Record<string, InitialExpression>;
+  itemPopulationContexts: ItemPopulationContext[];
+}
+
 export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   valueSet?: ValueSet;

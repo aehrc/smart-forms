@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import { readInitialExpressions } from './ReadInitialExpressions';
+import { readPopulationExpressions } from './ReadPopulationExpressions';
 import type { Questionnaire } from 'fhir/r5';
 import Q715XFhirQuery from './resources/715-v.json';
 
 describe('read initial expressions', () => {
   const questionnaire = Q715XFhirQuery as Questionnaire;
-  const initialExpressions = readInitialExpressions(questionnaire);
+  const { initialExpressions } = readPopulationExpressions(questionnaire);
 
   test('getting an initial expression with a linkId key should return an object containing its expression', () => {
     const prePopQuery0 = {

@@ -26,6 +26,8 @@ import type {
 } from 'fhir/r5';
 import type { InitialExpression, ValueSetPromise } from './Interfaces';
 import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './ProcessValueSets';
+import dayjs from 'dayjs';
+import moment from 'moment';
 
 const emptyQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -55,7 +57,16 @@ export async function constructResponse(
     item: []
   };
 
-  qrForm = readQuestionnaire(questionnaire, qrForm, initialExpressions, valueSetPromises);
+  // Populate questionnaire response as a two-step process
+  // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
+  // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
+  qrForm = populateResponseFromQuestionnaire(
+    questionnaire,
+    qrForm,
+    initialExpressions,
+    valueSetPromises
+  );
+
   valueSetPromises = await resolvePromises(valueSetPromises);
   qrForm = addValueSetAnswers(qrForm, valueSetPromises);
 
@@ -71,7 +82,7 @@ export async function constructResponse(
  *
  * @author Sean Fong
  */
-function readQuestionnaire(
+function populateResponseFromQuestionnaire(
   questionnaire: Questionnaire,
   qrForm: QuestionnaireResponseItem,
   initialExpressions: Record<string, InitialExpression>,
@@ -80,8 +91,12 @@ function readQuestionnaire(
   if (!questionnaire.item) return qrForm;
 
   questionnaire.item.forEach((item) => {
-    const newQrForm = readQuestionnaireItem(item, qrForm, initialExpressions, valueSetPromises);
-    if (newQrForm) {
+    const newQrForm = constructResponseItem(item, qrForm, initialExpressions, valueSetPromises);
+    if (Array.isArray(newQrForm)) {
+      console.error(
+        `Error: this population method currently doesn't support top-level repeat groups, returning empty questionnaire response.`
+      );
+    } else if (newQrForm) {
       qrForm = { ...newQrForm };
     }
   });
@@ -93,24 +108,34 @@ function readQuestionnaire(
  *
  * @author Sean Fong
  */
-function readQuestionnaireItem(
+function constructResponseItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
   initialExpressions: Record<string, InitialExpression>,
   valueSetPromises: Record<string, ValueSetPromise>
-): QuestionnaireResponseItem | null {
+): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
   const items = qItem.item;
 
   if (items && items.length > 0) {
     // iterate through items of item recursively
     const qrItems: QuestionnaireResponseItem[] = [];
 
-    items.forEach((item) => {
-      const newQrItem = readQuestionnaireItem(item, qrItem, initialExpressions, valueSetPromises);
-      if (newQrItem) {
-        qrItems.push(newQrItem);
-      }
-    });
+    // If qItem is a repeat group, populate instances of repeat groups containing child items
+    if (qItem.type === 'group' && qItem.repeats) {
+      // Create number of repeat group instances based on the number of answers that the first child item has
+      return constructRepeatGroupInstances(qItem, initialExpressions);
+    } else {
+      // Otherwise loop through qItem as usual
+      items.forEach((item) => {
+        const newQrItem = constructResponseItem(item, qrItem, initialExpressions, valueSetPromises);
+
+        if (Array.isArray(newQrItem)) {
+          qrItems.push(...newQrItem);
+        } else if (newQrItem) {
+          qrItems.push(newQrItem);
+        }
+      });
+    }
 
     return qrItems.length > 0
       ? {
@@ -170,6 +195,8 @@ function getAnswerValues(
       return Number.isInteger(value) ? { valueInteger: value } : { valueDecimal: value };
     } else if (checkIsDate(value)) {
       return { valueDate: value };
+    } else if (checkIsDateTime(value)) {
+      return { valueDateTime: value };
     } else {
       // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
       if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
@@ -183,15 +210,95 @@ function getAnswerValues(
 }
 
 /**
- * Check if an answer is a date in the format YYYY-MM-DD
+ * Check if an answer is a date in the formats YYYY, YYYY-MM, YYYY-MM-DD
  *
  * @author Sean Fong
  */
 export function checkIsDate(value: string): boolean {
-  const hasDateHyphens = value[4] === '-' && value[7] === '-';
-  const hasYear = /^-?\d+$/.test(value.slice(0, 4));
-  const hasMonth = /^-?\d+$/.test(value.slice(5, 7));
-  const hasDate = /^-?\d+$/.test(value.slice(8, 10));
+  const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD'];
+  return dayjs(value, acceptedFormats, true).isValid();
+}
 
-  return hasDateHyphens && hasYear && hasMonth && hasDate && value.length === 10;
+/**
+ * Check if an answer is a datetime in the format YYYY, YYYY-MM, YYYY-MM-DD, YYYY-MM-DDThh:mm:ss+zz:zz
+ *
+ * @author Sean Fong
+ */
+export function checkIsDateTime(value: string): boolean {
+  const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
+  return moment(value, acceptedFormats, true).isValid();
+}
+
+/**
+ * Constructed populated repeat group instances based on its child items' answers from initialExpressions
+ * Used with an itemPopulationContext extension at the parent-level and initialExpressions at the child-level
+ * i.e. If there are four child items with five arrays of respective answers obtained from initialExpressions,
+ *      five instances of repeat groups will be created.
+ *
+ * @author Sean Fong
+ */
+function constructRepeatGroupInstances(
+  qRepeatGroupParent: QuestionnaireItem,
+  initialExpressions: Record<string, InitialExpression>
+): QuestionnaireResponseItem[] {
+  if (!qRepeatGroupParent.item) return [];
+
+  const childItemAnswers: QuestionnaireResponseItemAnswer[][] = [];
+  for (const [i, childItem] of qRepeatGroupParent.item.entries()) {
+    const initialExpression = initialExpressions[childItem.linkId];
+    if (!initialExpression) {
+      childItemAnswers[i] = [];
+      continue;
+    }
+
+    const initialValues = initialExpression.value;
+    if (initialValues && initialValues.length > 0) {
+      const { newValues } = getAnswerValues(initialValues, childItem);
+      childItemAnswers[i] = newValues;
+    } else {
+      childItemAnswers[i] = [];
+    }
+  }
+
+  // calculate number of instances to be created by getting the length of the longest answer array
+  let numOfInstancesToBeCreated = 0;
+  for (const answers of childItemAnswers) {
+    if (answers.length > numOfInstancesToBeCreated) {
+      numOfInstancesToBeCreated = answers.length;
+    }
+  }
+
+  // return empty array early if no repeat group instances to be created
+  if (numOfInstancesToBeCreated === 0) return [];
+
+  const qrRepeatGroupInstances: QuestionnaireResponseItem[] = [];
+  for (let i = 0; i < numOfInstancesToBeCreated; i++) {
+    const childItemsWithAnswers: QuestionnaireResponseItem[] = [];
+
+    for (let j = 0; j < childItemAnswers.length; j++) {
+      const answerArray = childItemAnswers[j];
+      if (answerArray) {
+        const answerOfSpecificParent = answerArray[i];
+        const qItemChild = qRepeatGroupParent.item[j];
+        if (answerOfSpecificParent && qItemChild) {
+          const qrItemChild: QuestionnaireResponseItem = {
+            linkId: qItemChild.linkId,
+            text: qItemChild.text,
+            answer: [answerOfSpecificParent]
+          };
+          childItemsWithAnswers.push(qrItemChild);
+        }
+      }
+    }
+
+    const qItemParent = {
+      linkId: qRepeatGroupParent.linkId,
+      text: qRepeatGroupParent.text,
+      item: childItemsWithAnswers
+    };
+
+    qrRepeatGroupInstances.push(qItemParent);
+  }
+
+  return qrRepeatGroupInstances;
 }

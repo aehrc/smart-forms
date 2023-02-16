@@ -95,9 +95,9 @@ describe('simple component behaviour', () => {
 
   context('date picker component', () => {
     const itemText = 'Date of birth';
-    const validInput = '02022000';
-    const invalidInput = '0202200';
-    const expectedAnswer = '2000-02-02';
+    const validInput = '02032000';
+    const invalidInput = '0203200';
+    const expectedAnswer = '02/03/2000';
 
     it('reflects changes in questionnaire response on inputting correct date', () => {
       cy.getByData('q-item-date-box')
@@ -148,7 +148,7 @@ describe('simple component behaviour', () => {
     const itemText = 'Onset Date';
     const validInput = '020820230400AM';
     const invalidInput = '02022000';
-    const expectedAnswerWithoutTimeZone = '2023-02-08T04:00:00';
+    const expectedAnswerWithoutTimeZone = 'February 8, 2023 4:00 AM';
 
     beforeEach(() => {
       cy.getByData('renderer-tab-list')
@@ -177,7 +177,7 @@ describe('simple component behaviour', () => {
       cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
 
       cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains('Invalid Date');
+      cy.getByData('response-item-answer').contains('Invalid date');
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
