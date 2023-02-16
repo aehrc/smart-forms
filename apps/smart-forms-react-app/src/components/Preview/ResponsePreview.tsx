@@ -53,11 +53,13 @@ function ResponsePreview() {
           </ChipBar>
           <Divider light />
 
-          <Paper>
-            <Box sx={{ p: 4 }} ref={componentRef}>
-              <Preview />
-            </Box>
-          </Paper>
+          <Box>
+            <Paper sx={{ mb: 2 }}>
+              <Box sx={{ p: 4 }} ref={componentRef}>
+                <Preview />
+              </Box>
+            </Paper>
+          </Box>
         </MainGridContainerBox>
       </MainGrid>
     </Grid>
