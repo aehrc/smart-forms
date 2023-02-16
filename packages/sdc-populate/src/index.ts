@@ -23,7 +23,6 @@ import type {
   PrePopQueryContextParameter,
   VariablesContextParameter
 } from './Interfaces';
-import { readInitialExpressions } from './ReadInitialExpressions';
 import { addVariablesToContext } from './VariableProcessing';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateOutputParameters';
@@ -38,6 +37,7 @@ import {
   isVariablesName
 } from './TypePredicates';
 import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
+import { readPopulationExpressions } from './ReadPopulationExpressions';
 
 /**
  * Main function of this populate module.
@@ -54,7 +54,7 @@ export default async function populate(
   const subject = params[1].valueReference;
   const launchPatient = params[2].part[1].resource;
 
-  let initialExpressions = readInitialExpressions(questionnaire);
+  const populationExpressions = readPopulationExpressions(questionnaire);
   let context: Record<string, any> = {
     patient: launchPatient
   };
@@ -62,16 +62,23 @@ export default async function populate(
   // Add PrePopQuery and variables to context
   if (params.length === 5) {
     for (const param of [params[3], params[4]]) {
-      context = getContextContent(param, context, initialExpressions);
+      context = getContextContent(param, context, populationExpressions.initialExpressions);
     }
   } else {
-    context = getContextContent(params[3], context, initialExpressions);
+    context = getContextContent(params[3], context, populationExpressions.initialExpressions);
   }
 
   // Perform evaluate of initialExpressions based on context
-  initialExpressions = evaluateInitialExpressions(initialExpressions, context);
+  const evaluatedInitialExpressions = evaluateInitialExpressions(
+    populationExpressions.initialExpressions,
+    context
+  );
 
-  const questionnaireResponse = await constructResponse(questionnaire, subject, initialExpressions);
+  const questionnaireResponse = await constructResponse(
+    questionnaire,
+    subject,
+    evaluatedInitialExpressions
+  );
 
   return createOutputParameters(questionnaireResponse);
 }

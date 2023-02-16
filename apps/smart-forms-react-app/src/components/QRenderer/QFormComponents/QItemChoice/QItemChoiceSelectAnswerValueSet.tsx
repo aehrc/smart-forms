@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, SyntheticEvent, useEffect } from 'react';
+import React, { memo, SyntheticEvent, useEffect, useMemo } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import {
@@ -50,6 +50,13 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   }
 
   const { codings, serverError } = useValueSetCodings(qItem);
+
+  valueCoding = useMemo(() => {
+    const updatedValueCoding = codings.find(
+      (queriedCoding) => queriedCoding.code === valueCoding?.code
+    );
+    return updatedValueCoding ?? valueCoding;
+  }, [codings, valueCoding]);
 
   // Check and remove populated answer if it is a string
   useEffect(() => {

@@ -17,7 +17,7 @@
 
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import type { InitialExpression } from './Interfaces';
+import type { ItemPopulationContext } from './Interfaces';
 
 const unimplementedFunctions = ['join', 'split', 'trim', 'encode', 'decode'];
 
@@ -27,39 +27,46 @@ const unimplementedFunctions = ['join', 'split', 'trim', 'encode', 'decode'];
  *
  * @author Sean Fong
  */
-export function evaluateInitialExpressions(
-  initialExpressions: Record<string, InitialExpression>,
+export function evaluateItemPopulationContexts(
+  itemPopulationContexts: ItemPopulationContext[],
   context: Record<string, any>
-): Record<string, InitialExpression> {
-  for (const linkId in initialExpressions) {
-    const initialExpression = initialExpressions[linkId];
-    if (initialExpression) {
-      let expression = initialExpression.expression;
+): Record<string, any> {
+  for (const linkId in itemPopulationContexts) {
+    const itemPopulationContext = itemPopulationContexts[linkId];
+    if (itemPopulationContext) {
+      let evaluatedResult: any[];
+      let expression = itemPopulationContext.expression;
 
       // Remove unimplemented functions (split/join/trim/encode/decode)
       // NOTE: remove this code section when the functions are implemented
-      if (unimplementedFunctions.some((fn: string) => initialExpression.expression.includes(fn))) {
+      if (
+        unimplementedFunctions.some((fn: string) => itemPopulationContext.expression.includes(fn))
+      ) {
         expression = removeUnimplementedFunction(
           unimplementedFunctions,
-          initialExpression.expression
+          itemPopulationContext.expression
         );
       }
 
       // Evaluate expression by LaunchPatient or PrePopQuery
       try {
-        initialExpression.value = fhirpath.evaluate({}, expression, context, fhirpath_r4_model);
+        evaluatedResult = fhirpath.evaluate({}, expression, context, fhirpath_r4_model);
       } catch (e) {
         if (e instanceof Error) {
-          console.error('Error: fhirpath evaluation for InitialExpression failed. Details below:');
+          console.error(
+            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:'
+          );
           console.error(e);
         }
-        return initialExpressions;
+        continue;
       }
-      initialExpressions[linkId] = initialExpression;
+
+      // Save evaluated item population context result into context object
+      context[itemPopulationContext.name] = evaluatedResult;
     }
   }
 
-  return initialExpressions;
+  return context;
 }
 
 /**

@@ -16,24 +16,25 @@
  */
 
 import type { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r5';
-import type { InitialExpression } from './Interfaces';
+import type { PopulationExpressions } from './Interfaces';
 
 /**
  * Recursively read the items within a questionnaire item and store their initial expressions in a <string, InitialExpression> key-value map
  *
  * @author Sean Fong
  */
-export function readInitialExpressions(
-  questionnaire: Questionnaire
-): Record<string, InitialExpression> {
-  if (!questionnaire.item) return {};
+export function readPopulationExpressions(questionnaire: Questionnaire): PopulationExpressions {
+  const populationExpressions = {
+    initialExpressions: {},
+    itemPopulationContexts: []
+  };
 
-  const initialExpressions = {};
+  if (!questionnaire.item) return populationExpressions;
 
   questionnaire.item.forEach((item) => {
-    readQuestionnaireItem(item, initialExpressions);
+    readQuestionnaireItem(item, populationExpressions);
   });
-  return initialExpressions;
+  return populationExpressions;
 }
 
 /**
@@ -43,32 +44,41 @@ export function readInitialExpressions(
  */
 function readQuestionnaireItem(
   item: QuestionnaireItem,
-  initialExpressions: Record<string, InitialExpression>
-): Record<string, InitialExpression> {
+  populationExpressions: PopulationExpressions
+): PopulationExpressions {
   const items = item.item;
   if (items && items.length > 0) {
     // iterate through items of item recursively
     items.forEach((item) => {
-      readQuestionnaireItem(item, initialExpressions);
+      readQuestionnaireItem(item, populationExpressions);
     });
 
-    return initialExpressions;
+    // Read item population context of qGroup
+    const itemPopulationContext = getItemPopulationContext(item);
+    if (itemPopulationContext && itemPopulationContext.expression && itemPopulationContext.name) {
+      populationExpressions.itemPopulationContexts.push({
+        name: itemPopulationContext.name,
+        expression: itemPopulationContext.expression
+      });
+    }
+
+    return populationExpressions;
   }
 
   // Read initial expression of qItem
   const initialExpression = getInitialExpression(item);
   if (initialExpression && initialExpression.expression) {
-    initialExpressions[item.linkId] = {
+    populationExpressions.initialExpressions[item.linkId] = {
       expression: initialExpression.expression,
       value: undefined
     };
   }
 
-  return initialExpressions;
+  return populationExpressions;
 }
 
 /**
- * Check if a questionnaireItem contains an initialExpression
+ * Check and returns it if a questionnaireItem contains an initialExpression
  *
  * @author Sean Fong
  */
@@ -77,6 +87,26 @@ export function getInitialExpression(qItem: QuestionnaireItem): Expression | nul
     (extension: Extension) =>
       extension.url ===
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression'
+  );
+
+  if (itemControl) {
+    if (itemControl.valueExpression) {
+      return itemControl.valueExpression;
+    }
+  }
+  return null;
+}
+
+/**
+ * Check and returns it if a questionnaireItem contains an itemPopulationContext
+ *
+ * @author Sean Fong
+ */
+export function getItemPopulationContext(qItem: QuestionnaireItem): Expression | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext'
   );
 
   if (itemControl) {
