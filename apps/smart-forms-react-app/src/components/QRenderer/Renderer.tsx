@@ -83,6 +83,10 @@ function Renderer() {
         // TODO popup questionnaire fail to populate
       }
     );
+  } else {
+    if (spinner.isLoading) {
+      setSpinner({ ...spinner, isLoading: false });
+    }
   }
 
   const RenderPage = () => {

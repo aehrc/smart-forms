@@ -38,6 +38,7 @@ import {
 } from './TypePredicates';
 import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
 import { readPopulationExpressions } from './ReadPopulationExpressions';
+import { evaluateItemPopulationContexts } from './EvaluateItemPopulationContexts';
 
 /**
  * Main function of this populate module.
@@ -67,6 +68,9 @@ export default async function populate(
   } else {
     context = getContextContent(params[3], context, populationExpressions.initialExpressions);
   }
+
+  // Add evaluate itemPopulationContexts and add them to context
+  context = evaluateItemPopulationContexts(populationExpressions.itemPopulationContexts, context);
 
   // Perform evaluate of initialExpressions based on context
   const evaluatedInitialExpressions = evaluateInitialExpressions(
