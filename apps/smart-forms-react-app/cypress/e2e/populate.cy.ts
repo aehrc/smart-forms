@@ -95,7 +95,7 @@ describe('populate form', () => {
     cy.getByData('response-item-answer').contains('Benito Lucio');
 
     cy.getByData('response-item-text').contains('Date of birth');
-    cy.getByData('response-item-answer').contains('1936-08-18');
+    cy.getByData('response-item-answer').contains('18/08/1936');
 
     cy.getByData('response-item-text').contains('Age');
     cy.getByData('response-item-answer').contains('86');
