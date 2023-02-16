@@ -13,7 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "fhir": "^4.11.1",
-    "fhirclient": "^2.5.2"
+    "fhirclient": "^2.5.2",
+    "moment": "^2.29.4",
+    "dayjs": "^1.11.7"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",
