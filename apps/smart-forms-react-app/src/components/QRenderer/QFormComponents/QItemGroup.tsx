@@ -16,7 +16,7 @@
  */
 
 import React, { useContext, useEffect, useState } from 'react';
-import { Card, Divider } from '@mui/material';
+import { Box, Card, Divider, IconButton, Tooltip } from '@mui/material';
 import { QItemType } from '../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
@@ -37,6 +37,7 @@ import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { EnableWhenChecksContext } from '../Form';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -44,10 +45,20 @@ interface Props
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
+  isMarkedAsComplete?: boolean;
+  setMarkedAsComplete?: () => unknown;
 }
 
 function QItemGroup(props: Props) {
-  const { qItem, qrItem, isRepeated, groupCardElevation, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    groupCardElevation,
+    isMarkedAsComplete,
+    setMarkedAsComplete,
+    onQrItemChange
+  } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenChecksContext = useContext(EnableWhenChecksContext);
@@ -93,12 +104,27 @@ function QItemGroup(props: Props) {
         <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
           {isRepeated ? null : (
             <>
-              <QGroupHeadingTypography variant="h6">
-                <QItemLabel qItem={qItem} />
-              </QGroupHeadingTypography>
-              <Divider sx={{ mt: 1, mb: 1.5 }} light />
+              <Box display="flex" alignItems="center">
+                <QGroupHeadingTypography
+                  variant="h6"
+                  isTabHeading={isMarkedAsComplete !== undefined}>
+                  <QItemLabel qItem={qItem} />
+                </QGroupHeadingTypography>
+
+                {isMarkedAsComplete !== undefined && setMarkedAsComplete ? (
+                  <>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Tooltip title={!isMarkedAsComplete ? 'Complete tab' : 'Mark as incomplete'}>
+                      <IconButton onClick={setMarkedAsComplete}>
+                        <CheckCircleIcon color={isMarkedAsComplete ? 'success' : 'inherit'} />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                ) : null}
+              </Box>
             </>
           )}
+          <Divider sx={{ mt: 1, mb: 1.5 }} light />
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItemOrItems = qrItemsByIndex[i];
 
