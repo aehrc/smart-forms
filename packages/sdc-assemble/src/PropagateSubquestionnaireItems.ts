@@ -37,9 +37,6 @@ export function propagateSubquestionnaireItems(
     return parentQuestionnaire;
   }
 
-  // Add [version]-assembled attribute
-  parentQuestionnaire.version = `${parentQuestionnaire.version}-assembled`;
-
   // Propagate items
   const questionnaireItems: QuestionnaireItem[] = [];
   for (let i = 0; i < parentQuestionnaireForm.item.length; i++) {
@@ -130,7 +127,21 @@ export function propagateSubquestionnaireItems(
     );
     extensions.push(...initialExtensions, ...cqfLibraryAndLaunchContexts);
   }
+
+  // Add assembledFrom extension to assembled questionnaire
+  if (parentQuestionnaire.url) {
+    const rootQuestionnaireVersion = parentQuestionnaire.version ?? '';
+    const rootQuestionnaireUrl = `${parentQuestionnaire.url}|${rootQuestionnaireVersion}`;
+    extensions.push({
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom',
+      valueCanonical: rootQuestionnaireUrl
+    });
+  }
+
   parentQuestionnaire.extension = extensions;
+
+  // Add [version]-assembled attribute
+  parentQuestionnaire.version = `${parentQuestionnaire.version}-assembled`;
 
   return parentQuestionnaire;
 }
