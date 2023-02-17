@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Grid } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
@@ -40,6 +40,11 @@ function FormBodyTabbed(props: Props) {
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
 
+  const numOfTabs = qFormItems?.length ?? 0;
+  const [tabsMarkedAsComplete, setTabsMarkedAsComplete] = useState<boolean[]>(
+    new Array(numOfTabs).fill(false)
+  );
+
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
     updateLinkedItem(qrItem, null, qrForm, indexMap);
     onQrItemChange(qrForm);
@@ -59,6 +64,7 @@ function FormBodyTabbed(props: Props) {
             <FormBodyTabList
               qFormItems={qFormItems}
               tabIndex={tabIndex}
+              tabsMarkedAsComplete={tabsMarkedAsComplete}
               updateTabIndex={updateTabIndex}
             />
           </Grid>
@@ -79,6 +85,12 @@ function FormBodyTabbed(props: Props) {
                       qrItem={qrItem}
                       isRepeated={qItem.repeats ?? false}
                       groupCardElevation={1}
+                      isMarkedAsComplete={tabsMarkedAsComplete[i]}
+                      setMarkedAsComplete={() => {
+                        const newTabsMarkedAsComplete = [...tabsMarkedAsComplete];
+                        newTabsMarkedAsComplete[i] = !newTabsMarkedAsComplete[i];
+                        setTabsMarkedAsComplete(newTabsMarkedAsComplete);
+                      }}
                       onQrItemChange={handleQrGroupChange}></QItemGroup>
                   </TabPanel>
                 );

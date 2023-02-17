@@ -16,7 +16,7 @@
  */
 
 import React, { useContext } from 'react';
-import { Divider, Grid, Paper } from '@mui/material';
+import { Box, Divider, Grid, Paper } from '@mui/material';
 import Preview from './Preview';
 import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
 import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
@@ -71,9 +71,11 @@ function FormPreview(props: Props) {
               />
             </ChipBar>
             <Divider light />
-            <Paper sx={{ p: 4 }}>
-              <Preview />
-            </Paper>
+            <Box>
+              <Paper sx={{ p: 4, mb: 2 }}>
+                <Preview />
+              </Paper>
+            </Box>
           </MainGridContainerBox>
         </MainGrid>
       </Grid>

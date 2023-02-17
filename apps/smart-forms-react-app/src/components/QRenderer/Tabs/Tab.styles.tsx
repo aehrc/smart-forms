@@ -15,21 +15,8 @@
  * limitations under the License.
  */
 
-import { styled, Typography } from '@mui/material';
+import { ListItemIcon, styled } from '@mui/material';
 
-export const SideBarOverlineTypography = styled(Typography)(() => ({
-  fontSize: 10,
-  marginLeft: 16,
-  marginTop: 8
-}));
-
-export const QGroupHeadingTypography = styled(Typography, {
-  shouldForwardProp: (prop) => prop !== 'isTabHeading'
-})<{ isTabHeading?: boolean }>(({ isTabHeading }) => ({
-  fontSize: isTabHeading ? 16 : 15
-}));
-
-export const MainGridHeadingTypography = styled(Typography)(() => ({
-  fontSize: 30,
-  fontWeight: 'bold'
+export const TabListItemIcon = styled(ListItemIcon)(() => ({
+  minWidth: 36
 }));
