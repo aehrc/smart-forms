@@ -61,6 +61,7 @@ export function saveQuestionnaireResponse(
     }
   }
 
+  // Add additional attributes if questionnaireResponse is newly created
   if (questionnaireResponseToSave.id) {
     requestUrl += '/' + questionnaireResponseToSave.id;
     method = 'PUT';
@@ -81,18 +82,15 @@ export function saveQuestionnaireResponse(
         type: 'Practitioner',
         display: constructName(user.name)
       },
-      authored: dayjs().format(),
-      // FIXME plugging this in because SMART Health IT stopped support canonical references?
-      questionnaire: `Questionnaire/${questionnaire.id}`,
-      _questionnaire: {
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/StructureDefinition/display',
-            valueString: getQuestionnaireName(questionnaire)
-          }
-        ]
-      }
+      authored: dayjs().format()
     };
+
+    // Add questionnaire reference
+    questionnaireResponseToSave = addQuestionnaireReference(
+      questionnaire,
+      questionnaireResponseToSave,
+      client.state.serverUrl
+    );
   }
 
   return client.request({
@@ -101,6 +99,44 @@ export function saveQuestionnaireResponse(
     body: JSON.stringify(questionnaireResponseToSave),
     headers: headers
   });
+}
+
+function addQuestionnaireReference(
+  questionnaire: Questionnaire,
+  questionnaireResponseToSave: QuestionnaireResponse,
+  endpointUrl: string
+): QuestionnaireResponse {
+  let questionnaireReference: string;
+  if (endpointUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
+    // Plugging questionnaire.id in because SMART Health IT has these weird requirements for canonicals
+    questionnaireReference = questionnaire.id ? `Questionnaire/${questionnaire.id}` : '';
+  } else {
+    const assembleFromExtension = questionnaire.extension?.find(
+      (e) =>
+        e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
+    );
+
+    if (assembleFromExtension && assembleFromExtension.valueCanonical) {
+      questionnaireReference = assembleFromExtension.valueCanonical;
+    } else {
+      questionnaireReference = questionnaire.url ?? '';
+    }
+  }
+
+  // Add questionnaire reference if it is not an empty string
+  if (questionnaireReference) {
+    questionnaireResponseToSave.questionnaire = questionnaireReference;
+    questionnaireResponseToSave._questionnaire = {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/display',
+          valueString: getQuestionnaireName(questionnaire)
+        }
+      ]
+    };
+  }
+
+  return questionnaireResponseToSave;
 }
 
 function getQuestionnaireName(questionnaire: Questionnaire): string {
