@@ -1200,10 +1200,14 @@
           "valueString": "The patient that is to be used to pre-populate the form"
         }
       ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://www.health.gov.au/assessments/mbs/715|0.1.0"
     }
   ],
   "url": "http://www.health.gov.au/assessments/mbs/715",
-  "version": "0.1.0",
+  "version": "0.1.0-assembled",
   "name": "AboriginalTorresStraitIslanderHealthCheck",
   "title": "Aboriginal and Torres Strait Islander Health Check",
   "_title": {
@@ -3506,7 +3510,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%ConditionRepeat.onset.ofType(DateTime)"
+                        "expression": "%ConditionRepeat.onset.ofType(dateTime)"
                       }
                     }
                   ],
