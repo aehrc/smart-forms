@@ -32,12 +32,17 @@ import { isQuestionnaireParameter } from './TypePredicates';
  * @author Sean Fong
  */
 export default async function assemble(
-  parameters: AssembleInputParameters
+  parameters: AssembleInputParameters,
+  formsServerEndpoint: string
 ): Promise<AssembleOutputParameters | AssembleOutputParametersWithIssues> {
   const masterQuestionnaire = parameters.parameter[0].resource;
   const allCanonicals: string[] = [];
 
-  const assembledResult = await assembleQuestionnaire(masterQuestionnaire, allCanonicals);
+  const assembledResult = await assembleQuestionnaire(
+    masterQuestionnaire,
+    allCanonicals,
+    formsServerEndpoint
+  );
 
   return createOutputParameters(assembledResult);
 }
