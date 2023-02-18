@@ -22,6 +22,8 @@ import { QuestionnaireResponseProviderContext } from '../../App';
 import Form from './Form';
 import FormPreview from '../Preview/FormPreview';
 import QRSavedSnackbar from './QRSavedSnackbar';
+import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
+import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 
 function RendererBody() {
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
@@ -63,22 +65,26 @@ function RendererBody() {
           togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
         />
       ) : (
-        <Form
-          questionnaireResponse={questionnaireResponse}
-          tabIndex={tabIndex}
-          qrHasChanges={qrHasChanges}
-          setTabIndex={(newTabIndex) => setTabIndex(newTabIndex)}
-          removeQrHasChanges={() => setQrHasChanges(false)}
-          togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
-          updateQuestionnaireResponse={(newQuestionnaireResponse) => {
-            setQuestionnaireResponse(newQuestionnaireResponse);
-            setQrHasChanges(true);
-          }}
-          clearQuestionnaireResponse={(clearedQuestionnaireResponse) => {
-            setQuestionnaireResponse(clearedQuestionnaireResponse);
-            setQrHasChanges(true);
-          }}
-        />
+        <EnableWhenContextProvider>
+          <CalculatedExpressionContextProvider>
+            <Form
+              questionnaireResponse={questionnaireResponse}
+              tabIndex={tabIndex}
+              qrHasChanges={qrHasChanges}
+              setTabIndex={(newTabIndex) => setTabIndex(newTabIndex)}
+              removeQrHasChanges={() => setQrHasChanges(false)}
+              togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
+              updateQuestionnaireResponse={(newQuestionnaireResponse) => {
+                setQuestionnaireResponse(newQuestionnaireResponse);
+                setQrHasChanges(true);
+              }}
+              clearQuestionnaireResponse={(clearedQuestionnaireResponse) => {
+                setQuestionnaireResponse(clearedQuestionnaireResponse);
+                setQrHasChanges(true);
+              }}
+            />
+          </CalculatedExpressionContextProvider>
+        </EnableWhenContextProvider>
       )}
       <QRSavedSnackbar isDisplayed={!qrHasChanges} />
     </>

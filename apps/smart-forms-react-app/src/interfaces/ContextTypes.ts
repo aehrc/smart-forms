@@ -16,13 +16,17 @@
  */
 
 import {
+  Coding,
+  Expression,
   Patient,
   Practitioner,
+  Questionnaire,
+  QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
-import { EnableWhenItemProperties, EnableWhenItems } from './Interfaces';
+import { CalculatedExpression, EnableWhenItemProperties, EnableWhenItems } from './Interfaces';
 import { PageType } from './Enums';
 
 export type EnableWhenContextType = {
@@ -45,11 +49,6 @@ export type LaunchContextType = {
   setUser: (user: Practitioner) => unknown;
 };
 
-export type QuestionnaireActiveContextType = {
-  questionnaireActive: boolean;
-  setQuestionnaireActive: (questionnaireActive: boolean) => unknown;
-};
-
 export type PreviewModeContextType = {
   isPreviewMode: boolean;
   setIsPreviewMode: (previewMode: boolean) => unknown;
@@ -63,4 +62,18 @@ export type PageSwitcherContextType = {
 export type SideBarContextType = {
   isExpanded: boolean;
   setIsExpanded: (sideBarActive: boolean) => unknown;
+};
+
+export type AnswerValueSetContextType = {
+  cachedAnswerValueSets: Record<string, Coding[]>;
+  addCachedAnswerValueSet: (valueSetUrl: string, codings: Coding[]) => unknown;
+};
+
+export type CalculatedExpressionContextType = {
+  calculatedExpressions: Record<string, CalculatedExpression>;
+  updateCalculatedExpressions: (
+    questionnaire: Questionnaire,
+    questionnaireResponse: QuestionnaireResponse,
+    variables: Expression[]
+  ) => unknown;
 };

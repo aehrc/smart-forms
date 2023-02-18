@@ -18,7 +18,6 @@
 import React, { useContext, useState } from 'react';
 import ProgressSpinner from '../ProgressSpinner';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
-import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import RendererBody from './RendererBody';
@@ -93,11 +92,7 @@ function Renderer() {
     if (spinner.isLoading) {
       return <ProgressSpinner message={spinner.message} />;
     } else {
-      return (
-        <EnableWhenContextProvider>
-          <RendererBody />
-        </EnableWhenContextProvider>
-      );
+      return <RendererBody />;
     }
   };
 

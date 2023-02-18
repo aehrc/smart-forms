@@ -25,7 +25,6 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
-import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
@@ -33,6 +32,7 @@ import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
+import { CalculatedExpressionContext } from '../../../../custom-contexts/CalculatedExpressionContext';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,7 +45,7 @@ interface Props
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const calculatedExpressions = useContext(CalcExpressionContext);
+  const calculatedExpressionContext = useContext(CalculatedExpressionContext);
 
   const displayUnit = getTextDisplayUnit(qItem);
 
@@ -58,7 +58,7 @@ function QItemInteger(props: Props) {
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
-    const expression = calculatedExpressions[qItem.linkId];
+    const expression = calculatedExpressionContext.calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
       // only update questionnaireResponse if calculated value is different from current value
@@ -75,7 +75,7 @@ function QItemInteger(props: Props) {
         });
       }
     }
-  }, [calculatedExpressions]);
+  }, [calculatedExpressionContext.calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let newInput = event.target.value;

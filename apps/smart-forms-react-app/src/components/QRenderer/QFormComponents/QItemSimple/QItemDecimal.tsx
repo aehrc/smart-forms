@@ -26,7 +26,6 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
-import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
@@ -35,6 +34,7 @@ import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.style
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
+import { CalculatedExpressionContext } from '../../../../custom-contexts/CalculatedExpressionContext';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,13 +46,13 @@ interface Props
 
 function QItemDecimal(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const calculatedExpressions = useContext(CalcExpressionContext);
+  const calculatedExpressionContext = useContext(CalculatedExpressionContext);
 
   const precision = getDecimalPrecision(qItem);
   const displayUnit = getTextDisplayUnit(qItem);
 
   const calculatedExpression: CalculatedExpression | undefined =
-    calculatedExpressions[qItem.linkId];
+    calculatedExpressionContext.calculatedExpressions[qItem.linkId];
 
   let initialInput = '0';
   let valueDecimal = 0.0;
@@ -83,7 +83,7 @@ function QItemDecimal(props: Props) {
         });
       }
     }
-  }, [calculatedExpressions]);
+  }, [calculatedExpressionContext.calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;
