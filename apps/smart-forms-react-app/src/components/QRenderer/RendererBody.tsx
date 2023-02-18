@@ -33,6 +33,14 @@ function RendererBody() {
   const [tabIndex, setTabIndex] = useState<number | null>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
+  useEffect(() => {
+    window.addEventListener('beforeunload', (event) => {
+      if (qrHasChanges) {
+        event.returnValue = 'You have unfinished changes!';
+      }
+    });
+  }, [qrHasChanges]);
+
   // update QR state if QR is updated from the server
   // introduces two-way binding
   useEffect(() => {
