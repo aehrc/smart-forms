@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -35,6 +35,7 @@ import {
   updateQrOpenChoiceCheckboxAnswers
 } from '../../../../functions/OpenChoiceFunctions';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import { debounce } from 'lodash';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,7 +49,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   const qrOpenChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const answers = qrOpenChoiceCheckbox['answer'] ? qrOpenChoiceCheckbox['answer'] : [];
+  const answers = qrOpenChoiceCheckbox['answer'] ?? [];
   const answerOptions = qItem.answerOption;
 
   const openLabelText = getOpenLabelText(qItem);
@@ -65,39 +66,46 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   const [openLabelValue, setOpenLabelValue] = useState<string>(initialOpenLabelValue);
   const [openLabelChecked, setOpenLabelChecked] = useState<boolean>(initialOpenLabelChecked);
 
-  function handleValueChange(
-    changedOptionValue: string | null,
-    changedOpenLabelValue: string | null
-  ) {
-    if (!answerOptions) return null;
+  const handleValueChange = useCallback(
+    (changedOptionValue: string | null, changedOpenLabelValue: string | null) => {
+      if (!answerOptions) return null;
 
-    let updatedQrChoiceCheckbox: QuestionnaireResponseItem | null = null;
-    if (changedOptionValue) {
-      updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
-        changedOptionValue,
-        null,
-        answers,
-        answerOptions,
-        qrOpenChoiceCheckbox,
-        CheckBoxOptionType.AnswerOption,
-        isRepeated
-      );
-    } else if (changedOpenLabelValue !== null) {
-      updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
-        null,
-        changedOpenLabelValue,
-        answers,
-        answerOptions,
-        qrOpenChoiceCheckbox,
-        CheckBoxOptionType.AnswerOption,
-        isRepeated
-      );
-    }
+      let updatedQrChoiceCheckbox: QuestionnaireResponseItem | null = null;
+      if (changedOptionValue) {
+        updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
+          changedOptionValue,
+          null,
+          answers,
+          answerOptions,
+          qrOpenChoiceCheckbox,
+          CheckBoxOptionType.AnswerOption,
+          isRepeated
+        );
+      } else if (changedOpenLabelValue !== null) {
+        updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
+          null,
+          changedOpenLabelValue,
+          answers,
+          answerOptions,
+          qrOpenChoiceCheckbox,
+          CheckBoxOptionType.AnswerOption,
+          isRepeated
+        );
+      }
 
-    if (updatedQrChoiceCheckbox) {
-      onQrItemChange(updatedQrChoiceCheckbox);
-    }
-  }
+      if (updatedQrChoiceCheckbox) {
+        onQrItemChange(updatedQrChoiceCheckbox);
+      }
+    },
+    [answerOptions, answers, isRepeated, onQrItemChange, qrOpenChoiceCheckbox]
+  );
+
+  const updateOpenLabelValueWithDebounce = useCallback(
+    debounce((input: string) => {
+      handleValueChange(null, input);
+    }, 200),
+    [handleValueChange]
+  );
 
   const openChoiceCheckbox = (
     <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
@@ -149,8 +157,8 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
             setOpenLabelChecked(checked);
           }}
           onInputChange={(input) => {
-            handleValueChange(null, input);
             setOpenLabelValue(input);
+            updateOpenLabelValueWithDebounce(input);
           }}
         />
       ) : null}
