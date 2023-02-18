@@ -32,7 +32,6 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../QRenderer/Form';
 
 export interface Props {
   dialogOpen: boolean;
@@ -46,7 +45,6 @@ function ChangeQuestionnaireDialog(props: Props) {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const pageSwitcher = useContext(PageSwitcherContext);
   const launchContext = useContext(LaunchContext);
@@ -61,8 +59,7 @@ function ChangeQuestionnaireDialog(props: Props) {
       questionnaireResponseToSave = removeHiddenAnswers(
         questionnaireProvider.questionnaire,
         questionnaireResponseToSave,
-        enableWhenContext,
-        enableWhenChecksContext
+        enableWhenContext
       );
 
       setIsSaving(true);

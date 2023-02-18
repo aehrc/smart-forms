@@ -30,19 +30,24 @@ import {
 export const EnableWhenContext = React.createContext<EnableWhenContextType>({
   items: {},
   linkMap: {},
+  isActivated: true,
   setItems: () => void 0,
   updateItem: () => void 0,
-  checkItemIsEnabled: () => true
+  checkItemIsEnabled: () => true,
+  toggleActivation: () => void 0
 });
 
 function EnableWhenContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
+
+  const [isActivated, toggleActivation] = useState<boolean>(true);
   const [enableWhenItems, setEnableWhenItems] = useState<EnableWhenItems>({});
   const [linkedQuestionsMap, setLinkedQuestionsMap] = useState<Record<string, string[]>>({});
 
   const enableWhenContext: EnableWhenContextType = {
     items: enableWhenItems,
     linkMap: linkedQuestionsMap,
+    isActivated: isActivated,
     setItems: (items: EnableWhenItems, qrForm: QuestionnaireResponseItem) => {
       const linkedQuestionsMap = createLinkedQuestionsMap(items);
       const initialAnswers = readInitialAnswers(qrForm, linkedQuestionsMap);
@@ -88,7 +93,8 @@ function EnableWhenContextProvider(props: { children: React.ReactNode }) {
       }
       // always enable component when linkId not in enableWhenItems
       return true;
-    }
+    },
+    toggleActivation: (isToggled) => toggleActivation(isToggled)
   };
 
   return (

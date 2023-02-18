@@ -35,7 +35,6 @@ import { isSpecificItemControl } from '../../../functions/ItemControlFunctions';
 import QItemGroupTable from './QItemGroupTable';
 import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../Form';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -61,7 +60,6 @@ function QItemGroup(props: Props) {
   } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const qItems = qItem.item;
   const groupFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -73,7 +71,7 @@ function QItemGroup(props: Props) {
     setGroup(groupFromProps);
   }, [qrItem]);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) return null;
 
   const qItemsIndexMap = mapQItemsIndex(qItem);
 

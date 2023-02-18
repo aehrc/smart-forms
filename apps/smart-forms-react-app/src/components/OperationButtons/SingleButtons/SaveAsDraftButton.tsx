@@ -25,7 +25,6 @@ import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functio
 import Client from 'fhirclient/lib/Client';
 import { OperationChip } from '../../ChipBar/ChipBar.styles';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../../QRenderer/Form';
 import { SideBarContext } from '../../../custom-contexts/SideBarContext';
 import { SideBarIconButton } from '../../SideBar/SideBarBottom.styles';
 
@@ -53,7 +52,6 @@ function SaveAsDraftButton(props: Props) {
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
   const sideBar = useContext(SideBarContext);
 
   function handleClick() {
@@ -61,8 +59,7 @@ function SaveAsDraftButton(props: Props) {
     questionnaireResponseToSave = removeHiddenAnswers(
       questionnaireProvider.questionnaire,
       questionnaireResponseToSave,
-      enableWhenContext,
-      enableWhenChecksContext
+      enableWhenContext
     );
 
     saveQuestionnaireResponse(

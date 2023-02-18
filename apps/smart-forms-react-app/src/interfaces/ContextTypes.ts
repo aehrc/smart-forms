@@ -32,12 +32,14 @@ import { PageType } from './Enums';
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
   linkMap: Record<string, string[]>;
+  isActivated: boolean;
   setItems: (
     enableWhenItems: EnableWhenItems,
     questionnaireResponseForm: QuestionnaireResponseItem
   ) => unknown;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
   checkItemIsEnabled: (linkId: string) => boolean;
+  toggleActivation: (toggled: boolean) => unknown;
 };
 
 export type LaunchContextType = {

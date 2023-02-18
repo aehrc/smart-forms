@@ -41,7 +41,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { isHidden } from '../../../functions/QItemFunctions';
 import QItemGroupTableRow from './QItemGroupTableRow';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../Form';
 import { DeleteButtonTableCell, HeaderTableCell } from '../../StyledComponents/Table.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
@@ -56,7 +55,6 @@ function QItemGroupTable(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const emptyQrItem = createEmptyQrItem(qItem);
   const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =
@@ -71,7 +69,7 @@ function QItemGroupTable(props: Props) {
   // Check if there are columns within the group table
   if (!qItem.item || qItem.item.length === 0) return null;
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) return null;
 
   function handleRowsChange(newQrRow: QuestionnaireResponseItem, index: number) {
     const newQrRowItems = newQrRow.item;

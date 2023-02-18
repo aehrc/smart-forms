@@ -24,7 +24,6 @@ import QItemSwitcher from './QItemSwitcher';
 import { isHidden } from '../../../functions/QItemFunctions';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../Form';
 import { FirstTableCell, StandardTableCell } from '../../StyledComponents/Table.styles';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
@@ -36,7 +35,6 @@ function QItemGroupTableRow(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const qItemsIndexMap = mapQItemsIndex(qItem);
 
@@ -57,7 +55,7 @@ function QItemGroupTableRow(props: Props) {
     onQrItemChange(qrRow);
   }
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) return null;
   if (!rowItems || !rowQrItems) return null;
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);

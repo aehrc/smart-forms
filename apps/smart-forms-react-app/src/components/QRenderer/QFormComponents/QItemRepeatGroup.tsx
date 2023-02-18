@@ -33,7 +33,6 @@ import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.st
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../Form';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { nanoid } from 'nanoid';
@@ -48,7 +47,6 @@ function QItemRepeatGroup(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
@@ -63,7 +61,7 @@ function QItemRepeatGroup(props: Props) {
     }
   }, [qrItems]);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) return null;
 
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
     const newQrGroupItems = newQrGroup.item;

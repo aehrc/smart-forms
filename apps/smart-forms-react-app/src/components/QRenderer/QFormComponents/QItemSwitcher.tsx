@@ -37,7 +37,6 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/Interfaces';
 import { isHidden } from '../../../functions/QItemFunctions';
-import { EnableWhenChecksContext } from '../Form';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -55,7 +54,6 @@ interface Props
 function QItemSwitcher(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const handleQrItemChange = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
@@ -67,7 +65,7 @@ function QItemSwitcher(props: Props) {
     [enableWhenContext, onQrItemChange, qItem.linkId]
   );
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) return null;
 
   switch (qItem.type) {
     case QItemType.String:

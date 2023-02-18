@@ -7,7 +7,6 @@ import { isHidden } from '../../../functions/QItemFunctions';
 import { getShortText } from '../../../functions/ItemControlFunctions';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { QuestionnaireItem } from 'fhir/r5';
-import { EnableWhenChecksContext } from '../Form';
 import FormBodySingleTab from './FormBodySingleTab';
 
 interface Props {
@@ -21,7 +20,6 @@ function FormBodyTabList(props: Props) {
   const { qFormItems, tabIndex, tabsMarkedAsComplete, updateTabIndex } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
@@ -29,7 +27,7 @@ function FormBodyTabList(props: Props) {
         <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }} data-test="renderer-tab-list">
           <TransitionGroup>
             {qFormItems.map((qItem, i) => {
-              if (!isTab(qItem) || isHidden(qItem, enableWhenContext, enableWhenChecksContext)) {
+              if (!isTab(qItem) || isHidden(qItem, enableWhenContext)) {
                 return null;
               }
               return (
