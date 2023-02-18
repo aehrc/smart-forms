@@ -122,9 +122,9 @@ function QItemGroup(props: Props) {
                   </>
                 ) : null}
               </Box>
+              <Divider sx={{ mt: 1, mb: 1.5 }} light />
             </>
           )}
-          <Divider sx={{ mt: 1, mb: 1.5 }} light />
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItemOrItems = qrItemsByIndex[i];
 
