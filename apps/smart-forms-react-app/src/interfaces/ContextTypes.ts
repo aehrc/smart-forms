@@ -66,9 +66,9 @@ export type SideBarContextType = {
   setIsExpanded: (sideBarActive: boolean) => unknown;
 };
 
-export type AnswerValueSetContextType = {
-  cachedAnswerValueSets: Record<string, Coding[]>;
-  addCachedAnswerValueSet: (valueSetUrl: string, codings: Coding[]) => unknown;
+export type CachedQueriedValueSetContextType = {
+  cachedValueSetCodings: Record<string, Coding[]>;
+  addCodingToCache: (valueSetUrl: string, codings: Coding[]) => unknown;
 };
 
 export type CalculatedExpressionContextType = {

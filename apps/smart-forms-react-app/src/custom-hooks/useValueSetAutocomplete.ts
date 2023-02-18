@@ -15,20 +15,23 @@
  * limitations under the License.
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { Coding, ValueSet } from 'fhir/r5';
-import { AnswerValueSet } from '../classes/AnswerValueSet';
 import { debounce } from 'lodash';
+import { CachedQueriedValueSetContext } from '../custom-contexts/CachedValueSetContext';
+import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFunctions';
 
 function useValueSetAutocomplete(answerValueSetUrl: string | undefined, maxList: number) {
+  const { cachedValueSetCodings, addCodingToCache } = useContext(CachedQueriedValueSetContext);
+
   const [options, setOptions] = useState<Coding[]>([]);
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState<Error | null>(null);
 
-  const fetchNewOptions = useCallback(
-    (newInput: string) => {
+  const fetchOptions = useCallback(
+    (input: string) => {
       // make no changes if input is less than 2 characters long
-      if (newInput.length < 2) {
+      if (input.length < 2) {
         setOptions([]);
         setLoading(false);
         return;
@@ -36,44 +39,52 @@ function useValueSetAutocomplete(answerValueSetUrl: string | undefined, maxList:
 
       if (!answerValueSetUrl) return null;
 
+      // restructure url to include filter and count parameters
       const UrlWithTrailingAmpersand =
         answerValueSetUrl + (answerValueSetUrl[answerValueSetUrl.length - 1] !== '&' ? '&' : '');
-      const fullUrl = UrlWithTrailingAmpersand + 'filter=' + newInput + '&count=' + maxList;
-      const cachedAnswerOptions = AnswerValueSet.cache[fullUrl];
-      if (cachedAnswerOptions) {
-        // set options from cached answer options
-        setOptions(cachedAnswerOptions);
+      const fullUrl = UrlWithTrailingAmpersand + 'filter=' + input + '&count=' + maxList;
+
+      const cachedCodings = cachedValueSetCodings[fullUrl];
+
+      // set options from cached codings if present
+      if (cachedCodings) {
+        setOptions(cachedCodings);
         setLoading(false);
-      } else {
-        // expand valueSet, then set and cache answer options
-        AnswerValueSet.expand(
-          fullUrl,
-          (newOptions: ValueSet) => {
-            const contains = newOptions.expansion?.contains;
-            if (contains) {
-              const answerOptions = AnswerValueSet.getValueCodings(contains);
-              AnswerValueSet.cache[fullUrl] = answerOptions;
-              setOptions(answerOptions);
-            } else {
-              setOptions([]);
+        return;
+      }
+
+      // expand valueSet, then set and cache answer options
+      const promise = getValueSetPromise(fullUrl);
+      if (promise) {
+        promise
+          .then((valueSet: ValueSet) => {
+            const codings = getValueSetCodings(valueSet);
+            if (codings.length > 0) {
+              addCodingToCache(fullUrl, codings);
             }
+            setOptions(codings);
             setLoading(false);
-          },
-          (error: Error) => {
+          })
+          .catch((error: Error) => {
             setServerError(error);
-          }
-        );
+            setOptions([]);
+            setLoading(false);
+          });
+      } else {
+        // default to empty array options
+        setOptions([]);
+        setLoading(false);
       }
     },
-    [answerValueSetUrl, maxList]
+    [addCodingToCache, answerValueSetUrl, cachedValueSetCodings, maxList]
   );
 
   // search questionnaires from input with delay
   const searchResultsWithDebounce = useCallback(
     debounce((input: string) => {
-      fetchNewOptions(input);
+      fetchOptions(input);
     }, 200),
-    [fetchNewOptions]
+    [fetchOptions]
   );
 
   return {

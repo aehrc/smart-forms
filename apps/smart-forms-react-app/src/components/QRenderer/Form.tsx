@@ -17,7 +17,7 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { Divider, Grid } from '@mui/material';
-import { QuestionnaireResponse, QuestionnaireResponseItem, ValueSet } from 'fhir/r5';
+import { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import RendererDebugBar from '../DebugComponents/RendererDebugBar';
@@ -36,7 +36,8 @@ import { SideBarContext } from '../../custom-contexts/SideBarContext';
 import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../custom-contexts/CalculatedExpressionContext';
 
-export const ContainedValueSetContext = React.createContext<Record<string, ValueSet>>({});
+export const PreprocessedValueSetContext = React.createContext<Record<string, Coding[]>>({});
+
 interface Props {
   questionnaireResponse: QuestionnaireResponse;
   tabIndex: number | null;
@@ -64,8 +65,8 @@ function Form(props: Props) {
   const enableWhen = useContext(EnableWhenContext);
   const sideBar = useContext(SideBarContext);
 
-  const [containedValueSets] = useState<Record<string, ValueSet>>(
-    questionnaireProvider.containedValueSets
+  const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
+    questionnaireProvider.preprocessedValueSetCodings
   );
 
   // These states below are only for debugging purposes
@@ -103,7 +104,7 @@ function Form(props: Props) {
 
   if (qForm.item && qrForm.item) {
     return (
-      <ContainedValueSetContext.Provider value={containedValueSets}>
+      <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
         <Grid container>
           <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
             <SideBar>
@@ -174,7 +175,7 @@ function Form(props: Props) {
           hideQResponse={hideQResponse}
           toggleHideQResponse={(checked) => setHideQResponse(checked)}
         />
-      </ContainedValueSetContext.Provider>
+      </PreprocessedValueSetContext.Provider>
     );
   } else {
     return <FormBodyInvalid />;
