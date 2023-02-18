@@ -68,7 +68,7 @@ function QItemString(props: Props) {
       } else {
         onQrItemChange(createEmptyQrItem(qItem));
       }
-    }, 300),
+    }, 200),
     [onQrItemChange, qItem]
   );
 
