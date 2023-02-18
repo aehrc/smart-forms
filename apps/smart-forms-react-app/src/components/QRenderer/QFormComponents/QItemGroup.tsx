@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Box, Card, Divider, IconButton, Tooltip } from '@mui/material';
 import { QItemType } from '../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
@@ -68,24 +68,25 @@ function QItemGroup(props: Props) {
   const [group, setGroup] = useState(groupFromProps);
 
   useEffect(() => {
-    setGroup(groupFromProps);
+    const groupStateIsSame = JSON.stringify(group) === JSON.stringify(groupFromProps);
+    if (!groupStateIsSame) {
+      setGroup(groupFromProps);
+    }
   }, [qrItem]);
 
-  if (isHidden(qItem, enableWhenContext)) return null;
+  const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  const qItemsIndexMap = mapQItemsIndex(qItem);
+  if (isHidden(qItem, enableWhenContext)) return null;
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     const qrGroup: QuestionnaireResponseItem = { ...group };
     updateLinkedItem(newQrItem, null, qrGroup, qItemsIndexMap);
-    setGroup(qrGroup);
     onQrItemChange(qrGroup);
   }
 
   function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
     const qrGroup: QuestionnaireResponseItem = { ...group };
     updateLinkedItem(null, qrRepeatGroup, qrGroup, qItemsIndexMap);
-    setGroup(qrGroup);
     onQrItemChange(qrGroup);
   }
 

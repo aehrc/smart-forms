@@ -84,13 +84,11 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
  */
 export function isHidden(
   qItem: QuestionnaireItem,
-  enableWhenContext: EnableWhenContextType,
-  enableWhenChecksEnabled: boolean
+  enableWhenContext: EnableWhenContextType
 ): boolean {
   if (hasHiddenExtension(qItem)) return true;
 
-  // only for testing
-  if (enableWhenChecksEnabled) {
+  if (enableWhenContext.isActivated) {
     if (!enableWhenContext.checkItemIsEnabled(qItem.linkId)) return true; // preserve this line in final build
   }
 
