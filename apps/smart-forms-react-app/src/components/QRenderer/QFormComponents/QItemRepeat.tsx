@@ -95,7 +95,7 @@ function QItemRepeat(props: Props) {
     setAnswerIds(updatedIds);
 
     const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));
-    onQrItemChange({ ...qrRepeat, answer: answersWithValues });
+    onQrItemChange({ ...createEmptyQrItem(qItem), answer: answersWithValues });
   }
 
   return (

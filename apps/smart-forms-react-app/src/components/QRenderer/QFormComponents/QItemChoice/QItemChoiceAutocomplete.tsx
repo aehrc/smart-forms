@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import React, { memo, SyntheticEvent } from 'react';
-import { Autocomplete, CircularProgress, Grid, Typography } from '@mui/material';
+import React, { memo, SyntheticEvent, useState } from 'react';
+import { Autocomplete, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
@@ -25,12 +25,17 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import SearchIcon from '@mui/icons-material/Search';
+import useDebounce from '../../../../custom-hooks/useDebounce';
+import useOntoserverQuery from '../../../../custom-hooks/useOntoserverQuery';
+import InfoIcon from '@mui/icons-material/Info';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorIcon from '@mui/icons-material/Error';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -42,35 +47,39 @@ interface Props
 
 function QItemChoiceAutocomplete(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const qrOpenChoice = qrItem ? qrItem : createEmptyQrItem(qItem);
+  const qrChoice = qrItem ?? createEmptyQrItem(qItem);
 
   let valueCoding: Coding | undefined;
-  if (qrOpenChoice['answer']) {
-    valueCoding = qrOpenChoice['answer'][0].valueCoding;
+  if (qrChoice['answer']) {
+    valueCoding = qrChoice['answer'][0].valueCoding;
   }
 
   const answerValueSetUrl = qItem.answerValueSet;
   const maxList = 10;
 
-  const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
-    useValueSetAutocomplete(answerValueSetUrl, maxList);
+  const [input, setInput] = useState('');
+  const debouncedInput = useDebounce(input, 200);
+
+  const { options, loading, feedback } = useOntoserverQuery(
+    answerValueSetUrl,
+    maxList,
+    input,
+    debouncedInput
+  );
 
   if (!answerValueSetUrl) return null;
 
   function handleValueChange(event: SyntheticEvent<Element, Event>, newValue: Coding | null) {
-    if (newValue) {
-      onQrItemChange({
-        ...qrOpenChoice,
-        answer: [{ valueCoding: newValue }]
-      });
+    if (newValue === null) {
+      setInput('');
+      onQrItemChange(createEmptyQrItem(qItem));
       return;
     }
-    onQrItemChange(createEmptyQrItem(qItem));
-  }
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setLoading(true);
-    searchResultsWithDebounce(event.target.value);
+    onQrItemChange({
+      ...createEmptyQrItem(qItem),
+      answer: [{ valueCoding: newValue }]
+    });
   }
 
   const choiceAutocomplete = (
@@ -79,7 +88,6 @@ function QItemChoiceAutocomplete(props: Props) {
         id={qItem.id}
         value={valueCoding ?? null}
         options={options}
-        noOptionsText={'Try typing something else?'}
         getOptionLabel={(option) => `${option.display}`}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         loading={loading}
@@ -92,7 +100,7 @@ function QItemChoiceAutocomplete(props: Props) {
         renderInput={(params) => (
           <StandardTextField
             {...params}
-            onChange={handleInputChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
             isTabled={isTabled}
             InputProps={{
               ...params.InputProps,
@@ -105,7 +113,22 @@ function QItemChoiceAutocomplete(props: Props) {
               ),
               endAdornment: (
                 <>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                  {loading ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : feedback ? (
+                    <Fade in={!!feedback} timeout={300}>
+                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
+                        {
+                          {
+                            info: <InfoIcon fontSize="small" color="info" />,
+                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                            success: <DoneIcon fontSize="small" color="success" />,
+                            error: <ErrorIcon fontSize="small" color="error" />
+                          }[feedback.color]
+                        }
+                      </Tooltip>
+                    </Fade>
+                  ) : null}
                   {params.InputProps.endAdornment}
                 </>
               )
@@ -113,12 +136,6 @@ function QItemChoiceAutocomplete(props: Props) {
           />
         )}
       />
-
-      {serverError ? (
-        <Typography variant="subtitle2">
-          There was an error fetching results from the terminology server.
-        </Typography>
-      ) : null}
     </>
   );
 

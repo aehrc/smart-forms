@@ -2,7 +2,7 @@ import { Coding, ValueSet } from 'fhir/r5';
 import * as FHIR from 'fhirclient';
 import { ValueSetPromise } from 'sdc-populate/lib/Interfaces';
 
-export function getValueSetPromise(url: string): Promise<ValueSet> | null {
+export function getValueSetPromise(url: string): Promise<ValueSet> {
   const ontoserver = process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
 
   const valueSetUrl = url.includes('ValueSet/$expand?url=')

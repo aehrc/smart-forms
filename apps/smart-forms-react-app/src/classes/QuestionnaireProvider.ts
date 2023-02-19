@@ -168,12 +168,9 @@ export class QuestionnaireProvider {
     const valueSetUrl = item.answerValueSet;
     if (valueSetUrl) {
       if (!valueSetPromiseMap[valueSetUrl] && !valueSetUrl.startsWith('#')) {
-        const promise = getValueSetPromise(valueSetUrl);
-        if (promise) {
-          valueSetPromiseMap[valueSetUrl] = {
-            promise: promise
-          };
-        }
+        valueSetPromiseMap[valueSetUrl] = {
+          promise: getValueSetPromise(valueSetUrl)
+        };
       }
     }
   }
