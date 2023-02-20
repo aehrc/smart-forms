@@ -60,8 +60,8 @@ export type PageSwitcherContextType = {
 };
 
 export type SideBarContextType = {
-  isExpanded: boolean;
-  setIsExpanded: (sideBarActive: boolean) => unknown;
+  sideBarIsExpanded: boolean;
+  setSideBarIsExpanded: (sideBarActive: boolean) => unknown;
 };
 
 export type CachedQueriedValueSetContextType = {

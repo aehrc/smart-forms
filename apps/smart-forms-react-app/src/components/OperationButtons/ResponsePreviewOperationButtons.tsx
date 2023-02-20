@@ -29,9 +29,10 @@ interface Props {
 
 function ResponsePreviewOperationButtons(props: Props) {
   const { isChip } = props;
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const launch = useContext(LaunchContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const { fhirClient, patient, user } = useContext(LaunchContext);
   return (
     <>
       <BackToPickerButton isChip={isChip} />
@@ -39,17 +40,17 @@ function ResponsePreviewOperationButtons(props: Props) {
         <EditResponseButton isChip={isChip} />
       )}
 
-      {launch.fhirClient &&
-      launch.user &&
-      launch.patient &&
+      {fhirClient &&
+      user &&
+      patient &&
       questionnaireProvider.source === QuestionnaireSource.Remote &&
       questionnaireResponseProvider.questionnaireResponse.status !== 'completed' ? (
         <SaveAsFinalButton
           isChip={isChip}
           questionnaireResponse={questionnaireResponseProvider.questionnaireResponse}
-          fhirClient={launch.fhirClient}
-          patient={launch.patient}
-          user={launch.user}
+          fhirClient={fhirClient}
+          patient={patient}
+          user={user}
           removeQrHasChanges={() => ({})}
         />
       ) : null}

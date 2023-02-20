@@ -26,17 +26,17 @@ import ResponsePreview from './Preview/ResponsePreview';
 import SideBarContextProvider from '../custom-contexts/SideBarContext';
 
 function PageSwitcher() {
-  const pageSwitcher = useContext(PageSwitcherContext);
+  const { currentPage, goToPage } = useContext(PageSwitcherContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   useEffect(() => {
     if (!questionnaireProvider.questionnaire.item) {
-      pageSwitcher.goToPage(PageType.Picker);
+      goToPage(PageType.Picker);
     }
   }, []);
 
   function RenderPage() {
-    switch (pageSwitcher.currentPage) {
+    switch (currentPage) {
       case PageType.ResponsePreview:
         return <ResponsePreview />;
       case PageType.Picker:

@@ -36,8 +36,9 @@ interface Props {
 }
 function FormPreview(props: Props) {
   const { questionnaireResponse, qrHasChanges, removeQrHasChanges, togglePreviewMode } = props;
+
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return null;
@@ -48,7 +49,7 @@ function FormPreview(props: Props) {
   if (qForm.item && qrForm.item) {
     return (
       <Grid container>
-        <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
+        <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
           <SideBar>
             <FormPreviewOperationButtons
               togglePreviewMode={togglePreviewMode}
@@ -58,7 +59,7 @@ function FormPreview(props: Props) {
             />
           </SideBar>
         </SideBarGrid>
-        <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
+        <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
           <MainGridContainerBox>
             <MainGridHeadingTypography variant="h1">Preview</MainGridHeadingTypography>
             <ChipBar>

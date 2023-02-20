@@ -26,7 +26,7 @@ import { populateQuestionnaire } from '../../functions/populate-functions/Prepop
 function Renderer() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const launch = useContext(LaunchContext);
+  const { fhirClient, patient, user } = useContext(LaunchContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
   const questionnaireResponse = questionnaireResponseProvider.questionnaireResponse;
@@ -38,11 +38,8 @@ function Renderer() {
     );
   }
 
-  const client = launch.fhirClient;
-  const patient = launch.patient;
-  const user = launch.user;
   const spinnerInitialState =
-    client && patient && user && !questionnaireResponse.id
+    fhirClient && patient && user && !questionnaireResponse.id
       ? {
           isLoading: true,
           message: 'Populating questionnaire form'
@@ -58,7 +55,7 @@ function Renderer() {
   // 4. QuestionnaireResponse is not from a saved draft response
   const qrFormItem = questionnaireResponse.item?.[0].item;
   if (
-    client &&
+    fhirClient &&
     patient &&
     user &&
     spinner.isLoading &&
@@ -68,7 +65,7 @@ function Renderer() {
   ) {
     // obtain questionnaireResponse for pre-population
     populateQuestionnaire(
-      client,
+      fhirClient,
       questionnaire,
       patient,
       user,

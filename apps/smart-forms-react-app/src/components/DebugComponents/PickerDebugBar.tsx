@@ -29,13 +29,13 @@ type Props = {
 function PickerDebugBar(props: Props) {
   const { questionnaireIsSearching, questionnaireSourceIsLocal, toggleQuestionnaireSource } = props;
 
-  const launch = useContext(LaunchContext);
+  const { fhirClient } = useContext(LaunchContext);
   return (
     <DebugBarContainerBox>
       <FormControlLabel
         control={
           <Switch
-            disabled={questionnaireIsSearching || launch.fhirClient === null}
+            disabled={questionnaireIsSearching || fhirClient === null}
             checked={questionnaireSourceIsLocal}
             onChange={() => toggleQuestionnaireSource()}
           />

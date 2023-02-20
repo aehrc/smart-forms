@@ -31,11 +31,11 @@ interface Props {
 
 function EditResponseButton(props: Props) {
   const { isChip } = props;
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const sideBar = useContext(SideBarContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   function handleClick() {
-    pageSwitcher.goToPage(PageType.Renderer);
+    goToPage(PageType.Renderer);
   }
 
   const buttonTitle = 'Edit Response';
@@ -74,7 +74,7 @@ function EditResponseButton(props: Props) {
     </Box>
   );
 
-  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
+  return <>{isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default EditResponseButton;

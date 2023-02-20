@@ -52,8 +52,8 @@ function PickerQuestionnaireCard(props: Props) {
   } = props;
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const launch = useContext(LaunchContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { fhirClient } = useContext(LaunchContext);
 
   const [createNewResponseButtonLoading, setCreateNewResponseButtonLoading] = useState(false);
 
@@ -63,7 +63,7 @@ function PickerQuestionnaireCard(props: Props) {
       await questionnaireProvider.setQuestionnaire(
         selectedQuestionnaire,
         questionnaireSourceIsLocal,
-        launch.fhirClient
+        fhirClient
       );
       setCreateNewResponseButtonLoading(false);
       if (selectedQuestionnaire.item && selectedQuestionnaire.item.length > 0) {
@@ -72,7 +72,7 @@ function PickerQuestionnaireCard(props: Props) {
         );
       }
 
-      pageSwitcher.goToPage(PageType.Renderer);
+      goToPage(PageType.Renderer);
     }
   }
 

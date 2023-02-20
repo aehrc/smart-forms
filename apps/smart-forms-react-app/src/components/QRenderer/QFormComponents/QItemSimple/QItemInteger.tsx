@@ -45,7 +45,7 @@ interface Props
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const calculatedExpressionContext = useContext(CalculatedExpressionContext);
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
   const displayUnit = getTextDisplayUnit(qItem);
 
@@ -58,7 +58,7 @@ function QItemInteger(props: Props) {
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
-    const expression = calculatedExpressionContext.calculatedExpressions[qItem.linkId];
+    const expression = calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
       // only update questionnaireResponse if calculated value is different from current value
@@ -75,7 +75,7 @@ function QItemInteger(props: Props) {
         });
       }
     }
-  }, [calculatedExpressionContext.calculatedExpressions]);
+  }, [calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let newInput = event.target.value;

@@ -55,7 +55,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
   } = props;
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const pageSwitcher = useContext(PageSwitcherContext);
+  const { goToPage } = useContext(PageSwitcherContext);
 
   const enableWhenContext = useContext(EnableWhenContext);
 
@@ -81,7 +81,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
       .then((savedResponse) => {
         questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
         removeQrHasChanges();
-        pageSwitcher.goToPage(PageType.Picker);
+        goToPage(PageType.Picker);
         handleClose();
         setIsSaving(false);
       })

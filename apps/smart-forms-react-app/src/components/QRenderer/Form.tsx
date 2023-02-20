@@ -55,11 +55,13 @@ function Form(props: Props) {
     updateQuestionnaireResponse,
     clearQuestionnaireResponse
   } = props;
+
+  const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
+
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const calculatedExpression = useContext(CalculatedExpressionContext);
-  const enableWhen = useContext(EnableWhenContext);
-  const sideBar = useContext(SideBarContext);
+  const enableWhenContext = useContext(EnableWhenContext);
 
   const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
     questionnaireProvider.preprocessedValueSetCodings
@@ -73,7 +75,7 @@ function Form(props: Props) {
   };
 
   useEffect(() => {
-    enableWhen.setItems(questionnaireProvider.enableWhenItems, qrForm);
+    enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
   }, []);
 
   const questionnaire = questionnaireProvider.questionnaire;
@@ -88,10 +90,7 @@ function Form(props: Props) {
       item: [newQrForm]
     };
 
-    calculatedExpression.updateCalculatedExpressions(
-      questionnaireResponse,
-      questionnaireProvider.variables
-    );
+    updateCalculatedExpressions(questionnaireResponse, questionnaireProvider.variables);
 
     questionnaireResponseProvider.setQuestionnaireResponse(newQuestionnaireResponse);
     updateQuestionnaireResponse(newQuestionnaireResponse);
@@ -101,7 +100,7 @@ function Form(props: Props) {
     return (
       <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
         <Grid container>
-          <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
+          <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
             <SideBar>
               <RendererOperationButtons
                 qrHasChanges={qrHasChanges}
@@ -111,7 +110,7 @@ function Form(props: Props) {
               />
             </SideBar>
           </SideBarGrid>
-          <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
+          <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
             <MainGridContainerBox>
               <MainGridHeadingTypography variant="h1" data-test="renderer-heading">
                 <QTitle questionnaire={questionnaire} />

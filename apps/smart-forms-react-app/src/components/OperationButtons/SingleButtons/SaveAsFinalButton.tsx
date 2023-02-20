@@ -48,7 +48,7 @@ function SaveAsFinalButton(props: Props) {
     user
   } = props;
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const questionnaireResponseIsSaved: boolean =
     !!questionnaireResponseProvider.questionnaireResponse.authored &&
@@ -117,7 +117,7 @@ function SaveAsFinalButton(props: Props) {
 
   return (
     <>
-      {isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}
+      {isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}
       <ConfirmSaveAsFinalDialog
         dialogOpen={dialogOpen}
         closeDialog={() => setDialogOpen(false)}

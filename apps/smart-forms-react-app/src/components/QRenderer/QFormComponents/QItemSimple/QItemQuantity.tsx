@@ -41,7 +41,7 @@ interface Props
 
 function QItemQuantity(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const calculatedExpressionContext = useContext(CalculatedExpressionContext);
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
   let qrQuantity = qrItem ? qrItem : createEmptyQrItem(qItem);
   let valueQuantity: number | undefined = 0.0;
@@ -54,7 +54,7 @@ function QItemQuantity(props: Props) {
   }
 
   useEffect(() => {
-    const expression = calculatedExpressionContext.calculatedExpressions[qItem.linkId];
+    const expression = calculatedExpressions[qItem.linkId];
 
     if (expression && expression.value) {
       onQrItemChange({
@@ -62,7 +62,7 @@ function QItemQuantity(props: Props) {
         answer: [{ valueQuantity: { value: expression.value, unit: unitQuantity } }]
       });
     }
-  }, [calculatedExpressionContext.calculatedExpressions]);
+  }, [calculatedExpressions]);
 
   function handleValueChange(event: React.ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;

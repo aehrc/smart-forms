@@ -27,7 +27,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function SideBarBottom() {
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded, setSideBarIsExpanded } = useContext(SideBarContext);
 
   return (
     <Grid container alignItems="center">
@@ -49,7 +49,7 @@ function SideBarBottom() {
         <SideBarExpandButtonBox>
           <Tooltip title="Collapse Sidebar" placement="right">
             <span>
-              <SideBarIconButton onClick={() => sideBar.setIsExpanded(!sideBar.isExpanded)}>
+              <SideBarIconButton onClick={() => setSideBarIsExpanded(!sideBarIsExpanded)}>
                 <KeyboardDoubleArrowLeftIcon fontSize="small" />
               </SideBarIconButton>
             </span>

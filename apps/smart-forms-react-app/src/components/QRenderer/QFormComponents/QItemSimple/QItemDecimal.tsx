@@ -46,13 +46,13 @@ interface Props
 
 function QItemDecimal(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const calculatedExpressionContext = useContext(CalculatedExpressionContext);
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
   const precision = getDecimalPrecision(qItem);
   const displayUnit = getTextDisplayUnit(qItem);
 
   const calculatedExpression: CalculatedExpression | undefined =
-    calculatedExpressionContext.calculatedExpressions[qItem.linkId];
+    calculatedExpressions[qItem.linkId];
 
   let initialInput = '0';
   let valueDecimal = 0.0;
@@ -83,7 +83,7 @@ function QItemDecimal(props: Props) {
         });
       }
     }
-  }, [calculatedExpressionContext.calculatedExpressions]);
+  }, [calculatedExpressions]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;

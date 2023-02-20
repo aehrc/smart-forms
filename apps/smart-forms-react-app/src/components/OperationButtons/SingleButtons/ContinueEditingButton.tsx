@@ -30,7 +30,7 @@ interface Props {
 
 function ContinueEditingButton(props: Props) {
   const { isChip, togglePreviewMode } = props;
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   function handleClick() {
     togglePreviewMode();
@@ -72,7 +72,7 @@ function ContinueEditingButton(props: Props) {
     </Box>
   );
 
-  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
+  return <>{isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default ContinueEditingButton;

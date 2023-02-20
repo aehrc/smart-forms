@@ -37,7 +37,7 @@ function FormPreviewOperationButtons(props: Props) {
   const { isChip, qrHasChanges, removeQrHasChanges, togglePreviewMode, questionnaireResponse } =
     props;
 
-  const launch = useContext(LaunchContext);
+  const { fhirClient, patient, user } = useContext(LaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   return (
     <>
@@ -48,9 +48,9 @@ function FormPreviewOperationButtons(props: Props) {
         questionnaireResponse={questionnaireResponse}
       />
       <ContinueEditingButton isChip={isChip} togglePreviewMode={togglePreviewMode} />
-      {launch.fhirClient &&
-      launch.user &&
-      launch.patient &&
+      {fhirClient &&
+      user &&
+      patient &&
       questionnaireProvider.source === QuestionnaireSource.Remote ? (
         <>
           <SaveAsDraftButton
@@ -58,18 +58,18 @@ function FormPreviewOperationButtons(props: Props) {
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
             questionnaireResponse={questionnaireResponse}
-            fhirClient={launch.fhirClient}
-            patient={launch.patient}
-            user={launch.user}
+            fhirClient={fhirClient}
+            patient={patient}
+            user={user}
           />
           <SaveAsFinalButton
             isChip={isChip}
             qrHasChanges={qrHasChanges}
             removeQrHasChanges={removeQrHasChanges}
             questionnaireResponse={questionnaireResponse}
-            fhirClient={launch.fhirClient}
-            patient={launch.patient}
-            user={launch.user}
+            fhirClient={fhirClient}
+            patient={patient}
+            user={user}
           />
         </>
       ) : null}

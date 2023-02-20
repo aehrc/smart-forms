@@ -31,11 +31,11 @@ interface Props {
 
 function BackToPickerButton(props: Props) {
   const { isChip } = props;
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const sideBar = useContext(SideBarContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   function handleClick() {
-    pageSwitcher.goToPage(PageType.Picker);
+    goToPage(PageType.Picker);
   }
 
   const buttonTitle = 'Back to Questionnaires';
@@ -74,7 +74,7 @@ function BackToPickerButton(props: Props) {
     </Box>
   );
 
-  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
+  return <>{isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default BackToPickerButton;

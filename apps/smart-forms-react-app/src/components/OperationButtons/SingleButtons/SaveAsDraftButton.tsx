@@ -52,7 +52,7 @@ function SaveAsDraftButton(props: Props) {
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   function handleClick() {
     let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
@@ -114,7 +114,7 @@ function SaveAsDraftButton(props: Props) {
     </Box>
   );
 
-  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
+  return <>{isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default SaveAsDraftButton;

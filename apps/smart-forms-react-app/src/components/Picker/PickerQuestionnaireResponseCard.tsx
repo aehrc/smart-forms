@@ -54,8 +54,8 @@ function PickerQuestionnaireResponseCard(props: Props) {
   } = props;
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const launch = useContext(LaunchContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { fhirClient } = useContext(LaunchContext);
 
   const [viewResponseButtonLoading, setViewResponseButtonLoading] = useState(false);
 
@@ -69,25 +69,25 @@ function PickerQuestionnaireResponseCard(props: Props) {
         questionnaireProvider.setQuestionnaire(
           selectedQuestionnaire,
           questionnaireSourceIsLocal,
-          launch.fhirClient
+          fhirClient
         );
-        pageSwitcher.goToPage(PageType.ResponsePreview);
+        goToPage(PageType.ResponsePreview);
       } else {
         const questionnaireReference =
           questionnaireResponses[selectedQuestionnaireResponseIndex].questionnaire;
         if (!questionnaireReference) return null;
 
-        if (launch.fhirClient) {
+        if (fhirClient) {
           setViewResponseButtonLoading(true);
-          loadQuestionnaireFromResponse(launch.fhirClient, questionnaireReference)
+          loadQuestionnaireFromResponse(fhirClient, questionnaireReference)
             .then((questionnaire) => {
               questionnaireProvider.setQuestionnaire(
                 questionnaire,
                 questionnaireSourceIsLocal,
-                launch.fhirClient
+                fhirClient
               );
               setViewResponseButtonLoading(false);
-              pageSwitcher.goToPage(PageType.ResponsePreview);
+              goToPage(PageType.ResponsePreview);
             })
             .catch(() => setViewResponseButtonLoading(false));
         }
