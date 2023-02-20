@@ -356,7 +356,7 @@ describe('open choice component behaviour', () => {
       cy.getByData('response-item-answer').contains(expectedAnswerSecond);
     });
 
-    it.only('reflects changes in questionnaire response on open label input', () => {
+    it('reflects changes in questionnaire response on open label input', () => {
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
         .eq(0)

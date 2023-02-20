@@ -170,17 +170,10 @@ describe('choice component behaviour', () => {
       const expectedAnswerSecond = 'Other';
 
       beforeEach(() => {
-        cy.intercept(
-          'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender'
-        ).as('ontoserverExpand');
-
         cy.getByData('renderer-tab-list')
           .find('.MuiButtonBase-root')
           .contains('Patient Details')
           .click();
-
-        // wait for valueSet to be expanded
-        cy.wait('@ontoserverExpand');
       });
 
       it('reflects changes in questionnaire response on selection of first radio button', () => {
@@ -463,17 +456,10 @@ describe('choice component behaviour', () => {
       const secondInput = 'Northern Territory';
 
       beforeEach(() => {
-        cy.intercept(
-          'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2'
-        ).as('ontoserverExpand');
-
         cy.getByData('renderer-tab-list')
           .find('.MuiButtonBase-root')
           .contains('Patient Details')
           .click();
-
-        // wait for valueSet to be expanded
-        cy.wait('@ontoserverExpand');
       });
 
       it('reflects changes in questionnaire response on input', () => {

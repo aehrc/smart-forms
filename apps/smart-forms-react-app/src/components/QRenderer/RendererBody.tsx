@@ -33,6 +33,7 @@ function RendererBody() {
     questionnaireResponseProvider.questionnaireResponse
   );
   const [qrHasChanges, setQrHasChanges] = useState(false);
+  const [tabIndex, setTabIndex] = useState<number | null>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   useEffect(() => {
@@ -70,7 +71,9 @@ function RendererBody() {
             <CachedQueriedValueSetContextProvider>
               <Form
                 questionnaireResponse={questionnaireResponse}
+                tabIndex={tabIndex}
                 qrHasChanges={qrHasChanges}
+                setTabIndex={(newTabIndex) => setTabIndex(newTabIndex)}
                 removeQrHasChanges={() => setQrHasChanges(false)}
                 togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
                 updateQuestionnaireResponse={(newQuestionnaireResponse) => {

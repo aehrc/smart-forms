@@ -15,39 +15,30 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
 import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../functions/IndexFunctions';
 import QItemGroup from './QFormComponents/QItemGroup';
-import {
-  constructTabsWithProperties,
-  getIndexOfFirstTab,
-  isTab
-} from '../../functions/TabFunctions';
+import { constructTabsWithProperties, isTab } from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import FormBodyTabList from './Tabs/FormBodyTabList';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
+  tabIndex: number;
+  setTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabbed(props: Props) {
-  const { qForm, qrForm, onQrItemChange } = props;
+  const { qForm, qrForm, tabIndex, setTabIndex, onQrItemChange } = props;
 
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
-
-  let initialTabIndex = 0;
-  if (qFormItems) {
-    initialTabIndex = getIndexOfFirstTab(qFormItems);
-  }
-
-  const [tabIndex, setTabIndex] = useState<number>(initialTabIndex);
 
   const initialTabs = useMemo(() => constructTabsWithProperties(qFormItems), [qFormItems]);
   const [tabs, setTabs] =
@@ -57,10 +48,6 @@ function FormBodyTabbed(props: Props) {
     updateLinkedItem(qrItem, null, qrForm, indexMap);
     onQrItemChange(qrForm);
   }
-
-  const updateTabIndex = useCallback((newTabIndex: number) => {
-    setTabIndex(newTabIndex);
-  }, []);
 
   if (qFormItems && qrFormItems) {
     const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems, indexMap);
@@ -73,7 +60,7 @@ function FormBodyTabbed(props: Props) {
               qFormItems={qFormItems}
               tabIndex={tabIndex}
               tabs={tabs}
-              updateTabIndex={updateTabIndex}
+              updateTabIndex={(newTabIndex: number) => setTabIndex(newTabIndex)}
             />
           </Grid>
 
@@ -106,7 +93,7 @@ function FormBodyTabbed(props: Props) {
                         });
                       }}
                       goToNextTab={(nextTabIndex: number) => {
-                        updateTabIndex(nextTabIndex);
+                        setTabIndex(nextTabIndex);
                       }}
                       onQrItemChange={handleQrGroupChange}></QItemGroup>
                   </TabPanel>

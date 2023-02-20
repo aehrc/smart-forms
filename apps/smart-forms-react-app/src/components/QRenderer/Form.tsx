@@ -19,7 +19,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Divider, Grid } from '@mui/material';
 import { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
-import { containsTabs } from '../../functions/TabFunctions';
+import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
 import RendererDebugBar from '../DebugComponents/RendererDebugBar';
 import DisplayDebugQResponse from '../DebugComponents/DisplayDebugQResponse';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
@@ -40,7 +40,9 @@ export const PreprocessedValueSetContext = React.createContext<Record<string, Co
 
 interface Props {
   questionnaireResponse: QuestionnaireResponse;
+  tabIndex: number | null;
   qrHasChanges: boolean;
+  setTabIndex: (newTabIndex: number) => unknown;
   removeQrHasChanges: () => unknown;
   togglePreviewMode: () => unknown;
   updateQuestionnaireResponse: (newQuestionnaireResponse: QuestionnaireResponse) => unknown;
@@ -49,7 +51,9 @@ interface Props {
 function Form(props: Props) {
   const {
     questionnaireResponse,
+    tabIndex,
     qrHasChanges,
+    setTabIndex,
     removeQrHasChanges,
     togglePreviewMode,
     updateQuestionnaireResponse,
@@ -129,6 +133,8 @@ function Form(props: Props) {
                 <FormBodyTabbed
                   qForm={qForm}
                   qrForm={qrForm}
+                  tabIndex={tabIndex ?? getIndexOfFirstTab(qForm.item)}
+                  setTabIndex={setTabIndex}
                   onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                 />
               ) : (
