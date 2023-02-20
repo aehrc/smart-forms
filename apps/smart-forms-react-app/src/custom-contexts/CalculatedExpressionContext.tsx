@@ -17,7 +17,7 @@
 
 import React, { useContext, useState } from 'react';
 import { CalculatedExpressionContextType } from '../interfaces/ContextTypes';
-import { Expression, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import { Expression, QuestionnaireResponse } from 'fhir/r5';
 import { CalculatedExpression } from '../interfaces/Interfaces';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
@@ -45,17 +45,13 @@ function CalculatedExpressionContextProvider(props: { children: React.ReactNode 
      * @author Sean Fong
      */
     updateCalculatedExpressions: (
-      questionnaire: Questionnaire,
       questionnaireResponse: QuestionnaireResponse,
       variables: Expression[]
     ) => {
       let isUpdated = false;
       const updatedCalculatedExpressions = { ...calculatedExpressions };
       if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
-        const context: Record<string, any> = {
-          questionnaire: questionnaire,
-          resource: questionnaireResponse
-        };
+        const context: Record<string, any> = {};
         const qrForm = questionnaireResponse.item[0];
 
         if (variables.length > 0 && qrForm) {

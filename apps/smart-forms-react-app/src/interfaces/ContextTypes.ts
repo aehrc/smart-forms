@@ -20,7 +20,6 @@ import {
   Expression,
   Patient,
   Practitioner,
-  Questionnaire,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
@@ -38,7 +37,6 @@ export type EnableWhenContextType = {
     questionnaireResponseForm: QuestionnaireResponseItem
   ) => unknown;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
-  checkItemIsEnabled: (linkId: string) => boolean;
   toggleActivation: (toggled: boolean) => unknown;
 };
 
@@ -74,7 +72,6 @@ export type CachedQueriedValueSetContextType = {
 export type CalculatedExpressionContextType = {
   calculatedExpressions: Record<string, CalculatedExpression>;
   updateCalculatedExpressions: (
-    questionnaire: Questionnaire,
     questionnaireResponse: QuestionnaireResponse,
     variables: Expression[]
   ) => unknown;
