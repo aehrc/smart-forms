@@ -19,7 +19,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Divider, Grid } from '@mui/material';
 import { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
-import { containsTabs, getIndexOfFirstTab } from '../../functions/TabFunctions';
+import { containsTabs } from '../../functions/TabFunctions';
 import RendererDebugBar from '../DebugComponents/RendererDebugBar';
 import DisplayDebugQResponse from '../DebugComponents/DisplayDebugQResponse';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
@@ -40,9 +40,9 @@ export const PreprocessedValueSetContext = React.createContext<Record<string, Co
 
 interface Props {
   questionnaireResponse: QuestionnaireResponse;
-  tabIndex: number | null;
+  currentTabIndex: number;
   qrHasChanges: boolean;
-  setTabIndex: (newTabIndex: number) => unknown;
+  setCurrentTabIndex: (newTabIndex: number) => unknown;
   removeQrHasChanges: () => unknown;
   togglePreviewMode: () => unknown;
   updateQuestionnaireResponse: (newQuestionnaireResponse: QuestionnaireResponse) => unknown;
@@ -51,9 +51,9 @@ interface Props {
 function Form(props: Props) {
   const {
     questionnaireResponse,
-    tabIndex,
+    currentTabIndex,
     qrHasChanges,
-    setTabIndex,
+    setCurrentTabIndex,
     removeQrHasChanges,
     togglePreviewMode,
     updateQuestionnaireResponse,
@@ -133,8 +133,8 @@ function Form(props: Props) {
                 <FormBodyTabbed
                   qForm={qForm}
                   qrForm={qrForm}
-                  tabIndex={tabIndex ?? getIndexOfFirstTab(qForm.item)}
-                  setTabIndex={setTabIndex}
+                  currentTabIndex={currentTabIndex}
+                  setCurrentTabIndex={setCurrentTabIndex}
                   onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                 />
               ) : (
@@ -147,6 +147,12 @@ function Form(props: Props) {
                   isRepeated={false}
                 />
               )}
+
+              {/*<BackToTopButton>*/}
+              {/*  <Fab>*/}
+              {/*    <KeyboardArrowUpIcon />*/}
+              {/*  </Fab>*/}
+              {/*</BackToTopButton>*/}
             </MainGridContainerBox>
           </MainGrid>
         </Grid>

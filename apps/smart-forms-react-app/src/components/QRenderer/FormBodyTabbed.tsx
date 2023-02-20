@@ -29,20 +29,21 @@ import FormBodyTabList from './Tabs/FormBodyTabList';
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
-  tabIndex: number;
-  setTabIndex: (newTabIndex: number) => unknown;
+  currentTabIndex: number;
+  setCurrentTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabbed(props: Props) {
-  const { qForm, qrForm, tabIndex, setTabIndex, onQrItemChange } = props;
+  const { qForm, qrForm, currentTabIndex, setCurrentTabIndex, onQrItemChange } = props;
 
-  const indexMap: Record<string, number> = mapQItemsIndex(qForm);
+  const indexMap: Record<string, number> = useMemo(() => mapQItemsIndex(qForm), [qForm]);
+
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
 
   const initialTabs = useMemo(() => constructTabsWithProperties(qFormItems), [qFormItems]);
   const [tabs, setTabs] =
-    useState<Record<string, { tabNumber: number; isComplete: boolean }>>(initialTabs);
+    useState<Record<string, { tabIndex: number; isComplete: boolean }>>(initialTabs);
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
     updateLinkedItem(qrItem, null, qrForm, indexMap);
@@ -54,13 +55,13 @@ function FormBodyTabbed(props: Props) {
 
     return (
       <Grid container spacing={2}>
-        <TabContext value={tabIndex.toString()}>
+        <TabContext value={currentTabIndex.toString()}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
             <FormBodyTabList
               qFormItems={qFormItems}
-              tabIndex={tabIndex}
+              currentTabIndex={currentTabIndex}
               tabs={tabs}
-              updateTabIndex={(newTabIndex: number) => setTabIndex(newTabIndex)}
+              updateTabIndex={(newTabIndex: number) => setCurrentTabIndex(newTabIndex)}
             />
           </Grid>
 
@@ -82,18 +83,18 @@ function FormBodyTabbed(props: Props) {
                       groupCardElevation={1}
                       tabIsMarkedAsComplete={tabs[qItem.linkId].isComplete ?? false}
                       tabs={tabs}
-                      tabIndex={tabIndex}
+                      currentTabIndex={currentTabIndex}
                       markTabAsComplete={() => {
                         setTabs({
                           ...tabs,
                           [qItem.linkId]: {
-                            tabNumber: tabs[qItem.linkId].tabNumber,
+                            tabIndex: tabs[qItem.linkId].tabIndex,
                             isComplete: !tabs[qItem.linkId].isComplete
                           }
                         });
                       }}
                       goToNextTab={(nextTabIndex: number) => {
-                        setTabIndex(nextTabIndex);
+                        setCurrentTabIndex(nextTabIndex);
                       }}
                       onQrItemChange={handleQrGroupChange}></QItemGroup>
                   </TabPanel>

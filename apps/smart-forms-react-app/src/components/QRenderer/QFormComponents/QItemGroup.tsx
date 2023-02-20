@@ -39,7 +39,7 @@ import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { RoundButton } from '../../StyledComponents/Buttons.styles';
-import { getNextVisibleTabIndex } from '../../../functions/TabFunctions';
+import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../functions/TabFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,8 +48,8 @@ interface Props
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
-  tabs?: Record<string, { tabNumber: number; isComplete: boolean }>;
-  tabIndex?: number;
+  tabs?: Record<string, { tabIndex: number; isComplete: boolean }>;
+  currentTabIndex?: number;
   markTabAsComplete?: () => unknown;
   goToNextTab?: (nextTabIndex: number) => unknown;
 }
@@ -62,7 +62,7 @@ function QItemGroup(props: Props) {
     groupCardElevation,
     tabIsMarkedAsComplete,
     tabs,
-    tabIndex,
+    currentTabIndex,
     markTabAsComplete,
     goToNextTab,
     onQrItemChange
@@ -235,24 +235,27 @@ function QItemGroup(props: Props) {
             }
           })}
           {/* Next tab button at the end of each tab group */}
-          {tabIsMarkedAsComplete !== undefined && goToNextTab ? (
+          {currentTabIndex !== undefined && tabs && goToNextTab ? (
             <Box display="flex" flexDirection="row-reverse" sx={{ mt: 3 }}>
-              <RoundButton
-                variant="contained"
-                size="small"
-                endIcon={<ArrowForwardIcon />}
-                onClick={() => {
-                  if (tabIndex !== undefined && tabs) {
-                    const nextVisibleTabIndex = getNextVisibleTabIndex(
-                      tabs,
-                      tabIndex,
-                      enableWhenContext.items
-                    );
-                    goToNextTab(nextVisibleTabIndex);
-                  }
-                }}>
-                Next tab
-              </RoundButton>
+              {currentTabIndex !== Object.keys(tabs).length - 1 ? (
+                <RoundButton
+                  variant="contained"
+                  size="small"
+                  endIcon={<ArrowForwardIcon />}
+                  disabled={findNumOfVisibleTabs(tabs, enableWhenContext.items) < 2}
+                  onClick={() => {
+                    if (currentTabIndex !== undefined && tabs) {
+                      const nextVisibleTabIndex = getNextVisibleTabIndex(
+                        tabs,
+                        currentTabIndex,
+                        enableWhenContext.items
+                      );
+                      goToNextTab(nextVisibleTabIndex);
+                    }
+                  }}>
+                  Next tab
+                </RoundButton>
+              ) : null}
             </Box>
           ) : null}
         </Card>

@@ -17,7 +17,7 @@
 
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import React, { useContext, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import PickerQuestionnaireResponseCardContent from './PickerQuestionnaireResponseCardContent';
 import { RoundButton } from '../StyledComponents/Buttons.styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -29,6 +29,7 @@ import { loadQuestionnaireFromResponse } from '../../functions/LoadServerResourc
 import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import PickerQuestionnaireResponseListFilterPopper from './PickerQuestionnaireResponseListFilterPopper';
+import { SideBarOverlineTypography } from '../StyledComponents/Typographys.styles';
 
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
@@ -97,16 +98,18 @@ function PickerQuestionnaireResponseCard(props: Props) {
 
   return (
     <FullHeightCard>
-      <Box display="flex" flexDirection="row" sx={{ ml: 2, mr: 1.5, mt: 1 }}>
-        <Typography variant="overline" fontSize={10} data-test="picker-card-heading-responses">
+      <Box display="flex" flexDirection="row">
+        <SideBarOverlineTypography variant="overline" data-test="picker-card-heading-responses">
           Responses
-        </Typography>
+        </SideBarOverlineTypography>
         {questionnaireResponses.length > 0 && !questionnaireResponseIsSearching ? (
           <>
             <Box sx={{ flexGrow: 1 }}></Box>
-            <PickerQuestionnaireResponseListFilterPopper
-              onQrSortByParamChange={onQrSortByParamChange}
-            />
+            <Box sx={{ ml: 2, mt: 1 }}>
+              <PickerQuestionnaireResponseListFilterPopper
+                onQrSortByParamChange={onQrSortByParamChange}
+              />
+            </Box>
           </>
         ) : null}
       </Box>
