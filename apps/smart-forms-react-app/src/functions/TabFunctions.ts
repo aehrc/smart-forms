@@ -46,10 +46,10 @@ export function getTabbedItems(items: QuestionnaireItem[]): QuestionnaireItem[] 
 export function getIndexOfFirstTab(items: QuestionnaireItem[]): number {
   for (let i = 0; i < items.length; i++) {
     if (isTab(items[i])) {
-      return i + 1;
+      return i;
     }
   }
-  return 1;
+  return 0;
 }
 
 /**

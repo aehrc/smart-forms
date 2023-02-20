@@ -9,7 +9,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -27,7 +27,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -44,7 +44,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -76,7 +76,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -108,7 +108,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -125,7 +125,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -142,7 +142,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -160,7 +160,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -177,7 +177,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -194,7 +194,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -211,7 +211,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -225,15 +225,10 @@
           "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
           "operator": "=",
           "answerBoolean": false
-        },
-        "answer": [
-          {
-            "valueBoolean": false
-          }
-        ]
+        }
       }
     ],
-    "isEnabled": true
+    "isEnabled": false
   },
   "ddb65ed1-f4b2-4730-af2a-2f98bc73c76f": {
     "linked": [
@@ -242,15 +237,10 @@
           "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
           "operator": "=",
           "answerBoolean": false
-        },
-        "answer": [
-          {
-            "valueBoolean": false
-          }
-        ]
+        }
       }
     ],
-    "isEnabled": true
+    "isEnabled": false
   },
   "d9a1236c-8d6e-4f20-a12a-9d5de5a1d0f6": {
     "linked": [
@@ -259,15 +249,10 @@
           "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
           "operator": "=",
           "answerBoolean": false
-        },
-        "answer": [
-          {
-            "valueBoolean": false
-          }
-        ]
+        }
       }
     ],
-    "isEnabled": true
+    "isEnabled": false
   },
   "3f61a1ea-1c74-4f52-8519-432ce861a74f": {
     "linked": [
@@ -276,15 +261,10 @@
           "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
           "operator": "=",
           "answerBoolean": false
-        },
-        "answer": [
-          {
-            "valueBoolean": false
-          }
-        ]
+        }
       }
     ],
-    "isEnabled": true
+    "isEnabled": false
   },
   "aa35d559-f45b-4d35-9453-dd02e4a790f3": {
     "linked": [
@@ -296,7 +276,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -313,7 +293,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -330,7 +310,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -362,12 +342,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "7379a0fd-d95b-4ecb-a781-9f43d1394f10": {
     "linked": [
@@ -424,7 +404,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -436,12 +416,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true,
+    "isEnabled": false,
     "enableBehavior": "all"
   },
   "4c14b158-3ae4-4994-8446-76e02640702c": {
@@ -469,7 +449,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -501,12 +481,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "38f81a73-447f-4ecd-a8eb-6eccd9dee050": {
     "linked": [
@@ -518,12 +498,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "a0c06f8d-3210-480b-9031-7b5eb5bf1dda": {
     "linked": [
@@ -535,7 +515,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -552,7 +532,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -584,7 +564,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -601,7 +581,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -618,7 +598,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -636,7 +616,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -653,7 +633,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -670,7 +650,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -687,7 +667,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -699,7 +679,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -717,7 +697,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -729,7 +709,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -747,7 +727,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -764,7 +744,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -782,7 +762,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -799,7 +779,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -868,7 +848,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -886,7 +866,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -904,7 +884,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -921,7 +901,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -938,7 +918,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -971,7 +951,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -988,7 +968,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1005,7 +985,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1017,7 +997,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1050,7 +1030,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1067,7 +1047,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1079,7 +1059,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1127,7 +1107,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1139,7 +1119,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1157,7 +1137,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1174,7 +1154,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1191,7 +1171,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1208,7 +1188,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1225,7 +1205,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1242,7 +1222,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1259,7 +1239,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1276,7 +1256,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1293,7 +1273,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1305,7 +1285,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1323,7 +1303,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1340,7 +1320,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1357,7 +1337,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1369,7 +1349,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1381,12 +1361,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true,
+    "isEnabled": false,
     "enableBehavior": "all",
     "isTab": true
   },
@@ -1400,12 +1380,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false,
+    "isEnabled": true,
     "isTab": true
   },
   "9559242e-9ffe-4e1f-a9fc-86d1fa62c4b9": {
@@ -1418,7 +1398,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1430,7 +1410,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1478,7 +1458,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1490,12 +1470,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false,
+    "isEnabled": true,
     "isTab": true
   },
   "c5da020c-c4f3-437c-b658-ea7e7667514d": {
@@ -1508,7 +1488,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1520,12 +1500,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false,
+    "isEnabled": true,
     "isTab": true
   },
   "9674ffa0-2ad9-4ca3-80e6-e8bb0670a802": {
@@ -1538,7 +1518,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1550,7 +1530,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1562,7 +1542,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1581,7 +1561,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1598,7 +1578,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1641,7 +1621,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1658,7 +1638,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1675,7 +1655,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1707,7 +1687,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1739,12 +1719,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "9f6adf74-f240-41a2-a509-d216d5308911": {
     "linked": [
@@ -1756,7 +1736,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1773,7 +1753,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1805,7 +1785,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1838,7 +1818,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1871,7 +1851,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1904,7 +1884,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1922,7 +1902,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1934,7 +1914,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -1952,7 +1932,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -1964,12 +1944,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true,
+    "isEnabled": false,
     "isTab": true
   },
   "fd6beb79-ffc3-4879-913b-f42b0ec930ba": {
@@ -1997,12 +1977,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false,
+    "isEnabled": true,
     "isTab": true
   },
   "96dc7c22-d003-459c-8a56-f6cd182fc077": {
@@ -2015,10 +1995,19 @@
             "system": "http://snomed.info/sct",
             "code": "8517006"
           }
-        }
+        },
+        "answer": [
+          {
+            "valueCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006",
+              "display": "Former smoker"
+            }
+          }
+        ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "9e86387d-1be4-4c26-9047-9dd6b03e1ee0": {
     "linked": [
@@ -2030,7 +2019,16 @@
             "system": "http://snomed.info/sct",
             "code": "77176002"
           }
-        }
+        },
+        "answer": [
+          {
+            "valueCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006",
+              "display": "Former smoker"
+            }
+          }
+        ]
       },
       {
         "enableWhen": {
@@ -2040,17 +2038,35 @@
             "system": "http://snomed.info/sct",
             "code": "8517006"
           }
-        }
+        },
+        "answer": [
+          {
+            "valueCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006",
+              "display": "Former smoker"
+            }
+          }
+        ]
       },
       {
         "enableWhen": {
           "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
           "operator": "=",
           "answerString": "Wants to quit"
-        }
+        },
+        "answer": [
+          {
+            "valueCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006",
+              "display": "Former smoker"
+            }
+          }
+        ]
       }
     ],
-    "isEnabled": false,
+    "isEnabled": true,
     "enableBehavior": "any"
   },
   "32e71641-f660-4ca2-af99-dff8917f07be": {
@@ -2063,7 +2079,16 @@
             "system": "http://snomed.info/sct",
             "code": "77176002"
           }
-        }
+        },
+        "answer": [
+          {
+            "valueCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006",
+              "display": "Former smoker"
+            }
+          }
+        ]
       },
       {
         "enableWhen": {
@@ -2073,17 +2098,35 @@
             "system": "http://snomed.info/sct",
             "code": "8517006"
           }
-        }
+        },
+        "answer": [
+          {
+            "valueCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006",
+              "display": "Former smoker"
+            }
+          }
+        ]
       },
       {
         "enableWhen": {
           "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
           "operator": "=",
           "answerString": "Wants to quit"
-        }
+        },
+        "answer": [
+          {
+            "valueCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006",
+              "display": "Former smoker"
+            }
+          }
+        ]
       }
     ],
-    "isEnabled": false,
+    "isEnabled": true,
     "enableBehavior": "any"
   },
   "14a9fb5f-5b0e-4862-b143-08a11cd3ebf0": {
@@ -2096,7 +2139,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2108,7 +2151,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2141,7 +2184,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2153,7 +2196,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2186,7 +2229,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2198,7 +2241,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2210,7 +2253,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2244,7 +2287,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2256,12 +2299,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true,
+    "isEnabled": false,
     "enableBehavior": "all",
     "isTab": true
   },
@@ -2305,12 +2348,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false,
+    "isEnabled": true,
     "isTab": true
   },
   "bc49ee24-62a8-4252-a5ee-9c68bfed601c": {
@@ -2323,7 +2366,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2340,7 +2383,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2383,7 +2426,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2400,7 +2443,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2417,7 +2460,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2434,7 +2477,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2451,7 +2494,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2484,7 +2527,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2516,7 +2559,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2548,7 +2591,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2580,7 +2623,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2597,7 +2640,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2614,7 +2657,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2631,7 +2674,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2648,7 +2691,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2660,7 +2703,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2678,7 +2721,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2696,7 +2739,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2713,7 +2756,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2756,12 +2799,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "bde9ab00-a20f-4a7c-9266-11f53f60c65f": {
     "linked": [
@@ -2773,7 +2816,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2791,7 +2834,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2808,7 +2851,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2851,7 +2894,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2868,7 +2911,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2880,7 +2923,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2898,7 +2941,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2915,7 +2958,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2932,7 +2975,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2944,7 +2987,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -2962,7 +3005,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -2974,12 +3017,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true,
+    "isEnabled": false,
     "enableBehavior": "all"
   },
   "c8da01ec-de58-46e3-81a1-2c49aed8c28e": {
@@ -3007,7 +3050,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3025,7 +3068,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3042,7 +3085,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3059,7 +3102,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3076,7 +3119,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3093,7 +3136,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3110,7 +3153,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3127,7 +3170,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3144,7 +3187,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3161,7 +3204,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3178,7 +3221,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3195,7 +3238,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3212,7 +3255,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3229,7 +3272,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3247,7 +3290,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3259,7 +3302,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3277,7 +3320,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3294,12 +3337,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true
+    "isEnabled": false
   },
   "77847d34-103e-497d-a7d5-f62cbaf4f698": {
     "linked": [
@@ -3311,12 +3354,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true
+    "isEnabled": false
   },
   "4aa47bda-d740-4294-9466-52b1be2ec15b": {
     "linked": [
@@ -3328,12 +3371,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true
+    "isEnabled": false
   },
   "918f7f32-cdaf-4742-b33a-8254eda2d8bd": {
     "linked": [
@@ -3345,7 +3388,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3357,7 +3400,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3375,7 +3418,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3392,7 +3435,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3404,7 +3447,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3422,7 +3465,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3439,7 +3482,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3456,7 +3499,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3468,7 +3511,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3486,7 +3529,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3498,7 +3541,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3516,7 +3559,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3528,12 +3571,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true,
+    "isEnabled": false,
     "enableBehavior": "all"
   },
   "2657da9c-a27e-4939-af7a-08a19b9ab6f7": {
@@ -3546,12 +3589,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "4044d0b4-94b2-4a89-b826-a14614298511": {
     "linked": [
@@ -3563,7 +3606,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3580,7 +3623,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3592,7 +3635,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3610,7 +3653,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3622,7 +3665,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3640,7 +3683,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3652,12 +3695,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": true,
+    "isEnabled": false,
     "enableBehavior": "all"
   },
   "d68d9693-48d3-4663-9dbb-dd3a7aec5278": {
@@ -3670,12 +3713,12 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
     ],
-    "isEnabled": false
+    "isEnabled": true
   },
   "0ef84b09-ca34-44c2-96d1-fcbbea0bae66": {
     "linked": [
@@ -3728,7 +3771,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3745,7 +3788,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       },
@@ -3757,7 +3800,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3775,7 +3818,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }
@@ -3792,7 +3835,7 @@
         },
         "answer": [
           {
-            "valueInteger": 30
+            "valueInteger": 86
           }
         ]
       }

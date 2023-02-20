@@ -236,9 +236,10 @@ function QItemGroup(props: Props) {
           })}
           {/* Next tab button at the end of each tab group */}
           {tabIsMarkedAsComplete !== undefined && goToNextTab ? (
-            <Box display="flex" flexDirection="row-reverse" sx={{ mt: 2 }}>
+            <Box display="flex" flexDirection="row-reverse" sx={{ mt: 3 }}>
               <RoundButton
                 variant="contained"
+                size="small"
                 endIcon={<ArrowForwardIcon />}
                 onClick={() => {
                   if (tabIndex !== undefined && tabs) {
