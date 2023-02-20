@@ -160,9 +160,9 @@ export class QuestionnaireProvider {
       };
     }
 
-    const EnableWhenItemProperties = getEnableWhenItemProperties(item);
-    if (EnableWhenItemProperties) {
-      this.enableWhenItems[item.linkId] = EnableWhenItemProperties;
+    const enableWhenItemProperties = getEnableWhenItemProperties(item);
+    if (enableWhenItemProperties) {
+      this.enableWhenItems[item.linkId] = enableWhenItemProperties;
     }
 
     const valueSetUrl = item.answerValueSet;

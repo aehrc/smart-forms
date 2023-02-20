@@ -16,6 +16,7 @@
  */
 
 import { Coding, QuestionnaireItem } from 'fhir/r5';
+import { EnableWhenItems } from '../interfaces/Interfaces';
 
 /**
  * Checks if any of the items in a qItem array is a tabbed item
@@ -70,4 +71,59 @@ export function isTab(item: QuestionnaireItem) {
     }
   }
   return false;
+}
+
+/**
+ * Create a <linkId, {isComplete: boolean}> key-value pair for all tabbed items in a qItem array
+ *
+ * @author Sean Fong
+ */
+export function constructTabsWithProperties(
+  qItems: QuestionnaireItem[] | undefined
+): Record<string, { tabNumber: number; isComplete: boolean }> {
+  if (!qItems) return {};
+
+  const linkIds = qItems.filter(isTab).map((qItem) => qItem.linkId);
+
+  const tabs: Record<string, { tabNumber: number; isComplete: boolean }> = {};
+  for (const [i, linkId] of linkIds.entries()) {
+    tabs[linkId] = {
+      tabNumber: i,
+      isComplete: false
+    };
+  }
+  return tabs;
+}
+
+/**
+ * Get index of next visible tab
+ * TODO WIP
+ *
+ * @author Sean Fong
+ */
+export function getNextVisibleTabIndex(
+  tabs: Record<string, { tabNumber: number; isComplete: boolean }>,
+  currentTabIndex: number,
+  enableWhenItems: EnableWhenItems
+): number {
+  const tabsWithAttributes: { linkId: string; isVisible: boolean }[] = Object.entries(tabs).map(
+    ([linkId]) => {
+      if (enableWhenItems[linkId]) {
+        return { linkId: linkId, isVisible: enableWhenItems[linkId]?.isEnabled };
+      } else {
+        return { linkId: linkId, isVisible: true };
+      }
+    }
+  );
+
+  let nextTabIndex = currentTabIndex + 1;
+  const nextTabIndexIsVisible = false;
+  while (!nextTabIndexIsVisible) {
+    if (tabsWithAttributes[nextTabIndex].isVisible) {
+      return nextTabIndex;
+    }
+    nextTabIndex++;
+  }
+
+  return nextTabIndex;
 }

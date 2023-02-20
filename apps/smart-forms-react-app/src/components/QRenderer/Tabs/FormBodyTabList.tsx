@@ -12,12 +12,12 @@ import FormBodySingleTab from './FormBodySingleTab';
 interface Props {
   qFormItems: QuestionnaireItem[];
   tabIndex: number;
-  tabsMarkedAsComplete: boolean[];
+  tabs: Record<string, { tabNumber: number; isComplete: boolean }>;
   updateTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabList(props: Props) {
-  const { qFormItems, tabIndex, tabsMarkedAsComplete, updateTabIndex } = props;
+  const { qFormItems, tabIndex, tabs, updateTabIndex } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
 
@@ -33,10 +33,10 @@ function FormBodyTabList(props: Props) {
               return (
                 <Collapse key={qItem.linkId}>
                   <FormBodySingleTab
-                    selected={tabIndex.toString() === (i + 1).toString()}
+                    selected={tabIndex.toString() === i.toString()}
                     tabText={getShortText(qItem) ?? qItem.text + ''}
                     listIndex={i}
-                    markedAsComplete={tabsMarkedAsComplete[i]}
+                    markedAsComplete={tabs[qItem.linkId].isComplete ?? false}
                     updateTabIndex={updateTabIndex}
                   />
                 </Collapse>

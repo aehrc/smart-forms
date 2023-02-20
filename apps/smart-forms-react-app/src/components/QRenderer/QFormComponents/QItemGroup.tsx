@@ -37,6 +37,9 @@ import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { RoundButton } from '../../StyledComponents/Buttons.styles';
+import { getNextVisibleTabIndex } from '../../../functions/TabFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -44,8 +47,11 @@ interface Props
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
-  isMarkedAsComplete?: boolean;
-  setMarkedAsComplete?: () => unknown;
+  tabIsMarkedAsComplete?: boolean;
+  tabs?: Record<string, { tabNumber: number; isComplete: boolean }>;
+  tabIndex?: number;
+  markTabAsComplete?: () => unknown;
+  goToNextTab?: (nextTabIndex: number) => unknown;
 }
 
 function QItemGroup(props: Props) {
@@ -54,8 +60,11 @@ function QItemGroup(props: Props) {
     qrItem,
     isRepeated,
     groupCardElevation,
-    isMarkedAsComplete,
-    setMarkedAsComplete,
+    tabIsMarkedAsComplete,
+    tabs,
+    tabIndex,
+    markTabAsComplete,
+    goToNextTab,
     onQrItemChange
   } = props;
 
@@ -106,16 +115,16 @@ function QItemGroup(props: Props) {
               <Box display="flex" alignItems="center">
                 <QGroupHeadingTypography
                   variant="h6"
-                  isTabHeading={isMarkedAsComplete !== undefined}>
+                  isTabHeading={tabIsMarkedAsComplete !== undefined}>
                   <QItemLabel qItem={qItem} />
                 </QGroupHeadingTypography>
 
-                {isMarkedAsComplete !== undefined && setMarkedAsComplete ? (
+                {tabIsMarkedAsComplete !== undefined && markTabAsComplete ? (
                   <>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Tooltip title={!isMarkedAsComplete ? 'Complete tab' : 'Mark as incomplete'}>
-                      <IconButton onClick={setMarkedAsComplete}>
-                        <CheckCircleIcon color={isMarkedAsComplete ? 'success' : 'inherit'} />
+                    <Tooltip title={!tabIsMarkedAsComplete ? 'Complete tab' : 'Mark as incomplete'}>
+                      <IconButton onClick={markTabAsComplete}>
+                        <CheckCircleIcon color={tabIsMarkedAsComplete ? 'success' : 'inherit'} />
                       </IconButton>
                     </Tooltip>
                   </>
@@ -225,6 +234,26 @@ function QItemGroup(props: Props) {
               }
             }
           })}
+          {/* Next tab button at the end of each tab group */}
+          {tabIsMarkedAsComplete !== undefined && goToNextTab ? (
+            <Box display="flex" flexDirection="row-reverse" sx={{ mt: 2 }}>
+              <RoundButton
+                variant="contained"
+                endIcon={<ArrowForwardIcon />}
+                onClick={() => {
+                  if (tabIndex !== undefined && tabs) {
+                    const nextVisibleTabIndex = getNextVisibleTabIndex(
+                      tabs,
+                      tabIndex,
+                      enableWhenContext.items
+                    );
+                    goToNextTab(nextVisibleTabIndex);
+                  }
+                }}>
+                Next tab
+              </RoundButton>
+            </Box>
+          ) : null}
         </Card>
       </QGroupContainerBox>
     );

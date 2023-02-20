@@ -15,35 +15,43 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
 import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../functions/IndexFunctions';
 import QItemGroup from './QFormComponents/QItemGroup';
-import { isTab } from '../../functions/TabFunctions';
+import {
+  constructTabsWithProperties,
+  getIndexOfFirstTab,
+  isTab
+} from '../../functions/TabFunctions';
 import { updateLinkedItem } from '../../functions/QrItemFunctions';
 import FormBodyTabList from './Tabs/FormBodyTabList';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
-  tabIndex: number;
-  setTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabbed(props: Props) {
-  const { qForm, qrForm, tabIndex, setTabIndex, onQrItemChange } = props;
+  const { qForm, qrForm, onQrItemChange } = props;
 
   const indexMap: Record<string, number> = mapQItemsIndex(qForm);
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
 
-  const numOfTabs = qFormItems?.length ?? 0;
-  const [tabsMarkedAsComplete, setTabsMarkedAsComplete] = useState<boolean[]>(
-    new Array(numOfTabs).fill(false)
-  );
+  let initialTabIndex = 0;
+  if (qFormItems) {
+    initialTabIndex = getIndexOfFirstTab(qFormItems);
+  }
+
+  const [tabIndex, setTabIndex] = useState<number>(initialTabIndex);
+
+  const initialTabs = useMemo(() => constructTabsWithProperties(qFormItems), [qFormItems]);
+  const [tabs, setTabs] =
+    useState<Record<string, { tabNumber: number; isComplete: boolean }>>(initialTabs);
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
     updateLinkedItem(qrItem, null, qrForm, indexMap);
@@ -64,7 +72,7 @@ function FormBodyTabbed(props: Props) {
             <FormBodyTabList
               qFormItems={qFormItems}
               tabIndex={tabIndex}
-              tabsMarkedAsComplete={tabsMarkedAsComplete}
+              tabs={tabs}
               updateTabIndex={updateTabIndex}
             />
           </Grid>
@@ -78,18 +86,27 @@ function FormBodyTabbed(props: Props) {
                   <TabPanel
                     key={qItem.linkId}
                     sx={{ p: 0 }}
-                    value={(i + 1).toString()}
+                    value={i.toString()}
                     data-test="renderer-tab-panel">
                     <QItemGroup
                       qItem={qItem}
                       qrItem={qrItem}
                       isRepeated={qItem.repeats ?? false}
                       groupCardElevation={1}
-                      isMarkedAsComplete={tabsMarkedAsComplete[i]}
-                      setMarkedAsComplete={() => {
-                        const newTabsMarkedAsComplete = [...tabsMarkedAsComplete];
-                        newTabsMarkedAsComplete[i] = !newTabsMarkedAsComplete[i];
-                        setTabsMarkedAsComplete(newTabsMarkedAsComplete);
+                      tabIsMarkedAsComplete={tabs[qItem.linkId].isComplete ?? false}
+                      tabs={tabs}
+                      tabIndex={tabIndex}
+                      markTabAsComplete={() => {
+                        setTabs({
+                          ...tabs,
+                          [qItem.linkId]: {
+                            tabNumber: tabs[qItem.linkId].tabNumber,
+                            isComplete: !tabs[qItem.linkId].isComplete
+                          }
+                        });
+                      }}
+                      goToNextTab={(nextTabIndex: number) => {
+                        updateTabIndex(nextTabIndex);
                       }}
                       onQrItemChange={handleQrGroupChange}></QItemGroup>
                   </TabPanel>
