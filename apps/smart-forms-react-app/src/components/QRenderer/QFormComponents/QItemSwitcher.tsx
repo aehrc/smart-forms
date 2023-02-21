@@ -37,6 +37,7 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/Interfaces';
 import { isHidden } from '../../../functions/QItemFunctions';
+import { Collapse } from '@mui/material';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -55,6 +56,8 @@ function QItemSwitcher(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const enableWhenContext = useContext(EnableWhenContext);
 
+  let renderComponent = true;
+
   const handleQrItemChange = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
       if (newQrItem.answer) {
@@ -65,7 +68,34 @@ function QItemSwitcher(props: Props) {
     [enableWhenContext, onQrItemChange, qItem.linkId]
   );
 
-  if (isHidden(qItem, enableWhenContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) {
+    renderComponent = false;
+  }
+
+  // Is qItem is a repeat item, disable collapse transition as the base repeat item already has one
+  return isRepeated ? (
+    <RenderQItem
+      qItem={qItem}
+      qrItem={qrItem}
+      isRepeated={isRepeated}
+      isTabled={isTabled}
+      onQrItemChange={handleQrItemChange}
+    />
+  ) : (
+    <Collapse in={renderComponent} timeout={300}>
+      <RenderQItem
+        qItem={qItem}
+        qrItem={qrItem}
+        isRepeated={isRepeated}
+        isTabled={isTabled}
+        onQrItemChange={handleQrItemChange}
+      />
+    </Collapse>
+  );
+}
+
+function RenderQItem(props: Props) {
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   switch (qItem.type) {
     case QItemType.String:
@@ -75,7 +105,7 @@ function QItemSwitcher(props: Props) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Boolean:
@@ -84,7 +114,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Time:
@@ -94,7 +124,7 @@ function QItemSwitcher(props: Props) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Date:
@@ -104,7 +134,7 @@ function QItemSwitcher(props: Props) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.DateTime:
@@ -114,7 +144,7 @@ function QItemSwitcher(props: Props) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Text:
@@ -123,7 +153,7 @@ function QItemSwitcher(props: Props) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Display:
@@ -135,7 +165,7 @@ function QItemSwitcher(props: Props) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Decimal:
@@ -145,7 +175,7 @@ function QItemSwitcher(props: Props) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Quantity:
@@ -155,7 +185,7 @@ function QItemSwitcher(props: Props) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          onQrItemChange={handleQrItemChange}
+          onQrItemChange={onQrItemChange}
         />
       );
     case QItemType.Coding:
@@ -171,7 +201,7 @@ function QItemSwitcher(props: Props) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
-            onQrItemChange={handleQrItemChange}
+            onQrItemChange={onQrItemChange}
           />
         );
       }
@@ -185,7 +215,7 @@ function QItemSwitcher(props: Props) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
-            onQrItemChange={handleQrItemChange}
+            onQrItemChange={onQrItemChange}
           />
         );
       }
