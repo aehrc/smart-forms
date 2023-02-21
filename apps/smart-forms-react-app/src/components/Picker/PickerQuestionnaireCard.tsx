@@ -60,18 +60,22 @@ function PickerQuestionnaireCard(props: Props) {
   async function handleCreateNewResponseButtonClick() {
     if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
       setCreateNewResponseButtonLoading(true);
+
+      // Assign questionnaire to questionnaire provider
       await questionnaireProvider.setQuestionnaire(
         selectedQuestionnaire,
         questionnaireSourceIsLocal,
         fhirClient
       );
-      setCreateNewResponseButtonLoading(false);
+
+      // Assign questionnaireResponse to questionnaireResponse provider
       if (selectedQuestionnaire.item && selectedQuestionnaire.item.length > 0) {
         questionnaireResponseProvider.setQuestionnaireResponse(
           createQuestionnaireResponse(selectedQuestionnaire.id, selectedQuestionnaire.item[0])
         );
       }
 
+      setCreateNewResponseButtonLoading(false);
       goToPage(PageType.Renderer);
     }
   }

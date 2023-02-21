@@ -118,6 +118,8 @@ export function loadQuestionnaireFromResponse(
     Accept: 'application/json+fhir; charset=utf-8'
   };
 
+  // FIXME cater for canonical reference too
+
   return client.request({
     url: `Questionnaire/${questionnaireId}`,
     method: 'GET',

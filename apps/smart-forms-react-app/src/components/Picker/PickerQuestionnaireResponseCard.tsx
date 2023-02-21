@@ -60,39 +60,38 @@ function PickerQuestionnaireResponseCard(props: Props) {
 
   const [viewResponseButtonLoading, setViewResponseButtonLoading] = useState(false);
 
-  function handleViewResponseButtonClick() {
+  async function handleViewResponseButtonClick() {
     if (typeof selectedQuestionnaireResponseIndex === 'number') {
-      questionnaireResponseProvider.setQuestionnaireResponse(
-        questionnaireResponses[selectedQuestionnaireResponseIndex]
-      );
+      setViewResponseButtonLoading(true);
+      const questionnaireResponse = questionnaireResponses[selectedQuestionnaireResponseIndex];
 
+      // Assign questionnaireResponse to questionnaireResponse provider
+      questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+
+      // Assign questionnaire to questionnaire provider
       if (selectedQuestionnaire) {
-        questionnaireProvider.setQuestionnaire(
+        await questionnaireProvider.setQuestionnaire(
           selectedQuestionnaire,
           questionnaireSourceIsLocal,
           fhirClient
         );
-        goToPage(PageType.ResponsePreview);
       } else {
-        const questionnaireReference =
-          questionnaireResponses[selectedQuestionnaireResponseIndex].questionnaire;
-        if (!questionnaireReference) return null;
+        const questionnaireReference = questionnaireResponse.questionnaire;
+        if (!questionnaireReference || !fhirClient) return null;
 
-        if (fhirClient) {
-          setViewResponseButtonLoading(true);
-          loadQuestionnaireFromResponse(fhirClient, questionnaireReference)
-            .then((questionnaire) => {
-              questionnaireProvider.setQuestionnaire(
-                questionnaire,
-                questionnaireSourceIsLocal,
-                fhirClient
-              );
-              setViewResponseButtonLoading(false);
-              goToPage(PageType.ResponsePreview);
-            })
-            .catch(() => setViewResponseButtonLoading(false));
-        }
+        const questionnaire = await loadQuestionnaireFromResponse(
+          fhirClient,
+          questionnaireReference
+        );
+        await questionnaireProvider.setQuestionnaire(
+          questionnaire,
+          questionnaireSourceIsLocal,
+          fhirClient
+        );
       }
+
+      setViewResponseButtonLoading(false);
+      goToPage(PageType.ResponsePreview);
     }
   }
 

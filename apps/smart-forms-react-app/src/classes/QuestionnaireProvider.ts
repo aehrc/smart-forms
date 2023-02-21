@@ -60,7 +60,7 @@ export class QuestionnaireProvider {
     questionnaire: Questionnaire,
     questionnaireSourceIsLocal: boolean,
     client: Client | null
-  ) {
+  ): Promise<void> {
     // Assemble questionnaire if its not assembled
     if (assemblyIsRequired(questionnaire)) {
       questionnaire = await assembleQuestionnaire(questionnaire);
