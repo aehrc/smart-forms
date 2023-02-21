@@ -15,43 +15,25 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { QuestionnaireResponse } from 'fhir/r5';
 import { removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
+import { QuestionnaireResponseProviderContext } from '../../App';
 import Form from './Form';
 import FormPreview from '../Preview/FormPreview';
 import QRSavedSnackbar from './QRSavedSnackbar';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
-import { constructTabsWithProperties, getFirstVisibleTabIndex } from '../../functions/TabFunctions';
 
 function RendererBody() {
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
     questionnaireResponseProvider.questionnaireResponse
   );
 
-  const qForm = questionnaireProvider.questionnaire.item;
-
-  const initialTabIndex = useMemo(() => {
-    if (qForm && qForm[0].item) {
-      const nextVisibleTabIndex = getFirstVisibleTabIndex(
-        constructTabsWithProperties(qForm[0].item),
-        questionnaireProvider.enableWhenItems
-      );
-
-      if (nextVisibleTabIndex) {
-        return nextVisibleTabIndex;
-      }
-    }
-    return 0;
-  }, [qForm, questionnaireProvider.enableWhenItems]);
-
-  const [currentTabIndex, setCurrentTabIndex] = useState<number>(initialTabIndex);
+  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const [qrHasChanges, setQrHasChanges] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
