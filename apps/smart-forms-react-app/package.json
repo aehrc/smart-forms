@@ -42,7 +42,15 @@
     "sdc-populate": "^1.0.0",
     "typescript": "^4.7.4",
     "uuidjs": "^4.2.13",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "react-helmet-async": "^1.1.2",
+    "change-case": "^4.1.2",
+    "@faker-js/faker": "^7.6.0",
+    "simplebar-react": "^3.2.1",
+    "@iconify/react": "^4.1.0",
+    "react-apexcharts": "^1.3.9",
+    "react-hook-form": "^7.43.1",
+    "numeral": "^2.0.6"
   },
   "scripts": {
     "start": "react-scripts start",

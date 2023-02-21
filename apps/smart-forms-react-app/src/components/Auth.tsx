@@ -20,7 +20,6 @@ import { oauth2 } from 'fhirclient';
 import { LaunchContext } from '../custom-contexts/LaunchContext';
 import { getPatient, getUser } from '../functions/LaunchFunctions';
 import { isStillAuthenticating } from '../functions/LaunchContextFunctions';
-import PageSwitcher from './PageSwitcher';
 import PageSwitcherContextProvider from '../custom-contexts/PageSwitcherContext';
 import {
   getInitialQuestionnaireFromResponse,
@@ -30,6 +29,7 @@ import { QuestionnaireProviderContext } from '../App';
 import NoQuestionnaireDialog from './Dialogs/AuthorisationFailedDialog';
 import ProgressSpinner from './ProgressSpinner';
 import { AuthFailDialog } from '../interfaces/Interfaces';
+import DashboardLayout from '../layouts/dashboard/DashboardLayout';
 
 function Auth() {
   const { patient, user, setFhirClient, setPatient, setUser } = useContext(LaunchContext);
@@ -107,7 +107,7 @@ function Auth() {
     return (
       <PageSwitcherContextProvider
         questionnairePresent={!!questionnaireProvider.questionnaire.item}>
-        <PageSwitcher />
+        <DashboardLayout />
       </PageSwitcherContextProvider>
     );
   }

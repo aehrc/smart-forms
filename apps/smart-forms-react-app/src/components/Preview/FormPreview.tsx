@@ -61,7 +61,7 @@ function FormPreview(props: Props) {
         </SideBarGrid>
         <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
           <MainGridContainerBox>
-            <MainGridHeadingTypography variant="h1">Preview</MainGridHeadingTypography>
+            <MainGridHeadingTypography variant="h2">Preview</MainGridHeadingTypography>
             <ChipBar>
               <FormPreviewOperationButtons
                 isChip={true}

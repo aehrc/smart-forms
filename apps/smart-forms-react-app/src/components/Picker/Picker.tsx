@@ -63,7 +63,7 @@ function Picker() {
       <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
           <Stack direction="row" gap={8} alignItems="center">
-            <MainGridHeadingTypography variant="h1">Questionnaires</MainGridHeadingTypography>
+            <MainGridHeadingTypography variant="h2">Questionnaires</MainGridHeadingTypography>
 
             <PickerSearchField
               fullWidth

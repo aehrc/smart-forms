@@ -16,7 +16,7 @@
  */
 
 import React, { memo, useContext } from 'react';
-import logo from '../../data/images/CSIRO_Logo.png';
+import logo from '../../data/images/csiro-logo.png';
 import { Box, Grid, Tooltip } from '@mui/material';
 import {
   OrganisationLogoBox,

@@ -21,9 +21,7 @@ import { PageType } from '../interfaces/Enums';
 import Picker from './Picker/Picker';
 import Renderer from './QRenderer/Renderer';
 import { QuestionnaireProviderContext } from '../App';
-import NavBar from './NavBar/NavBar';
 import ResponsePreview from './Preview/ResponsePreview';
-import SideBarContextProvider from '../custom-contexts/SideBarContext';
 
 function PageSwitcher() {
   const { currentPage, goToPage } = useContext(PageSwitcherContext);
@@ -46,14 +44,7 @@ function PageSwitcher() {
     }
   }
 
-  return (
-    <>
-      <NavBar />
-      <SideBarContextProvider>
-        <RenderPage />
-      </SideBarContextProvider>
-    </>
-  );
+  return <RenderPage />;
 }
 
 export default PageSwitcher;

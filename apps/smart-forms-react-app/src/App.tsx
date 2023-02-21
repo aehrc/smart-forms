@@ -18,8 +18,7 @@
 import React, { createContext } from 'react';
 import './App.css';
 import { CssBaseline, useMediaQuery } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import getTheme from './theme';
+import ThemeProvider from './theme';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Launch from './components/LaunchPage/Launch';
 import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
@@ -39,7 +38,7 @@ export const QuestionnaireResponseProviderContext = createContext<QuestionnaireR
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   return (
-    <ThemeProvider theme={getTheme(prefersDarkMode)}>
+    <ThemeProvider>
       <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
         <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
           <LaunchContextProvider>

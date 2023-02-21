@@ -46,7 +46,7 @@ function ResponsePreview() {
       </SideBarGrid>
       <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
-          <MainGridHeadingTypography variant="h1">Response Preview</MainGridHeadingTypography>
+          <MainGridHeadingTypography variant="h2">Response Preview</MainGridHeadingTypography>
           <ChipBar>
             <ResponsePreviewOperationButtons isChip={true} />
             <PrintPreviewButton handlePrint={handlePrint} isChip={true} />
