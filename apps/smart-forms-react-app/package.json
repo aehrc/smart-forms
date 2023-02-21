@@ -35,7 +35,7 @@
     "nanoid": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.0",
+    "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
     "react-to-print": "^2.14.9",
     "sdc-assemble": "^0.2.0",

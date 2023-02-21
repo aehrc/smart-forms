@@ -17,14 +17,14 @@
 
 import React, { createContext } from 'react';
 import './App.css';
-import { CssBaseline, useMediaQuery } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Launch from './components/LaunchPage/Launch';
+import { BrowserRouter } from 'react-router-dom';
 import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
 import LaunchContextProvider from './custom-contexts/LaunchContext';
-import Auth from './components/Auth';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+import Router from './Router';
 
 const questionnaireProvider = new QuestionnaireProvider();
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
@@ -36,23 +36,20 @@ export const QuestionnaireResponseProviderContext = createContext<QuestionnaireR
 );
 
 function App() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   return (
-    <ThemeProvider>
-      <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
-        <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
-          <LaunchContextProvider>
-            <CssBaseline />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Auth />} />
-                <Route path="/launch" element={<Launch />} />
-              </Routes>
-            </BrowserRouter>
-          </LaunchContextProvider>
-        </QuestionnaireResponseProviderContext.Provider>
-      </QuestionnaireProviderContext.Provider>
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider>
+        <LaunchContextProvider>
+          <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
+            <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
+              <CssBaseline />
+              <ScrollToTop />
+              <Router />
+            </QuestionnaireResponseProviderContext.Provider>
+          </QuestionnaireProviderContext.Provider>
+        </LaunchContextProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
