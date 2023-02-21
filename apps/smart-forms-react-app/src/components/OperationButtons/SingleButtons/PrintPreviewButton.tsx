@@ -30,7 +30,7 @@ interface Props {
 
 function PrintPreviewButton(props: Props) {
   const { handlePrint, isChip } = props;
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const buttonTitle = 'Print Preview';
 
@@ -68,7 +68,7 @@ function PrintPreviewButton(props: Props) {
     </Box>
   );
 
-  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
+  return <>{isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default PrintPreviewButton;

@@ -46,9 +46,9 @@ function PickerQuestionnaireResponseCardContent(props: Props) {
     onQrSelectedIndexChange
   } = props;
 
-  const launch = useContext(LaunchContext);
+  const { fhirClient } = useContext(LaunchContext);
 
-  if (!launch.fhirClient) {
+  if (!fhirClient) {
     return (
       <PickerAlert severity="error">
         <AlertTitle>CMS not connected</AlertTitle>

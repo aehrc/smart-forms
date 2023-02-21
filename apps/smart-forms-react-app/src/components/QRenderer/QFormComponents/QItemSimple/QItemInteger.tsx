@@ -25,7 +25,6 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
-import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
@@ -33,6 +32,7 @@ import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
 import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.styles';
 import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
+import { CalculatedExpressionContext } from '../../../../custom-contexts/CalculatedExpressionContext';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,7 +45,7 @@ interface Props
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const calculatedExpressions = useContext(CalcExpressionContext);
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
   const displayUnit = getTextDisplayUnit(qItem);
 

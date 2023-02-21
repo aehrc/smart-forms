@@ -15,8 +15,12 @@
  * limitations under the License.
  */
 
-import { Expression, Questionnaire, QuestionnaireItem, ValueSet } from 'fhir/r5';
-import { CalculatedExpression, EnableWhenItemProperties } from '../interfaces/Interfaces';
+import { Coding, Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
+import {
+  CalculatedExpression,
+  EnableWhenItemProperties,
+  ValueSetPromise
+} from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
 import { getCalculatedExpression } from '../functions/ItemControlFunctions';
 import { QuestionnaireSource } from '../interfaces/Enums';
@@ -26,6 +30,11 @@ import {
   updateAssembledQuestionnaire
 } from '../functions/AssembleFunctions';
 import Client from 'fhirclient/lib/Client';
+import {
+  getValueSetCodings,
+  getValueSetPromise,
+  resolvePromises
+} from '../functions/ValueSetFunctions';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
@@ -33,7 +42,7 @@ export class QuestionnaireProvider {
   variables: Expression[];
   calculatedExpressions: Record<string, CalculatedExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
-  containedValueSets: Record<string, ValueSet>;
+  preprocessedValueSetCodings: Record<string, Coding[]>;
 
   constructor() {
     this.questionnaire = {
@@ -44,14 +53,14 @@ export class QuestionnaireProvider {
     this.variables = [];
     this.calculatedExpressions = {};
     this.enableWhenItems = {};
-    this.containedValueSets = {};
+    this.preprocessedValueSetCodings = {};
   }
 
   async setQuestionnaire(
     questionnaire: Questionnaire,
     questionnaireSourceIsLocal: boolean,
     client: Client | null
-  ) {
+  ): Promise<void> {
     // Assemble questionnaire if its not assembled
     if (assemblyIsRequired(questionnaire)) {
       questionnaire = await assembleQuestionnaire(questionnaire);
@@ -65,9 +74,8 @@ export class QuestionnaireProvider {
     this.source = questionnaireSourceIsLocal
       ? QuestionnaireSource.Local
       : QuestionnaireSource.Remote;
-    this.readCalculatedExpressionsAndEnableWhenItems();
+    await this.preprocessQuestionnaire();
     this.readVariables();
-    this.readContainedValueSets();
   }
 
   /**
@@ -98,12 +106,33 @@ export class QuestionnaireProvider {
    *
    * @author Sean Fong
    */
-  readCalculatedExpressionsAndEnableWhenItems() {
+  async preprocessQuestionnaire() {
     if (!this.questionnaire.item) return;
 
+    // Store contained valueSet codings
+    if (this.questionnaire.contained && this.questionnaire.contained.length > 0) {
+      this.questionnaire.contained.forEach((entry) => {
+        if (entry.resourceType === 'ValueSet' && entry.id) {
+          this.preprocessedValueSetCodings[entry.id] = getValueSetCodings(entry);
+        }
+      });
+    }
+
+    // Read enableWhen items, calculated expressions and valueSets to be expanded
+    const valueSetPromiseMap: Record<string, ValueSetPromise> = {};
     this.questionnaire.item.forEach((item) => {
-      this.readQuestionnaireItem(item);
+      this.readQuestionnaireItem(item, valueSetPromiseMap);
     });
+
+    const valueSetPromises = await resolvePromises(valueSetPromiseMap);
+
+    // Store valueSet codings
+    for (const valueSetUrl in valueSetPromises) {
+      const valueSet = valueSetPromises[valueSetUrl].valueSet;
+      if (valueSet) {
+        this.preprocessedValueSetCodings[valueSetUrl] = getValueSetCodings(valueSet);
+      }
+    }
   }
 
   /**
@@ -111,16 +140,19 @@ export class QuestionnaireProvider {
    *
    * @author Sean Fong
    */
-  readQuestionnaireItem(item: QuestionnaireItem) {
+  readQuestionnaireItem(
+    item: QuestionnaireItem,
+    valueSetPromiseMap: Record<string, ValueSetPromise>
+  ) {
     const items = item.item;
     if (items && items.length > 0) {
       // iterate through items of item recursively
       items.forEach((item) => {
-        this.readQuestionnaireItem(item);
+        this.readQuestionnaireItem(item, valueSetPromiseMap);
       });
     }
 
-    // Read enableWhen item and calculated expressions of simple qItem
+    // Read enableWhen items, calculated expressions and valueSets from qItem
     const calculatedExpression = getCalculatedExpression(item);
     if (calculatedExpression) {
       this.calculatedExpressions[item.linkId] = {
@@ -128,21 +160,18 @@ export class QuestionnaireProvider {
       };
     }
 
-    const EnableWhenItemProperties = getEnableWhenItemProperties(item);
-    if (EnableWhenItemProperties) {
-      this.enableWhenItems[item.linkId] = EnableWhenItemProperties;
+    const enableWhenItemProperties = getEnableWhenItemProperties(item);
+    if (enableWhenItemProperties) {
+      this.enableWhenItems[item.linkId] = enableWhenItemProperties;
     }
 
-    return;
-  }
-
-  readContainedValueSets() {
-    if (!this.questionnaire.contained || this.questionnaire.contained.length === 0) return;
-
-    this.questionnaire.contained.forEach((entry) => {
-      if (entry.resourceType === 'ValueSet' && entry.id) {
-        this.containedValueSets[entry.id] = entry;
+    const valueSetUrl = item.answerValueSet;
+    if (valueSetUrl) {
+      if (!valueSetPromiseMap[valueSetUrl] && !valueSetUrl.startsWith('#')) {
+        valueSetPromiseMap[valueSetUrl] = {
+          promise: getValueSetPromise(valueSetUrl)
+        };
       }
-    });
+    }
   }
 }

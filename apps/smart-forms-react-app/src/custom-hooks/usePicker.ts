@@ -115,7 +115,7 @@ function usePicker(launch: LaunchContextType) {
             setQuestionnaireResponseIsSearching(false);
           });
       }
-    }, 500),
+    }, 400),
     [launch.fhirClient]
   );
 

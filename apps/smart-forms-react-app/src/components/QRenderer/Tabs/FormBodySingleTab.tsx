@@ -16,10 +16,7 @@ function FormBodySingleTab(props: Props) {
   const { selected, tabText, listIndex, markedAsComplete, updateTabIndex } = props;
 
   return (
-    <ListItemButton
-      selected={selected}
-      sx={{ my: 0.5 }}
-      onClick={() => updateTabIndex(listIndex + 1)}>
+    <ListItemButton selected={selected} sx={{ my: 0.5 }} onClick={() => updateTabIndex(listIndex)}>
       <TabListItemIcon>
         {markedAsComplete ? (
           <Tooltip title="Completed">

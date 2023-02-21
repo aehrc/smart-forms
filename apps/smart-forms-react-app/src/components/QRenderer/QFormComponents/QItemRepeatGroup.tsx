@@ -33,7 +33,6 @@ import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.st
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../Form';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { nanoid } from 'nanoid';
@@ -48,7 +47,8 @@ function QItemRepeatGroup(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
+
+  let renderComponent = true;
 
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
@@ -63,7 +63,9 @@ function QItemRepeatGroup(props: Props) {
     }
   }, [qrItems]);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) {
+    renderComponent = false;
+  }
 
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
     const newQrGroupItems = newQrGroup.item;
@@ -106,64 +108,66 @@ function QItemRepeatGroup(props: Props) {
   }
 
   return (
-    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
-      <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
-        <QGroupHeadingTypography variant="h6">
-          <QItemLabel qItem={qItem} />
-        </QGroupHeadingTypography>
-        <Divider sx={{ mt: 1, mb: 1.5 }} light />
-        <TransitionGroup>
-          {repeatGroups.map((singleGroup, index) => {
-            const singleQrGroup: QuestionnaireResponseItem = singleGroup
-              ? { ...createEmptyQrItem(qItem), item: singleGroup.item }
-              : createEmptyQrItem(qItem);
+    <Collapse in={renderComponent} timeout={300}>
+      <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
+        <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
+          <QGroupHeadingTypography variant="h6">
+            <QItemLabel qItem={qItem} />
+          </QGroupHeadingTypography>
+          <Divider sx={{ mt: 1, mb: 1.5 }} light />
+          <TransitionGroup>
+            {repeatGroups.map((singleGroup, index) => {
+              const singleQrGroup: QuestionnaireResponseItem = singleGroup
+                ? { ...createEmptyQrItem(qItem), item: singleGroup.item }
+                : createEmptyQrItem(qItem);
 
-            return (
-              <Collapse key={groupIds[index]}>
-                <RepeatGroupContainerStack direction="row" justifyContent="end">
-                  <Box sx={{ flexGrow: 1 }}>
-                    <QItemGroup
-                      qItem={qItem}
-                      qrItem={singleQrGroup}
-                      isRepeated={true}
-                      groupCardElevation={groupCardElevation + 1}
-                      onQrItemChange={(newQrGroup) =>
-                        handleAnswerItemsChange(newQrGroup, index)
-                      }></QItemGroup>
-                  </Box>
+              return (
+                <Collapse key={groupIds[index]}>
+                  <RepeatGroupContainerStack direction="row" justifyContent="end">
+                    <Box sx={{ flexGrow: 1 }}>
+                      <QItemGroup
+                        qItem={qItem}
+                        qrItem={singleQrGroup}
+                        isRepeated={true}
+                        groupCardElevation={groupCardElevation + 1}
+                        onQrItemChange={(newQrGroup) =>
+                          handleAnswerItemsChange(newQrGroup, index)
+                        }></QItemGroup>
+                    </Box>
 
-                  <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
-                    <span>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        disabled={!singleGroup}
-                        onClick={() => deleteAnswerItem(index)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </span>
-                  </RepeatDeleteTooltip>
-                </RepeatGroupContainerStack>
-              </Collapse>
-            );
-          })}
-        </TransitionGroup>
+                    <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
+                      <span>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          disabled={!singleGroup}
+                          onClick={() => deleteAnswerItem(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </span>
+                    </RepeatDeleteTooltip>
+                  </RepeatGroupContainerStack>
+                </Collapse>
+              );
+            })}
+          </TransitionGroup>
 
-        <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            disabled={!repeatGroups[repeatGroups.length - 1]}
-            onClick={() => {
-              setRepeatGroups([...repeatGroups, undefined]);
-              setGroupIds([...groupIds, nanoid()]);
-            }}
-            data-test="button-add-repeat-group">
-            Add Item
-          </Button>
-        </Stack>
-      </Card>
-    </QGroupContainerBox>
+          <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              disabled={!repeatGroups[repeatGroups.length - 1]}
+              onClick={() => {
+                setRepeatGroups([...repeatGroups, undefined]);
+                setGroupIds([...groupIds, nanoid()]);
+              }}
+              data-test="button-add-repeat-group">
+              Add Item
+            </Button>
+          </Stack>
+        </Card>
+      </QGroupContainerBox>
+    </Collapse>
   );
 }
 

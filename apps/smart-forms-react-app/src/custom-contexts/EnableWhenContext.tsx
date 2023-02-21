@@ -21,7 +21,6 @@ import { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r5';
 import {
   createLinkedQuestionsMap,
-  isEnabledAnswerTypeSwitcher,
   readInitialAnswers,
   setInitialAnswers,
   updateItemAnswer
@@ -30,19 +29,23 @@ import {
 export const EnableWhenContext = React.createContext<EnableWhenContextType>({
   items: {},
   linkMap: {},
+  isActivated: true,
   setItems: () => void 0,
   updateItem: () => void 0,
-  checkItemIsEnabled: () => true
+  toggleActivation: () => void 0
 });
 
 function EnableWhenContextProvider(props: { children: React.ReactNode }) {
   const { children } = props;
+
+  const [isActivated, toggleActivation] = useState<boolean>(true);
   const [enableWhenItems, setEnableWhenItems] = useState<EnableWhenItems>({});
   const [linkedQuestionsMap, setLinkedQuestionsMap] = useState<Record<string, string[]>>({});
 
   const enableWhenContext: EnableWhenContextType = {
     items: enableWhenItems,
     linkMap: linkedQuestionsMap,
+    isActivated: isActivated,
     setItems: (items: EnableWhenItems, qrForm: QuestionnaireResponseItem) => {
       const linkedQuestionsMap = createLinkedQuestionsMap(items);
       const initialAnswers = readInitialAnswers(qrForm, linkedQuestionsMap);
@@ -67,28 +70,7 @@ function EnableWhenContextProvider(props: { children: React.ReactNode }) {
       );
       setEnableWhenItems(updatedItems);
     },
-    checkItemIsEnabled: (linkId: string) => {
-      let isEnabled = false;
-      if (enableWhenItems[linkId]) {
-        const checkedIsEnabledItems: boolean[] = [];
-        enableWhenItems[linkId].linked.forEach((linkedItem) => {
-          if (linkedItem.answer && linkedItem.answer.length > 0) {
-            linkedItem.answer.forEach((answer) => {
-              isEnabled = isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, answer);
-              checkedIsEnabledItems.push(isEnabled);
-            });
-          }
-        });
-
-        if (checkedIsEnabledItems.length === 0) return false;
-
-        return enableWhenItems[linkId].enableBehavior === 'any'
-          ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
-          : checkedIsEnabledItems.every((isEnabled) => isEnabled);
-      }
-      // always enable component when linkId not in enableWhenItems
-      return true;
-    }
+    toggleActivation: (isToggled) => toggleActivation(isToggled)
   };
 
   return (

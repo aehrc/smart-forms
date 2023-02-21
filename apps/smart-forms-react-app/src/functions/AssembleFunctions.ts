@@ -41,9 +41,12 @@ function defineAssembleParameters(questionnaire: Questionnaire): Parameters {
 }
 
 export async function assembleQuestionnaire(questionnaire: Questionnaire): Promise<Questionnaire> {
+  const formsServerEndpoint =
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com';
+
   const parameters = defineAssembleParameters(questionnaire);
   if (isAssembleInputParameters(parameters)) {
-    const outputAssembleParams = await assemble(parameters);
+    const outputAssembleParams = await assemble(parameters, formsServerEndpoint);
     if (outputAssembleParams.parameter[0].resource.resourceType === 'Questionnaire') {
       return outputAssembleParams.parameter[0].resource;
     } else {

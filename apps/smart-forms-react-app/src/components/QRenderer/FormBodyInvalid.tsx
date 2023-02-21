@@ -25,16 +25,16 @@ import ChipBar from '../ChipBar/ChipBar';
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function FormBodyInvalid() {
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   return (
     <Grid container>
-      <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
+      <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
         <SideBar>
           <InvalidQuestionnaireOperationButtons />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
+      <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
           <Typography fontSize={16} variant="h6">
             Oops, the form renderer is unable to render this questionnaire.

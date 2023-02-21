@@ -32,7 +32,6 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../QRenderer/Form';
 
 export interface Props {
   dialogOpen: boolean;
@@ -56,10 +55,9 @@ function ConfirmSaveAsFinalDialog(props: Props) {
   } = props;
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const pageSwitcher = useContext(PageSwitcherContext);
+  const { goToPage } = useContext(PageSwitcherContext);
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -68,8 +66,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     questionnaireResponseToSave = removeHiddenAnswers(
       questionnaireProvider.questionnaire,
       questionnaireResponseToSave,
-      enableWhenContext,
-      enableWhenChecksContext
+      enableWhenContext
     );
 
     setIsSaving(true);
@@ -84,7 +81,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
       .then((savedResponse) => {
         questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
         removeQrHasChanges();
-        pageSwitcher.goToPage(PageType.Picker);
+        goToPage(PageType.Picker);
         handleClose();
         setIsSaving(false);
       })

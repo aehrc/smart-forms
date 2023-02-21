@@ -74,12 +74,15 @@ export function getCanonicalUrls(
   return subquestionnaireCanonicals;
 }
 
-export async function fetchSubquestionnaires(canonicalUrls: string[]) {
+export async function fetchSubquestionnaires(
+  canonicalUrls: string[],
+  formsServerEndpoint: string
+): Promise<Questionnaire[] | OperationOutcome> {
   // Gather all promises to be executed at once
   const promises: Promise<any>[] = [];
 
   for (const canonicalUrl of canonicalUrls) {
-    promises.push(fetchQuestionnaireByCanonical(canonicalUrl));
+    promises.push(fetchQuestionnaireByCanonical(canonicalUrl, formsServerEndpoint));
   }
 
   const resources: (OperationOutcome | Bundle)[] = [];
@@ -119,11 +122,10 @@ export async function fetchSubquestionnaires(canonicalUrls: string[]) {
   return subquestionnaires;
 }
 
-async function fetchQuestionnaireByCanonical(canonicalUrl: string): Promise<any> {
-  // TODO temporarily specify form server url
-  const serverUrl =
-    'http://csiro-csiro-1d9bm4gf9damh-2033064964.ap-southeast-2.elb.amazonaws.com/fhir';
-
+async function fetchQuestionnaireByCanonical(
+  canonicalUrl: string,
+  formsServerEndpoint: string
+): Promise<any> {
   const headers = {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json+fhir; charset=UTF-8',
@@ -133,7 +135,7 @@ async function fetchQuestionnaireByCanonical(canonicalUrl: string): Promise<any>
   // FIXME version search i.e. "|0.1.0" doesnt work on SMART Health IT, remove version temporarily
   const canonicalUrlWithoutVersion = canonicalUrl.slice(0, -6);
 
-  return axios.get(`${serverUrl}/Questionnaire?url=${canonicalUrlWithoutVersion}`, {
+  return axios.get(`${formsServerEndpoint}/Questionnaire?url=${canonicalUrlWithoutVersion}`, {
     method: 'GET',
     headers: headers
   });

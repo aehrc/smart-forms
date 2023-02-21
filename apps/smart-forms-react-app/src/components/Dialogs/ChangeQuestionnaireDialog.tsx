@@ -32,7 +32,6 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../QRenderer/Form';
 
 export interface Props {
   dialogOpen: boolean;
@@ -46,37 +45,35 @@ function ChangeQuestionnaireDialog(props: Props) {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const launchContext = useContext(LaunchContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { fhirClient, patient, user } = useContext(LaunchContext);
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const isLaunched = !!(launchContext.fhirClient && launchContext.patient && launchContext.user);
+  const isLaunched = !!(fhirClient && patient && user);
 
   function handleSave() {
-    if (launchContext.fhirClient && launchContext.patient && launchContext.user) {
+    if (fhirClient && patient && user) {
       let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
       questionnaireResponseToSave = removeHiddenAnswers(
         questionnaireProvider.questionnaire,
         questionnaireResponseToSave,
-        enableWhenContext,
-        enableWhenChecksContext
+        enableWhenContext
       );
 
       setIsSaving(true);
       saveQuestionnaireResponse(
-        launchContext.fhirClient,
-        launchContext.patient,
-        launchContext.user,
+        fhirClient,
+        patient,
+        user,
         questionnaireProvider.questionnaire,
         questionnaireResponseToSave
       )
         .then((savedResponse) => {
           questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
           removeQrHasChanges();
-          pageSwitcher.goToPage(PageType.Picker);
+          goToPage(PageType.Picker);
           handleClose();
           setIsSaving(false);
         })
@@ -102,7 +99,7 @@ function ChangeQuestionnaireDialog(props: Props) {
         <Button onClick={handleClose}>Cancel</Button>
         <Button
           onClick={() => {
-            pageSwitcher.goToPage(PageType.Picker);
+            goToPage(PageType.Picker);
             handleClose();
           }}>
           {isLaunched ? 'Proceed without saving' : 'Proceed'}

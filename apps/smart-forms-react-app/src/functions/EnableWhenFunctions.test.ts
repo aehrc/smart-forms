@@ -14,22 +14,25 @@ describe('verify correctness of linked questions map created from enable when it
   const enableWhenItems = enableWhenItemsSample as EnableWhenItems;
 
   const linkedQuestionsMap = createLinkedQuestionsMap(enableWhenItems);
+  const linkedQuestionsOfAge = linkedQuestionsMap['e2a16e4d-2765-4b61-b286-82cfc6356b30'];
 
-  test('specifying age as key in linked questions map should return three linkIds', () => {
-    expect(linkedQuestionsMap['age'].length).toEqual(3);
+  test('linked questions of Age question should return 147 linkIds', () => {
+    expect(linkedQuestionsOfAge.length).toEqual(147);
   });
 
-  test('specifying age as key in linked questions map should return b7a9e23c-b875-4536-b72d-81d361c18e2c as the first value', () => {
-    expect(linkedQuestionsMap['age'][0]).toEqual('b7a9e23c-b875-4536-b72d-81d361c18e2c');
+  test('specifying age as key in linked questions map should return 2e82032a-dc28-45f2-916e-862303d39fe5 as the first value', () => {
+    expect(linkedQuestionsOfAge[0]).toEqual('2e82032a-dc28-45f2-916e-862303d39fe5');
   });
 
-  test('specifying age as key in linked questions map should return 650e63e1-3b06-46e6-b2c9-41f67717cacd as the last value', () => {
-    expect(linkedQuestionsMap['age'][2]).toEqual('650e63e1-3b06-46e6-b2c9-41f67717cacd');
+  test('specifying age as key in linked questions map should return 16971bd2-5494-483d-9713-eda182c47f02 as the last value', () => {
+    expect(linkedQuestionsOfAge[linkedQuestionsOfAge.length - 1]).toEqual(
+      '16971bd2-5494-483d-9713-eda182c47f02'
+    );
   });
 
-  test('specifying ee2589d5-e1b0-400d-a2ae-48356e2d011d as key in linked questions map should return f9aaa187-ef4d-4aff-a805-9ad2ebe56fe5 as the only value', () => {
-    const joinedLinkIds = linkedQuestionsMap['ee2589d5-e1b0-400d-a2ae-48356e2d011d'].join();
-    expect(joinedLinkIds).toEqual('f9aaa187-ef4d-4aff-a805-9ad2ebe56fe5');
+  test('specifying c72933c7-349f-4fef-94ff-c424c69da6f3 as key in linked questions map should return b7d116f9-0425-4cf1-8cde-fbf4dfaee550 as the only value', () => {
+    const joinedLinkIds = linkedQuestionsMap['c72933c7-349f-4fef-94ff-c424c69da6f3'].join();
+    expect(joinedLinkIds).toEqual('b7d116f9-0425-4cf1-8cde-fbf4dfaee550');
   });
 });
 
@@ -41,10 +44,11 @@ describe('verify correctness of initial answers created from linked questions ma
   const qrForm = questionnaireResponse.item![0];
 
   const initialAnswers = readInitialAnswers(qrForm, linkedQuestionsMap);
+  const ageKey = 'e2a16e4d-2765-4b61-b286-82cfc6356b30';
 
-  test('specifying age as key in initial answers should return valueInteger of 87', () => {
-    const initialAnswer = initialAnswers['age'];
-    expect(initialAnswer[0].valueInteger).toBe(87);
+  test('specifying age as key in initial answers should return valueInteger of 86', () => {
+    const initialAnswer = initialAnswers[ageKey];
+    expect(initialAnswer[0].valueInteger).toBe(86);
   });
 
   test('specifying b639a3a8-f476-4cc8-b5c7-f5d2abb23511 as key in initial answers should return valueCoding with code 8517006', () => {
@@ -75,7 +79,7 @@ describe('update enable when items by setting initial answers', () => {
 
   test('passing an initial answers object with age - valueInteger of 87 should result in a corresponding linked answer in object with linkId b7a9e23c-b875-4536-b72d-81d361c18e2c', () => {
     const initialAnswers: Record<string, QuestionnaireResponseItemAnswer[]> = {
-      age: [
+      'e2a16e4d-2765-4b61-b286-82cfc6356b30': [
         {
           valueInteger: 87
         }
@@ -83,7 +87,7 @@ describe('update enable when items by setting initial answers', () => {
     };
 
     const updatedAnswers = setInitialAnswers(initialAnswers, enableWhenItems, linkedQuestionsMap);
-    const objectWithLinkedAge = updatedAnswers['b7a9e23c-b875-4536-b72d-81d361c18e2c'];
+    const objectWithLinkedAge = updatedAnswers['c587e3b6-b91a-40dc-9a16-179342d001e9'];
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const answer = objectWithLinkedAge.linked![0].answer!;

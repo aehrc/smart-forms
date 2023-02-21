@@ -26,7 +26,6 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItemWithUnit } from '../../../../functions/QrItemFunctions';
-import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../functions/ItemControlFunctions';
 import { getTextDisplayUnit } from '../../../../functions/QItemFunctions';
@@ -35,6 +34,7 @@ import { StandardOutlinedInput } from '../../../StyledComponents/Textfield.style
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
+import { CalculatedExpressionContext } from '../../../../custom-contexts/CalculatedExpressionContext';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,7 +46,7 @@ interface Props
 
 function QItemDecimal(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const calculatedExpressions = useContext(CalcExpressionContext);
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
   const precision = getDecimalPrecision(qItem);
   const displayUnit = getTextDisplayUnit(qItem);

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
-import { Box, Card, Divider, IconButton, Tooltip } from '@mui/material';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Box, Card, Collapse, Divider, IconButton, Tooltip } from '@mui/material';
 import { QItemType } from '../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
@@ -35,9 +35,11 @@ import { isSpecificItemControl } from '../../../functions/ItemControlFunctions';
 import QItemGroupTable from './QItemGroupTable';
 import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../Form';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { RoundButton } from '../../StyledComponents/Buttons.styles';
+import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../functions/TabFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,8 +47,11 @@ interface Props
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
-  isMarkedAsComplete?: boolean;
-  setMarkedAsComplete?: () => unknown;
+  tabIsMarkedAsComplete?: boolean;
+  tabs?: Record<string, { tabIndex: number; isComplete: boolean }>;
+  currentTabIndex?: number;
+  markTabAsComplete?: () => unknown;
+  goToNextTab?: (nextTabIndex: number) => unknown;
 }
 
 function QItemGroup(props: Props) {
@@ -55,13 +60,17 @@ function QItemGroup(props: Props) {
     qrItem,
     isRepeated,
     groupCardElevation,
-    isMarkedAsComplete,
-    setMarkedAsComplete,
+    tabIsMarkedAsComplete,
+    tabs,
+    currentTabIndex,
+    markTabAsComplete,
+    goToNextTab,
     onQrItemChange
   } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
+
+  let renderComponent = true;
 
   const qItems = qItem.item;
   const groupFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -70,24 +79,27 @@ function QItemGroup(props: Props) {
   const [group, setGroup] = useState(groupFromProps);
 
   useEffect(() => {
-    setGroup(groupFromProps);
+    const groupStateIsSame = JSON.stringify(group) === JSON.stringify(groupFromProps);
+    if (!groupStateIsSame) {
+      setGroup(groupFromProps);
+    }
   }, [qrItem]);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  const qItemsIndexMap = mapQItemsIndex(qItem);
+  if (isHidden(qItem, enableWhenContext)) {
+    renderComponent = false;
+  }
 
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     const qrGroup: QuestionnaireResponseItem = { ...group };
     updateLinkedItem(newQrItem, null, qrGroup, qItemsIndexMap);
-    setGroup(qrGroup);
     onQrItemChange(qrGroup);
   }
 
   function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
     const qrGroup: QuestionnaireResponseItem = { ...group };
     updateLinkedItem(null, qrRepeatGroup, qrGroup, qItemsIndexMap);
-    setGroup(qrGroup);
     onQrItemChange(qrGroup);
   }
 
@@ -96,86 +108,52 @@ function QItemGroup(props: Props) {
       getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
     return (
-      <QGroupContainerBox
-        key={qItem.linkId}
-        cardElevation={groupCardElevation}
-        isRepeated={isRepeated}
-        data-test="q-item-group-box">
-        <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
-          {isRepeated ? null : (
-            <>
-              <Box display="flex" alignItems="center">
-                <QGroupHeadingTypography
-                  variant="h6"
-                  isTabHeading={isMarkedAsComplete !== undefined}>
-                  <QItemLabel qItem={qItem} />
-                </QGroupHeadingTypography>
+      <Collapse in={renderComponent} timeout={300}>
+        <QGroupContainerBox
+          key={qItem.linkId}
+          cardElevation={groupCardElevation}
+          isRepeated={isRepeated}
+          data-test="q-item-group-box">
+          <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
+            {isRepeated ? null : (
+              <>
+                <Box display="flex" alignItems="center">
+                  <QGroupHeadingTypography
+                    variant="h6"
+                    isTabHeading={tabIsMarkedAsComplete !== undefined}>
+                    <QItemLabel qItem={qItem} />
+                  </QGroupHeadingTypography>
 
-                {isMarkedAsComplete !== undefined && setMarkedAsComplete ? (
-                  <>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Tooltip title={!isMarkedAsComplete ? 'Complete tab' : 'Mark as incomplete'}>
-                      <IconButton onClick={setMarkedAsComplete}>
-                        <CheckCircleIcon color={isMarkedAsComplete ? 'success' : 'inherit'} />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                ) : null}
-              </Box>
-            </>
-          )}
-          <Divider sx={{ mt: 1, mb: 1.5 }} light />
-          {qItems.map((qItem: QuestionnaireItem, i) => {
-            const qrItemOrItems = qrItemsByIndex[i];
+                  {tabIsMarkedAsComplete !== undefined && markTabAsComplete ? (
+                    <>
+                      <Box sx={{ flexGrow: 1 }} />
+                      <Tooltip
+                        title={!tabIsMarkedAsComplete ? 'Complete tab' : 'Mark as incomplete'}>
+                        <IconButton onClick={markTabAsComplete}>
+                          <CheckCircleIcon color={tabIsMarkedAsComplete ? 'success' : 'inherit'} />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  ) : null}
+                </Box>
+                <Divider sx={{ mt: 1, mb: 1.5 }} light />
+              </>
+            )}
+            {qItems.map((qItem: QuestionnaireItem, i) => {
+              const qrItemOrItems = qrItemsByIndex[i];
 
-            // Process qrItemOrItems as an qrItem array
-            if (Array.isArray(qrItemOrItems)) {
-              const qrItems = qrItemOrItems;
+              // Process qrItemOrItems as an qrItem array
+              if (Array.isArray(qrItemOrItems)) {
+                const qrItems = qrItemOrItems;
 
-              // qItem should always be either a repeatGroup or a groupTable item
-              if (qItem.repeats && qItem.type === QItemType.Group) {
-                if (isSpecificItemControl(qItem, 'gtable')) {
-                  return (
-                    <QItemGroupTable
-                      key={qItem.linkId}
-                      qItem={qItem}
-                      qrItems={qrItems}
-                      groupCardElevation={groupCardElevation + 1}
-                      onQrRepeatGroupChange={handleQrRepeatGroupChange}
-                    />
-                  );
-                } else {
-                  return (
-                    <QItemRepeatGroup
-                      key={qItem.linkId}
-                      qItem={qItem}
-                      qrItems={qrItems}
-                      isRepeated={true}
-                      groupCardElevation={groupCardElevation + 1}
-                      onQrRepeatGroupChange={handleQrRepeatGroupChange}
-                    />
-                  );
-                }
-              } else {
-                // It is an issue if qItem entered this decision is neither
-                console.warn('Some items are not rendered');
-                return null;
-              }
-            } else {
-              // Process qrItemOrItems as a single qrItem
-              // if qItem is a repeating question
-              const qrItem = qrItemOrItems;
-
-              if (isRepeatItemAndNotCheckbox(qItem)) {
-                if (qItem.type === QItemType.Group) {
-                  // If qItem is RepeatGroup or a groupTable item in this decision branch,
-                  // their qrItem should always be undefined
+                // qItem should always be either a repeatGroup or a groupTable item
+                if (qItem.repeats && qItem.type === QItemType.Group) {
                   if (isSpecificItemControl(qItem, 'gtable')) {
                     return (
                       <QItemGroupTable
                         key={qItem.linkId}
                         qItem={qItem}
-                        qrItems={[]}
+                        qrItems={qrItems}
                         groupCardElevation={groupCardElevation + 1}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />
@@ -185,7 +163,7 @@ function QItemGroup(props: Props) {
                       <QItemRepeatGroup
                         key={qItem.linkId}
                         qItem={qItem}
-                        qrItems={[]}
+                        qrItems={qrItems}
                         isRepeated={true}
                         groupCardElevation={groupCardElevation + 1}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
@@ -193,41 +171,102 @@ function QItemGroup(props: Props) {
                     );
                   }
                 } else {
+                  // It is an issue if qItem entered this decision is neither
+                  console.warn('Some items are not rendered');
+                  return null;
+                }
+              } else {
+                // Process qrItemOrItems as a single qrItem
+                // if qItem is a repeating question
+                const qrItem = qrItemOrItems;
+
+                if (isRepeatItemAndNotCheckbox(qItem)) {
+                  if (qItem.type === QItemType.Group) {
+                    // If qItem is RepeatGroup or a groupTable item in this decision branch,
+                    // their qrItem should always be undefined
+                    if (isSpecificItemControl(qItem, 'gtable')) {
+                      return (
+                        <QItemGroupTable
+                          key={qItem.linkId}
+                          qItem={qItem}
+                          qrItems={[]}
+                          groupCardElevation={groupCardElevation + 1}
+                          onQrRepeatGroupChange={handleQrRepeatGroupChange}
+                        />
+                      );
+                    } else {
+                      return (
+                        <QItemRepeatGroup
+                          key={qItem.linkId}
+                          qItem={qItem}
+                          qrItems={[]}
+                          isRepeated={true}
+                          groupCardElevation={groupCardElevation + 1}
+                          onQrRepeatGroupChange={handleQrRepeatGroupChange}
+                        />
+                      );
+                    }
+                  } else {
+                    return (
+                      <QItemRepeat
+                        key={i}
+                        qItem={qItem}
+                        qrItem={qrItem}
+                        onQrItemChange={handleQrItemChange}
+                      />
+                    );
+                  }
+                } else if (qItem.type === QItemType.Group) {
+                  // if qItem is not a repeating question or is a checkbox
                   return (
-                    <QItemRepeat
-                      key={i}
+                    <QItemGroup
+                      key={qItem.linkId}
                       qItem={qItem}
                       qrItem={qrItem}
-                      onQrItemChange={handleQrItemChange}
-                    />
+                      isRepeated={false}
+                      groupCardElevation={groupCardElevation + 1}
+                      onQrItemChange={handleQrItemChange}></QItemGroup>
+                  );
+                } else {
+                  return (
+                    <QItemSwitcher
+                      key={qItem.linkId}
+                      qItem={qItem}
+                      qrItem={qrItem}
+                      isRepeated={false}
+                      isTabled={false}
+                      onQrItemChange={handleQrItemChange}></QItemSwitcher>
                   );
                 }
-              } else if (qItem.type === QItemType.Group) {
-                // if qItem is not a repeating question or is a checkbox
-                return (
-                  <QItemGroup
-                    key={qItem.linkId}
-                    qItem={qItem}
-                    qrItem={qrItem}
-                    isRepeated={false}
-                    groupCardElevation={groupCardElevation + 1}
-                    onQrItemChange={handleQrItemChange}></QItemGroup>
-                );
-              } else {
-                return (
-                  <QItemSwitcher
-                    key={qItem.linkId}
-                    qItem={qItem}
-                    qrItem={qrItem}
-                    isRepeated={false}
-                    isTabled={false}
-                    onQrItemChange={handleQrItemChange}></QItemSwitcher>
-                );
               }
-            }
-          })}
-        </Card>
-      </QGroupContainerBox>
+            })}
+            {/* Next tab button at the end of each tab group */}
+            {currentTabIndex !== undefined && tabs && goToNextTab ? (
+              <Box display="flex" flexDirection="row-reverse" sx={{ mt: 3 }}>
+                {currentTabIndex !== Object.keys(tabs).length - 1 ? (
+                  <RoundButton
+                    variant="contained"
+                    size="small"
+                    endIcon={<ArrowForwardIcon />}
+                    disabled={findNumOfVisibleTabs(tabs, enableWhenContext.items) < 2}
+                    onClick={() => {
+                      if (currentTabIndex !== undefined && tabs) {
+                        const nextVisibleTabIndex = getNextVisibleTabIndex(
+                          tabs,
+                          currentTabIndex,
+                          enableWhenContext.items
+                        );
+                        goToNextTab(nextVisibleTabIndex);
+                      }
+                    }}>
+                    Next tab
+                  </RoundButton>
+                ) : null}
+              </Box>
+            ) : null}
+          </Card>
+        </QGroupContainerBox>
+      </Collapse>
     );
   } else {
     return <div>Unable to load group</div>;

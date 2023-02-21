@@ -15,19 +15,21 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { FormControlLabel, Switch, Typography } from '@mui/material';
 import { DebugBarContainerBox } from './DebugBar.styles';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 
-type Props = {
+interface Props {
   hideQResponse: boolean;
   toggleHideQResponse: (checked: boolean) => unknown;
-  enableWhenStatus: boolean;
-  toggleEnableWhenStatus: (checked: boolean) => unknown;
-};
+}
 
 function RendererDebugBar(props: Props) {
-  const { hideQResponse, toggleHideQResponse, enableWhenStatus, toggleEnableWhenStatus } = props;
+  const { hideQResponse, toggleHideQResponse } = props;
+
+  const { toggleActivation, isActivated } = useContext(EnableWhenContext);
+
   return (
     <DebugBarContainerBox>
       <FormControlLabel
@@ -42,8 +44,8 @@ function RendererDebugBar(props: Props) {
       <FormControlLabel
         control={
           <Switch
-            onChange={(event) => toggleEnableWhenStatus(event.target.checked)}
-            checked={enableWhenStatus}
+            onChange={(event) => toggleActivation(event.target.checked)}
+            checked={isActivated}
           />
         }
         label={<Typography variant="subtitle2">EnableWhen checks</Typography>}

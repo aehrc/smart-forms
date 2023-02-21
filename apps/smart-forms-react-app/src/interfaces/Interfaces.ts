@@ -19,7 +19,8 @@ import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItemAnswer,
+  ValueSet
 } from 'fhir/r5';
 
 export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
@@ -57,7 +58,9 @@ export type EnableWhenItems = Record<string, EnableWhenItemProperties>;
 
 export interface EnableWhenItemProperties {
   linked: EnableWhenLinkedItem[];
+  isEnabled: boolean;
   enableBehavior?: QuestionnaireItem['enableBehavior'];
+  isTab?: boolean;
 }
 
 export interface EnableWhenLinkedItem {
@@ -73,4 +76,9 @@ export interface AuthFailDialog {
 export interface QrRepeatGroup {
   linkId: string;
   qrItems: QuestionnaireResponseItem[];
+}
+
+export interface ValueSetPromise {
+  promise: Promise<ValueSet>;
+  valueSet?: ValueSet;
 }

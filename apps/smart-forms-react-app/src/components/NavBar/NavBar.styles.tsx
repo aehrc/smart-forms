@@ -49,16 +49,16 @@ export const NavBarPopUpBox = styled(Box)(({ theme }) => ({
 
 export const NavBarPatientDetailsTypography = styled(Typography)(() => ({
   textTransform: 'capitalize',
-  fontSize: 14
+  fontSize: 12
 }));
 
 export const PatientDetailsDialogTypography = styled(Typography)(() => ({
   textTransform: 'capitalize',
-  fontSize: 14
+  fontSize: 12
 }));
 
 export const NavBarTitleTypography = styled(Typography)(() => ({
   textTransform: 'capitalize',
-  fontSize: 14,
+  fontSize: 12,
   fontWeight: 500
 }));

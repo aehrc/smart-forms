@@ -27,13 +27,13 @@ import SideBarBottomCollapsed from './SideBarBottomCollapsed';
 function SideBar(props: { children: React.ReactNode }) {
   const { children } = props;
 
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   return (
     <SideBarCard>
       <SideBarListBox>
         <Box sx={{ m: 1 }}>
-          {sideBar.isExpanded ? (
+          {sideBarIsExpanded ? (
             <>
               <SideBarOverlineTypography variant="overline">Operations</SideBarOverlineTypography>
               <SecondaryNonSelectableList disablePadding>{children}</SecondaryNonSelectableList>
@@ -46,7 +46,7 @@ function SideBar(props: { children: React.ReactNode }) {
         </Box>
         <Box sx={{ flexGrow: 1 }} />
         <Divider />
-        {sideBar.isExpanded ? <SideBarBottom /> : <SideBarBottomCollapsed />}
+        {sideBarIsExpanded ? <SideBarBottom /> : <SideBarBottomCollapsed />}
       </SideBarListBox>
     </SideBarCard>
   );

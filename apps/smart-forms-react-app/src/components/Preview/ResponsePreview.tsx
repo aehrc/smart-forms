@@ -29,7 +29,7 @@ import { MainGridHeadingTypography } from '../StyledComponents/Typographys.style
 import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function ResponsePreview() {
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
@@ -38,13 +38,13 @@ function ResponsePreview() {
 
   return (
     <Grid container>
-      <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
+      <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
         <SideBar>
           <ResponsePreviewOperationButtons />
           <PrintPreviewButton handlePrint={handlePrint} />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
+      <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
           <MainGridHeadingTypography variant="h1">Response Preview</MainGridHeadingTypography>
           <ChipBar>

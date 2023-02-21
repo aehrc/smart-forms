@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import React, { memo, SyntheticEvent } from 'react';
-import { Autocomplete, CircularProgress, Grid, Typography } from '@mui/material';
+import React, { memo, SyntheticEvent, useState } from 'react';
+import { Autocomplete, Box, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
 import {
@@ -25,12 +25,17 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import useValueSetAutocomplete from '../../../../custom-hooks/useValueSetAutocomplete';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import SearchIcon from '@mui/icons-material/Search';
+import useDebounce from '../../../../custom-hooks/useDebounce';
+import useOntoserverQuery from '../../../../custom-hooks/useOntoserverQuery';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import InfoIcon from '@mui/icons-material/Info';
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorIcon from '@mui/icons-material/Error';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -57,8 +62,15 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   const answerValueSetUrl = qItem.answerValueSet;
   const maxList = 10;
 
-  const { options, loading, setLoading, searchResultsWithDebounce, serverError } =
-    useValueSetAutocomplete(answerValueSetUrl, maxList);
+  const [input, setInput] = useState('');
+  const debouncedInput = useDebounce(input, 200);
+
+  const { options, loading, feedback } = useOntoserverQuery(
+    answerValueSetUrl,
+    maxList,
+    input,
+    debouncedInput
+  );
 
   if (!answerValueSetUrl) return null;
 
@@ -67,13 +79,14 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     newValue: Coding | string | null
   ) {
     if (newValue === null) {
+      setInput('');
       newValue = '';
     }
 
     if (typeof newValue === 'string') {
       if (newValue !== '') {
         onQrItemChange({
-          ...qrOpenChoice,
+          ...createEmptyQrItem(qItem),
           answer: [{ valueString: newValue }]
         });
       } else {
@@ -81,67 +94,71 @@ function QItemOpenChoiceAutocomplete(props: Props) {
       }
     } else {
       onQrItemChange({
-        ...qrOpenChoice,
+        ...createEmptyQrItem(qItem),
         answer: [{ valueCoding: newValue }]
       });
     }
   }
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const newInput = event.target.value;
-
-    setLoading(true);
-    searchResultsWithDebounce(newInput);
-    handleValueChange(event, newInput);
-  }
-
   const openChoiceAutocomplete = (
     <>
-      <Autocomplete
-        id={qItem.id}
-        value={valueAutocomplete}
-        options={options}
-        noOptionsText={'No results'}
-        getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
-        loading={loading}
-        loadingText={'Fetching results...'}
-        clearOnEscape
-        freeSolo
-        autoHighlight
-        fullWidth
-        onChange={handleValueChange}
-        filterOptions={(x) => x}
-        renderInput={(params) => (
-          <StandardTextField
-            {...params}
-            onChange={handleInputChange}
-            isTabled={isTabled}
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <>
-                  {!valueAutocomplete || valueAutocomplete === '' ? (
-                    <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
-                  ) : null}
-                  {params.InputProps.startAdornment}
-                </>
-              ),
-              endAdornment: (
-                <>
-                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                  {params.InputProps.endAdornment}
-                </>
-              )
-            }}
-            data-test="q-item-open-choice-autocomplete-field"
-          />
-        )}
-      />
-      {serverError ? (
-        <Typography variant="subtitle2">
-          There was an error fetching results from the terminology server.
-        </Typography>
-      ) : null}
+      <Box display="flex">
+        <Autocomplete
+          id={qItem.id}
+          value={valueAutocomplete}
+          options={options}
+          getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
+          loading={loading}
+          loadingText={'Fetching results...'}
+          clearOnEscape
+          freeSolo
+          autoHighlight
+          fullWidth
+          onChange={handleValueChange}
+          filterOptions={(x) => x}
+          renderInput={(params) => (
+            <StandardTextField
+              {...params}
+              value={input}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+              isTabled={isTabled}
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <>
+                    {!valueAutocomplete || valueAutocomplete === '' ? (
+                      <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                    ) : null}
+                    {params.InputProps.startAdornment}
+                  </>
+                ),
+                endAdornment: (
+                  <>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : feedback ? (
+                      <Fade in={!!feedback} timeout={300}>
+                        <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
+                          {
+                            {
+                              info: <InfoIcon fontSize="small" color="info" />,
+                              warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                              success: <DoneIcon fontSize="small" color="success" />,
+                              error: <ErrorIcon fontSize="small" color="error" />
+                            }[feedback.color]
+                          }
+                        </Tooltip>
+                      </Fade>
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </>
+                )
+              }}
+              data-test="q-item-open-choice-autocomplete-field"
+            />
+          )}
+        />
+      </Box>
     </>
   );
 

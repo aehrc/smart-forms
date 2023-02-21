@@ -22,12 +22,13 @@ import { RoundButton } from '../StyledComponents/Buttons.styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { PageType } from '../../interfaces/Enums';
 import { FullHeightCard } from '../StyledComponents/Card.styles';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Questionnaire } from 'fhir/r5';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 
 interface Props {
   searchInput: string;
@@ -51,23 +52,31 @@ function PickerQuestionnaireCard(props: Props) {
   } = props;
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const launch = useContext(LaunchContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { fhirClient } = useContext(LaunchContext);
 
-  function handleCreateNewResponseButtonClick() {
+  const [createNewResponseButtonLoading, setCreateNewResponseButtonLoading] = useState(false);
+
+  async function handleCreateNewResponseButtonClick() {
     if (typeof selectedQuestionnaireIndex === 'number' && selectedQuestionnaire) {
-      questionnaireProvider.setQuestionnaire(
+      setCreateNewResponseButtonLoading(true);
+
+      // Assign questionnaire to questionnaire provider
+      await questionnaireProvider.setQuestionnaire(
         selectedQuestionnaire,
         questionnaireSourceIsLocal,
-        launch.fhirClient
+        fhirClient
       );
+
+      // Assign questionnaireResponse to questionnaireResponse provider
       if (selectedQuestionnaire.item && selectedQuestionnaire.item.length > 0) {
         questionnaireResponseProvider.setQuestionnaireResponse(
           createQuestionnaireResponse(selectedQuestionnaire.id, selectedQuestionnaire.item[0])
         );
       }
 
-      pageSwitcher.goToPage(PageType.Renderer);
+      setCreateNewResponseButtonLoading(false);
+      goToPage(PageType.Renderer);
     }
   }
 
@@ -88,7 +97,13 @@ function PickerQuestionnaireCard(props: Props) {
       <Box display="flex" flexDirection="row-reverse">
         <RoundButton
           variant="contained"
-          endIcon={<ArrowForwardIcon />}
+          endIcon={
+            createNewResponseButtonLoading ? (
+              <WhiteCircularProgress size={20} />
+            ) : (
+              <ArrowForwardIcon />
+            )
+          }
           disabled={typeof selectedQuestionnaireIndex !== 'number'}
           onClick={handleCreateNewResponseButtonClick}
           sx={{ m: 1.5, textTransform: 'Capitalize' }}

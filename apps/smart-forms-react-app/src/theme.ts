@@ -39,6 +39,7 @@ declare module '@mui/material/styles' {
 const getTheme = (prefersDarkMode: boolean): ThemeOptions => {
   return createTheme({
     typography: {
+      fontFamily: ['Roboto', 'Arial', '"Helvetica Neue"', '"Helvetica"', 'sans-serif'].join(','),
       body1: {
         fontSize: 13
       },

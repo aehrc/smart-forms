@@ -30,7 +30,8 @@ import { propagateSubquestionnaireItems } from './PropagateSubquestionnaireItems
 
 export async function assembleQuestionnaire(
   questionnaire: Questionnaire,
-  allCanonicals: string[]
+  allCanonicals: string[],
+  formsServerEndpoint: string
 ): Promise<Questionnaire | OperationOutcome> {
   const parentQuestionnaire = JSON.parse(JSON.stringify(questionnaire));
   const canonicals = getCanonicalUrls(parentQuestionnaire, allCanonicals);
@@ -42,12 +43,16 @@ export async function assembleQuestionnaire(
   // Keep a record of all traversed canonical urls to prevent an infinite loop situation during assembly
   allCanonicals.push(...canonicals);
 
-  const subquestionnaires = await fetchSubquestionnaires(canonicals);
+  const subquestionnaires = await fetchSubquestionnaires(canonicals, formsServerEndpoint);
   if (!Array.isArray(subquestionnaires)) return subquestionnaires;
 
   // Recursively assemble subquestionnaires if required
   for (let subquestionnaire of subquestionnaires) {
-    const assembledSubquestionnaire = await assembleQuestionnaire(subquestionnaire, allCanonicals);
+    const assembledSubquestionnaire = await assembleQuestionnaire(
+      subquestionnaire,
+      allCanonicals,
+      formsServerEndpoint
+    );
     if (assembledSubquestionnaire.resourceType === 'Questionnaire') {
       subquestionnaire = assembledSubquestionnaire;
     } else {

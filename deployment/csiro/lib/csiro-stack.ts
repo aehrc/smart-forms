@@ -57,12 +57,12 @@ export class CsiroStack extends cdk.Stack {
       port: assemble.containerPort,
       protocol: ApplicationProtocol.HTTP,
       targets: [assembleTarget],
-      healthCheck: { path: '/fhir/$assemble' }
+      healthCheck: { path: '/fhir/Questionnaire/$assemble' }
     });
     listener.addAction('CsiroAssembleAction', {
       action: ListenerAction.forward([assembleTargetGroup]),
       priority: 1,
-      conditions: [ListenerCondition.pathPatterns(['/fhir/$assemble'])]
+      conditions: [ListenerCondition.pathPatterns(['/fhir/Questionnaire/$assemble'])]
     });
 
     // Create a target for the forms server, to handle all other requests.

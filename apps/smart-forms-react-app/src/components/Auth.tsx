@@ -32,7 +32,7 @@ import ProgressSpinner from './ProgressSpinner';
 import { AuthFailDialog } from '../interfaces/Interfaces';
 
 function Auth() {
-  const launchContext = useContext(LaunchContext);
+  const { patient, user, setFhirClient, setPatient, setUser } = useContext(LaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
@@ -46,15 +46,15 @@ function Auth() {
     oauth2
       .ready()
       .then((client) => {
-        launchContext.setFhirClient(client);
+        setFhirClient(client);
         setHasClient(true);
 
         getPatient(client)
-          .then((patient) => launchContext.setPatient(patient))
+          .then((patient) => setPatient(patient))
           .catch((error) => console.error(error));
 
         getUser(client)
-          .then((user) => launchContext.setUser(user))
+          .then((user) => setUser(user))
           .catch((error) => console.error(error));
 
         const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
@@ -89,7 +89,7 @@ function Auth() {
   }, []);
 
   if (
-    isStillAuthenticating(hasClient, launchContext.patient, launchContext.user) ||
+    isStillAuthenticating(hasClient, patient, user) ||
     questionnaireIsLoading ||
     authFailDialog.dialogOpen
   ) {

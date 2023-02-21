@@ -27,11 +27,12 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
+import { isTab } from './TabFunctions';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items
- * mapped to an array containing all its respective enableWhen items
- * returns a key-value pair of <linkedItemId, [enableWhenItem1, enableWhenItem2, enableWhenItem3]>
+ * mapped to an array containing all its respective enableWhen items' linkIds
+ * returns a key-value pair of <linkedItemId, [enableWhenItem1LinkId, enableWhenItem2LinkId, enableWhenItem3LinkId]>
  *
  * @author Sean Fong
  */
@@ -190,6 +191,7 @@ function readQuestionnaireResponseItem(
 
 /**
  * Set initial answer values into enableWhenItems' answer attributes
+ * Update enabled status of each enableWhenItem simultaneously
  *
  * @author Sean Fong
  */
@@ -212,7 +214,8 @@ export function setInitialAnswers(
 }
 
 /**
- * Update each initial answer value into each enableWhenItem's answer attribute
+ * Update answer of the target linkId in every related enableWhenItem's linked items
+ * Then update the enabled status of every related enableWhenItem
  *
  * @author Sean Fong
  */
@@ -223,13 +226,40 @@ export function updateItemAnswer(
   newAnswer: QuestionnaireResponseItemAnswer[]
 ): EnableWhenItems {
   linkedQuestions.forEach((question) => {
+    // Update modified linked answer
     items[question].linked.forEach((linkedItem) => {
       if (linkedItem.enableWhen.question === linkId) {
         linkedItem.answer = newAnswer ?? undefined;
       }
     });
+
+    // Update enabled status of modified enableWhenItem
+    items[question].isEnabled = checkItemIsEnabled(items[question]);
   });
   return items;
+}
+
+/**
+ * Check if an enableWhenItem is enabled based on the answer of its linked items
+ *
+ * @author Sean Fong
+ */
+export function checkItemIsEnabled(enableWhenItemProperties: EnableWhenItemProperties): boolean {
+  const checkedIsEnabledItems: boolean[] = [];
+
+  enableWhenItemProperties.linked.forEach((linkedItem) => {
+    if (linkedItem.answer && linkedItem.answer.length > 0) {
+      linkedItem.answer.forEach((answer) => {
+        checkedIsEnabledItems.push(isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, answer));
+      });
+    }
+  });
+
+  if (checkedIsEnabledItems.length === 0) return false;
+
+  return enableWhenItemProperties.enableBehavior === 'any'
+    ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
+    : checkedIsEnabledItems.every((isEnabled) => isEnabled);
 }
 
 /**
@@ -242,16 +272,20 @@ export function getEnableWhenItemProperties(
 ): EnableWhenItemProperties | null {
   const enableWhen = qItem.enableWhen;
   if (enableWhen) {
-    const EnableWhenItemProperties: EnableWhenItemProperties = { linked: [] };
-    EnableWhenItemProperties.linked = enableWhen.map((linkedItem): EnableWhenLinkedItem => {
+    const enableWhenItemProperties: EnableWhenItemProperties = { linked: [], isEnabled: false };
+    enableWhenItemProperties.linked = enableWhen.map((linkedItem): EnableWhenLinkedItem => {
       return { enableWhen: linkedItem };
     });
 
     if (qItem.enableBehavior) {
-      EnableWhenItemProperties.enableBehavior = qItem.enableBehavior;
+      enableWhenItemProperties.enableBehavior = qItem.enableBehavior;
     }
 
-    return EnableWhenItemProperties;
+    if (isTab(qItem)) {
+      enableWhenItemProperties.isTab = true;
+    }
+
+    return enableWhenItemProperties;
   }
   return null;
 }

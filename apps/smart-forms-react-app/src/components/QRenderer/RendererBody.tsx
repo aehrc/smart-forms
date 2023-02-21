@@ -22,6 +22,9 @@ import { QuestionnaireResponseProviderContext } from '../../App';
 import Form from './Form';
 import FormPreview from '../Preview/FormPreview';
 import QRSavedSnackbar from './QRSavedSnackbar';
+import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
+import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
+import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
 
 function RendererBody() {
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
@@ -29,9 +32,18 @@ function RendererBody() {
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
     questionnaireResponseProvider.questionnaireResponse
   );
+
+  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const [qrHasChanges, setQrHasChanges] = useState(false);
-  const [tabIndex, setTabIndex] = useState<number | null>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', (event) => {
+      if (qrHasChanges) {
+        event.returnValue = 'You have unfinished changes!';
+      }
+    });
+  }, [qrHasChanges]);
 
   // update QR state if QR is updated from the server
   // introduces two-way binding
@@ -55,22 +67,28 @@ function RendererBody() {
           togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
         />
       ) : (
-        <Form
-          questionnaireResponse={questionnaireResponse}
-          tabIndex={tabIndex}
-          qrHasChanges={qrHasChanges}
-          setTabIndex={(newTabIndex) => setTabIndex(newTabIndex)}
-          removeQrHasChanges={() => setQrHasChanges(false)}
-          togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
-          updateQuestionnaireResponse={(newQuestionnaireResponse) => {
-            setQuestionnaireResponse(newQuestionnaireResponse);
-            setQrHasChanges(true);
-          }}
-          clearQuestionnaireResponse={(clearedQuestionnaireResponse) => {
-            setQuestionnaireResponse(clearedQuestionnaireResponse);
-            setQrHasChanges(true);
-          }}
-        />
+        <EnableWhenContextProvider>
+          <CalculatedExpressionContextProvider>
+            <CachedQueriedValueSetContextProvider>
+              <Form
+                questionnaireResponse={questionnaireResponse}
+                currentTabIndex={currentTabIndex}
+                qrHasChanges={qrHasChanges}
+                setCurrentTabIndex={(newTabIndex) => setCurrentTabIndex(newTabIndex)}
+                removeQrHasChanges={() => setQrHasChanges(false)}
+                togglePreviewMode={() => setIsPreviewMode(!isPreviewMode)}
+                updateQuestionnaireResponse={(newQuestionnaireResponse) => {
+                  setQuestionnaireResponse(newQuestionnaireResponse);
+                  setQrHasChanges(true);
+                }}
+                clearQuestionnaireResponse={(clearedQuestionnaireResponse) => {
+                  setQuestionnaireResponse(clearedQuestionnaireResponse);
+                  setQrHasChanges(true);
+                }}
+              />
+            </CachedQueriedValueSetContextProvider>
+          </CalculatedExpressionContextProvider>
+        </EnableWhenContextProvider>
       )}
       <QRSavedSnackbar isDisplayed={!qrHasChanges} />
     </>

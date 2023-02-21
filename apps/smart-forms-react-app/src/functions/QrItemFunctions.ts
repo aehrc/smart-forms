@@ -15,16 +15,8 @@
  * limitations under the License.
  */
 
-import {
-  Expression,
-  Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r5';
-import fhirpath from 'fhirpath';
-import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { CalculatedExpression, QrRepeatGroup } from '../interfaces/Interfaces';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import { QrRepeatGroup } from '../interfaces/Interfaces';
 
 /**
  * Create a questionnaireResponse from a given questionnaire fprm item
@@ -242,58 +234,4 @@ export function updateLinkedItem(
       }
     }
   }
-}
-
-/**
- * Evaluate all calculated expressions after a change has been made in a questionnaireRespoonse
- * Evaluation is done using fhirpath.evaluate function
- *
- * @author Sean Fong
- */
-export function evaluateCalculatedExpressions(
-  questionnaire: Questionnaire,
-  questionnaireResponse: QuestionnaireResponse,
-  variables: Expression[],
-  calculatedExpressions: Record<string, CalculatedExpression>
-): Record<string, CalculatedExpression> | null {
-  let isUpdated = false;
-  const updatedCalculatedExpressions = { ...calculatedExpressions };
-  if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
-    const context: Record<string, any> = {
-      questionnaire: questionnaire,
-      resource: questionnaireResponse
-    };
-    const qrForm = questionnaireResponse.item[0];
-
-    if (variables.length > 0 && qrForm) {
-      variables.forEach((variable) => {
-        context[`${variable.name}`] = fhirpath.evaluate(
-          qrForm,
-          {
-            base: 'QuestionnaireResponse.item',
-            expression: `${variable.expression}`
-          },
-          context,
-          fhirpath_r4_model
-        );
-      });
-
-      for (const linkId in calculatedExpressions) {
-        const result = fhirpath.evaluate(
-          questionnaireResponse,
-          calculatedExpressions[linkId].expression,
-          context,
-          fhirpath_r4_model
-        );
-
-        if (result.length > 0) {
-          if (calculatedExpressions[linkId].value !== result[0]) {
-            isUpdated = true;
-            updatedCalculatedExpressions[linkId].value = result[0];
-          }
-        }
-      }
-    }
-  }
-  return isUpdated ? updatedCalculatedExpressions : null;
 }

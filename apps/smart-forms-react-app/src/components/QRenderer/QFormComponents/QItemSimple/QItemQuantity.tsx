@@ -25,11 +25,11 @@ import {
 } from '../../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import { CalcExpressionContext } from '../../Form';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
+import { CalculatedExpressionContext } from '../../../../custom-contexts/CalculatedExpressionContext';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -41,7 +41,7 @@ interface Props
 
 function QItemQuantity(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const calculatedExpressions = useContext(CalcExpressionContext);
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
   let qrQuantity = qrItem ? qrItem : createEmptyQrItem(qItem);
   let valueQuantity: number | undefined = 0.0;

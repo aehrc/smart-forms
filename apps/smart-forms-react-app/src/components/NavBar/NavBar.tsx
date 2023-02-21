@@ -35,10 +35,7 @@ const userData: UserData = {
 };
 
 function NavBar() {
-  const launchContext = useContext(LaunchContext);
-
-  const patient = launchContext.patient;
-  const user = launchContext.user;
+  const { patient, user } = useContext(LaunchContext);
 
   if (patient) {
     const dateOfBirthDayJs = dayjs(patient.birthDate);

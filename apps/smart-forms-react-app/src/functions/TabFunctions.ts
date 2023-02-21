@@ -16,6 +16,7 @@
  */
 
 import { Coding, QuestionnaireItem } from 'fhir/r5';
+import { EnableWhenItems } from '../interfaces/Interfaces';
 
 /**
  * Checks if any of the items in a qItem array is a tabbed item
@@ -38,20 +39,6 @@ export function getTabbedItems(items: QuestionnaireItem[]): QuestionnaireItem[] 
 }
 
 /**
- * Get index of the first tabbed item from a qItem array
- *
- * @author Sean Fong
- */
-export function getIndexOfFirstTab(items: QuestionnaireItem[]): number {
-  for (let i = 0; i < items.length; i++) {
-    if (isTab(items[i])) {
-      return i + 1;
-    }
-  }
-  return 1;
-}
-
-/**
  * Check if a qItem is a tabbed item
  *
  * @author Sean Fong
@@ -70,4 +57,89 @@ export function isTab(item: QuestionnaireItem) {
     }
   }
   return false;
+}
+
+/**
+ * Create a <linkId, {isComplete: boolean}> key-value pair for all tabbed items in a qItem array
+ *
+ * @author Sean Fong
+ */
+export function constructTabsWithProperties(
+  qItems: QuestionnaireItem[] | undefined
+): Record<string, { tabIndex: number; isComplete: boolean }> {
+  if (!qItems) return {};
+
+  const linkIds = qItems.filter(isTab).map((qItem) => qItem.linkId);
+
+  const tabs: Record<string, { tabIndex: number; isComplete: boolean }> = {};
+  for (const [i, linkId] of linkIds.entries()) {
+    tabs[linkId] = {
+      tabIndex: i,
+      isComplete: false
+    };
+  }
+  return tabs;
+}
+
+export function constructTabsWithVisibility(
+  tabs: Record<string, { tabIndex: number; isComplete: boolean }>,
+  enableWhenItems: EnableWhenItems
+): { linkId: string; isVisible: boolean }[] {
+  return Object.entries(tabs).map(([linkId]) => {
+    return {
+      linkId,
+      isVisible: enableWhenItems[linkId] ? enableWhenItems[linkId]?.isEnabled : true
+    };
+  });
+}
+
+/**
+ * Get index of next visible tab
+ *
+ * @author Sean Fong
+ */
+export function getNextVisibleTabIndex(
+  tabs: Record<string, { tabIndex: number; isComplete: boolean }>,
+  currentTabIndex: number,
+  enableWhenItems: EnableWhenItems
+): number {
+  const tabsWithVisibility = constructTabsWithVisibility(tabs, enableWhenItems);
+
+  let nextTabIndex = currentTabIndex + 1;
+  const nextTabIndexIsVisible = false;
+  while (!nextTabIndexIsVisible) {
+    if (tabsWithVisibility[nextTabIndex].isVisible) {
+      return nextTabIndex;
+    }
+    nextTabIndex++;
+  }
+
+  return nextTabIndex;
+}
+/**
+ *
+ * Get index of first visible tab
+ *
+ * @author Sean Fong
+ */
+export function getFirstVisibleTabIndex(
+  tabs: Record<string, { tabIndex: number; isComplete: boolean }>,
+  enableWhenItems: EnableWhenItems
+): number | undefined {
+  const tabsWithVisibility = constructTabsWithVisibility(tabs, enableWhenItems);
+  return tabsWithVisibility.findIndex((tab) => tab.isVisible);
+}
+
+/**
+ *
+ * Find number of visible tabs
+ *
+ * @author Sean Fong
+ */
+export function findNumOfVisibleTabs(
+  tabs: Record<string, { tabIndex: number; isComplete: boolean }>,
+  enableWhenItems: EnableWhenItems
+): number {
+  const tabsWithVisibility = constructTabsWithVisibility(tabs, enableWhenItems);
+  return tabsWithVisibility.filter((tab) => tab.isVisible).length;
 }

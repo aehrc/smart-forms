@@ -16,24 +16,28 @@
  */
 
 import {
+  Coding,
+  Expression,
   Patient,
   Practitioner,
+  QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
-import { EnableWhenItemProperties, EnableWhenItems } from './Interfaces';
+import { CalculatedExpression, EnableWhenItemProperties, EnableWhenItems } from './Interfaces';
 import { PageType } from './Enums';
 
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
   linkMap: Record<string, string[]>;
+  isActivated: boolean;
   setItems: (
     enableWhenItems: EnableWhenItems,
     questionnaireResponseForm: QuestionnaireResponseItem
   ) => unknown;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
-  checkItemIsEnabled: (linkId: string) => boolean;
+  toggleActivation: (toggled: boolean) => unknown;
 };
 
 export type LaunchContextType = {
@@ -43,11 +47,6 @@ export type LaunchContextType = {
   setFhirClient: (client: Client) => unknown;
   setPatient: (patient: Patient) => unknown;
   setUser: (user: Practitioner) => unknown;
-};
-
-export type QuestionnaireActiveContextType = {
-  questionnaireActive: boolean;
-  setQuestionnaireActive: (questionnaireActive: boolean) => unknown;
 };
 
 export type PreviewModeContextType = {
@@ -61,6 +60,19 @@ export type PageSwitcherContextType = {
 };
 
 export type SideBarContextType = {
-  isExpanded: boolean;
-  setIsExpanded: (sideBarActive: boolean) => unknown;
+  sideBarIsExpanded: boolean;
+  setSideBarIsExpanded: (sideBarActive: boolean) => unknown;
+};
+
+export type CachedQueriedValueSetContextType = {
+  cachedValueSetCodings: Record<string, Coding[]>;
+  addCodingToCache: (valueSetUrl: string, codings: Coding[]) => unknown;
+};
+
+export type CalculatedExpressionContextType = {
+  calculatedExpressions: Record<string, CalculatedExpression>;
+  updateCalculatedExpressions: (
+    questionnaireResponse: QuestionnaireResponse,
+    variables: Expression[]
+  ) => unknown;
 };

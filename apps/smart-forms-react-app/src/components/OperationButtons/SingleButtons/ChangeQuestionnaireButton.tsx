@@ -36,8 +36,8 @@ interface Props {
 
 function ChangeQuestionnaireButton(props: Props) {
   const { isChip, qrHasChanges, removeQrHasChanges, questionnaireResponse } = props;
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const sideBar = useContext(SideBarContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -45,7 +45,7 @@ function ChangeQuestionnaireButton(props: Props) {
     if (qrHasChanges) {
       setDialogOpen(true);
     } else {
-      pageSwitcher.goToPage(PageType.Picker);
+      goToPage(PageType.Picker);
     }
   }
 
@@ -87,7 +87,7 @@ function ChangeQuestionnaireButton(props: Props) {
 
   return (
     <>
-      {isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}
+      {isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}
       {qrHasChanges && removeQrHasChanges && questionnaireResponse ? (
         <ChangeQuestionnaireDialog
           dialogOpen={dialogOpen}

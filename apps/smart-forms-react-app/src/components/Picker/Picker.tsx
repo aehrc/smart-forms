@@ -33,7 +33,7 @@ import { SideBarContext } from '../../custom-contexts/SideBarContext';
 
 function Picker() {
   const launch = useContext(LaunchContext);
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const {
     searchInput,
@@ -55,12 +55,12 @@ function Picker() {
 
   return (
     <Grid container>
-      <SideBarGrid item xs={12} lg={sideBar.isExpanded ? 1.75 : 0.5}>
+      <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
         <SideBar>
           <PickerOperationButtons refreshQuestionnaireList={refreshQuestionnaireList} />
         </SideBar>
       </SideBarGrid>
-      <MainGrid item xs={12} lg={sideBar.isExpanded ? 10.25 : 11.5}>
+      <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
         <MainGridContainerBox>
           <Stack direction="row" gap={8} alignItems="center">
             <MainGridHeadingTypography variant="h1">Questionnaires</MainGridHeadingTypography>

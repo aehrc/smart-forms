@@ -17,7 +17,7 @@
 
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import React, { useContext, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import PickerQuestionnaireResponseCardContent from './PickerQuestionnaireResponseCardContent';
 import { RoundButton } from '../StyledComponents/Buttons.styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -29,6 +29,7 @@ import { loadQuestionnaireFromResponse } from '../../functions/LoadServerResourc
 import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import PickerQuestionnaireResponseListFilterPopper from './PickerQuestionnaireResponseListFilterPopper';
+import { SideBarOverlineTypography } from '../StyledComponents/Typographys.styles';
 
 interface Props {
   questionnaireResponses: QuestionnaireResponse[];
@@ -54,59 +55,60 @@ function PickerQuestionnaireResponseCard(props: Props) {
   } = props;
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const pageSwitcher = useContext(PageSwitcherContext);
-  const launch = useContext(LaunchContext);
+  const { goToPage } = useContext(PageSwitcherContext);
+  const { fhirClient } = useContext(LaunchContext);
 
   const [viewResponseButtonLoading, setViewResponseButtonLoading] = useState(false);
 
-  function handleViewResponseButtonClick() {
+  async function handleViewResponseButtonClick() {
     if (typeof selectedQuestionnaireResponseIndex === 'number') {
-      questionnaireResponseProvider.setQuestionnaireResponse(
-        questionnaireResponses[selectedQuestionnaireResponseIndex]
-      );
+      setViewResponseButtonLoading(true);
+      const questionnaireResponse = questionnaireResponses[selectedQuestionnaireResponseIndex];
 
+      // Assign questionnaireResponse to questionnaireResponse provider
+      questionnaireResponseProvider.setQuestionnaireResponse(questionnaireResponse);
+
+      // Assign questionnaire to questionnaire provider
       if (selectedQuestionnaire) {
-        questionnaireProvider.setQuestionnaire(
+        await questionnaireProvider.setQuestionnaire(
           selectedQuestionnaire,
           questionnaireSourceIsLocal,
-          launch.fhirClient
+          fhirClient
         );
-        pageSwitcher.goToPage(PageType.ResponsePreview);
       } else {
-        const questionnaireReference =
-          questionnaireResponses[selectedQuestionnaireResponseIndex].questionnaire;
-        if (!questionnaireReference) return null;
+        const questionnaireReference = questionnaireResponse.questionnaire;
+        if (!questionnaireReference || !fhirClient) return null;
 
-        if (launch.fhirClient) {
-          setViewResponseButtonLoading(true);
-          loadQuestionnaireFromResponse(launch.fhirClient, questionnaireReference)
-            .then((questionnaire) => {
-              questionnaireProvider.setQuestionnaire(
-                questionnaire,
-                questionnaireSourceIsLocal,
-                launch.fhirClient
-              );
-              setViewResponseButtonLoading(false);
-              pageSwitcher.goToPage(PageType.ResponsePreview);
-            })
-            .catch(() => setViewResponseButtonLoading(false));
-        }
+        const questionnaire = await loadQuestionnaireFromResponse(
+          fhirClient,
+          questionnaireReference
+        );
+        await questionnaireProvider.setQuestionnaire(
+          questionnaire,
+          questionnaireSourceIsLocal,
+          fhirClient
+        );
       }
+
+      setViewResponseButtonLoading(false);
+      goToPage(PageType.ResponsePreview);
     }
   }
 
   return (
     <FullHeightCard>
-      <Box display="flex" flexDirection="row" sx={{ ml: 2, mr: 1.5, mt: 1 }}>
-        <Typography variant="overline" fontSize={10} data-test="picker-card-heading-responses">
+      <Box display="flex" flexDirection="row">
+        <SideBarOverlineTypography variant="overline" data-test="picker-card-heading-responses">
           Responses
-        </Typography>
+        </SideBarOverlineTypography>
         {questionnaireResponses.length > 0 && !questionnaireResponseIsSearching ? (
           <>
             <Box sx={{ flexGrow: 1 }}></Box>
-            <PickerQuestionnaireResponseListFilterPopper
-              onQrSortByParamChange={onQrSortByParamChange}
-            />
+            <Box sx={{ ml: 2, mt: 1 }}>
+              <PickerQuestionnaireResponseListFilterPopper
+                onQrSortByParamChange={onQrSortByParamChange}
+              />
+            </Box>
           </>
         ) : null}
       </Box>

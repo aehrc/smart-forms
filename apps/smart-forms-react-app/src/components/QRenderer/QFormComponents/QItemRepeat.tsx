@@ -32,7 +32,6 @@ import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { EnableWhenChecksContext } from '../Form';
 import { TransitionGroup } from 'react-transition-group';
 import { FullWidthFormComponentBox } from '../../StyledComponents/Boxes.styles';
 import { nanoid } from 'nanoid';
@@ -46,12 +45,13 @@ function QItemRepeat(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenChecksContext = useContext(EnableWhenChecksContext);
 
   const qrRepeat = qrItem ?? createEmptyQrItem(qItem);
   const qrRepeatAnswers: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
     ? qrRepeat.answer
     : [undefined];
+
+  let renderComponent = true;
 
   const initialRepeatAnswers = [...qrRepeatAnswers];
   if (initialRepeatAnswers[initialRepeatAnswers.length - 1] !== undefined) {
@@ -68,7 +68,9 @@ function QItemRepeat(props: Props) {
     }
   }, [qrItem]);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenChecksContext)) return null;
+  if (isHidden(qItem, enableWhenContext)) {
+    renderComponent = false;
+  }
 
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const answersTemp = [...repeatAnswers];
@@ -97,69 +99,71 @@ function QItemRepeat(props: Props) {
     setAnswerIds(updatedIds);
 
     const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));
-    onQrItemChange({ ...qrRepeat, answer: answersWithValues });
+    onQrItemChange({ ...createEmptyQrItem(qItem), answer: answersWithValues });
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-repeat-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
-        </Grid>
-        <Grid item xs={7}>
-          <TransitionGroup>
-            {repeatAnswers.map((answer, index) => {
-              const singleQrItem = answer
-                ? { ...createEmptyQrItem(qItem), answer: [answer] }
-                : createEmptyQrItem(qItem);
+    <Collapse in={renderComponent} timeout={300}>
+      <FullWidthFormComponentBox data-test="q-item-repeat-box">
+        <Grid container columnSpacing={6}>
+          <Grid item xs={5}>
+            <QItemLabel qItem={qItem} />
+          </Grid>
+          <Grid item xs={7}>
+            <TransitionGroup>
+              {repeatAnswers.map((answer, index) => {
+                const singleQrItem = answer
+                  ? { ...createEmptyQrItem(qItem), answer: [answer] }
+                  : createEmptyQrItem(qItem);
 
-              return (
-                <Collapse key={answerIds[index]}>
-                  <RepeatItemContainerStack direction="row">
-                    <Box sx={{ flexGrow: 1 }}>
-                      <QItemSwitcher
-                        qItem={qItem}
-                        qrItem={singleQrItem}
-                        isRepeated={qItem.repeats ?? false}
-                        isTabled={false}
-                        onQrItemChange={(newQrItem) =>
-                          handleAnswersChange(newQrItem, index)
-                        }></QItemSwitcher>
-                    </Box>
-                    <RepeatDeleteTooltip className="repeat-item-delete" title="Delete item">
-                      <span>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          disabled={!answer}
-                          onClick={() => deleteAnswer(index)}>
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </RepeatDeleteTooltip>
-                  </RepeatItemContainerStack>
-                </Collapse>
-              );
-            })}
-          </TransitionGroup>
-          <QItemDisplayInstructions qItem={qItem} />
+                return (
+                  <Collapse key={answerIds[index]}>
+                    <RepeatItemContainerStack direction="row">
+                      <Box sx={{ flexGrow: 1 }}>
+                        <QItemSwitcher
+                          qItem={qItem}
+                          qrItem={singleQrItem}
+                          isRepeated={qItem.repeats ?? false}
+                          isTabled={false}
+                          onQrItemChange={(newQrItem) =>
+                            handleAnswersChange(newQrItem, index)
+                          }></QItemSwitcher>
+                      </Box>
+                      <RepeatDeleteTooltip className="repeat-item-delete" title="Delete item">
+                        <span>
+                          <IconButton
+                            size="small"
+                            color="error"
+                            disabled={!answer}
+                            onClick={() => deleteAnswer(index)}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </span>
+                      </RepeatDeleteTooltip>
+                    </RepeatItemContainerStack>
+                  </Collapse>
+                );
+              })}
+            </TransitionGroup>
+            <QItemDisplayInstructions qItem={qItem} />
+          </Grid>
         </Grid>
-      </Grid>
 
-      <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          disabled={!repeatAnswers[repeatAnswers.length - 1]}
-          onClick={() => {
-            setRepeatAnswers([...repeatAnswers, undefined]);
-            setAnswerIds([...answerIds, nanoid()]);
-          }}
-          data-test="button-add-repeat-item">
-          Add Item
-        </Button>
-      </Stack>
-    </FullWidthFormComponentBox>
+        <Stack direction="row" justifyContent="end" sx={{ mt: 1 }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            disabled={!repeatAnswers[repeatAnswers.length - 1]}
+            onClick={() => {
+              setRepeatAnswers([...repeatAnswers, undefined]);
+              setAnswerIds([...answerIds, nanoid()]);
+            }}
+            data-test="button-add-repeat-item">
+            Add Item
+          </Button>
+        </Stack>
+      </FullWidthFormComponentBox>
+    </Collapse>
   );
 }
 

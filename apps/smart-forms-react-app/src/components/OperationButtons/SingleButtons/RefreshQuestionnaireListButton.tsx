@@ -29,7 +29,7 @@ interface Props {
 }
 function RefreshQuestionnaireListButton(props: Props) {
   const { isChip, refreshQuestionnaireList } = props;
-  const sideBar = useContext(SideBarContext);
+  const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const buttonTitle = 'Refresh Questionnaires';
 
@@ -67,7 +67,7 @@ function RefreshQuestionnaireListButton(props: Props) {
     </Box>
   );
 
-  return <>{isChip ? renderChip : sideBar.isExpanded ? renderButton : renderIconButton}</>;
+  return <>{isChip ? renderChip : sideBarIsExpanded ? renderButton : renderIconButton}</>;
 }
 
 export default RefreshQuestionnaireListButton;

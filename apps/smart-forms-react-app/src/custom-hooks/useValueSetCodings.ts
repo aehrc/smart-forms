@@ -17,66 +17,58 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { Coding, QuestionnaireItem, ValueSet } from 'fhir/r5';
-import { AnswerValueSet } from '../classes/AnswerValueSet';
-import { ContainedValueSetContext } from '../components/QRenderer/Form';
+import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFunctions';
+import { PreprocessedValueSetContext } from '../components/QRenderer/Form';
+import { CachedQueriedValueSetContext } from '../custom-contexts/CachedValueSetContext';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
-  const containedValueSetContext = useContext(ContainedValueSetContext);
+  const preprocessedCodings = useContext(PreprocessedValueSetContext);
+  const { cachedValueSetCodings, addCodingToCache } = useContext(CachedQueriedValueSetContext);
 
-  const valueSetUrl = qItem.answerValueSet;
+  let valueSetUrl = qItem.answerValueSet;
 
   let initialCodings: Coding[] = [];
-  let cachedCodings: Coding[] | undefined;
 
   // set options from cached answer options if present
   if (valueSetUrl) {
-    cachedCodings = AnswerValueSet.cache[valueSetUrl];
-    if (cachedCodings) {
-      initialCodings = cachedCodings;
-    } else if (valueSetUrl.startsWith('#')) {
-      // set options from contained valueSet if present
-      const reference = valueSetUrl.slice(1);
-      const valueSet = containedValueSetContext[reference];
-      if (valueSet) {
-        initialCodings = getValueSetOptions(valueSetUrl, valueSet);
-      }
+    if (valueSetUrl.startsWith('#')) {
+      valueSetUrl = valueSetUrl.slice(1);
+    }
+
+    // attempt to get codings from value sets preprocessed when loading questionnaire
+    initialCodings = preprocessedCodings[valueSetUrl] ?? [];
+
+    if (initialCodings.length === 0) {
+      // attempt to get codings from cached queried value sets
+      initialCodings = cachedValueSetCodings[valueSetUrl] ?? [];
     }
   }
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
-
   const [serverError, setServerError] = useState<Error | null>(null);
 
   // get options from answerValueSet on render
   useEffect(() => {
     const valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl) return;
+    if (!valueSetUrl || codings.length > 0) return;
 
-    if (!cachedCodings && !valueSetUrl.startsWith('#')) {
-      AnswerValueSet.expand(
-        valueSetUrl,
-        (valueSet: ValueSet) => {
-          const codings = getValueSetOptions(valueSetUrl, valueSet);
-          setCodings(codings);
-        },
-        (error: Error) => {
+    const promise = getValueSetPromise(valueSetUrl);
+    if (promise) {
+      promise
+        .then((valueSet: ValueSet) => {
+          const codings = getValueSetCodings(valueSet);
+          if (codings.length > 0) {
+            addCodingToCache(valueSetUrl, codings);
+            setCodings(codings);
+          }
+        })
+        .catch((error: Error) => {
           setServerError(error);
-        }
-      );
+        });
     }
   }, [qItem]);
 
   return { codings, serverError };
-}
-
-function getValueSetOptions(valueSetUrl: string, valueSet: ValueSet): Coding[] {
-  const contains = valueSet.expansion?.contains;
-  if (contains) {
-    const answerOptions = AnswerValueSet.getValueCodings(contains);
-    AnswerValueSet.cache[valueSetUrl] = answerOptions;
-    return answerOptions;
-  }
-  return [];
 }
 
 export default useValueSetCodings;
