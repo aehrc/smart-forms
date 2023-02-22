@@ -7,16 +7,18 @@ declare module '@mui/material/styles' {
   interface Palette {
     accent1: PaletteColor;
     accent2: PaletteColor;
-    accent3: PaletteColor;
-    accent4: PaletteColor;
+    customBackground: {
+      neutral: string;
+    };
   }
 
   // noinspection JSUnusedGlobalSymbols
   interface PaletteOptions {
     accent1?: PaletteColorOptions;
     accent2?: PaletteColorOptions;
-    accent3?: PaletteColorOptions;
-    accent4?: PaletteColorOptions;
+    customBackground?: {
+      neutral: string;
+    };
   }
 }
 
@@ -119,7 +121,9 @@ const palette = {
   },
   background: {
     paper: '#fff',
-    default: GREY[100],
+    default: GREY[100]
+  },
+  customBackground: {
     neutral: GREY[200]
   },
   action: {

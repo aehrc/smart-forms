@@ -1,12 +1,9 @@
-export function remToPx(value) {
-  return Math.round(parseFloat(value) * 16);
-}
-
-export function pxToRem(value) {
+export function pxToRem(value: number) {
   return `${value / 16}rem`;
 }
 
-export function responsiveFontSizes({ sm, md, lg }) {
+export function responsiveFontSizes(props: { sm: number; md: number; lg: number }) {
+  const { sm, md, lg } = props;
   return {
     '@media (min-width:600px)': {
       fontSize: pxToRem(sm)
@@ -22,10 +19,8 @@ export function responsiveFontSizes({ sm, md, lg }) {
 
 // ----------------------------------------------------------------------
 
-const FONT_PRIMARY = 'Public Sans, sans-serif'; // Google Font
-
 const typography = {
-  fontFamily: FONT_PRIMARY,
+  fontFamily: 'Public Sans, sans-serif, Roboto, Arial, "Helvetica Neue", Helvetica',
   fontWeightRegular: 400,
   fontWeightMedium: 600,
   fontWeightBold: 700,
@@ -90,14 +85,12 @@ const typography = {
   overline: {
     fontWeight: 700,
     lineHeight: 1.5,
-    fontSize: pxToRem(12),
-    textTransform: 'uppercase'
+    fontSize: pxToRem(12)
   },
   button: {
     fontWeight: 700,
     lineHeight: 24 / 14,
-    fontSize: pxToRem(14),
-    textTransform: 'capitalize'
+    fontSize: pxToRem(14)
   }
 };
 

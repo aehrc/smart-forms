@@ -8,15 +8,16 @@ import Tooltip from './Tooltip';
 import Backdrop from './Backdrop';
 import Typography from './Typography';
 import Autocomplete from './Autocomplete';
+import { Theme } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-export default function ComponentsOverrides(theme) {
+export default function ComponentsOverrides(theme: Theme) {
   return Object.assign(
     Card(theme),
     Table(theme),
     Input(theme),
-    Paper(theme),
+    Paper(),
     Button(theme),
     Tooltip(theme),
     Backdrop(theme),

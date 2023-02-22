@@ -18,7 +18,7 @@
 import React, { createContext } from 'react';
 import './App.css';
 import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme';
+import ThemeProvider from './theme/Theme';
 import { BrowserRouter } from 'react-router-dom';
 import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
 import LaunchContextProvider from './custom-contexts/LaunchContext';
