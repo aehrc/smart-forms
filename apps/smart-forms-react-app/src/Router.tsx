@@ -16,8 +16,7 @@ import { isStillAuthenticating } from './functions/LaunchContextFunctions';
 import NoQuestionnaireDialog from './components/Dialogs/AuthorisationFailedDialog';
 import ProgressSpinner from './components/ProgressSpinner';
 import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
-
-// ----------------------------------------------------------------------
+import QuestionnairePage from './pages/QuestionnairePage';
 
 export default function Router() {
   const { patient, user, setFhirClient, setPatient, setUser } = useContext(LaunchContext);
@@ -82,7 +81,8 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/questionnaires" />, index: true },
-        { path: 'questionnaires', element: <DashboardLayout /> }
+        { path: 'questionnaires', element: <QuestionnairePage /> },
+        { path: 'responses', element: <QuestionnairePage /> }
       ]
     },
     {
@@ -108,7 +108,7 @@ export default function Router() {
           closeDialog={() => setAuthFailDialog({ ...authFailDialog, dialogOpen: false })}
           errorMessage={authFailDialog.errorMessage}
         />
-        <ProgressSpinner message="Fetching patient" />
+        <ProgressSpinner message="Authorising launch" />
       </>
     );
   } else {
