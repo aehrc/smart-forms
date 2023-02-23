@@ -45,15 +45,6 @@ const PRIMARY = {
   contrastText: '#fff'
 };
 
-const SECONDARY = {
-  lighter: '#D6E4FF',
-  light: '#84A9FF',
-  main: '#3366FF',
-  dark: '#1939B7',
-  darker: '#091A7A',
-  contrastText: '#fff'
-};
-
 const INFO = {
   lighter: '#D0F2FF',
   light: '#74CAFF',
@@ -103,9 +94,9 @@ const palette = {
   warning: WARNING,
   error: ERROR,
   accent1: {
-    main: '#d6eaf8',
-    light: '#ebf5fb',
-    dark: '#aed6f1'
+    main: '#d2e0f6',
+    light: '#e9f0fa',
+    dark: '#bcd1f1'
   },
   accent2: {
     main: '#d5f5e3',
