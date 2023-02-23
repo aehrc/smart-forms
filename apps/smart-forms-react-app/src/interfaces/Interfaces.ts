@@ -19,6 +19,7 @@ import {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
+  QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   ValueSet
@@ -92,11 +93,32 @@ export interface TableAttributes {
 
 export interface QuestionnaireListItem {
   id: string;
-  name: string;
+  title: string;
   avatarColor: string;
   publisher: string;
   date: string;
   status: Questionnaire['status'];
 }
 
-export type UserWithIndex = [number, QuestionnaireListItem];
+export interface ResponseListItem {
+  id: string;
+  title: string;
+  avatarColor: string;
+  author: string;
+  authored: string;
+  status: QuestionnaireResponse['status'];
+}
+
+export type ListItem = QuestionnaireListItem | ResponseListItem;
+
+export type ListItemWithIndex = [number, QuestionnaireListItem | ResponseListItem];
+
+export interface SelectedQuestionnaire {
+  listItem: QuestionnaireListItem;
+  resource: Questionnaire;
+}
+
+export interface SelectedResponse {
+  listItem: ResponseListItem;
+  resource: QuestionnaireResponse;
+}

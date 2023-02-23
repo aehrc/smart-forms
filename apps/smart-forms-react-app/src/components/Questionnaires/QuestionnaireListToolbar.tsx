@@ -23,7 +23,7 @@ function QuestionnaireListToolbar(props: Props) {
       }}>
       {selected ? (
         <Typography component="div" variant="subtitle1">
-          {selected.name} selected
+          {selected.title} selected
         </Typography>
       ) : (
         <StyledSearch

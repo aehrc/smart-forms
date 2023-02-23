@@ -7,6 +7,7 @@ import { Main, StyledRoot } from './DashboardLayout.styles';
 import { Outlet } from 'react-router-dom';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { SourceContextType } from '../../interfaces/ContextTypes';
+import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
 
 export const SourceContext = createContext<SourceContextType>({
   source: 'local',
@@ -25,7 +26,9 @@ function DashboardLayout() {
 
       <Main>
         <SourceContext.Provider value={{ source, setSource }}>
-          <Outlet />
+          <SelectedQuestionnaireContextProvider>
+            <Outlet />
+          </SelectedQuestionnaireContextProvider>
         </SourceContext.Provider>
       </Main>
     </StyledRoot>

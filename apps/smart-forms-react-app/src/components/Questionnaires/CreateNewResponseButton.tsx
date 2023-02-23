@@ -1,25 +1,20 @@
 // @mui
 import { Button } from '@mui/material';
 import React, { useContext, useState } from 'react';
-import { QuestionnaireListItem } from '../../interfaces/Interfaces';
+import { SelectedQuestionnaire } from '../../interfaces/Interfaces';
 import Iconify from '../Iconify';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
-import {
-  createBasicQuestionnaire,
-  getQuestionnaireById
-} from '../../functions/QuestionnairePageFunctions';
-import { loadQuestionnairesFromLocal } from '../../functions/LoadServerResourceFunctions';
 import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 
 interface Props {
-  selectedItem: QuestionnaireListItem | undefined;
+  selectedQuestionnaire: SelectedQuestionnaire | null;
   source: 'local' | 'remote';
 }
 
-function CreateResponseButton(props: Props) {
-  const { selectedItem, source } = props;
+function CreateNewResponseButton(props: Props) {
+  const { selectedQuestionnaire, source } = props;
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
@@ -27,35 +22,23 @@ function CreateResponseButton(props: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const endpointUrl =
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
-
   async function handleClick() {
-    if (!selectedItem) return;
+    if (!selectedQuestionnaire) return;
 
     setIsLoading(true);
 
-    let selectedQuestionnaire = createBasicQuestionnaire();
-
-    if (fhirClient) {
-      selectedQuestionnaire = await getQuestionnaireById(endpointUrl, selectedItem.id);
-    } else {
-      const questionnaires = loadQuestionnairesFromLocal();
-      selectedQuestionnaire =
-        questionnaires.find((q) => q.id === selectedItem.id) ?? selectedQuestionnaire;
-    }
-
     // Assign questionnaire to questionnaire provider
+    const questionnaireResource = selectedQuestionnaire.resource;
     await questionnaireProvider.setQuestionnaire(
-      selectedQuestionnaire,
+      questionnaireResource,
       source === 'local',
       fhirClient
     );
 
     // Assign questionnaireResponse to questionnaireResponse provider
-    if (selectedQuestionnaire.item && selectedQuestionnaire.item.length > 0) {
+    if (questionnaireResource.item && questionnaireResource.item.length > 0) {
       questionnaireResponseProvider.setQuestionnaireResponse(
-        createQuestionnaireResponse(selectedQuestionnaire.id, selectedQuestionnaire.item[0])
+        createQuestionnaireResponse(questionnaireResource.id, questionnaireResource.item[0])
       );
     }
 
@@ -65,18 +48,24 @@ function CreateResponseButton(props: Props) {
   return (
     <Button
       variant="contained"
-      disabled={!selectedItem}
+      disabled={!selectedQuestionnaire?.listItem}
       endIcon={
         isLoading ? (
           <WhiteCircularProgress size={20} />
         ) : (
-          <Iconify icon="material-symbols:arrow-right-alt" />
+          <Iconify icon="ant-design:form-outlined" />
         )
       }
+      sx={{
+        backgroundColor: 'secondary.main',
+        '&:hover': {
+          backgroundColor: 'secondary.dark'
+        }
+      }}
       onClick={handleClick}>
       Create response
     </Button>
   );
 }
 
-export default CreateResponseButton;
+export default CreateNewResponseButton;

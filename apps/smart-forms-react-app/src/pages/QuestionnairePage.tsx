@@ -21,22 +21,25 @@ import QuestionnaireListToolbar from '../components/Questionnaires/Questionnaire
 import { QuestionnaireListItem, TableAttributes } from '../interfaces/Interfaces';
 import {
   applySortFilter,
+  getBundlePromise,
   getComparator,
-  getQuestionnaireListItems,
-  getQuestionnairesPromise
-} from '../functions/QuestionnairePageFunctions';
-import Label from '../components/Label/Label';
+  getQuestionnaireListItems
+} from '../functions/DashboardFunctions';
+import QuestionnaireLabel from '../components/Label/QuestionnaireLabel';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
-import { Bundle } from 'fhir/r5';
+import { Bundle, Questionnaire } from 'fhir/r5';
 import useDebounce from '../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from '../components/Questionnaires/QuestionnaireListFeedback';
-import CreateResponseButton from '../components/Questionnaires/CreateResponseButton';
+import CreateNewResponseButton from '../components/Questionnaires/CreateNewResponseButton';
 import { SourceContext } from '../layouts/dashboard/DashboardLayout';
 import {
   getLocalQuestionnaireBundle,
   loadQuestionnairesFromLocal
 } from '../functions/LoadServerResourceFunctions';
+import ViewExistingResponsesButton from '../components/Questionnaires/ViewExistingResponsesButton';
+import { SelectedQuestionnaireContext } from '../custom-contexts/SelectedQuestionnaireContext';
+import { LaunchContext } from '../custom-contexts/LaunchContext';
 
 const TABLE_HEAD: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -47,13 +50,16 @@ const TABLE_HEAD: TableAttributes[] = [
 
 function QuestionnairePage() {
   const { source, setSource } = useContext(SourceContext);
+  const { fhirClient } = useContext(LaunchContext);
+  const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
+    SelectedQuestionnaireContext
+  );
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [selected, setSelected] = useState<QuestionnaireListItem | undefined>(undefined);
-  const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('name');
+  const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('title');
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
@@ -70,13 +76,14 @@ function QuestionnairePage() {
   );
 
   const { data, status, error } = useQuery<Bundle>(
-    ['questionnaire', queryUrl],
-    () => getQuestionnairesPromise(endpointUrl, queryUrl),
+    ['questionnaires', queryUrl],
+    () => getBundlePromise(endpointUrl, queryUrl),
     {
-      enabled: debouncedInput === searchInput && source === 'remote'
+      enabled: debouncedInput === searchInput
     }
   );
 
+  // construct questionnaire list items for data display
   const questionnaireListItems: QuestionnaireListItem[] = useMemo(
     () => getQuestionnaireListItems(source === 'remote' ? data : localQuestionnaireBundle),
     [data, localQuestionnaireBundle, source]
@@ -87,12 +94,18 @@ function QuestionnairePage() {
     [page, questionnaireListItems.length, rowsPerPage]
   );
 
-  const filteredListItems: QuestionnaireListItem[] = useMemo(
-    () => applySortFilter(questionnaireListItems, getComparator(order, orderBy), debouncedInput),
+  // construct questionnaire list items for data display
+  const sortedListItems: QuestionnaireListItem[] = useMemo(
+    () =>
+      applySortFilter(
+        questionnaireListItems,
+        getComparator(order, orderBy, 'questionnaire'),
+        debouncedInput
+      ) as QuestionnaireListItem[],
     [debouncedInput, order, orderBy, questionnaireListItems]
   );
 
-  const isNotFound = filteredListItems.length === 0 && !!debouncedInput;
+  const isNotFound = sortedListItems.length === 0 && !!debouncedInput;
 
   // Event handlers
   const handleRequestSort = (
@@ -104,14 +117,24 @@ function QuestionnairePage() {
     setOrderBy(property);
   };
 
-  const handleClick = (id: string) => {
-    const selectedItem = filteredListItems.find((item) => item.id === id);
+  const handleRowClick = (id: string) => {
+    const selectedItem = sortedListItems.find((item) => item.id === id);
 
     if (selectedItem) {
-      if (selectedItem.id === selected?.id) {
-        setSelected(undefined);
+      if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
+        setSelectedQuestionnaire(null);
       } else {
-        setSelected(selectedItem);
+        const bundle = source === 'remote' ? data : localQuestionnaireBundle;
+        const resource = bundle?.entry?.find((entry) => entry.resource?.id === id)?.resource;
+
+        if (resource) {
+          setSelectedQuestionnaire({
+            listItem: selectedItem,
+            resource: resource as Questionnaire
+          });
+        } else {
+          setSelectedQuestionnaire(null);
+        }
       }
     }
   };
@@ -124,7 +147,16 @@ function QuestionnairePage() {
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <FormControlLabel
-          control={<Switch onChange={() => setSource(source === 'local' ? 'remote' : 'local')} />}
+          control={
+            <Switch
+              checked={source === 'remote'}
+              onChange={() => {
+                setSource(source === 'local' ? 'remote' : 'local');
+                setSelectedQuestionnaire(null);
+                setPage(0);
+              }}
+            />
+          }
           label={
             <Typography variant="subtitle2" textTransform="capitalize">
               {source}
@@ -135,9 +167,9 @@ function QuestionnairePage() {
 
       <Card>
         <QuestionnaireListToolbar
-          selected={selected}
+          selected={selectedQuestionnaire?.listItem}
           searchInput={searchInput}
-          clearSelection={() => setSelected(undefined)}
+          clearSelection={() => setSelectedQuestionnaire(null)}
           onSearch={(input) => {
             setPage(0);
             setSearchInput(input);
@@ -154,11 +186,11 @@ function QuestionnairePage() {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {filteredListItems
+                {sortedListItems
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
-                    const { id, name, avatarColor, publisher, date, status } = row;
-                    const isSelected = selected?.name === name;
+                    const { id, title, avatarColor, publisher, date, status } = row;
+                    const isSelected = selectedQuestionnaire?.listItem.title === title;
 
                     return (
                       <TableRow
@@ -166,7 +198,7 @@ function QuestionnairePage() {
                         key={id}
                         tabIndex={-1}
                         selected={isSelected}
-                        onClick={() => handleClick(row.id)}>
+                        onClick={() => handleRowClick(row.id)}>
                         <TableCell padding="checkbox">
                           <Avatar
                             sx={{
@@ -182,7 +214,7 @@ function QuestionnairePage() {
 
                         <TableCell scope="row" sx={{ maxWidth: 240 }}>
                           <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
-                            {name}
+                            {title}
                           </Typography>
                         </TableCell>
 
@@ -195,7 +227,7 @@ function QuestionnairePage() {
                         </TableCell>
 
                         <TableCell align="left">
-                          <Label color={status}>{status}</Label>
+                          <QuestionnaireLabel color={status}>{status}</QuestionnaireLabel>
                         </TableCell>
                       </TableRow>
                     );
@@ -221,7 +253,7 @@ function QuestionnairePage() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredListItems.length}
+          count={sortedListItems.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={(_, newPage) => setPage(newPage)}
@@ -232,8 +264,9 @@ function QuestionnairePage() {
         />
       </Card>
 
-      <Stack direction="row-reverse" alignItems="center" my={5}>
-        <CreateResponseButton selectedItem={selected} source={source} />
+      <Stack direction="row-reverse" alignItems="center" gap={2} my={5}>
+        {fhirClient ? <ViewExistingResponsesButton /> : null}
+        <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} source={source} />
       </Stack>
     </Container>
   );
