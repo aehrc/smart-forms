@@ -1,9 +1,12 @@
 import React, { useContext, useMemo, useState } from 'react';
 import {
   Avatar,
+  Box,
   Card,
   Container,
+  FormControlLabel,
   Stack,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -30,6 +33,10 @@ import useDebounce from '../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from '../components/Questionnaires/QuestionnaireListFeedback';
 import CreateResponseButton from '../components/Questionnaires/CreateResponseButton';
 import { SourceContext } from '../layouts/dashboard/DashboardLayout';
+import {
+  getLocalQuestionnaireBundle,
+  loadQuestionnairesFromLocal
+} from '../functions/LoadServerResourceFunctions';
 
 const TABLE_HEAD: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -57,17 +64,22 @@ function QuestionnairePage() {
     'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
   const queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&title:contains=${debouncedInput}`;
 
+  const localQuestionnaireBundle: Bundle = useMemo(
+    () => getLocalQuestionnaireBundle(loadQuestionnairesFromLocal()),
+    []
+  );
+
   const { data, status, error } = useQuery<Bundle>(
     ['questionnaire', queryUrl],
     () => getQuestionnairesPromise(endpointUrl, queryUrl),
     {
-      enabled: debouncedInput === searchInput
+      enabled: debouncedInput === searchInput && source === 'remote'
     }
   );
 
   const questionnaireListItems: QuestionnaireListItem[] = useMemo(
-    () => getQuestionnaireListItems(data),
-    [data]
+    () => getQuestionnaireListItems(source === 'remote' ? data : localQuestionnaireBundle),
+    [data, localQuestionnaireBundle, source]
   );
 
   const emptyRows: number = useMemo(
@@ -104,16 +116,21 @@ function QuestionnairePage() {
     }
   };
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-  };
-
   return (
     <Container>
       <Stack direction="row" alignItems="center" mb={5}>
         <Typography variant="h3" gutterBottom>
           Questionnaires
         </Typography>
+        <Box sx={{ flexGrow: 1 }} />
+        <FormControlLabel
+          control={<Switch onChange={() => setSource(source === 'local' ? 'remote' : 'local')} />}
+          label={
+            <Typography variant="subtitle2" textTransform="capitalize">
+              {source}
+            </Typography>
+          }
+        />
       </Stack>
 
       <Card>
@@ -207,7 +224,7 @@ function QuestionnairePage() {
           count={filteredListItems.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onPageChange={handleChangePage}
+          onPageChange={(_, newPage) => setPage(newPage)}
           onRowsPerPageChange={(event) => {
             setRowsPerPage(parseInt(event.target.value));
             setPage(0);
