@@ -1,18 +1,18 @@
 import React, { forwardRef } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, SxProps, Theme } from '@mui/material';
-import { StyledLabel } from './Label.styles';
-import { QuestionnaireListItem } from '../../interfaces/Interfaces';
+import { ResponseListItem } from '../../interfaces/Interfaces';
+import { ResponseStyledLabel } from './ResponseLabel.styles';
 
 interface Props {
-  color: QuestionnaireListItem['status'];
+  color: ResponseListItem['status'];
   children: React.ReactNode;
   endIcon?: React.ReactNode;
   startIcon?: React.ReactNode;
   sx?: SxProps<Theme>;
 }
 
-const Label = forwardRef((props: Props, ref) => {
+const ResponseLabel = forwardRef((props: Props, ref) => {
   const { color, startIcon, endIcon, children, sx, ...other } = props;
 
   const theme = useTheme();
@@ -24,7 +24,7 @@ const Label = forwardRef((props: Props, ref) => {
   };
 
   return (
-    <StyledLabel
+    <ResponseStyledLabel
       ref={ref}
       component="span"
       color={color}
@@ -40,10 +40,10 @@ const Label = forwardRef((props: Props, ref) => {
       {children}
 
       {endIcon && <Box sx={{ ml: 0.75, ...iconStyle }}> {endIcon} </Box>}
-    </StyledLabel>
+    </ResponseStyledLabel>
   );
 });
 
-Label.displayName = 'Label';
+ResponseLabel.displayName = 'ResponseLabel';
 
-export default Label;
+export default ResponseLabel;
