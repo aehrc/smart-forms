@@ -66,14 +66,29 @@ export function getQuestionnaireListItems(bundle: Bundle | undefined): Questionn
     .filter((entry) => entry.resource && entry.resource.resourceType === 'Questionnaire')
     .map((entry, i) => {
       const questionnaire = entry.resource as Questionnaire; // non-questionnaire resources are filtered
+      const questionnaireTitle = questionnaire.title ?? 'Untitled';
+
       const questionnaireListItem: QuestionnaireListItem = {
         id: questionnaire.id ?? i.toString(),
-        name: questionnaire.title ?? 'Untitled',
-        avatarColor: randomColor({ luminosity: 'dark' }),
+        name: questionnaireTitle,
+        avatarColor: randomColor({ luminosity: 'dark', seed: questionnaireTitle }),
         publisher: questionnaire.publisher ?? '—',
         date: questionnaire.date ? dayjs(questionnaire.date).format('LL') : '—',
         status: questionnaire.status
       };
       return questionnaireListItem;
     });
+}
+
+export function getQuestionnaireById(endpointUrl: string, id: string): Promise<Questionnaire> {
+  return FHIR.client({ serverUrl: endpointUrl }).request({
+    url: `/Questionnaire/${id}`
+  });
+}
+
+export function createBasicQuestionnaire(): Questionnaire {
+  return {
+    resourceType: 'Questionnaire',
+    status: 'draft'
+  };
 }

@@ -1,17 +1,15 @@
 import React from 'react';
 import { Paper, TableBody, TableCell, TableRow, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 
 interface Props {
   status: 'loading' | 'error' | 'success';
   searchInput: string;
+  error?: unknown;
 }
 function QuestionnaireListFeedback(props: Props) {
-  const { status, searchInput } = props;
+  const { status, searchInput, error } = props;
 
-  let feedbackType: 'loading' | 'error' | 'empty' = 'empty';
-  feedbackType = status !== 'success' ? status : feedbackType;
+  const feedbackType: FeedbackProps['feedbackType'] = status === 'error' ? 'error' : 'empty';
 
   return (
     <TableBody>
@@ -21,7 +19,7 @@ function QuestionnaireListFeedback(props: Props) {
             sx={{
               textAlign: 'center'
             }}>
-            <RenderFeedback feedbackType={feedbackType} searchInput={searchInput} />
+            <RenderFeedback feedbackType={feedbackType} searchInput={searchInput} error={error} />
           </Paper>
         </TableCell>
       </TableRow>
@@ -30,26 +28,19 @@ function QuestionnaireListFeedback(props: Props) {
 }
 
 interface FeedbackProps {
-  feedbackType: 'loading' | 'error' | 'empty';
+  feedbackType: 'error' | 'empty';
   searchInput: string;
+  error?: unknown;
 }
 
 function RenderFeedback(props: FeedbackProps) {
-  const { feedbackType, searchInput } = props;
+  const { feedbackType, searchInput, error } = props;
+
+  if (feedbackType === 'error') {
+    console.error(error);
+  }
 
   switch (feedbackType) {
-    case 'loading':
-      return (
-        <>
-          <Typography variant="h6" paragraph>
-            Loading questionnaires
-          </Typography>
-
-          <Box display="flex" flexDirection="row" justifyContent="center" sx={{ m: 5 }}>
-            <CircularProgress size={44} />
-          </Box>
-        </>
-      );
     case 'error':
       return (
         <>

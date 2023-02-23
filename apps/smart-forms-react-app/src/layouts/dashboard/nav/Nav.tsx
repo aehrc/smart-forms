@@ -9,24 +9,14 @@ import { NAV_WIDTH } from './Nav.styles';
 import NavAccounts from '../../../components/NavComponents/NavAccounts';
 
 interface Props {
-  patientName: string;
-  patientGender: string;
-  patientDOB: string;
   openNav: boolean;
   onCloseNav: () => void;
 }
 
 export default function Nav(props: Props) {
-  const { patientName, patientGender, patientDOB, openNav, onCloseNav } = props;
+  const { openNav, onCloseNav } = props;
 
   const isDesktop = useResponsive('up', 'lg');
-
-  // <RendererOperationButtons
-  //   qrHasChanges={qrHasChanges}
-  //   removeQrHasChanges={removeQrHasChanges}
-  //   togglePreviewMode={togglePreviewMode}
-  //   questionnaireResponse={questionnaireResponse}
-  // />;
 
   const renderContent = (
     <Scrollbar

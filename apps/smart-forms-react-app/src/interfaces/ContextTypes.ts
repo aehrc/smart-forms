@@ -76,3 +76,8 @@ export type CalculatedExpressionContextType = {
     variables: Expression[]
   ) => unknown;
 };
+
+export type SourceContextType = {
+  source: 'local' | 'remote';
+  setSource: (updatedSource: 'local' | 'remote') => unknown;
+};

@@ -1,8 +1,6 @@
-import React, { useMemo, useState } from 'react';
-// @mui
+import React, { useContext, useMemo, useState } from 'react';
 import {
   Avatar,
-  Button,
   Card,
   Container,
   Stack,
@@ -14,7 +12,6 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import Iconify from '../components/Iconify';
 import Scrollbar from '../components/Scrollbar/Scrollbar';
 import QuestionnaireListHead from '../components/Questionnaires/QuestionnaireListHead';
 import QuestionnaireListToolbar from '../components/Questionnaires/QuestionnaireListToolbar';
@@ -31,6 +28,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Bundle } from 'fhir/r5';
 import useDebounce from '../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from '../components/Questionnaires/QuestionnaireListFeedback';
+import CreateResponseButton from '../components/Questionnaires/CreateResponseButton';
+import { SourceContext } from '../layouts/dashboard/DashboardLayout';
 
 const TABLE_HEAD: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -40,22 +39,25 @@ const TABLE_HEAD: TableAttributes[] = [
 ];
 
 function QuestionnairePage() {
+  const { source, setSource } = useContext(SourceContext);
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<QuestionnaireListItem | undefined>(undefined);
   const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('name');
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
-  const debouncedInput = useDebounce(searchInput, 200);
+  const debouncedInput = useDebounce(searchInput, 500);
   const numOfSearchEntries = 15;
 
-  const endpointUrl = 'https://sqlonfhir-r4.azurewebsites.net/fhir';
-  const queryUrl = `/Questionnaire?_count=${numOfSearchEntries}`;
+  const endpointUrl =
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&title:contains=${debouncedInput}`;
 
-  const { isInitialLoading, error, data, status } = useQuery<Bundle>(
+  const { data, status, error } = useQuery<Bundle>(
     ['questionnaire', queryUrl],
     () => getQuestionnairesPromise(endpointUrl, queryUrl),
     {
@@ -63,24 +65,22 @@ function QuestionnairePage() {
     }
   );
 
-  console.log(data);
-  console.log(status);
-
   const questionnaireListItems: QuestionnaireListItem[] = useMemo(
     () => getQuestionnaireListItems(data),
     [data]
   );
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - questionnaireListItems.length) : 0;
-
-  const filteredQuestionnaires = applySortFilter(
-    questionnaireListItems,
-    getComparator(order, orderBy),
-    searchInput
+  const emptyRows: number = useMemo(
+    () => (page > 0 ? Math.max(0, (1 + page) * rowsPerPage - questionnaireListItems.length) : 0),
+    [page, questionnaireListItems.length, rowsPerPage]
   );
 
-  const isNotFound = !filteredQuestionnaires.length && searchInput;
+  const filteredListItems: QuestionnaireListItem[] = useMemo(
+    () => applySortFilter(questionnaireListItems, getComparator(order, orderBy), debouncedInput),
+    [debouncedInput, order, orderBy, questionnaireListItems]
+  );
+
+  const isNotFound = filteredListItems.length === 0 && !!debouncedInput;
 
   // Event handlers
   const handleRequestSort = (
@@ -92,45 +92,20 @@ function QuestionnairePage() {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelecteds = questionnaireListItems.map((item) => item.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
+  const handleClick = (id: string) => {
+    const selectedItem = filteredListItems.find((item) => item.id === id);
 
-  const handleClick = (event: React.ChangeEvent<HTMLInputElement>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: string[] = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+    if (selectedItem) {
+      if (selectedItem.id === selected?.id) {
+        setSelected(undefined);
+      } else {
+        setSelected(selectedItem);
+      }
     }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: { target: { value: string } }) => {
-    setPage(0);
-    setRowsPerPage(parseInt(event.target.value, 10));
-  };
-
-  const handleSearchByName = (event: { target: { value: React.SetStateAction<string> } }) => {
-    setPage(0);
-    setSearchInput(event.target.value);
   };
 
   return (
@@ -143,9 +118,13 @@ function QuestionnairePage() {
 
       <Card>
         <QuestionnaireListToolbar
-          numSelected={selected.length}
+          selected={selected}
           searchInput={searchInput}
-          onSearch={handleSearchByName}
+          clearSelection={() => setSelected(undefined)}
+          onSearch={(input) => {
+            setPage(0);
+            setSearchInput(input);
+          }}
         />
 
         <Scrollbar>
@@ -155,27 +134,36 @@ function QuestionnairePage() {
                 order={order}
                 orderBy={orderBy}
                 headLabel={TABLE_HEAD}
-                rowCount={questionnaireListItems.length}
-                numSelected={selected.length}
                 onRequestSort={handleRequestSort}
-                onSelectAllClick={handleSelectAllClick}
               />
               <TableBody>
-                {filteredQuestionnaires
+                {filteredListItems
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => {
                     const { id, name, avatarColor, publisher, date, status } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                    const isSelected = selected?.name === name;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} selected={selectedUser}>
-                        <TableCell>
-                          <Avatar sx={{ bgcolor: avatarColor }}>
+                      <TableRow
+                        hover
+                        key={id}
+                        tabIndex={-1}
+                        selected={isSelected}
+                        onClick={() => handleClick(row.id)}>
+                        <TableCell padding="checkbox">
+                          <Avatar
+                            sx={{
+                              bgcolor: avatarColor,
+                              ml: 1,
+                              my: 2.25,
+                              width: 36,
+                              height: 36
+                            }}>
                             <AssignmentIcon />
                           </Avatar>
                         </TableCell>
 
-                        <TableCell scope="row" padding="normal" sx={{ maxWidth: 240 }}>
+                        <TableCell scope="row" sx={{ maxWidth: 240 }}>
                           <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
                             {name}
                           </Typography>
@@ -202,8 +190,12 @@ function QuestionnairePage() {
                 )}
               </TableBody>
 
-              {isNotFound || status === 'error' || status === 'loading' ? (
-                <QuestionnaireListFeedback status={status} searchInput={searchInput} />
+              {isNotFound || status === 'error' ? (
+                <QuestionnaireListFeedback
+                  status={status}
+                  searchInput={searchInput}
+                  error={error}
+                />
               ) : null}
             </Table>
           </TableContainer>
@@ -212,18 +204,19 @@ function QuestionnairePage() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={questionnaireListItems.length}
+          count={filteredListItems.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          onRowsPerPageChange={(event) => {
+            setRowsPerPage(parseInt(event.target.value));
+            setPage(0);
+          }}
         />
       </Card>
 
       <Stack direction="row-reverse" alignItems="center" my={5}>
-        <Button variant="contained" endIcon={<Iconify icon="material-symbols:arrow-right-alt" />}>
-          Create response
-        </Button>
+        <CreateResponseButton selectedItem={selected} source={source} />
       </Stack>
     </Container>
   );

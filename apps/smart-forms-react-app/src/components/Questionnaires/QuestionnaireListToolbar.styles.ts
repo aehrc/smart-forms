@@ -15,7 +15,7 @@ export const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
     duration: theme.transitions.duration.shorter
   }),
   '&.Mui-focused': {
-    width: 'calc(100% - 50px)',
+    width: '100%',
     boxShadow: theme.customShadows.z4
   },
   '& fieldset': {

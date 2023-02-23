@@ -20,16 +20,12 @@ const visuallyHidden = {
 interface Props {
   order: 'asc' | 'desc';
   orderBy: string;
-  rowCount: number;
   headLabel: TableAttributes[];
-  numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof QuestionnaireListItem) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 function QuestionnaireListHead(props: Props) {
-  const { order, orderBy, rowCount, headLabel, numSelected, onRequestSort, onSelectAllClick } =
-    props;
+  const { order, orderBy, headLabel, onRequestSort } = props;
   const createSortHandler =
     (property: TableAttributes['id']) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property as keyof QuestionnaireListItem);

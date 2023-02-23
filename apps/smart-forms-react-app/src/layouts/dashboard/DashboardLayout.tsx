@@ -1,27 +1,32 @@
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 // @mui
 //
 import Header from './header/Header';
 import Nav from './nav/Nav';
 import { Main, StyledRoot } from './DashboardLayout.styles';
 import { Outlet } from 'react-router-dom';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SourceContextType } from '../../interfaces/ContextTypes';
+
+export const SourceContext = createContext<SourceContextType>({
+  source: 'local',
+  setSource: () => void 0
+});
 
 function DashboardLayout() {
+  const { fhirClient } = useContext(LaunchContext);
   const [open, setOpen] = useState(false);
+  const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
 
   return (
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)} />
-      <Nav
-        patientName={'Patient'}
-        patientGender={'Male'}
-        patientDOB={'20 Jan 2000'}
-        openNav={open}
-        onCloseNav={() => setOpen(false)}
-      />
+      <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
       <Main>
-        <Outlet />
+        <SourceContext.Provider value={{ source, setSource }}>
+          <Outlet />
+        </SourceContext.Provider>
       </Main>
     </StyledRoot>
   );

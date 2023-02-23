@@ -2,31 +2,33 @@ import { IconButton, InputAdornment, Tooltip, Typography } from '@mui/material';
 import { ChangeEvent } from 'react';
 import Iconify from '../Iconify';
 import { StyledRoot, StyledSearch } from './QuestionnaireListToolbar.styles';
+import { QuestionnaireListItem } from '../../interfaces/Interfaces';
 
 interface Props {
-  numSelected: number;
+  selected: QuestionnaireListItem | undefined;
   searchInput: string;
-  onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
+  clearSelection: () => void;
+  onSearch: (searchInput: string) => void;
 }
 
 function QuestionnaireListToolbar(props: Props) {
-  const { numSelected, searchInput, onSearch } = props;
+  const { selected, searchInput, clearSelection, onSearch } = props;
   return (
     <StyledRoot
       sx={{
-        ...(numSelected > 0 && {
+        ...(selected && {
           color: 'primary.main',
           bgcolor: 'primary.lighter'
         })
       }}>
-      {numSelected > 0 ? (
+      {selected ? (
         <Typography component="div" variant="subtitle1">
-          {numSelected} selected
+          {selected.name} selected
         </Typography>
       ) : (
         <StyledSearch
           value={searchInput}
-          onChange={onSearch}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => onSearch(event.target.value)}
           placeholder="Search questionnaires..."
           startAdornment={
             <InputAdornment position="start">
@@ -39,19 +41,13 @@ function QuestionnaireListToolbar(props: Props) {
         />
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Iconify icon="eva:trash-2-fill" />
+      {selected ? (
+        <Tooltip title="Clear">
+          <IconButton onClick={clearSelection}>
+            <Iconify icon="ic:baseline-clear" />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null}
     </StyledRoot>
   );
 }
