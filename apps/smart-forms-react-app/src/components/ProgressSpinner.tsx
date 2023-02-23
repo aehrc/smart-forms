@@ -37,8 +37,8 @@ function ProgressSpinner(props: Props) {
       <Box display="flex" flexDirection="row" justifyContent="center">
         <CircularProgress size={72} />
       </Box>
-      <Box textAlign="center">
-        <Typography>{message}</Typography>
+      <Box textAlign="center" sx={{ mt: 2 }}>
+        <Typography variant="subtitle1">{message}</Typography>
       </Box>
     </Stack>
   );
