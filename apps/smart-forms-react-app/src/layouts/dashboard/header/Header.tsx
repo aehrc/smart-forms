@@ -1,14 +1,19 @@
 // @mui
-import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Stack } from '@mui/material';
 // utils
 // components
 import Iconify from '../../../components/Iconify';
 //
-import Searchbar from './SearchBar';
 import { StyledRoot, StyledToolbar } from './Header.styles';
 import React from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import AccountPopover from '../../../components/Account/AccountPopover';
+import { useTheme } from '@mui/material/styles';
+import PatientPopoverMenu from '../../../components/Account/PatientPopoverMenu';
+import UserPopoverMenu from '../../../components/Account/UserPopoverMenu';
+import UserHeader from '../../../components/Account/UserHeader';
+import useResponsive from '../../../custom-hooks/useResponsive';
 
 interface Props {
   onOpenNav: () => void;
@@ -16,6 +21,10 @@ interface Props {
 
 function Header(props: Props) {
   const { onOpenNav } = props;
+
+  const theme = useTheme();
+
+  const isDesktop = useResponsive('up', 'lg');
 
   return (
     <StyledRoot>
@@ -30,7 +39,6 @@ function Header(props: Props) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack
@@ -39,45 +47,24 @@ function Header(props: Props) {
           spacing={{
             xs: 0.5,
             sm: 1
-          }}>
-          <Box display="flex" alignItems="center" gap={1.75} sx={{ my: 1.5, px: 2.5 }}>
-            <Tooltip title={'Patient'}>
-              <FaceIcon fontSize="large" sx={{ color: 'text.primary' }} />
-            </Tooltip>
-            <Box>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {'Mr. Benito Lucio'}
-              </Typography>
-              <Box display="flex" alignItems="center" gap={0.5}>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                  {'Male'}
-                </Typography>
-                <Box sx={{ flexGrow: 1 }} />
-                <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                  {'86 years'}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={1.75} sx={{ my: 1.5, px: 2.5 }}>
-            <Tooltip title={'User'}>
-              <MedicalServicesIcon fontSize="large" sx={{ color: 'text.primary' }} />
-            </Tooltip>
-            <Box>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }} noWrap>
-                {'Dr. Sara Angulo'}
-              </Typography>
-            </Box>
-          </Box>
-
-          {/*<AccountPopover*/}
-          {/*  patientName={'Mr. Benito Lucio'}*/}
-          {/*  patientGender={'Male'}*/}
-          {/*  patientAge={'86 years'}*/}
-          {/*  patientDOB={'August 18, 1936'}*/}
-          {/*  displayIcon={<FaceIcon fontSize="large" />}*/}
-          {/*/>*/}
+          }}
+          sx={{ color: theme.palette.grey['700'] }}>
+          {isDesktop ? (
+            <UserHeader />
+          ) : (
+            <>
+              <AccountPopover
+                bgColor={theme.palette.secondary.main}
+                displayIcon={<FaceIcon sx={{ color: theme.palette.common.white }} />}
+                menuContent={<PatientPopoverMenu />}
+              />
+              <AccountPopover
+                bgColor={theme.palette.error.main}
+                displayIcon={<MedicalServicesIcon sx={{ color: theme.palette.common.white }} />}
+                menuContent={<UserPopoverMenu />}
+              />
+            </>
+          )}
         </Stack>
       </StyledToolbar>
     </StyledRoot>

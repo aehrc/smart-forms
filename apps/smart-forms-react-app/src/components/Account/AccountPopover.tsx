@@ -17,25 +17,25 @@
 
 import React from 'react';
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
-import { Box, IconButton, Popover, Typography } from '@mui/material';
+import { Avatar, IconButton, Popover } from '@mui/material';
 
 interface Props {
-  patientName: string;
+  bgColor: string;
   displayIcon: JSX.Element;
-  patientGender?: string;
-  patientAge?: string;
-  patientDOB?: string;
+  menuContent: JSX.Element;
 }
 
 function AccountPopover(props: Props) {
-  const { patientName, patientGender, patientAge, patientDOB, displayIcon } = props;
+  const { bgColor, displayIcon, menuContent } = props;
 
   return (
     <>
       <PopupState variant="popover" popupId="patient-details-popover">
         {(popupState) => (
           <div>
-            <IconButton {...bindTrigger(popupState)}>{displayIcon}</IconButton>
+            <Avatar sx={{ bgcolor: bgColor, m: 0.5 }}>
+              <IconButton {...bindTrigger(popupState)}>{displayIcon}</IconButton>
+            </Avatar>
             <Popover
               {...bindPopover(popupState)}
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -52,26 +52,7 @@ function AccountPopover(props: Props) {
                   }
                 }
               }}>
-              <Box sx={{ my: 1.5, px: 2.5 }}>
-                <Typography variant="subtitle2" noWrap>
-                  {patientName}
-                </Typography>
-                {patientGender ? (
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                    {patientGender}
-                  </Typography>
-                ) : null}
-                {patientAge ? (
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                    {patientAge}
-                  </Typography>
-                ) : null}
-                {patientDOB ? (
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                    {patientDOB}
-                  </Typography>
-                ) : null}
-              </Box>
+              {menuContent}
             </Popover>
           </div>
         )}

@@ -16,6 +16,7 @@
  */
 
 import {
+  Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponseItem,
@@ -82,3 +83,20 @@ export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   valueSet?: ValueSet;
 }
+
+export interface TableAttributes {
+  id: string;
+  label: string;
+  alignRight: boolean;
+}
+
+export interface QuestionnaireListItem {
+  id: string;
+  name: string;
+  avatarColor: string;
+  publisher: string;
+  date: string;
+  status: Questionnaire['status'];
+}
+
+export type UserWithIndex = [number, QuestionnaireListItem];

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Header from './header/Header';
 import Nav from './nav/Nav';
 import { Main, StyledRoot } from './DashboardLayout.styles';
-import PageSwitcher from '../../components/PageSwitcher';
+import { Outlet } from 'react-router-dom';
 
 function DashboardLayout() {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ function DashboardLayout() {
       />
 
       <Main>
-        <PageSwitcher />
+        <Outlet />
       </Main>
     </StyledRoot>
   );
