@@ -1,62 +1,52 @@
-import { List, ListItemText } from '@mui/material';
-import React from 'react';
-import { StyledNavItem, StyledNavItemIcon } from './NavSection.styles';
-import FaceIcon from '@mui/icons-material/Face';
-import SyncIcon from '@mui/icons-material/Sync';
-import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
+import { List, ListItemButton, ListItemText, useTheme } from '@mui/material';
+import React, { memo } from 'react';
+import { navConfig } from './NavConfig';
+import { NavLink } from 'react-router-dom';
+import { StyledNavItemIcon } from './NavSection.styles';
 
-interface DataProps {
+export interface NavButton {
   title: string;
+  path: string;
   icon: JSX.Element;
 }
-
-const data: DataProps[] = [
-  {
-    title: 'Refresh Questionnaires',
-    icon: <SyncIcon />
-  },
-  {
-    title: 'Change Questionnaire',
-    icon: <AssignmentReturnIcon />
-  },
-  {
-    title: 'product',
-    icon: <FaceIcon />
-  },
-  {
-    title: 'blog',
-    icon: <FaceIcon />
-  },
-  {
-    title: 'login',
-    icon: <FaceIcon />
-  },
-  {
-    title: 'Not found',
-    icon: <FaceIcon />
-  }
-];
 
 function NavSection() {
   return (
     <List disablePadding sx={{ px: 1 }}>
-      {data.map((item) => (
-        <NavItem key={item.title} title={item.title} icon={item.icon} />
+      {navConfig.map((item) => (
+        <NavItem key={item.title} title={item.title} path={item.path} icon={item.icon} />
       ))}
     </List>
   );
 }
 
-export default NavSection;
-
-function NavItem(props: DataProps) {
-  const { title, icon } = props;
+function NavItem(props: NavButton) {
+  const { title, path, icon } = props;
+  const theme = useTheme();
 
   return (
-    <StyledNavItem>
-      <StyledNavItemIcon sx={{ ml: -1 }}>{icon}</StyledNavItemIcon>
+    <ListItemButton
+      component={NavLink}
+      to={path}
+      disableGutters
+      sx={{
+        ...theme.typography.subtitle2,
+        height: 48,
+        textTransform: 'capitalize',
+        color: theme.palette.text.secondary,
+        borderRadius: Number(theme.shape.borderRadius) * 0.2,
+
+        '&.active': {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.action.selected,
+          fontWeight: theme.typography.fontWeightBold
+        }
+      }}>
+      <StyledNavItemIcon>{icon}</StyledNavItemIcon>
 
       <ListItemText disableTypography primary={title} />
-    </StyledNavItem>
+    </ListItemButton>
   );
 }
+
+export default memo(NavSection);
