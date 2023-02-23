@@ -18,7 +18,7 @@ function NavAccounts() {
 
   return (
     <Box sx={{ my: 4, mx: 2.5 }}>
-      <StyledAccount sx={{ backgroundColor: theme.palette.accent2.light }}>
+      <StyledAccount>
         <FaceIcon fontSize="large" sx={{ color: theme.palette.grey['700'] }} />
 
         <Box sx={{ ml: 2 }}>
