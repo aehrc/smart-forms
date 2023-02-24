@@ -57,6 +57,7 @@ function CreateNewResponseButton(props: Props) {
         )
       }
       sx={{
+        px: 2.5,
         backgroundColor: 'secondary.main',
         '&:hover': {
           backgroundColor: 'secondary.dark'

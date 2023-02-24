@@ -14,6 +14,7 @@ function BackToQuestionnairesButton() {
       variant="contained"
       endIcon={<Iconify icon="material-symbols:arrow-back" />}
       sx={{
+        px: 2.5,
         backgroundColor: 'primary.main',
         '&:hover': {
           backgroundColor: 'primary.dark'
