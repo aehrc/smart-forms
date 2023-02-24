@@ -256,6 +256,10 @@ function QItemGroup(props: Props) {
                         currentTabIndex,
                         enableWhenContext.items
                       );
+
+                      // Scroll to top of page
+                      window.scrollTo(0, 0);
+
                       goToNextTab(nextVisibleTabIndex);
                     }
                   }}>
