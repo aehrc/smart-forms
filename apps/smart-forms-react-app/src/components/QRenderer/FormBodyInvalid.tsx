@@ -15,41 +15,39 @@
  * limitations under the License.
  */
 
-import React, { useContext } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
-import SideBar from '../SideBar/SideBar';
-import InvalidQuestionnaireOperationButtons from '../OperationButtons/InvalidQuestionnaireOperationButtons';
-import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
-import ChipBar from '../ChipBar/ChipBar';
-import { SideBarContext } from '../../custom-contexts/SideBarContext';
+import React from 'react';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import Iconify from '../Iconify';
 
 function FormBodyInvalid() {
-  const { sideBarIsExpanded } = useContext(SideBarContext);
+  const navigate = useNavigate();
+
+  function handleClick() {
+    navigate('/questionnaires');
+  }
 
   return (
-    <Grid container>
-      <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
-        <SideBar>
-          <InvalidQuestionnaireOperationButtons />
-        </SideBar>
-      </SideBarGrid>
-      <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
-        <MainGridContainerBox>
-          <Typography fontSize={16} variant="h6">
-            Oops, the form renderer is unable to render this questionnaire.
-          </Typography>
-          <Typography fontSize={14}>
-            {
-              "This questionnaire either lacks a top-level group item, or the group item doesn't have any items."
-            }
-          </Typography>
-          <ChipBar>
-            <InvalidQuestionnaireOperationButtons isChip={true} />
-          </ChipBar>
-        </MainGridContainerBox>
-      </MainGrid>
-    </Grid>
+    <Box sx={{ pt: 5, px: 1 }}>
+      <Stack gap={1}>
+        <Typography variant="h3">
+          Oops, the form renderer is unable to render this questionnaire.
+        </Typography>
+        <Typography>
+          {
+            "This questionnaire either lacks a top-level group item, or the group item doesn't have any items."
+          }
+        </Typography>
+      </Stack>
+      <Box sx={{ py: 5 }}>
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon="material-symbols:arrow-back" />}
+          onClick={handleClick}>
+          Take me back
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

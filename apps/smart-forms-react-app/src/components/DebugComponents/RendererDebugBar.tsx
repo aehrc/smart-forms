@@ -16,31 +16,21 @@
  */
 
 import React, { useContext } from 'react';
-import { FormControlLabel, Switch, Typography } from '@mui/material';
-import { DebugBarContainerBox } from './DebugBar.styles';
+import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 
 interface Props {
-  hideQResponse: boolean;
-  toggleHideQResponse: (checked: boolean) => unknown;
+  isHidden: boolean;
+  toggleIsHidden: (checked: boolean) => unknown;
 }
 
 function RendererDebugBar(props: Props) {
-  const { hideQResponse, toggleHideQResponse } = props;
+  const { isHidden, toggleIsHidden } = props;
 
   const { toggleActivation, isActivated } = useContext(EnableWhenContext);
 
   return (
-    <DebugBarContainerBox>
-      <FormControlLabel
-        control={
-          <Switch
-            onChange={(event) => toggleHideQResponse(event.target.checked)}
-            checked={hideQResponse}
-          />
-        }
-        label={<Typography variant="subtitle2">Hide Debug QResponse</Typography>}
-      />
+    <Box display="flex" flexDirection="row-reverse">
       <FormControlLabel
         control={
           <Switch
@@ -48,9 +38,15 @@ function RendererDebugBar(props: Props) {
             checked={isActivated}
           />
         }
-        label={<Typography variant="subtitle2">EnableWhen checks</Typography>}
+        label={<Typography variant="overline">EnableWhen on</Typography>}
       />
-    </DebugBarContainerBox>
+      <FormControlLabel
+        control={
+          <Switch onChange={(event) => toggleIsHidden(event.target.checked)} checked={isHidden} />
+        }
+        label={<Typography variant="overline">Hide debug response</Typography>}
+      />
+    </Box>
   );
 }
 

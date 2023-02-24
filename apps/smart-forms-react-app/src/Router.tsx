@@ -19,8 +19,8 @@ import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairePage from './pages/QuestionnairePage';
 import ResponsePage from './pages/ResponsePage';
 import { SourceContextType } from './interfaces/ContextTypes';
-import RendererLayout from './layouts/viewer/RendererLayout';
-import { Box } from '@mui/material';
+import RendererLayout from './layouts/renderer/RendererLayout';
+import Form from './components/QRenderer/Form';
 
 export const SourceContext = createContext<SourceContextType>({
   source: 'local',
@@ -99,8 +99,9 @@ export default function Router() {
       ]
     },
     {
+      path: '/renderer',
       element: <RendererLayout />,
-      children: [{ path: 'renderer', element: <Box /> }]
+      children: [{ path: '', element: <Form /> }]
     },
     {
       path: '/launch',

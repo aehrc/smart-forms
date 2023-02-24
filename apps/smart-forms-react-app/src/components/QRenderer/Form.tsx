@@ -16,63 +16,33 @@
  */
 
 import React, { useContext, useEffect, useState } from 'react';
-import { Divider, Grid } from '@mui/material';
-import { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import { Box, Container, Divider, Fade, Typography } from '@mui/material';
+import { Coding, QuestionnaireResponseItem } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs } from '../../functions/TabFunctions';
-import RendererDebugBar from '../DebugComponents/RendererDebugBar';
-import DisplayDebugQResponse from '../DebugComponents/DisplayDebugQResponse';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
-import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
-import SideBar from '../SideBar/SideBar';
-import ChipBar from '../ChipBar/ChipBar';
-import RendererOperationButtons from '../OperationButtons/RendererOperationButtons';
+import { QuestionnaireProviderContext } from '../../App';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import FormBodyInvalid from './FormBodyInvalid';
-import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
 import QTitle from './QFormComponents/QItemParts/QTitle';
-import { SideBarContext } from '../../custom-contexts/SideBarContext';
 import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../custom-contexts/CalculatedExpressionContext';
+import { CurrentTabIndexContext, RendererContext } from '../../layouts/renderer/RendererLayout';
+import DebugFooter from '../../layouts/debug-footer/DebugFooter';
 
 export const PreprocessedValueSetContext = React.createContext<Record<string, Coding[]>>({});
 
-interface Props {
-  questionnaireResponse: QuestionnaireResponse;
-  currentTabIndex: number;
-  qrHasChanges: boolean;
-  setCurrentTabIndex: (newTabIndex: number) => unknown;
-  removeQrHasChanges: () => unknown;
-  togglePreviewMode: () => unknown;
-  updateQuestionnaireResponse: (newQuestionnaireResponse: QuestionnaireResponse) => unknown;
-  clearQuestionnaireResponse: (clearedQuestionnaireResponse: QuestionnaireResponse) => unknown;
-}
-function Form(props: Props) {
-  const {
-    questionnaireResponse,
-    currentTabIndex,
-    qrHasChanges,
-    setCurrentTabIndex,
-    removeQrHasChanges,
-    togglePreviewMode,
-    updateQuestionnaireResponse,
-    clearQuestionnaireResponse
-  } = props;
-
-  const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
-  const { sideBarIsExpanded } = useContext(SideBarContext);
-
+function Form() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+
+  const { renderer, setRenderer } = useContext(RendererContext);
+  const { currentTabIndex, setCurrentTabIndex } = useContext(CurrentTabIndexContext);
+
   const enableWhenContext = useContext(EnableWhenContext);
+  const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
 
   const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
     questionnaireProvider.preprocessedValueSetCodings
   );
-
-  // These states below are only for debugging purposes
-  const [hideQResponse, setHideQResponse] = useState(true);
 
   let qrForm: QuestionnaireResponseItem = {
     linkId: ''
@@ -83,101 +53,58 @@ function Form(props: Props) {
   }, []); // init enableWhen items on first entry into renderer, leave dependency array empty
 
   const questionnaire = questionnaireProvider.questionnaire;
-  if (!questionnaire.item || !questionnaireResponse.item) return <FormBodyInvalid />;
+  const { response } = renderer;
+
+  if (!questionnaire.item || !response.item) return <FormBodyInvalid />;
 
   const qForm = questionnaire.item[0];
-  qrForm = questionnaireResponse.item[0];
+  qrForm = response.item[0];
 
   function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
-    const newQuestionnaireResponse = {
-      ...questionnaireResponse,
+    const updatedResponse = {
+      ...response,
       item: [newQrForm]
     };
 
-    updateCalculatedExpressions(questionnaireResponse, questionnaireProvider.variables);
+    updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables);
 
-    questionnaireResponseProvider.setQuestionnaireResponse(newQuestionnaireResponse);
-    updateQuestionnaireResponse(newQuestionnaireResponse);
+    // questionnaireResponseProvider.setQuestionnaireResponse(newQuestionnaireResponse);
+    // TODO only update provider on save
+    setRenderer({ response: updatedResponse, hasChanges: true });
   }
 
   if (qForm.item && qrForm.item) {
     return (
       <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
-        <Grid container>
-          <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
-            <SideBar>
-              <RendererOperationButtons
-                qrHasChanges={qrHasChanges}
-                removeQrHasChanges={removeQrHasChanges}
-                togglePreviewMode={togglePreviewMode}
-                questionnaireResponse={questionnaireResponse}
-              />
-            </SideBar>
-          </SideBarGrid>
-          <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
-            <MainGridContainerBox>
-              <MainGridHeadingTypography variant="h2" data-test="renderer-heading">
+        <Fade in={true}>
+          <Container maxWidth="xl">
+            <Box>
+              <Typography variant="h3" data-test="renderer-heading">
                 <QTitle questionnaire={questionnaire} />
-              </MainGridHeadingTypography>
-              <ChipBar>
-                <RendererOperationButtons
-                  isChip={true}
-                  qrHasChanges={qrHasChanges}
-                  removeQrHasChanges={removeQrHasChanges}
-                  togglePreviewMode={togglePreviewMode}
-                  questionnaireResponse={questionnaireResponse}
-                />
-              </ChipBar>
-              <Divider light />
-              {containsTabs(qForm.item) ? (
-                <FormBodyTabbed
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  currentTabIndex={currentTabIndex}
-                  setCurrentTabIndex={setCurrentTabIndex}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                />
-              ) : (
-                // If form is untabbed, it is rendered as a regular group
-                <QItemGroup
-                  qItem={qForm}
-                  qrItem={qrForm}
-                  groupCardElevation={1}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                  isRepeated={false}
-                />
-              )}
-
-              {/*<BackToTopButton>*/}
-              {/*  <Fab>*/}
-              {/*    <KeyboardArrowUpIcon />*/}
-              {/*  </Fab>*/}
-              {/*</BackToTopButton>*/}
-            </MainGridContainerBox>
-          </MainGrid>
-        </Grid>
-
-        {hideQResponse ? null : (
-          <DisplayDebugQResponse
-            questionnaire={questionnaire}
-            questionnaireResponse={questionnaireResponse}
-            clearQResponse={() => {
-              const clearQrForm: QuestionnaireResponseItem = {
-                linkId: '715',
-                text: 'MBS 715 Cleared',
-                item: []
-              };
-              clearQuestionnaireResponse({
-                ...questionnaireResponse,
-                item: [clearQrForm]
-              });
-            }}
-          />
-        )}
-        <RendererDebugBar
-          hideQResponse={hideQResponse}
-          toggleHideQResponse={(checked) => setHideQResponse(checked)}
-        />
+              </Typography>
+            </Box>
+            <Divider light sx={{ my: 1.5 }} />
+            {containsTabs(qForm.item) ? (
+              <FormBodyTabbed
+                qForm={qForm}
+                qrForm={qrForm}
+                currentTabIndex={currentTabIndex}
+                setCurrentTabIndex={setCurrentTabIndex}
+                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+              />
+            ) : (
+              // If form is untabbed, it is rendered as a regular group
+              <QItemGroup
+                qItem={qForm}
+                qrItem={qrForm}
+                groupCardElevation={1}
+                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                isRepeated={false}
+              />
+            )}
+          </Container>
+        </Fade>
+        <DebugFooter />
       </PreprocessedValueSetContext.Provider>
     );
   } else {

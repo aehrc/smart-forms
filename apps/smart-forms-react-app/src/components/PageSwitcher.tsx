@@ -19,9 +19,9 @@ import React, { useContext, useEffect } from 'react';
 import { PageSwitcherContext } from '../custom-contexts/PageSwitcherContext';
 import { PageType } from '../interfaces/Enums';
 import Picker from './Picker/Picker';
-import Renderer from './QRenderer/Renderer';
 import { QuestionnaireProviderContext } from '../App';
 import ResponsePreview from './Preview/ResponsePreview';
+import { Box } from '@mui/material';
 
 function PageSwitcher() {
   const { currentPage, goToPage } = useContext(PageSwitcherContext);
@@ -40,7 +40,7 @@ function PageSwitcher() {
       case PageType.Picker:
         return <Picker />;
       default:
-        return <Renderer />;
+        return <Box />;
     }
   }
 
