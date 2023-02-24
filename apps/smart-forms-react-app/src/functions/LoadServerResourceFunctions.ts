@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
-import { Bundle, BundleEntry, Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import {
+  Bundle,
+  BundleEntry,
+  FhirResource,
+  Patient,
+  Questionnaire,
+  QuestionnaireResponse
+} from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import Q715 from '../data/resources/715.R4.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
@@ -194,10 +201,10 @@ export function loadQuestionnairesFromLocal() {
   return questionnaires;
 }
 
-export function getLocalQuestionnaireBundle(questionnaires: Questionnaire[]): Bundle {
-  const bundleEntries: BundleEntry[] = questionnaires.map((questionnaire) => {
+export function constructBundle(resources: FhirResource[]): Bundle {
+  const bundleEntries: BundleEntry[] = resources.map((resource) => {
     return {
-      resource: questionnaire
+      resource: resource
     };
   });
 

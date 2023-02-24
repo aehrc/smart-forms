@@ -57,7 +57,8 @@ export function getComparator(
 export function applySortFilter(
   array: ListItem[],
   comparator: (a: ListItem, b: ListItem) => number,
-  query: string
+  source: 'local' | 'remote',
+  query?: string
 ): ListItem[] {
   const stabilizedThis: ListItemWithIndex[] = array.map((el, index) => [index, el]);
 
@@ -70,8 +71,9 @@ export function applySortFilter(
     return a[0] - b[0];
   });
 
-  if (query) {
-    return filter(array, (_user) => _user.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+  // Perform client-side filtering only when source is local
+  if (query && source === 'local') {
+    return filter(array, (_item) => _item.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
 
   return stabilizedThis.map((el) => el[1]);

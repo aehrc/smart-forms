@@ -1,5 +1,13 @@
 import React from 'react';
-import { Paper, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Paper,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
 
 interface Props {
   status: 'loading' | 'error' | 'success';
@@ -9,7 +17,12 @@ interface Props {
 function QuestionnaireListFeedback(props: Props) {
   const { status, searchInput, error } = props;
 
-  const feedbackType: FeedbackProps['feedbackType'] = status === 'error' ? 'error' : 'empty';
+  let feedbackType: FeedbackProps['feedbackType'] = 'empty';
+  if (status === 'error') {
+    feedbackType = 'error';
+  } else if (status === 'loading') {
+    feedbackType = 'loading';
+  }
 
   return (
     <TableBody>
@@ -28,7 +41,7 @@ function QuestionnaireListFeedback(props: Props) {
 }
 
 interface FeedbackProps {
-  feedbackType: 'error' | 'empty';
+  feedbackType: 'error' | 'empty' | 'loading';
   searchInput: string;
   error?: unknown;
 }
@@ -41,6 +54,18 @@ function RenderFeedback(props: FeedbackProps) {
   }
 
   switch (feedbackType) {
+    case 'loading':
+      return (
+        <>
+          <Typography variant="h6" paragraph>
+            Loading questionnaires
+          </Typography>
+
+          <Box display="flex" flexDirection="row" justifyContent="center" sx={{ m: 5 }}>
+            <CircularProgress size={44} />
+          </Box>
+        </>
+      );
     case 'error':
       return (
         <>

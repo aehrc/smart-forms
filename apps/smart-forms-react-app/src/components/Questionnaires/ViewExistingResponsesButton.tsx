@@ -8,23 +8,23 @@ import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SelectedQuestionnaireContext } from '../../custom-contexts/SelectedQuestionnaireContext';
+import { useNavigate } from 'react-router-dom';
 
 function ViewExistingResponsesButton() {
   const { patient } = useContext(LaunchContext);
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
 
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   // search responses from selected questionnaire
-  const endpointUrl =
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const endpointUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
 
   const questionnaireIdParam = selectedQuestionnaire?.resource?.id
     ? `questionnaire=${selectedQuestionnaire?.resource?.id}&`
     : '';
   const patientIdParam = patient?.id ? `patient=${patient?.id}&` : '';
-  const queryUrl = 'QuestionnaireResponse?' + questionnaireIdParam + patientIdParam;
-
+  const queryUrl = '/QuestionnaireResponse?' + questionnaireIdParam + patientIdParam;
   const { data, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
     () => getBundlePromise(endpointUrl, queryUrl),
@@ -45,7 +45,7 @@ function ViewExistingResponsesButton() {
   function handleClick() {
     setIsLoading(true);
     setExistingResponses(existingResponses);
-
+    navigate('/responses');
     setIsLoading(false);
   }
 
@@ -57,7 +57,7 @@ function ViewExistingResponsesButton() {
         isLoading ? (
           <WhiteCircularProgress size={20} />
         ) : (
-          <Iconify icon="material-symbols:arrow-right-alt" />
+          <Iconify icon="material-symbols:arrow-forward" />
         )
       }
       onClick={handleClick}>
