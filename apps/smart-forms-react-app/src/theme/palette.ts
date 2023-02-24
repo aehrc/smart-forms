@@ -45,6 +45,15 @@ const PRIMARY = {
   contrastText: '#fff'
 };
 
+const SECONDARY = {
+  lighter: '#d3ebdd',
+  light: '#7ac298',
+  main: '#229954',
+  dark: '#145c32',
+  darker: '#071f11',
+  contrastText: '#fff'
+};
+
 const INFO = {
   lighter: '#D0F2FF',
   light: '#74CAFF',
@@ -84,11 +93,7 @@ const ERROR = {
 const palette = {
   common: { black: '#000', white: '#fff' },
   primary: PRIMARY,
-  secondary: {
-    main: '#229954',
-    light: '#2ecc71',
-    dark: '#196f3d'
-  },
+  secondary: SECONDARY,
   info: INFO,
   success: SUCCESS,
   warning: WARNING,
