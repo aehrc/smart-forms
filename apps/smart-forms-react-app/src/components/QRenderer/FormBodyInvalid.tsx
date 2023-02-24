@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Iconify from '../Iconify';
 
@@ -28,26 +28,28 @@ function FormBodyInvalid() {
   }
 
   return (
-    <Box sx={{ pt: 5, px: 1 }}>
-      <Stack gap={1}>
-        <Typography variant="h3">
-          Oops, the form renderer is unable to render this questionnaire.
-        </Typography>
-        <Typography>
-          {
-            "This questionnaire either lacks a top-level group item, or the group item doesn't have any items."
-          }
-        </Typography>
-      </Stack>
-      <Box sx={{ py: 5 }}>
-        <Button
-          variant="contained"
-          startIcon={<Iconify icon="material-symbols:arrow-back" />}
-          onClick={handleClick}>
-          Take me back
-        </Button>
-      </Box>
-    </Box>
+    <Fade in={true} timeout={500}>
+      <Container sx={{ pt: 3 }} maxWidth="xl">
+        <Stack gap={1}>
+          <Typography variant="h3">
+            Oops, the form renderer is unable to render this questionnaire.
+          </Typography>
+          <Typography>
+            {
+              "This questionnaire either lacks a top-level group item, or the group item doesn't have any items."
+            }
+          </Typography>
+        </Stack>
+        <Box sx={{ py: 5 }}>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="material-symbols:arrow-back" />}
+            onClick={handleClick}>
+            Take me back
+          </Button>
+        </Box>
+      </Container>
+    </Fade>
   );
 }
 

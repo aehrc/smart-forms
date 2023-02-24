@@ -1,8 +1,8 @@
-import React from 'react';
-import { ListItemButton, ListItemText, Tooltip, Typography } from '@mui/material';
+import React, { memo } from 'react';
+import { Box, ListItemButton, ListItemText, Tooltip, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import PendingIcon from '@mui/icons-material/Pending';
 import { TabListItemIcon } from './Tab.styles';
+import Iconify from '../../Iconify';
 
 interface Props {
   selected: boolean;
@@ -27,7 +27,9 @@ function FormBodySingleTab(props: Props) {
           </Tooltip>
         ) : (
           <Tooltip title="In progress">
-            <PendingIcon fontSize="small" />
+            <Box display="flex">
+              <Iconify icon={'carbon:in-progress'} />
+            </Box>
           </Tooltip>
         )}
       </TabListItemIcon>
@@ -36,4 +38,4 @@ function FormBodySingleTab(props: Props) {
   );
 }
 
-export default FormBodySingleTab;
+export default memo(FormBodySingleTab);

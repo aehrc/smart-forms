@@ -32,7 +32,7 @@ function FormBodyTabList(props: Props) {
               }
 
               return (
-                <Collapse key={qItem.linkId}>
+                <Collapse key={qItem.linkId} timeout={100}>
                   <FormBodySingleTab
                     selected={currentTabIndex.toString() === i.toString()}
                     tabText={getShortText(qItem) ?? qItem.text + ''}

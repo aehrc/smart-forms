@@ -76,33 +76,35 @@ function Form() {
   if (qForm.item && qrForm.item) {
     return (
       <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
-        <Fade in={true}>
-          <Container maxWidth="xl">
-            <Box>
-              <Typography variant="h3" data-test="renderer-heading">
-                <QTitle questionnaire={questionnaire} />
-              </Typography>
-            </Box>
-            <Divider light sx={{ my: 1.5 }} />
-            {containsTabs(qForm.item) ? (
-              <FormBodyTabbed
-                qForm={qForm}
-                qrForm={qrForm}
-                currentTabIndex={currentTabIndex}
-                setCurrentTabIndex={setCurrentTabIndex}
-                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-              />
-            ) : (
-              // If form is untabbed, it is rendered as a regular group
-              <QItemGroup
-                qItem={qForm}
-                qrItem={qrForm}
-                groupCardElevation={1}
-                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                isRepeated={false}
-              />
-            )}
-          </Container>
+        <Fade in={true} timeout={500}>
+          <Box>
+            <Container maxWidth="xl">
+              <Box>
+                <Typography variant="h3" data-test="renderer-heading">
+                  <QTitle questionnaire={questionnaire} />
+                </Typography>
+              </Box>
+              <Divider light sx={{ my: 1.5 }} />
+              {containsTabs(qForm.item) ? (
+                <FormBodyTabbed
+                  qForm={qForm}
+                  qrForm={qrForm}
+                  currentTabIndex={currentTabIndex}
+                  setCurrentTabIndex={setCurrentTabIndex}
+                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                />
+              ) : (
+                // If form is untabbed, it is rendered as a regular group
+                <QItemGroup
+                  qItem={qForm}
+                  qrItem={qrForm}
+                  groupCardElevation={1}
+                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                  isRepeated={false}
+                />
+              )}
+            </Container>
+          </Box>
         </Fade>
         <DebugFooter />
       </PreprocessedValueSetContext.Provider>
