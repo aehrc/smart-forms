@@ -22,12 +22,6 @@ export default function Button(theme: Theme) {
             backgroundColor: theme.palette.grey[400]
           }
         },
-        containedPrimary: {
-          boxShadow: theme.customShadows.primary
-        },
-        containedSecondary: {
-          boxShadow: theme.customShadows.secondary
-        },
         outlinedInherit: {
           border: `1px solid ${alpha(theme.palette.grey[500], 0.32)}`,
           '&:hover': {

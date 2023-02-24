@@ -30,7 +30,7 @@ export interface BgBlurOutputProps {
 
 export function bgBlur(props: BgBlurProps): BgBlurOutputProps {
   const color = props?.color || '#000000';
-  const blur = props?.blur || 6;
+  const blur = props?.blur || 2.25;
   const opacity = props?.opacity || 0.8;
   const imgUrl = props?.imgUrl;
 
