@@ -20,18 +20,18 @@ function DashboardLayout() {
   const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
 
   return (
-    <StyledRoot>
-      <Header onOpenNav={() => setOpen(true)} />
-      <Nav openNav={open} onCloseNav={() => setOpen(false)} />
+    <SourceContext.Provider value={{ source, setSource }}>
+      <StyledRoot>
+        <Header onOpenNav={() => setOpen(true)} />
+        <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
-      <Main>
-        <SourceContext.Provider value={{ source, setSource }}>
+        <Main>
           <SelectedQuestionnaireContextProvider>
             <Outlet />
           </SelectedQuestionnaireContextProvider>
-        </SourceContext.Provider>
-      </Main>
-    </StyledRoot>
+        </Main>
+      </StyledRoot>
+    </SourceContext.Provider>
   );
 }
 

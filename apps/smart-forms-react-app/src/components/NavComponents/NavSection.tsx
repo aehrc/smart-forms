@@ -1,27 +1,36 @@
 import { List, ListItemButton, ListItemText, useTheme } from '@mui/material';
-import React, { memo } from 'react';
-import { navConfig } from './NavConfig';
+import React, { memo, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from './NavSection.styles';
+import { SourceContext } from '../../layouts/dashboard/DashboardLayout';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 export interface NavButton {
   title: string;
   path: string;
   icon: JSX.Element;
+  disabled?: boolean;
 }
 
 function NavSection() {
+  const { source } = useContext(SourceContext);
+
   return (
     <List disablePadding sx={{ px: 1 }}>
-      {navConfig.map((item) => (
-        <NavItem key={item.title} title={item.title} path={item.path} icon={item.icon} />
-      ))}
+      <NavItem title={'Questionnaires'} path={'/questionnaires'} icon={<AssignmentIcon />} />
+      <NavItem
+        title={'Responses'}
+        path={'/responses'}
+        icon={<AssignmentTurnedInIcon />}
+        disabled={source === 'local'}
+      />
     </List>
   );
 }
 
 function NavItem(props: NavButton) {
-  const { title, path, icon } = props;
+  const { title, path, icon, disabled } = props;
   const theme = useTheme();
 
   return (
@@ -29,6 +38,7 @@ function NavItem(props: NavButton) {
       component={NavLink}
       to={path}
       disableGutters
+      disabled={disabled}
       sx={{
         ...theme.typography.subtitle2,
         height: 48,
