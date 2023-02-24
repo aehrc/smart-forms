@@ -18,7 +18,7 @@ function QuestionnaireListToolbar(props: Props) {
       sx={{
         ...(selected && {
           color: 'primary.main',
-          bgcolor: 'primary.lighter'
+          bgcolor: 'pale.primary'
         })
       }}>
       {selected ? (

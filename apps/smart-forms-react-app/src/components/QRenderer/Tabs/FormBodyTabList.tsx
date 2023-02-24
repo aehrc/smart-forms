@@ -24,7 +24,7 @@ function FormBodyTabList(props: Props) {
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }} data-test="renderer-tab-list">
+        <PrimarySelectableList dense disablePadding sx={{ my: 1 }} data-test="renderer-tab-list">
           <TransitionGroup>
             {qFormItems.map((qItem, i) => {
               if (!isTab(qItem) || isHidden(qItem, enableWhenContext)) {

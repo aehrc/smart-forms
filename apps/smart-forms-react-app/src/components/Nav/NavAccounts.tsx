@@ -19,7 +19,7 @@ function NavAccounts() {
   return (
     <Box sx={{ my: 4, mx: 2.5 }}>
       <StyledAccount>
-        <FaceIcon fontSize="large" sx={{ color: theme.palette.grey['700'] }} />
+        <FaceIcon fontSize="large" sx={{ color: theme.palette.primary.dark }} />
 
         <Box sx={{ ml: 2 }}>
           <AccountNameTypography name={patient ? constructName(patient.name) : 'No Patient'} />

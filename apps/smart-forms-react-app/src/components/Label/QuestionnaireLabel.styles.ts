@@ -17,11 +17,11 @@ const handleColorType = (color: QuestionnaireListItem['status'], theme: Theme) =
 const handleBgColorType = (color: QuestionnaireListItem['status'], theme: Theme) => {
   switch (color) {
     case 'draft':
-      return alpha(theme.palette.warning.main, 0.16);
+      return alpha(theme.palette.warning.light, 0.16);
     case 'active':
-      return alpha(theme.palette.success.main, 0.16);
+      return alpha(theme.palette.success.light, 0.16);
     case 'retired':
-      return alpha(theme.palette.error.main, 0.16);
+      return alpha(theme.palette.error.light, 0.16);
     case 'unknown':
       return theme.palette.grey[300];
   }

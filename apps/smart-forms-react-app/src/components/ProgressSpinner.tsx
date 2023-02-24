@@ -31,9 +31,9 @@ function ProgressSpinner(props: Props) {
     <Stack
       direction="column"
       justifyContent="center"
-      minHeight="95vh"
       spacing={3}
-      data-test="progress-spinner">
+      data-test="progress-spinner"
+      sx={{ height: '100%' }}>
       <Box display="flex" flexDirection="row" justifyContent="center">
         <CircularProgress size={72} />
       </Box>

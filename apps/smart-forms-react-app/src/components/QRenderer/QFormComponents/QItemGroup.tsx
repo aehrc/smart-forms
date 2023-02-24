@@ -16,7 +16,7 @@
  */
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Box, Card, Collapse, Divider, IconButton, Tooltip } from '@mui/material';
+import { Box, Button, Card, Collapse, Divider, IconButton, Tooltip } from '@mui/material';
 import { QItemType } from '../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
@@ -37,9 +37,8 @@ import QItemLabel from './QItemParts/QItemLabel';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { RoundButton } from '../../StyledComponents/Buttons.styles';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../functions/TabFunctions';
+import Iconify from '../../Iconify';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -244,11 +243,17 @@ function QItemGroup(props: Props) {
             {currentTabIndex !== undefined && tabs && goToNextTab ? (
               <Box display="flex" flexDirection="row-reverse" sx={{ mt: 3 }}>
                 {currentTabIndex !== Object.keys(tabs).length - 1 ? (
-                  <RoundButton
+                  <Button
                     variant="contained"
                     size="small"
-                    endIcon={<ArrowForwardIcon />}
+                    endIcon={<Iconify icon="material-symbols:arrow-forward" />}
                     disabled={findNumOfVisibleTabs(tabs, enableWhenContext.items) < 2}
+                    sx={{
+                      backgroundColor: 'secondary.main',
+                      '&:hover': {
+                        backgroundColor: 'secondary.dark'
+                      }
+                    }}
                     onClick={() => {
                       if (currentTabIndex !== undefined && tabs) {
                         const nextVisibleTabIndex = getNextVisibleTabIndex(
@@ -260,7 +265,7 @@ function QItemGroup(props: Props) {
                       }
                     }}>
                     Next tab
-                  </RoundButton>
+                  </Button>
                 ) : null}
               </Box>
             ) : null}

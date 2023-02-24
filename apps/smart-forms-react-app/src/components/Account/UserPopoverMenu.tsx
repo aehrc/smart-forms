@@ -9,7 +9,7 @@ function UserPopoverMenu() {
 
   return (
     <Box sx={{ my: 1.5, px: 2.5 }}>
-      <AccountNameTypographyNoWrap name={user ? constructName(user.name) : 'No Patient'} />
+      <AccountNameTypographyNoWrap name={user ? constructName(user.name) : 'No User'} />
       {user ? <AccountDetailsTypography details={user ? `${user.gender}` : ''} /> : null}
     </Box>
   );
