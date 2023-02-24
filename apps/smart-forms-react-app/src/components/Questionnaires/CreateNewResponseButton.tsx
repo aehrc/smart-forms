@@ -7,6 +7,7 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
 import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   selectedQuestionnaire: SelectedQuestionnaire | null;
@@ -19,6 +20,7 @@ function CreateNewResponseButton(props: Props) {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
   const { fhirClient } = useContext(LaunchContext);
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,6 +43,7 @@ function CreateNewResponseButton(props: Props) {
         createQuestionnaireResponse(questionnaireResource.id, questionnaireResource.item[0])
       );
     }
+    navigate('/renderer');
 
     setIsLoading(false);
   }
