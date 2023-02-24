@@ -17,6 +17,7 @@ import NoQuestionnaireDialog from './components/Dialogs/AuthorisationFailedDialo
 import ProgressSpinner from './components/ProgressSpinner';
 import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairePage from './pages/QuestionnairePage';
+import ResponsePage from './pages/ResponsePage';
 
 export default function Router() {
   const { patient, user, setFhirClient, setPatient, setUser } = useContext(LaunchContext);
@@ -29,6 +30,7 @@ export default function Router() {
     errorMessage: ''
   });
 
+  // only authenticate once, leave dependency array empty
   useEffect(() => {
     oauth2
       .ready()
@@ -82,7 +84,7 @@ export default function Router() {
       children: [
         { element: <Navigate to="/questionnaires" />, index: true },
         { path: 'questionnaires', element: <QuestionnairePage /> },
-        { path: 'responses', element: <QuestionnairePage /> }
+        { path: 'responses', element: <ResponsePage /> }
       ]
     },
     {
