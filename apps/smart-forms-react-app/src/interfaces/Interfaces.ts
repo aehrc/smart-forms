@@ -122,3 +122,8 @@ export interface SelectedResponse {
   listItem: ResponseListItem;
   resource: QuestionnaireResponse;
 }
+
+export interface Renderer {
+  response: QuestionnaireResponse;
+  hasChanges: boolean;
+}

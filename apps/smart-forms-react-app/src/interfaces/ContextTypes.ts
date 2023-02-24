@@ -25,7 +25,12 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
-import { CalculatedExpression, EnableWhenItemProperties, EnableWhenItems } from './Interfaces';
+import {
+  CalculatedExpression,
+  EnableWhenItemProperties,
+  EnableWhenItems,
+  Renderer
+} from './Interfaces';
 import { PageType } from './Enums';
 
 export type EnableWhenContextType = {
@@ -80,4 +85,14 @@ export type CalculatedExpressionContextType = {
 export type SourceContextType = {
   source: 'local' | 'remote';
   setSource: (updatedSource: 'local' | 'remote') => unknown;
+};
+
+export type RendererContextType = {
+  renderer: Renderer;
+  setRenderer: (updatedRenderer: Renderer) => unknown;
+};
+
+export type CurrentTabIndexContextType = {
+  currentTabIndex: number;
+  setCurrentTabIndex: (updatedIndex: number) => unknown;
 };
