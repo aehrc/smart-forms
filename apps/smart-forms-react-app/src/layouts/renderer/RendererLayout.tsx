@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import Header from '../header/Header';
+import RendererHeader from './RendererHeader';
 import Nav from './nav/Nav';
 import { Main, StyledRoot } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
@@ -69,13 +69,13 @@ function RendererLayout() {
   const [spinner, setSpinner] = useState(initialSpinner);
 
   // Pop up for user trying to leave the page with unfinished changes
-  useEffect(() => {
-    window.addEventListener('beforeunload', (event) => {
-      if (renderer.hasChanges) {
-        event.returnValue = 'You have unfinished changes!';
-      }
-    });
-  }, [renderer.hasChanges]);
+  // useEffect(() => {
+  //   window.addEventListener('beforeunload', (event) => {
+  //     if (renderer.hasChanges) {
+  //       event.returnValue = 'You have unfinished changes!';
+  //     }
+  //   });
+  // }, [renderer.hasChanges]);
 
   /*
    * Update response state if response is updated from the server
@@ -135,7 +135,7 @@ function RendererLayout() {
 
   return (
     <StyledRoot>
-      <Header onOpenNav={() => setOpen(true)} />
+      <RendererHeader onOpenNav={() => setOpen(true)} />
       <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
       <Main>

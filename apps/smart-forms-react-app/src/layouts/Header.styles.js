@@ -1,12 +1,12 @@
 import { styled } from '@mui/material/styles';
 import { AppBar, Toolbar } from '@mui/material';
-import { bgBlur } from '../../utils/css.styles';
+import { bgBlur } from '../utils/css.styles';
 
-const NAV_WIDTH = 280;
+const NAV_WIDTH = 240;
 
 const HEADER_MOBILE = 64;
 
-const HEADER_DESKTOP = 92;
+const HEADER_DESKTOP = 80;
 
 export const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: theme.palette.background.default }),

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Header from '../header/Header';
+import DashboardHeader from './DashboardHeader';
 import Nav from './nav/Nav';
 import { Main, StyledRoot } from './DashboardLayout.styles';
 import { Outlet } from 'react-router-dom';
@@ -10,7 +10,7 @@ function DashboardLayout() {
 
   return (
     <StyledRoot>
-      <Header onOpenNav={() => setOpen(true)} />
+      <DashboardHeader onOpenNav={() => setOpen(true)} />
       <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
       <Main>
