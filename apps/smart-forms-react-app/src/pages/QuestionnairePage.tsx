@@ -5,9 +5,7 @@ import {
   Card,
   Container,
   Fade,
-  FormControlLabel,
   Stack,
-  Switch,
   Table,
   TableBody,
   TableCell,
@@ -41,6 +39,7 @@ import {
 import ViewExistingResponsesButton from '../components/Questionnaires/ViewExistingResponsesButton';
 import { SelectedQuestionnaireContext } from '../custom-contexts/SelectedQuestionnaireContext';
 import { LaunchContext } from '../custom-contexts/LaunchContext';
+import SourceToggle from '../components/Toggles/SourceToggle';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -50,7 +49,7 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function QuestionnairePage() {
-  const { source, setSource } = useContext(SourceContext);
+  const { source } = useContext(SourceContext);
   const { fhirClient } = useContext(LaunchContext);
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
@@ -107,7 +106,7 @@ function QuestionnairePage() {
     [debouncedInput, order, orderBy, questionnaireListItems, source]
   );
 
-  const isNotFound = sortedListItems.length === 0 && !!debouncedInput && status !== 'loading';
+  const isEmpty = sortedListItems.length === 0 && !!debouncedInput && status !== 'loading';
 
   // Event handlers
   const handleRequestSort = (
@@ -149,23 +148,7 @@ function QuestionnairePage() {
             Questionnaires
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={source === 'remote'}
-                onChange={() => {
-                  setSource(source === 'local' ? 'remote' : 'local');
-                  setSelectedQuestionnaire(null);
-                  setPage(0);
-                }}
-              />
-            }
-            label={
-              <Typography variant="subtitle2" textTransform="capitalize">
-                {source}
-              </Typography>
-            }
-          />
+          <SourceToggle setPage={setPage} />
         </Stack>
 
         <Card>
@@ -242,8 +225,9 @@ function QuestionnairePage() {
                   )}
                 </TableBody>
 
-                {isNotFound || status === 'error' || status === 'loading' ? (
+                {isEmpty || status === 'error' || status === 'loading' ? (
                   <QuestionnaireListFeedback
+                    isEmpty={isEmpty}
                     status={status}
                     searchInput={searchInput}
                     error={error}

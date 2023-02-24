@@ -79,7 +79,25 @@ export function applySortFilter(
   return stabilizedThis.map((el) => el[1]);
 }
 
+export function getQuestionnairePromise(
+  endpointUrl: string,
+  queryUrl: string
+): Promise<Questionnaire> {
+  return FHIR.client({ serverUrl: endpointUrl }).request({
+    url: queryUrl
+  });
+}
+
 export function getBundlePromise(endpointUrl: string, queryUrl: string): Promise<Bundle> {
+  return FHIR.client({ serverUrl: endpointUrl }).request({
+    url: queryUrl
+  });
+}
+
+export function getBundleOrQuestionnairePromise(
+  endpointUrl: string,
+  queryUrl: string
+): Promise<Bundle | Questionnaire> {
   return FHIR.client({ serverUrl: endpointUrl }).request({
     url: queryUrl
   });
@@ -133,4 +151,22 @@ export function getResponsesFromBundle(bundle: Bundle | undefined): Questionnair
   return bundle.entry
     .filter((entry) => entry.resource && entry.resource.resourceType === 'QuestionnaireResponse')
     .map((entry) => entry.resource as QuestionnaireResponse); // non-questionnaire response resources are filtered
+}
+
+export function getReferencedQuestionnaire(
+  resource: Bundle | Questionnaire | undefined
+): Questionnaire | null {
+  if (!resource) return null;
+
+  if (resource.resourceType === 'Bundle') {
+    if (!resource.entry || resource.entry.length === 0) return null;
+
+    // return the most recently updated questionnaire
+    return resource.entry.filter(
+      (entry) => entry.resource && entry.resource.resourceType === 'Questionnaire'
+    )[0] as Questionnaire; // non-questionnaire  resources are filtered
+  } else {
+    // resource is Questionnaire
+    return resource;
+  }
 }

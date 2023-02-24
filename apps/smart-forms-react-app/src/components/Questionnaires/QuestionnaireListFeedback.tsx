@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Box,
   CircularProgress,
@@ -8,23 +8,28 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
+import { SourceContext } from '../../layouts/dashboard/DashboardLayout';
 
 interface Props {
+  isEmpty: boolean;
   status: 'loading' | 'error' | 'success';
   searchInput: string;
   error?: unknown;
 }
 function QuestionnaireListFeedback(props: Props) {
-  const { status, searchInput, error } = props;
+  const { isEmpty, status, searchInput, error } = props;
+  const { source } = useContext(SourceContext);
 
-  let feedbackType: FeedbackProps['feedbackType'] = 'empty';
+  let feedbackType: FeedbackProps['feedbackType'] | null = null;
   if (status === 'error') {
     feedbackType = 'error';
-  } else if (status === 'loading') {
+  } else if (status === 'loading' && source === 'remote') {
     feedbackType = 'loading';
+  } else if (isEmpty) {
+    feedbackType = 'empty';
   }
 
-  return (
+  return feedbackType ? (
     <TableBody>
       <TableRow>
         <TableCell align="center" colSpan={6} sx={{ py: 5 }}>
@@ -37,7 +42,7 @@ function QuestionnaireListFeedback(props: Props) {
         </TableCell>
       </TableRow>
     </TableBody>
-  );
+  ) : null;
 }
 
 interface FeedbackProps {

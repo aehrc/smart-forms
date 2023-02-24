@@ -5,9 +5,7 @@ import {
   Card,
   Container,
   Fade,
-  FormControlLabel,
   Stack,
-  Switch,
   Table,
   TableBody,
   TableCell,
@@ -33,10 +31,10 @@ import ResponseListHead from '../components/Responses/ResponseListHead';
 import ResponseLabel from '../components/Label/ResponseLabel';
 import ResponseListFeedback from '../components/Responses/ResponseListFeedback';
 import Scrollbar from '../components/Scrollbar/Scrollbar';
-import ViewExistingResponsesButton from '../components/Questionnaires/ViewExistingResponsesButton';
 import { constructBundle } from '../functions/LoadServerResourceFunctions';
 import dayjs from 'dayjs';
 import BackToQuestionnairesButton from '../components/Responses/BackToQuestionnairesButton';
+import OpenResponseButton from '../components/Responses/OpenResponseButton';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -144,15 +142,6 @@ function ResponsePage() {
           <Typography variant="h3" gutterBottom>
             Responses
           </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <FormControlLabel
-            control={<Switch onChange={() => console.log('')} />}
-            label={
-              <Typography variant="subtitle2" textTransform="capitalize">
-                {source}
-              </Typography>
-            }
-          />
         </Stack>
 
         <Card>
@@ -175,7 +164,7 @@ function ResponsePage() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { id, title, avatarColor, author, authored, status } = row;
-                      const isSelected = selectedResponse?.listItem.title === title;
+                      const isSelected = selectedResponse?.listItem.id === id;
 
                       return (
                         <TableRow
@@ -248,8 +237,7 @@ function ResponsePage() {
         <Stack direction="row" alignItems="center" my={5}>
           <BackToQuestionnairesButton />
           <Box sx={{ flexGrow: 1 }} />
-          {existingResponses.length > 0 ? <ViewExistingResponsesButton /> : null}
-          {/*<CreateNewResponseButton selectedItem={selectedResponse} source={source} />*/}
+          <OpenResponseButton selectedResponse={selectedResponse} />
         </Stack>
       </Container>
     </Fade>

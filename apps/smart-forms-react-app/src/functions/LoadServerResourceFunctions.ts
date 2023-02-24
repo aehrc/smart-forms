@@ -48,7 +48,7 @@ export async function loadQuestionnairesFromServer(
   };
 
   return client.request({
-    url: 'Questionnaire?_count=10&_sort=-&' + urlParams,
+    url: 'Questionnaire?_count=10&_sort=-date&' + urlParams,
     method: 'GET',
     headers: headers
   });
@@ -145,7 +145,7 @@ export function getQuestionnaireFromUrl(
   };
 
   return client.request({
-    url: `Questionnaire?url=${canonicalReferenceUrl}&_sort=-&`,
+    url: `Questionnaire?url=${canonicalReferenceUrl}&_sort=-date&`,
     method: 'GET',
     headers: headers
   });
