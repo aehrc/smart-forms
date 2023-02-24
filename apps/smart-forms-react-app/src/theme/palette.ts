@@ -1,4 +1,4 @@
-import { alpha } from '@mui/material/styles';
+import { alpha, PaletteOptions } from '@mui/material/styles';
 import { PaletteColor, PaletteColorOptions } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -7,6 +7,10 @@ declare module '@mui/material/styles' {
   interface Palette {
     accent1: PaletteColor;
     accent2: PaletteColor;
+    pale: {
+      primary: string;
+      secondary: string;
+    };
     customBackground: {
       neutral: string;
     };
@@ -16,6 +20,10 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     accent1?: PaletteColorOptions;
     accent2?: PaletteColorOptions;
+    pale?: {
+      primary: string;
+      secondary: string;
+    };
     customBackground?: {
       neutral: string;
     };
@@ -36,68 +44,16 @@ const GREY = {
   900: '#161C24'
 };
 
-const PRIMARY = {
-  lighter: '#D1E9FC',
-  light: '#76B0F1',
-  main: '#2065D1',
-  dark: '#103996',
-  darker: '#061B64',
-  contrastText: '#fff'
-};
-
 const SECONDARY = {
-  lighter: '#d3ebdd',
   light: '#7ac298',
   main: '#229954',
   dark: '#145c32',
-  darker: '#071f11',
   contrastText: '#fff'
 };
 
-const INFO = {
-  lighter: '#D0F2FF',
-  light: '#74CAFF',
-  main: '#1890FF',
-  dark: '#0C53B7',
-  darker: '#04297A',
-  contrastText: '#fff'
-};
-
-const SUCCESS = {
-  lighter: '#E9FCD4',
-  light: '#AAF27F',
-  main: '#54D62C',
-  dark: '#229A16',
-  darker: '#08660D',
-  contrastText: GREY[800]
-};
-
-const WARNING = {
-  lighter: '#FFF7CD',
-  light: '#FFE16A',
-  main: '#FFC107',
-  dark: '#B78103',
-  darker: '#7A4F01',
-  contrastText: GREY[800]
-};
-
-const ERROR = {
-  lighter: '#FFE7D9',
-  light: '#FFA48D',
-  main: '#FF4842',
-  dark: '#B72136',
-  darker: '#7A0C2E',
-  contrastText: '#fff'
-};
-
-const palette = {
+const palette: PaletteOptions = {
   common: { black: '#000', white: '#fff' },
-  primary: PRIMARY,
   secondary: SECONDARY,
-  info: INFO,
-  success: SUCCESS,
-  warning: WARNING,
-  error: ERROR,
   accent1: {
     main: '#d2e0f6',
     light: '#e9f0fa',
@@ -107,6 +63,10 @@ const palette = {
     main: '#d5f5e3',
     light: '#eafaf1',
     dark: '#abebc6'
+  },
+  pale: {
+    primary: '#D1E9FC',
+    secondary: '#D3EBDD'
   },
   grey: GREY,
   divider: alpha(GREY[500], 0.24),
