@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Header from './header/Header';
+import Header from '../header/Header';
 import Nav from './nav/Nav';
 import { Main, StyledRoot } from './DashboardLayout.styles';
 import { Outlet } from 'react-router-dom';
