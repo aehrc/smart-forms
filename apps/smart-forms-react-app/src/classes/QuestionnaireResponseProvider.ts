@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Bundle, QuestionnaireResponse } from 'fhir/r5';
+import { QuestionnaireResponse } from 'fhir/r5';
 
 const emptyQResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -23,15 +23,13 @@ const emptyQResponse: QuestionnaireResponse = {
 };
 
 export class QuestionnaireResponseProvider {
-  questionnaireResponse: QuestionnaireResponse;
-  batchResponse: Bundle | null;
+  response: QuestionnaireResponse;
 
   constructor() {
-    this.questionnaireResponse = emptyQResponse;
-    this.batchResponse = null;
+    this.response = emptyQResponse;
   }
 
   setQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse) {
-    this.questionnaireResponse = questionnaireResponse;
+    this.response = questionnaireResponse;
   }
 }

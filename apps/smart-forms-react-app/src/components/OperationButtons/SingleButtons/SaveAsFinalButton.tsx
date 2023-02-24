@@ -51,8 +51,8 @@ function SaveAsFinalButton(props: Props) {
   const { sideBarIsExpanded } = useContext(SideBarContext);
 
   const questionnaireResponseIsSaved: boolean =
-    !!questionnaireResponseProvider.questionnaireResponse.authored &&
-    !!questionnaireResponseProvider.questionnaireResponse.author;
+    !!questionnaireResponseProvider.response.authored &&
+    !!questionnaireResponseProvider.response.author;
 
   const [dialogOpen, setDialogOpen] = useState(false);
 

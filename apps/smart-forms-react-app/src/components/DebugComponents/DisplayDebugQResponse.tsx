@@ -24,13 +24,12 @@ import { RoundButton } from '../StyledComponents/Buttons.styles';
 
 interface Props {
   questionnaire: Questionnaire;
-  batchResponse: Bundle | null;
   questionnaireResponse: QuestionnaireResponse;
   clearQResponse: () => unknown;
 }
 
 function DisplayDebugQResponse(props: Props) {
-  const { questionnaire, batchResponse, questionnaireResponse, clearQResponse } = props;
+  const { questionnaire, questionnaireResponse, clearQResponse } = props;
 
   const [displayInfo, setDisplayInfo] = useState<{
     name: string;
@@ -84,14 +83,6 @@ function DisplayDebugQResponse(props: Props) {
               })
             }>
             QuestionnaireResponse
-          </RoundButton>
-          <RoundButton
-            variant="outlined"
-            disabled={displayInfo.name === 'Batch Response' || !batchResponse}
-            onClick={() => {
-              if (batchResponse) setDisplayInfo({ name: 'Batch Response', data: batchResponse });
-            }}>
-            Batch Response
           </RoundButton>
         </Box>
       </Stack>

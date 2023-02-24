@@ -36,7 +36,7 @@ function ResponsePreviewOperationButtons(props: Props) {
   return (
     <>
       <BackToPickerButton isChip={isChip} />
-      {questionnaireResponseProvider.questionnaireResponse.status === 'completed' ? null : (
+      {questionnaireResponseProvider.response.status === 'completed' ? null : (
         <EditResponseButton isChip={isChip} />
       )}
 
@@ -44,10 +44,10 @@ function ResponsePreviewOperationButtons(props: Props) {
       user &&
       patient &&
       questionnaireProvider.source === QuestionnaireSource.Remote &&
-      questionnaireResponseProvider.questionnaireResponse.status !== 'completed' ? (
+      questionnaireResponseProvider.response.status !== 'completed' ? (
         <SaveAsFinalButton
           isChip={isChip}
-          questionnaireResponse={questionnaireResponseProvider.questionnaireResponse}
+          questionnaireResponse={questionnaireResponseProvider.response}
           fhirClient={fhirClient}
           patient={patient}
           user={user}

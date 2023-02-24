@@ -80,7 +80,7 @@ function Form(props: Props) {
 
   useEffect(() => {
     enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
-  }, []);
+  }, []); // init enableWhen items on first entry into renderer, leave dependency array empty
 
   const questionnaire = questionnaireProvider.questionnaire;
   if (!questionnaire.item || !questionnaireResponse.item) return <FormBodyInvalid />;
@@ -172,7 +172,6 @@ function Form(props: Props) {
                 item: [clearQrForm]
               });
             }}
-            batchResponse={questionnaireResponseProvider.batchResponse}
           />
         )}
         <RendererDebugBar

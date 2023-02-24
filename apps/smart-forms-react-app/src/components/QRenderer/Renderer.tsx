@@ -29,7 +29,7 @@ function Renderer() {
   const { fhirClient, patient, user } = useContext(LaunchContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  const questionnaireResponse = questionnaireResponseProvider.questionnaireResponse;
+  const questionnaireResponse = questionnaireResponseProvider.response;
 
   // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
   if (questionnaire.item && !questionnaireResponse.item) {

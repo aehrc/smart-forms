@@ -29,7 +29,7 @@ function Preview() {
   const enableWhenContext = useContext(EnableWhenContext);
 
   const questionnaire = questionnaireProvider.questionnaire;
-  let qResponse = questionnaireResponseProvider.questionnaireResponse;
+  let qResponse = questionnaireResponseProvider.response;
   qResponse = removeHiddenAnswers(questionnaire, qResponse, enableWhenContext);
   const parsedHTML = parse(qrToHTML(questionnaire, qResponse));
 

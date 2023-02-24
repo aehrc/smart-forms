@@ -30,7 +30,7 @@ function RendererBody() {
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(
-    questionnaireResponseProvider.questionnaireResponse
+    questionnaireResponseProvider.response
   );
 
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
@@ -48,14 +48,14 @@ function RendererBody() {
   // update QR state if QR is updated from the server
   // introduces two-way binding
   useEffect(() => {
-    const updatedQResponse = questionnaireResponseProvider.questionnaireResponse;
+    const updatedQResponse = questionnaireResponseProvider.response;
     if (!updatedQResponse.item) return;
 
     const qrFormCleaned = removeNoAnswerQrItem(updatedQResponse.item[0]);
     if (qrFormCleaned) {
       setQuestionnaireResponse({ ...updatedQResponse, item: [qrFormCleaned] });
     }
-  }, [questionnaireResponseProvider.questionnaireResponse]);
+  }, [questionnaireResponseProvider.response]);
 
   return (
     <>
