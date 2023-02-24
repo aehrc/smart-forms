@@ -2,7 +2,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard/DashboardLayout';
 import Launch from './components/LaunchPage/Launch';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { LaunchContext } from './custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext } from './App';
 import { AuthFailDialog } from './interfaces/Interfaces';
@@ -18,9 +18,16 @@ import ProgressSpinner from './components/ProgressSpinner';
 import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairePage from './pages/QuestionnairePage';
 import ResponsePage from './pages/ResponsePage';
+import { SourceContextType } from './interfaces/ContextTypes';
+
+export const SourceContext = createContext<SourceContextType>({
+  source: 'local',
+  setSource: () => void 0
+});
 
 export default function Router() {
-  const { patient, user, setFhirClient, setPatient, setUser } = useContext(LaunchContext);
+  const { fhirClient, patient, user, setFhirClient, setPatient, setUser } =
+    useContext(LaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
@@ -30,12 +37,14 @@ export default function Router() {
     errorMessage: ''
   });
 
-  // only authenticate once, leave dependency array empty
+  const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
+
   useEffect(() => {
     oauth2
       .ready()
       .then((client) => {
         setFhirClient(client);
+        setSource('remote');
         setHasClient(true);
 
         getPatient(client)
@@ -75,7 +84,7 @@ export default function Router() {
         setQuestionnaireIsLoading(false);
         setHasClient(false);
       });
-  }, []);
+  }, []); // only authenticate once, leave dependency array empty
 
   const routes = useRoutes([
     {
@@ -115,10 +124,12 @@ export default function Router() {
     );
   } else {
     return (
-      <PageSwitcherContextProvider
-        questionnairePresent={!!questionnaireProvider.questionnaire.item}>
-        {routes}
-      </PageSwitcherContextProvider>
+      <SourceContext.Provider value={{ source, setSource }}>
+        <PageSwitcherContextProvider
+          questionnairePresent={!!questionnaireProvider.questionnaire.item}>
+          {routes}
+        </PageSwitcherContextProvider>
+      </SourceContext.Provider>
     );
   }
 }

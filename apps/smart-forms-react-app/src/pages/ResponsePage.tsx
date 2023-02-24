@@ -23,7 +23,7 @@ import {
 } from '../functions/DashboardFunctions';
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, QuestionnaireResponse } from 'fhir/r5';
-import { SourceContext } from '../layouts/dashboard/DashboardLayout';
+import { SourceContext } from '../Router';
 import { SelectedQuestionnaireContext } from '../custom-contexts/SelectedQuestionnaireContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ResponseListToolbar from '../components/Responses/ResponseListToolbar';

@@ -2,7 +2,7 @@ import { List, ListItemButton, ListItemText, useTheme } from '@mui/material';
 import React, { memo, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from './NavSection.styles';
-import { SourceContext } from '../../layouts/dashboard/DashboardLayout';
+import { SourceContext } from '../../Router';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 

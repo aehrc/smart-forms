@@ -31,7 +31,7 @@ import { Bundle, Questionnaire } from 'fhir/r5';
 import useDebounce from '../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from '../components/Questionnaires/QuestionnaireListFeedback';
 import CreateNewResponseButton from '../components/Questionnaires/CreateNewResponseButton';
-import { SourceContext } from '../layouts/dashboard/DashboardLayout';
+import { SourceContext } from '../Router';
 import {
   constructBundle,
   loadQuestionnairesFromLocal
@@ -148,7 +148,7 @@ function QuestionnairePage() {
             Questionnaires
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <SourceToggle setPage={setPage} />
+          {fhirClient ? <SourceToggle setPage={setPage} /> : null}
         </Stack>
 
         <Card>

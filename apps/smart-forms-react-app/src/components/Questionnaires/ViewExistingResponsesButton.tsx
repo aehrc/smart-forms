@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SelectedQuestionnaireContext } from '../../custom-contexts/SelectedQuestionnaireContext';
 import { useNavigate } from 'react-router-dom';
-import { SourceContext } from '../../layouts/dashboard/DashboardLayout';
+import { SourceContext } from '../../Router';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
@@ -54,7 +54,7 @@ function ViewExistingResponsesButton() {
   return (
     <Button
       variant="contained"
-      disabled={!selectedQuestionnaire || existingResponses.length === 0}
+      disabled={!selectedQuestionnaire || existingResponses.length === 0 || source === 'local'}
       endIcon={
         isInitialLoading ? (
           <CircularProgress size={20} color="inherit" />

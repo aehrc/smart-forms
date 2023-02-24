@@ -8,7 +8,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { SourceContext } from '../../layouts/dashboard/DashboardLayout';
+import { SourceContext } from '../../Router';
 
 interface Props {
   isEmpty: boolean;

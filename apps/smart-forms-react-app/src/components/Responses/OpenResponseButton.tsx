@@ -13,7 +13,7 @@ import {
   getQuestionnairePromise,
   getReferencedQuestionnaire
 } from '../../functions/DashboardFunctions';
-import { SourceContext } from '../../layouts/dashboard/DashboardLayout';
+import { SourceContext } from '../../Router';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
