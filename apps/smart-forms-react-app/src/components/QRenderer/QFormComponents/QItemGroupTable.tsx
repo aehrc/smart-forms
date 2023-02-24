@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
 import { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import {
   Box,
   Button,
-  Collapse,
   Divider,
   IconButton,
   Paper,
@@ -57,8 +56,6 @@ function QItemGroupTable(props: Props) {
 
   const enableWhenContext = useContext(EnableWhenContext);
 
-  let renderComponent = true;
-
   const emptyQrItem = createEmptyQrItem(qItem);
   const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
@@ -69,13 +66,18 @@ function QItemGroupTable(props: Props) {
     setTableRows(qrGroupTableRows);
   }, [qrItems]);
 
+  // Generate item labels as table headers
+  const itemLabels: string[] = useMemo(
+    () => qItem.item?.map((item) => (item.text ? item.text : '')) ?? [],
+    [qItem.item]
+  );
+
   // Check if there are columns within the group table
   if (!qItem.item || qItem.item.length === 0) return null;
 
-  if (isHidden(qItem, enableWhenContext)) {
-    renderComponent = false;
-  }
+  if (isHidden(qItem, enableWhenContext)) return null;
 
+  // Event Handlers
   function handleRowsChange(newQrRow: QuestionnaireResponseItem, index: number) {
     const newQrRowItems = newQrRow.item;
     const rowsTemp = [...tableRows];
@@ -107,68 +109,63 @@ function QItemGroupTable(props: Props) {
     onQrRepeatGroupChange({ linkId: qItem.linkId, qrItems: rowsWithValues });
   }
 
-  // Generate item labels as table headers
-  const itemLabels: string[] = qItem.item.map((item) => (item.text ? item.text : ''));
-
   return (
-    <Collapse in={renderComponent} timeout={300}>
-      <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={false}>
-        <Box sx={{ my: 3.5 }}>
-          <Typography fontSize={13} variant="h6">
-            <QItemLabel qItem={qItem} />
-          </Typography>
-          <Divider sx={{ my: 1 }} light />
-          <TableContainer component={Paper} elevation={groupCardElevation}>
-            <Table>
-              <caption>
-                <Stack direction="row" justifyContent="end">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<AddIcon />}
-                    onClick={() => setTableRows([...tableRows, undefined])}>
-                    Add Row
-                  </Button>
-                </Stack>
-              </caption>
-              <TableHead>
-                <TableRow>
-                  {itemLabels.map((itemLabel) => (
-                    <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
-                  ))}
-                  <TableCell />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tableRows.map((row, index) => {
-                  const singleQrRow: QuestionnaireResponseItem = row
-                    ? { ...emptyQrItem, item: row.item }
-                    : { ...emptyQrItem };
-                  return (
-                    <TableRow key={index}>
-                      <QItemGroupTableRow
-                        qItem={qItem}
-                        qrItem={singleQrRow}
-                        onQrItemChange={(newQrGroup) => handleRowsChange(newQrGroup, index)}
-                      />
-                      <DeleteButtonTableCell>
-                        <Tooltip title="Delete item">
-                          <span>
-                            <IconButton size="small" color="error" onClick={() => deleteRow(index)}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </span>
-                        </Tooltip>
-                      </DeleteButtonTableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </QGroupContainerBox>
-    </Collapse>
+    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={false}>
+      <Box sx={{ my: 3.5 }}>
+        <Typography fontSize={13} variant="h6">
+          <QItemLabel qItem={qItem} />
+        </Typography>
+        <Divider sx={{ my: 1 }} light />
+        <TableContainer component={Paper} elevation={groupCardElevation}>
+          <Table>
+            <caption>
+              <Stack direction="row" justifyContent="end">
+                <Button
+                  variant="contained"
+                  size="small"
+                  startIcon={<AddIcon />}
+                  onClick={() => setTableRows([...tableRows, undefined])}>
+                  Add Row
+                </Button>
+              </Stack>
+            </caption>
+            <TableHead>
+              <TableRow>
+                {itemLabels.map((itemLabel) => (
+                  <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+                ))}
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tableRows.map((row, index) => {
+                const singleQrRow: QuestionnaireResponseItem = row
+                  ? { ...emptyQrItem, item: row.item }
+                  : { ...emptyQrItem };
+                return (
+                  <TableRow key={index}>
+                    <QItemGroupTableRow
+                      qItem={qItem}
+                      qrItem={singleQrRow}
+                      onQrItemChange={(newQrGroup) => handleRowsChange(newQrGroup, index)}
+                    />
+                    <DeleteButtonTableCell>
+                      <Tooltip title="Delete item">
+                        <span>
+                          <IconButton size="small" color="error" onClick={() => deleteRow(index)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </span>
+                      </Tooltip>
+                    </DeleteButtonTableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </QGroupContainerBox>
   );
 }
 

@@ -30,6 +30,7 @@ function FormBodyTabList(props: Props) {
               if (!isTab(qItem) || isHidden(qItem, enableWhenContext)) {
                 return null;
               }
+
               return (
                 <Collapse key={qItem.linkId}>
                   <FormBodySingleTab

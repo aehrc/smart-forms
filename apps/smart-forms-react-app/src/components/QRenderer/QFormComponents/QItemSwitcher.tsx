@@ -37,7 +37,6 @@ import {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/Interfaces';
 import { isHidden } from '../../../functions/QItemFunctions';
-import { Collapse } from '@mui/material';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -56,8 +55,6 @@ function QItemSwitcher(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const enableWhenContext = useContext(EnableWhenContext);
 
-  let renderComponent = true;
-
   const handleQrItemChange = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
       if (newQrItem.answer) {
@@ -68,12 +65,10 @@ function QItemSwitcher(props: Props) {
     [enableWhenContext, onQrItemChange, qItem.linkId]
   );
 
-  if (isHidden(qItem, enableWhenContext)) {
-    renderComponent = false;
-  }
+  if (isHidden(qItem, enableWhenContext)) return null;
 
   // Is qItem is a repeat item, disable collapse transition as the base repeat item already has one
-  return isRepeated ? (
+  return (
     <RenderQItem
       qItem={qItem}
       qrItem={qrItem}
@@ -81,16 +76,6 @@ function QItemSwitcher(props: Props) {
       isTabled={isTabled}
       onQrItemChange={handleQrItemChange}
     />
-  ) : (
-    <Collapse in={renderComponent} timeout={300}>
-      <RenderQItem
-        qItem={qItem}
-        qrItem={qrItem}
-        isRepeated={isRepeated}
-        isTabled={isTabled}
-        onQrItemChange={handleQrItemChange}
-      />
-    </Collapse>
   );
 }
 

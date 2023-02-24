@@ -48,15 +48,15 @@ function QItemGroupTableRow(props: Props) {
     setRow(qrRowFromProps);
   }, [qrItem]);
 
+  if (isHidden(qItem, enableWhenContext)) return null;
+  if (!rowItems || !rowQrItems) return null;
+
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateLinkedItem(newQrRowItem, null, qrRow, qItemsIndexMap);
     setRow(qrRow);
     onQrItemChange(qrRow);
   }
-
-  if (isHidden(qItem, enableWhenContext)) return null;
-  if (!rowItems || !rowQrItems) return null;
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
 
