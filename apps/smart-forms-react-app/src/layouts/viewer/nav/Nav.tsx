@@ -4,7 +4,7 @@ import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../../components/Logo/Logo';
 import csiroLogo from '../../../data/images/csiro-logo.png';
 import Scrollbar from '../../../components/Scrollbar/Scrollbar';
-import NavSection from '../../../components/Nav/DashboardNav/NavSection';
+import OperationSection from '../../../components/Nav/ViewerNav/OperationSection';
 import { NAV_WIDTH } from '../../Nav.styles';
 import NavAccounts from '../../../components/Nav/NavAccounts';
 
@@ -30,7 +30,7 @@ export default function Nav(props: Props) {
 
       <NavAccounts />
 
-      <NavSection />
+      <OperationSection />
 
       <Box sx={{ flexGrow: 1 }} />
 

@@ -2,18 +2,18 @@
 import { Box, IconButton, Stack } from '@mui/material';
 // utils
 // components
-import Iconify from '../../../components/Iconify';
+import Iconify from '../../components/Iconify';
 //
 import { StyledRoot, StyledToolbar } from './Header.styles';
 import React from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import AccountPopover from '../../../components/Account/AccountPopover';
+import AccountPopover from '../../components/Account/AccountPopover';
 import { useTheme } from '@mui/material/styles';
-import PatientPopoverMenu from '../../../components/Account/PatientPopoverMenu';
-import UserPopoverMenu from '../../../components/Account/UserPopoverMenu';
-import UserHeader from '../../../components/Account/UserHeader';
-import useResponsive from '../../../custom-hooks/useResponsive';
+import PatientPopoverMenu from '../../components/Account/PatientPopoverMenu';
+import UserPopoverMenu from '../../components/Account/UserPopoverMenu';
+import UserHeader from '../../components/Account/UserHeader';
+import useResponsive from '../../custom-hooks/useResponsive';
 
 interface Props {
   onOpenNav: () => void;
