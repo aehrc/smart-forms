@@ -9,8 +9,8 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, Questionnaire } from 'fhir/r5';
 import {
-  getBundleOrQuestionnairePromise,
-  getQuestionnairePromise,
+  getFormsServerAssembledBundlePromise,
+  getFormsServerBundleOrQuestionnairePromise,
   getReferencedQuestionnaire
 } from '../../functions/DashboardFunctions';
 import { SourceContext } from '../../Router';
@@ -27,28 +27,21 @@ function OpenResponseButton(props: Props) {
   const { source } = useContext(SourceContext);
 
   const [isLoading, setIsLoading] = useState(false);
-  // const navigate = useNavigate();
-
-  // search questionnaire from selected response
-  const endpointUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-
-  // create a use query to fetch the questionnaire from the response
-  // define conditions at usequery hook
 
   // reference could either be a canonical or an id
   const questionnaireRef = selectedResponse?.resource.questionnaire;
 
-  let queryUrl = '/Questionnaire?_sort=-date&';
+  let queryUrl = '';
   if (questionnaireRef) {
     queryUrl += questionnaireRef?.startsWith('http')
-      ? `url=${questionnaireRef}`
+      ? `/Questionnaire?_sort=-date&url=${questionnaireRef}`
       : `/${questionnaireRef}`;
   }
 
   // search referenced questionnaire
   const { data, error } = useQuery<Bundle | Questionnaire>(
     ['referencedQuestionnaire', queryUrl],
-    () => getBundleOrQuestionnairePromise(endpointUrl, queryUrl),
+    () => getFormsServerBundleOrQuestionnairePromise(queryUrl),
     {
       enabled: !!selectedResponse && !!questionnaireRef
     }
@@ -72,10 +65,26 @@ function OpenResponseButton(props: Props) {
       (e) =>
         e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
     );
-
     if (assembledFrom && assembledFrom.valueCanonical) {
-      const queryUrl = '/Questionnaire?url=' + assembledFrom.valueCanonical;
-      referencedQuestionnaire = await getQuestionnairePromise(endpointUrl, queryUrl);
+      // invalidate current referenced questionnaire because it requires assembly
+      referencedQuestionnaire = null;
+
+      const queryUrl = '/Questionnaire?_sort=-date&url=' + assembledFrom.valueCanonical + '';
+      const questionnaireBundle = await getFormsServerAssembledBundlePromise(queryUrl);
+      if (questionnaireBundle.entry && questionnaireBundle.entry.length > 0) {
+        const firstQuestionnaire = questionnaireBundle.entry[0].resource;
+
+        // assign most recently updated questionnaire
+        if (firstQuestionnaire) {
+          referencedQuestionnaire = firstQuestionnaire as Questionnaire;
+        }
+      }
+
+      // assembled questionnaire not found
+      if (!referencedQuestionnaire) {
+        console.error(error);
+        return;
+      }
     }
 
     // Assign questionnaire to questionnaire provider

@@ -18,6 +18,7 @@
 import { Extension, Parameters, Questionnaire } from 'fhir/r5';
 import assemble, { isAssembleInputParameters } from 'sdc-assemble';
 import Client from 'fhirclient/lib/Client';
+import FHIR from 'fhirclient/lib/entry/browser';
 
 export function assemblyIsRequired(questionnaire: Questionnaire): boolean {
   return !!questionnaire.extension?.find(
@@ -42,7 +43,7 @@ function defineAssembleParameters(questionnaire: Questionnaire): Parameters {
 
 export async function assembleQuestionnaire(questionnaire: Questionnaire): Promise<Questionnaire> {
   const formsServerEndpoint =
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com';
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
 
   const parameters = defineAssembleParameters(questionnaire);
   if (isAssembleInputParameters(parameters)) {
@@ -64,7 +65,11 @@ export function updateAssembledQuestionnaire(client: Client, questionnaire: Ques
     'Content-Type': 'application/json+fhir; charset=UTF-8'
   };
 
-  return client.request({
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  return FHIR.client(endpointUrl).request({
     url: `Questionnaire/${questionnaire.id}`,
     method: 'PUT',
     body: JSON.stringify(questionnaire),

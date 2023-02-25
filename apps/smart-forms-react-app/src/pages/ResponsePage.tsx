@@ -17,7 +17,7 @@ import {
 import { ResponseListItem, SelectedResponse, TableAttributes } from '../interfaces/Interfaces';
 import {
   applySortFilter,
-  getBundlePromise,
+  getClientBundlePromise,
   getComparator,
   getResponseListItems
 } from '../functions/DashboardFunctions';
@@ -35,6 +35,7 @@ import { constructBundle } from '../functions/LoadServerResourceFunctions';
 import dayjs from 'dayjs';
 import BackToQuestionnairesButton from '../components/Responses/BackToQuestionnairesButton';
 import OpenResponseButton from '../components/Responses/OpenResponseButton';
+import { LaunchContext } from '../custom-contexts/LaunchContext';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -44,14 +45,9 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function ResponsePage() {
+  const { fhirClient } = useContext(LaunchContext);
   const { source } = useContext(SourceContext);
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
-
-  // we want to be able to search for all responses - by questionnaire title
-  // back to questionnaires page
-  // have an indicator saying these responses are from questionnaires
-  // have a button to clear the filter: selectedResponse questionnaire - at the same time remove the back to questionnaires button
-  //
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -63,14 +59,13 @@ function ResponsePage() {
   // search responses
   const numOfSearchEntries = 100;
 
-  const endpointUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
   const queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}`;
 
   const { data, status, error } = useQuery<Bundle>(
     ['response', queryUrl],
-    () => getBundlePromise(endpointUrl, queryUrl),
+    () => getClientBundlePromise(fhirClient!, queryUrl),
     {
-      enabled: source === 'remote'
+      enabled: source === 'remote' && !!fhirClient
     }
   );
 

@@ -12,6 +12,7 @@ import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
 import { getQuestionnaireNameFromResponse } from './ItemControlFunctions';
+import Client from 'fhirclient/lib/Client';
 
 export function descendingComparator(
   a: ListItem,
@@ -79,26 +80,59 @@ export function applySortFilter(
   return stabilizedThis.map((el) => el[1]);
 }
 
-export function getQuestionnairePromise(
-  endpointUrl: string,
-  queryUrl: string
-): Promise<Questionnaire> {
-  return FHIR.client({ serverUrl: endpointUrl }).request({
+export function getQuestionnairePromise(queryUrl: string): Promise<Questionnaire> {
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  queryUrl = queryUrl.replace('|', '&version=');
+
+  return FHIR.client(endpointUrl).request({
     url: queryUrl
   });
 }
 
-export function getBundlePromise(endpointUrl: string, queryUrl: string): Promise<Bundle> {
-  return FHIR.client({ serverUrl: endpointUrl }).request({
+export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  queryUrl = queryUrl.replace('|', '&version=');
+
+  return FHIR.client(endpointUrl).request({
     url: queryUrl
   });
 }
 
-export function getBundleOrQuestionnairePromise(
-  endpointUrl: string,
+export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<Bundle> {
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  queryUrl = queryUrl.replace('|', '&version=');
+  queryUrl += '-assembled';
+
+  return FHIR.client(endpointUrl).request({
+    url: queryUrl
+  });
+}
+
+export function getClientBundlePromise(fhirClient: Client, queryUrl: string): Promise<Bundle> {
+  return fhirClient.request({
+    url: queryUrl
+  });
+}
+
+export function getFormsServerBundleOrQuestionnairePromise(
   queryUrl: string
 ): Promise<Bundle | Questionnaire> {
-  return FHIR.client({ serverUrl: endpointUrl }).request({
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  queryUrl = queryUrl.replace('|', '&version=');
+
+  return FHIR.client(endpointUrl).request({
     url: queryUrl
   });
 }

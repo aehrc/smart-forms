@@ -3,7 +3,7 @@ import { Button, CircularProgress } from '@mui/material';
 import React, { useContext, useMemo } from 'react';
 import Iconify from '../Iconify';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { getBundlePromise, getResponsesFromBundle } from '../../functions/DashboardFunctions';
+import { getClientBundlePromise, getResponsesFromBundle } from '../../functions/DashboardFunctions';
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SelectedQuestionnaireContext } from '../../custom-contexts/SelectedQuestionnaireContext';
@@ -12,28 +12,39 @@ import { SourceContext } from '../../Router';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
-  const { patient } = useContext(LaunchContext);
+  const { fhirClient, patient } = useContext(LaunchContext);
   const { source } = useContext(SourceContext);
 
   const navigate = useNavigate();
 
   // search responses from selected questionnaire
-  const endpointUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
+  let questionnaireRefParam = '';
 
-  const questionnaireIdParam = selectedQuestionnaire?.resource?.id
-    ? `questionnaire=${selectedQuestionnaire?.resource?.id}&`
-    : '';
+  // Have different questionnaireRef config due to SMART Health IT limitation
+  if (fhirClient) {
+    const questionnaireRef =
+      fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir'
+        ? selectedQuestionnaire?.resource?.id
+        : selectedQuestionnaire?.resource?.url;
+
+    if (questionnaireRef) {
+      questionnaireRefParam = `questionnaire=${questionnaireRef}&`;
+    }
+  }
+
   const patientIdParam = patient?.id ? `patient=${patient?.id}&` : '';
-  const queryUrl = '/QuestionnaireResponse?' + questionnaireIdParam + patientIdParam;
+  const queryUrl = '/QuestionnaireResponse?' + questionnaireRefParam + patientIdParam;
+
   const { data, isInitialLoading, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
-    () => getBundlePromise(endpointUrl, queryUrl),
+    () => getClientBundlePromise(fhirClient!, queryUrl),
     {
       enabled:
         !!selectedQuestionnaire &&
-        questionnaireIdParam !== '' &&
+        questionnaireRefParam !== '' &&
         patientIdParam !== '' &&
-        source === 'remote'
+        source === 'remote' &&
+        !!fhirClient
     }
   );
 
@@ -70,17 +81,3 @@ function ViewExistingResponsesButton() {
 }
 
 export default ViewExistingResponsesButton;
-
-/*
-
-    // get assembled version of questionnaire if assembledFrom extension exists
-    const assembledFrom = questionnaire.extension?.find(
-      (e) =>
-        e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
-    );
-
-    if (assembledFrom && assembledFrom.valueCanonical) {
-      const queryUrl = '/Questionnaire?url=' + assembledFrom.valueCanonical;
-      return await getQuestionnairePromise(endpointUrl, queryUrl);
-    }
- */

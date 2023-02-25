@@ -30,7 +30,7 @@ function ResponseListToolbar(props: Props) {
         ...(selected
           ? {
               color: 'primary.main',
-              bgcolor: 'primary.lighter'
+              bgcolor: 'pale.primary'
             }
           : selectedQuestionnaire && existingResponses.length > 0
           ? {

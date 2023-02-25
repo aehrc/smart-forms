@@ -20,8 +20,8 @@ import QuestionnaireListToolbar from '../components/Questionnaires/Questionnaire
 import { QuestionnaireListItem, TableAttributes } from '../interfaces/Interfaces';
 import {
   applySortFilter,
-  getBundlePromise,
   getComparator,
+  getFormsServerBundlePromise,
   getQuestionnaireListItems
 } from '../functions/DashboardFunctions';
 import QuestionnaireLabel from '../components/Label/QuestionnaireLabel';
@@ -66,12 +66,11 @@ function QuestionnairePage() {
   const debouncedInput = useDebounce(searchInput, 500);
   const numOfSearchEntries = 20;
 
-  const endpointUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
   const queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&title:contains=${debouncedInput}`;
 
   const { data, status, error } = useQuery<Bundle>(
     ['questionnaires', queryUrl],
-    () => getBundlePromise(endpointUrl, queryUrl),
+    () => getFormsServerBundlePromise(queryUrl),
     {
       enabled: debouncedInput === searchInput
     }
