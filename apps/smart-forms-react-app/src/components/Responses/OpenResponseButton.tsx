@@ -13,6 +13,7 @@ import {
   getReferencedQuestionnaire
 } from '../../functions/DashboardFunctions';
 import { SourceContext } from '../../Router';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
@@ -26,6 +27,8 @@ function OpenResponseButton(props: Props) {
   const { source } = useContext(SourceContext);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   // reference could either be a canonical or an id
   const questionnaireRef = selectedResponse?.resource.questionnaire;
@@ -95,6 +98,8 @@ function OpenResponseButton(props: Props) {
 
     // Assign questionnaireResponse to questionnaireResponse provider
     questionnaireResponseProvider.setQuestionnaireResponse(selectedResponse.resource);
+
+    navigate('/viewer');
     setIsLoading(false);
   }
 

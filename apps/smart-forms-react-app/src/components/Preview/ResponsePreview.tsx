@@ -15,54 +15,40 @@
  * limitations under the License.
  */
 
-import React, { useContext, useRef } from 'react';
-import { Box, Divider, Grid, Paper } from '@mui/material';
+import React, { useContext, useEffect, useRef } from 'react';
+import { Box, Card, Container, Fade, Typography } from '@mui/material';
 import Preview from './Preview';
-import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
-import SideBar from '../SideBar/SideBar';
-import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
-import ChipBar from '../ChipBar/ChipBar';
-import ResponsePreviewOperationButtons from '../OperationButtons/ResponsePreviewOperationButtons';
-import { useReactToPrint } from 'react-to-print';
-import PrintPreviewButton from '../OperationButtons/SingleButtons/PrintPreviewButton';
-import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
-import { SideBarContext } from '../../custom-contexts/SideBarContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
+import ViewerInvalid from '../QRenderer/ViewerInvalid';
+import { PrintComponentRefContext } from '../Viewer/ViewerLayout';
 
 function ResponsePreview() {
-  const { sideBarIsExpanded } = useContext(SideBarContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const { setComponentRef } = useContext(PrintComponentRefContext);
 
   const componentRef = useRef(null);
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current
-  });
+
+  useEffect(() => {
+    setComponentRef(componentRef);
+  }, []); // init componentRef on first render, leave dependency array empty
+
+  if (!questionnaireProvider.questionnaire.item || !questionnaireResponseProvider.response.item)
+    return <ViewerInvalid />;
 
   return (
-    <Grid container>
-      <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
-        <SideBar>
-          <ResponsePreviewOperationButtons />
-          <PrintPreviewButton handlePrint={handlePrint} />
-        </SideBar>
-      </SideBarGrid>
-      <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
-        <MainGridContainerBox>
-          <MainGridHeadingTypography variant="h2">Response Preview</MainGridHeadingTypography>
-          <ChipBar>
-            <ResponsePreviewOperationButtons isChip={true} />
-            <PrintPreviewButton handlePrint={handlePrint} isChip={true} />
-          </ChipBar>
-          <Divider light />
-
-          <Box>
-            <Paper sx={{ mb: 2 }}>
-              <Box sx={{ p: 4 }} ref={componentRef}>
-                <Preview />
-              </Box>
-            </Paper>
+    <Fade in={true} timeout={500}>
+      <Container sx={{ mt: 3 }}>
+        <Box mb={3}>
+          <Typography variant="h2">Response Preview</Typography>
+        </Box>
+        <Card sx={{ mb: 2 }}>
+          <Box ref={componentRef} sx={{ p: 4 }}>
+            <Preview />
           </Box>
-        </MainGridContainerBox>
-      </MainGrid>
-    </Grid>
+        </Card>
+      </Container>
+    </Fade>
   );
 }
 

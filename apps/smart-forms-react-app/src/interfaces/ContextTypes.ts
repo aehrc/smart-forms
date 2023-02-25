@@ -32,6 +32,7 @@ import {
   Renderer
 } from './Interfaces';
 import { PageType } from './Enums';
+import { MutableRefObject } from 'react';
 
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
@@ -95,4 +96,9 @@ export type RendererContextType = {
 export type CurrentTabIndexContextType = {
   currentTabIndex: number;
   setCurrentTabIndex: (updatedIndex: number) => unknown;
+};
+
+export type PrintComponentRefContextType = {
+  componentRef: MutableRefObject<null> | null;
+  setComponentRef: (componentRef: MutableRefObject<null>) => unknown;
 };

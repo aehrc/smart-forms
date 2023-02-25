@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import DashboardNav from './DashboardNav/DashboardNav';
-import { Main, StyledRoot } from './DashboardLayout.styles';
+import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
 import { Outlet } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
 

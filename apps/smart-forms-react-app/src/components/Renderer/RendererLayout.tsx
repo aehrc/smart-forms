@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import RendererHeader from './RendererHeader/RendererHeader';
 import RendererNav from './RendererNav/RendererNav';
-import { Main, StyledRoot } from './RendererLayout.styles';
+import { StyledRoot } from '../StyledComponents/Layout.styles';
+import { Main } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
@@ -72,13 +73,13 @@ function RendererLayout() {
   const [spinner, setSpinner] = useState(initialSpinner);
 
   // Pop up for user trying to leave the page with unfinished changes
-  // useEffect(() => {
-  //   window.addEventListener('beforeunload', (event) => {
-  //     if (renderer.hasChanges) {
-  //       event.returnValue = 'You have unfinished changes!';
-  //     }
-  //   });
-  // }, [renderer.hasChanges]);
+  useEffect(() => {
+    window.addEventListener('beforeunload', (event) => {
+      if (renderer.hasChanges) {
+        event.returnValue = 'You have unfinished changes!';
+      }
+    });
+  }, [renderer.hasChanges]);
 
   /*
    * Update response state if response is updated from the server
@@ -96,7 +97,7 @@ function RendererLayout() {
         response: { ...questionnaireResponseProvider.response, item: [qrFormCleaned] }
       });
     }
-  }, [questionnaireResponseProvider.response]);
+  }, [questionnaireResponseProvider.response]); // init update renderer response only when server-side changes occur, leave dependency array empty
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
