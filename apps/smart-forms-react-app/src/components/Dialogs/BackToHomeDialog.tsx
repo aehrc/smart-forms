@@ -25,81 +25,89 @@ import {
   DialogTitle
 } from '@mui/material';
 import React, { useContext, useState } from 'react';
-import { PageSwitcherContext } from '../../custom-contexts/PageSwitcherContext';
-import { PageType } from '../../interfaces/Enums';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import { QuestionnaireResponse } from 'fhir/r5';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import { RendererContext } from '../Renderer/RendererLayout';
+import { useNavigate } from 'react-router-dom';
 
 export interface Props {
-  dialogOpen: boolean;
+  open: boolean;
   closeDialog: () => unknown;
-  removeQrHasChanges: () => unknown;
-  questionnaireResponse: QuestionnaireResponse;
 }
 
-function ChangeQuestionnaireDialog(props: Props) {
-  const { dialogOpen, closeDialog, removeQrHasChanges, questionnaireResponse } = props;
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const enableWhenContext = useContext(EnableWhenContext);
+// TODO implement this with home button
+// also bind to back button
 
-  const { goToPage } = useContext(PageSwitcherContext);
+function BackToHomeDialog(props: Props) {
+  const { open, closeDialog } = props;
   const { fhirClient, patient, user } = useContext(LaunchContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const responseProvider = useContext(QuestionnaireResponseProviderContext);
+  const { renderer, setRenderer } = useContext(RendererContext);
+  const enableWhenContext = useContext(EnableWhenContext);
 
   const [isSaving, setIsSaving] = useState(false);
 
+  const navigate = useNavigate();
+
+  const { response } = renderer;
   const isLaunched = !!(fhirClient && patient && user);
 
-  function handleSave() {
-    if (fhirClient && patient && user) {
-      let questionnaireResponseToSave = JSON.parse(JSON.stringify(questionnaireResponse));
-      questionnaireResponseToSave = removeHiddenAnswers(
-        questionnaireProvider.questionnaire,
-        questionnaireResponseToSave,
-        enableWhenContext
-      );
-
-      setIsSaving(true);
-      saveQuestionnaireResponse(
-        fhirClient,
-        patient,
-        user,
-        questionnaireProvider.questionnaire,
-        questionnaireResponseToSave
-      )
-        .then((savedResponse) => {
-          questionnaireResponseProvider.setQuestionnaireResponse(savedResponse);
-          removeQrHasChanges();
-          goToPage(PageType.Picker);
-          handleClose();
-          setIsSaving(false);
-        })
-        .catch((error) => console.error(error));
-    } else {
-      handleClose();
-    }
-  }
-
+  // Event handlers
   function handleClose() {
     closeDialog();
   }
 
+  function handleSave() {
+    if (!(fhirClient && patient && user)) {
+      handleClose();
+      return;
+    }
+
+    setIsSaving(true);
+
+    let responseToSave = JSON.parse(JSON.stringify(response));
+    responseToSave = removeHiddenAnswers(
+      questionnaireProvider.questionnaire,
+      responseToSave,
+      enableWhenContext
+    );
+
+    setIsSaving(true);
+    saveQuestionnaireResponse(
+      fhirClient,
+      patient,
+      user,
+      questionnaireProvider.questionnaire,
+      responseToSave
+    )
+      .then((savedResponse) => {
+        responseProvider.setQuestionnaireResponse(savedResponse);
+        setRenderer({ response: savedResponse, hasChanges: false });
+        setIsSaving(false);
+        handleClose();
+        navigate('/responses');
+      })
+      .catch((error) => {
+        console.error(error);
+        handleClose();
+      });
+  }
+
   return (
-    <Dialog open={dialogOpen} onClose={handleClose}>
-      <DialogTitle>Changes unsaved</DialogTitle>
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle variant="h5">Changes unsaved</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {'The form has unsaved changes. Are you sure you want to change the questionnaire?'}
+        <DialogContentText variant="body1">
+          {'The form has unsaved changes. Are you sure you want to exit?'}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button
           onClick={() => {
-            goToPage(PageType.Picker);
             handleClose();
           }}>
           {isLaunched ? 'Proceed without saving' : 'Proceed'}
@@ -109,7 +117,7 @@ function ChangeQuestionnaireDialog(props: Props) {
             disabled={isSaving}
             endIcon={isSaving ? <CircularProgress size={20} /> : null}
             onClick={handleSave}>
-            Save and proceed
+            Save as draft and proceed
           </Button>
         ) : null}
       </DialogActions>
@@ -117,4 +125,4 @@ function ChangeQuestionnaireDialog(props: Props) {
   );
 }
 
-export default ChangeQuestionnaireDialog;
+export default BackToHomeDialog;
