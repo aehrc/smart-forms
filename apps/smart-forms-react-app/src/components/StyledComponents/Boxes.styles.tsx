@@ -17,14 +17,6 @@
 
 import { Box, styled } from '@mui/material';
 
-export const MainGridContainerBox = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: 24,
-  height: '100%',
-  gap: 12
-}));
-
 export const QGroupContainerBox = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'cardElevation' && prop !== 'isRepeated'
 })<{ cardElevation: number; isRepeated: boolean }>(({ cardElevation, isRepeated }) => ({
