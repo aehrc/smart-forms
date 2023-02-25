@@ -33,7 +33,10 @@ export const PrimarySelectableList = styled(List)(({ theme }) => ({
   '&& .Mui-selected': {
     color: theme.palette.primary.dark,
     backgroundColor: theme.palette.accent1.main,
-    borderRadius: 30
+    borderRadius: 30,
+    '& .MuiTypography-root': {
+      fontWeight: 'bold'
+    }
   },
   '& .MuiListItemButton-root': {
     color: '#444746',

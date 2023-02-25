@@ -1,7 +1,13 @@
 import React, { memo } from 'react';
-import { Box, ListItemButton, ListItemText, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { TabListItemIcon } from './Tab.styles';
 import Iconify from '../../Iconify';
 
 interface Props {
@@ -20,7 +26,7 @@ function FormBodySingleTab(props: Props) {
       selected={selected}
       sx={{ my: 0.5, py: 0.6 }}
       onClick={() => updateTabIndex(listIndex)}>
-      <TabListItemIcon>
+      <ListItemIcon sx={{ minWidth: 36 }}>
         {markedAsComplete ? (
           <Tooltip title="Completed">
             <CheckCircleIcon fontSize="small" color="secondary" />
@@ -32,7 +38,7 @@ function FormBodySingleTab(props: Props) {
             </Box>
           </Tooltip>
         )}
-      </TabListItemIcon>
+      </ListItemIcon>
       <ListItemText primary={<Typography variant="subtitle2">{tabText}</Typography>} />
     </ListItemButton>
   );
