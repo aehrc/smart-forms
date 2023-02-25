@@ -4,16 +4,16 @@ import { StyledRoot, StyledToolbar } from '../../StyledComponents/Header.styles'
 import React, { useContext } from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import AccountPopover from '../../Account/AccountPopover';
+import AccountPopover from '../../Header/AccountPopover';
 import { useTheme } from '@mui/material/styles';
-import PatientPopoverMenu from '../../Account/PatientPopoverMenu';
-import UserPopoverMenu from '../../Account/UserPopoverMenu';
-import UserHeader from '../../Account/UserHeader';
+import PatientPopoverMenu from '../../Header/PatientPopoverMenu';
+import UserPopoverMenu from '../../Header/UserPopoverMenu';
+import UserHeader from '../../Header/UserHeader';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import { QuestionnaireProviderContext } from '../../../App';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import QuestionnairePopoverMenu from '../../Account/QuestionnairePopoverMenu';
+import QuestionnairePopoverMenu from '../../Header/QuestionnairePopoverMenu';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 
 interface Props {
