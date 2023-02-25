@@ -29,7 +29,7 @@ function RendererHeader(props: Props) {
   const { questionnaire } = useContext(QuestionnaireProviderContext);
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z1 }}>
+    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }}>
       <StyledToolbar>
         <IconButton
           onClick={onOpenNav}

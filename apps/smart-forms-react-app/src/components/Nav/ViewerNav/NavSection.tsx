@@ -1,9 +1,10 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyledNavItemIcon } from '../NavSection.styles';
-import { SourceContext } from '../../../Router';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import SaveIcon from '@mui/icons-material/Save';
+import HomeIcon from '@mui/icons-material/Home';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export interface NavButton {
   title: string;
@@ -12,37 +13,46 @@ export interface NavButton {
   onClick: () => unknown;
 }
 
-function OperationSection() {
-  const { source } = useContext(SourceContext);
+function NavSection() {
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
-        <Typography variant="overline">Operations</Typography>
+        <Typography variant="overline">Pages</Typography>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
-        <OperationItem
-          title={'Save as Draft'}
-          icon={<SaveIcon />}
-          disabled={source === 'local'}
+        <NavItem
+          title={'Back to Home'}
+          icon={<HomeIcon />}
           onClick={() => {
-            console.log('go back');
+            navigate('/');
           }}
         />
-        <OperationItem
-          title={'Save as Final'}
-          icon={<TaskAltIcon />}
-          disabled={source === 'local'}
-          onClick={() => {
-            console.log('go back');
-          }}
-        />
+        {location.pathname === '/renderer/preview' ? (
+          <NavItem
+            title={'Editor'}
+            icon={<EditIcon />}
+            onClick={() => {
+              navigate('/renderer');
+            }}
+          />
+        ) : (
+          <NavItem
+            title={'Preview'}
+            icon={<VisibilityIcon />}
+            onClick={() => {
+              navigate('/renderer/preview');
+            }}
+          />
+        )}
       </List>
     </Box>
   );
 }
 
-function OperationItem(props: NavButton) {
+function NavItem(props: NavButton) {
   const { title, icon, disabled, onClick } = props;
   const theme = useTheme();
 
@@ -65,4 +75,4 @@ function OperationItem(props: NavButton) {
   );
 }
 
-export default OperationSection;
+export default NavSection;

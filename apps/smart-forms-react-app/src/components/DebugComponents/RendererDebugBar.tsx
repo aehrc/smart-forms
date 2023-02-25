@@ -38,13 +38,21 @@ function RendererDebugBar(props: Props) {
             checked={isActivated}
           />
         }
-        label={<Typography variant="overline">EnableWhen on</Typography>}
+        label={
+          <Typography variant="overline">
+            {isActivated ? 'EnableWhen on' : 'EnableWhen off'}
+          </Typography>
+        }
       />
       <FormControlLabel
         control={
           <Switch onChange={(event) => toggleIsHidden(event.target.checked)} checked={isHidden} />
         }
-        label={<Typography variant="overline">Hide debug response</Typography>}
+        label={
+          <Typography variant="overline">
+            {isHidden ? 'Debug response hidden' : 'Debug response shown'}
+          </Typography>
+        }
       />
     </Box>
   );

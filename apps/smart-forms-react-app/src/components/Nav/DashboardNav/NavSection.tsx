@@ -1,4 +1,4 @@
-import { List, ListItemButton, ListItemText, useTheme } from '@mui/material';
+import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
 import React, { memo, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from '../NavSection.styles';
@@ -17,15 +17,20 @@ function NavSection() {
   const { source } = useContext(SourceContext);
 
   return (
-    <List disablePadding sx={{ px: 1 }}>
-      <NavItem title={'Questionnaires'} path={'/questionnaires'} icon={<AssignmentIcon />} />
-      <NavItem
-        title={'Responses'}
-        path={'/responses'}
-        icon={<AssignmentTurnedInIcon />}
-        disabled={source === 'local'}
-      />
-    </List>
+    <Box sx={{ pb: 4 }}>
+      <Box sx={{ px: 2.5, pb: 0.75 }}>
+        <Typography variant="overline">Pages</Typography>
+      </Box>
+      <List disablePadding sx={{ px: 1 }}>
+        <NavItem title={'Questionnaires'} path={'/questionnaires'} icon={<AssignmentIcon />} />
+        <NavItem
+          title={'Responses'}
+          path={'/responses'}
+          icon={<AssignmentTurnedInIcon />}
+          disabled={source === 'local'}
+        />
+      </List>
+    </Box>
   );
 }
 
