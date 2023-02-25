@@ -1,6 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Theme } from '@mui/material';
-import { QuestionnaireListItem } from '../../interfaces/Interfaces';
+import { QuestionnaireListItem } from '../../../interfaces/Interfaces';
 
 const handleColorType = (color: QuestionnaireListItem['status'], theme: Theme) => {
   switch (color) {

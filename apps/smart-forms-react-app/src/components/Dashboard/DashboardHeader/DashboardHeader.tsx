@@ -10,7 +10,7 @@ import PatientPopoverMenu from '../../Account/PatientPopoverMenu';
 import UserPopoverMenu from '../../Account/UserPopoverMenu';
 import UserHeader from '../../Account/UserHeader';
 import useResponsive from '../../../custom-hooks/useResponsive';
-import Logo from '../../Logo/Logo';
+import Logo from '../../Misc/Logo';
 
 interface Props {
   onOpenNav: () => void;

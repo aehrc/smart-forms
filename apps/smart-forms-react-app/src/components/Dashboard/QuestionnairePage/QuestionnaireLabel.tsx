@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, SxProps, Theme } from '@mui/material';
 import { QuestionnaireStyledLabel } from './QuestionnaireLabel.styles';
-import { QuestionnaireListItem } from '../../interfaces/Interfaces';
+import { QuestionnaireListItem } from '../../../interfaces/Interfaces';
 
 interface Props {
   color: QuestionnaireListItem['status'];

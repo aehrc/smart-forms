@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Box, Drawer, Typography } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
-import Logo from '../../Logo/Logo';
+import Logo from '../../Misc/Logo';
 import csiroLogo from '../../../data/images/csiro-logo.png';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';

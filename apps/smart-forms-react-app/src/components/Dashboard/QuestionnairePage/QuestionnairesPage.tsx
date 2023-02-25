@@ -24,7 +24,7 @@ import {
   getFormsServerBundlePromise,
   getQuestionnaireListItems
 } from '../../../functions/DashboardFunctions';
-import QuestionnaireLabel from '../../Label/QuestionnaireLabel';
+import QuestionnaireLabel from './QuestionnaireLabel';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, Questionnaire } from 'fhir/r5';
@@ -48,7 +48,7 @@ const tableHeaders: TableAttributes[] = [
   { id: 'status', label: 'Status', alignRight: false }
 ];
 
-function QuestionnairePage() {
+function QuestionnairesPage() {
   const { source } = useContext(SourceContext);
   const { fhirClient } = useContext(LaunchContext);
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
@@ -259,4 +259,4 @@ function QuestionnairePage() {
   );
 }
 
-export default QuestionnairePage;
+export default QuestionnairesPage;

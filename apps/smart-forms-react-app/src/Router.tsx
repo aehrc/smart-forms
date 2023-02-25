@@ -1,7 +1,7 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './components/Dashboard/DashboardLayout';
-import Launch from './components/LaunchPage/Launch';
+import Launch from './components/Launch/Launch';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { LaunchContext } from './custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext } from './App';
@@ -16,8 +16,8 @@ import { isStillAuthenticating } from './functions/LaunchContextFunctions';
 import NoQuestionnaireDialog from './components/Dialogs/AuthorisationFailedDialog';
 import ProgressSpinner from './components/Misc/ProgressSpinner';
 import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
-import QuestionnairePage from './components/Dashboard/DashboardPages/QuestionnairePage';
-import ResponsePage from './components/Dashboard/DashboardPages/ResponsePage';
+import QuestionnairesPage from './components/Dashboard/QuestionnairePage/QuestionnairesPage';
+import ResponsesPage from './components/Dashboard/ResponsesPage/ResponsesPage';
 import { SourceContextType } from './interfaces/ContextTypes';
 import RendererLayout from './components/Renderer/RendererLayout';
 import Form from './components/QRenderer/Form';
@@ -95,8 +95,8 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/questionnaires" />, index: true },
-        { path: 'questionnaires', element: <QuestionnairePage /> },
-        { path: 'responses', element: <ResponsePage /> }
+        { path: 'questionnaires', element: <QuestionnairesPage /> },
+        { path: 'responses', element: <ResponsesPage /> }
       ]
     },
     {

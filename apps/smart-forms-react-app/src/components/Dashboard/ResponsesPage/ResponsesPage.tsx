@@ -32,7 +32,7 @@ import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQ
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ResponseListToolbar from '../../Responses/ResponseListToolbar';
 import ResponseListHead from '../../Responses/ResponseListHead';
-import ResponseLabel from '../../Label/ResponseLabel';
+import ResponseLabel from './ResponseLabel';
 import ResponseListFeedback from '../../Responses/ResponseListFeedback';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import { constructBundle } from '../../../functions/LoadServerResourceFunctions';
@@ -48,7 +48,7 @@ const tableHeaders: TableAttributes[] = [
   { id: 'status', label: 'Status', alignRight: false }
 ];
 
-function ResponsePage() {
+function ResponsesPage() {
   const { fhirClient } = useContext(LaunchContext);
   const { source } = useContext(SourceContext);
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
@@ -243,4 +243,4 @@ function ResponsePage() {
   );
 }
 
-export default ResponsePage;
+export default ResponsesPage;

@@ -1,6 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Theme } from '@mui/material';
-import { ResponseListItem } from '../../interfaces/Interfaces';
+import { ResponseListItem } from '../../../interfaces/Interfaces';
 
 const handleColorType = (color: ResponseListItem['status'], theme: Theme) => {
   switch (color) {
