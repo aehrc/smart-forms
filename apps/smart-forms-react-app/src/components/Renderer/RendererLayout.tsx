@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import RendererHeader from './RendererHeader';
-import Nav from './nav/Nav';
+import RendererHeader from './RendererHeader/RendererHeader';
+import RendererNav from './RendererNav/RendererNav';
 import { Main, StyledRoot } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
@@ -10,11 +10,11 @@ import { QuestionnaireResponse } from 'fhir/r5';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
 import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
-import ProgressSpinner from '../../components/ProgressSpinner';
+import ProgressSpinner from '../ProgressSpinner';
 import { Outlet } from 'react-router-dom';
 import { CurrentTabIndexContextType, RendererContextType } from '../../interfaces/ContextTypes';
 import { Renderer } from '../../interfaces/Interfaces';
-import BackToTopButton from '../../components/OperationButtons/BackToTopButton';
+import BackToTopButton from '../OperationButtons/BackToTopButton';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
@@ -143,7 +143,7 @@ function RendererLayout() {
     <RendererContext.Provider value={{ renderer, setRenderer }}>
       <StyledRoot>
         <RendererHeader onOpenNav={() => setOpen(true)} />
-        <Nav openNav={open} onCloseNav={() => setOpen(false)} />
+        <RendererNav openNav={open} onCloseNav={() => setOpen(false)} />
 
         <Main>
           <EnableWhenContextProvider>

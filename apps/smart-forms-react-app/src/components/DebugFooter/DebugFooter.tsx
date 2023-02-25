@@ -1,10 +1,10 @@
 import { StyledRoot } from './DebugFooter.styles';
 import React, { useContext, useState } from 'react';
-import DisplayDebugQResponse from '../../components/DebugComponents/DisplayDebugQResponse';
+import DisplayDebugQResponse from '../DebugComponents/DisplayDebugQResponse';
 import { QuestionnaireResponseItem } from 'fhir/r5';
-import RendererDebugBar from '../../components/DebugComponents/RendererDebugBar';
+import RendererDebugBar from '../DebugComponents/RendererDebugBar';
 import { QuestionnaireProviderContext } from '../../App';
-import { RendererContext } from '../renderer/RendererLayout';
+import { RendererContext } from '../Renderer/RendererLayout';
 
 function DebugFooter() {
   const [isHidden, setIsHidden] = useState(true);

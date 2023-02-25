@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { StyledAccount } from '../../layouts/Nav.styles';
+import { StyledAccount } from '../StyledComponents/Nav.styles';
 import FaceIcon from '@mui/icons-material/Face';
 import React, { useContext } from 'react';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';

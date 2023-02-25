@@ -1,6 +1,6 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
-import DashboardLayout from './layouts/dashboard/DashboardLayout';
+import DashboardLayout from './components/Dashboard/DashboardLayout';
 import Launch from './components/LaunchPage/Launch';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { LaunchContext } from './custom-contexts/LaunchContext';
@@ -19,7 +19,7 @@ import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairePage from './pages/QuestionnairePage';
 import ResponsePage from './pages/ResponsePage';
 import { SourceContextType } from './interfaces/ContextTypes';
-import RendererLayout from './layouts/renderer/RendererLayout';
+import RendererLayout from './components/Renderer/RendererLayout';
 import Form from './components/QRenderer/Form';
 import FormPreview from './components/Preview/FormPreview';
 

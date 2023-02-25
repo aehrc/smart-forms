@@ -1,8 +1,8 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { StyledNavItemIcon } from '../NavSection.styles';
-import SaveAsDraftOperation from '../../../Operations/SaveAsDraftOperation';
-import SaveAsFinalOperation from '../../../Operations/SaveAsFinalOperation';
+import SaveAsDraftOperation from '../../Operations/SaveAsDraftOperation';
+import SaveAsFinalOperation from '../../Operations/SaveAsFinalOperation';
 
 export interface NavButton {
   title: string;

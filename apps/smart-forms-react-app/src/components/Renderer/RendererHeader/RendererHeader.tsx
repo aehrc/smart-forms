@@ -1,30 +1,35 @@
-import { Box, IconButton, Stack } from '@mui/material';
-import Iconify from '../../components/Iconify';
-import { StyledRoot, StyledToolbar } from '../Header.styles';
-import React from 'react';
+import Iconify from '../../Iconify';
+
+import { StyledRoot, StyledToolbar } from '../../StyledComponents/Header.styles';
+import React, { useContext } from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import AccountPopover from '../../components/Account/AccountPopover';
+import AccountPopover from '../../Account/AccountPopover';
 import { useTheme } from '@mui/material/styles';
-import PatientPopoverMenu from '../../components/Account/PatientPopoverMenu';
-import UserPopoverMenu from '../../components/Account/UserPopoverMenu';
-import UserHeader from '../../components/Account/UserHeader';
-import useResponsive from '../../custom-hooks/useResponsive';
-import Logo from '../../components/Logo/Logo';
+import PatientPopoverMenu from '../../Account/PatientPopoverMenu';
+import UserPopoverMenu from '../../Account/UserPopoverMenu';
+import UserHeader from '../../Account/UserHeader';
+import useResponsive from '../../../custom-hooks/useResponsive';
+import Logo from '../../Logo/Logo';
+import { QuestionnaireProviderContext } from '../../../App';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import QuestionnairePopoverMenu from '../../Account/QuestionnairePopoverMenu';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
 
 interface Props {
   onOpenNav: () => void;
 }
 
-function DashboardHeader(props: Props) {
+function RendererHeader(props: Props) {
   const { onOpenNav } = props;
 
   const theme = useTheme();
 
   const isDesktop = useResponsive('up', 'lg');
+  const { questionnaire } = useContext(QuestionnaireProviderContext);
 
   return (
-    <StyledRoot>
+    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }}>
       <StyledToolbar>
         <IconButton
           onClick={onOpenNav}
@@ -41,6 +46,14 @@ function DashboardHeader(props: Props) {
             <Logo />
           </Box>
         ) : null}
+
+        {isDesktop ? (
+          <Box sx={{ px: 1 }}>
+            <Typography variant="subtitle1" color="text.primary">
+              {questionnaire.title}
+            </Typography>
+          </Box>
+        ) : null}
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack
@@ -55,6 +68,11 @@ function DashboardHeader(props: Props) {
             <UserHeader />
           ) : (
             <>
+              <AccountPopover
+                bgColor={theme.palette.primary.main}
+                displayIcon={<AssignmentIcon sx={{ color: theme.palette.common.white }} />}
+                menuContent={<QuestionnairePopoverMenu />}
+              />
               <AccountPopover
                 bgColor={theme.palette.secondary.main}
                 displayIcon={<FaceIcon sx={{ color: theme.palette.common.white }} />}
@@ -73,4 +91,4 @@ function DashboardHeader(props: Props) {
   );
 }
 
-export default DashboardHeader;
+export default RendererHeader;

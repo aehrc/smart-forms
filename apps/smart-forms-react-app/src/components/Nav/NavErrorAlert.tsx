@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { StyledAlert } from '../../layouts/Nav.styles';
+import { StyledAlert } from '../StyledComponents/Nav.styles';
 import React from 'react';
 
 interface Props {

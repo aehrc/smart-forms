@@ -1,22 +1,22 @@
 import React, { useContext } from 'react';
 import { Box, Drawer, Typography } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
-import Logo from '../../../components/Logo/Logo';
+import Logo from '../../Logo/Logo';
 import csiroLogo from '../../../data/images/csiro-logo.png';
-import Scrollbar from '../../../components/Scrollbar/Scrollbar';
-import { NAV_WIDTH } from '../../Nav.styles';
-import NavAccounts from '../../../components/Nav/NavAccounts';
-import NavSection from '../../../components/Nav/ViewerNav/NavSection';
-import OperationSection from '../../../components/Nav/ViewerNav/OperationSection';
+import Scrollbar from '../../Scrollbar/Scrollbar';
+import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
+import NavAccounts from '../../Nav/NavAccounts';
+import NavSection from '../../Nav/ViewerNav/NavSection';
+import OperationSection from '../../Nav/ViewerNav/OperationSection';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
-import NavErrorAlert from '../../../components/Nav/NavErrorAlert';
+import NavErrorAlert from '../../Nav/NavErrorAlert';
 
 interface Props {
   openNav: boolean;
   onCloseNav: () => void;
 }
 
-export default function Nav(props: Props) {
+export default function RendererNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
   const { fhirClient } = useContext(LaunchContext);

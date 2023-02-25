@@ -1,11 +1,11 @@
 import SaveIcon from '@mui/icons-material/Save';
 import React, { useContext } from 'react';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../functions/SaveQrFunctions';
-import { LaunchContext } from '../custom-contexts/LaunchContext';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../App';
-import { RendererContext } from '../layouts/renderer/RendererLayout';
-import { EnableWhenContext } from '../custom-contexts/EnableWhenContext';
-import { OperationItem } from '../components/Nav/ViewerNav/OperationSection';
+import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
+import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
+import { RendererContext } from '../Renderer/RendererLayout';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import { OperationItem } from '../Nav/ViewerNav/OperationSection';
 
 function SaveAsDraftOperation() {
   const { fhirClient, patient, user } = useContext(LaunchContext);

@@ -1,21 +1,21 @@
 import React, { useContext } from 'react';
 import { Box, Drawer, Typography } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
-import Logo from '../../../components/Logo/Logo';
+import Logo from '../../Logo/Logo';
 import csiroLogo from '../../../data/images/csiro-logo.png';
-import Scrollbar from '../../../components/Scrollbar/Scrollbar';
-import NavSection from '../../../components/Nav/DashboardNav/NavSection';
-import { NAV_WIDTH } from '../../Nav.styles';
-import NavAccounts from '../../../components/Nav/NavAccounts';
+import Scrollbar from '../../Scrollbar/Scrollbar';
+import NavSection from '../../Nav/DashboardNav/NavSection';
+import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
+import NavAccounts from '../../Nav/NavAccounts';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
-import NavErrorAlert from '../../../components/Nav/NavErrorAlert';
+import NavErrorAlert from '../../Nav/NavErrorAlert';
 
 interface Props {
   openNav: boolean;
   onCloseNav: () => void;
 }
 
-export default function Nav(props: Props) {
+export default function DashboardNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
   const { fhirClient } = useContext(LaunchContext);

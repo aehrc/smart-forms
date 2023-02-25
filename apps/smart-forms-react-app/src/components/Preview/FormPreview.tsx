@@ -19,7 +19,7 @@ import React, { useContext } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
 import Preview from './Preview';
 import { QuestionnaireProviderContext } from '../../App';
-import { RendererContext } from '../../layouts/renderer/RendererLayout';
+import { RendererContext } from '../Renderer/RendererLayout';
 import FormInvalid from '../QRenderer/FormInvalid';
 
 function FormPreview() {

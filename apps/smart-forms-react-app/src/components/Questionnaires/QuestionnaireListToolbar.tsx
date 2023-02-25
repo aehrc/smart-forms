@@ -3,7 +3,7 @@ import React, { ChangeEvent, useState } from 'react';
 import Iconify from '../Iconify';
 import { StyledRoot, StyledSearch } from './QuestionnaireListToolbar.styles';
 import { QuestionnaireListItem } from '../../interfaces/Interfaces';
-import { StyledAlert } from '../../layouts/Nav.styles';
+import { StyledAlert } from '../StyledComponents/Nav.styles';
 
 interface Props {
   selected: QuestionnaireListItem | undefined;

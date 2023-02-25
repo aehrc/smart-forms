@@ -26,8 +26,8 @@ import FormInvalid from './FormInvalid';
 import QTitle from './QFormComponents/QItemParts/QTitle';
 import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../custom-contexts/CalculatedExpressionContext';
-import { CurrentTabIndexContext, RendererContext } from '../../layouts/renderer/RendererLayout';
-import DebugFooter from '../../layouts/debug-footer/DebugFooter';
+import { CurrentTabIndexContext, RendererContext } from '../Renderer/RendererLayout';
+import DebugFooter from '../DebugFooter/DebugFooter';
 
 export const PreprocessedValueSetContext = React.createContext<Record<string, Coding[]>>({});
 
