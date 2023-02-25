@@ -11,3 +11,11 @@ export const StyledAccount = styled(Box)(({ theme }) => ({
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
   backgroundColor: alpha(theme.palette.primary.light, 0.12)
 }));
+
+export const StyledErrorAlert = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(2.5),
+  borderRadius: Number(theme.shape.borderRadius) * 1.5,
+  backgroundColor: alpha(theme.palette.error.light, 0.12)
+}));

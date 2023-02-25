@@ -1,9 +1,10 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import { StyledNavItemIcon } from '../NavSection.styles';
-import { SourceContext } from '../../../Router';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import SaveIcon from '@mui/icons-material/Save';
+import SaveAsDraftOperation from '../../../Operations/SaveAsDraftOperation';
+import SaveAsFinalOperation from '../../../Operations/SaveAsFinalOperation';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { StyledErrorAlert } from '../../../layouts/Nav.styles';
 
 export interface NavButton {
   title: string;
@@ -13,36 +14,32 @@ export interface NavButton {
 }
 
 function OperationSection() {
-  const { source } = useContext(SourceContext);
+  const { fhirClient } = useContext(LaunchContext);
 
-  return (
+  return fhirClient ? (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
         <Typography variant="overline">Operations</Typography>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
-        <OperationItem
-          title={'Save as Draft'}
-          icon={<SaveIcon />}
-          disabled={source === 'local'}
-          onClick={() => {
-            console.log('go back');
-          }}
-        />
-        <OperationItem
-          title={'Save as Final'}
-          icon={<TaskAltIcon />}
-          disabled={source === 'local'}
-          onClick={() => {
-            console.log('go back');
-          }}
-        />
+        <SaveAsDraftOperation />
+        <SaveAsFinalOperation />
       </List>
+    </Box>
+  ) : (
+    <Box sx={{ px: 2.5 }}>
+      <StyledErrorAlert>
+        <Box>
+          <Typography variant="subtitle2">
+            Save operations are disabled when app is not connected to a FHIR server
+          </Typography>
+        </Box>
+      </StyledErrorAlert>
     </Box>
   );
 }
 
-function OperationItem(props: NavButton) {
+export function OperationItem(props: NavButton) {
   const { title, icon, disabled, onClick } = props;
   const theme = useTheme();
 
