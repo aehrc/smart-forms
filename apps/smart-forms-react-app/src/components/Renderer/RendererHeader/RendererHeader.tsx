@@ -17,11 +17,12 @@ import QuestionnairePopoverMenu from '../../Header/QuestionnairePopoverMenu';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 
 interface Props {
+  navCollapsed: boolean;
   onOpenNav: () => void;
 }
 
 function RendererHeader(props: Props) {
-  const { onOpenNav } = props;
+  const { navCollapsed, onOpenNav } = props;
 
   const theme = useTheme();
 
@@ -29,25 +30,25 @@ function RendererHeader(props: Props) {
   const { questionnaire } = useContext(QuestionnaireProviderContext);
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }}>
+    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={navCollapsed}>
       <StyledToolbar>
         <IconButton
           onClick={onOpenNav}
           sx={{
             mr: 1,
             color: 'text.primary',
-            display: { lg: 'none' }
+            ...(!navCollapsed && { display: { lg: 'none' } })
           }}>
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        {!isDesktop ? (
+        {isDesktop && !navCollapsed ? null : (
           <Box sx={{ p: 1, display: 'inline-flex' }}>
             <Logo />
           </Box>
-        ) : null}
+        )}
 
-        {isDesktop ? (
+        {isDesktop && !navCollapsed ? (
           <Box sx={{ px: 1 }}>
             <Typography variant="subtitle1" color="text.primary">
               {questionnaire.title}
@@ -64,7 +65,7 @@ function RendererHeader(props: Props) {
             sm: 1
           }}
           sx={{ color: theme.palette.grey['700'] }}>
-          {isDesktop ? (
+          {isDesktop && !navCollapsed ? (
             <UserHeader />
           ) : (
             <>

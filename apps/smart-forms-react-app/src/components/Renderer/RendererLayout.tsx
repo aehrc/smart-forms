@@ -16,8 +16,9 @@ import { Outlet } from 'react-router-dom';
 import { CurrentTabIndexContextType, RendererContextType } from '../../interfaces/ContextTypes';
 import { Renderer } from '../../interfaces/Interfaces';
 import BackToTopButton from '../Misc/BackToTopButton';
-import { Fab } from '@mui/material';
+import { Fab, IconButton } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -39,6 +40,8 @@ export const CurrentTabIndexContext = createContext<CurrentTabIndexContextType>(
 
 function RendererLayout() {
   const [open, setOpen] = useState(false);
+  const [navCollapsed, setNavCollapsed] = useState(false);
+
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
   const { fhirClient, patient, user } = useContext(LaunchContext);
@@ -143,8 +146,13 @@ function RendererLayout() {
   return (
     <RendererContext.Provider value={{ renderer, setRenderer }}>
       <StyledRoot>
-        <RendererHeader onOpenNav={() => setOpen(true)} />
-        <RendererNav openNav={open} onCloseNav={() => setOpen(false)} />
+        <RendererHeader onOpenNav={() => setOpen(true)} navCollapsed={navCollapsed} />
+        <RendererNav
+          openNav={open}
+          onCloseNav={() => setOpen(false)}
+          navCollapsed={navCollapsed}
+          setNavCollapsed={() => setNavCollapsed(true)}
+        />
 
         <Main>
           <EnableWhenContextProvider>
@@ -157,11 +165,20 @@ function RendererLayout() {
             </CalculatedExpressionContextProvider>
           </EnableWhenContextProvider>
         </Main>
+
         <BackToTopButton>
           <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
             <KeyboardArrowUpIcon />
           </Fab>
         </BackToTopButton>
+
+        {navCollapsed ? (
+          <IconButton
+            onClick={() => setNavCollapsed(false)}
+            sx={{ position: 'fixed', bottom: 16, left: 16 }}>
+            <KeyboardDoubleArrowRightIcon fontSize="small" />
+          </IconButton>
+        ) : null}
       </StyledRoot>
     </RendererContext.Provider>
   );
