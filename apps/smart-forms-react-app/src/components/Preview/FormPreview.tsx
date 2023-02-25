@@ -40,11 +40,9 @@ function FormPreview() {
           <Box mb={3}>
             <Typography variant="h2">Preview</Typography>
           </Box>
-          <Box>
-            <Card sx={{ p: 4, mb: 2 }}>
-              <Preview />
-            </Card>
-          </Box>
+          <Card sx={{ p: 4, mb: 2 }}>
+            <Preview />
+          </Card>
         </Container>
       </Fade>
     );

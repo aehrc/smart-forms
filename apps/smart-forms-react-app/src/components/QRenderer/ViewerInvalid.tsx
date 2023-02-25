@@ -20,7 +20,7 @@ import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Iconify from '../Iconify';
 
-function FormInvalid() {
+function ViewerInvalid() {
   const navigate = useNavigate();
 
   function handleClick() {
@@ -32,11 +32,11 @@ function FormInvalid() {
       <Container sx={{ mt: 3 }}>
         <Stack gap={1}>
           <Typography variant="h2">
-            Oops, the form renderer is unable to render this questionnaire.
+            Oops, the selected response doesn't seem to be valid.
           </Typography>
           <Typography>
             {
-              "This questionnaire either lacks a top-level group item, or the group item doesn't have any items."
+              "It's most likely due to the selected response or its referenced questionnaire not having a top-level group item."
             }
           </Typography>
         </Stack>
@@ -53,4 +53,4 @@ function FormInvalid() {
   );
 }
 
-export default FormInvalid;
+export default ViewerInvalid;
