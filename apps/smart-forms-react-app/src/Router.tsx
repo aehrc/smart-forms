@@ -21,6 +21,7 @@ import ResponsePage from './pages/ResponsePage';
 import { SourceContextType } from './interfaces/ContextTypes';
 import RendererLayout from './layouts/renderer/RendererLayout';
 import Form from './components/QRenderer/Form';
+import FormPreview from './components/Preview/FormPreview';
 
 export const SourceContext = createContext<SourceContextType>({
   source: 'local',
@@ -99,9 +100,12 @@ export default function Router() {
       ]
     },
     {
-      path: '/renderer',
+      path: '/renderer/',
       element: <RendererLayout />,
-      children: [{ path: '', element: <Form /> }]
+      children: [
+        { path: '', element: <Form /> },
+        { path: 'preview', element: <FormPreview /> }
+      ]
     },
     {
       path: '/launch',
