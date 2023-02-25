@@ -1,8 +1,9 @@
-import { IconButton, InputAdornment, Tooltip, Typography } from '@mui/material';
-import { ChangeEvent } from 'react';
+import { Box, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material';
+import React, { ChangeEvent, useState } from 'react';
 import Iconify from '../Iconify';
 import { StyledRoot, StyledSearch } from './QuestionnaireListToolbar.styles';
 import { QuestionnaireListItem } from '../../interfaces/Interfaces';
+import { StyledAlert } from '../../layouts/Nav.styles';
 
 interface Props {
   selected: QuestionnaireListItem | undefined;
@@ -13,6 +14,9 @@ interface Props {
 
 function QuestionnaireListToolbar(props: Props) {
   const { selected, searchInput, clearSelection, onSearch } = props;
+
+  const [alertVisible, setAlertVisible] = useState(true);
+
   return (
     <StyledRoot
       sx={{
@@ -28,6 +32,7 @@ function QuestionnaireListToolbar(props: Props) {
       ) : (
         <StyledSearch
           value={searchInput}
+          onFocus={() => setAlertVisible(false)}
           onChange={(event: ChangeEvent<HTMLInputElement>) => onSearch(event.target.value)}
           placeholder="Search questionnaires..."
           startAdornment={
@@ -40,6 +45,15 @@ function QuestionnaireListToolbar(props: Props) {
           }
         />
       )}
+      {alertVisible && !selected ? (
+        <StyledAlert color="info">
+          <Box>
+            <Typography variant="subtitle2">
+              {'Looking for something else? Refine your search in the search bar.'}
+            </Typography>
+          </Box>
+        </StyledAlert>
+      ) : null}
 
       {selected ? (
         <Tooltip title="Clear">

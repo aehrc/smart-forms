@@ -225,15 +225,14 @@ function QItemGroup(props: Props) {
                 );
               } else {
                 return (
-                  <>
-                    <QItemSwitcher
-                      key={qItem.linkId}
-                      qItem={qItem}
-                      qrItem={qrItem}
-                      isRepeated={false}
-                      isTabled={false}
-                      onQrItemChange={handleQrItemChange}></QItemSwitcher>
-                  </>
+                  <QItemSwitcher
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    isRepeated={false}
+                    isTabled={false}
+                    onQrItemChange={handleQrItemChange}
+                  />
                 );
               }
             }

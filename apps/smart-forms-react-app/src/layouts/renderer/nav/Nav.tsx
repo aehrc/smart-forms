@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Drawer, Typography } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../../components/Logo/Logo';
@@ -8,6 +8,8 @@ import { NAV_WIDTH } from '../../Nav.styles';
 import NavAccounts from '../../../components/Nav/NavAccounts';
 import NavSection from '../../../components/Nav/ViewerNav/NavSection';
 import OperationSection from '../../../components/Nav/ViewerNav/OperationSection';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import NavErrorAlert from '../../../components/Nav/NavErrorAlert';
 
 interface Props {
   openNav: boolean;
@@ -16,6 +18,8 @@ interface Props {
 
 export default function Nav(props: Props) {
   const { openNav, onCloseNav } = props;
+
+  const { fhirClient } = useContext(LaunchContext);
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -32,9 +36,16 @@ export default function Nav(props: Props) {
       <NavAccounts />
 
       <NavSection />
-      <OperationSection />
+
+      {fhirClient ? <OperationSection /> : null}
 
       <Box sx={{ flexGrow: 1 }} />
+
+      {!fhirClient ? (
+        <NavErrorAlert
+          message={'Save operations are disabled when app is not connected to a FHIR server'}
+        />
+      ) : null}
 
       <Box sx={{ px: 2.5, pb: 2 }}>
         <Box display="flex" justifyContent="center" alignItems="center" gap={2}>

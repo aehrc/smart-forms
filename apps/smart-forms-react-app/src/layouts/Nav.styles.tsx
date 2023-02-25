@@ -12,10 +12,15 @@ export const StyledAccount = styled(Box)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.primary.light, 0.12)
 }));
 
-export const StyledErrorAlert = styled(Box)(({ theme }) => ({
+export const StyledAlert = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'color'
+})<{ color: 'info' | 'error' }>(({ theme, color }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
-  backgroundColor: alpha(theme.palette.error.light, 0.12)
+  backgroundColor: alpha(
+    color === 'error' ? theme.palette.error.light : theme.palette.info.light,
+    0.12
+  )
 }));

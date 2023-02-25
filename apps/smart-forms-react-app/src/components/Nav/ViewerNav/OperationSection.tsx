@@ -1,10 +1,8 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyledNavItemIcon } from '../NavSection.styles';
 import SaveAsDraftOperation from '../../../Operations/SaveAsDraftOperation';
 import SaveAsFinalOperation from '../../../Operations/SaveAsFinalOperation';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
-import { StyledErrorAlert } from '../../../layouts/Nav.styles';
 
 export interface NavButton {
   title: string;
@@ -14,9 +12,7 @@ export interface NavButton {
 }
 
 function OperationSection() {
-  const { fhirClient } = useContext(LaunchContext);
-
-  return fhirClient ? (
+  return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
         <Typography variant="overline">Operations</Typography>
@@ -25,16 +21,6 @@ function OperationSection() {
         <SaveAsDraftOperation />
         <SaveAsFinalOperation />
       </List>
-    </Box>
-  ) : (
-    <Box sx={{ px: 2.5 }}>
-      <StyledErrorAlert>
-        <Box>
-          <Typography variant="subtitle2">
-            Save operations are disabled when app is not connected to a FHIR server
-          </Typography>
-        </Box>
-      </StyledErrorAlert>
     </Box>
   );
 }
