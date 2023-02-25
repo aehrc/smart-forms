@@ -1,9 +1,9 @@
 import { Box, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material';
 import React, { ChangeEvent, useState } from 'react';
-import Iconify from '../Misc/Iconify';
+import Iconify from '../../../Misc/Iconify';
 import { StyledRoot, StyledSearch } from './QuestionnaireListToolbar.styles';
-import { QuestionnaireListItem } from '../../interfaces/Interfaces';
-import { StyledAlert } from '../StyledComponents/Nav.styles';
+import { QuestionnaireListItem } from '../../../../interfaces/Interfaces';
+import { StyledAlert } from '../../../StyledComponents/Nav.styles';
 
 interface Props {
   selected: QuestionnaireListItem | undefined;

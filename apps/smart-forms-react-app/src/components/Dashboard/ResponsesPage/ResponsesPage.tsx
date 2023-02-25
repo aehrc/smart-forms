@@ -30,15 +30,15 @@ import { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SourceContext } from '../../../Router';
 import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import ResponseListToolbar from '../../Responses/ResponseListToolbar';
-import ResponseListHead from '../../Responses/ResponseListHead';
+import ResponseListToolbar from './ResponsesPageComponents/ResponseListToolbar';
+import ResponseListHead from './ResponsesPageComponents/ResponseListHead';
 import ResponseLabel from './ResponseLabel';
-import ResponseListFeedback from '../../Responses/ResponseListFeedback';
+import ResponseListFeedback from './ResponsesPageComponents/ResponseListFeedback';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import { constructBundle } from '../../../functions/LoadServerResourceFunctions';
 import dayjs from 'dayjs';
-import BackToQuestionnairesButton from '../../Responses/BackToQuestionnairesButton';
-import OpenResponseButton from '../../Responses/OpenResponseButton';
+import BackToQuestionnairesButton from './ResponsesPageComponents/BackToQuestionnairesButton';
+import OpenResponseButton from './ResponsesPageComponents/OpenResponseButton';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 
 const tableHeaders: TableAttributes[] = [

@@ -15,8 +15,8 @@ import {
   Typography
 } from '@mui/material';
 import Scrollbar from '../../Scrollbar/Scrollbar';
-import QuestionnaireListHead from '../../Questionnaires/QuestionnaireListHead';
-import QuestionnaireListToolbar from '../../Questionnaires/QuestionnaireListToolbar';
+import QuestionnaireListHead from './QuestionnairePageComponents/QuestionnaireListHead';
+import QuestionnaireListToolbar from './QuestionnairePageComponents/QuestionnaireListToolbar';
 import { QuestionnaireListItem, TableAttributes } from '../../../interfaces/Interfaces';
 import {
   applySortFilter,
@@ -29,14 +29,14 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, Questionnaire } from 'fhir/r5';
 import useDebounce from '../../../custom-hooks/useDebounce';
-import QuestionnaireListFeedback from '../../Questionnaires/QuestionnaireListFeedback';
-import CreateNewResponseButton from '../../Questionnaires/CreateNewResponseButton';
+import QuestionnaireListFeedback from './QuestionnairePageComponents/QuestionnaireListFeedback';
+import CreateNewResponseButton from './QuestionnairePageComponents/CreateNewResponseButton';
 import { SourceContext } from '../../../Router';
 import {
   constructBundle,
   loadQuestionnairesFromLocal
 } from '../../../functions/LoadServerResourceFunctions';
-import ViewExistingResponsesButton from '../../Questionnaires/ViewExistingResponsesButton';
+import ViewExistingResponsesButton from './QuestionnairePageComponents/ViewExistingResponsesButton';
 import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import SourceToggle from '../../Misc/SourceToggle';

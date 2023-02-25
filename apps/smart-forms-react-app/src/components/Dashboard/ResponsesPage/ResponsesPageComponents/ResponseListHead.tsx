@@ -1,7 +1,7 @@
 // @mui
 import { Box, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import React from 'react';
-import { QuestionnaireListItem, TableAttributes } from '../../interfaces/Interfaces';
+import { ResponseListItem, TableAttributes } from '../../../../interfaces/Interfaces';
 
 // ----------------------------------------------------------------------
 
@@ -21,14 +21,14 @@ interface Props {
   order: 'asc' | 'desc';
   orderBy: string;
   headLabel: TableAttributes[];
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof QuestionnaireListItem) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof ResponseListItem) => void;
 }
 
-function QuestionnaireListHead(props: Props) {
+function ResponseListHead(props: Props) {
   const { order, orderBy, headLabel, onRequestSort } = props;
   const createSortHandler =
     (property: TableAttributes['id']) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property as keyof QuestionnaireListItem);
+      onRequestSort(event, property as keyof ResponseListItem);
     };
 
   return (
@@ -59,4 +59,4 @@ function QuestionnaireListHead(props: Props) {
   );
 }
 
-export default QuestionnaireListHead;
+export default ResponseListHead;
