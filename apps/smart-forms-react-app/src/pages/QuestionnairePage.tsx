@@ -94,7 +94,7 @@ function QuestionnairePage() {
   );
 
   // sort or perform client-side filtering or items
-  const sortedListItems: QuestionnaireListItem[] = useMemo(
+  const filteredListItems: QuestionnaireListItem[] = useMemo(
     () =>
       applySortFilter(
         questionnaireListItems,
@@ -105,7 +105,7 @@ function QuestionnairePage() {
     [debouncedInput, order, orderBy, questionnaireListItems, source]
   );
 
-  const isEmpty = sortedListItems.length === 0 && !!debouncedInput && status !== 'loading';
+  const isEmpty = filteredListItems.length === 0 && !!debouncedInput && status !== 'loading';
 
   // Event handlers
   const handleRequestSort = (
@@ -118,7 +118,7 @@ function QuestionnairePage() {
   };
 
   const handleRowClick = (id: string) => {
-    const selectedItem = sortedListItems.find((item) => item.id === id);
+    const selectedItem = filteredListItems.find((item) => item.id === id);
 
     if (selectedItem) {
       if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
@@ -171,7 +171,7 @@ function QuestionnairePage() {
                   onRequestSort={handleRequestSort}
                 />
                 <TableBody>
-                  {sortedListItems
+                  {filteredListItems
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       const { id, title, avatarColor, publisher, date, status } = row;
@@ -239,7 +239,7 @@ function QuestionnairePage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={sortedListItems.length}
+            count={filteredListItems.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={(_, newPage) => setPage(newPage)}

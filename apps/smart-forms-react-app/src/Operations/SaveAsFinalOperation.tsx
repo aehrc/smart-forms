@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function SaveAsFinalOperation() {
   const { fhirClient } = useContext(LaunchContext);
@@ -22,7 +23,7 @@ function SaveAsFinalOperation() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { response } = renderer;
+  const { response, hasChanges } = renderer;
 
   const responseWasSaved: boolean = !!response.authored && !!response.author;
 
@@ -31,7 +32,7 @@ function SaveAsFinalOperation() {
       <OperationItem
         title="Save as Final"
         icon={<TaskAltIcon />}
-        disabled={!responseWasSaved}
+        disabled={!hasChanges && !responseWasSaved}
         onClick={() => {
           if (!fhirClient) return;
           setDialogOpen(true);
@@ -59,6 +60,9 @@ function ConfirmSaveAsFinalDialog(props: Props) {
 
   const { response } = renderer;
 
+  const navigate = useNavigate();
+
+  // Event Handlers
   function handleClose() {
     closeDialog();
   }
@@ -87,6 +91,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
         setRenderer({ response: savedResponse, hasChanges: false });
         setIsSaving(false);
         handleClose();
+        navigate('/responses');
       })
       .catch((error) => {
         console.error(error);
@@ -96,9 +101,9 @@ function ConfirmSaveAsFinalDialog(props: Props) {
 
   return (
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
-      <DialogTitle>Confirm save</DialogTitle>
+      <DialogTitle variant="h5">Confirm save</DialogTitle>
       <DialogContent>
-        <DialogContentText>
+        <DialogContentText variant="subtitle1">
           {"Are you sure you want to save this form as final? You won't be able to edit it after."}
         </DialogContentText>
       </DialogContent>

@@ -84,6 +84,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         getOptionLabel={(option) => `${option.display}`}
         value={valueCoding ?? null}
         onChange={handleChange}
+        openOnFocus
         autoHighlight
         fullWidth
         renderInput={(params) => (

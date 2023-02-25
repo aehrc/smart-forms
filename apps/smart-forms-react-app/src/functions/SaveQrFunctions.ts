@@ -36,7 +36,7 @@ import { removeNoAnswerQrItem } from './QrItemFunctions';
  *
  * @author Sean Fong
  */
-export function saveQuestionnaireResponse(
+export async function saveQuestionnaireResponse(
   client: Client,
   patient: Patient,
   user: Practitioner,
@@ -91,6 +91,16 @@ export function saveQuestionnaireResponse(
       questionnaireResponseToSave,
       client.state.serverUrl
     );
+  }
+
+  // If client is SMART Health IT, POST questionnaire to SMART Health IT before POSTing questionnaireResponse
+  if (client.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
+    await client.request({
+      url: questionnaireResponseToSave.questionnaire ?? '',
+      method: 'PUT',
+      body: JSON.stringify(questionnaire),
+      headers: headers
+    });
   }
 
   return client.request({
