@@ -97,7 +97,7 @@ function ResponsePage() {
     [order, orderBy, responseListItems, source]
   );
 
-  const isNotFound = filteredListItems.length === 0 && status !== 'loading';
+  const isEmpty = filteredListItems.length === 0 && status !== 'loading';
 
   // Event handlers
   const handleRequestSort = (
@@ -208,8 +208,8 @@ function ResponsePage() {
                   )}
                 </TableBody>
 
-                {isNotFound || status === 'error' ? (
-                  <ResponseListFeedback status={status} error={error} />
+                {isEmpty || status === 'error' || status === 'loading' ? (
+                  <ResponseListFeedback isEmpty={isEmpty} status={status} error={error} />
                 ) : null}
               </Table>
             </TableContainer>

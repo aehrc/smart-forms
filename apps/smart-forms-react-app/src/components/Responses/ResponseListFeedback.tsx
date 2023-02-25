@@ -1,16 +1,34 @@
-import React from 'react';
-import { Paper, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import React, { useContext } from 'react';
+import {
+  Box,
+  CircularProgress,
+  Paper,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { SourceContext } from '../../Router';
 
 interface Props {
+  isEmpty: boolean;
   status: 'loading' | 'error' | 'success';
   error?: unknown;
 }
 function ResponseListFeedback(props: Props) {
-  const { status, error } = props;
+  const { isEmpty, status, error } = props;
+  const { source } = useContext(SourceContext);
 
-  const feedbackType: FeedbackProps['feedbackType'] = status === 'error' ? 'error' : 'empty';
+  let feedbackType: FeedbackProps['feedbackType'] | null = null;
+  if (status === 'error') {
+    feedbackType = 'error';
+  } else if (status === 'loading' && source === 'remote') {
+    feedbackType = 'loading';
+  } else if (isEmpty) {
+    feedbackType = 'empty';
+  }
 
-  return (
+  return feedbackType ? (
     <TableBody>
       <TableRow>
         <TableCell align="center" colSpan={6} sx={{ py: 5 }}>
@@ -23,11 +41,11 @@ function ResponseListFeedback(props: Props) {
         </TableCell>
       </TableRow>
     </TableBody>
-  );
+  ) : null;
 }
 
 interface FeedbackProps {
-  feedbackType: 'error' | 'empty';
+  feedbackType: 'error' | 'empty' | 'loading';
   error?: unknown;
 }
 
@@ -39,6 +57,18 @@ function RenderFeedback(props: FeedbackProps) {
   }
 
   switch (feedbackType) {
+    case 'loading':
+      return (
+        <>
+          <Typography variant="h6" paragraph>
+            Loading responses
+          </Typography>
+
+          <Box display="flex" flexDirection="row" justifyContent="center" sx={{ m: 5 }}>
+            <CircularProgress size={44} />
+          </Box>
+        </>
+      );
     case 'error':
       return (
         <>
@@ -55,7 +85,7 @@ function RenderFeedback(props: FeedbackProps) {
       return (
         <>
           <Typography variant="h6" paragraph>
-            No questionnaires found
+            No responses found
           </Typography>
 
           <Typography variant="body2">
