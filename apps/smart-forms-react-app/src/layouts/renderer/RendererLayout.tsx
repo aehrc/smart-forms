@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import RendererHeader from './RendererHeader';
-import Nav from '../response-viewer/nav/Nav';
+import Nav from './nav/Nav';
 import { Main, StyledRoot } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
