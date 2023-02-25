@@ -4,7 +4,7 @@ import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Logo/Logo';
 import csiroLogo from '../../../data/images/csiro-logo.png';
 import Scrollbar from '../../Scrollbar/Scrollbar';
-import NavSection from '../../Nav/DashboardNav/NavSection';
+import NavSection from './DashboardNavSection';
 import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
 import NavAccounts from '../../Nav/NavAccounts';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';

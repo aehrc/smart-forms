@@ -6,8 +6,8 @@ import csiroLogo from '../../../data/images/csiro-logo.png';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
 import NavAccounts from '../../Nav/NavAccounts';
-import NavSection from '../../Nav/ViewerNav/NavSection';
-import OperationSection from '../../Nav/ViewerNav/OperationSection';
+import RendererNavSection from './RendererNavSection';
+import RendererOperationSection from './RendererOperationSection';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 
@@ -35,9 +35,9 @@ export default function RendererNav(props: Props) {
 
       <NavAccounts />
 
-      <NavSection />
+      <RendererNavSection />
 
-      {fhirClient ? <OperationSection /> : null}
+      {fhirClient ? <RendererOperationSection /> : null}
 
       <Box sx={{ flexGrow: 1 }} />
 

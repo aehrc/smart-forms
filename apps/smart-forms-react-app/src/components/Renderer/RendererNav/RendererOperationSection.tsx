@@ -1,6 +1,6 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
 import React from 'react';
-import { StyledNavItemIcon } from '../NavSection.styles';
+import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import SaveAsDraftOperation from '../../Operations/SaveAsDraftOperation';
 import SaveAsFinalOperation from '../../Operations/SaveAsFinalOperation';
 
@@ -11,7 +11,7 @@ export interface NavButton {
   onClick: () => unknown;
 }
 
-function OperationSection() {
+function RendererOperationSection() {
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
@@ -48,4 +48,4 @@ export function OperationItem(props: NavButton) {
   );
 }
 
-export default OperationSection;
+export default RendererOperationSection;

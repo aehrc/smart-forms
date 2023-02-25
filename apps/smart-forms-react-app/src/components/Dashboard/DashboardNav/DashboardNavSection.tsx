@@ -1,7 +1,7 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
 import React, { memo, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { StyledNavItemIcon } from '../NavSection.styles';
+import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import { SourceContext } from '../../../Router';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -13,7 +13,7 @@ export interface NavButton {
   disabled?: boolean;
 }
 
-function NavSection() {
+function DashboardNavSection() {
   const { source } = useContext(SourceContext);
 
   return (
@@ -64,4 +64,4 @@ function NavItem(props: NavButton) {
   );
 }
 
-export default memo(NavSection);
+export default memo(DashboardNavSection);

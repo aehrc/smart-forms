@@ -1,6 +1,6 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
 import React from 'react';
-import { StyledNavItemIcon } from '../NavSection.styles';
+import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import HomeIcon from '@mui/icons-material/Home';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,7 +13,7 @@ export interface NavButton {
   onClick: () => unknown;
 }
 
-function NavSection() {
+function RendererNavSection() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -75,4 +75,4 @@ function NavItem(props: NavButton) {
   );
 }
 
-export default NavSection;
+export default RendererNavSection;

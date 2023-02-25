@@ -5,7 +5,7 @@ import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { RendererContext } from '../Renderer/RendererLayout';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { OperationItem } from '../Nav/ViewerNav/OperationSection';
+import { OperationItem } from '../Renderer/RendererNav/RendererOperationSection';
 import {
   Button,
   CircularProgress,
