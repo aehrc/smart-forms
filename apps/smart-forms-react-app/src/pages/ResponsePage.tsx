@@ -139,7 +139,7 @@ function ResponsePage() {
     <Fade in={true}>
       <Container>
         <Stack direction="row" alignItems="center" mb={5}>
-          <Typography variant="h3" gutterBottom>
+          <Typography variant="h2" gutterBottom>
             Responses
           </Typography>
         </Stack>

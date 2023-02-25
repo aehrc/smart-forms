@@ -109,7 +109,9 @@ function QItemGroup(props: Props) {
         cardElevation={groupCardElevation}
         isRepeated={isRepeated}
         data-test="q-item-group-box">
-        <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: isRepeated ? 0 : 3.5 }}>
+        <Card
+          elevation={groupCardElevation}
+          sx={{ p: 3, pt: 2.5, px: groupCardElevation === 1 ? 3.25 : 3, mb: isRepeated ? 0 : 3.5 }}>
           {isRepeated ? null : (
             <>
               <Box display="flex" alignItems="center">
@@ -223,13 +225,15 @@ function QItemGroup(props: Props) {
                 );
               } else {
                 return (
-                  <QItemSwitcher
-                    key={qItem.linkId}
-                    qItem={qItem}
-                    qrItem={qrItem}
-                    isRepeated={false}
-                    isTabled={false}
-                    onQrItemChange={handleQrItemChange}></QItemSwitcher>
+                  <>
+                    <QItemSwitcher
+                      key={qItem.linkId}
+                      qItem={qItem}
+                      qrItem={qrItem}
+                      isRepeated={false}
+                      isTabled={false}
+                      onQrItemChange={handleQrItemChange}></QItemSwitcher>
+                  </>
                 );
               }
             }

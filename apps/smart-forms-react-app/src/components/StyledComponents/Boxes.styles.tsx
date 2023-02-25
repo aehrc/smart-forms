@@ -33,5 +33,5 @@ export const QGroupContainerBox = styled(Box, {
 }));
 
 export const FullWidthFormComponentBox = styled(Box)(() => ({
-  marginBottom: 12
+  marginBottom: 14
 }));

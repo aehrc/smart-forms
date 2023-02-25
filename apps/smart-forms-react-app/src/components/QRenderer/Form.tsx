@@ -22,7 +22,7 @@ import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs } from '../../functions/TabFunctions';
 import { QuestionnaireProviderContext } from '../../App';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import FormBodyInvalid from './FormBodyInvalid';
+import FormInvalid from './FormInvalid';
 import QTitle from './QFormComponents/QItemParts/QTitle';
 import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../custom-contexts/CalculatedExpressionContext';
@@ -55,7 +55,7 @@ function Form() {
   const questionnaire = questionnaireProvider.questionnaire;
   const { response } = renderer;
 
-  if (!questionnaire.item || !response.item) return <FormBodyInvalid />;
+  if (!questionnaire.item || !response.item) return <FormInvalid />;
 
   const qForm = questionnaire.item[0];
   qrForm = response.item[0];
@@ -77,40 +77,38 @@ function Form() {
     return (
       <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
         <Fade in={true} timeout={500}>
-          <Box>
-            <Container maxWidth="xl">
-              <Box>
-                <Typography variant="h3" data-test="renderer-heading">
-                  <QTitle questionnaire={questionnaire} />
-                </Typography>
-              </Box>
-              <Divider light sx={{ my: 1.5 }} />
-              {containsTabs(qForm.item) ? (
-                <FormBodyTabbed
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  currentTabIndex={currentTabIndex}
-                  setCurrentTabIndex={setCurrentTabIndex}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                />
-              ) : (
-                // If form is untabbed, it is rendered as a regular group
-                <QItemGroup
-                  qItem={qForm}
-                  qrItem={qrForm}
-                  groupCardElevation={1}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                  isRepeated={false}
-                />
-              )}
-            </Container>
-          </Box>
+          <Container disableGutters maxWidth="xl" sx={{ px: 2 }}>
+            <Box>
+              <Typography variant="h3" data-test="renderer-heading">
+                <QTitle questionnaire={questionnaire} />
+              </Typography>
+            </Box>
+            <Divider light sx={{ my: 1.5 }} />
+            {containsTabs(qForm.item) ? (
+              <FormBodyTabbed
+                qForm={qForm}
+                qrForm={qrForm}
+                currentTabIndex={currentTabIndex}
+                setCurrentTabIndex={setCurrentTabIndex}
+                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+              />
+            ) : (
+              // If form is untabbed, it is rendered as a regular group
+              <QItemGroup
+                qItem={qForm}
+                qrItem={qrForm}
+                groupCardElevation={1}
+                onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
+                isRepeated={false}
+              />
+            )}
+          </Container>
         </Fade>
         <DebugFooter />
       </PreprocessedValueSetContext.Provider>
     );
   } else {
-    return <FormBodyInvalid />;
+    return <FormInvalid />;
   }
 }
 

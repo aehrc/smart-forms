@@ -20,7 +20,7 @@ import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Iconify from '../Iconify';
 
-function FormBodyInvalid() {
+function FormInvalid() {
   const navigate = useNavigate();
 
   function handleClick() {
@@ -53,4 +53,4 @@ function FormBodyInvalid() {
   );
 }
 
-export default FormBodyInvalid;
+export default FormInvalid;
