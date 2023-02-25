@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import RendererHeader from './RendererHeader';
-import Nav from './nav/Nav';
+import Nav from '../response-viewer/nav/Nav';
 import { Main, StyledRoot } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
@@ -43,7 +43,7 @@ function RendererLayout() {
   const { fhirClient, patient, user } = useContext(LaunchContext);
 
   // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
-  let initialResponse: QuestionnaireResponse = emptyResponse;
+  let initialResponse: QuestionnaireResponse;
   if (questionnaireProvider.questionnaire.item && !questionnaireResponseProvider.response.item) {
     initialResponse = createQuestionnaireResponse(
       questionnaireProvider.questionnaire.id,
@@ -87,13 +87,16 @@ function RendererLayout() {
    *  overwrite prompt - to implement in next phase
    */
   useEffect(() => {
-    if (!initialResponse.item) return;
+    if (!questionnaireResponseProvider.response.item) return;
 
-    const qrFormCleaned = removeNoAnswerQrItem(initialResponse.item[0]);
+    const qrFormCleaned = removeNoAnswerQrItem(questionnaireResponseProvider.response.item[0]);
     if (qrFormCleaned) {
-      setRenderer({ response: { ...initialResponse, item: [qrFormCleaned] }, hasChanges: true });
+      setRenderer({
+        ...renderer,
+        response: { ...questionnaireResponseProvider.response, item: [qrFormCleaned] }
+      });
     }
-  }, [initialResponse]);
+  }, [questionnaireResponseProvider.response]);
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
@@ -137,29 +140,29 @@ function RendererLayout() {
   }
 
   return (
-    <StyledRoot>
-      <RendererHeader onOpenNav={() => setOpen(true)} />
-      <Nav openNav={open} onCloseNav={() => setOpen(false)} />
+    <RendererContext.Provider value={{ renderer, setRenderer }}>
+      <StyledRoot>
+        <RendererHeader onOpenNav={() => setOpen(true)} />
+        <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 
-      <Main>
-        <EnableWhenContextProvider>
-          <CalculatedExpressionContextProvider>
-            <CachedQueriedValueSetContextProvider>
-              <RendererContext.Provider value={{ renderer, setRenderer }}>
+        <Main>
+          <EnableWhenContextProvider>
+            <CalculatedExpressionContextProvider>
+              <CachedQueriedValueSetContextProvider>
                 <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
                   {spinner.isLoading ? <ProgressSpinner message={spinner.message} /> : <Outlet />}
                 </CurrentTabIndexContext.Provider>
-              </RendererContext.Provider>
-            </CachedQueriedValueSetContextProvider>
-          </CalculatedExpressionContextProvider>
-        </EnableWhenContextProvider>
-      </Main>
-      <BackToTopButton>
-        <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
-          <KeyboardArrowUpIcon />
-        </Fab>
-      </BackToTopButton>
-    </StyledRoot>
+              </CachedQueriedValueSetContextProvider>
+            </CalculatedExpressionContextProvider>
+          </EnableWhenContextProvider>
+        </Main>
+        <BackToTopButton>
+          <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
+            <KeyboardArrowUpIcon />
+          </Fab>
+        </BackToTopButton>
+      </StyledRoot>
+    </RendererContext.Provider>
   );
 }
 
