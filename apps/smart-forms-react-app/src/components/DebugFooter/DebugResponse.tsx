@@ -28,7 +28,7 @@ interface Props {
   clearQResponse: () => unknown;
 }
 
-function DisplayDebugQResponse(props: Props) {
+function DebugResponse(props: Props) {
   const { questionnaire, questionnaireResponse, clearQResponse } = props;
 
   const [displayInfo, setDisplayInfo] = useState<{
@@ -91,4 +91,4 @@ function DisplayDebugQResponse(props: Props) {
   );
 }
 
-export default DisplayDebugQResponse;
+export default DebugResponse;

@@ -1,8 +1,8 @@
 import { StyledRoot } from './DebugFooter.styles';
 import React, { useContext, useState } from 'react';
-import DisplayDebugQResponse from '../DebugComponents/DisplayDebugQResponse';
+import DebugResponse from './DebugResponse';
 import { QuestionnaireResponseItem } from 'fhir/r5';
-import RendererDebugBar from '../DebugComponents/RendererDebugBar';
+import RendererDebugBar from './RendererDebugBar';
 import { QuestionnaireProviderContext } from '../../App';
 import { RendererContext } from '../Renderer/RendererLayout';
 
@@ -14,7 +14,7 @@ function DebugFooter() {
   return (
     <>
       {isHidden ? null : (
-        <DisplayDebugQResponse
+        <DebugResponse
           questionnaire={questionnaire}
           questionnaireResponse={renderer.response}
           clearQResponse={() => {

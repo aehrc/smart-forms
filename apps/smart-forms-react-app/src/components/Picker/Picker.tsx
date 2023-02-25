@@ -19,7 +19,6 @@ import React, { useContext } from 'react';
 import { Box, Divider, Grid, Stack } from '@mui/material';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { PickerSearchField } from './Picker.styles';
-import PickerDebugBar from '../DebugComponents/PickerDebugBar';
 import usePicker from '../../custom-hooks/usePicker';
 import PickerQuestionnaireCard from './PickerQuestionnaireCard';
 import PickerQuestionnaireResponseCard from './PickerQuestionnaireResponseCard';
@@ -49,7 +48,6 @@ function Picker() {
     selectQuestionnaireByIndex,
     selectQuestionnaireResponseByIndex,
     sortQuestionnaireResponses,
-    toggleQuestionnaireSource,
     refreshQuestionnaireList
   } = usePicker(launch);
 
@@ -128,12 +126,6 @@ function Picker() {
           </Grid>
 
           <Box sx={{ pb: 2 }}></Box>
-
-          <PickerDebugBar
-            questionnaireIsSearching={questionnaireIsSearching}
-            questionnaireSourceIsLocal={questionnaireSourceIsLocal}
-            toggleQuestionnaireSource={toggleQuestionnaireSource}
-          />
         </MainGridContainerBox>
       </MainGrid>
     </Grid>
