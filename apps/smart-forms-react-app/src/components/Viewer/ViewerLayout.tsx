@@ -1,7 +1,7 @@
 import React, { createContext, MutableRefObject, useState } from 'react';
 import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
 import { Outlet } from 'react-router-dom';
-import BackToTopButton from '../OperationButtons/BackToTopButton';
+import BackToTopButton from '../Misc/BackToTopButton';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ViewerHeader from './ViewerHeader';

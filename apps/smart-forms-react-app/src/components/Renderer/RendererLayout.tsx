@@ -15,7 +15,7 @@ import ProgressSpinner from '../Misc/ProgressSpinner';
 import { Outlet } from 'react-router-dom';
 import { CurrentTabIndexContextType, RendererContextType } from '../../interfaces/ContextTypes';
 import { Renderer } from '../../interfaces/Interfaces';
-import BackToTopButton from '../OperationButtons/BackToTopButton';
+import BackToTopButton from '../Misc/BackToTopButton';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
