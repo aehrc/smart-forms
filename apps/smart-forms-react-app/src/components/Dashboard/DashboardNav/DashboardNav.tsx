@@ -45,7 +45,7 @@ export default function DashboardNav(props: Props) {
       ) : null}
 
       <Box sx={{ px: 2.5, pb: 2 }}>
-        <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
+        <Box display="flex" justifyContent="center" alignItems="center" gap={1.5}>
           <Typography sx={{ color: 'text.secondary' }}>By</Typography>
           <Box
             component="img"

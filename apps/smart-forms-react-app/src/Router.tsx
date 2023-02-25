@@ -5,7 +5,6 @@ import Launch from './components/Launch/Launch';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { LaunchContext } from './custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext } from './App';
-import { AuthFailDialog } from './interfaces/Interfaces';
 import { oauth2 } from 'fhirclient';
 import { getPatient, getUser } from './functions/LaunchFunctions';
 import {
@@ -13,7 +12,6 @@ import {
   getQuestionnaireFromUrl
 } from './functions/LoadServerResourceFunctions';
 import { isStillAuthenticating } from './functions/LaunchContextFunctions';
-import NoQuestionnaireDialog from './components/Dialogs/AuthorisationFailedDialog';
 import ProgressSpinner from './components/Misc/ProgressSpinner';
 import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairesPage from './components/Dashboard/QuestionnairePage/QuestionnairesPage';
@@ -37,10 +35,6 @@ export default function Router() {
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
   const [questionnaireIsLoading, setQuestionnaireIsLoading] = useState<boolean>(true);
-  const [authFailDialog, setAuthFailDialog] = useState<AuthFailDialog>({
-    dialogOpen: null,
-    errorMessage: ''
-  });
 
   const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
 
@@ -76,16 +70,7 @@ export default function Router() {
         }
       })
       .catch((error) => {
-        // Display auth fail dialog only when app is launched but fail to authorise
-        const errorString: string = error.toString();
-        if (!errorString.includes("No 'state' parameter found")) {
-          setAuthFailDialog({
-            dialogOpen: true,
-            errorMessage: error.toString()
-          });
-        }
         console.error(error);
-
         setQuestionnaireIsLoading(false);
         setHasClient(false);
       });
@@ -124,21 +109,8 @@ export default function Router() {
     }
   ]);
 
-  if (
-    isStillAuthenticating(hasClient, patient, user) ||
-    questionnaireIsLoading ||
-    authFailDialog.dialogOpen
-  ) {
-    return (
-      <>
-        <NoQuestionnaireDialog
-          dialogOpen={authFailDialog.dialogOpen}
-          closeDialog={() => setAuthFailDialog({ ...authFailDialog, dialogOpen: false })}
-          errorMessage={authFailDialog.errorMessage}
-        />
-        <ProgressSpinner message="Authorising launch" />
-      </>
-    );
+  if (isStillAuthenticating(hasClient, patient, user) || questionnaireIsLoading) {
+    return <ProgressSpinner message="Authorising launch" />;
   } else {
     return (
       <SourceContext.Provider value={{ source, setSource }}>
