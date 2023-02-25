@@ -1,11 +1,11 @@
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import React, { useContext, useState } from 'react';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import { RendererContext } from '../Renderer/RendererLayout';
-import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { OperationItem } from '../Renderer/RendererNav/RendererOperationSection';
+import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
+import { RendererContext } from '../RendererLayout';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { OperationItem } from './RendererOperationSection';
 import {
   Button,
   CircularProgress,
@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-function SaveAsFinalOperation() {
+function RendererSaveAsFinal() {
   const { fhirClient } = useContext(LaunchContext);
   const { renderer } = useContext(RendererContext);
 
@@ -103,7 +103,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
       <DialogTitle variant="h5">Confirm save</DialogTitle>
       <DialogContent>
-        <DialogContentText variant="subtitle1">
+        <DialogContentText variant="body1">
           {"Are you sure you want to save this form as final? You won't be able to edit it after."}
         </DialogContentText>
       </DialogContent>
@@ -120,4 +120,4 @@ function ConfirmSaveAsFinalDialog(props: Props) {
   );
 }
 
-export default SaveAsFinalOperation;
+export default RendererSaveAsFinal;

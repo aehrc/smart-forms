@@ -10,15 +10,17 @@ import RendererNavSection from './RendererNavSection';
 import RendererOperationSection from './RendererOperationSection';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
+import { QuestionnaireProviderContext } from '../../../App';
 
 interface Props {
   openNav: boolean;
   onCloseNav: () => void;
 }
 
-export default function RendererNav(props: Props) {
+function RendererNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const { fhirClient } = useContext(LaunchContext);
 
   const isDesktop = useResponsive('up', 'lg');
@@ -37,7 +39,7 @@ export default function RendererNav(props: Props) {
 
       <RendererNavSection />
 
-      {fhirClient ? <RendererOperationSection /> : null}
+      {fhirClient && questionnaireProvider.questionnaire.item ? <RendererOperationSection /> : null}
 
       <Box sx={{ flexGrow: 1 }} />
 
@@ -99,3 +101,5 @@ export default function RendererNav(props: Props) {
     </Box>
   );
 }
+
+export default RendererNav;

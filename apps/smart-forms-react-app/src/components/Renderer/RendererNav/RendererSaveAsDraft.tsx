@@ -1,13 +1,13 @@
 import SaveIcon from '@mui/icons-material/Save';
 import React, { useContext } from 'react';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../functions/SaveQrFunctions';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import { RendererContext } from '../Renderer/RendererLayout';
-import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { OperationItem } from '../Renderer/RendererNav/RendererOperationSection';
+import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
+import { RendererContext } from '../RendererLayout';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { OperationItem } from './RendererOperationSection';
 
-function SaveAsDraftOperation() {
+function RendererSaveAsDraft() {
   const { fhirClient, patient, user } = useContext(LaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const responseProvider = useContext(QuestionnaireResponseProviderContext);
@@ -48,4 +48,4 @@ function SaveAsDraftOperation() {
   );
 }
 
-export default SaveAsDraftOperation;
+export default RendererSaveAsDraft;

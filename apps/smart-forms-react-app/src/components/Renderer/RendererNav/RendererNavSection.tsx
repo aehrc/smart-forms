@@ -2,9 +2,7 @@ import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@
 import React from 'react';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import HomeIcon from '@mui/icons-material/Home';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export interface NavButton {
   title: string;
@@ -15,7 +13,6 @@ export interface NavButton {
 
 function RendererNavSection() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   return (
     <Box sx={{ pb: 4 }}>
@@ -30,23 +27,6 @@ function RendererNavSection() {
             navigate('/');
           }}
         />
-        {location.pathname === '/renderer/preview' ? (
-          <NavItem
-            title={'Editor'}
-            icon={<EditIcon />}
-            onClick={() => {
-              navigate('/renderer');
-            }}
-          />
-        ) : (
-          <NavItem
-            title={'Preview'}
-            icon={<VisibilityIcon />}
-            onClick={() => {
-              navigate('/renderer/preview');
-            }}
-          />
-        )}
       </List>
     </Box>
   );

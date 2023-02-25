@@ -1,8 +1,11 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
-import SaveAsDraftOperation from '../../Operations/SaveAsDraftOperation';
-import SaveAsFinalOperation from '../../Operations/SaveAsFinalOperation';
+import RendererSaveAsDraft from './RendererSaveAsDraft';
+import RendererSaveAsFinal from './RendererSaveAsFinal';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export interface NavButton {
   title: string;
@@ -12,14 +15,34 @@ export interface NavButton {
 }
 
 function RendererOperationSection() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
         <Typography variant="overline">Operations</Typography>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
-        <SaveAsDraftOperation />
-        <SaveAsFinalOperation />
+        {location.pathname === '/renderer/preview' ? (
+          <OperationItem
+            title={'Editor'}
+            icon={<EditIcon />}
+            onClick={() => {
+              navigate('/renderer');
+            }}
+          />
+        ) : (
+          <OperationItem
+            title={'Preview'}
+            icon={<VisibilityIcon />}
+            onClick={() => {
+              navigate('/renderer/preview');
+            }}
+          />
+        )}
+        <RendererSaveAsDraft />
+        <RendererSaveAsFinal />
       </List>
     </Box>
   );
