@@ -62,7 +62,7 @@ function ViewExistingResponsesButton() {
           <Iconify icon="material-symbols:arrow-forward" />
         )
       }
-      sx={{ width: 198 }}
+      sx={{ width: 175 }}
       onClick={handleClick}>
       {data && existingResponses.length === 0 ? 'No Responses Found' : 'View Responses'}
     </Button>

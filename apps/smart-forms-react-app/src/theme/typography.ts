@@ -90,7 +90,7 @@ const typography = {
   button: {
     fontWeight: 700,
     lineHeight: 24 / 14,
-    fontSize: pxToRem(11)
+    fontSize: pxToRem(12)
   }
 };
 
