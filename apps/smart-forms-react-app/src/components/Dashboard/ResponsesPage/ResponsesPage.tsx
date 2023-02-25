@@ -212,7 +212,8 @@ function ResponsesPage() {
                   )}
                 </TableBody>
 
-                {isEmpty || status === 'error' || status === 'loading' ? (
+                {(isEmpty || status === 'error' || status === 'loading') &&
+                filteredListItems.length === 0 ? (
                   <ResponseListFeedback isEmpty={isEmpty} status={status} error={error} />
                 ) : null}
               </Table>

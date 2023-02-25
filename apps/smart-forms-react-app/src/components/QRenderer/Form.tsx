@@ -67,9 +67,6 @@ function Form() {
     };
 
     updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables);
-
-    // questionnaireResponseProvider.setQuestionnaireResponse(newQuestionnaireResponse);
-    // TODO only update provider on save
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
 
