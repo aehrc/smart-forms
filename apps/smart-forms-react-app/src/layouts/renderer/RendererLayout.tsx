@@ -14,6 +14,9 @@ import ProgressSpinner from '../../components/ProgressSpinner';
 import { Outlet } from 'react-router-dom';
 import { CurrentTabIndexContextType, RendererContextType } from '../../interfaces/ContextTypes';
 import { Renderer } from '../../interfaces/Interfaces';
+import BackToTopButton from '../../components/OperationButtons/BackToTopButton';
+import { Fab } from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -151,6 +154,11 @@ function RendererLayout() {
           </CalculatedExpressionContextProvider>
         </EnableWhenContextProvider>
       </Main>
+      <BackToTopButton>
+        <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
+          <KeyboardArrowUpIcon />
+        </Fab>
+      </BackToTopButton>
     </StyledRoot>
   );
 }
