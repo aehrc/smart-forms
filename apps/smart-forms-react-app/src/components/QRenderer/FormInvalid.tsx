@@ -29,9 +29,9 @@ function FormInvalid() {
 
   return (
     <Fade in={true} timeout={500}>
-      <Container sx={{ mt: 3 }}>
+      <Container sx={{ mt: 1.25 }}>
         <Stack gap={1}>
-          <Typography variant="h2">
+          <Typography variant="h3">
             Oops, the form renderer is unable to render this questionnaire.
           </Typography>
           <Typography>

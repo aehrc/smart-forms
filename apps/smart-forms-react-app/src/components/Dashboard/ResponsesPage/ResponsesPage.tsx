@@ -137,8 +137,8 @@ function ResponsesPage() {
   return (
     <Fade in={true}>
       <Container>
-        <Stack direction="row" alignItems="center" mb={5}>
-          <Typography variant="h2" gutterBottom>
+        <Stack direction="row" alignItems="center" mb={3}>
+          <Typography variant="h3" gutterBottom>
             Responses
           </Typography>
         </Stack>

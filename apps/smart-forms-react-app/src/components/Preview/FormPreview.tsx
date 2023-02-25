@@ -38,7 +38,7 @@ function FormPreview() {
       <Fade in={true} timeout={500}>
         <Container sx={{ mt: 3 }}>
           <Box mb={3}>
-            <Typography variant="h2">Preview</Typography>
+            <Typography variant="h3">Preview</Typography>
           </Box>
           <Card sx={{ p: 4, mb: 2 }}>
             <Preview />

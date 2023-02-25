@@ -31,7 +31,7 @@ function ViewerInvalid() {
     <Fade in={true} timeout={500}>
       <Container>
         <Stack gap={3}>
-          <Typography variant="h2">
+          <Typography variant="h3">
             Oops, the selected response doesn't seem to be valid.
           </Typography>
           <Typography>

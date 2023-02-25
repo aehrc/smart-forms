@@ -40,7 +40,7 @@ function ResponsePreview() {
     <Fade in={true} timeout={500}>
       <Container sx={{ mt: 3 }}>
         <Box mb={3}>
-          <Typography variant="h2">Response Preview</Typography>
+          <Typography variant="h3">Response Preview</Typography>
         </Box>
         <Card sx={{ mb: 2 }}>
           <Box ref={componentRef} sx={{ p: 4 }}>

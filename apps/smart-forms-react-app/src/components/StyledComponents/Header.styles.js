@@ -6,7 +6,7 @@ const NAV_WIDTH = 240;
 
 const HEADER_MOBILE = 64;
 
-const HEADER_DESKTOP = 80;
+const HEADER_DESKTOP = 72;
 
 export const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: theme.palette.background.default }),
