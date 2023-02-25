@@ -1,9 +1,8 @@
 // @mui
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import React, { useContext, useMemo, useState } from 'react';
 import Iconify from '../Misc/Iconify';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 import { SelectedResponse } from '../../interfaces/Interfaces';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { useQuery } from '@tanstack/react-query';
@@ -105,7 +104,7 @@ function OpenResponseButton(props: Props) {
       disabled={!selectedResponse}
       endIcon={
         isLoading ? (
-          <WhiteCircularProgress size={20} />
+          <CircularProgress size={20} sx={{ color: 'common.white' }} />
         ) : (
           <Iconify icon="material-symbols:open-in-new" />
         )

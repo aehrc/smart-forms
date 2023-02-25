@@ -23,7 +23,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
 import LaunchContextProvider from './custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
-import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+import ScrollToTop from './components/Nav/ScrollToTop';
 import Router from './Router';
 
 const questionnaireProvider = new QuestionnaireProvider();

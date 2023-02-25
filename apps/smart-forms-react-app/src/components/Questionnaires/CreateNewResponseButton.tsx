@@ -1,12 +1,11 @@
 // @mui
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { SelectedQuestionnaire } from '../../interfaces/Interfaces';
 import Iconify from '../Misc/Iconify';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';
-import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -54,7 +53,7 @@ function CreateNewResponseButton(props: Props) {
       disabled={!selectedQuestionnaire?.listItem}
       endIcon={
         isLoading ? (
-          <WhiteCircularProgress size={20} />
+          <CircularProgress size={20} sx={{ color: 'common.white' }} />
         ) : (
           <Iconify icon="ant-design:form-outlined" />
         )
