@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import React, { useContext } from 'react';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { AccountDetailsTypography, AccountNameTypographyNoWrap } from '../Typography/Typography';
+import { AccountDetailsTypography, AccountNameTypographyNoWrap } from '../Misc/Typography';
 import { constructName } from '../../functions/LaunchContextFunctions';
 
 function UserPopoverMenu() {

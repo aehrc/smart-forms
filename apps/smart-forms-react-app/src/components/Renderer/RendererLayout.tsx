@@ -10,7 +10,7 @@ import { QuestionnaireResponse } from 'fhir/r5';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
 import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
-import ProgressSpinner from '../ProgressSpinner';
+import ProgressSpinner from '../Misc/ProgressSpinner';
 import { Outlet } from 'react-router-dom';
 import { CurrentTabIndexContextType, RendererContextType } from '../../interfaces/ContextTypes';
 import { Renderer } from '../../interfaces/Interfaces';

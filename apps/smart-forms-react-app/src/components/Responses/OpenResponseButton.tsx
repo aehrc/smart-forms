@@ -1,7 +1,7 @@
 // @mui
 import { Button } from '@mui/material';
 import React, { useContext, useMemo, useState } from 'react';
-import Iconify from '../Iconify';
+import Iconify from '../Misc/Iconify';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { WhiteCircularProgress } from '../StyledComponents/Progress.styles';
 import { SelectedResponse } from '../../interfaces/Interfaces';

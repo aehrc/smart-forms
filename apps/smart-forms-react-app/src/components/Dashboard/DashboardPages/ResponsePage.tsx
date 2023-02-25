@@ -14,28 +14,32 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { ResponseListItem, SelectedResponse, TableAttributes } from '../interfaces/Interfaces';
+import {
+  ResponseListItem,
+  SelectedResponse,
+  TableAttributes
+} from '../../../interfaces/Interfaces';
 import {
   applySortFilter,
   getClientBundlePromise,
   getComparator,
   getResponseListItems
-} from '../functions/DashboardFunctions';
+} from '../../../functions/DashboardFunctions';
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, QuestionnaireResponse } from 'fhir/r5';
-import { SourceContext } from '../Router';
-import { SelectedQuestionnaireContext } from '../custom-contexts/SelectedQuestionnaireContext';
+import { SourceContext } from '../../../Router';
+import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import ResponseListToolbar from '../components/Responses/ResponseListToolbar';
-import ResponseListHead from '../components/Responses/ResponseListHead';
-import ResponseLabel from '../components/Label/ResponseLabel';
-import ResponseListFeedback from '../components/Responses/ResponseListFeedback';
-import Scrollbar from '../components/Scrollbar/Scrollbar';
-import { constructBundle } from '../functions/LoadServerResourceFunctions';
+import ResponseListToolbar from '../../Responses/ResponseListToolbar';
+import ResponseListHead from '../../Responses/ResponseListHead';
+import ResponseLabel from '../../Label/ResponseLabel';
+import ResponseListFeedback from '../../Responses/ResponseListFeedback';
+import Scrollbar from '../../Scrollbar/Scrollbar';
+import { constructBundle } from '../../../functions/LoadServerResourceFunctions';
 import dayjs from 'dayjs';
-import BackToQuestionnairesButton from '../components/Responses/BackToQuestionnairesButton';
-import OpenResponseButton from '../components/Responses/OpenResponseButton';
-import { LaunchContext } from '../custom-contexts/LaunchContext';
+import BackToQuestionnairesButton from '../../Responses/BackToQuestionnairesButton';
+import OpenResponseButton from '../../Responses/OpenResponseButton';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },

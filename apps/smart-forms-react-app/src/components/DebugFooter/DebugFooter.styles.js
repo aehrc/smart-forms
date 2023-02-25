@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { bgBlur } from '../../utils/css.styles';
+import { bgBlur } from '../StyledComponents/Utils.styles';
 import { Paper } from '@mui/material';
 
 const FOOTER_MOBILE = 20;

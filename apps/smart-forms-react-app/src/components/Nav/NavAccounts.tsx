@@ -5,7 +5,7 @@ import React, { useContext } from 'react';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import dayjs from 'dayjs';
-import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography';
+import { AccountDetailsTypography, AccountNameTypography } from '../Misc/Typography';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { useTheme } from '@mui/material/styles';
 

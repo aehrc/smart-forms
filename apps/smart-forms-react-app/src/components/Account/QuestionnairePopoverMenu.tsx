@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import React, { useContext } from 'react';
 import { QuestionnaireProviderContext } from '../../App';
-import { AccountNameTypography } from '../Typography/Typography';
+import { AccountNameTypography } from '../Misc/Typography';
 
 function QuestionnairePopoverMenu() {
   const { questionnaire } = useContext(QuestionnaireProviderContext);

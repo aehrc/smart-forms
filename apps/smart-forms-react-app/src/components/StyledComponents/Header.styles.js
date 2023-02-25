@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { AppBar, Toolbar } from '@mui/material';
-import { bgBlur } from '../../utils/css.styles';
+import { bgBlur } from './Utils.styles';
 
 const NAV_WIDTH = 240;
 

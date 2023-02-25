@@ -2,7 +2,7 @@
 import { Button } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { SelectedQuestionnaire } from '../../interfaces/Interfaces';
-import Iconify from '../Iconify';
+import Iconify from '../Misc/Iconify';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions';

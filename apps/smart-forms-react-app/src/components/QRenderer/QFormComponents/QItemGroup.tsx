@@ -38,7 +38,7 @@ import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../functions/TabFunctions';
-import Iconify from '../../Iconify';
+import Iconify from '../../Misc/Iconify';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

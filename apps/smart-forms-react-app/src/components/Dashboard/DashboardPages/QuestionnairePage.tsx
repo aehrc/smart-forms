@@ -14,32 +14,32 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import Scrollbar from '../components/Scrollbar/Scrollbar';
-import QuestionnaireListHead from '../components/Questionnaires/QuestionnaireListHead';
-import QuestionnaireListToolbar from '../components/Questionnaires/QuestionnaireListToolbar';
-import { QuestionnaireListItem, TableAttributes } from '../interfaces/Interfaces';
+import Scrollbar from '../../Scrollbar/Scrollbar';
+import QuestionnaireListHead from '../../Questionnaires/QuestionnaireListHead';
+import QuestionnaireListToolbar from '../../Questionnaires/QuestionnaireListToolbar';
+import { QuestionnaireListItem, TableAttributes } from '../../../interfaces/Interfaces';
 import {
   applySortFilter,
   getComparator,
   getFormsServerBundlePromise,
   getQuestionnaireListItems
-} from '../functions/DashboardFunctions';
-import QuestionnaireLabel from '../components/Label/QuestionnaireLabel';
+} from '../../../functions/DashboardFunctions';
+import QuestionnaireLabel from '../../Label/QuestionnaireLabel';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, Questionnaire } from 'fhir/r5';
-import useDebounce from '../custom-hooks/useDebounce';
-import QuestionnaireListFeedback from '../components/Questionnaires/QuestionnaireListFeedback';
-import CreateNewResponseButton from '../components/Questionnaires/CreateNewResponseButton';
-import { SourceContext } from '../Router';
+import useDebounce from '../../../custom-hooks/useDebounce';
+import QuestionnaireListFeedback from '../../Questionnaires/QuestionnaireListFeedback';
+import CreateNewResponseButton from '../../Questionnaires/CreateNewResponseButton';
+import { SourceContext } from '../../../Router';
 import {
   constructBundle,
   loadQuestionnairesFromLocal
-} from '../functions/LoadServerResourceFunctions';
-import ViewExistingResponsesButton from '../components/Questionnaires/ViewExistingResponsesButton';
-import { SelectedQuestionnaireContext } from '../custom-contexts/SelectedQuestionnaireContext';
-import { LaunchContext } from '../custom-contexts/LaunchContext';
-import SourceToggle from '../components/Toggles/SourceToggle';
+} from '../../../functions/LoadServerResourceFunctions';
+import ViewExistingResponsesButton from '../../Questionnaires/ViewExistingResponsesButton';
+import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import SourceToggle from '../../Misc/SourceToggle';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },

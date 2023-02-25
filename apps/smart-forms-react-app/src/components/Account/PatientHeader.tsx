@@ -1,7 +1,7 @@
 import { Avatar, Box, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography';
+import { AccountDetailsTypography, AccountNameTypography } from '../Misc/Typography';
 import FaceIcon from '@mui/icons-material/Face';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import dayjs from 'dayjs';

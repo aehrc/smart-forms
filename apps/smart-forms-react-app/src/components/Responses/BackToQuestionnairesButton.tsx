@@ -1,7 +1,7 @@
 // @mui
 import { Button } from '@mui/material';
 import React, { useContext } from 'react';
-import Iconify from '../Iconify';
+import Iconify from '../Misc/Iconify';
 import { SelectedQuestionnaireContext } from '../../custom-contexts/SelectedQuestionnaireContext';
 import { useNavigate } from 'react-router-dom';
 

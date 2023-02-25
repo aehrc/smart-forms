@@ -1,4 +1,4 @@
-import Iconify from '../../Iconify';
+import Iconify from '../../Misc/Iconify';
 
 import { StyledRoot, StyledToolbar } from '../../StyledComponents/Header.styles';
 import React, { useContext } from 'react';

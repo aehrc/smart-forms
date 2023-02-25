@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack } from '@mui/material';
-import Iconify from '../../Iconify';
+import Iconify from '../../Misc/Iconify';
 import { StyledRoot, StyledToolbar } from '../../StyledComponents/Header.styles';
 import React from 'react';
 import FaceIcon from '@mui/icons-material/Face';

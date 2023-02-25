@@ -14,10 +14,10 @@ import {
 } from './functions/LoadServerResourceFunctions';
 import { isStillAuthenticating } from './functions/LaunchContextFunctions';
 import NoQuestionnaireDialog from './components/Dialogs/AuthorisationFailedDialog';
-import ProgressSpinner from './components/ProgressSpinner';
+import ProgressSpinner from './components/Misc/ProgressSpinner';
 import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
-import QuestionnairePage from './pages/QuestionnairePage';
-import ResponsePage from './pages/ResponsePage';
+import QuestionnairePage from './components/Dashboard/DashboardPages/QuestionnairePage';
+import ResponsePage from './components/Dashboard/DashboardPages/ResponsePage';
 import { SourceContextType } from './interfaces/ContextTypes';
 import RendererLayout from './components/Renderer/RendererLayout';
 import Form from './components/QRenderer/Form';

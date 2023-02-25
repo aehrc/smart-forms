@@ -18,7 +18,7 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { oauth2 } from 'fhirclient';
-import ProgressSpinner from '../ProgressSpinner';
+import ProgressSpinner from '../Misc/ProgressSpinner';
 
 function Launch() {
   const [searchParams] = useSearchParams();

@@ -1,5 +1,5 @@
 import { IconButton, Tooltip, Typography } from '@mui/material';
-import Iconify from '../Iconify';
+import Iconify from '../Misc/Iconify';
 import { StyledRoot } from '../Questionnaires/QuestionnaireListToolbar.styles';
 import { ResponseListItem } from '../../interfaces/Interfaces';
 import dayjs from 'dayjs';

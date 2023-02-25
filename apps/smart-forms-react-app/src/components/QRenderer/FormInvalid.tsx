@@ -18,7 +18,7 @@
 import React from 'react';
 import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Iconify from '../Iconify';
+import Iconify from '../Misc/Iconify';
 
 function FormInvalid() {
   const navigate = useNavigate();

@@ -8,7 +8,7 @@ import {
   Typography
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import Iconify from '../../Iconify';
+import Iconify from '../../Misc/Iconify';
 
 interface Props {
   selected: boolean;

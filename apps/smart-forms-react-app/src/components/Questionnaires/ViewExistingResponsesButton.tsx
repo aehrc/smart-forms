@@ -1,7 +1,7 @@
 // @mui
 import { Button, CircularProgress } from '@mui/material';
 import React, { useContext, useMemo } from 'react';
-import Iconify from '../Iconify';
+import Iconify from '../Misc/Iconify';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { getClientBundlePromise, getResponsesFromBundle } from '../../functions/DashboardFunctions';
 import { useQuery } from '@tanstack/react-query';

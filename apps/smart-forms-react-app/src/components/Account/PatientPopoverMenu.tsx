@@ -5,7 +5,7 @@ import {
   AccountDetailsTypography,
   AccountDetailsTypographyNoCaps,
   AccountNameTypographyNoWrap
-} from '../Typography/Typography';
+} from '../Misc/Typography';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import dayjs from 'dayjs';
 

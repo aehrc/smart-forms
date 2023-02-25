@@ -1,7 +1,7 @@
 import { Avatar, Box, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
-import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography';
+import { AccountDetailsTypography, AccountNameTypography } from '../Misc/Typography';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 
