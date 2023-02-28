@@ -36,7 +36,6 @@ import {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/Interfaces';
-import { isHidden } from '../../../functions/QItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -64,8 +63,6 @@ function QItemSwitcher(props: Props) {
     },
     [enableWhenContext, onQrItemChange, qItem.linkId]
   );
-
-  if (isHidden(qItem, enableWhenContext)) return null;
 
   // Is qItem is a repeat item, disable collapse transition as the base repeat item already has one
   return (

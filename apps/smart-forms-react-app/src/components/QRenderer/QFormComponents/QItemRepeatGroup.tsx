@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, Collapse, Divider, IconButton, Stack } from '@mui/material';
 
 import {
@@ -28,11 +28,9 @@ import QItemGroup from './QItemGroup';
 
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
-import { isHidden } from '../../../functions/QItemFunctions';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styles';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { nanoid } from 'nanoid';
@@ -46,8 +44,6 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeated
 function QItemRepeatGroup(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const enableWhenContext = useContext(EnableWhenContext);
-
   const qrRepeatGroups: (QuestionnaireResponseItem | undefined)[] =
     qrItems.length > 0 ? qrItems : [undefined];
 
@@ -60,8 +56,6 @@ function QItemRepeatGroup(props: Props) {
       setGroupIds([nanoid()]);
     }
   }, [qrItems]);
-
-  if (isHidden(qItem, enableWhenContext)) return null;
 
   // Event Handlers
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
@@ -118,7 +112,7 @@ function QItemRepeatGroup(props: Props) {
               : createEmptyQrItem(qItem);
 
             return (
-              <Collapse key={groupIds[index]}>
+              <Collapse key={groupIds[index]} timeout={200}>
                 <RepeatGroupContainerStack direction="row" justifyContent="end">
                   <Box sx={{ flexGrow: 1 }}>
                     <QItemGroup

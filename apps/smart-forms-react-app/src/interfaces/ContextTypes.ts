@@ -55,19 +55,9 @@ export type LaunchContextType = {
   setUser: (user: Practitioner) => unknown;
 };
 
-export type PreviewModeContextType = {
-  isPreviewMode: boolean;
-  setIsPreviewMode: (previewMode: boolean) => unknown;
-};
-
 export type PageSwitcherContextType = {
   currentPage: PageType;
   goToPage: (page: PageType) => unknown;
-};
-
-export type SideBarContextType = {
-  sideBarIsExpanded: boolean;
-  setSideBarIsExpanded: (sideBarActive: boolean) => unknown;
 };
 
 export type CachedQueriedValueSetContextType = {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -38,9 +38,7 @@ import {
 import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { isHidden } from '../../../functions/QItemFunctions';
 import QItemGroupTableRow from './QItemGroupTableRow';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { DeleteButtonTableCell, HeaderTableCell } from '../../StyledComponents/Table.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
@@ -53,8 +51,6 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler {
 
 function QItemGroupTable(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
-
-  const enableWhenContext = useContext(EnableWhenContext);
 
   const emptyQrItem = createEmptyQrItem(qItem);
   const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =
@@ -74,8 +70,6 @@ function QItemGroupTable(props: Props) {
 
   // Check if there are columns within the group table
   if (!qItem.item || qItem.item.length === 0) return null;
-
-  if (isHidden(qItem, enableWhenContext)) return null;
 
   // Event Handlers
   function handleRowsChange(newQrRow: QuestionnaireResponseItem, index: number) {

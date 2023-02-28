@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Collapse, Grid, IconButton, Stack } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
@@ -27,11 +27,9 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
-import { isHidden } from '../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { TransitionGroup } from 'react-transition-group';
 import { FullWidthFormComponentBox } from '../../StyledComponents/Boxes.styles';
 import { nanoid } from 'nanoid';
@@ -43,8 +41,6 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
 
 function QItemRepeat(props: Props) {
   const { qItem, qrItem, onQrItemChange } = props;
-
-  const enableWhenContext = useContext(EnableWhenContext);
 
   const qrRepeat = qrItem ?? createEmptyQrItem(qItem);
   const qrRepeatAnswers: (QuestionnaireResponseItemAnswer | undefined)[] = qrRepeat['answer']
@@ -65,8 +61,6 @@ function QItemRepeat(props: Props) {
       setAnswerIds([nanoid()]);
     }
   }, [qrItem]);
-
-  if (isHidden(qItem, enableWhenContext)) return null;
 
   // Event Handlers
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
@@ -113,7 +107,7 @@ function QItemRepeat(props: Props) {
                 : createEmptyQrItem(qItem);
 
               return (
-                <Collapse key={answerIds[index]}>
+                <Collapse key={answerIds[index]} timeout={200}>
                   <RepeatItemContainerStack direction="row">
                     <Box sx={{ flexGrow: 1 }}>
                       <QItemSwitcher

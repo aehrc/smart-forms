@@ -138,6 +138,8 @@ function QItemGroup(props: Props) {
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItemOrItems = qrItemsByIndex[i];
 
+            if (isHidden(qItem, enableWhenContext)) return null;
+
             // Process qrItemOrItems as an qrItem array
             if (Array.isArray(qrItemOrItems)) {
               const qrItems = qrItemOrItems;
