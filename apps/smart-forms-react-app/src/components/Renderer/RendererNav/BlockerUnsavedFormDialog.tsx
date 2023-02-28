@@ -79,8 +79,8 @@ function BlockerUnsavedFormDialog(props: Props) {
         setRenderer({ response: savedResponse, hasChanges: false });
         setIsSaving(false);
         closeDialog();
-        navigate('/responses');
         blocker.proceed?.();
+        navigate('/responses');
       })
       .catch((error) => {
         console.error(error);
