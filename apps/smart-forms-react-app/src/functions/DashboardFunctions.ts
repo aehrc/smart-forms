@@ -141,7 +141,18 @@ export function getQuestionnaireListItems(bundle: Bundle | undefined): Questionn
   if (!bundle || !bundle.entry || bundle.entry.length === 0) return [];
 
   return bundle.entry
-    .filter((entry) => entry.resource && entry.resource.resourceType === 'Questionnaire')
+    .filter((entry) => {
+      if (entry.resource && entry.resource.resourceType === 'Questionnaire') {
+        // filter questionnaires with extension of sdc-assemble-expectation
+        const assembledFrom = entry.resource.extension?.find(
+          (extension) =>
+            extension.url ===
+            'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation'
+        );
+        return !assembledFrom;
+      }
+      return false;
+    })
     .map((entry, i) => {
       const questionnaire = entry.resource as Questionnaire; // non-questionnaire resources are filtered
       const questionnaireTitle = questionnaire.title ?? 'Untitled';
