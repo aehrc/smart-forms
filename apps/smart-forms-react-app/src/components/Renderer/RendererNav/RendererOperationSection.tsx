@@ -1,11 +1,13 @@
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import RendererSaveAsDraft from './RendererSaveAsDraft';
 import RendererSaveAsFinal from './RendererSaveAsFinal';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { QuestionnaireProviderContext } from '../../../App';
 
 export interface NavButton {
   title: string;
@@ -15,6 +17,9 @@ export interface NavButton {
 }
 
 function RendererOperationSection() {
+  const { fhirClient } = useContext(LaunchContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,8 +46,12 @@ function RendererOperationSection() {
             }}
           />
         )}
-        <RendererSaveAsDraft />
-        <RendererSaveAsFinal />
+        {fhirClient && questionnaireProvider.questionnaire.item ? (
+          <>
+            <RendererSaveAsDraft />
+            <RendererSaveAsFinal />
+          </>
+        ) : null}
       </List>
     </Box>
   );

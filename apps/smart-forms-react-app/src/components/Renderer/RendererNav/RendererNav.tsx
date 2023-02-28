@@ -10,7 +10,6 @@ import RendererNavSection from './RendererNavSection';
 import RendererOperationSection from './RendererOperationSection';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
-import { QuestionnaireProviderContext } from '../../../App';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 
 interface Props {
@@ -23,7 +22,6 @@ interface Props {
 function RendererNav(props: Props) {
   const { openNav, onCloseNav, navCollapsed, setNavCollapsed } = props;
 
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const { fhirClient } = useContext(LaunchContext);
 
   const isDesktop = useResponsive('up', 'lg');
@@ -41,8 +39,7 @@ function RendererNav(props: Props) {
       <NavAccounts />
 
       <RendererNavSection />
-
-      {fhirClient && questionnaireProvider.questionnaire.item ? <RendererOperationSection /> : null}
+      <RendererOperationSection />
 
       <Box sx={{ flexGrow: 1 }} />
 
