@@ -110,7 +110,7 @@ export default function Router() {
   ]);
 
   if (isStillAuthenticating(hasClient, patient, user) || questionnaireIsLoading) {
-    return <ProgressSpinner message="Authorising launch" />;
+    return <ProgressSpinner message={'Authorising user'} />;
   } else {
     return (
       <SourceContext.Provider value={{ source, setSource }}>

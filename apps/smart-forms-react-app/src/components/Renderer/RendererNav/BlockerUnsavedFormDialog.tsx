@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
+import { RendererContext } from '../RendererLayout';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
-import { NavItem } from './RendererNavSection';
-
 import {
   Button,
   CircularProgress,
@@ -13,46 +15,16 @@ import {
   DialogTitle
 } from '@mui/material';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { RendererContext } from '../RendererLayout';
-
-function RendererBackToHome() {
-  const { renderer } = useContext(RendererContext);
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const { hasChanges } = renderer;
-
-  return (
-    <>
-      <NavItem
-        title="Back to Home"
-        icon={<HomeIcon />}
-        onClick={() => {
-          if (hasChanges) {
-            setDialogOpen(true);
-          } else {
-            navigate('/questionnaires');
-          }
-        }}
-      />
-      {hasChanges ? (
-        <BackToHomeDialog open={dialogOpen} closeDialog={() => setDialogOpen(false)} />
-      ) : null}
-    </>
-  );
-}
 
 export interface Props {
+  blocker: Blocker;
   open: boolean;
   closeDialog: () => unknown;
 }
 
-function BackToHomeDialog(props: Props) {
-  const { open, closeDialog } = props;
+function BlockerUnsavedFormDialog(props: Props) {
+  const { blocker, open, closeDialog } = props;
+
   const { fhirClient, patient, user } = useContext(LaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const responseProvider = useContext(QuestionnaireResponseProviderContext);
@@ -67,16 +39,24 @@ function BackToHomeDialog(props: Props) {
   const isLaunched = !!(fhirClient && patient && user);
 
   // Event handlers
-  function handleClose() {
+  function handleCancel() {
+    blocker.reset?.();
+    closeDialog();
+  }
+
+  function handleProceed() {
+    blocker.proceed?.();
     closeDialog();
   }
 
   function handleSave() {
     if (!(fhirClient && patient && user)) {
-      handleClose();
+      closeDialog();
+      blocker.proceed?.();
       return;
     }
 
+    setIsSaving(true);
     setIsSaving(true);
 
     let responseToSave = JSON.parse(JSON.stringify(response));
@@ -98,32 +78,30 @@ function BackToHomeDialog(props: Props) {
         responseProvider.setQuestionnaireResponse(savedResponse);
         setRenderer({ response: savedResponse, hasChanges: false });
         setIsSaving(false);
-        handleClose();
+        closeDialog();
         navigate('/responses');
+        blocker.proceed?.();
       })
       .catch((error) => {
+        console.error('An error occurred while saving. Changes not saved.');
         console.error(error);
-        handleClose();
+        closeDialog();
+        navigate('/responses');
+        blocker.proceed?.();
       });
   }
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle variant="h5">Changes unsaved</DialogTitle>
+    <Dialog open={open} onClose={closeDialog}>
+      <DialogTitle variant="h5">Unsaved changes</DialogTitle>
       <DialogContent>
-        <DialogContentText variant="body1">
+        <DialogContentText>
           {'The form has unsaved changes. Are you sure you want to exit?'}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button
-          onClick={() => {
-            navigate('/questionnaires');
-            handleClose();
-          }}>
-          {isLaunched ? 'Proceed anyway' : 'Proceed'}
-        </Button>
+        <Button onClick={handleCancel}>Cancel</Button>
+        <Button onClick={handleProceed}>Proceed anyway</Button>
         {isLaunched ? (
           <Button
             disabled={isSaving}
@@ -137,4 +115,4 @@ function BackToHomeDialog(props: Props) {
   );
 }
 
-export default RendererBackToHome;
+export default BlockerUnsavedFormDialog;

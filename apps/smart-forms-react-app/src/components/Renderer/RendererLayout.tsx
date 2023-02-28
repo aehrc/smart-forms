@@ -20,6 +20,8 @@ import { Fab, IconButton } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import ScrollToTop from '../Nav/ScrollToTop';
+import { unstable_useBlocker as useBlocker } from 'react-router';
+import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -40,6 +42,7 @@ export const CurrentTabIndexContext = createContext<CurrentTabIndexContextType>(
 });
 
 function RendererLayout() {
+  // Hooks
   const [open, setOpen] = useState(false);
   const [navCollapsed, setNavCollapsed] = useState(false);
 
@@ -64,6 +67,7 @@ function RendererLayout() {
     hasChanges: false
   });
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Init population spinner
   const initialSpinner =
@@ -76,14 +80,25 @@ function RendererLayout() {
 
   const [spinner, setSpinner] = useState(initialSpinner);
 
-  // Pop up for user trying to leave the page with unfinished changes
+  let isBlocked = renderer.hasChanges;
+  const blocker = useBlocker(isBlocked);
+
   useEffect(() => {
-    window.addEventListener('beforeunload', (event) => {
-      if (renderer.hasChanges) {
-        event.returnValue = 'You have unfinished changes!';
-      }
-    });
-  }, [renderer.hasChanges]);
+    if (
+      blocker.location?.pathname === '/renderer/preview' ||
+      blocker.location?.pathname === '/renderer'
+    ) {
+      blocker.proceed?.();
+    }
+
+    if (blocker.state === 'blocked' && !isBlocked) {
+      blocker.reset();
+    }
+  }, [blocker, isBlocked]);
+
+  if (blocker.state === 'blocked' && !dialogOpen) {
+    setDialogOpen(true);
+  }
 
   /*
    * Update response state if response is updated from the server
@@ -167,6 +182,15 @@ function RendererLayout() {
             </CalculatedExpressionContextProvider>
           </EnableWhenContextProvider>
         </Main>
+
+        {/* Dialogs and FABs */}
+        {blocker.state === 'blocked' ? (
+          <BlockerUnsavedFormDialog
+            blocker={blocker}
+            open={dialogOpen}
+            closeDialog={() => setDialogOpen(false)}
+          />
+        ) : null}
 
         <BackToTopButton>
           <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
