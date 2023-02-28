@@ -91,10 +91,14 @@ function ConfirmSaveAsFinalDialog(props: Props) {
       .then((savedResponse) => {
         responseProvider.setQuestionnaireResponse(savedResponse);
         setRenderer({ response: savedResponse, hasChanges: false });
-        setIsSaving(false);
-        handleClose();
         enqueueSnackbar('Response saved as final', { variant: 'success' });
-        navigate('/responses');
+
+        // Wait until renderer.hasChanges is set to false before navigating away
+        setTimeout(() => {
+          navigate('/responses');
+          setIsSaving(false);
+          handleClose();
+        }, 1000);
       })
       .catch((error) => {
         console.error(error);
