@@ -34,6 +34,7 @@ import {
   constructPrePopQueryContextParameters,
   getPrePopQuery
 } from './PrePopQueryPopulateFunctions';
+import { headers } from '../LoadServerResourceFunctions';
 
 /**
  * Pre-populate questionnaire from CMS patient data to form a populated questionnaireReponse
@@ -95,11 +96,6 @@ export async function populateQuestionnaire(
  * @author Sean Fong
  */
 export function getBatchResponse(client: Client, bundle: Bundle): Promise<Bundle> {
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8'
-  };
-
   return client.request({
     url: '',
     method: 'POST',

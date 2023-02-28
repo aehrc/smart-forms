@@ -30,8 +30,7 @@ import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
 import { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { removeNoAnswerQrItem } from './QrItemFunctions';
-import { headers } from '../interfaces/RequestHeaders';
-import { OperationOutcome } from 'fhir/r2';
+import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
 
 /**
  * Sends a request to client CMS to write back a completed questionnaireResponse
@@ -93,15 +92,11 @@ export async function saveQuestionnaireResponse(
   // If client is SMART Health IT, check if questionnaire exists
   // If not, POST questionnaire to SMART Health IT before POSTing questionnaireResponse
   if (client.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
-    const response: Questionnaire | OperationOutcome = await client.request({
-      url: `Questionnaire/${questionnaire.id}`,
-      method: 'GET',
-      headers: headers
-    });
+    const response = await fetchQuestionnaireById(client, questionnaire.id ?? '');
 
     if (response.resourceType === 'OperationOutcome') {
       await client.request({
-        url: questionnaireResponseToSave.questionnaire ?? '',
+        url: questionnaire.id ?? '',
         method: 'PUT',
         body: JSON.stringify(questionnaire),
         headers: headers

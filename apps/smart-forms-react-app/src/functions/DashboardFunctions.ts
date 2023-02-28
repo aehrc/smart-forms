@@ -80,18 +80,6 @@ export function applySortFilter(
   return stabilizedThis.map((el) => el[1]);
 }
 
-export function getQuestionnairePromise(queryUrl: string): Promise<Questionnaire> {
-  const endpointUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ??
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
-
-  queryUrl = queryUrl.replace('|', '&version=');
-
-  return FHIR.client(endpointUrl).request({
-    url: queryUrl
-  });
-}
-
 export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
   const endpointUrl =
     process.env.REACT_APP_FORMS_SERVER_URL ??

@@ -19,6 +19,7 @@ import { Extension, Parameters, Questionnaire } from 'fhir/r5';
 import assemble, { isAssembleInputParameters } from 'sdc-assemble';
 import Client from 'fhirclient/lib/Client';
 import FHIR from 'fhirclient/lib/entry/browser';
+import { headers } from './LoadServerResourceFunctions';
 
 export function assemblyIsRequired(questionnaire: Questionnaire): boolean {
   return !!questionnaire.extension?.find(
@@ -60,11 +61,6 @@ export async function assembleQuestionnaire(questionnaire: Questionnaire): Promi
 }
 
 export function updateAssembledQuestionnaire(client: Client, questionnaire: Questionnaire) {
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8'
-  };
-
   const endpointUrl =
     process.env.REACT_APP_FORMS_SERVER_URL ??
     'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
