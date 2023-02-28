@@ -1,25 +1,31 @@
-import { IconButton, Tooltip, Typography } from '@mui/material';
+import { IconButton, InputAdornment, Tooltip, Typography, useTheme } from '@mui/material';
 import Iconify from '../../../Misc/Iconify';
-import { StyledRoot } from '../../QuestionnairePage/QuestionnairePageComponents/QuestionnaireListToolbar.styles';
+import {
+  StyledRoot,
+  StyledSearch
+} from '../../QuestionnairePage/QuestionnairePageComponents/QuestionnaireListToolbar.styles';
 import { ResponseListItem } from '../../../../interfaces/Interfaces';
 import dayjs from 'dayjs';
-import { useContext } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
 import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
 import { constructName } from '../../../../functions/LaunchContextFunctions';
 
 interface Props {
   selected: ResponseListItem | undefined;
+  searchInput: string;
   clearSelection: () => void;
+  onSearch: (searchInput: string) => void;
 }
 
 function ResponseListToolbar(props: Props) {
-  const { selected, clearSelection } = props;
+  const { selected, searchInput, clearSelection, onSearch } = props;
 
   const { selectedQuestionnaire, existingResponses, clearSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
   const { patient } = useContext(LaunchContext);
+  const theme = useTheme();
 
   const selectedQuestionnaireTitle =
     selectedQuestionnaire?.listItem.title ?? 'selected questionnaire';
@@ -48,9 +54,25 @@ function ResponseListToolbar(props: Props) {
           Displaying responses from <b>{selectedQuestionnaireTitle}</b> questionnaire
         </Typography>
       ) : (
-        <Typography variant="subtitle1">
-          Showing all responses for <b>{constructName(patient?.name)}</b>
-        </Typography>
+        <StyledSearch
+          value={searchInput}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => onSearch(event.target.value)}
+          placeholder="Search responses..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Iconify
+                icon="eva:search-fill"
+                sx={{ color: 'text.disabled', width: 20, height: 20 }}
+              />
+            </InputAdornment>
+          }
+          sx={{
+            '&.Mui-focused': {
+              width: '50%',
+              boxShadow: theme.customShadows.z4
+            }
+          }}
+        />
       )}
 
       {selected ? (
@@ -65,7 +87,11 @@ function ResponseListToolbar(props: Props) {
             <Iconify icon="material-symbols:filter-alt-off-outline" />
           </IconButton>
         </Tooltip>
-      ) : null}
+      ) : (
+        <Typography variant="subtitle1">
+          Showing responses for <b>{constructName(patient?.name)}</b>
+        </Typography>
+      )}
     </StyledRoot>
   );
 }

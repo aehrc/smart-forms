@@ -14,10 +14,11 @@ import { useSnackbar } from 'notistack';
 interface Props {
   isEmpty: boolean;
   status: 'loading' | 'error' | 'success';
+  searchInput: string;
   error?: unknown;
 }
 function ResponseListFeedback(props: Props) {
-  const { isEmpty, status, error } = props;
+  const { isEmpty, status, searchInput, error } = props;
   const { source } = useContext(SourceContext);
 
   let feedbackType: FeedbackProps['feedbackType'] | null = null;
@@ -37,7 +38,7 @@ function ResponseListFeedback(props: Props) {
             sx={{
               textAlign: 'center'
             }}>
-            <RenderFeedback feedbackType={feedbackType} error={error} />
+            <RenderFeedback feedbackType={feedbackType} searchInput={searchInput} error={error} />
           </Paper>
         </TableCell>
       </TableRow>
@@ -47,11 +48,12 @@ function ResponseListFeedback(props: Props) {
 
 interface FeedbackProps {
   feedbackType: 'error' | 'empty' | 'loading';
+  searchInput: string;
   error?: unknown;
 }
 
 function RenderFeedback(props: FeedbackProps) {
-  const { feedbackType, error } = props;
+  const { feedbackType, searchInput, error } = props;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -95,10 +97,18 @@ function RenderFeedback(props: FeedbackProps) {
             No responses found
           </Typography>
 
-          <Typography variant="body2">
-            No results found.
-            <br /> It doesn't seem like you have any responses yet.
-          </Typography>
+          {searchInput === '' ? (
+            <Typography variant="body2">
+              No results found.
+              <br /> It doesn't seem like you have any responses yet.
+            </Typography>
+          ) : (
+            <Typography variant="body2">
+              No results found for &nbsp;
+              <strong>&quot;{searchInput}&quot;</strong>.
+              <br /> Try searching for something else.
+            </Typography>
+          )}
         </>
       );
   }

@@ -40,6 +40,7 @@ import dayjs from 'dayjs';
 import BackToQuestionnairesButton from './ResponsesPageComponents/BackToQuestionnairesButton';
 import OpenResponseButton from './ResponsesPageComponents/OpenResponseButton';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import useDebounce from '../../../custom-hooks/useDebounce';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -59,17 +60,22 @@ function ResponsesPage() {
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedResponse, setSelectedResponse] = useState<SelectedResponse | null>(null);
   const [orderBy, setOrderBy] = useState<keyof ResponseListItem>('authored');
+  const [searchInput, setSearchInput] = useState('');
 
   // search responses
-  const numOfSearchEntries = 100;
+  const debouncedInput = useDebounce(searchInput, 300);
+  const numOfSearchEntries = 50;
 
-  const queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}`;
+  let queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}&`;
+  if (debouncedInput) {
+    queryUrl += 'questionnaire.title:contains=' + debouncedInput;
+  }
 
   const { data, status, error } = useQuery<Bundle>(
     ['response', queryUrl],
     () => getClientBundlePromise(fhirClient!, queryUrl),
     {
-      enabled: source === 'remote' && !!fhirClient
+      enabled: source === 'remote' && !!fhirClient && debouncedInput === searchInput
     }
   );
 
@@ -146,7 +152,12 @@ function ResponsesPage() {
         <Card>
           <ResponseListToolbar
             selected={selectedResponse?.listItem}
+            searchInput={searchInput}
             clearSelection={() => setSelectedResponse(null)}
+            onSearch={(input) => {
+              setPage(0);
+              setSearchInput(input);
+            }}
           />
 
           <Scrollbar>
@@ -214,7 +225,12 @@ function ResponsesPage() {
 
                 {(isEmpty || status === 'error' || status === 'loading') &&
                 filteredListItems.length === 0 ? (
-                  <ResponseListFeedback isEmpty={isEmpty} status={status} error={error} />
+                  <ResponseListFeedback
+                    isEmpty={isEmpty}
+                    status={status}
+                    searchInput={searchInput}
+                    error={error}
+                  />
                 ) : null}
               </Table>
             </TableContainer>

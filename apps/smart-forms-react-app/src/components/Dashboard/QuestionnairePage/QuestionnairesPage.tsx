@@ -40,6 +40,7 @@ import ViewExistingResponsesButton from './QuestionnairePageComponents/ViewExist
 import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import SourceToggle from '../../Misc/SourceToggle';
+import dayjs from 'dayjs';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -208,7 +209,7 @@ function QuestionnairesPage() {
                           </TableCell>
 
                           <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {date}
+                            {dayjs(date).format('LL')}
                           </TableCell>
 
                           <TableCell align="left">
