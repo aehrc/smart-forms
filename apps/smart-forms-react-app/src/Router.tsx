@@ -22,6 +22,7 @@ import Form from './components/QRenderer/Form';
 import FormPreview from './components/Preview/FormPreview';
 import ViewerLayout from './components/Viewer/ViewerLayout';
 import ResponsePreview from './components/Preview/ResponsePreview';
+import { useSnackbar } from 'notistack';
 
 export const SourceContext = createContext<SourceContextType>({
   source: 'local',
@@ -38,6 +39,8 @@ export default function Router() {
 
   const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
 
+  const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     oauth2
       .ready()
@@ -48,11 +51,21 @@ export default function Router() {
 
         getPatient(client)
           .then((patient) => setPatient(patient))
-          .catch((error) => console.error(error));
+          .catch((error) => {
+            console.error(error);
+            enqueueSnackbar('Fail to fetch patient. Try launching the app again', {
+              variant: 'error'
+            });
+          });
 
         getUser(client)
           .then((user) => setUser(user))
-          .catch((error) => console.error(error));
+          .catch((error) => {
+            console.error(error);
+            enqueueSnackbar('Fail to fetch user. Try launching the app again', {
+              variant: 'error'
+            });
+          });
 
         const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
         if (questionnaireUrl) {
@@ -69,8 +82,11 @@ export default function Router() {
           setQuestionnaireIsLoading(false);
         }
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((error: Error) => {
+        if (!error.message.includes("No 'state' parameter found")) {
+          console.error(error);
+          enqueueSnackbar('An error occurred while launching the app', { variant: 'error' });
+        }
         setQuestionnaireIsLoading(false);
         setHasClient(false);
       });

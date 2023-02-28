@@ -9,6 +9,7 @@ import {
   Typography
 } from '@mui/material';
 import { SourceContext } from '../../../../Router';
+import { useSnackbar } from 'notistack';
 
 interface Props {
   isEmpty: boolean;
@@ -52,8 +53,14 @@ interface FeedbackProps {
 function RenderFeedback(props: FeedbackProps) {
   const { feedbackType, error } = props;
 
+  const { enqueueSnackbar } = useSnackbar();
+
   if (feedbackType === 'error') {
     console.error(error);
+    enqueueSnackbar('An error occurred while fetching responses', {
+      variant: 'error',
+      preventDuplicate: true
+    });
   }
 
   switch (feedbackType) {

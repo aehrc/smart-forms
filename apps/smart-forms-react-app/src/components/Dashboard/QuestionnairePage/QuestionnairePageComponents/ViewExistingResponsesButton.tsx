@@ -12,6 +12,7 @@ import { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
 import { useNavigate } from 'react-router-dom';
 import { SourceContext } from '../../../../Router';
+import { useSnackbar } from 'notistack';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
@@ -19,6 +20,7 @@ function ViewExistingResponsesButton() {
   const { source } = useContext(SourceContext);
 
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   // search responses from selected questionnaire
   let questionnaireRefParam = '';
@@ -53,6 +55,10 @@ function ViewExistingResponsesButton() {
 
   if (error) {
     console.error(error);
+    enqueueSnackbar('An error occurred while fetching existing responses', {
+      variant: 'error',
+      preventDuplicate: true
+    });
   }
 
   const existingResponses: QuestionnaireResponse[] = useMemo(

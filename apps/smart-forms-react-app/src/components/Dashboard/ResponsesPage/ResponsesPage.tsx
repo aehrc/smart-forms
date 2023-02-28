@@ -56,9 +56,9 @@ function ResponsesPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedResponse, setSelectedResponse] = useState<SelectedResponse | null>(null);
-  const [orderBy, setOrderBy] = useState<keyof ResponseListItem>('title');
+  const [orderBy, setOrderBy] = useState<keyof ResponseListItem>('authored');
 
   // search responses
   const numOfSearchEntries = 100;
@@ -196,7 +196,7 @@ function ResponsesPage() {
                           </TableCell>
 
                           <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {dayjs(authored).format('LL')}
+                            {dayjs(authored).format('LLL')}
                           </TableCell>
 
                           <TableCell align="left">

@@ -17,6 +17,7 @@ import {
 } from '../../../../functions/DashboardFunctions';
 import { SourceContext } from '../../../../Router';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
@@ -32,6 +33,7 @@ function OpenResponseButton(props: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   // reference could either be a canonical or an id
   const questionnaireRef = selectedResponse?.resource.questionnaire;
@@ -54,6 +56,7 @@ function OpenResponseButton(props: Props) {
 
   if (error) {
     console.error(error);
+    enqueueSnackbar('An error occurred while opening this response', { variant: 'error' });
   }
 
   let referencedQuestionnaire: Questionnaire | null = useMemo(
@@ -88,6 +91,9 @@ function OpenResponseButton(props: Props) {
       // assembled questionnaire not found
       if (!referencedQuestionnaire) {
         console.error(error);
+        enqueueSnackbar('Assembled questionnaire not found. Attempting assembly...', {
+          variant: 'error'
+        });
         return;
       }
     }

@@ -83,11 +83,10 @@ function BlockerUnsavedFormDialog(props: Props) {
         blocker.proceed?.();
       })
       .catch((error) => {
-        console.error('An error occurred while saving. Changes not saved.');
         console.error(error);
+        console.error('An error occurred while saving. Changes not saved.');
+        blocker.reset?.();
         closeDialog();
-        navigate('/responses');
-        blocker.proceed?.();
       });
   }
 

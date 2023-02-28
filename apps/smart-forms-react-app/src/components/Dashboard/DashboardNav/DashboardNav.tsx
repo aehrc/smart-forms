@@ -40,7 +40,7 @@ export default function DashboardNav(props: Props) {
 
       {!fhirClient ? (
         <NavErrorAlert
-          message={'Viewing responses are disabled when app is not connected to a FHIR server'}
+          message={'Viewing responses are disabled when app is not launched from a CMS'}
         />
       ) : null}
 

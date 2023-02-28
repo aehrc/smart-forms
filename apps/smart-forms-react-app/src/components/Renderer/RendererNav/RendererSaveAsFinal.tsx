@@ -16,6 +16,7 @@ import {
   DialogTitle
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 function RendererSaveAsFinal() {
   const { fhirClient } = useContext(LaunchContext);
@@ -61,6 +62,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
   const { response } = renderer;
 
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   // Event Handlers
   function handleClose() {
@@ -91,10 +93,12 @@ function ConfirmSaveAsFinalDialog(props: Props) {
         setRenderer({ response: savedResponse, hasChanges: false });
         setIsSaving(false);
         handleClose();
+        enqueueSnackbar('Response saved as final', { variant: 'success' });
         navigate('/responses');
       })
       .catch((error) => {
         console.error(error);
+        enqueueSnackbar('An error occurred while saving. Try again later.', { variant: 'error' });
         handleClose();
       });
   }

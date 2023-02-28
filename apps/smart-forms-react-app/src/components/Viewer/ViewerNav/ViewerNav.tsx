@@ -50,7 +50,7 @@ function ViewerNav(props: Props) {
 
       {!fhirClient ? (
         <NavErrorAlert
-          message={'Save operations are disabled when app is not connected to a FHIR server'}
+          message={'Save operations are disabled when app is not launched from a CMS'}
         />
       ) : null}
 

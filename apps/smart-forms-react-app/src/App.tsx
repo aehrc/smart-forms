@@ -23,6 +23,7 @@ import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
 import LaunchContextProvider from './custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
 import Router from './Router';
+import { SnackbarProvider } from 'notistack';
 
 const questionnaireProvider = new QuestionnaireProvider();
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
@@ -36,14 +37,16 @@ export const QuestionnaireResponseProviderContext = createContext<QuestionnaireR
 function App() {
   return (
     <ThemeProvider>
-      <LaunchContextProvider>
-        <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
-          <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
-            <CssBaseline />
-            <Router />
-          </QuestionnaireResponseProviderContext.Provider>
-        </QuestionnaireProviderContext.Provider>
-      </LaunchContextProvider>
+      <SnackbarProvider>
+        <LaunchContextProvider>
+          <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
+            <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
+              <CssBaseline />
+              <Router />
+            </QuestionnaireResponseProviderContext.Provider>
+          </QuestionnaireProviderContext.Provider>
+        </LaunchContextProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

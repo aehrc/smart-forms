@@ -22,6 +22,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import ScrollToTop from '../Nav/ScrollToTop';
 import { unstable_useBlocker as useBlocker } from 'react-router';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog';
+import { useSnackbar } from 'notistack';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -68,6 +69,8 @@ function RendererLayout() {
   });
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   // Init population spinner
   const initialSpinner =
@@ -146,11 +149,12 @@ function RendererLayout() {
         questionnaireResponseProvider.setQuestionnaireResponse(populated);
         setRenderer({ ...renderer, response: populated });
         setSpinner({ ...spinner, isLoading: false });
+        enqueueSnackbar('Questionnaire form populated');
       },
       () => {
         setSpinner({ ...spinner, isLoading: false });
         console.warn('Population failed');
-        // TODO popup questionnaire fail to populate
+        enqueueSnackbar('Form population failed', { variant: 'warning' });
       }
     );
   } else {
