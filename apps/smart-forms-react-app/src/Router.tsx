@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 // layouts
 import DashboardLayout from './components/Dashboard/DashboardLayout';
 import Launch from './components/Launch/Launch';
@@ -76,7 +76,7 @@ export default function Router() {
       });
   }, []); // only authenticate once, leave dependency array empty
 
-  const routes = useRoutes([
+  const router = createBrowserRouter([
     {
       path: '/',
       element: <DashboardLayout />,
@@ -116,7 +116,7 @@ export default function Router() {
       <SourceContext.Provider value={{ source, setSource }}>
         <PageSwitcherContextProvider
           questionnairePresent={!!questionnaireProvider.questionnaire.item}>
-          {routes}
+          <RouterProvider router={router} />
         </PageSwitcherContextProvider>
       </SourceContext.Provider>
     );

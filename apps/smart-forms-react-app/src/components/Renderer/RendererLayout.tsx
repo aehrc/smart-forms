@@ -19,6 +19,7 @@ import BackToTopButton from '../Misc/BackToTopButton';
 import { Fab, IconButton } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import ScrollToTop from '../Nav/ScrollToTop';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -145,6 +146,7 @@ function RendererLayout() {
 
   return (
     <RendererContext.Provider value={{ renderer, setRenderer }}>
+      <ScrollToTop />
       <StyledRoot>
         <RendererHeader onOpenNav={() => setOpen(true)} navCollapsed={navCollapsed} />
         <RendererNav

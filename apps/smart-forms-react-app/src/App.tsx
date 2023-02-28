@@ -19,11 +19,9 @@ import React, { createContext } from 'react';
 import './App.css';
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/Theme';
-import { BrowserRouter } from 'react-router-dom';
 import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
 import LaunchContextProvider from './custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
-import ScrollToTop from './components/Nav/ScrollToTop';
 import Router from './Router';
 
 const questionnaireProvider = new QuestionnaireProvider();
@@ -37,19 +35,16 @@ export const QuestionnaireResponseProviderContext = createContext<QuestionnaireR
 
 function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <LaunchContextProvider>
-          <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
-            <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
-              <CssBaseline />
-              <ScrollToTop />
-              <Router />
-            </QuestionnaireResponseProviderContext.Provider>
-          </QuestionnaireProviderContext.Provider>
-        </LaunchContextProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <LaunchContextProvider>
+        <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
+          <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
+            <CssBaseline />
+            <Router />
+          </QuestionnaireResponseProviderContext.Provider>
+        </QuestionnaireProviderContext.Provider>
+      </LaunchContextProvider>
+    </ThemeProvider>
   );
 }
 

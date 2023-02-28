@@ -38,7 +38,7 @@ function ResponsePreview() {
 
   return (
     <Fade in={true} timeout={500}>
-      <Container sx={{ mt: 3 }}>
+      <Container>
         <Box mb={3}>
           <Typography variant="h3">Response Preview</Typography>
         </Box>
