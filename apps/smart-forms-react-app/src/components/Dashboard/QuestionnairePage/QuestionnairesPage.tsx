@@ -63,7 +63,7 @@ function QuestionnairesPage() {
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
-  const debouncedInput = useDebounce(searchInput, 500);
+  const debouncedInput = useDebounce(searchInput, 300);
   const numOfSearchEntries = 50;
 
   const queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&title:contains=${debouncedInput}`;
