@@ -39,6 +39,7 @@ import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../functions/TabFunctions';
 import Iconify from '../../Misc/Iconify';
+import { CurrentTabIndexContext } from '../../Renderer/RendererLayout';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -63,11 +64,11 @@ function QItemGroup(props: Props) {
     tabs,
     currentTabIndex,
     markTabAsComplete,
-    goToNextTab,
     onQrItemChange
   } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
+  const { setCurrentTabIndex } = useContext(CurrentTabIndexContext);
 
   const qItems = qItem.item;
   const groupFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -240,7 +241,7 @@ function QItemGroup(props: Props) {
             }
           })}
           {/* Next tab button at the end of each tab group */}
-          {currentTabIndex !== undefined && tabs && goToNextTab ? (
+          {currentTabIndex !== undefined && tabs ? (
             <Box display="flex" flexDirection="row-reverse" sx={{ mt: 3 }}>
               {currentTabIndex !== Object.keys(tabs).length - 1 ? (
                 <Button
@@ -265,7 +266,7 @@ function QItemGroup(props: Props) {
                       // Scroll to top of page
                       window.scrollTo(0, 0);
 
-                      goToNextTab(nextVisibleTabIndex);
+                      setCurrentTabIndex(nextVisibleTabIndex);
                     }
                   }}>
                   Next tab

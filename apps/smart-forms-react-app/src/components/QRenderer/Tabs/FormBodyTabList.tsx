@@ -13,11 +13,10 @@ interface Props {
   qFormItems: QuestionnaireItem[];
   currentTabIndex: number;
   tabs: Record<string, { tabIndex: number; isComplete: boolean }>;
-  updateTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabList(props: Props) {
-  const { qFormItems, currentTabIndex, tabs, updateTabIndex } = props;
+  const { qFormItems, currentTabIndex, tabs } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
 
@@ -38,7 +37,6 @@ function FormBodyTabList(props: Props) {
                     tabText={getShortText(qItem) ?? qItem.text + ''}
                     listIndex={i}
                     markedAsComplete={tabs[qItem.linkId].isComplete ?? false}
-                    updateTabIndex={updateTabIndex}
                   />
                 </Collapse>
               );

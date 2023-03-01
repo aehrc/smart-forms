@@ -35,7 +35,7 @@ function Form() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const { renderer, setRenderer } = useContext(RendererContext);
-  const { currentTabIndex, setCurrentTabIndex } = useContext(CurrentTabIndexContext);
+  const { currentTabIndex } = useContext(CurrentTabIndexContext);
 
   const enableWhenContext = useContext(EnableWhenContext);
   const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
@@ -86,7 +86,6 @@ function Form() {
                 qForm={qForm}
                 qrForm={qrForm}
                 currentTabIndex={currentTabIndex}
-                setCurrentTabIndex={setCurrentTabIndex}
                 onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
               />
             ) : (

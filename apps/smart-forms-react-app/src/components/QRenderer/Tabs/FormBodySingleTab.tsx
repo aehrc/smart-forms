@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import {
   Box,
   ListItemButton,
@@ -9,23 +9,25 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Iconify from '../../Misc/Iconify';
+import { CurrentTabIndexContext } from '../../Renderer/RendererLayout';
 
 interface Props {
   selected: boolean;
   tabText: string;
   listIndex: number;
   markedAsComplete: boolean;
-  updateTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodySingleTab(props: Props) {
-  const { selected, tabText, listIndex, markedAsComplete, updateTabIndex } = props;
+  const { selected, tabText, listIndex, markedAsComplete } = props;
+
+  const { setCurrentTabIndex } = useContext(CurrentTabIndexContext);
 
   return (
     <ListItemButton
       selected={selected}
       sx={{ my: 0.5, py: 0.6 }}
-      onClick={() => updateTabIndex(listIndex)}>
+      onClick={() => setCurrentTabIndex(listIndex)}>
       <ListItemIcon sx={{ minWidth: 36 }}>
         {markedAsComplete ? (
           <Tooltip title="Completed">
