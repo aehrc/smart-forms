@@ -17,13 +17,17 @@
 
 import React, { useContext } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
-import Preview from './Preview';
 import { QuestionnaireProviderContext } from '../../App';
 import { RendererContext } from '../Renderer/RendererLayout';
 import FormInvalid from '../QRenderer/FormInvalid';
+import parse from 'html-react-parser';
+import { qrToHTML } from '../../functions/PreviewFunctions';
+import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 
 function FormPreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const enableWhenContext = useContext(EnableWhenContext);
   const { renderer } = useContext(RendererContext);
   const { response } = renderer;
 
@@ -34,15 +38,16 @@ function FormPreview() {
   const qrForm = response.item[0];
 
   if (qForm.item && qrForm.item) {
+    const responseCleaned = removeHiddenAnswers(questionnaire, response, enableWhenContext);
+    const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
+
     return (
       <Fade in={true} timeout={500}>
         <Container sx={{ mt: 3 }}>
           <Box mb={3}>
             <Typography variant="h3">Preview</Typography>
           </Box>
-          <Card sx={{ p: 4, mb: 2 }}>
-            <Preview />
-          </Card>
+          <Card sx={{ p: 4, mb: 2 }}>{parsedHTML}</Card>
         </Container>
       </Fade>
     );
