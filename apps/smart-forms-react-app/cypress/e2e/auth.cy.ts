@@ -2,6 +2,8 @@ import Q715Assembled from '../../src/data/resources/Questionnaire-AboriginalTorr
 
 describe('launch app', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
+  const formsServerUrl =
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
 
   context('launch without authorisation', () => {
     const launchPage = 'http://localhost:3000/launch';
@@ -16,31 +18,26 @@ describe('launch app', () => {
   });
 
   context('launch with authorisation without questionnaire url parameter', () => {
-    const patientId = 'd64b37f5-d3b5-4c25-abe8-23ebe8f5a04e';
     const launchUrl =
       'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
 
-    it('from launch page, fetch patient and redirect to picker', () => {
+    it('from launch page, fetch patient and redirect to questionnaire page', () => {
       cy.intercept({
         method: 'POST',
         url: 'https://launch.smarthealthit.org/v/r4/auth/token'
       }).as('authorising');
-      cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
-      cy.intercept(`${clientUrl}/QuestionnaireResponse?patient=${patientId}&`).as(
-        'fetchQuestionnaireResponse'
+      cy.intercept(`${formsServerUrl}/Questionnaire?_count=50&_sort=-date&`).as(
+        'fetchQuestionnaire'
       );
 
       cy.visit(launchUrl);
       cy.wait('@authorising');
-      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Fetching patient');
+      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Authorising user');
 
       cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
-      cy.wait('@fetchQuestionnaireResponse').its('response.statusCode').should('eq', 200);
-      cy.wait(200);
-      cy.getByData('picker-card-heading-questionnaires').contains('Questionnaires');
-      cy.getByData('picker-card-heading-responses').contains('Responses');
-      cy.getByData('picker-alert-refine').find('.MuiAlert-message').contains('Refine your search');
-      cy.location('pathname').should('eq', '/');
+
+      cy.getByData('dashboard-questionnaires-container').contains('Questionnaires');
+      cy.location('pathname').should('eq', '/questionnaires');
     });
   });
 
@@ -84,14 +81,14 @@ describe('launch app', () => {
 
       cy.visit(launchUrl);
       cy.wait('@authorising');
-      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Fetching patient');
+      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Authorising user');
 
       cy.wait('@populating');
       cy.getByData('progress-spinner')
         .find('.MuiTypography-root')
         .contains('Populating questionnaire form');
-      cy.location('pathname').should('eq', '/');
-      cy.getByData('renderer-heading').should('be.visible');
+      cy.location('pathname').should('eq', '/renderer');
+      cy.getByData('form-heading').should('be.visible');
     });
   });
 });
