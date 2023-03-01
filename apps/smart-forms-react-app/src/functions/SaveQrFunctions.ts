@@ -29,7 +29,6 @@ import dayjs from 'dayjs';
 import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
 import { EnableWhenContextType } from '../interfaces/ContextTypes';
-import { removeNoAnswerQrItem } from './QrItemFunctions';
 import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
 
 /**
@@ -49,13 +48,6 @@ export async function saveQuestionnaireResponse(
   let questionnaireResponseToSave: QuestionnaireResponse = JSON.parse(
     JSON.stringify(questionnaireResponse)
   );
-
-  if (questionnaireResponseToSave.item && questionnaireResponseToSave.item.length > 0) {
-    const qrFormCleaned = removeNoAnswerQrItem(questionnaireResponseToSave.item[0]);
-    if (qrFormCleaned) {
-      questionnaireResponseToSave.item[0] = qrFormCleaned;
-    }
-  }
 
   // Add additional attributes if questionnaireResponse is newly created
   if (questionnaireResponseToSave.id) {
@@ -245,7 +237,9 @@ function readQuestionnaireResponseItem(
       }
       return { ...qrItem, item: newQrItems };
     }
-    return qrItem;
+
+    // Also perform checking if answer exists
+    return qrItem['answer'] ? qrItem : null;
   }
 
   // Process non-group items
