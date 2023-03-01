@@ -7,21 +7,18 @@ import {
   QuestionnaireProviderContext,
   QuestionnaireResponseProviderContext
 } from '../../../../App';
-import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse } from '../../../../functions/QrItemFunctions';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
   selectedQuestionnaire: SelectedQuestionnaire | null;
-  source: 'local' | 'remote';
 }
 
 function CreateNewResponseButton(props: Props) {
-  const { selectedQuestionnaire, source } = props;
+  const { selectedQuestionnaire } = props;
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient } = useContext(LaunchContext);
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -33,11 +30,7 @@ function CreateNewResponseButton(props: Props) {
 
     // Assign questionnaire to questionnaire provider
     const questionnaireResource = selectedQuestionnaire.resource;
-    await questionnaireProvider.setQuestionnaire(
-      questionnaireResource,
-      source === 'local',
-      fhirClient
-    );
+    await questionnaireProvider.setQuestionnaire(questionnaireResource);
 
     // Assign questionnaireResponse to questionnaireResponse provider
     if (questionnaireResource.item && questionnaireResource.item.length > 0) {

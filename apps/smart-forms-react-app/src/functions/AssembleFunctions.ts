@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import { Extension, Parameters, Questionnaire } from 'fhir/r5';
-import assemble, { isAssembleInputParameters } from 'sdc-assemble';
-import Client from 'fhirclient/lib/Client';
-import FHIR from 'fhirclient/lib/entry/browser';
+import { Extension, OperationOutcome, Parameters, Questionnaire } from 'fhir/r5';
+import { isAssembleInputParameters } from 'sdc-assemble';
 import { headers } from './LoadServerResourceFunctions';
+import * as FHIR from 'fhirclient';
 
 export function assemblyIsRequired(questionnaire: Questionnaire): boolean {
   return !!questionnaire.extension?.find(
@@ -42,25 +41,33 @@ function defineAssembleParameters(questionnaire: Questionnaire): Parameters {
   };
 }
 
-export async function assembleQuestionnaire(questionnaire: Questionnaire): Promise<Questionnaire> {
-  const formsServerEndpoint =
+export async function assembleQuestionnaire(
+  questionnaire: Questionnaire
+): Promise<Questionnaire | OperationOutcome> {
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
     'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
 
   const parameters = defineAssembleParameters(questionnaire);
   if (isAssembleInputParameters(parameters)) {
-    const outputAssembleParams = await assemble(parameters, formsServerEndpoint);
-    if (outputAssembleParams.parameter[0].resource.resourceType === 'Questionnaire') {
-      return outputAssembleParams.parameter[0].resource;
-    } else {
+    const outputAssembleParams = await FHIR.client(endpointUrl).request({
+      url: 'Questionnaire/$assemble',
+      method: 'POST',
+      body: JSON.stringify(parameters),
+      headers: { ...headers, 'Content-Type': 'application/json' }
+    });
+
+    if (outputAssembleParams.parameter[0].resource.resourceType !== 'Questionnaire') {
       console.warn('Assemble fail');
       console.warn(outputAssembleParams.parameter[0].resource);
     }
+    return outputAssembleParams.parameter[0].resource;
   }
 
   return questionnaire;
 }
 
-export function updateAssembledQuestionnaire(client: Client, questionnaire: Questionnaire) {
+export function updateAssembledQuestionnaire(questionnaire: Questionnaire) {
   const endpointUrl =
     process.env.REACT_APP_FORMS_SERVER_URL ??
     'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';

@@ -8,8 +8,7 @@ import { QuestionnaireProviderContext } from './App';
 import { oauth2 } from 'fhirclient';
 import { getPatient, getUser } from './functions/LaunchFunctions';
 import {
-  getAssembledFromExtension,
-  getAssembledQuestionnaire,
+  assembleIfRequired,
   getInitialQuestionnaireFromBundle,
   getQuestionnaireFromUrl
 } from './functions/LoadServerResourceFunctions';
@@ -86,25 +85,20 @@ export default function Router() {
                 return;
               }
 
-              // get assembled version of questionnaire if assembledFrom extension exists
-
-              const assembledFrom = getAssembledFromExtension(questionnaire);
-              if (assembledFrom && assembledFrom.valueCanonical) {
-                getAssembledQuestionnaire(questionnaire).then((assembledQuestionnaire) => {
-                  if (assembledQuestionnaire) {
-                    questionnaireProvider.setQuestionnaire(assembledQuestionnaire, false, client);
-                  } else {
-                    sessionStorage.removeItem('questionnaireUrl');
-                    enqueueSnackbar(
-                      'An error occurred while fetching initially specified questionnaire',
-                      { variant: 'error' }
-                    );
-                  }
-                  setQuestionnaireIsLoading(false);
-                });
-              } else {
-                questionnaireProvider.setQuestionnaire(questionnaire, false, client);
-              }
+              // set questionnaire in provider context
+              // perform assembly if required
+              assembleIfRequired(questionnaire).then((questionnaire) => {
+                if (questionnaire) {
+                  questionnaireProvider.setQuestionnaire(questionnaire);
+                } else {
+                  sessionStorage.removeItem('questionnaireUrl');
+                  enqueueSnackbar(
+                    'An error occurred while fetching initially specified questionnaire',
+                    { variant: 'error' }
+                  );
+                }
+                setQuestionnaireIsLoading(false);
+              });
             })
             .catch(() => {
               enqueueSnackbar(

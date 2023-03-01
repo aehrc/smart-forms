@@ -2,7 +2,6 @@
 import { Button, CircularProgress } from '@mui/material';
 import React, { useContext, useMemo, useState } from 'react';
 import Iconify from '../../../Misc/Iconify';
-import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
 import { SelectedResponse } from '../../../../interfaces/Interfaces';
 import {
   QuestionnaireProviderContext,
@@ -11,13 +10,12 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { Bundle, Questionnaire } from 'fhir/r5';
 import {
-  getFormsServerAssembledBundlePromise,
   getFormsServerBundleOrQuestionnairePromise,
   getReferencedQuestionnaire
 } from '../../../../functions/DashboardFunctions';
-import { SourceContext } from '../../../../Router';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { assembleIfRequired } from '../../../../functions/LoadServerResourceFunctions';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
@@ -27,8 +25,6 @@ function OpenResponseButton(props: Props) {
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient } = useContext(LaunchContext);
-  const { source } = useContext(SourceContext);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -68,42 +64,21 @@ function OpenResponseButton(props: Props) {
     if (!selectedResponse || !referencedQuestionnaire) return;
     setIsLoading(true);
 
-    // get assembled version of questionnaire if assembledFrom extension exists
-    const assembledFrom = referencedQuestionnaire.extension?.find(
-      (e) =>
-        e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
-    );
-    if (assembledFrom && assembledFrom.valueCanonical) {
-      // invalidate current referenced questionnaire because it requires assembly
-      referencedQuestionnaire = null;
+    // assemble questionnaire if selected response is linked to an assemble-root questionnaire
+    referencedQuestionnaire = await assembleIfRequired(referencedQuestionnaire);
 
-      const queryUrl = '/Questionnaire?_sort=-date&url=' + assembledFrom.valueCanonical + '';
-      const questionnaireBundle = await getFormsServerAssembledBundlePromise(queryUrl);
-      if (questionnaireBundle.entry && questionnaireBundle.entry.length > 0) {
-        const firstQuestionnaire = questionnaireBundle.entry[0].resource;
-
-        // assign most recently updated questionnaire
-        if (firstQuestionnaire) {
-          referencedQuestionnaire = firstQuestionnaire as Questionnaire;
-        }
-      }
-
-      // assembled questionnaire not found
-      if (!referencedQuestionnaire) {
-        console.error(error);
-        enqueueSnackbar('Assembled questionnaire not found. Attempting assembly...', {
-          variant: 'error'
-        });
-        return;
-      }
+    // return early if assembly cannot be performed
+    if (!referencedQuestionnaire) {
+      console.error(error);
+      enqueueSnackbar('Referenced questionnaire not found. Unable to open response', {
+        variant: 'error'
+      });
+      setIsLoading(false);
+      return;
     }
 
     // Assign questionnaire to questionnaire provider
-    await questionnaireProvider.setQuestionnaire(
-      referencedQuestionnaire,
-      source === 'local',
-      fhirClient
-    );
+    await questionnaireProvider.setQuestionnaire(referencedQuestionnaire);
 
     // Assign questionnaireResponse to questionnaireResponse provider
     questionnaireResponseProvider.setQuestionnaireResponse(selectedResponse.resource);

@@ -23,13 +23,6 @@ import {
 } from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
 import { getCalculatedExpression } from '../functions/ItemControlFunctions';
-import { QuestionnaireSource } from '../interfaces/Enums';
-import {
-  assembleQuestionnaire,
-  assemblyIsRequired,
-  updateAssembledQuestionnaire
-} from '../functions/AssembleFunctions';
-import Client from 'fhirclient/lib/Client';
 import {
   getValueSetCodings,
   getValueSetPromise,
@@ -38,7 +31,6 @@ import {
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
-  source: QuestionnaireSource | null;
   variables: Expression[];
   calculatedExpressions: Record<string, CalculatedExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
@@ -49,31 +41,14 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'active'
     };
-    this.source = null;
     this.variables = [];
     this.calculatedExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
   }
 
-  async setQuestionnaire(
-    questionnaire: Questionnaire,
-    questionnaireSourceIsLocal: boolean,
-    client: Client | null
-  ): Promise<void> {
-    // Assemble questionnaire if its not assembled
-    if (assemblyIsRequired(questionnaire)) {
-      questionnaire = await assembleQuestionnaire(questionnaire);
-
-      if (client) {
-        await updateAssembledQuestionnaire(client, questionnaire);
-      }
-    }
-
+  async setQuestionnaire(questionnaire: Questionnaire): Promise<void> {
     this.questionnaire = questionnaire;
-    this.source = questionnaireSourceIsLocal
-      ? QuestionnaireSource.Local
-      : QuestionnaireSource.Remote;
     await this.preprocessQuestionnaire();
     this.readVariables();
   }

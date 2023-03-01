@@ -257,7 +257,7 @@ function QuestionnairesPage() {
 
         <Stack direction="row-reverse" alignItems="center" gap={2} my={5}>
           {fhirClient ? <ViewExistingResponsesButton /> : null}
-          <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} source={source} />
+          <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} />
         </Stack>
       </Container>
     </Fade>
