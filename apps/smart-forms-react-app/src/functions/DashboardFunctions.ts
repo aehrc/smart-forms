@@ -150,7 +150,7 @@ export function getQuestionnaireListItems(bundle: Bundle | undefined): Questionn
         title: questionnaireTitle,
         avatarColor: randomColor({ luminosity: 'dark', seed: questionnaireTitle + i.toString() }),
         publisher: questionnaire.publisher ?? '—',
-        date: questionnaire.date ? dayjs(questionnaire.date).format('LL') : '—',
+        date: questionnaire.date ? dayjs(questionnaire.date).format() : '—',
         status: questionnaire.status
       };
       return questionnaireListItem;
@@ -171,7 +171,7 @@ export function getResponseListItems(bundle: Bundle | undefined): ResponseListIt
         title: responseTitle,
         avatarColor: randomColor({ luminosity: 'dark', seed: responseTitle + i.toString() }),
         author: response.author?.display ?? '—',
-        authored: response.authored ? dayjs(response.authored).format('LLL') : '—',
+        authored: response.authored ?? dayjs(response.authored).format(),
         status: response.status
       };
       return responseListItem;

@@ -40,6 +40,7 @@ import BackToQuestionnairesButton from './ResponsesPageComponents/BackToQuestion
 import OpenResponseButton from './ResponsesPageComponents/OpenResponseButton';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import useDebounce from '../../../custom-hooks/useDebounce';
+import dayjs from 'dayjs';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'name', label: 'Name', alignRight: false },
@@ -206,7 +207,7 @@ function ResponsesPage() {
                           </TableCell>
 
                           <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {authored}
+                            {dayjs(authored).format('LLL')}
                           </TableCell>
 
                           <TableCell align="left">
