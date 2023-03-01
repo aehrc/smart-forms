@@ -42,6 +42,7 @@ import QItemGroupTableRow from './QItemGroupTableRow';
 import { DeleteButtonTableCell, HeaderTableCell } from '../../StyledComponents/Table.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
+import { mapQItemsIndex } from '../../../functions/IndexFunctions';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -67,6 +68,8 @@ function QItemGroupTable(props: Props) {
     () => qItem.item?.map((item) => (item.text ? item.text : '')) ?? [],
     [qItem.item]
   );
+
+  const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
   // Check if there are columns within the group table
   if (!qItem.item || qItem.item.length === 0) return null;
@@ -141,6 +144,7 @@ function QItemGroupTable(props: Props) {
                     <QItemGroupTableRow
                       qItem={qItem}
                       qrItem={singleQrRow}
+                      qItemsIndexMap={qItemsIndexMap}
                       onQrItemChange={(newQrGroup) => handleRowsChange(newQrGroup, index)}
                     />
                     <DeleteButtonTableCell>

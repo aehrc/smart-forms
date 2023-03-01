@@ -21,18 +21,17 @@ import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import QItemSwitcher from './QItemSwitcher';
-import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
+import { getQrItemsIndex } from '../../../functions/IndexFunctions';
 import { FirstTableCell, StandardTableCell } from '../../StyledComponents/Table.styles';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  qItemsIndexMap: Record<string, number>;
 }
 
 function QItemGroupTableRow(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
-
-  const qItemsIndexMap = mapQItemsIndex(qItem);
+  const { qItem, qrItem, qItemsIndexMap, onQrItemChange } = props;
 
   const rowItems = qItem.item;
   const qrRowFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
