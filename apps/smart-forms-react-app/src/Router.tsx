@@ -8,7 +8,9 @@ import { QuestionnaireProviderContext } from './App';
 import { oauth2 } from 'fhirclient';
 import { getPatient, getUser } from './functions/LaunchFunctions';
 import {
-  getInitialQuestionnaireFromResponse,
+  getAssembledFromExtension,
+  getAssembledQuestionnaire,
+  getInitialQuestionnaireFromBundle,
   getQuestionnaireFromUrl
 } from './functions/LoadServerResourceFunctions';
 import { isStillAuthenticating } from './functions/LaunchContextFunctions';
@@ -69,15 +71,48 @@ export default function Router() {
 
         const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
         if (questionnaireUrl) {
-          getQuestionnaireFromUrl(client, questionnaireUrl)
-            .then((response) => {
-              const questionnaire = getInitialQuestionnaireFromResponse(response);
-              if (questionnaire) {
+          getQuestionnaireFromUrl(questionnaireUrl)
+            .then((bundle) => {
+              let questionnaire = getInitialQuestionnaireFromBundle(bundle);
+
+              // return early if no matching questionnaire
+              if (!questionnaire) {
+                setQuestionnaireIsLoading(false);
+                sessionStorage.removeItem('questionnaireUrl');
+                enqueueSnackbar(
+                  'An error occurred while fetching initially specified questionnaire',
+                  { variant: 'error' }
+                );
+                return;
+              }
+
+              // get assembled version of questionnaire if assembledFrom extension exists
+
+              const assembledFrom = getAssembledFromExtension(questionnaire);
+              if (assembledFrom && assembledFrom.valueCanonical) {
+                getAssembledQuestionnaire(questionnaire).then((assembledQuestionnaire) => {
+                  if (assembledQuestionnaire) {
+                    questionnaireProvider.setQuestionnaire(assembledQuestionnaire, false, client);
+                  } else {
+                    sessionStorage.removeItem('questionnaireUrl');
+                    enqueueSnackbar(
+                      'An error occurred while fetching initially specified questionnaire',
+                      { variant: 'error' }
+                    );
+                  }
+                  setQuestionnaireIsLoading(false);
+                });
+              } else {
                 questionnaireProvider.setQuestionnaire(questionnaire, false, client);
               }
-              setQuestionnaireIsLoading(false);
             })
-            .catch(() => setQuestionnaireIsLoading(false));
+            .catch(() => {
+              enqueueSnackbar(
+                'An error occurred while fetching initially specified questionnaire',
+                { variant: 'error' }
+              );
+              setQuestionnaireIsLoading(false);
+            });
         } else {
           setQuestionnaireIsLoading(false);
         }

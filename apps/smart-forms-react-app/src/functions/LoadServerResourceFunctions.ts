@@ -15,13 +15,22 @@
  * limitations under the License.
  */
 
-import { Bundle, BundleEntry, FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
+import {
+  Bundle,
+  BundleEntry,
+  Extension,
+  FhirResource,
+  OperationOutcome,
+  Questionnaire
+} from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import Q715 from '../data/resources/715.R4.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
 import QCvdRisk from '../data/resources/CVD Risk.json';
 import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
+import * as FHIR from 'fhirclient';
+import { getFormsServerAssembledBundlePromise } from './DashboardFunctions';
 
 export const headers = {
   'Cache-Control': 'no-cache',
@@ -40,24 +49,58 @@ export function fetchQuestionnaireById(
   });
 }
 
-export function getQuestionnaireFromUrl(
-  client: Client,
-  canonicalReferenceUrl: string
-): Promise<Questionnaire | Bundle> {
-  return client.request({
-    url: `Questionnaire?url=${canonicalReferenceUrl}&_sort=-date&`,
+export async function getAssembledQuestionnaire(
+  questionnaire: Questionnaire | null
+): Promise<Questionnaire | null> {
+  if (!questionnaire) return null;
+
+  // get assembled version of questionnaire if assembledFrom extension exists
+  const assembledFrom = getAssembledFromExtension(questionnaire);
+  if (assembledFrom && assembledFrom.valueCanonical) {
+    // invalidate current referenced questionnaire because it requires assembly
+    questionnaire = null;
+
+    const queryUrl = '/Questionnaire?_sort=-date&url=' + assembledFrom.valueCanonical;
+    const questionnaireBundle = await getFormsServerAssembledBundlePromise(queryUrl);
+    if (questionnaireBundle.entry && questionnaireBundle.entry.length > 0) {
+      const firstQuestionnaire = questionnaireBundle.entry[0].resource;
+
+      // assign most recently updated questionnaire
+      if (firstQuestionnaire) {
+        questionnaire = firstQuestionnaire as Questionnaire;
+      }
+    }
+  }
+  return questionnaire;
+}
+
+export function getQuestionnaireFromUrl(canonicalUrl: string): Promise<Bundle> {
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  let queryUrl = `Questionnaire?_sort=-date&url=${canonicalUrl}&`;
+  queryUrl = queryUrl.replace('|', '&version=');
+
+  return FHIR.client(endpointUrl).request({
+    url: queryUrl,
     method: 'GET',
     headers: headers
   });
 }
 
-export function getInitialQuestionnaireFromResponse(
-  response: Questionnaire | Bundle
-): Questionnaire | null {
-  if (response.resourceType === 'Questionnaire') {
-    return response;
-  }
+export function getAssembledFromExtension(questionnaire: Questionnaire | null): Extension | null {
+  if (!questionnaire) return null;
 
+  return (
+    questionnaire.extension?.find(
+      (e) =>
+        e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
+    ) ?? null
+  );
+}
+
+export function getInitialQuestionnaireFromBundle(response: Bundle): Questionnaire | null {
   const bundleEntries = response.entry;
   if (bundleEntries && bundleEntries.length > 0) {
     for (const entry of bundleEntries) {
