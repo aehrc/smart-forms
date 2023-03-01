@@ -31,11 +31,7 @@ import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 import * as FHIR from 'fhirclient';
 import { getFormsServerAssembledBundlePromise } from './DashboardFunctions';
-import {
-  assembleQuestionnaire,
-  assemblyIsRequired,
-  updateAssembledQuestionnaire
-} from './AssembleFunctions';
+import { assembleQuestionnaire, updateAssembledQuestionnaire } from './AssembleFunctions';
 
 export const headers = {
   'Cache-Control': 'no-cache',
@@ -57,34 +53,32 @@ export function fetchQuestionnaireById(
 export async function assembleIfRequired(
   questionnaire: Questionnaire
 ): Promise<Questionnaire | null> {
-  if (!questionnaire) return null;
-
   // get assembled version of questionnaire if assembledFrom extension exists
   const assembledFrom = getAssembledFromExtension(questionnaire);
   if (assembledFrom && assembledFrom.valueCanonical) {
-    // invalidate current referenced questionnaire because it requires assembly
-    let questionnaireToBeAssembled = null;
-
+    // check for existing assembled questionnaires
     const queryUrl = '/Questionnaire?_sort=-date&url=' + assembledFrom.valueCanonical;
     const bundle = await getFormsServerAssembledBundlePromise(queryUrl);
+
+    // if there is an assembled questionnaire, return it
     if (bundle.entry && bundle.entry.length > 0) {
       const firstQuestionnaire = bundle.entry[0].resource;
-      if (!firstQuestionnaire) return null;
-
-      // check if questionnaire is assemble-root and proceed with assembly
-      questionnaireToBeAssembled = firstQuestionnaire as Questionnaire;
-      if (!assemblyIsRequired(questionnaireToBeAssembled)) return null;
-
-      // attempt assembly
-      const resource = await assembleQuestionnaire(questionnaire);
-      if (resource.resourceType === 'OperationOutcome') return null;
-
-      // at this point, assembly is successful
-      // save assembled questionnaire to forms server and return it
-      await updateAssembledQuestionnaire(questionnaire);
-      return resource;
+      if (firstQuestionnaire) {
+        return firstQuestionnaire as Questionnaire;
+      }
     }
+
+    // If not, perform assemble on-the-fly and save it to forms server
+    const resource = await assembleQuestionnaire(questionnaire);
+    if (resource.resourceType === 'OperationOutcome') return null;
+
+    // at this point, assembly is successful
+    // save assembled questionnaire to forms server and return it
+    await updateAssembledQuestionnaire(questionnaire);
+    return resource;
   }
+
+  // questionnaire does not require assembly, return as usual
   return questionnaire;
 }
 
