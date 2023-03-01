@@ -36,7 +36,6 @@ import ResponseLabel from './ResponseLabel';
 import ResponseListFeedback from './ResponsesPageComponents/ResponseListFeedback';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import { constructBundle } from '../../../functions/LoadServerResourceFunctions';
-import dayjs from 'dayjs';
 import BackToQuestionnairesButton from './ResponsesPageComponents/BackToQuestionnairesButton';
 import OpenResponseButton from './ResponsesPageComponents/OpenResponseButton';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
@@ -207,7 +206,7 @@ function ResponsesPage() {
                           </TableCell>
 
                           <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {dayjs(authored).format('LLL')}
+                            {authored}
                           </TableCell>
 
                           <TableCell align="left">
