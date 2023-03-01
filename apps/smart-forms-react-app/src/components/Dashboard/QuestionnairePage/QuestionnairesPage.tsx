@@ -67,7 +67,10 @@ function QuestionnairesPage() {
   const debouncedInput = useDebounce(searchInput, 300);
   const numOfSearchEntries = 50;
 
-  const queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&title:contains=${debouncedInput}`;
+  let queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&_sort=-date&`;
+  if (debouncedInput) {
+    queryUrl += 'title:contains=' + debouncedInput;
+  }
 
   const { data, status, error } = useQuery<Bundle>(
     ['questionnaires', queryUrl],
@@ -142,7 +145,7 @@ function QuestionnairesPage() {
 
   return (
     <Fade in={true}>
-      <Container>
+      <Container data-test="dashboard-questionnaires-container">
         <Stack direction="row" alignItems="center" mb={3}>
           <Typography variant="h3" gutterBottom>
             Questionnaires
@@ -184,6 +187,7 @@ function QuestionnairesPage() {
                           key={id}
                           tabIndex={-1}
                           selected={isSelected}
+                          data-test="questionnaire-list-row"
                           onClick={() => handleRowClick(row.id)}>
                           <TableCell padding="checkbox">
                             <Avatar

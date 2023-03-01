@@ -50,7 +50,7 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function ResponsesPage() {
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient, patient } = useContext(LaunchContext);
   const { source } = useContext(SourceContext);
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
 
@@ -66,7 +66,7 @@ function ResponsesPage() {
   const debouncedInput = useDebounce(searchInput, 300);
   const numOfSearchEntries = 50;
 
-  let queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}&`;
+  let queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}&_sort=-authored&patient=${patient?.id}&`;
   if (debouncedInput) {
     queryUrl += 'questionnaire.title:contains=' + debouncedInput;
   }
@@ -142,7 +142,7 @@ function ResponsesPage() {
 
   return (
     <Fade in={true}>
-      <Container>
+      <Container data-test="dashboard-responses-container">
         <Stack direction="row" alignItems="center" mb={3}>
           <Typography variant="h3" gutterBottom>
             Responses

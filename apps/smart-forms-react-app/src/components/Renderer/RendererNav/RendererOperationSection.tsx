@@ -66,6 +66,7 @@ export function OperationItem(props: NavButton) {
       disableGutters
       onClick={onClick}
       disabled={disabled}
+      data-test="list-button-renderer-operation"
       sx={{
         ...theme.typography.subtitle2,
         height: 48,

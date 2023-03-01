@@ -38,7 +38,8 @@ function RendererHeader(props: Props) {
             mr: 1,
             color: 'text.primary',
             ...(!navCollapsed && { display: { lg: 'none' } })
-          }}>
+          }}
+          data-test="button-expand-nav">
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
