@@ -68,6 +68,7 @@ function CreateNewResponseButton(props: Props) {
           backgroundColor: 'secondary.dark'
         }
       }}
+      data-test="button-create-response"
       onClick={handleClick}>
       Create response
     </Button>

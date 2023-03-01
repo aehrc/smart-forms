@@ -76,7 +76,7 @@ function Form() {
         <Fade in={true} timeout={500}>
           <Container disableGutters maxWidth="xl" sx={{ px: 2 }}>
             <Box>
-              <Typography variant="h3" data-test="renderer-heading">
+              <Typography variant="h3" data-test="form-heading">
                 <QTitle questionnaire={questionnaire} />
               </Typography>
             </Box>
