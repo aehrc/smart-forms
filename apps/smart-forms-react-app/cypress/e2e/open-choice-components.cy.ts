@@ -3,29 +3,17 @@ describe('open choice component behaviour', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
+
+    cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('renderer-heading').should('be.visible');
+    cy.getByData('form-heading').should('be.visible');
 
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
+    cy.goToPatientDetailsTab();
+    cy.initAgeValue(50);
 
-    cy.getByData('q-item-integer-box')
-      .should('include.text', 'Age')
-      .find('input')
-      .eq(0)
-      .type('50')
-      .wait(50);
-
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Finalising the health check')
-      .click();
+    cy.goToTab('Finalising the health check');
   });
 
   context('open choice checkbox answer option component with repeats', () => {
@@ -47,10 +35,8 @@ describe('open choice component behaviour', () => {
         .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
     });
 
     it('reflects changes in questionnaire response on checking second checkbox then unchecking it', () => {
@@ -72,17 +58,11 @@ describe('open choice component behaviour', () => {
         .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
 
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
-      cy.getByData('response-item-answer').contains(expectedAnswerSecond);
-
-      cy.getByData('chip-bar-box')
-        .find('.MuiButtonBase-root')
-        .contains('Continue Editing')
-        .click()
-        .wait(100);
+      cy.editForm();
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -93,10 +73,8 @@ describe('open choice component behaviour', () => {
         .wait(50)
         .should('not.be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
       cy.getByData('response-item-answer').should('not.have.text', expectedAnswerSecond);
     });
 
@@ -137,17 +115,11 @@ describe('open choice component behaviour', () => {
         .type(openLabelInput)
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
+      cy.checkResponseTextAndAnswer(itemText, openLabelInput);
 
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
-      cy.getByData('response-item-answer').contains(openLabelInput);
-
-      cy.getByData('chip-bar-box')
-        .find('.MuiButtonBase-root')
-        .contains('Continue Editing')
-        .click()
-        .wait(100);
+      cy.editForm();
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -158,17 +130,11 @@ describe('open choice component behaviour', () => {
         .clear()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
       cy.getByData('response-item-answer').should('not.contain.text', openLabelInput);
 
-      cy.getByData('chip-bar-box')
-        .find('.MuiButtonBase-root')
-        .contains('Continue Editing')
-        .click()
-        .wait(100);
+      cy.editForm();
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -197,10 +163,8 @@ describe('open choice component behaviour', () => {
         .uncheck()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
       cy.getByData('response-item-answer').should('not.contain.text', openLabelInput);
     });
   });
@@ -214,10 +178,7 @@ describe('open choice component behaviour', () => {
     const secondInputToBeSearched = 'stone';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Medical history and current problems')
-        .click();
+      cy.goToTab('Medical history and current problems');
     });
 
     it('reflects changes in questionnaire response on selection of autocompleted input', () => {
@@ -242,10 +203,8 @@ describe('open choice component behaviour', () => {
         .type('{enter}')
         .should('contain.value', firstInputToBeSearched);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(firstInputToBeSearched);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, firstInputToBeSearched);
     });
 
     it('reflects changes in questionnaire response on change of input and autocompleted input', () => {
@@ -288,10 +247,8 @@ describe('open choice component behaviour', () => {
         .type('{enter}')
         .should('contain.value', secondInputToBeSearched);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(secondInputToBeSearched);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, secondInputToBeSearched);
     });
   });
 
@@ -305,7 +262,7 @@ describe('open choice component behaviour', () => {
     const expectedAnswerSecond = 'School';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Consent').click();
+      cy.goToTab('Consent');
     });
 
     it('reflects changes in questionnaire response on selection of first radio button', () => {
@@ -318,10 +275,8 @@ describe('open choice component behaviour', () => {
         .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
     });
 
     it('reflects changes in questionnaire response on checking second checkbox then unchecking it', () => {
@@ -350,10 +305,8 @@ describe('open choice component behaviour', () => {
         .eq(indexFirstRadioToBeChecked)
         .should('not.be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerSecond);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
     });
 
     it('reflects changes in questionnaire response on open label input', () => {
@@ -393,17 +346,11 @@ describe('open choice component behaviour', () => {
         .type(openLabelInput)
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, openLabelInput);
       cy.getByData('response-item-answer').should('not.include.text', expectedAnswerFirst);
-      cy.getByData('response-item-answer').contains(openLabelInput);
 
-      cy.getByData('chip-bar-box')
-        .find('.MuiButtonBase-root')
-        .contains('Continue Editing')
-        .click()
-        .wait(100);
+      cy.editForm();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -414,16 +361,12 @@ describe('open choice component behaviour', () => {
         .clear()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+      cy.previewForm();
 
       cy.getByData('response-item-text').should('not.contain.text', itemText);
       cy.getByData('response-item-answer').should('not.contain.text', openLabelInput);
 
-      cy.getByData('chip-bar-box')
-        .find('.MuiButtonBase-root')
-        .contains('Continue Editing')
-        .click()
-        .wait(100);
+      cy.editForm();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -452,10 +395,8 @@ describe('open choice component behaviour', () => {
         .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
       cy.getByData('response-item-answer').should('not.contain.text', openLabelInput);
     });
   });

@@ -43,6 +43,7 @@ function QuestionnaireListToolbar(props: Props) {
               />
             </InputAdornment>
           }
+          data-test="search-field-questionnaires"
         />
       )}
       {alertVisible && !selected ? (

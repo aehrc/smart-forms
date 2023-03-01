@@ -96,7 +96,7 @@ function QItemDateTimePicker(props: QItemDateTimePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
-        inputFormat="DD/MM/YYYY hh:mm a"
+        inputFormat="DD/MM/YYYY hh:mm A"
         value={value}
         onChange={onDateTimeChange}
         renderInput={(params) => (

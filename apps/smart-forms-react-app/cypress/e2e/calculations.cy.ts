@@ -3,7 +3,11 @@ describe('calculations via variables', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.goToTab('Aboriginal and Torres Strait Islander Health Check');
+    cy.getByData('questionnaire-list-row')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
+      .click();
+    cy.getByData('button-create-response').click();
+    cy.getByData('form-heading').should('be.visible');
 
     cy.goToPatientDetailsTab();
     cy.initAgeValue(50);

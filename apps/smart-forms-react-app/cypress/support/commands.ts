@@ -38,6 +38,13 @@ Cypress.Commands.add('previewForm', () => {
   cy.get('.simplebar-content').type('{esc}');
 });
 
+Cypress.Commands.add('clickOnOperation', (operationName: string) => {
+  cy.getByData('button-expand-nav').click();
+  cy.getByData('list-button-renderer-operation');
+  cy.contains(operationName).click();
+  cy.get('.simplebar-content').type('{esc}');
+});
+
 Cypress.Commands.add('editForm', () => {
   cy.getByData('button-expand-nav').click();
   cy.getByData('list-button-renderer-operation');
