@@ -23,7 +23,6 @@ import {
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 import QItemGroup from './QItemGroup';
 
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -34,6 +33,7 @@ import { QGroupHeadingTypography } from '../../StyledComponents/Typographys.styl
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { nanoid } from 'nanoid';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -132,7 +132,7 @@ function QItemRepeatGroup(props: Props) {
                         color="error"
                         disabled={!singleGroup}
                         onClick={() => deleteAnswerItem(index)}>
-                        <DeleteIcon />
+                        <RemoveCircleOutlineIcon />
                       </IconButton>
                     </span>
                   </RepeatDeleteTooltip>

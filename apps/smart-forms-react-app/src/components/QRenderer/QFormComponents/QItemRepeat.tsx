@@ -19,7 +19,6 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Collapse, Grid, IconButton, Stack } from '@mui/material';
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 import QItemSwitcher from './QItemSwitcher';
 import {
   QuestionnaireItem,
@@ -33,6 +32,7 @@ import QItemLabel from './QItemParts/QItemLabel';
 import { TransitionGroup } from 'react-transition-group';
 import { FullWidthFormComponentBox } from '../../StyledComponents/Boxes.styles';
 import { nanoid } from 'nanoid';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -126,7 +126,7 @@ function QItemRepeat(props: Props) {
                           color="error"
                           disabled={!answer}
                           onClick={() => deleteAnswer(index)}>
-                          <DeleteIcon fontSize="small" />
+                          <RemoveCircleOutlineIcon fontSize="small" />
                         </IconButton>
                       </span>
                     </RepeatDeleteTooltip>

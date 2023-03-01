@@ -37,12 +37,12 @@ import {
 } from '@mui/material';
 import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 import QItemGroupTableRow from './QItemGroupTableRow';
 import { DeleteButtonTableCell, HeaderTableCell } from '../../StyledComponents/Table.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupContainerBox } from '../../StyledComponents/Boxes.styles';
 import { mapQItemsIndex } from '../../../functions/IndexFunctions';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -151,7 +151,7 @@ function QItemGroupTable(props: Props) {
                       <Tooltip title="Delete item">
                         <span>
                           <IconButton size="small" color="error" onClick={() => deleteRow(index)}>
-                            <DeleteIcon />
+                            <RemoveCircleOutlineIcon fontSize="small" />
                           </IconButton>
                         </span>
                       </Tooltip>
