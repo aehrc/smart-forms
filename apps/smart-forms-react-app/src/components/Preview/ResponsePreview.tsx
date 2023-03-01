@@ -17,24 +17,33 @@
 
 import React, { useContext, useEffect, useRef } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
-import Preview from './Preview';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import ViewerInvalid from '../QRenderer/ViewerInvalid';
 import { PrintComponentRefContext } from '../Viewer/ViewerLayout';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
+import parse from 'html-react-parser';
+import { qrToHTML } from '../../functions/PreviewFunctions';
 
 function ResponsePreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { setComponentRef } = useContext(PrintComponentRefContext);
+  const enableWhenContext = useContext(EnableWhenContext);
 
+  const { setComponentRef } = useContext(PrintComponentRefContext);
   const componentRef = useRef(null);
 
   useEffect(() => {
     setComponentRef(componentRef);
   }, []); // init componentRef on first render, leave dependency array empty
 
-  if (!questionnaireProvider.questionnaire.item || !questionnaireResponseProvider.response.item)
-    return <ViewerInvalid />;
+  const questionnaire = questionnaireProvider.questionnaire;
+  const response = questionnaireResponseProvider.response;
+
+  if (!questionnaire.item || !response.item) return <ViewerInvalid />;
+
+  const responseCleaned = removeHiddenAnswers(questionnaire, response, enableWhenContext);
+  const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 
   return (
     <Fade in={true} timeout={500}>
@@ -44,7 +53,7 @@ function ResponsePreview() {
         </Box>
         <Card sx={{ mb: 2 }}>
           <Box ref={componentRef} sx={{ p: 4 }}>
-            <Preview />
+            <>{parsedHTML}</>
           </Box>
         </Card>
       </Container>
