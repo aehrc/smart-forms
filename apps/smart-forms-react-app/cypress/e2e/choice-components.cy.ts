@@ -2,13 +2,13 @@ describe('choice component behaviour', () => {
   const launchPage = 'http://localhost:3000/launch';
 
   beforeEach(() => {
+    // select questionnaire
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
+    cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('renderer-heading').should('be.visible');
+    cy.getByData('form-heading').should('be.visible');
   });
 
   context('choice radio answer option component', () => {
@@ -19,22 +19,10 @@ describe('choice component behaviour', () => {
     const expectedAnswerSecond = 'Not required';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Patient Details')
-        .click();
+      cy.goToPatientDetailsTab();
+      cy.initAgeValue(50);
 
-      cy.getByData('q-item-integer-box')
-        .should('include.text', 'Age')
-        .find('input')
-        .eq(0)
-        .type('50')
-        .wait(50);
-
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Participation in screening programs')
-        .click();
+      cy.goToTab('Participation in screening programs');
     });
 
     it('reflects changes in questionnaire response on selection of first radio', () => {
@@ -44,13 +32,10 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
     });
 
     it('reflects changes in questionnaire response on change of selection to second radio button', () => {
@@ -79,10 +64,8 @@ describe('choice component behaviour', () => {
         .eq(indexFirstRadioToBeChecked)
         .should('not.be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerSecond);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
     });
   });
 
@@ -94,21 +77,10 @@ describe('choice component behaviour', () => {
     const expectedAnswerSecond = 'Not applicable';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Patient Details')
-        .click();
+      cy.goToPatientDetailsTab();
+      cy.initAgeValue(60);
 
-      cy.getByData('q-item-integer-box')
-        .should('include.text', 'Age')
-        .find('input')
-        .type('60')
-        .wait(50);
-
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('About the health check')
-        .click();
+      cy.goToTab('About the health check');
     });
 
     it('reflects changes in questionnaire response on selection of first radio button', () => {
@@ -121,10 +93,8 @@ describe('choice component behaviour', () => {
         .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
     });
 
     it('reflects changes in questionnaire response on change of selection to second radio button', () => {
@@ -153,10 +123,8 @@ describe('choice component behaviour', () => {
         .eq(indexFirstRadioToBeChecked)
         .should('not.be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerSecond);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
     });
   });
 
@@ -170,10 +138,7 @@ describe('choice component behaviour', () => {
       const expectedAnswerSecond = 'Other';
 
       beforeEach(() => {
-        cy.getByData('renderer-tab-list')
-          .find('.MuiButtonBase-root')
-          .contains('Patient Details')
-          .click();
+        cy.goToPatientDetailsTab();
       });
 
       it('reflects changes in questionnaire response on selection of first radio button', () => {
@@ -186,10 +151,8 @@ describe('choice component behaviour', () => {
           .wait(50)
           .should('be.checked');
 
-        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-        cy.getByData('response-item-text').contains(itemText);
-        cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+        cy.previewForm();
+        cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
       });
 
       it('reflects changes in questionnaire response on change of selection to second radio button', () => {
@@ -218,10 +181,8 @@ describe('choice component behaviour', () => {
           .eq(indexFirstRadioToBeChecked)
           .should('not.be.checked');
 
-        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-        cy.getByData('response-item-text').contains(itemText);
-        cy.getByData('response-item-answer').contains(expectedAnswerSecond);
+        cy.previewForm();
+        cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
       });
     }
   );
@@ -234,22 +195,10 @@ describe('choice component behaviour', () => {
     const expectedAnswerSecond = 'Not required';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Patient Details')
-        .click();
+      cy.goToPatientDetailsTab();
+      cy.initAgeValue(49);
 
-      cy.getByData('q-item-integer-box')
-        .should('include.text', 'Age')
-        .find('input')
-        .eq(0)
-        .type('49')
-        .wait(50);
-
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Genitourinary and sexual health')
-        .click();
+      cy.goToTab('Genitourinary and sexual health');
     });
 
     it('reflects changes in questionnaire response on selection of first checkbox', () => {
@@ -262,10 +211,8 @@ describe('choice component behaviour', () => {
         .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
     });
 
     it('reflects changes in questionnaire response on change of selection to second checkbox ', () => {
@@ -294,10 +241,8 @@ describe('choice component behaviour', () => {
         .eq(indexFirstRadioToBeChecked)
         .should('not.be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerSecond);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
     });
   });
 
@@ -311,17 +256,8 @@ describe('choice component behaviour', () => {
       const expectedAnswerSecond = 'Grandparent';
 
       beforeEach(() => {
-        cy.getByData('renderer-tab-list')
-          .find('.MuiButtonBase-root')
-          .contains('Patient Details')
-          .click();
-
-        cy.getByData('q-item-integer-box')
-          .should('include.text', 'Age')
-          .find('input')
-          .eq(0)
-          .type('10')
-          .wait(50);
+        cy.goToPatientDetailsTab();
+        cy.initAgeValue(10);
       });
 
       it('reflects changes in questionnaire response on selection of first checkbox', () => {
@@ -334,10 +270,8 @@ describe('choice component behaviour', () => {
           .wait(50)
           .should('be.checked');
 
-        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-        cy.getByData('response-item-text').contains(itemText);
-        cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+        cy.previewForm();
+        cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
       });
 
       it('reflects changes in questionnaire response on checking second checkbox then unchecking it', () => {
@@ -359,17 +293,10 @@ describe('choice component behaviour', () => {
           .wait(50)
           .should('be.checked');
 
-        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+        cy.previewForm();
+        cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
 
-        cy.getByData('response-item-text').contains(itemText);
-        cy.getByData('response-item-answer').contains(expectedAnswerSecond);
-        cy.getByData('response-item-answer').contains(expectedAnswerSecond);
-
-        cy.getByData('chip-bar-box')
-          .find('.MuiButtonBase-root')
-          .contains('Continue Editing')
-          .click()
-          .wait(100);
+        cy.editForm();
 
         cy.getByData('q-item-choice-checkbox-answer-value-set-box')
           .should('include.text', itemText)
@@ -380,10 +307,9 @@ describe('choice component behaviour', () => {
           .wait(50)
           .should('not.be.checked');
 
-        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+        cy.previewForm();
 
-        cy.getByData('response-item-text').contains(itemText);
-        cy.getByData('response-item-answer').contains(expectedAnswerFirst);
+        cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
         cy.getByData('response-item-answer').should('not.have.text', expectedAnswerSecond);
       });
     }
@@ -397,41 +323,24 @@ describe('choice component behaviour', () => {
     const secondInput = 'Recurrence';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Patient Details')
-        .click();
-
-      cy.getByData('q-item-integer-box')
-        .should('include.text', 'Age')
-        .find('input')
-        .eq(0)
-        .type('10')
-        .wait(50);
+      cy.goToPatientDetailsTab();
+      cy.initAgeValue(50);
     });
 
     it('reflects changes in questionnaire response on input', () => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Medical history and current problems')
-        .click();
+      cy.goToTab('Medical history and current problems');
 
       cy.getByData('q-item-choice-dropdown-answer-value-set-field')
         .eq(0)
         .find('input')
         .type(`${firstInput}{enter}`);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(firstInput);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, firstInput);
     });
 
     it('reflects changes in questionnaire response on change of input/selection', () => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Medical history and current problems')
-        .click();
+      cy.goToTab('Medical history and current problems');
 
       cy.getByData('q-item-choice-dropdown-answer-value-set-field')
         .eq(0)
@@ -441,10 +350,8 @@ describe('choice component behaviour', () => {
         .clear()
         .type(`${secondInput}{enter}`);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(secondInput);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, secondInput);
     });
   });
 
@@ -456,10 +363,7 @@ describe('choice component behaviour', () => {
       const secondInput = 'Northern Territory';
 
       beforeEach(() => {
-        cy.getByData('renderer-tab-list')
-          .find('.MuiButtonBase-root')
-          .contains('Patient Details')
-          .click();
+        cy.goToPatientDetailsTab();
       });
 
       it('reflects changes in questionnaire response on input', () => {
@@ -469,10 +373,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .type(`${firstInput}{enter}`);
 
-        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-        cy.getByData('response-item-text').contains(itemText);
-        cy.getByData('response-item-answer').contains(firstInput);
+        cy.previewForm();
+        cy.checkResponseTextAndAnswer(itemText, firstInput);
       });
 
       it('reflects changes in questionnaire response on change of input/selection', () => {
@@ -486,10 +388,8 @@ describe('choice component behaviour', () => {
           .type(`${secondInput}{enter}`)
           .wait(50);
 
-        cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-        cy.getByData('response-item-text').contains(itemText);
-        cy.getByData('response-item-answer').contains(secondInput);
+        cy.previewForm();
+        cy.checkResponseTextAndAnswer(itemText, secondInput);
       });
     }
   );
