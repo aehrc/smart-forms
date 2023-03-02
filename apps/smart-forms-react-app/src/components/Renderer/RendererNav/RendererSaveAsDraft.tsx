@@ -1,5 +1,5 @@
 import SaveIcon from '@mui/icons-material/Save';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
@@ -15,15 +15,24 @@ function RendererSaveAsDraft() {
   const { renderer, setRenderer } = useContext(RendererContext);
   const enableWhenContext = useContext(EnableWhenContext);
 
+  const { response, hasChanges } = renderer;
+
   const { enqueueSnackbar } = useSnackbar();
 
-  const { response, hasChanges } = renderer;
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    setIsUpdating(true);
+    setTimeout(() => {
+      setIsUpdating(false);
+    }, 500);
+  }, [response]);
 
   return (
     <OperationItem
       title={'Save as Draft'}
       icon={<SaveIcon />}
-      disabled={!hasChanges || !fhirClient}
+      disabled={!hasChanges || !fhirClient || isUpdating}
       onClick={() => {
         if (!(fhirClient && patient && user)) return;
 

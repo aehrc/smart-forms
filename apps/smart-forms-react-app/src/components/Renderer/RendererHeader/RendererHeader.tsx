@@ -15,6 +15,7 @@ import { QuestionnaireProviderContext } from '../../../App';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import QuestionnairePopoverMenu from '../../Header/QuestionnairePopoverMenu';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
+import UpdatingIndicator from './UpdatingIndicator';
 
 interface Props {
   navCollapsed: boolean;
@@ -57,6 +58,7 @@ function RendererHeader(props: Props) {
           </Box>
         ) : null}
         <Box sx={{ flexGrow: 1 }} />
+        <UpdatingIndicator />
 
         <Stack
           direction="row"
