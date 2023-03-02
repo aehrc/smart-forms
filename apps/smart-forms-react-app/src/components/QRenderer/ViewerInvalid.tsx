@@ -32,7 +32,7 @@ function ViewerInvalid() {
       <Container>
         <Stack gap={3}>
           <Typography variant="h3">
-            Oops, the selected response doesn't seem to be valid.
+            {"Oops, the selected response doesn't seem to be valid."}
           </Typography>
           <Typography>
             {
