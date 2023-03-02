@@ -73,7 +73,7 @@ export default function Router() {
         if (questionnaireUrl) {
           getQuestionnaireFromUrl(questionnaireUrl)
             .then((bundle) => {
-              let questionnaire = getInitialQuestionnaireFromBundle(bundle);
+              const questionnaire = getInitialQuestionnaireFromBundle(bundle);
 
               // return early if no matching questionnaire
               if (!questionnaire) {

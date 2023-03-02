@@ -83,7 +83,7 @@ function RendererLayout() {
 
   const [spinner, setSpinner] = useState(initialSpinner);
 
-  let isBlocked = renderer.hasChanges;
+  const isBlocked = renderer.hasChanges;
   const blocker = useBlocker(isBlocked);
 
   useEffect(() => {

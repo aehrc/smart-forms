@@ -100,7 +100,7 @@ function RenderFeedback(props: FeedbackProps) {
           {searchInput === '' ? (
             <Typography variant="body2">
               No results found.
-              <br /> It doesn't seem like you have any responses yet.
+              <br /> It doesn&apos;t seem like you have any responses yet.
             </Typography>
           ) : (
             <Typography variant="body2">

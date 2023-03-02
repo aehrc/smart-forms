@@ -61,7 +61,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     if (!(fhirClient && patient && user)) return;
 
     setIsSaving(true);
-    let responseToSave = JSON.parse(JSON.stringify(responseProvider.response));
+    const responseToSave = JSON.parse(JSON.stringify(responseProvider.response));
 
     saveQuestionnaireResponse(
       fhirClient,
