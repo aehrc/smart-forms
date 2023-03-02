@@ -100,7 +100,7 @@ function Form() {
             )}
           </Container>
         </Fade>
-        <DebugFooter />
+        {process.env.REACT_APP_SHOW_DEBUG_FOOTER === 'true' ? <DebugFooter /> : null}
       </PreprocessedValueSetContext.Provider>
     );
   } else {
