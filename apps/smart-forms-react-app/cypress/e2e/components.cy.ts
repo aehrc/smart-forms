@@ -3,19 +3,15 @@ describe('simple component behaviour', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
+
+    cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('renderer-heading').should('be.visible');
+    cy.getByData('form-heading').should('be.visible');
 
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
-
-    cy.getByData('q-item-integer-box').should('include.text', 'Age').find('input').type('60');
+    cy.goToPatientDetailsTab();
+    cy.initAgeValue(60);
   });
 
   context('string component', () => {
@@ -30,10 +26,8 @@ describe('simple component behaviour', () => {
         .type(input)
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(input);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, input);
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
@@ -46,7 +40,7 @@ describe('simple component behaviour', () => {
         .clear()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+      cy.previewForm();
 
       cy.getByData('response-item-text').should('not.have.text', itemText);
       cy.getByData('response-item-answer').should('not.have.text', input);
@@ -67,10 +61,8 @@ describe('simple component behaviour', () => {
         .wait(50)
         .should('be.checked');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains('True');
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, 'True');
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
@@ -86,10 +78,8 @@ describe('simple component behaviour', () => {
         .uncheck()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains('False');
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, 'False');
     });
   });
 
@@ -107,10 +97,8 @@ describe('simple component behaviour', () => {
         .type(validInput)
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswer);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswer);
     });
 
     it('reflects changes in questionnaire response on inputting invalid date', () => {
@@ -121,10 +109,8 @@ describe('simple component behaviour', () => {
         .type(invalidInput)
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains('Invalid Date');
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, 'Invalid Date');
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
@@ -137,8 +123,7 @@ describe('simple component behaviour', () => {
         .clear()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
+      cy.previewForm();
       cy.getByData('response-item-text').should('not.have.text', itemText);
       cy.getByData('response-item-answer').should('not.have.text', expectedAnswer);
     });
@@ -148,13 +133,10 @@ describe('simple component behaviour', () => {
     const itemText = 'Onset Date';
     const validInput = '020820230400AM';
     const invalidInput = '02022000';
-    const expectedAnswerWithoutTimeZone = 'February 8, 2023 4:00 AM';
+    const expectedAnswerWithoutTimeZone = 'August 2, 2023 4:00 AM';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Medical history and current problems')
-        .click();
+      cy.goToTab('Medical history and current problems');
     });
 
     it('reflects changes in questionnaire response on inputting correct datetime', () => {
@@ -165,19 +147,15 @@ describe('simple component behaviour', () => {
         .wait(300)
         .should('have.value', '02/08/2023 04:00 AM');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(expectedAnswerWithoutTimeZone);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, expectedAnswerWithoutTimeZone);
     });
 
     it('reflects changes in questionnaire response on inputting invalid datetime', () => {
       cy.getByData('q-item-date-time-field').find('input').eq(0).type(invalidInput).wait(200);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains('Invalid date');
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, 'Invalid date');
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
@@ -189,7 +167,7 @@ describe('simple component behaviour', () => {
         .clear()
         .wait(200);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+      cy.previewForm();
 
       cy.getByData('response-item-text').should('not.have.text', itemText);
       cy.getByData('response-item-answer').should('not.have.text', expectedAnswerWithoutTimeZone);
@@ -208,10 +186,8 @@ describe('simple component behaviour', () => {
         .type(input)
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(input);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, input);
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
@@ -224,8 +200,7 @@ describe('simple component behaviour', () => {
         .clear()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
+      cy.previewForm();
       cy.getByData('response-item-text').should('not.have.text', itemText);
       cy.getByData('response-item-answer').should('not.have.text', input);
     });
@@ -242,10 +217,8 @@ describe('simple component behaviour', () => {
         .eq(0)
         .should('have.value', '60');
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(input);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, input);
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
@@ -256,10 +229,8 @@ describe('simple component behaviour', () => {
         .clear()
         .wait(50);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').should('not.have.text', itemText);
-      cy.getByData('response-item-answer').should('not.have.text', input);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, '0');
     });
   });
 
@@ -268,7 +239,7 @@ describe('simple component behaviour', () => {
     const input = '180';
 
     beforeEach(() => {
-      cy.getByData('renderer-tab-list').find('.MuiButtonBase-root').contains('Examination').click();
+      cy.goToTab('Examination');
     });
 
     it('reflects changes in questionnaire response on input', () => {
@@ -279,10 +250,8 @@ describe('simple component behaviour', () => {
         .type(input)
         .wait(200);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
-      cy.getByData('response-item-text').contains(itemText);
-      cy.getByData('response-item-answer').contains(input);
+      cy.previewForm();
+      cy.checkResponseTextAndAnswer(itemText, input);
     });
 
     it('removes changes in questionnaire response on clearing field', () => {
@@ -295,8 +264,7 @@ describe('simple component behaviour', () => {
         .clear()
         .wait(200);
 
-      cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
-
+      cy.previewForm();
       cy.getByData('response-item-text').should('not.have.text', itemText);
       cy.getByData('response-item-answer').should('not.have.text', input);
     });

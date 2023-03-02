@@ -15,142 +15,100 @@
  * limitations under the License.
  */
 
-import { Bundle, Patient, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import {
+  Bundle,
+  BundleEntry,
+  Extension,
+  FhirResource,
+  OperationOutcome,
+  Questionnaire
+} from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
 import Q715 from '../data/resources/715.R4.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
 import QCvdRisk from '../data/resources/CVD Risk.json';
 import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
+import * as FHIR from 'fhirclient';
+import { getFormsServerAssembledBundlePromise } from './DashboardFunctions';
+import { assembleQuestionnaire, updateAssembledQuestionnaire } from './AssembleFunctions';
 
-/**
- * Sends a request to forms server to obtain the first ten questionnaires that fufills the parameters provided
- *
- * @author Sean Fong
- */
-export async function loadQuestionnairesFromServer(
+export const headers = {
+  'Cache-Control': 'no-cache',
+  'Content-Type': 'application/json+fhir; charset=UTF-8',
+  Accept: 'application/json+fhir; charset=utf-8'
+};
+
+export function fetchQuestionnaireById(
   client: Client,
-  input?: string
-): Promise<Bundle> {
-  const urlParams = input ? `title=${input}` : '';
-
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8',
-    Accept: 'application/json+fhir; charset=utf-8'
-  };
-
+  questionnaireId: string
+): Promise<Questionnaire | OperationOutcome> {
   return client.request({
-    url: 'Questionnaire?_count=10&_sort=-&' + urlParams,
+    url: 'Questionnaire/' + questionnaireId,
     method: 'GET',
     headers: headers
   });
 }
 
-/**
- * Sends a request to client CMS to obtain the questionnaireResponses with a given questionnaire context
- *
- * @author Sean Fong
- */
-export async function loadQuestionnaireResponsesFromServer(
-  client: Client,
-  patient: Patient | null,
-  questionnaireId?: string
-): Promise<Bundle> {
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8',
-    Accept: 'application/json+fhir; charset=utf-8'
-  };
+export async function assembleIfRequired(
+  questionnaire: Questionnaire
+): Promise<Questionnaire | null> {
+  // get assembled version of questionnaire if assembledFrom extension exists
+  const assembledFrom = getAssembledFromExtension(questionnaire);
+  if (assembledFrom && assembledFrom.valueCanonical) {
+    // check for existing assembled questionnaires
+    const queryUrl = '/Questionnaire?_sort=-date&url=' + assembledFrom.valueCanonical;
+    const bundle = await getFormsServerAssembledBundlePromise(queryUrl);
 
-  let requestUrl = 'QuestionnaireResponse?';
-  requestUrl += questionnaireId ? `questionnaire=${questionnaireId}&` : '';
-  requestUrl += patient ? `patient=${patient.id}&` : '';
-
-  return client.request({
-    url: requestUrl,
-    method: 'GET',
-    headers: headers
-  });
-}
-
-/**
- * Obtains an array of questionnaires from a bundle of questionnaires
- *
- * @author Sean Fong
- */
-export function getQuestionnairesFromBundle(bundle: Bundle): Questionnaire[] {
-  if (!bundle.entry) return [];
-
-  return bundle.entry.reduce((mapping: Questionnaire[], entry, i) => {
-    if (entry.resource?.resourceType === 'Questionnaire') {
-      mapping[i] = entry.resource as unknown as Questionnaire;
+    // if there is an assembled questionnaire, return it
+    if (bundle.entry && bundle.entry.length > 0) {
+      const firstQuestionnaire = bundle.entry[0].resource;
+      if (firstQuestionnaire) {
+        return firstQuestionnaire as Questionnaire;
+      }
     }
-    return mapping;
-  }, []);
-}
 
-/**
- * Obtains an array of questionnaireResponses from a bundle of questionnaireResponses
- *
- * @author Sean Fong
- */
-export function getQResponsesFromBundle(bundle: Bundle): QuestionnaireResponse[] {
-  if (!bundle.entry) return [];
+    // If not, perform assemble on-the-fly and save it to forms server
+    const resource = await assembleQuestionnaire(questionnaire);
+    if (resource.resourceType === 'OperationOutcome') return null;
 
-  return bundle.entry.reduce((mapping: QuestionnaireResponse[], entry, i) => {
-    if (entry.resource?.resourceType === 'QuestionnaireResponse') {
-      mapping[i] = entry.resource as unknown as QuestionnaireResponse;
-    }
-    return mapping;
-  }, []);
-}
-
-export function loadQuestionnaireFromResponse(
-  client: Client,
-  questionnaireReference: string
-): Promise<Questionnaire> {
-  const questionnaireId = questionnaireReference.replace('Questionnaire/', '');
-
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8',
-    Accept: 'application/json+fhir; charset=utf-8'
-  };
-
-  // FIXME cater for canonical reference too
-
-  return client.request({
-    url: `Questionnaire/${questionnaireId}`,
-    method: 'GET',
-    headers: headers
-  });
-}
-
-export function getQuestionnaireFromUrl(
-  client: Client,
-  canonicalReferenceUrl: string
-): Promise<Questionnaire | Bundle> {
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8',
-    Accept: 'application/json+fhir; charset=utf-8'
-  };
-
-  return client.request({
-    url: `Questionnaire?url=${canonicalReferenceUrl}&_sort=-&`,
-    method: 'GET',
-    headers: headers
-  });
-}
-
-export function getInitialQuestionnaireFromResponse(
-  response: Questionnaire | Bundle
-): Questionnaire | null {
-  if (response.resourceType === 'Questionnaire') {
-    return response;
+    // at this point, assembly is successful
+    // save assembled questionnaire to forms server and return it
+    await updateAssembledQuestionnaire(questionnaire);
+    return resource;
   }
 
+  // questionnaire does not require assembly, return as usual
+  return questionnaire;
+}
+
+export function getQuestionnaireFromUrl(canonicalUrl: string): Promise<Bundle> {
+  const endpointUrl =
+    process.env.REACT_APP_FORMS_SERVER_URL ??
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  let queryUrl = `Questionnaire?_sort=-date&url=${canonicalUrl}&`;
+  queryUrl = queryUrl.replace('|', '&version=');
+
+  return FHIR.client(endpointUrl).request({
+    url: queryUrl,
+    method: 'GET',
+    headers: headers
+  });
+}
+
+export function getAssembledFromExtension(questionnaire: Questionnaire | null): Extension | null {
+  if (!questionnaire) return null;
+
+  return (
+    questionnaire.extension?.find(
+      (e) =>
+        e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
+    ) ?? null
+  );
+}
+
+export function getInitialQuestionnaireFromBundle(response: Bundle): Questionnaire | null {
   const bundleEntries = response.entry;
   if (bundleEntries && bundleEntries.length > 0) {
     for (const entry of bundleEntries) {
@@ -192,4 +150,18 @@ export function loadQuestionnairesFromLocal() {
   ] as Questionnaire[];
 
   return questionnaires;
+}
+
+export function constructBundle(resources: FhirResource[]): Bundle {
+  const bundleEntries: BundleEntry[] = resources.map((resource) => {
+    return {
+      resource: resource
+    };
+  });
+
+  return {
+    entry: bundleEntries,
+    resourceType: 'Bundle',
+    type: 'collection'
+  };
 }

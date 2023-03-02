@@ -16,8 +16,10 @@
  */
 
 import {
+  Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
+  QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   ValueSet
@@ -81,4 +83,47 @@ export interface QrRepeatGroup {
 export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   valueSet?: ValueSet;
+}
+
+export interface TableAttributes {
+  id: string;
+  label: string;
+  alignRight: boolean;
+}
+
+export interface QuestionnaireListItem {
+  id: string;
+  title: string;
+  avatarColor: string;
+  publisher: string;
+  date: string;
+  status: Questionnaire['status'];
+}
+
+export interface ResponseListItem {
+  id: string;
+  title: string;
+  avatarColor: string;
+  author: string;
+  authored: string;
+  status: QuestionnaireResponse['status'];
+}
+
+export type ListItem = QuestionnaireListItem | ResponseListItem;
+
+export type ListItemWithIndex = [number, QuestionnaireListItem | ResponseListItem];
+
+export interface SelectedQuestionnaire {
+  listItem: QuestionnaireListItem;
+  resource: Questionnaire;
+}
+
+export interface SelectedResponse {
+  listItem: ResponseListItem;
+  resource: QuestionnaireResponse;
+}
+
+export interface Renderer {
+  response: QuestionnaireResponse;
+  hasChanges: boolean;
 }

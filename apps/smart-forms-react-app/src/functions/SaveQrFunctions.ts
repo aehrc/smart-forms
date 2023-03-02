@@ -29,62 +29,77 @@ import dayjs from 'dayjs';
 import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
 import { EnableWhenContextType } from '../interfaces/ContextTypes';
-import { removeNoAnswerQrItem } from './QrItemFunctions';
+import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
+
+/**
+ * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
+ * Due to SMART Health IT's restriction on response saving
+ * No required for any other client
+ *
+ * @author Sean Fong
+ */
+export function postQuestionnaireToSMARTHealthIT(client: Client, questionnaire: Questionnaire) {
+  fetchQuestionnaireById(client, questionnaire.id ?? '').then((res) => {
+    if (res.resourceType === 'OperationOutcome') {
+      client
+        .request({
+          url: questionnaire.id ?? '',
+          method: 'PUT',
+          body: JSON.stringify(questionnaire),
+          headers: headers
+        })
+        .then((res) => {
+          if (res.resourceType === 'OperationOutcome') {
+            console.warn('Error: Failed to POST questionnaire to SMART Health IT');
+          }
+        });
+    }
+  });
+}
 
 /**
  * Sends a request to client CMS to write back a completed questionnaireResponse
  *
  * @author Sean Fong
  */
-export function saveQuestionnaireResponse(
+export async function saveQuestionnaireResponse(
   client: Client,
   patient: Patient,
   user: Practitioner,
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ): Promise<QuestionnaireResponse> {
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8'
-  };
-
   let requestUrl = 'QuestionnaireResponse';
   let method = 'POST';
   let questionnaireResponseToSave: QuestionnaireResponse = JSON.parse(
     JSON.stringify(questionnaireResponse)
   );
 
-  if (questionnaireResponseToSave.item && questionnaireResponseToSave.item.length > 0) {
-    const qrFormCleaned = removeNoAnswerQrItem(questionnaireResponseToSave.item[0]);
-    if (qrFormCleaned) {
-      questionnaireResponseToSave.item[0] = qrFormCleaned;
-    }
-  }
+  questionnaireResponseToSave = {
+    ...questionnaireResponseToSave,
+    text: {
+      status: 'generated',
+      div: qrToHTML(questionnaire, questionnaireResponseToSave)
+    },
+    status: 'completed',
+    subject: {
+      reference: `Patient/${patient.id}`,
+      type: 'Patient',
+      display: constructName(patient.name)
+    },
+    author: {
+      reference: `Practitioner/${user.id}`,
+      type: 'Practitioner',
+      display: constructName(user.name)
+    },
+    authored: dayjs().format()
+  };
 
-  // Add additional attributes if questionnaireResponse is newly created
+  // Add additional attributes depending on whether questionnaire has been saved before
   if (questionnaireResponseToSave.id) {
     requestUrl += '/' + questionnaireResponseToSave.id;
     method = 'PUT';
   } else {
-    questionnaireResponseToSave = {
-      ...questionnaireResponseToSave,
-      text: {
-        status: 'generated',
-        div: qrToHTML(questionnaire, questionnaireResponseToSave)
-      },
-      subject: {
-        reference: `Patient/${patient.id}`,
-        type: 'Patient',
-        display: constructName(patient.name)
-      },
-      author: {
-        reference: `Practitioner/${user.id}`,
-        type: 'Practitioner',
-        display: constructName(user.name)
-      },
-      authored: dayjs().format()
-    };
-
     // Add questionnaire reference
     questionnaireResponseToSave = addQuestionnaireReference(
       questionnaire,
@@ -234,7 +249,9 @@ function readQuestionnaireResponseItem(
       }
       return { ...qrItem, item: newQrItems };
     }
-    return qrItem;
+
+    // Also perform checking if answer exists
+    return qrItem['answer'] ? qrItem : null;
   }
 
   // Process non-group items

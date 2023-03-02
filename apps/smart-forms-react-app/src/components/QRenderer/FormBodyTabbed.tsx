@@ -30,11 +30,10 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
   currentTabIndex: number;
-  setCurrentTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabbed(props: Props) {
-  const { qForm, qrForm, currentTabIndex, setCurrentTabIndex, onQrItemChange } = props;
+  const { qForm, qrForm, currentTabIndex, onQrItemChange } = props;
 
   const indexMap: Record<string, number> = useMemo(() => mapQItemsIndex(qForm), [qForm]);
 
@@ -61,7 +60,6 @@ function FormBodyTabbed(props: Props) {
               qFormItems={qFormItems}
               currentTabIndex={currentTabIndex}
               tabs={tabs}
-              updateTabIndex={(newTabIndex: number) => setCurrentTabIndex(newTabIndex)}
             />
           </Grid>
 
@@ -93,10 +91,8 @@ function FormBodyTabbed(props: Props) {
                           }
                         });
                       }}
-                      goToNextTab={(nextTabIndex: number) => {
-                        setCurrentTabIndex(nextTabIndex);
-                      }}
-                      onQrItemChange={handleQrGroupChange}></QItemGroup>
+                      onQrItemChange={handleQrGroupChange}
+                    />
                   </TabPanel>
                 );
               } else {

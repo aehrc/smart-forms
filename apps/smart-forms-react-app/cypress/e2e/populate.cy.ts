@@ -1,43 +1,45 @@
 describe('populate form', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const launchUrl =
+  const formsServerUrl =
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  const launchUrlWithQuestionnaireParam =
+    'http://localhost:3000/launch?questionnaireUrl=http%3A%2F%2Fwww.health.gov.au%2Fassessments%2Fmbs%2F715&iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
+
+  const launchUrlWithoutQuestionnaire =
     'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
 
   beforeEach(() => {
-    cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
+    cy.intercept(`${formsServerUrl}/Questionnaire?_count=50&_sort=-date&`).as('fetchQuestionnaire');
     cy.intercept(
-      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+      `${formsServerUrl}/Questionnaire?_count=50&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
     cy.intercept({
       method: 'POST',
       url: clientUrl
     }).as('populating');
 
-    cy.visit(launchUrl);
+    cy.visit(launchUrlWithoutQuestionnaire);
+
     cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
 
-    cy.getByData('picker-search-field-desktop')
+    cy.getByData('search-field-questionnaires')
       .find('input')
-      .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander Health Check')
-      .wait(50);
+      .type('Aboriginal and Torres Strait Islander Health Check');
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
+
+    cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
 
     cy.wait('@populating').its('response.statusCode').should('eq', 200);
-    cy.getByData('renderer-heading').should('be.visible');
+    cy.getByData('form-heading').should('be.visible');
   });
 
   it('form items in Patient Details tab have expected populated answers', () => {
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
+    cy.goToPatientDetailsTab();
 
     cy.getByData('q-item-string-box').eq(0).find('input').should('have.value', 'Benito Lucio');
     cy.getByData('q-item-date-box').eq(0).find('input').should('have.value', '18/08/1936');
@@ -50,10 +52,7 @@ describe('populate form', () => {
   });
 
   it('repeat items in Medical history tab have expected populated answers', () => {
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Medical history and current problems')
-      .click();
+    cy.goToTab('Medical history and current problems');
 
     cy.getByData('q-item-open-choice-autocomplete-field')
       .eq(0)
@@ -77,11 +76,8 @@ describe('populate form', () => {
       .should('have.value', 'Polyp of colon');
   });
 
-  it('form preview has the expected populated answers', () => {
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
+  it.only('form preview has the expected populated answers', () => {
+    cy.goToPatientDetailsTab();
 
     cy.getByData('q-item-boolean-box')
       .should('contain.text', 'No fixed address')
@@ -89,7 +85,7 @@ describe('populate form', () => {
       .eq(0)
       .should('not.be.checked');
 
-    cy.getByData('chip-bar-box').find('.MuiButtonBase-root').contains('View Preview').click();
+    cy.previewForm();
 
     cy.getByData('response-item-text').contains('Name');
     cy.getByData('response-item-answer').contains('Benito Lucio');

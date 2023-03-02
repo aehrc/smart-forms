@@ -16,73 +16,43 @@
  */
 
 import React, { useContext } from 'react';
-import { Box, Divider, Grid, Paper } from '@mui/material';
-import Preview from './Preview';
-import { MainGrid, SideBarGrid } from '../StyledComponents/Grids.styles';
-import { MainGridContainerBox } from '../StyledComponents/Boxes.styles';
-import SideBar from '../SideBar/SideBar';
-import { QuestionnaireResponse } from 'fhir/r5';
+import { Box, Card, Container, Fade, Typography } from '@mui/material';
 import { QuestionnaireProviderContext } from '../../App';
-import FormPreviewOperationButtons from '../OperationButtons/FormPreviewOperationButtons';
-import ChipBar from '../ChipBar/ChipBar';
-import { MainGridHeadingTypography } from '../StyledComponents/Typographys.styles';
-import { SideBarContext } from '../../custom-contexts/SideBarContext';
+import { RendererContext } from '../Renderer/RendererLayout';
+import FormInvalid from '../QRenderer/FormInvalid';
+import parse from 'html-react-parser';
+import { qrToHTML } from '../../functions/PreviewFunctions';
+import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
+import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 
-interface Props {
-  questionnaireResponse: QuestionnaireResponse;
-  qrHasChanges: boolean;
-  removeQrHasChanges: () => unknown;
-  togglePreviewMode: () => unknown;
-}
-function FormPreview(props: Props) {
-  const { questionnaireResponse, qrHasChanges, removeQrHasChanges, togglePreviewMode } = props;
-
+function FormPreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const { sideBarIsExpanded } = useContext(SideBarContext);
+  const enableWhenContext = useContext(EnableWhenContext);
+  const { renderer } = useContext(RendererContext);
+  const { response } = renderer;
 
   const questionnaire = questionnaireProvider.questionnaire;
-  if (!questionnaire.item || !questionnaireResponse.item) return null;
+  if (!questionnaire.item || !response.item) return <FormInvalid />;
 
   const qForm = questionnaire.item[0];
-  const qrForm = questionnaireResponse.item[0];
+  const qrForm = response.item[0];
 
   if (qForm.item && qrForm.item) {
+    const responseCleaned = removeHiddenAnswers(questionnaire, response, enableWhenContext);
+    const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
+
     return (
-      <Grid container>
-        <SideBarGrid item xs={12} lg={sideBarIsExpanded ? 1.75 : 0.5}>
-          <SideBar>
-            <FormPreviewOperationButtons
-              togglePreviewMode={togglePreviewMode}
-              qrHasChanges={qrHasChanges}
-              removeQrHasChanges={removeQrHasChanges}
-              questionnaireResponse={questionnaireResponse}
-            />
-          </SideBar>
-        </SideBarGrid>
-        <MainGrid item xs={12} lg={sideBarIsExpanded ? 10.25 : 11.5}>
-          <MainGridContainerBox>
-            <MainGridHeadingTypography variant="h1">Preview</MainGridHeadingTypography>
-            <ChipBar>
-              <FormPreviewOperationButtons
-                isChip={true}
-                togglePreviewMode={togglePreviewMode}
-                qrHasChanges={qrHasChanges}
-                removeQrHasChanges={() => removeQrHasChanges}
-                questionnaireResponse={questionnaireResponse}
-              />
-            </ChipBar>
-            <Divider light />
-            <Box>
-              <Paper sx={{ p: 4, mb: 2 }}>
-                <Preview />
-              </Paper>
-            </Box>
-          </MainGridContainerBox>
-        </MainGrid>
-      </Grid>
+      <Fade in={true} timeout={500}>
+        <Container sx={{ mt: 3 }}>
+          <Box mb={3}>
+            <Typography variant="h3">Preview</Typography>
+          </Box>
+          <Card sx={{ p: 4, mb: 2 }}>{parsedHTML}</Card>
+        </Container>
+      </Fade>
     );
   } else {
-    return <div>Questionnaire is invalid.</div>;
+    return <FormInvalid />;
   }
 }
 

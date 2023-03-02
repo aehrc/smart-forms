@@ -15,28 +15,23 @@
  * limitations under the License.
  */
 
-import React, { memo, useContext, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import QItemSwitcher from './QItemSwitcher';
-import { isHidden } from '../../../functions/QItemFunctions';
-import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { getQrItemsIndex } from '../../../functions/IndexFunctions';
 import { FirstTableCell, StandardTableCell } from '../../StyledComponents/Table.styles';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  qItemsIndexMap: Record<string, number>;
 }
 
 function QItemGroupTableRow(props: Props) {
-  const { qItem, qrItem, onQrItemChange } = props;
-
-  const enableWhenContext = useContext(EnableWhenContext);
-
-  const qItemsIndexMap = mapQItemsIndex(qItem);
+  const { qItem, qrItem, qItemsIndexMap, onQrItemChange } = props;
 
   const rowItems = qItem.item;
   const qrRowFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -48,15 +43,14 @@ function QItemGroupTableRow(props: Props) {
     setRow(qrRowFromProps);
   }, [qrItem]);
 
+  if (!rowItems || !rowQrItems) return null;
+
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateLinkedItem(newQrRowItem, null, qrRow, qItemsIndexMap);
     setRow(qrRow);
     onQrItemChange(qrRow);
   }
-
-  if (isHidden(qItem, enableWhenContext)) return null;
-  if (!rowItems || !rowQrItems) return null;
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
 

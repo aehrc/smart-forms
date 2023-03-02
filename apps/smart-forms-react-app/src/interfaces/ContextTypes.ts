@@ -25,8 +25,14 @@ import {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
 import Client from 'fhirclient/lib/Client';
-import { CalculatedExpression, EnableWhenItemProperties, EnableWhenItems } from './Interfaces';
+import {
+  CalculatedExpression,
+  EnableWhenItemProperties,
+  EnableWhenItems,
+  Renderer
+} from './Interfaces';
 import { PageType } from './Enums';
+import { MutableRefObject } from 'react';
 
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
@@ -49,19 +55,9 @@ export type LaunchContextType = {
   setUser: (user: Practitioner) => unknown;
 };
 
-export type PreviewModeContextType = {
-  isPreviewMode: boolean;
-  setIsPreviewMode: (previewMode: boolean) => unknown;
-};
-
 export type PageSwitcherContextType = {
   currentPage: PageType;
   goToPage: (page: PageType) => unknown;
-};
-
-export type SideBarContextType = {
-  sideBarIsExpanded: boolean;
-  setSideBarIsExpanded: (sideBarActive: boolean) => unknown;
 };
 
 export type CachedQueriedValueSetContextType = {
@@ -75,4 +71,24 @@ export type CalculatedExpressionContextType = {
     questionnaireResponse: QuestionnaireResponse,
     variables: Expression[]
   ) => unknown;
+};
+
+export type SourceContextType = {
+  source: 'local' | 'remote';
+  setSource: (updatedSource: 'local' | 'remote') => unknown;
+};
+
+export type RendererContextType = {
+  renderer: Renderer;
+  setRenderer: (updatedRenderer: Renderer) => unknown;
+};
+
+export type CurrentTabIndexContextType = {
+  currentTabIndex: number;
+  setCurrentTabIndex: (updatedIndex: number) => unknown;
+};
+
+export type PrintComponentRefContextType = {
+  componentRef: MutableRefObject<null> | null;
+  setComponentRef: (componentRef: MutableRefObject<null>) => unknown;
 };

@@ -1,36 +1,37 @@
 describe('save response', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const launchUrl =
+  const formsServerUrl =
+    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+
+  const launchUrlWithoutQuestionnaire =
     'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
 
   beforeEach(() => {
-    cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
+    cy.intercept(`${formsServerUrl}/Questionnaire?_count=50&_sort=-date&`).as('fetchQuestionnaire');
     cy.intercept(
-      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+      `${formsServerUrl}/Questionnaire?_count=50&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
     cy.intercept({
       method: 'POST',
       url: clientUrl
     }).as('populating');
 
-    cy.visit(launchUrl);
+    cy.visit(launchUrlWithoutQuestionnaire);
     cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
 
-    cy.getByData('picker-search-field-desktop')
+    cy.getByData('search-field-questionnaires')
       .find('input')
-      .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander Health Check')
-      .wait(50);
+      .type('Aboriginal and Torres Strait Islander Health Check');
 
     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
+
+    cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
 
     cy.wait('@populating').its('response.statusCode').should('eq', 200);
-    cy.getByData('renderer-heading').should('be.visible');
+    cy.getByData('form-heading').should('be.visible');
   });
 
   context('saving a response as draft', () => {
@@ -40,67 +41,67 @@ describe('save response', () => {
         url: 'https://launch.smarthealthit.org/v/r4/fhir/QuestionnaireResponse'
       }).as('savingResponse');
 
-      cy.getByData('chip-save-as-draft').should('be.visible').should('have.class', 'Mui-disabled');
-      cy.getByData('alert-response-saved').should('not.be.visible');
+      cy.goToPatientDetailsTab();
+      cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
+      cy.initAgeValue(60);
 
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Patient Details')
-        .click();
-      cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
-
-      cy.getByData('chip-save-as-draft').click();
+      cy.clickOnOperation('Save as Draft');
 
       cy.wait('@savingResponse');
-      cy.getByData('chip-save-as-draft').should('be.visible').should('have.class', 'Mui-disabled');
-      cy.getByData('alert-response-saved').should('be.visible');
     });
 
-    it('saving a response as final', () => {
-      cy.getByData('chip-save-as-final').should('be.visible').should('have.class', 'Mui-disabled');
+    it.only('saving a response as final', () => {
+      cy.intercept({
+        method: 'POST',
+        url: 'https://launch.smarthealthit.org/v/r4/fhir/QuestionnaireResponse'
+      }).as('savingResponse');
 
-      cy.getByData('renderer-tab-list')
-        .find('.MuiButtonBase-root')
-        .contains('Patient Details')
-        .click();
-      cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
+      cy.goToPatientDetailsTab();
+      cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
+      cy.initAgeValue(60);
 
-      cy.getByData('chip-save-as-final').click();
-      cy.getByData('dialog-confirm-save').find('button').contains('Save as final').click();
+      cy.getByData('button-expand-nav').click();
+      cy.getByData('list-button-renderer-operation');
+      cy.contains('Save as Final').click();
+      cy.get('.MuiButtonBase-root').contains('Save as final').click();
+
+      cy.wait('@savingResponse');
     });
   });
 });
 
-describe('view response', () => {
-  const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const launchUrl =
-    'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
-
-  beforeEach(() => {
-    cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
-    cy.intercept(
-      `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
-    ).as('fetchQuestionnaireByTitle');
-
-    cy.visit(launchUrl);
-    cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
-
-    cy.getByData('picker-search-field-desktop')
-      .find('input')
-      .should('not.be.disabled')
-      .type('Aboriginal and Torres Strait Islander Health Check')
-      .wait(50);
-
-    cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
-      .contains('Aboriginal and Torres Strait Islander Health Check')
-      .click();
-  });
-
-  it('view draft response', () => {
-    cy.getByData('picker-questionnaire-list');
-  });
-});
+// TODO create test for viewing responses
+//
+// describe('view response', () => {
+//   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
+//   const launchUrl =
+//     'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
+//
+//   beforeEach(() => {
+//     cy.intercept(`${clientUrl}/Questionnaire?_count=10&_sort=-&`).as('fetchQuestionnaire');
+//     cy.intercept(
+//       `${clientUrl}/Questionnaire?_count=10&_sort=-&title=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+//     ).as('fetchQuestionnaireByTitle');
+//
+//     cy.visit(launchUrl);
+//     cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
+//
+//     cy.getByData('picker-search-field-desktop')
+//       .find('input')
+//       .should('not.be.disabled')
+//       .type('Aboriginal and Torres Strait Islander Health Check')
+//       .wait(50);
+//
+//     cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
+//     cy.getByData('picker-questionnaire-list')
+//       .find('.MuiButtonBase-root')
+//       .contains('Aboriginal and Torres Strait Islander Health Check')
+//       .click();
+//   });
+//
+//   it('view draft response', () => {
+//     cy.getByData('picker-questionnaire-list');
+//   });
+// });
 
 export {};

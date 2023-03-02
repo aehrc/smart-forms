@@ -13,31 +13,30 @@ interface Props {
   qFormItems: QuestionnaireItem[];
   currentTabIndex: number;
   tabs: Record<string, { tabIndex: number; isComplete: boolean }>;
-  updateTabIndex: (newTabIndex: number) => unknown;
 }
 
 function FormBodyTabList(props: Props) {
-  const { qFormItems, currentTabIndex, tabs, updateTabIndex } = props;
+  const { qFormItems, currentTabIndex, tabs } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
 
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <PrimarySelectableList dense disablePadding sx={{ my: 0.5 }} data-test="renderer-tab-list">
+        <PrimarySelectableList dense disablePadding sx={{ my: 1 }} data-test="renderer-tab-list">
           <TransitionGroup>
             {qFormItems.map((qItem, i) => {
               if (!isTab(qItem) || isHidden(qItem, enableWhenContext)) {
                 return null;
               }
+
               return (
-                <Collapse key={qItem.linkId}>
+                <Collapse key={qItem.linkId} timeout={100}>
                   <FormBodySingleTab
                     selected={currentTabIndex.toString() === i.toString()}
                     tabText={getShortText(qItem) ?? qItem.text + ''}
                     listIndex={i}
                     markedAsComplete={tabs[qItem.linkId].isComplete ?? false}
-                    updateTabIndex={updateTabIndex}
                   />
                 </Collapse>
               );

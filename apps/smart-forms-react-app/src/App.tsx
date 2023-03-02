@@ -17,15 +17,13 @@
 
 import React, { createContext } from 'react';
 import './App.css';
-import { CssBaseline, useMediaQuery } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import getTheme from './theme';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Launch from './components/LaunchPage/Launch';
+import { CssBaseline } from '@mui/material';
+import ThemeProvider from './theme/Theme';
 import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
 import LaunchContextProvider from './custom-contexts/LaunchContext';
-import Auth from './components/Auth';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
+import Router from './Router';
+import { SnackbarProvider } from 'notistack';
 
 const questionnaireProvider = new QuestionnaireProvider();
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
@@ -37,22 +35,18 @@ export const QuestionnaireResponseProviderContext = createContext<QuestionnaireR
 );
 
 function App() {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   return (
-    <ThemeProvider theme={getTheme(prefersDarkMode)}>
-      <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
-        <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
-          <LaunchContextProvider>
-            <CssBaseline />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Auth />} />
-                <Route path="/launch" element={<Launch />} />
-              </Routes>
-            </BrowserRouter>
-          </LaunchContextProvider>
-        </QuestionnaireResponseProviderContext.Provider>
-      </QuestionnaireProviderContext.Provider>
+    <ThemeProvider>
+      <SnackbarProvider>
+        <LaunchContextProvider>
+          <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
+            <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
+              <CssBaseline />
+              <Router />
+            </QuestionnaireResponseProviderContext.Provider>
+          </QuestionnaireProviderContext.Provider>
+        </LaunchContextProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

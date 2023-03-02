@@ -6,27 +6,20 @@ describe('repeat items functionality', () => {
 
   beforeEach(() => {
     cy.visit(launchPage);
-    cy.getByData('picker-questionnaire-list')
-      .find('.MuiButtonBase-root')
+    cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('renderer-heading').should('be.visible');
+    cy.getByData('form-heading').should('be.visible');
 
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Patient Details')
-      .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').type('60').wait(50);
+    cy.goToPatientDetailsTab();
+    cy.initAgeValue(60);
   });
 
   it('add button is disabled if there is no input in the last field', () => {
     cy.intercept(ontoserverExpandRegex).as('ontoserverExpand');
 
-    cy.getByData('renderer-tab-list')
-      .find('.MuiButtonBase-root')
-      .contains('Medical history and current problems')
-      .click();
+    cy.goToTab('Medical history and current problems');
 
     cy.getByData('q-item-repeat-box').getByData('button-add-repeat-item').should('be.disabled');
 
