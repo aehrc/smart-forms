@@ -63,7 +63,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   const maxList = 10;
 
   const [input, setInput] = useState('');
-  const debouncedInput = useDebounce(input, 200);
+  const debouncedInput = useDebounce(input, 300);
 
   const { options, loading, feedback } = useOntoserverQuery(
     answerValueSetUrl,
@@ -120,6 +120,15 @@ function QItemOpenChoiceAutocomplete(props: Props) {
             <StandardTextField
               {...params}
               value={input}
+              onBlur={() => {
+                // set answer to current input when text field is unfocused
+                if (!valueAutocomplete && input !== '') {
+                  onQrItemChange({
+                    ...createEmptyQrItem(qItem),
+                    answer: [{ valueString: input }]
+                  });
+                }
+              }}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
               isTabled={isTabled}
               InputProps={{
