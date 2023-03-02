@@ -16,6 +16,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { assembleIfRequired } from '../../../../functions/LoadServerResourceFunctions';
+import { postQuestionnaireToSMARTHealthIT } from '../../../../functions/SaveQrFunctions';
+import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
@@ -25,6 +27,7 @@ function OpenResponseButton(props: Props) {
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const { fhirClient } = useContext(LaunchContext);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,6 +78,11 @@ function OpenResponseButton(props: Props) {
       });
       setIsLoading(false);
       return;
+    }
+
+    // Post questionnaire to client if it is SMART Health IT
+    if (fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
+      postQuestionnaireToSMARTHealthIT(fhirClient, referencedQuestionnaire);
     }
 
     // Assign questionnaire to questionnaire provider

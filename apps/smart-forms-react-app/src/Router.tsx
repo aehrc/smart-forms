@@ -24,6 +24,7 @@ import FormPreview from './components/Preview/FormPreview';
 import ViewerLayout from './components/Viewer/ViewerLayout';
 import ResponsePreview from './components/Preview/ResponsePreview';
 import { useSnackbar } from 'notistack';
+import { postQuestionnaireToSMARTHealthIT } from './functions/SaveQrFunctions';
 
 export const SourceContext = createContext<SourceContextType>({
   source: 'local',
@@ -89,6 +90,13 @@ export default function Router() {
               // perform assembly if required
               assembleIfRequired(questionnaire).then((questionnaire) => {
                 if (questionnaire) {
+                  // Post questionnaire to client if it is SMART Health IT
+                  if (
+                    fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir'
+                  ) {
+                    postQuestionnaireToSMARTHealthIT(fhirClient, questionnaire);
+                  }
+
                   questionnaireProvider.setQuestionnaire(questionnaire);
                 } else {
                   sessionStorage.removeItem('questionnaireUrl');

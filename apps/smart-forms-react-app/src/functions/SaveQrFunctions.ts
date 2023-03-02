@@ -32,6 +32,32 @@ import { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
 
 /**
+ * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
+ * Due to SMART Health IT's restriction on response saving
+ * No required for any other client
+ *
+ * @author Sean Fong
+ */
+export function postQuestionnaireToSMARTHealthIT(client: Client, questionnaire: Questionnaire) {
+  fetchQuestionnaireById(client, questionnaire.id ?? '').then((res) => {
+    if (res.resourceType === 'OperationOutcome') {
+      client
+        .request({
+          url: questionnaire.id ?? '',
+          method: 'PUT',
+          body: JSON.stringify(questionnaire),
+          headers: headers
+        })
+        .then((res) => {
+          if (res.resourceType === 'OperationOutcome') {
+            console.warn('Error: Failed to POST questionnaire to SMART Health IT');
+          }
+        });
+    }
+  });
+}
+
+/**
  * Sends a request to client CMS to write back a completed questionnaireResponse
  *
  * @author Sean Fong
@@ -49,51 +75,37 @@ export async function saveQuestionnaireResponse(
     JSON.stringify(questionnaireResponse)
   );
 
-  // Add additional attributes if questionnaireResponse is newly created
+  questionnaireResponseToSave = {
+    ...questionnaireResponseToSave,
+    text: {
+      status: 'generated',
+      div: qrToHTML(questionnaire, questionnaireResponseToSave)
+    },
+    status: 'completed',
+    subject: {
+      reference: `Patient/${patient.id}`,
+      type: 'Patient',
+      display: constructName(patient.name)
+    },
+    author: {
+      reference: `Practitioner/${user.id}`,
+      type: 'Practitioner',
+      display: constructName(user.name)
+    },
+    authored: dayjs().format()
+  };
+
+  // Add additional attributes depending on whether questionnaire has been saved before
   if (questionnaireResponseToSave.id) {
     requestUrl += '/' + questionnaireResponseToSave.id;
     method = 'PUT';
   } else {
-    questionnaireResponseToSave = {
-      ...questionnaireResponseToSave,
-      text: {
-        status: 'generated',
-        div: qrToHTML(questionnaire, questionnaireResponseToSave)
-      },
-      subject: {
-        reference: `Patient/${patient.id}`,
-        type: 'Patient',
-        display: constructName(patient.name)
-      },
-      author: {
-        reference: `Practitioner/${user.id}`,
-        type: 'Practitioner',
-        display: constructName(user.name)
-      },
-      authored: dayjs().format()
-    };
-
     // Add questionnaire reference
     questionnaireResponseToSave = addQuestionnaireReference(
       questionnaire,
       questionnaireResponseToSave,
       client.state.serverUrl
     );
-  }
-
-  // If client is SMART Health IT, check if questionnaire exists
-  // If not, POST questionnaire to SMART Health IT before POSTing questionnaireResponse
-  if (client.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
-    const response = await fetchQuestionnaireById(client, questionnaire.id ?? '');
-
-    if (response.resourceType === 'OperationOutcome') {
-      await client.request({
-        url: questionnaire.id ?? '',
-        method: 'PUT',
-        body: JSON.stringify(questionnaire),
-        headers: headers
-      });
-    }
   }
 
   return client.request({
