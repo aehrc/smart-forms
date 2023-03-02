@@ -13,6 +13,7 @@ import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
 import { getQuestionnaireNameFromResponse } from './ItemControlFunctions';
 import Client from 'fhirclient/lib/Client';
+import { headers } from './LoadServerResourceFunctions';
 
 export function descendingComparator(
   a: ListItem,
@@ -107,7 +108,8 @@ export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<
 
 export function getClientBundlePromise(fhirClient: Client, queryUrl: string): Promise<Bundle> {
   return fhirClient.request({
-    url: queryUrl
+    url: queryUrl,
+    headers: headers
   });
 }
 

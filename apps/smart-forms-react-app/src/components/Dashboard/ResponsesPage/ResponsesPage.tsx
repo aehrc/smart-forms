@@ -71,7 +71,7 @@ function ResponsesPage() {
     queryUrl += 'questionnaire.title:contains=' + debouncedInput;
   }
 
-  const { data, status, error } = useQuery<Bundle>(
+  const { data, status, error, isFetching } = useQuery<Bundle>(
     ['response', queryUrl],
     () => getClientBundlePromise(fhirClient!, queryUrl),
     {
@@ -236,18 +236,25 @@ function ResponsesPage() {
             </TableContainer>
           </Scrollbar>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredListItems.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={(_, newPage) => setPage(newPage)}
-            onRowsPerPageChange={(event) => {
-              setRowsPerPage(parseInt(event.target.value));
-              setPage(0);
-            }}
-          />
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Fade in={isFetching}>
+              <Typography variant="subtitle2" sx={{ p: 2 }}>
+                Updating...
+              </Typography>
+            </Fade>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={filteredListItems.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(_, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(event) => {
+                setRowsPerPage(parseInt(event.target.value));
+                setPage(0);
+              }}
+            />
+          </Box>
         </Card>
 
         <Stack direction="row" alignItems="center" my={5}>
