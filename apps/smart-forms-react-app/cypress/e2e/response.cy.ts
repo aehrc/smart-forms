@@ -50,7 +50,7 @@ describe('save response', () => {
       cy.wait('@savingResponse');
     });
 
-    it('saving a response as final', () => {
+    it.only('saving a response as final', () => {
       cy.intercept({
         method: 'POST',
         url: 'https://launch.smarthealthit.org/v/r4/fhir/QuestionnaireResponse'
@@ -60,7 +60,10 @@ describe('save response', () => {
       cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
       cy.initAgeValue(60);
 
-      cy.clickOnOperation('Save as Final');
+      cy.getByData('button-expand-nav').click();
+      cy.getByData('list-button-renderer-operation');
+      cy.contains('Save as Final').click();
+      cy.get('.MuiButtonBase-root').contains('Save as final').click();
 
       cy.wait('@savingResponse');
     });

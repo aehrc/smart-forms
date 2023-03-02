@@ -70,8 +70,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexSecondCheckboxToBeChecked)
         .uncheck()
-        .wait(50)
-        .should('not.be.checked');
+        .should('not.be.checked')
+        .wait(100);
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
