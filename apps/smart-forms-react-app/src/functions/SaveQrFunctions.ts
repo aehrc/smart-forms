@@ -39,21 +39,17 @@ import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
  * @author Sean Fong
  */
 export function postQuestionnaireToSMARTHealthIT(client: Client, questionnaire: Questionnaire) {
-  fetchQuestionnaireById(client, questionnaire.id ?? '').then((res) => {
-    if (res.resourceType === 'OperationOutcome') {
-      client
-        .request({
-          url: questionnaire.id ?? '',
-          method: 'PUT',
-          body: JSON.stringify(questionnaire),
-          headers: headers
-        })
-        .then((res) => {
-          if (res.resourceType === 'OperationOutcome') {
-            console.warn('Error: Failed to POST questionnaire to SMART Health IT');
-          }
-        });
-    }
+  fetchQuestionnaireById(client, questionnaire.id ?? '').catch(() => {
+    client
+      .request({
+        url: `Questionnaire/${questionnaire.id}`,
+        method: 'PUT',
+        body: JSON.stringify(questionnaire),
+        headers: headers
+      })
+      .catch(() => {
+        console.warn('Error: Failed to POST questionnaire to SMART Health IT');
+      });
   });
 }
 
