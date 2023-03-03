@@ -53,7 +53,10 @@ export class FormsServer extends Construct {
       logging: AwsLogDriver.awsLogs({
         streamPrefix: 'smart-forms-forms-server',
         logRetention: RetentionDays.ONE_MONTH
-      })
+      }),
+      environment: {
+        use_apache_address_strategy: 'true'
+      }
     });
 
     this.service = new FargateService(this, 'SmartFormsFormsServerService', {
