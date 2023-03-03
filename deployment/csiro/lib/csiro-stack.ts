@@ -28,6 +28,9 @@ import {
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Construct } from 'constructs';
 import { FormsServer } from 'forms-server';
+import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
+import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
 
 export class CsiroStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -43,7 +46,27 @@ export class CsiroStack extends cdk.Stack {
       internetFacing: true
     });
 
-    const listener = lb.addListener('CsiroSmartFormsListener', { port: 80 });
+    // Create a hosted zone and domain certificate
+    const hostedZone = HostedZone.fromHostedZoneAttributes(this, 'CsiroSmartFormsHostedZone', {
+      hostedZoneId: 'Z0507963281Q0BWHKV1OD',
+      zoneName: 'smartforms.io'
+    });
+    const certificate = new Certificate(this, 'CsiroSmartFormsCertificate', {
+      domainName: 'api.smartforms.io',
+      validation: CertificateValidation.fromDns(hostedZone)
+    });
+
+    new ARecord(this, 'CsiroSmartFormsAliasRecord', {
+      zone: hostedZone,
+      target: RecordTarget.fromAlias(new LoadBalancerTarget(lb)),
+      recordName: 'api.smartforms.io'
+    });
+
+    const listener = lb.addListener('CsiroSmartFormsListener', {
+      port: 443,
+      protocol: ApplicationProtocol.HTTPS,
+      certificates: [certificate]
+    });
     const assemble = new Assemble(this, 'CsiroAssemble', { cluster });
     const formsServer = new FormsServer(this, 'CsiroFormsServer', { cluster });
 
