@@ -82,9 +82,7 @@ export function applySortFilter(
 }
 
 export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
-  const endpointUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ??
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const endpointUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   queryUrl = queryUrl.replace('|', '&version=');
 
@@ -94,9 +92,7 @@ export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
 }
 
 export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<Bundle> {
-  const endpointUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ??
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const endpointUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   queryUrl = queryUrl.replace('|', '&version=');
   queryUrl += '-assembled';
@@ -116,9 +112,7 @@ export function getClientBundlePromise(fhirClient: Client, queryUrl: string): Pr
 export function getFormsServerBundleOrQuestionnairePromise(
   queryUrl: string
 ): Promise<Bundle | Questionnaire> {
-  const endpointUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ??
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const endpointUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   queryUrl = queryUrl.replace('|', '&version=');
 
