@@ -77,7 +77,6 @@ export async function saveQuestionnaireResponse(
       status: 'generated',
       div: qrToHTML(questionnaire, questionnaireResponseToSave)
     },
-    status: 'completed',
     subject: {
       reference: `Patient/${patient.id}`,
       type: 'Patient',
@@ -97,6 +96,7 @@ export async function saveQuestionnaireResponse(
     method = 'PUT';
   } else {
     // Add questionnaire reference
+    questionnaireResponseToSave.status = 'in-progress';
     questionnaireResponseToSave = addQuestionnaireReference(
       questionnaire,
       questionnaireResponseToSave,
