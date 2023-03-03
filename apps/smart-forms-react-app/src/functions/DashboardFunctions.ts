@@ -87,7 +87,8 @@ export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
   queryUrl = queryUrl.replace('|', '&version=');
 
   return FHIR.client(endpointUrl).request({
-    url: queryUrl
+    url: queryUrl,
+    headers: headers
   });
 }
 
@@ -98,7 +99,8 @@ export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<
   queryUrl += '-assembled';
 
   return FHIR.client(endpointUrl).request({
-    url: queryUrl
+    url: queryUrl,
+    headers: headers
   });
 }
 
@@ -117,7 +119,8 @@ export function getFormsServerBundleOrQuestionnairePromise(
   queryUrl = queryUrl.replace('|', '&version=');
 
   return FHIR.client(endpointUrl).request({
-    url: queryUrl
+    url: queryUrl,
+    headers: headers
   });
 }
 
