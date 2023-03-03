@@ -238,7 +238,7 @@ function ResponsesPage() {
 
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Fade in={isFetching}>
-              <Typography variant="subtitle2" sx={{ p: 2 }}>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
                 Updating...
               </Typography>
             </Fade>
