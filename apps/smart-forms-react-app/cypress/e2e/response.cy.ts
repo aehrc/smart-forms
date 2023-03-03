@@ -1,7 +1,6 @@
 describe('save response', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const formsServerUrl =
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const formsServerUrl = 'https://api.smartforms.io/fhir';
 
   const launchUrlWithoutQuestionnaire =
     'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';

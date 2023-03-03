@@ -2,8 +2,7 @@ import Q715Assembled from '../../src/data/resources/Questionnaire-AboriginalTorr
 
 describe('launch app', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const formsServerUrl =
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const formsServerUrl = 'https://api.smartforms.io/fhir';
 
   context('launch without authorisation', () => {
     const launchPage = 'http://localhost:3000/launch';

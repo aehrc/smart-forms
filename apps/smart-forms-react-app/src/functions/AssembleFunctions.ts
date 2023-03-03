@@ -44,9 +44,7 @@ function defineAssembleParameters(questionnaire: Questionnaire): Parameters {
 export async function assembleQuestionnaire(
   questionnaire: Questionnaire
 ): Promise<Questionnaire | OperationOutcome> {
-  const endpointUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ??
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const endpointUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   const parameters = defineAssembleParameters(questionnaire);
   if (isAssembleInputParameters(parameters)) {
@@ -68,9 +66,7 @@ export async function assembleQuestionnaire(
 }
 
 export function updateAssembledQuestionnaire(questionnaire: Questionnaire) {
-  const endpointUrl =
-    process.env.REACT_APP_FORMS_SERVER_URL ??
-    'http://csiro-csiro-14iep6fgtigke-1594922365.ap-southeast-2.elb.amazonaws.com/fhir';
+  const endpointUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   return FHIR.client(endpointUrl).request({
     url: `Questionnaire/${questionnaire.id}`,

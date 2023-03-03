@@ -37,7 +37,7 @@ app.get('/fhir/Questionnaire/\\$assemble', (_, res) => {
 });
 
 app.post('/fhir/Questionnaire/\\$assemble', (req, res) => {
-  const formsServerEndpoint = req.protocol + '://' + req.get('host') + '/fhir';
+  const formsServerEndpoint = 'https://api.smartforms.io/fhir';
 
   const parameters = req.body;
   if (isAssembleInputParameters(req.body)) {
