@@ -87,6 +87,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
       enableWhenContext
     );
 
+    responseToSave.status = 'completed';
     saveQuestionnaireResponse(
       fhirClient,
       patient,
