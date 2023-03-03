@@ -1,5 +1,5 @@
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
@@ -21,10 +21,17 @@ import { useSnackbar } from 'notistack';
 function RendererSaveAsFinal() {
   const { fhirClient } = useContext(LaunchContext);
   const { renderer } = useContext(RendererContext);
+  const { response, hasChanges } = renderer;
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const { response, hasChanges } = renderer;
+  useEffect(() => {
+    setIsUpdating(true);
+    setTimeout(() => {
+      setIsUpdating(false);
+    }, 500);
+  }, [response]);
 
   const responseWasSaved: boolean = !!response.authored && !!response.author;
 
@@ -33,7 +40,7 @@ function RendererSaveAsFinal() {
       <OperationItem
         title="Save as Final"
         icon={<TaskAltIcon />}
-        disabled={!hasChanges && !responseWasSaved}
+        disabled={(!hasChanges && !responseWasSaved) || isUpdating}
         onClick={() => {
           if (!fhirClient) return;
           setDialogOpen(true);
