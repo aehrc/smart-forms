@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { isRepeatItemAndNotCheckbox } from './QItemFunctions';
 import { QItemType } from '../interfaces/Enums';
 

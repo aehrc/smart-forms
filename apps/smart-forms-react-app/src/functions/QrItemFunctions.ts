@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
-import { QrRepeatGroup } from '../interfaces/Interfaces';
+import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QrRepeatGroup } from '../interfaces/Interfaces';
 
 /**
  * Create a questionnaireResponse from a given questionnaire fprm item

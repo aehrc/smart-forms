@@ -4,9 +4,10 @@ import {
   StyledRoot,
   StyledSearch
 } from '../../QuestionnairePage/QuestionnairePageComponents/QuestionnaireListToolbar.styles';
-import { ResponseListItem } from '../../../../interfaces/Interfaces';
+import type { ResponseListItem } from '../../../../interfaces/Interfaces';
 import dayjs from 'dayjs';
-import React, { ChangeEvent, useContext } from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
 import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
 import { constructName } from '../../../../functions/LaunchContextFunctions';

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {
+import type {
   Coding,
   Extension,
   QuestionnaireItem,
@@ -23,11 +23,8 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
-import {
-  CheckBoxOptionType,
-  QItemChoiceControl,
-  QItemChoiceOrientation
-} from '../interfaces/Enums';
+import type { CheckBoxOptionType } from '../interfaces/Enums';
+import { QItemChoiceControl, QItemChoiceOrientation } from '../interfaces/Enums';
 import { isSpecificItemControl } from './ItemControlFunctions';
 
 /**

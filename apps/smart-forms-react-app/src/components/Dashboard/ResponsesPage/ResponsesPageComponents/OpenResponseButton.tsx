@@ -2,13 +2,13 @@
 import { Button, CircularProgress } from '@mui/material';
 import React, { useContext, useMemo, useState } from 'react';
 import Iconify from '../../../Misc/Iconify';
-import { SelectedResponse } from '../../../../interfaces/Interfaces';
+import type { SelectedResponse } from '../../../../interfaces/Interfaces';
 import {
   QuestionnaireProviderContext,
   QuestionnaireResponseProviderContext
 } from '../../../../App';
 import { useQuery } from '@tanstack/react-query';
-import { Bundle, Questionnaire } from 'fhir/r5';
+import type { Bundle, Questionnaire } from 'fhir/r5';
 import {
   getFormsServerBundleOrQuestionnairePromise,
   getReferencedQuestionnaire

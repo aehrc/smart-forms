@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-import React, { memo, SyntheticEvent } from 'react';
+import type { SyntheticEvent } from 'react';
+import React, { memo } from 'react';
 import { Autocomplete, Grid } from '@mui/material';
 
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
-import {
+import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem

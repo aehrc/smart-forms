@@ -7,14 +7,17 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
 import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
-import { QuestionnaireResponse } from 'fhir/r5';
+import type { QuestionnaireResponse } from 'fhir/r5';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
 import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
 import ProgressSpinner from '../Misc/ProgressSpinner';
 import { Outlet } from 'react-router-dom';
-import { CurrentTabIndexContextType, RendererContextType } from '../../interfaces/ContextTypes';
-import { Renderer } from '../../interfaces/Interfaces';
+import type {
+  CurrentTabIndexContextType,
+  RendererContextType
+} from '../../interfaces/ContextTypes';
+import type { Renderer } from '../../interfaces/Interfaces';
 import BackToTopButton from '../Misc/BackToTopButton';
 import { Fab, IconButton } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';

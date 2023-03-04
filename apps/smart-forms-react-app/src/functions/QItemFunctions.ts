@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { QuestionnaireItem } from 'fhir/r5';
+import type { QuestionnaireItem } from 'fhir/r5';
 import {
   hasHiddenExtension,
   isSpecificDisplayCategory,
@@ -24,7 +24,7 @@ import {
 import { getChoiceControlType } from './ChoiceFunctions';
 import { QItemChoiceControl, QItemOpenChoiceControl } from '../interfaces/Enums';
 import { getOpenChoiceControlType } from './OpenChoiceFunctions';
-import { EnableWhenContextType } from '../interfaces/ContextTypes';
+import type { EnableWhenContextType } from '../interfaces/ContextTypes';
 
 /**
  * Get text display prompt for items with itemControlCode prompt and has a prompt childItem

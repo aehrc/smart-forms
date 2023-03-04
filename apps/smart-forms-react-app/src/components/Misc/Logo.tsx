@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
-import { Box, SxProps, Theme, Typography, useTheme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
 interface Props {
   sx?: SxProps<Theme>;

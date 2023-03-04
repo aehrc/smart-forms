@@ -18,14 +18,14 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, Collapse, Divider, IconButton, Stack } from '@mui/material';
 
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
 import QItemGroup from './QItemGroup';
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../functions/QrItemFunctions';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';

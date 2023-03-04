@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {
+import type {
   Bundle,
   BundleEntry,
   Extension,
@@ -23,7 +23,7 @@ import {
   OperationOutcome,
   Questionnaire
 } from 'fhir/r5';
-import Client from 'fhirclient/lib/Client';
+import type Client from 'fhirclient/lib/Client';
 import Q715 from '../data/resources/715.R4.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
 import QCvdRisk from '../data/resources/CVD Risk.json';

@@ -1,18 +1,18 @@
 // ----------------------------------------------------------------------
 
 import { filter } from 'lodash';
-import {
+import type {
   ListItem,
   ListItemWithIndex,
   QuestionnaireListItem,
   ResponseListItem
 } from '../interfaces/Interfaces';
 import * as FHIR from 'fhirclient';
-import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
 import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
 import { getQuestionnaireNameFromResponse } from './ItemControlFunctions';
-import Client from 'fhirclient/lib/Client';
+import type Client from 'fhirclient/lib/Client';
 import { headers } from './LoadServerResourceFunctions';
 
 export function descendingComparator(

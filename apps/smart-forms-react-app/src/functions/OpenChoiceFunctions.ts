@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {
+import type {
   Coding,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,

@@ -1,4 +1,4 @@
-import { EnableWhenItems } from '../interfaces/Interfaces';
+import type { EnableWhenItems } from '../interfaces/Interfaces';
 import enableWhenItemsSample from '../data/test-data/enable-when-items-sample.json';
 import linkedQuestionsMapSample from '../data/test-data/linked-questions-map.json';
 import questionnaireResponseSample from '../data/test-data/questionnaire-response-sample.json';
@@ -8,7 +8,7 @@ import {
   readInitialAnswers,
   setInitialAnswers
 } from './EnableWhenFunctions';
-import { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r5';
+import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r5';
 
 describe('verify correctness of linked questions map created from enable when items', () => {
   const enableWhenItems = enableWhenItemsSample as EnableWhenItems;

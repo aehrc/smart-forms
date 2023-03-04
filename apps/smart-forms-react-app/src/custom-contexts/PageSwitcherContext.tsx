@@ -17,7 +17,7 @@
 
 import React, { useState } from 'react';
 import { PageType } from '../interfaces/Enums';
-import { PageSwitcherContextType } from '../interfaces/ContextTypes';
+import type { PageSwitcherContextType } from '../interfaces/ContextTypes';
 
 export const PageSwitcherContext = React.createContext<PageSwitcherContextType>({
   currentPage: PageType.Renderer,

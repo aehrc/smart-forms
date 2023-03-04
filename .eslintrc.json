@@ -14,12 +14,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
-  "overrides": [
-    {
-      "files": ["*.ts", "*.ts"]
-    }
-  ],
-  "ignorePatterns": ["*.config.js", "*.bin.ts"],
+  "ignorePatterns": ["*.config.js", "*.bin.ts", "*.js" ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -27,7 +22,8 @@
   },
   "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/consistent-type-imports": "error",
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "warn",
     "prettier/prettier": [

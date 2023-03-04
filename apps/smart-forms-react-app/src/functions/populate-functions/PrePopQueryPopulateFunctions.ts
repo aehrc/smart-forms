@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Bundle, ParametersParameter, Patient, Questionnaire } from 'fhir/r5';
-import Client from 'fhirclient/lib/Client';
+import type { Bundle, ParametersParameter, Patient, Questionnaire } from 'fhir/r5';
+import type Client from 'fhirclient/lib/Client';
 import { constructContextParameters, getBatchResponse } from './PrepopulateFunctions';
 
 /**

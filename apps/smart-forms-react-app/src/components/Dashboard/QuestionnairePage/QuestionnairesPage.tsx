@@ -17,7 +17,7 @@ import {
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import QuestionnaireListHead from './QuestionnairePageComponents/QuestionnaireListHead';
 import QuestionnaireListToolbar from './QuestionnairePageComponents/QuestionnaireListToolbar';
-import { QuestionnaireListItem, TableAttributes } from '../../../interfaces/Interfaces';
+import type { QuestionnaireListItem, TableAttributes } from '../../../interfaces/Interfaces';
 import {
   applySortFilter,
   getComparator,
@@ -27,7 +27,7 @@ import {
 import QuestionnaireLabel from './QuestionnaireLabel';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
-import { Bundle, Questionnaire } from 'fhir/r5';
+import type { Bundle, Questionnaire } from 'fhir/r5';
 import useDebounce from '../../../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from './QuestionnairePageComponents/QuestionnaireListFeedback';
 import CreateNewResponseButton from './QuestionnairePageComponents/CreateNewResponseButton';

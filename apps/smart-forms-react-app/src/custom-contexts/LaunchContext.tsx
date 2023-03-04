@@ -16,9 +16,9 @@
  */
 
 import React, { useState } from 'react';
-import { LaunchContextType } from '../interfaces/ContextTypes';
-import Client from 'fhirclient/lib/Client';
-import { Patient, Practitioner } from 'fhir/r5';
+import type { LaunchContextType } from '../interfaces/ContextTypes';
+import type Client from 'fhirclient/lib/Client';
+import type { Patient, Practitioner } from 'fhir/r5';
 
 export const LaunchContext = React.createContext<LaunchContextType>({
   fhirClient: null,

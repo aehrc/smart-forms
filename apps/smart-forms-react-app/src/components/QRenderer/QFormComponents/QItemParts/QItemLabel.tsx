@@ -16,7 +16,7 @@
  */
 
 import React, { memo } from 'react';
-import { QuestionnaireItem } from 'fhir/r5';
+import type { QuestionnaireItem } from 'fhir/r5';
 import { getXHtmlString } from '../../../../functions/ItemControlFunctions';
 import { QItemTypography } from '../../../StyledComponents/Item.styles';
 import parse from 'html-react-parser';

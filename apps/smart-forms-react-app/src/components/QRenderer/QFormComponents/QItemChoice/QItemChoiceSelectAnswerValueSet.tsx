@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-import React, { memo, SyntheticEvent, useEffect, useMemo } from 'react';
+import type { SyntheticEvent } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Coding, QuestionnaireItem } from 'fhir/r5';
-import { EnableWhenItems } from '../interfaces/Interfaces';
+import type { Coding, QuestionnaireItem } from 'fhir/r5';
+import type { EnableWhenItems } from '../interfaces/Interfaces';
 
 /**
  * Checks if any of the items in a qItem array is a tabbed item

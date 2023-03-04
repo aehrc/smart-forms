@@ -1,7 +1,8 @@
 import React, { forwardRef } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, SxProps, Theme } from '@mui/material';
-import { ResponseListItem } from '../../../interfaces/Interfaces';
+import type { SxProps, Theme } from '@mui/material';
+import { Box } from '@mui/material';
+import type { ResponseListItem } from '../../../interfaces/Interfaces';
 import { ResponseStyledLabel } from './ResponseLabel.styles';
 
 interface Props {
