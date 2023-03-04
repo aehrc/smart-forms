@@ -24,7 +24,6 @@ import type {
 } from 'fhir/r5';
 import type { ValueSetPromise } from './Interfaces';
 import * as FHIR from 'fhirclient';
-import { headers } from 'smart-forms-react/src/functions/LoadServerResourceFunctions';
 
 export function getValueSetPromise(
   qItem: QuestionnaireItem,
@@ -39,8 +38,7 @@ export function getValueSetPromise(
 
   valueSetPromiseMap[qItem.linkId] = {
     promise: FHIR.client({ serverUrl: ontoserver }).request({
-      url: 'ValueSet/$expand?url=' + valueSetUrl,
-      headers: headers
+      url: 'ValueSet/$expand?url=' + valueSetUrl
     })
   };
 }
