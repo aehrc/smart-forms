@@ -1,7 +1,6 @@
 import type { Coding, ValueSet } from 'fhir/r5';
 import * as FHIR from 'fhirclient';
 import type { ValueSetPromise } from 'sdc-populate/lib/Interfaces';
-import { headers } from './LoadServerResourceFunctions';
 
 export function getValueSetPromise(url: string): Promise<ValueSet> {
   const ontoserver = process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
@@ -11,8 +10,7 @@ export function getValueSetPromise(url: string): Promise<ValueSet> {
     : url;
 
   return FHIR.client({ serverUrl: ontoserver }).request({
-    url: 'ValueSet/$expand?url=' + valueSetUrl,
-    headers: headers
+    url: 'ValueSet/$expand?url=' + valueSetUrl
   });
 }
 
