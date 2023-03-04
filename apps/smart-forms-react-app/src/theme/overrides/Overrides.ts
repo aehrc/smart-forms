@@ -8,7 +8,7 @@ import Tooltip from './Tooltip';
 import Backdrop from './Backdrop';
 import Typography from './Typography';
 import Autocomplete from './Autocomplete';
-import { Theme } from '@mui/material';
+import type { Theme } from '@mui/material';
 
 function ComponentsOverrides(theme: Theme) {
   return Object.assign(

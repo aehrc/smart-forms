@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Coding, Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
-import {
+import type { Coding, Expression, Questionnaire, QuestionnaireItem } from 'fhir/r5';
+import type {
   CalculatedExpression,
   EnableWhenItemProperties,
   ValueSetPromise

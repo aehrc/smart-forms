@@ -18,14 +18,15 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import dayjs, { Dayjs } from 'dayjs';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import QItemDisplayInstructions from './QItemDisplayInstructions';

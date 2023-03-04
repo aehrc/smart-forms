@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {
+import type {
   Patient,
   Practitioner,
   Questionnaire,
@@ -23,12 +23,12 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r5';
-import Client from 'fhirclient/lib/Client';
+import type Client from 'fhirclient/lib/Client';
 import { constructName } from './LaunchContextFunctions';
 import dayjs from 'dayjs';
 import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
-import { EnableWhenContextType } from '../interfaces/ContextTypes';
+import type { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
 
 /**

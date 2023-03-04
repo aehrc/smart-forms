@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { Extension, Questionnaire } from 'fhir/r5';
+import type { Extension, Questionnaire } from 'fhir/r5';
 import parse from 'html-react-parser';
 
 interface Props {

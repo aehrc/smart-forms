@@ -17,8 +17,8 @@
 
 import React, { useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { PropsWithQrItemChangeHandler } from '../../interfaces/Interfaces';
 import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../functions/IndexFunctions';
 import QItemGroup from './QFormComponents/QItemGroup';

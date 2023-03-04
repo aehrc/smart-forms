@@ -18,9 +18,9 @@
 import React, { memo, useCallback, useState } from 'react';
 import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';

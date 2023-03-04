@@ -1,7 +1,7 @@
 // @mui
 import { Box, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import React from 'react';
-import { QuestionnaireListItem, TableAttributes } from '../../../../interfaces/Interfaces';
+import type { QuestionnaireListItem, TableAttributes } from '../../../../interfaces/Interfaces';
 
 // ----------------------------------------------------------------------
 

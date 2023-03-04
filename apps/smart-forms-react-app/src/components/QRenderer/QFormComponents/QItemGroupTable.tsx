@@ -17,8 +17,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/Interfaces';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/Interfaces';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import {
   Box,
   Button,

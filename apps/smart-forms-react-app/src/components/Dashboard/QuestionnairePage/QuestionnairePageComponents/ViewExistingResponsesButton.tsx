@@ -8,7 +8,7 @@ import {
   getResponsesFromBundle
 } from '../../../../functions/DashboardFunctions';
 import { useQuery } from '@tanstack/react-query';
-import { Bundle, QuestionnaireResponse } from 'fhir/r5';
+import type { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
 import { useNavigate } from 'react-router-dom';
 import { SourceContext } from '../../../../Router';

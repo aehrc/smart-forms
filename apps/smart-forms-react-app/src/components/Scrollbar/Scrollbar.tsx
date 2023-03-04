@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
-import { Box, SxProps, Theme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import { StyledRootScrollbar, StyledScrollbar } from './Scrollbar.styles';
 
 interface Props {

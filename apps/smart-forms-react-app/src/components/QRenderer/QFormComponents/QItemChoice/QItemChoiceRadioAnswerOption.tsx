@@ -18,11 +18,11 @@
 import React, { memo } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../interfaces/Enums';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';

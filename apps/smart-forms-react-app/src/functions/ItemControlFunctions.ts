@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 
-import { Coding, Expression, Extension, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r5';
+import type {
+  Coding,
+  Expression,
+  Extension,
+  QuestionnaireItem,
+  QuestionnaireResponse
+} from 'fhir/r5';
 
 /**
  * Check if the extension has an itemControl code equal to the given itemControlCode

@@ -17,7 +17,7 @@ import ProgressSpinner from './components/Misc/ProgressSpinner';
 import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairesPage from './components/Dashboard/QuestionnairePage/QuestionnairesPage';
 import ResponsesPage from './components/Dashboard/ResponsesPage/ResponsesPage';
-import { SourceContextType } from './interfaces/ContextTypes';
+import type { SourceContextType } from './interfaces/ContextTypes';
 import RendererLayout from './components/Renderer/RendererLayout';
 import Form from './components/QRenderer/Form';
 import FormPreview from './components/Preview/FormPreview';

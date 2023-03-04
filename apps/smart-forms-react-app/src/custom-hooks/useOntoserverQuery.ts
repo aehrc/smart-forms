@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { Coding, ValueSet } from 'fhir/r5';
+import type { Coding, ValueSet } from 'fhir/r5';
 import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFunctions';
 
-import { AlertColor } from '@mui/material';
+import type { AlertColor } from '@mui/material';
 
 function useOntoserverQuery(
   answerValueSetUrl: string | undefined,

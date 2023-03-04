@@ -17,10 +17,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Collapse, Grid, IconButton, Stack } from '@mui/material';
-import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
+import type { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
 import QItemSwitcher from './QItemSwitcher';
-import {
+import type {
   QuestionnaireItem,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer

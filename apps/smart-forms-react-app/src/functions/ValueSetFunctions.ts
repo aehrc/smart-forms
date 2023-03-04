@@ -1,6 +1,6 @@
-import { Coding, ValueSet } from 'fhir/r5';
+import type { Coding, ValueSet } from 'fhir/r5';
 import * as FHIR from 'fhirclient';
-import { ValueSetPromise } from 'sdc-populate/lib/Interfaces';
+import type { ValueSetPromise } from 'sdc-populate/lib/Interfaces';
 import { headers } from './LoadServerResourceFunctions';
 
 export function getValueSetPromise(url: string): Promise<ValueSet> {

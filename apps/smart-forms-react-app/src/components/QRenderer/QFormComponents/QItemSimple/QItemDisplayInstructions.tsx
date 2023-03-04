@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { QuestionnaireItem } from 'fhir/r5';
+import type { QuestionnaireItem } from 'fhir/r5';
 import { getTextDisplayInstructions } from '../../../../functions/QItemFunctions';
 
 interface Props {

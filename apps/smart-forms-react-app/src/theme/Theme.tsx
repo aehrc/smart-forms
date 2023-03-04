@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { CssBaseline, ThemeOptions } from '@mui/material';
+import type { ThemeOptions } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import {
   alpha,
   createTheme,

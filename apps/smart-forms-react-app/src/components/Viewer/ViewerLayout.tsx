@@ -1,4 +1,5 @@
-import React, { createContext, MutableRefObject, useState } from 'react';
+import type { MutableRefObject } from 'react';
+import React, { createContext, useState } from 'react';
 import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../Misc/BackToTopButton';
@@ -6,7 +7,7 @@ import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ViewerHeader from './ViewerHeader';
 import ViewerNav from './ViewerNav/ViewerNav';
-import { PrintComponentRefContextType } from '../../interfaces/ContextTypes';
+import type { PrintComponentRefContextType } from '../../interfaces/ContextTypes';
 
 export const PrintComponentRefContext = createContext<PrintComponentRefContextType>({
   componentRef: null,

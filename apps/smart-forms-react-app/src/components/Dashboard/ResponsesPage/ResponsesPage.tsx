@@ -14,7 +14,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import {
+import type {
   ResponseListItem,
   SelectedResponse,
   TableAttributes
@@ -26,7 +26,7 @@ import {
   getResponseListItems
 } from '../../../functions/DashboardFunctions';
 import { useQuery } from '@tanstack/react-query';
-import { Bundle, QuestionnaireResponse } from 'fhir/r5';
+import type { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SourceContext } from '../../../Router';
 import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';

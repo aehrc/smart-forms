@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Extension, OperationOutcome, Parameters, Questionnaire } from 'fhir/r5';
+import type { Extension, OperationOutcome, Parameters, Questionnaire } from 'fhir/r5';
 import { isAssembleInputParameters } from 'sdc-assemble';
 import { headers } from './LoadServerResourceFunctions';
 import * as FHIR from 'fhirclient';

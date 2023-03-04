@@ -6,7 +6,7 @@ import { isTab } from '../../../functions/TabFunctions';
 import { isHidden } from '../../../functions/QItemFunctions';
 import { getShortText } from '../../../functions/ItemControlFunctions';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
-import { QuestionnaireItem } from 'fhir/r5';
+import type { QuestionnaireItem } from 'fhir/r5';
 import FormBodySingleTab from './FormBodySingleTab';
 
 interface Props {

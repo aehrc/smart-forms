@@ -22,9 +22,9 @@ import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
 import QItemRepeatGroup from './QItemRepeatGroup';
 import QItemRepeat from './QItemRepeat';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler,
   QrRepeatGroup

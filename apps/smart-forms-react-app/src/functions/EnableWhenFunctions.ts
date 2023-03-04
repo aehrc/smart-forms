@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import {
+import type {
   EnableWhenItemProperties,
   EnableWhenItems,
   EnableWhenLinkedItem
 } from '../interfaces/Interfaces';
-import {
+import type {
   Quantity,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,

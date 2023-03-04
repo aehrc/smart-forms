@@ -17,8 +17,8 @@
 
 import React, { memo, useEffect, useState } from 'react';
 
-import { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createQrGroup, updateLinkedItem } from '../../../functions/QrItemFunctions';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex } from '../../../functions/IndexFunctions';

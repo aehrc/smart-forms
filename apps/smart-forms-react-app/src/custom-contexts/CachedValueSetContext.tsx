@@ -16,8 +16,8 @@
  */
 
 import React, { useState } from 'react';
-import { CachedQueriedValueSetContextType } from '../interfaces/ContextTypes';
-import { Coding } from 'fhir/r5';
+import type { CachedQueriedValueSetContextType } from '../interfaces/ContextTypes';
+import type { Coding } from 'fhir/r5';
 
 export const CachedQueriedValueSetContext = React.createContext<CachedQueriedValueSetContextType>({
   cachedValueSetCodings: {},

@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import React, { memo, SyntheticEvent, useState } from 'react';
+import type { SyntheticEvent } from 'react';
+import React, { memo, useState } from 'react';
 import { Autocomplete, Box, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import Client from 'fhirclient/lib/Client';
-import { Patient, Practitioner } from 'fhir/r5';
+import type Client from 'fhirclient/lib/Client';
+import type { Patient, Practitioner } from 'fhir/r5';
 
 export async function getPatient(client: Client): Promise<Patient> {
   return await client.patient.read();

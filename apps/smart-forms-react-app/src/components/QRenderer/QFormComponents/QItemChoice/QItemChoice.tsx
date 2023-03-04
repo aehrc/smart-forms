@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { QItemChoiceControl } from '../../../../interfaces/Enums';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemChoiceRadioAnswerOption from './QItemChoiceRadioAnswerOption';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceCheckboxAnswerOption from './QItemChoiceCheckboxAnswerOption';
@@ -25,7 +25,7 @@ import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
 import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import { getChoiceControlType, getChoiceOrientation } from '../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioAnswerValueSet from './QItemChoiceRadioAnswerValueSet';
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {
+import type {
   Coding,
   Expression,
   Patient,
@@ -24,15 +24,15 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
-import Client from 'fhirclient/lib/Client';
-import {
+import type Client from 'fhirclient/lib/Client';
+import type {
   CalculatedExpression,
   EnableWhenItemProperties,
   EnableWhenItems,
   Renderer
 } from './Interfaces';
-import { PageType } from './Enums';
-import { MutableRefObject } from 'react';
+import type { PageType } from './Enums';
+import type { MutableRefObject } from 'react';
 
 export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;

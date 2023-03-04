@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {
+import type {
   Bundle,
   Parameters,
   ParametersParameter,
@@ -24,7 +24,7 @@ import {
   Questionnaire,
   QuestionnaireResponse
 } from 'fhir/r5';
-import Client from 'fhirclient/lib/Client';
+import type Client from 'fhirclient/lib/Client';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
 import {
   constructVariablesContextParameters,

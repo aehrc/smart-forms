@@ -17,12 +17,12 @@
 
 import React from 'react';
 import { QItemOpenChoiceControl } from '../../../../interfaces/Enums';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemOpenChoiceSelectAnswerOption from './QItemOpenChoiceSelectAnswerOption';
 import QItemOpenChoiceSelectAnswerValueSet from './QItemOpenChoiceSelectAnswerValueSet';
 import QItemOpenChoiceAutocomplete from './QItemOpenChoiceAutocomplete';
 import { getOpenChoiceControlType } from '../../../../functions/OpenChoiceFunctions';
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler

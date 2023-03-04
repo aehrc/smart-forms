@@ -18,12 +18,12 @@
 import React, { memo, useCallback, useState } from 'react';
 import { Grid } from '@mui/material';
 
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import { getTextDisplayPrompt } from '../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
