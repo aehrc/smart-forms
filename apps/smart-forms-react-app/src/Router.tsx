@@ -25,6 +25,7 @@ import ViewerLayout from './components/Viewer/ViewerLayout';
 import ResponsePreview from './components/Preview/ResponsePreview';
 import { useSnackbar } from 'notistack';
 import { postQuestionnaireToSMARTHealthIT } from './functions/SaveQrFunctions';
+import GoToTestLauncher from './components/SnackbarActions/GoToTestLauncher';
 
 export const SourceContext = createContext<SourceContextType>({
   source: 'local',
@@ -120,7 +121,14 @@ export default function Router() {
         }
       })
       .catch((error: Error) => {
-        if (!error.message.includes("No 'state' parameter found")) {
+        // Prompt user to launch app if app is unlaunched
+        // Otherwise app is launched but failed, display error message
+        if (error.message.includes("No 'state' parameter found")) {
+          enqueueSnackbar('Intending to launch from a CMS? Try it out here!', {
+            action: <GoToTestLauncher />,
+            autoHideDuration: 7500
+          });
+        } else {
           console.error(error);
           enqueueSnackbar('An error occurred while launching the app', { variant: 'error' });
         }
