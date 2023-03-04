@@ -66,15 +66,17 @@ function RendererNav(props: Props) {
             </Box>
           </Grid>
           <Grid item xs={4}>
-            <Box display="flex" justifyContent="end" alignItems="center">
-              <Tooltip title="Collapse Sidebar" placement="right">
-                <span>
-                  <IconButton onClick={setNavCollapsed}>
-                    <KeyboardDoubleArrowLeftIcon fontSize="small" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Box>
+            {navCollapsed || !isDesktop ? null : (
+              <Box display="flex" justifyContent="end" alignItems="center">
+                <Tooltip title="Collapse Sidebar" placement="right">
+                  <span>
+                    <IconButton onClick={setNavCollapsed}>
+                      <KeyboardDoubleArrowLeftIcon fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Box>
+            )}
           </Grid>
         </Grid>
       </Box>

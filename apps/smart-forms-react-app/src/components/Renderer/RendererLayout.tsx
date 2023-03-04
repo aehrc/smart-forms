@@ -19,13 +19,13 @@ import type {
 } from '../../interfaces/ContextTypes';
 import type { Renderer } from '../../interfaces/Interfaces';
 import BackToTopButton from '../Misc/BackToTopButton';
-import { Fab, IconButton } from '@mui/material';
+import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import ScrollToTop from '../Nav/ScrollToTop';
 import { unstable_useBlocker as useBlocker } from 'react-router';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog';
 import { useSnackbar } from 'notistack';
+import NavExpandButton from './NavCollapseButton';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -199,19 +199,13 @@ function RendererLayout() {
           />
         ) : null}
 
+        <NavExpandButton navCollapsed={navCollapsed} expandNav={() => setNavCollapsed(false)} />
+
         <BackToTopButton>
           <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
             <KeyboardArrowUpIcon />
           </Fab>
         </BackToTopButton>
-
-        {navCollapsed ? (
-          <IconButton
-            onClick={() => setNavCollapsed(false)}
-            sx={{ position: 'fixed', bottom: 16, left: 16 }}>
-            <KeyboardDoubleArrowRightIcon fontSize="small" />
-          </IconButton>
-        ) : null}
       </StyledRoot>
     </RendererContext.Provider>
   );
