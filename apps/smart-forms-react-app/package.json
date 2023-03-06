@@ -34,7 +34,8 @@
     "simplebar-react": "^3.2.1",
     "@iconify/react": "^4.1.0",
     "randomcolor": "^0.6.2",
-    "notistack": "^2.0.8"
+    "notistack": "^2.0.8",
+    "react-confetti-explosion": "^2.0.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.4.1",

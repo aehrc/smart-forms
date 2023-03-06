@@ -28,6 +28,7 @@ import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../custom-contexts/CalculatedExpressionContext';
 import { CurrentTabIndexContext, RendererContext } from '../Renderer/RendererLayout';
 import DebugFooter from '../DebugFooter/DebugFooter';
+import { DebugModeContext } from '../../Router';
 
 export const PreprocessedValueSetContext = React.createContext<Record<string, Coding[]>>({});
 
@@ -39,6 +40,7 @@ function Form() {
 
   const enableWhenContext = useContext(EnableWhenContext);
   const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
+  const { debugMode } = useContext(DebugModeContext);
 
   const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
     questionnaireProvider.preprocessedValueSetCodings
@@ -100,7 +102,7 @@ function Form() {
             )}
           </Container>
         </Fade>
-        {process.env.REACT_APP_SHOW_DEBUG_FOOTER === 'true' ? <DebugFooter /> : null}
+        {debugMode ? <DebugFooter /> : null}
       </PreprocessedValueSetContext.Provider>
     );
   } else {

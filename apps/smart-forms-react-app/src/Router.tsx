@@ -18,6 +18,7 @@ import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairesPage from './components/Dashboard/QuestionnairePage/QuestionnairesPage';
 import ResponsesPage from './components/Dashboard/ResponsesPage/ResponsesPage';
 import type { SourceContextType } from './interfaces/ContextTypes';
+import { DebugModeContextType } from './interfaces/ContextTypes';
 import RendererLayout from './components/Renderer/RendererLayout';
 import Form from './components/QRenderer/Form';
 import FormPreview from './components/Preview/FormPreview';
@@ -32,6 +33,11 @@ export const SourceContext = createContext<SourceContextType>({
   setSource: () => void 0
 });
 
+export const DebugModeContext = createContext<DebugModeContextType>({
+  debugMode: false,
+  activateDebugMode: () => void 0
+});
+
 export default function Router() {
   const { fhirClient, patient, user, setFhirClient, setPatient, setUser } =
     useContext(LaunchContext);
@@ -41,6 +47,7 @@ export default function Router() {
   const [questionnaireIsLoading, setQuestionnaireIsLoading] = useState<boolean>(true);
 
   const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
+  const [debugMode, setDebugMode] = useState(process.env.REACT_APP_SHOW_DEBUG_MODE === 'true');
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -178,10 +185,13 @@ export default function Router() {
   } else {
     return (
       <SourceContext.Provider value={{ source, setSource }}>
-        <PageSwitcherContextProvider
-          questionnairePresent={!!questionnaireProvider.questionnaire.item}>
-          <RouterProvider router={router} />
-        </PageSwitcherContextProvider>
+        <DebugModeContext.Provider
+          value={{ debugMode, activateDebugMode: () => setDebugMode(true) }}>
+          <PageSwitcherContextProvider
+            questionnairePresent={!!questionnaireProvider.questionnaire.item}>
+            <RouterProvider router={router} />
+          </PageSwitcherContextProvider>
+        </DebugModeContext.Provider>
       </SourceContext.Provider>
     );
   }

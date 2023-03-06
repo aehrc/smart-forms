@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { Box, Drawer, Typography } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
-import csiroLogo from '../../../data/images/csiro-logo.png';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
 import NavAccounts from '../../Nav/NavAccounts';
@@ -11,6 +10,7 @@ import ViewerOperationSection from './ViewerOperationSection';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
+import CsiroLogo from '../../Misc/CsiroLogo';
 
 interface Props {
   openNav: boolean;
@@ -55,17 +55,7 @@ function ViewerNav(props: Props) {
       ) : null}
 
       <Box sx={{ px: 2.5, pb: 2 }}>
-        <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
-          <Typography sx={{ color: 'text.secondary' }}>By</Typography>
-          <Box
-            component="img"
-            sx={{
-              maxHeight: { xs: 35 },
-              maxWidth: { xs: 35 }
-            }}
-            src={csiroLogo}
-          />
-        </Box>
+        <CsiroLogo />
       </Box>
     </Scrollbar>
   );

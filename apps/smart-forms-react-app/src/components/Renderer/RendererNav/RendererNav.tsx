@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { Box, Drawer, Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, Drawer, Grid, IconButton, Tooltip } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
-import csiroLogo from '../../../data/images/csiro-logo.png';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
 import NavAccounts from '../../Nav/NavAccounts';
@@ -11,6 +10,7 @@ import RendererOperationSection from './RendererOperationSection';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import CsiroLogo from '../../Misc/CsiroLogo';
 
 interface Props {
   openNav: boolean;
@@ -53,17 +53,7 @@ function RendererNav(props: Props) {
         <Grid container alignItems="center">
           <Grid item xs={4} />
           <Grid item xs={4}>
-            <Box display="flex" justifyContent="center" alignItems="center" gap={1.5}>
-              <Typography sx={{ color: 'text.secondary' }}>By</Typography>
-              <Box
-                component="img"
-                sx={{
-                  maxHeight: { xs: 35 },
-                  maxWidth: { xs: 35 }
-                }}
-                src={csiroLogo}
-              />
-            </Box>
+            <CsiroLogo />
           </Grid>
           <Grid item xs={4}>
             {navCollapsed || !isDesktop ? null : (

@@ -78,6 +78,11 @@ export type SourceContextType = {
   setSource: (updatedSource: 'local' | 'remote') => unknown;
 };
 
+export type DebugModeContextType = {
+  debugMode: boolean;
+  activateDebugMode: () => unknown;
+};
+
 export type RendererContextType = {
   renderer: Renderer;
   setRenderer: (updatedRenderer: Renderer) => unknown;

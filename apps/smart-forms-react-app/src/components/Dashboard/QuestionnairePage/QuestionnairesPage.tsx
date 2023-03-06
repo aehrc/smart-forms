@@ -31,7 +31,7 @@ import type { Bundle, Questionnaire } from 'fhir/r5';
 import useDebounce from '../../../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from './QuestionnairePageComponents/QuestionnaireListFeedback';
 import CreateNewResponseButton from './QuestionnairePageComponents/CreateNewResponseButton';
-import { SourceContext } from '../../../Router';
+import { DebugModeContext, SourceContext } from '../../../Router';
 import {
   constructBundle,
   loadQuestionnairesFromLocal
@@ -51,6 +51,7 @@ const tableHeaders: TableAttributes[] = [
 
 function QuestionnairesPage() {
   const { source } = useContext(SourceContext);
+  const { debugMode } = useContext(DebugModeContext);
   const { fhirClient } = useContext(LaunchContext);
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
@@ -151,7 +152,7 @@ function QuestionnairesPage() {
             Questionnaires
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          {fhirClient ? <SourceToggle setPage={setPage} /> : null}
+          {debugMode ? <SourceToggle setPage={setPage} /> : null}
         </Stack>
 
         <Card>
