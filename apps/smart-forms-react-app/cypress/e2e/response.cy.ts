@@ -1,14 +1,16 @@
 describe('save response', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const formsServerUrl = 'https://api.smartforms.io/fhir';
+  const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   const launchUrlWithoutQuestionnaire =
     'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
 
   beforeEach(() => {
-    cy.intercept(`${formsServerUrl}/Questionnaire?_count=50&_sort=-date&`).as('fetchQuestionnaire');
+    cy.intercept(`${formsServerUrl}/Questionnaire?_count=100&_sort=-date&`).as(
+      'fetchQuestionnaire'
+    );
     cy.intercept(
-      `${formsServerUrl}/Questionnaire?_count=50&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+      `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
     cy.intercept({
       method: 'POST',
