@@ -43,6 +43,7 @@ function RendererSaveAsDraft() {
           enableWhenContext
         );
 
+        responseToSave.status = 'in-progress';
         saveQuestionnaireResponse(
           fhirClient,
           patient,

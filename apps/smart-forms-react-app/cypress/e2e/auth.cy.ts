@@ -2,7 +2,7 @@ import Q715Assembled from '../../src/data/resources/Questionnaire-AboriginalTorr
 
 describe('launch app', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const formsServerUrl = 'https://api.smartforms.io/fhir';
+  const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   context('launch without authorisation', () => {
     const launchPage = 'http://localhost:3000/launch';
@@ -25,7 +25,7 @@ describe('launch app', () => {
         method: 'POST',
         url: 'https://launch.smarthealthit.org/v/r4/auth/token'
       }).as('authorising');
-      cy.intercept(`${formsServerUrl}/Questionnaire?_count=50&_sort=-date&`).as(
+      cy.intercept(`${formsServerUrl}/Questionnaire?_count=100&_sort=-date&`).as(
         'fetchQuestionnaire'
       );
 

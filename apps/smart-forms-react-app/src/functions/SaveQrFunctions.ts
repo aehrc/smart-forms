@@ -96,7 +96,6 @@ export async function saveQuestionnaireResponse(
     method = 'PUT';
   } else {
     // Add questionnaire reference
-    questionnaireResponseToSave.status = 'in-progress';
     questionnaireResponseToSave = addQuestionnaireReference(
       questionnaire,
       questionnaireResponseToSave,

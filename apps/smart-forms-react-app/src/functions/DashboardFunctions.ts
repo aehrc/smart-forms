@@ -96,7 +96,6 @@ export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<
   const endpointUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   queryUrl = queryUrl.replace('|', '&version=');
-  queryUrl += '-assembled';
 
   return FHIR.client(endpointUrl).request({
     url: queryUrl,
@@ -118,6 +117,11 @@ export function getFormsServerBundleOrQuestionnairePromise(
 
   queryUrl = queryUrl.replace('|', '&version=');
 
+  // Remove trailing "-SMARTcopy" if it exists
+  if (queryUrl.endsWith('-SMARTcopy')) {
+    queryUrl = queryUrl.substring(0, queryUrl.lastIndexOf('-SMARTcopy')) + '';
+  }
+
   return FHIR.client(endpointUrl).request({
     url: queryUrl,
     headers: headers
@@ -131,12 +135,12 @@ export function getQuestionnaireListItems(bundle: Bundle | undefined): Questionn
     .filter((entry) => {
       if (entry.resource && entry.resource.resourceType === 'Questionnaire') {
         // filter questionnaires with extension of sdc-assemble-expectation
-        const assembledFrom = entry.resource.extension?.find(
+        const assembledExpectation = entry.resource.extension?.find(
           (extension) =>
             extension.url ===
             'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation'
         );
-        return !assembledFrom;
+        return !assembledExpectation;
       }
       return false;
     })

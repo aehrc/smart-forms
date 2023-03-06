@@ -95,6 +95,7 @@ export default function Router() {
                   if (
                     fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir'
                   ) {
+                    questionnaire.id = questionnaire.id + '-SMARTcopy';
                     postQuestionnaireToSMARTHealthIT(fhirClient, questionnaire);
                   }
 
