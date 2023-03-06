@@ -151,7 +151,9 @@ function QuestionnairesPage() {
             Questionnaires
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          {fhirClient ? <SourceToggle setPage={setPage} /> : null}
+          {fhirClient && process.env.REACT_APP_SHOW_DEBUG_FOOTER === 'true' ? (
+            <SourceToggle setPage={setPage} />
+          ) : null}
         </Stack>
 
         <Card>

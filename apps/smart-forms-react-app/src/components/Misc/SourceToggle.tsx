@@ -1,4 +1,3 @@
-// @mui
 import { FormControlLabel, Switch, Typography } from '@mui/material';
 import React, { useContext } from 'react';
 import { SourceContext } from '../../Router';
