@@ -15,14 +15,7 @@
  * limitations under the License.
  */
 
-import type {
-  Bundle,
-  BundleEntry,
-  Extension,
-  FhirResource,
-  OperationOutcome,
-  Questionnaire
-} from 'fhir/r5';
+import type { Bundle, BundleEntry, FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
 import type Client from 'fhirclient/lib/Client';
 import Q715 from '../data/resources/715.R4.json';
 import QCvdCheck from '../data/resources/CVD Check.json';
@@ -31,7 +24,11 @@ import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 import * as FHIR from 'fhirclient';
 import { getFormsServerAssembledBundlePromise } from './DashboardFunctions';
-import { assembleQuestionnaire, updateAssembledQuestionnaire } from './AssembleFunctions';
+import {
+  assembleQuestionnaire,
+  assemblyIsRequired,
+  updateAssembledQuestionnaire
+} from './AssembleFunctions';
 
 export const headers = {
   'Cache-Control': 'no-cache',
@@ -53,11 +50,11 @@ export function fetchQuestionnaireById(
 export async function assembleIfRequired(
   questionnaire: Questionnaire
 ): Promise<Questionnaire | null> {
-  // get assembled version of questionnaire if assembledFrom extension exists
-  const assembledFrom = getAssembledFromExtension(questionnaire);
-  if (assembledFrom && assembledFrom.valueCanonical) {
+  // get assembled version of questionnaire if assembled-expectation extension exists
+  const assembleRequired = assemblyIsRequired(questionnaire);
+  if (assembleRequired) {
     // check for existing assembled questionnaires
-    const queryUrl = '/Questionnaire?_sort=-date&url=' + assembledFrom.valueCanonical;
+    const queryUrl = `/Questionnaire?_sort=-date&url=${questionnaire.url}&version=${questionnaire.version}-assembled`;
     const bundle = await getFormsServerAssembledBundlePromise(queryUrl);
 
     // if there is an assembled questionnaire, return it
@@ -93,17 +90,6 @@ export function getQuestionnaireFromUrl(canonicalUrl: string): Promise<Bundle> {
     method: 'GET',
     headers: headers
   });
-}
-
-export function getAssembledFromExtension(questionnaire: Questionnaire | null): Extension | null {
-  if (!questionnaire) return null;
-
-  return (
-    questionnaire.extension?.find(
-      (e) =>
-        e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
-    ) ?? null
-  );
 }
 
 export function getInitialQuestionnaireFromBundle(response: Bundle): Questionnaire | null {
