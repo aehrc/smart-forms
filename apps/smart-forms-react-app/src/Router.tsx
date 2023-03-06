@@ -124,10 +124,12 @@ export default function Router() {
         // Prompt user to launch app if app is unlaunched
         // Otherwise app is launched but failed, display error message
         if (error.message.includes("No 'state' parameter found")) {
-          enqueueSnackbar('Intending to launch from a CMS? Try it out here!', {
-            action: <GoToTestLauncher />,
-            autoHideDuration: 7500
-          });
+          if (window.location.pathname !== '/launch') {
+            enqueueSnackbar('Intending to launch from a CMS? Try it out here!', {
+              action: <GoToTestLauncher />,
+              autoHideDuration: 7500
+            });
+          }
         } else {
           console.error(error);
           enqueueSnackbar('An error occurred while launching the app', { variant: 'error' });
