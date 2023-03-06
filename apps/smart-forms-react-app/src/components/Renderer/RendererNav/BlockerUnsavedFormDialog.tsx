@@ -67,6 +67,7 @@ function BlockerUnsavedFormDialog(props: Props) {
     );
 
     setIsSaving(true);
+    responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(
       fhirClient,
       patient,
