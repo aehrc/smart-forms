@@ -1,16 +1,47 @@
 # SMART Forms
 
----
-
 Smart Forms is a Typescript-based [React](https://reactjs.org/) web application currently ongoing development by CSIRO AEHRC as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
 
-The prototype is intended to demonstrate the use of HL7 FHIR Specifications to provide a shared Smart Health Check application that can be launched by a primary care Practice Management System (PMS) and capture standardised health check information for healthcare client.
+The prototype is intended to demonstrate the use of HL7 FHIR Specifications to provide a shared Smart Health Check application that can be launched by a primary care Practice Management System (PMS) and capture standardised health check information for healthcare clients.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This repository contains the Smart Forms React app and a module containing functionality from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/
+---
 
-**This project is still ongoing development and should only be used for testing purposes only.**
+**This repository contains:**
+1. The Smart Forms React app
+2. Two modules containing functionalities from the [SDC (Structured Data Capture) Specification of HL7 FHIR] (http://hl7.org/fhir/uv/sdc/): 
+ - [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
+ - [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
+3. A [Questionnaire](https://hl7.org/fhir/questionnaire.html)-hosting Forms Server as part of our Common Services architecture which supports the $assemble operation. It is built on top of the [HAPI FHIR JPA Server](https://github.com/hapifhir/hapi-fhir-jpaserver-starter). 
+
+**This project is still ongoing development and should be used for testing purposes only.**
+
+## Try it out here:
+
+- SMART Forms React app: https://www.smartforms.io/
+- Forms server: https://api.smartforms.io/
+
+### Running on a SMART CMS client (the preferred way)
+
+1. Open https://launch.smarthealthit.org/ in a browser.
+2. Set the **App Launch URL** at the bottom of the page as `https://www.smartforms.io/launch` and launch app.
+
+![image](https://user-images.githubusercontent.com/52597778/223016492-882abdaf-33e9-4039-8c32-301c4cf58e91.png)
+
+
+3. Alternatively, launch a specified questionnaire directly to launch a questionnaire directly with `https://www.smartforms.io/launch?questionnaireUrl={questionnaire.url}` with questionnaire.url being the absolute URI of the questionnaire: https://hl7.org/FHIR/questionnaire-definitions.html#Questionnaire.url. The questionnaire has to be stored in the forms server before you can launch it directly. You can use [Postman](https://www.postman.com/) to do so.
+
+![image](https://user-images.githubusercontent.com/52597778/223016795-1b7b66d9-70c5-4a00-9fe6-b8e873a62c5b.png)
+
+
+### Running in an unlaunched state
+
+This method of running the app does not allow you to save responses as it is not connected to a CMS client.
+
+1. Open https://www.smartforms.io/ in a browser.
+
+**If you are keen on setting it up locally instead, follow the instructions below.**
 
 ## Setup Development Environment
 
@@ -46,19 +77,4 @@ Start the local server.
 npm start
 ```
 
-### Running on SMART EHR (the preferred way)
-
-1. Open https://launch.smarthealthit.org/ in a browser.
-2. Set the **App Launch URL** at the bottom of the page as `http://localhost:3000/launch` and launch app.
-
-![img.png](launch.png)
-
-3. Alternatively, launch a specified questionnaire directly to launch a questionnaire directly with `http://localhost:3000/launch?questionnaireUrl={questionnaire.url}` with questionnaire.url being the absolute URI of the questionnaire: https://hl7.org/FHIR/questionnaire-definitions.html#Questionnaire.url
-
-![img.png](launch-with-questionnaire.png)
-
-### Running without a patient
-
-This method of running the app does not allow you to save responses as it is not connected to a CMS client.
-
-1. Open http://localhost:3000 in a browser.
+To run the app, follow the instructions [here](https://github.com/aehrc/smart-forms/edit/main/README.md#running-on-a-smart-cms-client-the-preferred-way) but replace https://www.smartforms.io/launch with http://localhost:3000/launch  
