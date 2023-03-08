@@ -34,7 +34,7 @@ const Logo = forwardRef((props: Props, ref) => {
     <Box display="flex" alignItems="center">
       {logo}
       <Typography variant="h6" sx={{ ml: 0.5, color: 'common.black' }}>
-        SMART Forms
+        Smart Forms
       </Typography>
     </Box>
   );
