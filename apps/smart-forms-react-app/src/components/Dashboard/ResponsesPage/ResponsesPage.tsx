@@ -43,7 +43,7 @@ import useDebounce from '../../../custom-hooks/useDebounce';
 import dayjs from 'dayjs';
 
 const tableHeaders: TableAttributes[] = [
-  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'title', label: 'Questionnaire Title', alignRight: false },
   { id: 'author', label: 'Author', alignRight: false },
   { id: 'authored', label: 'Authored On', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false }
