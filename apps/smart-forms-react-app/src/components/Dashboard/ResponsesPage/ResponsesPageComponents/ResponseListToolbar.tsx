@@ -52,7 +52,7 @@ function ResponseListToolbar(props: Props) {
         </Typography>
       ) : selectedQuestionnaire && existingResponses.length > 0 ? (
         <Typography variant="subtitle1">
-          Displaying responses from <b>{selectedQuestionnaireTitle}</b> questionnaire
+          Displaying responses from the <b>{selectedQuestionnaireTitle}</b> questionnaire
         </Typography>
       ) : (
         <StyledSearch
