@@ -9,11 +9,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ---
 
 **This repository contains:**
+
 1. The Smart Forms React app
-2. Two modules containing functionalities from the [SDC (Structured Data Capture) Specification of HL7 FHIR] (http://hl7.org/fhir/uv/sdc/): 
- - [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
- - [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
-3. A [Questionnaire](https://hl7.org/fhir/questionnaire.html)-hosting Forms Server as part of our Common Services architecture which supports the $assemble operation. It is built on top of the [HAPI FHIR JPA Server](https://github.com/hapifhir/hapi-fhir-jpaserver-starter). 
+2. Two modules containing functionalities from the [SDC (Structured Data Capture) Specification of HL7 FHIR] (http://hl7.org/fhir/uv/sdc/):
+
+- [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
+- [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
+
+3. A [Questionnaire](https://hl7.org/fhir/questionnaire.html)-hosting Forms Server as part of our Common Services architecture which supports the $assemble operation. It is built on top of the [HAPI FHIR JPA Server](https://github.com/hapifhir/hapi-fhir-jpaserver-starter).
 
 **This project is still ongoing development and should be used for testing purposes only.**
 
@@ -29,11 +32,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ![image](https://user-images.githubusercontent.com/52597778/223016492-882abdaf-33e9-4039-8c32-301c4cf58e91.png)
 
-
 3. Alternatively, launch a specified questionnaire directly to launch a questionnaire directly with `https://www.smartforms.io/launch?questionnaireUrl={questionnaire.url}` with questionnaire.url being the absolute URI of the questionnaire: https://hl7.org/FHIR/questionnaire-definitions.html#Questionnaire.url. The questionnaire has to be stored in the forms server before you can launch it directly. You can use [Postman](https://www.postman.com/) to do so.
 
 ![image](https://user-images.githubusercontent.com/52597778/223016795-1b7b66d9-70c5-4a00-9fe6-b8e873a62c5b.png)
-
 
 ### Running in an unlaunched state
 
@@ -77,4 +78,4 @@ Start the local server.
 npm start
 ```
 
-To run the app, follow the instructions [here](https://github.com/aehrc/smart-forms/edit/main/README.md#running-on-a-smart-cms-client-the-preferred-way) but replace https://www.smartforms.io/launch with http://localhost:3000/launch  
+To run the app, follow the instructions [here](https://github.com/aehrc/smart-forms/edit/main/README.md#running-on-a-smart-cms-client-the-preferred-way) but replace https://www.smartforms.io/launch with http://localhost:3000/launch
