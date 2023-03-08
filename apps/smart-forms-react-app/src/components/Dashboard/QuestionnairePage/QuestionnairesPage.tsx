@@ -43,7 +43,7 @@ import SourceToggle from '../../Misc/SourceToggle';
 import dayjs from 'dayjs';
 
 const tableHeaders: TableAttributes[] = [
-  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'title', label: 'Title', alignRight: false },
   { id: 'publisher', label: 'Publisher', alignRight: false },
   { id: 'date', label: 'Date', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false }

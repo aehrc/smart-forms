@@ -29,7 +29,7 @@ function ViewExistingResponsesButton() {
   if (fhirClient) {
     const questionnaireRef =
       fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir'
-        ? selectedQuestionnaire?.resource?.id
+        ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
         : selectedQuestionnaire?.resource?.url;
 
     if (questionnaireRef) {
@@ -52,6 +52,10 @@ function ViewExistingResponsesButton() {
         !!fhirClient
     }
   );
+
+  console.log(queryUrl);
+  console.log(data);
+  console.log('-----');
 
   if (error) {
     console.error(error);
