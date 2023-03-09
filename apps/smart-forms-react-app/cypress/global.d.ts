@@ -4,6 +4,7 @@ declare namespace Cypress {
   interface Chainable {
     getByData(dataTestAttribute: string, args?: any): Chainable<Element>;
     previewForm(): void;
+    clickOnNavPage(pageName: string): void;
     clickOnOperation(operationName: string): void;
     editForm(): void;
     goToPatientDetailsTab(): void;
@@ -13,5 +14,7 @@ declare namespace Cypress {
     waitForFormUpdate(): Chainable<Element>;
     waitForPopulation(): void;
     launchFromSMARTHealthIT(): void;
+    goToResponsesPage(): void;
+    waitForExistingResponses(): void;
   }
 }

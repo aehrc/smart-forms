@@ -52,7 +52,7 @@ function ResponsePreview() {
           <Typography variant="h3">Response Preview</Typography>
         </Box>
         <Card sx={{ mb: 2 }}>
-          <Box ref={componentRef} sx={{ p: 4 }}>
+          <Box ref={componentRef} sx={{ p: 4 }} data-test="response-preview-box">
             <>{parsedHTML}</>
           </Box>
         </Card>
