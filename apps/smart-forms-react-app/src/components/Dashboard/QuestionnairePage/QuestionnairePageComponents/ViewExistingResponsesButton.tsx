@@ -53,10 +53,6 @@ function ViewExistingResponsesButton() {
     }
   );
 
-  console.log(queryUrl);
-  console.log(data);
-  console.log('-----');
-
   if (error) {
     console.error(error);
     enqueueSnackbar('An error occurred while fetching existing responses', {
