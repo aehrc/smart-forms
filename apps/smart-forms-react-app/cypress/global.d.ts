@@ -17,5 +17,6 @@ declare namespace Cypress {
     launchFromSMARTHealthIT(): void;
     goToResponsesPage(): void;
     waitForExistingResponses(): void;
+    createDraftResponse(): void;
   }
 }

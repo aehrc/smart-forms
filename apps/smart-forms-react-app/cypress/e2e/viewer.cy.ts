@@ -8,40 +8,45 @@ describe('response viewer', () => {
     '^https:\\/\\/launch\\.smarthealthit\\.org\\/v\\/r4\\/fhir\\/Questionnaire\\/.*'
   );
 
-  beforeEach(() => {
-    // intercepts
-    cy.intercept(
-      `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-authored&patient=d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e&`
-    ).as('fetchResponse');
-    cy.intercept(
-      `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-authored&patient=d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e&questionnaire.title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
-    ).as('fetchResponseByTitle');
-
-    cy.intercept(formsServerQuestionnaireRegex).as('enableOpenResponseButton');
-    cy.intercept(clientQuestionnaireRegex).as('openingResponseClient');
-
-    // creating a dummy draft questionnaire
-
-    // ui test process
-    cy.launchFromSMARTHealthIT();
-    cy.goToResponsesPage();
-    cy.wait('@fetchResponse').its('response.statusCode').should('eq', 200);
-
-    cy.getByData('response-list-sort-label').contains('Status').click().click();
-
-    cy.getByData('response-list-row')
-      .contains('Aboriginal and Torres Strait Islander Health Check')
-      .eq(0)
-      .click()
-      .wait(100);
-
-    cy.wait('@enableOpenResponseButton').its('response.statusCode').should('eq', 200);
-    cy.getByData('button-open-response').should('not.be.disabled').click();
-
-    cy.location('pathname').should('eq', '/viewer');
+  // creating a dummy draft response
+  context('creating a dummy draft response', () => {
+    it('create a draft response', () => {
+      cy.createDraftResponse();
+    });
   });
 
   context('viewing a draft response', () => {
+    beforeEach(() => {
+      // intercepts
+      cy.intercept(
+        `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-authored&patient=d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e&`
+      ).as('fetchResponse');
+      cy.intercept(
+        `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-authored&patient=d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e&questionnaire.title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+      ).as('fetchResponseByTitle');
+
+      cy.intercept(formsServerQuestionnaireRegex).as('enableOpenResponseButton');
+      cy.intercept(clientQuestionnaireRegex).as('openingResponseClient');
+
+      // ui test process
+      cy.launchFromSMARTHealthIT();
+      cy.goToResponsesPage();
+      cy.wait('@fetchResponse').its('response.statusCode').should('eq', 200);
+
+      cy.getByData('response-list-sort-label').contains('Status').click().click();
+
+      cy.getByData('response-list-row')
+        .contains('Aboriginal and Torres Strait Islander Health Check')
+        .eq(0)
+        .click()
+        .wait(100);
+
+      cy.wait('@enableOpenResponseButton').its('response.statusCode').should('eq', 200);
+      cy.getByData('button-open-response').should('not.be.disabled').click();
+
+      cy.location('pathname').should('eq', '/viewer');
+    });
+
     it('opening a response', () => {
       cy.getByData('response-preview-box').should(
         'include.text',

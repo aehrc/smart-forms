@@ -104,4 +104,41 @@ Cypress.Commands.add('waitForExistingResponses', () => {
   cy.wait('@loadExistingResponses').its('response.statusCode').should('eq', 200);
 });
 
+Cypress.Commands.add('createDraftResponse', () => {
+  const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+  const launchUrlWithoutQuestionnaire =
+    'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
+
+  cy.intercept(`${formsServerUrl}/Questionnaire?_count=100&_sort=-date&`).as('fetchQuestionnaire');
+  cy.intercept(
+    `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+  ).as('fetchQuestionnaireByTitle');
+  cy.intercept({
+    method: 'POST',
+    url: 'https://launch.smarthealthit.org/v/r4/fhir/QuestionnaireResponse'
+  }).as('savingResponse');
+
+  cy.visit(launchUrlWithoutQuestionnaire);
+  cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
+
+  cy.getByData('search-field-questionnaires')
+    .find('input')
+    .type('Aboriginal and Torres Strait Islander Health Check');
+
+  cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
+
+  cy.getByData('questionnaire-list-row')
+    .contains('Aboriginal and Torres Strait Islander Health Check')
+    .click();
+  cy.getByData('button-create-response').click();
+  cy.waitForPopulation();
+
+  cy.goToPatientDetailsTab();
+  cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
+  cy.initAgeValue(60);
+
+  cy.clickOnRendererOperation('Save as Draft');
+  cy.wait('@savingResponse');
+});
+
 export {};
