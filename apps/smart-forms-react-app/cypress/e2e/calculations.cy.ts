@@ -1,13 +1,11 @@
 describe('calculations via variables', () => {
-  const launchPage = 'http://localhost:3000/launch';
-
   beforeEach(() => {
-    cy.visit(launchPage);
+    cy.launchFromSMARTHealthIT();
     cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
 
     cy.goToPatientDetailsTab();
     cy.initAgeValue(50);

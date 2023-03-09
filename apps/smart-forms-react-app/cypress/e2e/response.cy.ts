@@ -1,5 +1,4 @@
 describe('save response', () => {
-  const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
   const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   const launchUrlWithoutQuestionnaire =
@@ -12,10 +11,6 @@ describe('save response', () => {
     cy.intercept(
       `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
-    cy.intercept({
-      method: 'POST',
-      url: clientUrl
-    }).as('populating');
 
     cy.visit(launchUrlWithoutQuestionnaire);
     cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
@@ -30,9 +25,7 @@ describe('save response', () => {
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-
-    cy.wait('@populating').its('response.statusCode').should('eq', 200);
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
   });
 
   context('saving a response as draft', () => {
@@ -61,7 +54,6 @@ describe('save response', () => {
       cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
       cy.initAgeValue(60);
 
-      cy.getByData('button-expand-nav').click();
       cy.getByData('list-button-renderer-operation');
       cy.contains('Save as Final').click();
       cy.get('.MuiButtonBase-root').contains('Save as final').click();

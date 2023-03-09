@@ -7,7 +7,6 @@ cy.intercept(
 */
 
 describe('navigate dashboard', () => {
-  const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
   const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   const launchUrlWithQuestionnaireParam =
@@ -23,10 +22,6 @@ describe('navigate dashboard', () => {
     cy.intercept(
       `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
-    cy.intercept({
-      method: 'POST',
-      url: clientUrl
-    }).as('populating');
 
     cy.visit(launchUrlWithoutQuestionnaire);
 
@@ -43,8 +38,7 @@ describe('navigate dashboard', () => {
       .click();
     cy.getByData('button-create-response').click();
 
-    cy.wait('@populating').its('response.statusCode').should('eq', 200);
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
   });
 });
 

@@ -1,14 +1,11 @@
 describe('choice component behaviour', () => {
-  const launchPage = 'http://localhost:3000/launch';
-
   beforeEach(() => {
-    // select questionnaire
-    cy.visit(launchPage);
+    cy.launchFromSMARTHealthIT();
     cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
   });
 
   context('choice radio answer option component', () => {
@@ -45,8 +42,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -54,8 +51,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexSecondRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -90,8 +87,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -104,8 +101,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-choice-radio-answer-value-set-box')
         .should('include.text', itemText)
@@ -113,8 +110,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexSecondRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-choice-radio-answer-value-set-box')
         .should('include.text', itemText)
@@ -148,8 +145,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexFirstRadioToBeChecked)
           .check()
-          .wait(50)
-          .should('be.checked');
+          .should('be.checked')
+          .waitForFormUpdate();
 
         cy.previewForm();
         cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -162,8 +159,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexFirstRadioToBeChecked)
           .check()
-          .wait(50)
-          .should('be.checked');
+          .should('be.checked')
+          .waitForFormUpdate();
 
         cy.getByData('q-item-choice-radio-answer-value-set-box')
           .should('include.text', itemText)
@@ -171,8 +168,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexSecondRadioToBeChecked)
           .check()
-          .wait(50)
-          .should('be.checked');
+          .should('be.checked')
+          .waitForFormUpdate();
 
         cy.getByData('q-item-choice-radio-answer-value-set-box')
           .should('include.text', itemText)
@@ -208,8 +205,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -222,8 +219,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -231,8 +228,8 @@ describe('choice component behaviour', () => {
         .find('input')
         .eq(indexSecondRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -267,8 +264,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexFirstCheckboxToBeChecked)
           .check()
-          .wait(50)
-          .should('be.checked');
+          .should('be.checked')
+          .waitForFormUpdate();
 
         cy.previewForm();
         cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -281,8 +278,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexFirstCheckboxToBeChecked)
           .check()
-          .wait(50)
-          .should('be.checked');
+          .should('be.checked')
+          .waitForFormUpdate();
 
         cy.getByData('q-item-choice-checkbox-answer-value-set-box')
           .should('include.text', itemText)
@@ -290,8 +287,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexSecondCheckboxToBeChecked)
           .check()
-          .wait(50)
-          .should('be.checked');
+          .should('be.checked')
+          .waitForFormUpdate();
 
         cy.previewForm();
         cy.checkResponseTextAndAnswer(itemText, expectedAnswerSecond);
@@ -304,8 +301,8 @@ describe('choice component behaviour', () => {
           .find('input')
           .eq(indexSecondCheckboxToBeChecked)
           .uncheck()
-          .wait(50)
-          .should('not.be.checked');
+          .should('not.be.checked')
+          .waitForFormUpdate();
 
         cy.previewForm();
 
@@ -346,9 +343,9 @@ describe('choice component behaviour', () => {
         .eq(0)
         .find('input')
         .type(`${firstInput}{enter}`)
-        .wait(50)
         .clear()
-        .type(`${secondInput}{enter}`);
+        .type(`${secondInput}{enter}`)
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, secondInput);
@@ -383,10 +380,9 @@ describe('choice component behaviour', () => {
           .eq(0)
           .find('input')
           .type(`${firstInput}{enter}`)
-          .wait(50)
           .clear()
           .type(`${secondInput}{enter}`)
-          .wait(50);
+          .waitForFormUpdate();
 
         cy.previewForm();
         cy.checkResponseTextAndAnswer(itemText, secondInput);

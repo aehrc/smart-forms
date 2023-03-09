@@ -10,5 +10,8 @@ declare namespace Cypress {
     goToTab(tabName: string): void;
     initAgeValue(age: number): void;
     checkResponseTextAndAnswer(text: string, answer: string): void;
+    waitForFormUpdate(): Chainable<Element>;
+    waitForPopulation(): void;
+    launchFromSMARTHealthIT(): void;
   }
 }
