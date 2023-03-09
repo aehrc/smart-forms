@@ -15,7 +15,7 @@ describe('repeat items functionality', () => {
     cy.initAgeValue(60);
   });
 
-  it.only('add button is disabled if there is no input in the last field', () => {
+  it('add button is disabled if there is no input in the last field', () => {
     cy.intercept(ontoserverExpandRegex).as('ontoserverExpand');
 
     cy.goToPatientDetailsTab();

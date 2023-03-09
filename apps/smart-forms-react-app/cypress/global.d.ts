@@ -5,7 +5,8 @@ declare namespace Cypress {
     getByData(dataTestAttribute: string, args?: any): Chainable<Element>;
     previewForm(): void;
     clickOnNavPage(pageName: string): void;
-    clickOnOperation(operationName: string): void;
+    clickOnRendererOperation(operationName: string): void;
+    clickOnViewerOperation(operationName: string): void;
     editForm(): void;
     goToPatientDetailsTab(): void;
     goToTab(tabName: string): void;

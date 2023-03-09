@@ -25,8 +25,13 @@ Cypress.Commands.add('clickOnNavPage', (operationName: string) => {
   cy.contains(operationName).click();
 });
 
-Cypress.Commands.add('clickOnOperation', (operationName: string) => {
+Cypress.Commands.add('clickOnRendererOperation', (operationName: string) => {
   cy.getByData('list-button-renderer-operation');
+  cy.contains(operationName).click();
+});
+
+Cypress.Commands.add('clickOnViewerOperation', (operationName: string) => {
+  cy.getByData('list-button-viewer-operation');
   cy.contains(operationName).click();
 });
 

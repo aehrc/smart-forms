@@ -44,6 +44,7 @@ function ResponseListHead(props: Props) {
               hideSortIcon
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
+              data-test="response-list-sort-label"
               onClick={createSortHandler(headCell.id)}>
               {headCell.label}
               {orderBy === headCell.id ? (

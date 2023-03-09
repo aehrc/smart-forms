@@ -48,7 +48,7 @@ describe('navigate questionnaires page', () => {
       .should('be.checked')
       .waitForFormUpdate();
 
-    cy.clickOnOperation('Save as Draft');
+    cy.clickOnRendererOperation('Save as Draft');
     cy.wait('@saveAsDraft').its('response.statusCode').should('eq', 201);
     cy.clickOnNavPage('Back to Home');
   });
@@ -82,7 +82,7 @@ describe('navigate responses page', () => {
     cy.launchFromSMARTHealthIT();
   });
 
-  it.only('selecting and opening a response', () => {
+  it('selecting and opening a response', () => {
     cy.intercept(
       `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-authored&patient=d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e&`
     ).as('fetchResponse');

@@ -212,7 +212,9 @@ function ResponsesPage() {
                           </TableCell>
 
                           <TableCell align="left">
-                            <ResponseLabel color={status}>{status}</ResponseLabel>
+                            <ResponseLabel color={status} data-test="response-label">
+                              {status}
+                            </ResponseLabel>
                           </TableCell>
                         </TableRow>
                       );
