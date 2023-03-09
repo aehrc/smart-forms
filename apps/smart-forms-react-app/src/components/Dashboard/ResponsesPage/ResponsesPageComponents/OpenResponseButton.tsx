@@ -114,6 +114,7 @@ function OpenResponseButton(props: Props) {
           backgroundColor: 'secondary.dark'
         }
       }}
+      data-test="button-open-response"
       onClick={handleClick}>
       Open Response
     </Button>

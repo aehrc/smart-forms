@@ -33,6 +33,7 @@ function ResponseListToolbar(props: Props) {
 
   return (
     <StyledRoot
+      data-test="responses-list-toolbar"
       sx={{
         ...(selected
           ? {
@@ -67,6 +68,7 @@ function ResponseListToolbar(props: Props) {
               />
             </InputAdornment>
           }
+          data-test="search-field-responses"
           sx={{
             '&.Mui-focused': {
               width: '50%',
@@ -84,7 +86,9 @@ function ResponseListToolbar(props: Props) {
         </Tooltip>
       ) : selectedQuestionnaire && existingResponses.length > 0 ? (
         <Tooltip title="Remove questionnaire filter">
-          <IconButton onClick={() => clearSelectedQuestionnaire()}>
+          <IconButton
+            onClick={() => clearSelectedQuestionnaire()}
+            data-test="button-remove-questionnaire-filter">
             <Iconify icon="material-symbols:filter-alt-off-outline" />
           </IconButton>
         </Tooltip>

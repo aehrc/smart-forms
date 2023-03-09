@@ -182,6 +182,7 @@ function ResponsesPage() {
                           key={id}
                           tabIndex={-1}
                           selected={isSelected}
+                          data-test="response-list-row"
                           onClick={() => handleRowClick(row.id)}>
                           <TableCell padding="checkbox">
                             <Avatar
@@ -211,7 +212,9 @@ function ResponsesPage() {
                           </TableCell>
 
                           <TableCell align="left">
-                            <ResponseLabel color={status}>{status}</ResponseLabel>
+                            <ResponseLabel color={status} data-test="response-label">
+                              {status}
+                            </ResponseLabel>
                           </TableCell>
                         </TableRow>
                       );

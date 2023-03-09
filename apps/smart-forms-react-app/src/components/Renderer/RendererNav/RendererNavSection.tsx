@@ -41,6 +41,7 @@ export function NavItem(props: NavButton) {
       disableGutters
       onClick={onClick}
       disabled={disabled}
+      data-test="list-button-renderer-nav-page"
       sx={{
         ...theme.typography.subtitle2,
         height: 48,

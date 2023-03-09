@@ -130,7 +130,10 @@ export default function Router() {
       .catch((error: Error) => {
         // Prompt user to launch app if app is unlaunched
         // Otherwise app is launched but failed, display error message
-        if (error.message.includes("No 'state' parameter found")) {
+        if (
+          error.message.includes("No 'state' parameter found") ||
+          error.message.includes('No state found')
+        ) {
           if (window.location.pathname !== '/launch') {
             enqueueSnackbar('Intending to launch from a CMS? Try it out here!', {
               action: <GoToTestLauncher />,

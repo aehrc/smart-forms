@@ -9,48 +9,36 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('getByData', (selector, ...args) => {
   return cy.get(`[data-test*=${selector}]`, ...args);
 });
 
 Cypress.Commands.add('previewForm', () => {
-  cy.getByData('button-expand-nav').click();
   cy.getByData('list-button-renderer-operation');
   cy.contains('Preview').click();
   cy.location('pathname').should('eq', '/renderer/preview');
-  cy.get('.simplebar-content').type('{esc}');
 });
 
-Cypress.Commands.add('clickOnOperation', (operationName: string) => {
-  cy.getByData('button-expand-nav').click();
+Cypress.Commands.add('clickOnNavPage', (operationName: string) => {
+  cy.getByData('list-button-renderer-nav-page');
+  cy.contains(operationName).click();
+});
+
+Cypress.Commands.add('clickOnRendererOperation', (operationName: string) => {
   cy.getByData('list-button-renderer-operation');
   cy.contains(operationName).click();
-  cy.get('.simplebar-content').type('{esc}');
+});
+
+Cypress.Commands.add('clickOnViewerOperation', (operationName: string) => {
+  cy.getByData('list-button-viewer-operation');
+  cy.contains(operationName).click();
 });
 
 Cypress.Commands.add('editForm', () => {
-  cy.getByData('button-expand-nav').click();
   cy.getByData('list-button-renderer-operation');
   cy.contains('Editor').click();
   cy.location('pathname').should('eq', '/renderer');
-  cy.get('.simplebar-content').type('{esc}');
 });
 
 Cypress.Commands.add('goToPatientDetailsTab', () => {
@@ -65,13 +53,93 @@ Cypress.Commands.add('initAgeValue', (age: number) => {
   cy.getByData('q-item-integer-box')
     .should('include.text', 'Age')
     .find('input')
+    .clear()
     .type(age.toString())
-    .wait(50);
+    .waitForFormUpdate();
 });
 
 Cypress.Commands.add('checkResponseTextAndAnswer', (text: string, answer: string) => {
   cy.getByData('response-item-text').contains(text);
   cy.getByData('response-item-answer').contains(answer);
+});
+
+Cypress.Commands.add('waitForFormUpdate', () => {
+  cy.getByData('list-button-renderer-operation')
+    .contains('Save as Draft')
+    .parent()
+    .should('not.have.class', 'Mui-disabled');
+});
+
+Cypress.Commands.add('waitForPopulation', () => {
+  const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
+
+  cy.intercept({
+    method: 'POST',
+    url: clientUrl
+  }).as('populating');
+
+  cy.wait('@populating').its('response.statusCode').should('eq', 200);
+  cy.getByData('form-heading').should('be.visible');
+});
+
+Cypress.Commands.add('launchFromSMARTHealthIT', () => {
+  const launchUrl =
+    'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
+
+  cy.visit(launchUrl);
+});
+
+Cypress.Commands.add('goToResponsesPage', () => {
+  cy.getByData('list-button-dashboard-nav-page');
+  cy.contains('Responses').click();
+});
+
+Cypress.Commands.add('waitForExistingResponses', () => {
+  const fetchQuestionnaireRegex = new RegExp(
+    /^https:\/\/launch\.smarthealthit\.org\/v\/r4\/fhir\/QuestionnaireResponse\?questionnaire=.+$/i
+  );
+  cy.intercept(fetchQuestionnaireRegex).as('loadExistingResponses');
+
+  cy.wait('@loadExistingResponses', { timeout: 10000 })
+    .its('response.statusCode')
+    .should('eq', 200);
+});
+
+Cypress.Commands.add('createDraftResponse', () => {
+  const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+  const launchUrlWithoutQuestionnaire =
+    'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
+
+  cy.intercept(`${formsServerUrl}/Questionnaire?_count=100&_sort=-date&`).as('fetchQuestionnaire');
+  cy.intercept(
+    `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+  ).as('fetchQuestionnaireByTitle');
+  cy.intercept({
+    method: 'POST',
+    url: 'https://launch.smarthealthit.org/v/r4/fhir/QuestionnaireResponse'
+  }).as('savingResponse');
+
+  cy.visit(launchUrlWithoutQuestionnaire);
+  cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
+
+  cy.getByData('search-field-questionnaires')
+    .find('input')
+    .type('Aboriginal and Torres Strait Islander Health Check');
+
+  cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
+
+  cy.getByData('questionnaire-list-row')
+    .contains('Aboriginal and Torres Strait Islander Health Check')
+    .click();
+  cy.getByData('button-create-response').click();
+  cy.waitForPopulation();
+
+  cy.goToPatientDetailsTab();
+  cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
+  cy.initAgeValue(60);
+
+  cy.clickOnRendererOperation('Save as Draft');
+  cy.wait('@savingResponse');
 });
 
 export {};

@@ -1,14 +1,11 @@
 describe('open choice component behaviour', () => {
-  const launchPage = 'http://localhost:3000/launch';
-
   beforeEach(() => {
-    cy.visit(launchPage);
-
+    cy.launchFromSMARTHealthIT();
     cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
 
     cy.goToPatientDetailsTab();
     cy.initAgeValue(50);
@@ -32,8 +29,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexFirstCheckboxToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -46,8 +43,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexFirstCheckboxToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -55,8 +52,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexSecondCheckboxToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -71,7 +68,7 @@ describe('open choice component behaviour', () => {
         .eq(indexSecondCheckboxToBeChecked)
         .uncheck()
         .should('not.be.checked')
-        .wait(100);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -85,8 +82,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexFirstCheckboxToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -102,8 +99,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(0)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -113,7 +110,7 @@ describe('open choice component behaviour', () => {
         .find('input')
         .should('not.be.disabled')
         .type(openLabelInput)
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -128,7 +125,7 @@ describe('open choice component behaviour', () => {
         .getByData('q-item-checkbox-open-label-field')
         .find('input')
         .clear()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -136,6 +133,7 @@ describe('open choice component behaviour', () => {
 
       cy.editForm();
 
+      // Check open label, enter input and uncheck again
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
         .eq(0)
@@ -143,7 +141,7 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(0)
         .check()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -152,7 +150,8 @@ describe('open choice component behaviour', () => {
         .getByData('q-item-checkbox-open-label-field')
         .find('input')
         .type(openLabelInput)
-        .wait(50);
+        .waitForFormUpdate()
+        .wait(200); // Add wait here to take debounced input duration into account
 
       cy.getByData('q-item-open-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
@@ -161,7 +160,7 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(0)
         .uncheck()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -189,15 +188,13 @@ describe('open choice component behaviour', () => {
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
         .find('input')
-        .eq(0)
-        .type(firstInputToBeSearched)
-        .wait(50);
+        .clear()
+        .type(firstInputToBeSearched);
       cy.wait('@ontoserverExpand');
 
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
         .find('input')
-        .eq(0)
         .should('have.value', firstInputToBeSearched)
         .click()
         .type('{enter}')
@@ -218,30 +215,24 @@ describe('open choice component behaviour', () => {
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
         .find('input')
-        .eq(0)
-        .type(firstInputToBeSearched)
-        .wait(200);
+        .clear()
+        .type(firstInputToBeSearched);
       cy.wait('@firstOntoserverExpand');
 
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
         .find('input')
-        .eq(0)
         .should('have.value', firstInputToBeSearched)
         .click()
         .type('{enter}')
-        .wait(50)
         .should('contain.value', firstInputToBeSearched)
         .clear()
-        .wait(50)
-        .type(secondInputToBeSearched)
-        .wait(200);
+        .type(secondInputToBeSearched);
       cy.wait('@secondOntoserverExpand');
 
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
         .find('input')
-        .eq(0)
         .should('have.value', secondInputToBeSearched)
         .click()
         .type('{enter}')
@@ -272,8 +263,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
@@ -286,8 +277,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -295,8 +286,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexSecondRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -316,8 +307,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -333,8 +324,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(0)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -344,7 +335,7 @@ describe('open choice component behaviour', () => {
         .find('input')
         .should('not.be.disabled')
         .type(openLabelInput)
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, openLabelInput);
@@ -359,7 +350,7 @@ describe('open choice component behaviour', () => {
         .getByData('q-item-radio-open-label-field')
         .find('input')
         .clear()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
 
@@ -375,7 +366,7 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(0)
         .check()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -384,7 +375,7 @@ describe('open choice component behaviour', () => {
         .getByData('q-item-radio-open-label-field')
         .find('input')
         .type(openLabelInput)
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.getByData('q-item-open-choice-radio-answer-option-box')
         .should('include.text', itemText)
@@ -392,8 +383,8 @@ describe('open choice component behaviour', () => {
         .find('input')
         .eq(indexFirstRadioToBeChecked)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);

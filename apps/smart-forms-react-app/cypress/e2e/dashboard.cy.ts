@@ -1,20 +1,11 @@
-// TODO create test to navigate dashboard
-/*
-cy.intercept(
-  `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-date&patient=${patientId}&`
-).as('fetchQuestionnaireResponse');
-  cy.wait('@fetchQuestionnaireResponse').its('response.statusCode').should('eq', 200);
-*/
-
-describe('navigate dashboard', () => {
+describe('navigate questionnaires page', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
   const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+  const questionnaireTitle = 'Aboriginal and Torres Strait Islander Health Check';
 
-  const launchUrlWithQuestionnaireParam =
-    'http://localhost:3000/launch?questionnaireUrl=http%3A%2F%2Fwww.health.gov.au%2Fassessments%2Fmbs%2F715&iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
-
-  const launchUrlWithoutQuestionnaire =
-    'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
+  beforeEach(() => {
+    cy.launchFromSMARTHealthIT();
+  });
 
   it('selecting a questionnaire and creating a new response', () => {
     cy.intercept(`${formsServerUrl}/Questionnaire?_count=100&_sort=-date&`).as(
@@ -23,12 +14,7 @@ describe('navigate dashboard', () => {
     cy.intercept(
       `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
-    cy.intercept({
-      method: 'POST',
-      url: clientUrl
-    }).as('populating');
-
-    cy.visit(launchUrlWithoutQuestionnaire);
+    cy.intercept(`${clientUrl}/QuestionnaireResponse`).as('saveAsDraft');
 
     cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
 
@@ -43,8 +29,88 @@ describe('navigate dashboard', () => {
       .click();
     cy.getByData('button-create-response').click();
 
-    cy.wait('@populating').its('response.statusCode').should('eq', 200);
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
+
+    cy.getByData('q-item-choice-radio-answer-value-set-box')
+      .should('include.text', 'Eligible for health check')
+      .eq(0)
+      .find('input')
+      .eq(0)
+      .check()
+      .should('be.checked')
+      .waitForFormUpdate();
+
+    cy.clickOnRendererOperation('Save as Draft');
+    cy.wait('@saveAsDraft').its('response.statusCode').should('eq', 201);
+    cy.clickOnNavPage('Back to Home');
+  });
+
+  it('View responses from a specified questionnaire', () => {
+    cy.getByData('questionnaire-list-row').contains(questionnaireTitle).click();
+
+    cy.waitForExistingResponses();
+    cy.getByData('button-view-responses').should('not.be.disabled').click();
+    cy.getByData('responses-list-toolbar').should('include.text', questionnaireTitle);
+  });
+
+  it('Go back button displays and works as intended', () => {
+    cy.getByData('questionnaire-list-row').contains(questionnaireTitle).click();
+
+    cy.waitForExistingResponses();
+    cy.getByData('button-view-responses').should('not.be.disabled').click();
+    cy.getByData('button-responses-go-back').should('be.visible').click();
+
+    cy.getByData('button-view-responses').should('not.be.disabled').click();
+    cy.getByData('button-remove-questionnaire-filter').should('be.visible').click();
+
+    cy.getByData('button-responses-go-back').should('not.exist');
+  });
+});
+
+describe('navigate responses page', () => {
+  const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
+  const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+
+  beforeEach(() => {
+    cy.launchFromSMARTHealthIT();
+  });
+
+  it('selecting and opening a response', () => {
+    cy.intercept(
+      `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-authored&patient=d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e&`
+    ).as('fetchResponse');
+    cy.intercept(
+      `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-authored&patient=d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e&questionnaire.title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+    ).as('fetchResponseByTitle');
+
+    cy.intercept(`${formsServerUrl}/Questionnaire/AboriginalTorresStraitIslanderHealthCheck`).as(
+      'enableOpenResponseButton'
+    );
+    cy.intercept(
+      `${clientUrl}/Questionnaire/AboriginalTorresStraitIslanderHealthCheck-SMARTcopy`
+    ).as('openingResponseClient');
+
+    cy.goToResponsesPage();
+    cy.wait('@fetchResponse').its('response.statusCode').should('eq', 200);
+
+    cy.getByData('search-field-responses')
+      .find('input')
+      .type('Aboriginal and Torres Strait Islander Health Check');
+
+    cy.wait('@fetchResponseByTitle').its('response.statusCode').should('eq', 200);
+
+    cy.getByData('response-list-row')
+      .contains('Aboriginal and Torres Strait Islander Health Check')
+      .click();
+    cy.wait('@enableOpenResponseButton').its('response.statusCode').should('eq', 200);
+    cy.getByData('button-open-response').should('not.be.disabled').click();
+    cy.wait('@openingResponseClient').its('response.statusCode').should('eq', 200);
+
+    cy.location('pathname').should('eq', '/viewer');
+    cy.getByData('response-preview-box').should(
+      'include.text',
+      'Aboriginal and Torres Strait Islander Health Check'
+    );
   });
 });
 

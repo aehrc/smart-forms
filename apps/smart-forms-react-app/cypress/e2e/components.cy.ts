@@ -1,14 +1,11 @@
 describe('simple component behaviour', () => {
-  const launchPage = 'http://localhost:3000/launch';
-
   beforeEach(() => {
-    cy.visit(launchPage);
-
+    cy.launchFromSMARTHealthIT();
     cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
 
     cy.goToPatientDetailsTab();
     cy.initAgeValue(60);
@@ -24,7 +21,7 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .type(input)
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, input);
@@ -36,9 +33,8 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .type(input)
-        .wait(50)
         .clear()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
 
@@ -56,10 +52,9 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .should('not.be.checked')
-        .wait(100)
         .check()
-        .wait(50)
-        .should('be.checked');
+        .should('be.checked')
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, 'True');
@@ -71,12 +66,10 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .should('not.be.checked')
-        .wait(100)
         .check()
-        .wait(50)
         .should('be.checked')
         .uncheck()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, 'False');
@@ -94,8 +87,9 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('input')
         .eq(0)
+        .clear()
         .type(validInput)
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswer);
@@ -106,8 +100,9 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('input')
         .eq(0)
+        .clear()
         .type(invalidInput)
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, 'Invalid Date');
@@ -118,10 +113,10 @@ describe('simple component behaviour', () => {
         .should('include.text', itemText)
         .find('input')
         .eq(0)
-        .type(validInput)
-        .wait(50)
         .clear()
-        .wait(50);
+        .type(validInput)
+        .clear()
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.getByData('response-item-text').should('not.have.text', itemText);
@@ -143,8 +138,9 @@ describe('simple component behaviour', () => {
       cy.getByData('q-item-date-time-field')
         .find('input')
         .eq(0)
+        .clear()
         .type(validInput)
-        .wait(300)
+        .wait(200)
         .should('have.value', '02/08/2023 04:00 AM');
 
       cy.previewForm();
@@ -152,7 +148,11 @@ describe('simple component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on inputting invalid datetime', () => {
-      cy.getByData('q-item-date-time-field').find('input').eq(0).type(invalidInput).wait(200);
+      cy.getByData('q-item-date-time-field')
+        .find('input')
+        .eq(0)
+        .type(invalidInput)
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, 'Invalid date');
@@ -162,10 +162,10 @@ describe('simple component behaviour', () => {
       cy.getByData('q-item-date-time-field')
         .find('input')
         .eq(0)
-        .type(validInput)
-        .wait(200)
         .clear()
-        .wait(200);
+        .type(validInput)
+        .clear()
+        .waitForFormUpdate();
 
       cy.previewForm();
 
@@ -184,7 +184,7 @@ describe('simple component behaviour', () => {
         .find('textarea')
         .eq(0)
         .type(input)
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, input);
@@ -196,9 +196,8 @@ describe('simple component behaviour', () => {
         .find('textarea')
         .eq(0)
         .type(input)
-        .wait(50)
         .clear()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.getByData('response-item-text').should('not.have.text', itemText);
@@ -227,7 +226,7 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .clear()
-        .wait(50);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, '0');
@@ -248,7 +247,7 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .type(input)
-        .wait(200);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, input);
@@ -260,9 +259,8 @@ describe('simple component behaviour', () => {
         .find('input')
         .eq(0)
         .type(input)
-        .wait(200)
         .clear()
-        .wait(200);
+        .waitForFormUpdate();
 
       cy.previewForm();
       cy.getByData('response-item-text').should('not.have.text', itemText);

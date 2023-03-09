@@ -13,6 +13,7 @@ function BackToQuestionnairesButton() {
     <Button
       variant="contained"
       endIcon={<Iconify icon="material-symbols:arrow-back" />}
+      data-test="button-responses-go-back"
       sx={{
         px: 2.5,
         backgroundColor: 'primary.main',

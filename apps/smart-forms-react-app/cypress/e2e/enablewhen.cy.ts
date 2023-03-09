@@ -1,13 +1,11 @@
 describe('enable when functionality', () => {
-  const launchPage = 'http://localhost:3000/launch';
-
   beforeEach(() => {
-    cy.visit(launchPage);
+    cy.launchFromSMARTHealthIT();
     cy.getByData('questionnaire-list-row')
       .contains('Aboriginal and Torres Strait Islander Health Check')
       .click();
     cy.getByData('button-create-response').click();
-    cy.getByData('form-heading').should('be.visible');
+    cy.waitForPopulation();
 
     cy.goToPatientDetailsTab();
     cy.initAgeValue(50);
@@ -50,7 +48,7 @@ describe('enable when functionality', () => {
       .should('be.visible')
       .should('have.length', 28);
 
-    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4').wait(50);
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4').waitForFormUpdate();
 
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
@@ -64,7 +62,13 @@ describe('enable when functionality', () => {
     cy.getByData('q-item-decimal-box').should('not.include.text', 'Head circumference');
 
     cy.goToPatientDetailsTab();
-    cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50).type('10').wait(50);
+    cy.getByData('q-item-integer-box')
+      .eq(0)
+      .find('input')
+      .clear()
+      .wait(50)
+      .type('10')
+      .waitForFormUpdate();
 
     cy.goToTab('Examination');
     cy.getByData('q-item-decimal-box').eq(2).find('p').should('have.text', 'Head circumference');
@@ -82,7 +86,13 @@ describe('enable when functionality', () => {
       .find('.MuiButtonBase-root')
       .contains('Patient Details')
       .click();
-    cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50).type('6').wait(50);
+    cy.getByData('q-item-integer-box')
+      .eq(0)
+      .find('input')
+      .clear()
+      .wait(50)
+      .type('6')
+      .waitForFormUpdate();
 
     cy.goToTab('Finalising the health check');
     cy.getByData('q-item-text-box')
@@ -93,7 +103,7 @@ describe('enable when functionality', () => {
       .should('be.visible');
 
     cy.goToTab('Patient Details');
-    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4').wait(50);
+    cy.getByData('q-item-integer-box').eq(0).find('input').clear().type('4').waitForFormUpdate();
 
     cy.getByData('q-item-text-box').should(
       'not.include.text',
@@ -110,7 +120,7 @@ describe('enable when functionality', () => {
       .should('include.text', 'Who')
       .find('input')
       .type('gp{enter}')
-      .wait(50);
+      .waitForFormUpdate();
 
     cy.getByData('q-item-date-box').should('exist').should('include.text', 'When');
   });
