@@ -100,7 +100,6 @@ Cypress.Commands.add('waitForExistingResponses', () => {
   );
   cy.intercept(fetchQuestionnaireRegex).as('loadExistingResponses');
 
-  cy.getByData('list-button-dashboard-operation');
   cy.wait('@loadExistingResponses').its('response.statusCode').should('eq', 200);
 });
 

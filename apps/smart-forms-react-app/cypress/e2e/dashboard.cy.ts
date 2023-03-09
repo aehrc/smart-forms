@@ -1,11 +1,3 @@
-// TODO create test to navigate dashboard
-/*
-cy.intercept(
-  `${clientUrl}/QuestionnaireResponse?_count=50&_sort=-date&patient=${patientId}&`
-).as('fetchQuestionnaireResponse');
-  cy.wait('@fetchQuestionnaireResponse').its('response.statusCode').should('eq', 200);
-*/
-
 describe('navigate questionnaires page', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
   const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
@@ -65,6 +57,7 @@ describe('navigate questionnaires page', () => {
     cy.getByData('questionnaire-list-row').contains(questionnaireTitle).click();
 
     cy.waitForExistingResponses();
+    cy.getByData('button-view-responses').should('not.be.disabled').click();
     cy.getByData('button-responses-go-back').should('be.visible').click();
 
     cy.getByData('button-view-responses').should('not.be.disabled').click();

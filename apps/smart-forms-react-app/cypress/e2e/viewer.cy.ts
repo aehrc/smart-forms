@@ -38,11 +38,10 @@ describe('response viewer', () => {
       cy.getByData('response-list-row')
         .contains('Aboriginal and Torres Strait Islander Health Check')
         .eq(0)
-        .click()
-        .wait(100);
+        .click();
 
       cy.wait('@enableOpenResponseButton').its('response.statusCode').should('eq', 200);
-      cy.getByData('button-open-response').should('not.be.disabled').click();
+      cy.getByData('button-open-response').should('not.be.disabled').wait(300).click();
 
       cy.location('pathname').should('eq', '/viewer');
     });
