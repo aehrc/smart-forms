@@ -56,7 +56,7 @@ function QItemText(props: Props) {
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       if (input !== '') {
-        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueString: input }] });
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueString: input.trim() }] });
       } else {
         onQrItemChange(createEmptyQrItem(qItem));
       }
