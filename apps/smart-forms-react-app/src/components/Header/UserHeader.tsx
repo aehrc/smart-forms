@@ -16,7 +16,7 @@ function UserHeader() {
       </Avatar>
       <Box>
         <AccountNameTypography name={user ? constructName(user.name) : 'No User'} />
-        {user ? <AccountDetailsTypography details={`${user.gender}`} /> : null}
+        {user && user.gender ? <AccountDetailsTypography details={`${user.gender}`} /> : null}
       </Box>
     </Box>
   );
