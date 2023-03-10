@@ -55,7 +55,7 @@ function OpenResponseButton(props: Props) {
 
   if (error) {
     console.error(error);
-    enqueueSnackbar('An error occurred while opening this response', { variant: 'error' });
+    enqueueSnackbar('There might be an issue with this response', { variant: 'warning' });
   }
 
   let referencedQuestionnaire: Questionnaire | null = useMemo(
@@ -64,7 +64,17 @@ function OpenResponseButton(props: Props) {
   );
 
   async function handleClick() {
-    if (!selectedResponse || !referencedQuestionnaire) return;
+    if (!selectedResponse) {
+      enqueueSnackbar('No response selected.', { variant: 'error' });
+      return;
+    }
+
+    if (!referencedQuestionnaire) {
+      enqueueSnackbar('Referenced questionnaire of selected response not found', {
+        variant: 'error'
+      });
+      return;
+    }
     setIsLoading(true);
 
     // assemble questionnaire if selected response is linked to an assemble-root questionnaire
