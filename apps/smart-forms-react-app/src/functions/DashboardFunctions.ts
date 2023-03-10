@@ -200,7 +200,7 @@ export function getReferencedQuestionnaire(
     // return the most recently updated questionnaire
     return resource.entry.filter(
       (entry) => entry.resource && entry.resource.resourceType === 'Questionnaire'
-    )[0] as Questionnaire; // non-questionnaire  resources are filtered
+    )[0].resource as Questionnaire; // non-questionnaire resources are filtered
   } else {
     // resource is Questionnaire
     return resource;
