@@ -49,6 +49,7 @@ export function createQuestionnaireResponse(
 
 /**
  * Remove items with no answers from a given questionnaireResponse
+ * Also remove any starting or trailing whitespace from valueStrings
  * Generated questionnaireResponse only has items with answers
  *
  * @author Sean Fong
@@ -69,6 +70,11 @@ export function removeNoAnswerQrItem(
     });
 
     return itemsCleaned.length > 0 ? { ...qrItem, item: itemsCleaned } : undefined;
+  }
+
+  // remove starting or trailing whitespace
+  if (qrItem['answer'] && qrItem['answer'][0]['valueString']) {
+    qrItem['answer'][0]['valueString'] = qrItem['answer'][0]['valueString'].trim();
   }
 
   // check answer when qrItem is a single question
