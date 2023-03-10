@@ -1,4 +1,4 @@
-# SMART Forms
+# Smart Forms
 
 Smart Forms is a Typescript-based [React](https://reactjs.org/) web application currently ongoing development by CSIRO AEHRC as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
 
@@ -22,8 +22,15 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Try it out here:
 
-- SMART Forms React app: https://www.smartforms.io/
+- Smart Forms React app: https://www.smartforms.io/
 - Forms server: https://api.smartforms.io/
+
+### Configuration
+
+If you would like to use a different server for hosting questionnaire resources, you can edit the
+**REACT_APP_FORMS_SERVER_URL** variable in the environment files.
+
+It will be necessary to configure the REACT_APP_LAUNCH_* variables if you are connecting the app to your own client CMS.
 
 ### Running on a SMART CMS client (the preferred way)
 
