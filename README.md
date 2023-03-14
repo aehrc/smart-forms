@@ -30,7 +30,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 If you would like to use a different server for hosting questionnaire resources, you can edit the
 **REACT_APP_FORMS_SERVER_URL** variable in the environment files.
 
-It will be necessary to configure the REACT_APP_LAUNCH_* variables if you are connecting the app to your own client CMS.
+It will be necessary to configure the **REACT_APP_LAUNCH_SCOPE** and **REACT_APP_LAUNCH_CLIENT_ID** variables if you are connecting the app to your own client CMS.
 
 ### Running on a SMART CMS client (the preferred way)
 
