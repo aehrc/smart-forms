@@ -72,7 +72,10 @@ function NavItem(props: NavButton) {
         '&.active': {
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.action.selected,
-          fontWeight: theme.typography.fontWeightBold
+          fontWeight: theme.typography.fontWeightBold,
+          '& .MuiListItemIcon-root': {
+            color: theme.palette.primary.dark
+          }
         }
       }}>
       <StyledNavItemIcon>{icon}</StyledNavItemIcon>
