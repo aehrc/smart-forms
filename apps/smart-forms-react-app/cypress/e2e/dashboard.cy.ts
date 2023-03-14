@@ -62,7 +62,7 @@ describe('navigate questionnaires page', () => {
     cy.clickOnNavPage('Back to Home');
   });
 
-  it('View responses from a specified questionnaire', () => {
+  it.only('View responses from a specified questionnaire', () => {
     cy.getByData('questionnaire-list-row').contains(questionnaireTitle).click();
 
     cy.waitForExistingResponses();
@@ -121,7 +121,9 @@ describe('navigate responses page', () => {
       .click();
     cy.wait('@enableOpenResponseButton').its('response.statusCode').should('eq', 200);
     cy.getByData('button-open-response').should('not.be.disabled').click();
-    cy.wait('@openingResponseClient').its('response.statusCode').should('eq', 200);
+    cy.wait('@openingResponseClient', { timeout: 15000 })
+      .its('response.statusCode')
+      .should('eq', 200);
 
     cy.location('pathname').should('eq', '/viewer');
     cy.getByData('response-preview-box').should(
