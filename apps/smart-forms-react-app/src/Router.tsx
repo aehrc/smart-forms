@@ -35,7 +35,7 @@ import QuestionnairesPage from './components/Dashboard/QuestionnairePage/Questio
 import ResponsesPage from './components/Dashboard/ResponsesPage/ResponsesPage';
 import type { DebugModeContextType, SourceContextType } from './interfaces/ContextTypes';
 import RendererLayout from './components/Renderer/RendererLayout';
-import Form from './components/QRenderer/Form';
+import Form from './components/Renderer/FormPage/Form';
 import FormPreview from './components/Preview/FormPreview';
 import ViewerLayout from './components/Viewer/ViewerLayout';
 import ResponsePreview from './components/Preview/ResponsePreview';

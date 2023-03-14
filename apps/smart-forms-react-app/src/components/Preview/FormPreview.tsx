@@ -19,7 +19,7 @@ import React, { useContext } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
 import { QuestionnaireProviderContext } from '../../App';
 import { RendererContext } from '../Renderer/RendererLayout';
-import FormInvalid from '../QRenderer/FormInvalid';
+import FormInvalid from '../Renderer/FormPage/FormInvalid';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../functions/PreviewFunctions';
 import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
