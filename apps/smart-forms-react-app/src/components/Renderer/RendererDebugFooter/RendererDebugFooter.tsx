@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-import { StyledRoot } from './DebugFooter.styles';
+import { StyledRoot } from '../../StyledComponents/DebugFooter.styles';
 import React, { useContext, useState } from 'react';
 import DebugResponse from './DebugResponse';
 import type { QuestionnaireResponseItem } from 'fhir/r5';
 import RendererDebugBar from './RendererDebugBar';
-import { QuestionnaireProviderContext } from '../../App';
-import { RendererContext } from '../Renderer/RendererLayout';
+import { QuestionnaireProviderContext } from '../../../App';
+import { RendererContext } from '../RendererLayout';
 
-function DebugFooter() {
+function RendererDebugFooter() {
   const [isHidden, setIsHidden] = useState(true);
   const { questionnaire } = useContext(QuestionnaireProviderContext);
   const { renderer, setRenderer } = useContext(RendererContext);
@@ -57,4 +57,4 @@ function DebugFooter() {
   );
 }
 
-export default DebugFooter;
+export default RendererDebugFooter;

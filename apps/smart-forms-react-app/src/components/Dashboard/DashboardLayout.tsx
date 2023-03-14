@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import DashboardNav from './DashboardNav/DashboardNav';
 import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
+import { DebugModeContext } from '../../Router';
+import DashboardDebugFooter from './DashboardDebugFooter/DashboardDebugFooter';
 
 function DashboardLayout() {
+  const { debugMode } = useContext(DebugModeContext);
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -46,6 +49,7 @@ function DashboardLayout() {
           <Outlet />
         </SelectedQuestionnaireContextProvider>
       </Main>
+      {debugMode ? <DashboardDebugFooter /> : null}
     </StyledRoot>
   );
 }

@@ -16,7 +16,7 @@
  */
 
 import { styled } from '@mui/material/styles';
-import { bgBlur } from '../StyledComponents/Utils.styles';
+import { bgBlur } from './Utils.styles';
 import { Paper } from '@mui/material';
 
 const FOOTER_MOBILE = 20;

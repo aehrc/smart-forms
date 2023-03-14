@@ -17,7 +17,7 @@
 
 import React, { useContext } from 'react';
 import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
-import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 
 interface Props {
   isHidden: boolean;

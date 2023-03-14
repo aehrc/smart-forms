@@ -27,7 +27,7 @@ import QTitle from './QFormComponents/QItemParts/QTitle';
 import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../custom-contexts/CalculatedExpressionContext';
 import { CurrentTabIndexContext, RendererContext } from '../Renderer/RendererLayout';
-import DebugFooter from '../DebugFooter/DebugFooter';
+import RendererDebugFooter from '../Renderer/RendererDebugFooter/RendererDebugFooter';
 import { DebugModeContext } from '../../Router';
 import { Helmet } from 'react-helmet';
 
@@ -107,7 +107,7 @@ function Form() {
               )}
             </Container>
           </Fade>
-          {debugMode ? <DebugFooter /> : null}
+          {debugMode ? <RendererDebugFooter /> : null}
         </PreprocessedValueSetContext.Provider>
       </>
     );
