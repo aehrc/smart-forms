@@ -19,7 +19,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import ViewerInvalid from '../Renderer/FormPage/ViewerInvalid';
-import { PrintComponentRefContext } from '../Viewer/ViewerLayout';
+import { PrintComponentRefContext } from './ViewerLayout';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
 import parse from 'html-react-parser';

@@ -22,7 +22,7 @@ import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../Misc/BackToTopButton';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import ViewerHeader from './ViewerHeader';
+import ViewerHeader from './ViewerHeader/ViewerHeader';
 import ViewerNav from './ViewerNav/ViewerNav';
 import type { PrintComponentRefContextType } from '../../interfaces/ContextTypes';
 

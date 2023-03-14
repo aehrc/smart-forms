@@ -15,21 +15,21 @@
  * limitations under the License.
  */
 
-import Iconify from '../../components/Misc/Iconify';
+import Iconify from '../../Misc/Iconify';
 
-import { StyledRoot, StyledToolbar } from '../StyledComponents/Header.styles';
+import { StyledRoot, StyledToolbar } from '../../StyledComponents/Header.styles';
 import React from 'react';
 import FaceIcon from '@mui/icons-material/Face';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import AccountPopover from '../../components/Header/AccountPopover';
+import AccountPopover from '../../Header/AccountPopover';
 import { useTheme } from '@mui/material/styles';
-import PatientPopoverMenu from '../../components/Header/PatientPopoverMenu';
-import UserPopoverMenu from '../../components/Header/UserPopoverMenu';
-import UserHeader from '../../components/Header/UserHeader';
-import useResponsive from '../../custom-hooks/useResponsive';
-import Logo from '../../components/Misc/Logo';
+import PatientPopoverMenu from '../../Header/PatientPopoverMenu';
+import UserPopoverMenu from '../../Header/UserPopoverMenu';
+import UserHeader from '../../Header/UserHeader';
+import useResponsive from '../../../custom-hooks/useResponsive';
+import Logo from '../../Misc/Logo';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import QuestionnairePopoverMenu from '../../components/Header/QuestionnairePopoverMenu';
+import QuestionnairePopoverMenu from '../../Header/QuestionnairePopoverMenu';
 import { Box, IconButton, Stack } from '@mui/material';
 
 interface Props {
