@@ -24,6 +24,7 @@ import parse from 'html-react-parser';
 import { qrToHTML } from '../../functions/PreviewFunctions';
 import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
 import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
+import { Helmet } from 'react-helmet';
 
 function FormPreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
@@ -42,14 +43,19 @@ function FormPreview() {
     const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 
     return (
-      <Fade in={true} timeout={500}>
-        <Container sx={{ mt: 3 }}>
-          <Box mb={3}>
-            <Typography variant="h3">Preview</Typography>
-          </Box>
-          <Card sx={{ p: 4, mb: 2 }}>{parsedHTML}</Card>
-        </Container>
-      </Fade>
+      <>
+        <Helmet>
+          <title>{questionnaire.title ? questionnaire.title : 'Form Preview'}</title>
+        </Helmet>
+        <Fade in={true} timeout={500}>
+          <Container sx={{ mt: 3 }}>
+            <Box mb={3}>
+              <Typography variant="h3">Preview</Typography>
+            </Box>
+            <Card sx={{ p: 4, mb: 2 }}>{parsedHTML}</Card>
+          </Container>
+        </Fade>
+      </>
     );
   } else {
     return <FormInvalid />;

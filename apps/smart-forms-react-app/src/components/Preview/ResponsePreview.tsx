@@ -24,6 +24,7 @@ import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
 import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../functions/PreviewFunctions';
+import { Helmet } from 'react-helmet';
 
 function ResponsePreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
@@ -46,18 +47,23 @@ function ResponsePreview() {
   const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 
   return (
-    <Fade in={true} timeout={500}>
-      <Container>
-        <Box mb={3}>
-          <Typography variant="h3">Response Preview</Typography>
-        </Box>
-        <Card sx={{ mb: 2 }}>
-          <Box ref={componentRef} sx={{ p: 4 }} data-test="response-preview-box">
-            <>{parsedHTML}</>
+    <>
+      <Helmet>
+        <title>{questionnaire.title ? questionnaire.title : 'Response Preview'}</title>
+      </Helmet>
+      <Fade in={true} timeout={500}>
+        <Container>
+          <Box mb={3}>
+            <Typography variant="h3">Response Preview</Typography>
           </Box>
-        </Card>
-      </Container>
-    </Fade>
+          <Card sx={{ mb: 2 }}>
+            <Box ref={componentRef} sx={{ p: 4 }} data-test="response-preview-box">
+              <>{parsedHTML}</>
+            </Box>
+          </Card>
+        </Container>
+      </Fade>
+    </>
   );
 }
 

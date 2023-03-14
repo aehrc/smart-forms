@@ -41,6 +41,7 @@ import OpenResponseButton from './ResponsesPageComponents/OpenResponseButton';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import useDebounce from '../../../custom-hooks/useDebounce';
 import dayjs from 'dayjs';
+import { Helmet } from 'react-helmet';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Questionnaire Title', alignRight: false },
@@ -141,132 +142,137 @@ function ResponsesPage() {
   };
 
   return (
-    <Fade in={true}>
-      <Container data-test="dashboard-responses-container">
-        <Stack direction="row" alignItems="center" mb={3}>
-          <Typography variant="h3" gutterBottom>
-            Responses
-          </Typography>
-        </Stack>
+    <>
+      <Helmet>
+        <title>Responses</title>
+      </Helmet>
+      <Fade in={true}>
+        <Container data-test="dashboard-responses-container">
+          <Stack direction="row" alignItems="center" mb={3}>
+            <Typography variant="h3" gutterBottom>
+              Responses
+            </Typography>
+          </Stack>
 
-        <Card>
-          <ResponseListToolbar
-            selected={selectedResponse?.listItem}
-            searchInput={searchInput}
-            clearSelection={() => setSelectedResponse(null)}
-            onSearch={(input) => {
-              setPage(0);
-              setSearchInput(input);
-            }}
-          />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 600 }}>
-              <Table>
-                <ResponseListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={tableHeaders}
-                  onRequestSort={handleRequestSort}
-                />
-                <TableBody>
-                  {filteredListItems
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { id, title, avatarColor, author, authored, status } = row;
-                      const isSelected = selectedResponse?.listItem.id === id;
-
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          selected={isSelected}
-                          data-test="response-list-row"
-                          onClick={() => handleRowClick(row.id)}>
-                          <TableCell padding="checkbox">
-                            <Avatar
-                              sx={{
-                                bgcolor: avatarColor,
-                                ml: 1,
-                                my: 2.25,
-                                width: 36,
-                                height: 36
-                              }}>
-                              <AssignmentIcon />
-                            </Avatar>
-                          </TableCell>
-
-                          <TableCell scope="row" sx={{ maxWidth: 240 }}>
-                            <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
-                              {title}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {author}
-                          </TableCell>
-
-                          <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {dayjs(authored).format('LLL')}
-                          </TableCell>
-
-                          <TableCell align="left">
-                            <ResponseLabel color={status} data-test="response-label">
-                              {status}
-                            </ResponseLabel>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {(isEmpty || status === 'error' || status === 'loading') &&
-                filteredListItems.length === 0 ? (
-                  <ResponseListFeedback
-                    isEmpty={isEmpty}
-                    status={status}
-                    searchInput={searchInput}
-                    error={error}
-                  />
-                ) : null}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
-
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Fade in={isFetching}>
-              <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
-                Updating...
-              </Typography>
-            </Fade>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={filteredListItems.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={(_, newPage) => setPage(newPage)}
-              onRowsPerPageChange={(event) => {
-                setRowsPerPage(parseInt(event.target.value));
+          <Card>
+            <ResponseListToolbar
+              selected={selectedResponse?.listItem}
+              searchInput={searchInput}
+              clearSelection={() => setSelectedResponse(null)}
+              onSearch={(input) => {
                 setPage(0);
+                setSearchInput(input);
               }}
             />
-          </Box>
-        </Card>
 
-        <Stack direction="row" alignItems="center" my={5}>
-          <BackToQuestionnairesButton />
-          <Box sx={{ flexGrow: 1 }} />
-          <OpenResponseButton selectedResponse={selectedResponse} />
-        </Stack>
-      </Container>
-    </Fade>
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 600 }}>
+                <Table>
+                  <ResponseListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={tableHeaders}
+                    onRequestSort={handleRequestSort}
+                  />
+                  <TableBody>
+                    {filteredListItems
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => {
+                        const { id, title, avatarColor, author, authored, status } = row;
+                        const isSelected = selectedResponse?.listItem.id === id;
+
+                        return (
+                          <TableRow
+                            hover
+                            key={id}
+                            tabIndex={-1}
+                            selected={isSelected}
+                            data-test="response-list-row"
+                            onClick={() => handleRowClick(row.id)}>
+                            <TableCell padding="checkbox">
+                              <Avatar
+                                sx={{
+                                  bgcolor: avatarColor,
+                                  ml: 1,
+                                  my: 2.25,
+                                  width: 36,
+                                  height: 36
+                                }}>
+                                <AssignmentIcon />
+                              </Avatar>
+                            </TableCell>
+
+                            <TableCell scope="row" sx={{ maxWidth: 240 }}>
+                              <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
+                                {title}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
+                              {author}
+                            </TableCell>
+
+                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
+                              {dayjs(authored).format('LLL')}
+                            </TableCell>
+
+                            <TableCell align="left">
+                              <ResponseLabel color={status} data-test="response-label">
+                                {status}
+                              </ResponseLabel>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+
+                  {(isEmpty || status === 'error' || status === 'loading') &&
+                  filteredListItems.length === 0 ? (
+                    <ResponseListFeedback
+                      isEmpty={isEmpty}
+                      status={status}
+                      searchInput={searchInput}
+                      error={error}
+                    />
+                  ) : null}
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Fade in={isFetching}>
+                <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
+                  Updating...
+                </Typography>
+              </Fade>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={filteredListItems.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(_, newPage) => setPage(newPage)}
+                onRowsPerPageChange={(event) => {
+                  setRowsPerPage(parseInt(event.target.value));
+                  setPage(0);
+                }}
+              />
+            </Box>
+          </Card>
+
+          <Stack direction="row" alignItems="center" my={5}>
+            <BackToQuestionnairesButton />
+            <Box sx={{ flexGrow: 1 }} />
+            <OpenResponseButton selectedResponse={selectedResponse} />
+          </Stack>
+        </Container>
+      </Fade>
+    </>
   );
 }
 
