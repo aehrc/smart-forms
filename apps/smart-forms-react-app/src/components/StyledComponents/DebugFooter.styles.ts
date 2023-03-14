@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import { styled } from '@mui/material/styles';
-import { bgBlur } from './Utils.styles';
+import { alpha, styled } from '@mui/material/styles';
 import { Paper } from '@mui/material';
 
 const FOOTER_MOBILE = 20;
@@ -24,7 +23,9 @@ const FOOTER_MOBILE = 20;
 const FOOTER_DESKTOP = 20;
 
 export const StyledRoot = styled(Paper)(({ theme }) => ({
-  ...bgBlur({ color: theme.palette.background.default }),
+  backdropFilter: `blur(2.25px)`,
+  WebkitBackdropFilter: `blur(2.25px)`,
+  backgroundColor: alpha(theme.palette.background.default, 0.8),
   minHeight: FOOTER_MOBILE,
   width: '100%',
   [theme.breakpoints.up('lg')]: {
