@@ -1,6 +1,6 @@
 import type { Coding, ValueSet } from 'fhir/r5';
 import * as FHIR from 'fhirclient';
-import type { ValueSetPromise } from 'sdc-populate/lib/Interfaces';
+import type { ValueSetPromise } from '../interfaces/Interfaces';
 
 export function getValueSetPromise(url: string): Promise<ValueSet> {
   const ontoserver = process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
