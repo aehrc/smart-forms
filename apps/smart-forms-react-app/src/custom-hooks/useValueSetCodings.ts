@@ -18,7 +18,7 @@
 import { useContext, useEffect, useState } from 'react';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r5';
 import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFunctions';
-import { PreprocessedValueSetContext } from '../components/QRenderer/Form';
+import { PreprocessedValueSetContext } from '../components/Renderer/FormPage/Form';
 import { CachedQueriedValueSetContext } from '../custom-contexts/CachedValueSetContext';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {

@@ -1,3 +1,20 @@
+/*
+ * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import React, { useContext, useMemo, useState } from 'react';
 import {
   Avatar,
@@ -41,6 +58,7 @@ import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQ
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import SourceToggle from '../../Misc/SourceToggle';
 import dayjs from 'dayjs';
+import { Helmet } from 'react-helmet';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -145,123 +163,128 @@ function QuestionnairesPage() {
   };
 
   return (
-    <Fade in={true}>
-      <Container data-test="dashboard-questionnaires-container">
-        <Stack direction="row" alignItems="center" mb={3}>
-          <Typography variant="h3" gutterBottom>
-            Questionnaires
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          {debugMode ? <SourceToggle setPage={setPage} /> : null}
-        </Stack>
+    <>
+      <Helmet>
+        <title>Questionnaires</title>
+      </Helmet>
+      <Fade in={true}>
+        <Container data-test="dashboard-questionnaires-container">
+          <Stack direction="row" alignItems="center" mb={3}>
+            <Typography variant="h3" gutterBottom>
+              Questionnaires
+            </Typography>
+            <Box sx={{ flexGrow: 1 }} />
+            {debugMode ? <SourceToggle setPage={setPage} /> : null}
+          </Stack>
 
-        <Card>
-          <QuestionnaireListToolbar
-            selected={selectedQuestionnaire?.listItem}
-            searchInput={searchInput}
-            clearSelection={() => setSelectedQuestionnaire(null)}
-            onSearch={(input) => {
-              setPage(0);
-              setSearchInput(input);
-            }}
-          />
+          <Card>
+            <QuestionnaireListToolbar
+              selected={selectedQuestionnaire?.listItem}
+              searchInput={searchInput}
+              clearSelection={() => setSelectedQuestionnaire(null)}
+              onSearch={(input) => {
+                setPage(0);
+                setSearchInput(input);
+              }}
+            />
 
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 600 }}>
-              <Table>
-                <QuestionnaireListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={tableHeaders}
-                  onRequestSort={handleRequestSort}
-                />
-                <TableBody>
-                  {filteredListItems
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { id, title, avatarColor, publisher, date, status } = row;
-                      const isSelected = selectedQuestionnaire?.listItem.id === id;
-
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          selected={isSelected}
-                          data-test="questionnaire-list-row"
-                          onClick={() => handleRowClick(row.id)}>
-                          <TableCell padding="checkbox">
-                            <Avatar
-                              sx={{
-                                bgcolor: avatarColor,
-                                ml: 1,
-                                my: 2.25,
-                                width: 36,
-                                height: 36
-                              }}>
-                              <AssignmentIcon />
-                            </Avatar>
-                          </TableCell>
-
-                          <TableCell scope="row" sx={{ maxWidth: 240 }}>
-                            <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
-                              {title}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {publisher}
-                          </TableCell>
-
-                          <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                            {dayjs(date).format('LL')}
-                          </TableCell>
-
-                          <TableCell align="left">
-                            <QuestionnaireLabel color={status}>{status}</QuestionnaireLabel>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isEmpty || status === 'error' || status === 'loading' ? (
-                  <QuestionnaireListFeedback
-                    isEmpty={isEmpty}
-                    status={status}
-                    searchInput={searchInput}
-                    error={error}
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 600 }}>
+                <Table>
+                  <QuestionnaireListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={tableHeaders}
+                    onRequestSort={handleRequestSort}
                   />
-                ) : null}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+                  <TableBody>
+                    {filteredListItems
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => {
+                        const { id, title, avatarColor, publisher, date, status } = row;
+                        const isSelected = selectedQuestionnaire?.listItem.id === id;
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredListItems.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={(_, newPage) => setPage(newPage)}
-            onRowsPerPageChange={(event) => {
-              setRowsPerPage(parseInt(event.target.value));
-              setPage(0);
-            }}
-          />
-        </Card>
+                        return (
+                          <TableRow
+                            hover
+                            key={id}
+                            tabIndex={-1}
+                            selected={isSelected}
+                            data-test="questionnaire-list-row"
+                            onClick={() => handleRowClick(row.id)}>
+                            <TableCell padding="checkbox">
+                              <Avatar
+                                sx={{
+                                  bgcolor: avatarColor,
+                                  ml: 1,
+                                  my: 2.25,
+                                  width: 36,
+                                  height: 36
+                                }}>
+                                <AssignmentIcon />
+                              </Avatar>
+                            </TableCell>
 
-        <Stack direction="row-reverse" alignItems="center" gap={2} my={5}>
-          {fhirClient ? <ViewExistingResponsesButton /> : null}
-          <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} />
-        </Stack>
-      </Container>
-    </Fade>
+                            <TableCell scope="row" sx={{ maxWidth: 240 }}>
+                              <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
+                                {title}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
+                              {publisher}
+                            </TableCell>
+
+                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
+                              {dayjs(date).format('LL')}
+                            </TableCell>
+
+                            <TableCell align="left">
+                              <QuestionnaireLabel color={status}>{status}</QuestionnaireLabel>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+
+                  {isEmpty || status === 'error' || status === 'loading' ? (
+                    <QuestionnaireListFeedback
+                      isEmpty={isEmpty}
+                      status={status}
+                      searchInput={searchInput}
+                      error={error}
+                    />
+                  ) : null}
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={filteredListItems.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(_, newPage) => setPage(newPage)}
+              onRowsPerPageChange={(event) => {
+                setRowsPerPage(parseInt(event.target.value));
+                setPage(0);
+              }}
+            />
+          </Card>
+
+          <Stack direction="row-reverse" alignItems="center" gap={2} my={5}>
+            {fhirClient ? <ViewExistingResponsesButton /> : null}
+            <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} />
+          </Stack>
+        </Container>
+      </Fade>
+    </>
   );
 }
 

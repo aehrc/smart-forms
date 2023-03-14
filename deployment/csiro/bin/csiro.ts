@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
-import { Assemble } from 'assemble';
 import * as cdk from 'aws-cdk-lib';
 import { CsiroStack } from '../lib/csiro-stack';
 
