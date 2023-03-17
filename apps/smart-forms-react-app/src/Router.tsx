@@ -170,8 +170,7 @@ export default function Router() {
       path: '/',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/questionnaires" />, index: true },
-        { path: 'questionnaires', element: <QuestionnairesPage /> },
+        { path: '', element: <QuestionnairesPage /> },
         { path: 'responses', element: <ResponsesPage /> }
       ]
     },
@@ -194,7 +193,7 @@ export default function Router() {
     },
     {
       path: '*',
-      element: <Navigate to="/questionnaires" replace />
+      element: <Navigate to="/" replace />
     }
   ]);
 
