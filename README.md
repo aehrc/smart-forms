@@ -12,7 +12,6 @@ Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to e
 Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web application currently ongoing development by [CSIRO's Australian e-Health Research Centre](https://aehrc.csiro.au/) as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
 
 The web app is intended to demonstrate the use of [HL7 FHIR](https://hl7.org/fhir/) specifications, such as the [Questionnaire](https://hl7.org/fhir/questionnaire.html) and [QuestionnaireResponse](https://hl7.org/fhir/questionnaireresponse.html) resources, the Structured Data Capture (SDC) implementation guide, and most notably it leverages [SMART on FHIR capabilities](https://hl7.org/fhir/smart-app-launch/index.html) that allows the app to be launched by a primary care Clinical Management System (CMS) and capture standardised health check information for healthcare clients.
-It 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -21,7 +20,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 **Smart Forms app**
 
-| Functionality                    | Description                                                                                                                                                  | Resources                                                                                                                                                            | Showcase 🖼️ (Right click -> Open link in new tab)                                                                                                       |
+| Functionality                    | Description                                                                                                                                                  | Resources                                                                                                                                                            | Showcase 🖼️ (Right click -> Open link in new tab)                                                                                                        |
 |----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Form population                  | Populate FHIR clinical data into forms, removing the need to re-enter generic information every time a new form is created, allows reusability of data.      | [SDC Populate](https://hl7.org/fhir/uv/sdc/populate.html)                                                                                                            | [Population of patient details](assets/population-patient-details.png)</br>[Population of patient medical history](assets/population-medical-history.png) |
 | Conditional rendering            | Render form items conditionally based on user decisions or pre-determined data.                                                                              | [Questionnaire EnableWhen](https://hl7.org/fhir/questionnaire-definitions.html#Questionnaire.item.enableWhen)                                                        | [Form tabs and items presented differently for patients of different age groups](assets/enablewhen-age-groups.png)                                        |
@@ -124,3 +123,18 @@ npm start
 ```
 
 5. Follow the instructions [here](https://github.com/aehrc/smart-forms/edit/main/README.md#running-on-a-smart-cms-client-the-preferred-way) but replace https://www.smartforms.io/launch with http://localhost:3000/launch
+
+## I found a bug/the app crashed, now what?
+
+Definitely report it to us! [Create an issue within the repo](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed as soon as possible.
+
+
+## Licensing and attribution
+
+Smart Forms is copyright © 2022-2023, Commonwealth Scientific and Industrial
+Research Organisation
+(CSIRO) ABN 41 687 119 230. Licensed under
+the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+This means that you are free to use, modify and redistribute the software as
+you wish, even for commercial purposes.
