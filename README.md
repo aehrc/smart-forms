@@ -4,7 +4,7 @@
 <h4>
 Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to easily integrate forms into your existing healthcare system.
 </h4>
-<h3><a href="https://www.smartforms.io">Show me the app ➡️</a></h3>
+<h3><a href="https://www.smartforms.io" target="_blank">Show me the app ➡️</a></h3>
 <br/>
 </div>
 
