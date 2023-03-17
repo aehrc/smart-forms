@@ -82,7 +82,7 @@ function Form() {
         <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
           <Fade in={true} timeout={500}>
             <Container disableGutters maxWidth="xl" sx={{ px: 2 }}>
-              <Box>
+              <Box sx={{ mt: 1.5 }}>
                 <Typography variant="h3" data-test="form-heading">
                   <QTitle questionnaire={questionnaire} />
                 </Typography>
