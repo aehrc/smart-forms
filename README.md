@@ -26,9 +26,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 | Conditional rendering            | Render form items conditionally based on user decisions or pre-determined data.                                                                              | [Questionnaire EnableWhen](https://hl7.org/fhir/questionnaire-definitions.html#Questionnaire.item.enableWhen)                                                        | [Form tabs and items presented differently for patients of different age groups](assets/enablewhen-age-groups.png)                                        |
 | Built-in calculations            | Perform calculations based on form item answers to produce a calculated result, e.g. BMI, CVD Risk Score.                                                    | [SDC Calculations](https://hl7.org/fhir/uv/sdc/behavior.html#calculations)                                                                                           | [Calculated BMI based on height and weight values](assets/calculation.png)                                                                                |
 | ValueSet expansion               | Perform expansion of ValueSet resources via the Ontoserver $expand operation API within autocomplete, dropdown, radio button and checkbox fields.            | [ValueSet expand](https://hl7.org/fhir/OperationDefinition/ValueSet-expand)</br>[Ontoserver ValueSet API](https://ontoserver.csiro.au/docs/6/api-fhir-valueset.html) | [Ontoserver ValueSet Expansion in an Autocomplete component](assets/ontoserver-expand.png)                                                                |
-| QuestionnaireResponse write-back | A form can either be saved as a draft or as final, which will compile the form answers into a QuestionnaireResponse resource and store it on the CMS server. | <div align="center">-</div>                                                                                                                                          | [List of responses in context of a patient](assets/responses.png)                                                                                         |
+| QuestionnaireResponse write-back | A form can either be saved as a draft or as final, which will compile the form answers into a QuestionnaireResponse resource and store it on the CMS's FHIR server via REST API. | [FHIR RESTful API](https://hl7.org/fhir/http.html)                                                                                                                                      | [List of responses in context of a patient](assets/responses.png)                                                                                         |
 | Form preview                     | Generate a human-readable preview of the QuestionnaireResponse which can be viewed while filling in the form or after the form is saved.                     | <div align="center">-</div>                                                                                                                                          | [Human-readable form preview](assets/preview.png)                                                                                                         |                                                      |
-| Generic form implementation      | The app is able to render any form as long as it conforms to the FHIR specification!                                                                         | <div align="center">-</div>                                                                                                                                          | [Rendering of an Australian absolute CVD Risk calculator questionnaire](assets/generic-form.png)                                                          |
+| Generic form implementation      | The app is able to render any form as long as it conforms to the FHIR specification!                                                                         | [Questionnaire](https://hl7.org/fhir/questionnaire.html)</br>[SDC](https://hl7.org/fhir/uv/sdc)                                                                                                                                          | [Rendering of an Australian absolute CVD Risk calculator questionnaire](assets/generic-form.png)                                                          |
 
 NOTE: The patients featured in the screenshots are synthetic and do not represent any real people.
 
@@ -47,7 +47,7 @@ NOTE: The patients featured in the screenshots are synthetic and do not represen
  - [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
  - [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
 
-3. A Questionnaire-hosting Forms Server API which supports the $assemble operation. This API is It is built on the [HAPI-FHIR Starter Project](https://github.com/hapifhir/hapi-fhir-jpaserver-starter). The API is publicly available at https://api.smartforms.io.
+3. A Questionnaire-hosting Forms Server API which supports the $assemble operation. This API is It is built on the [HAPI-FHIR Starter Project](https://github.com/hapifhir/hapi-fhir-jpaserver-starter). The API is publicly available at https://api.smartforms.io/fhir.
 
 ## Usage
 
@@ -80,7 +80,7 @@ The default configuration is set to:
 
 ```
 # Ontoserver endpoint for $expand operations
-# For commercial usage, you might want to get your own license at https://ontoserver.csiro.au/site/contact-us/ontoserver-contact-form/
+# To run your own Ontoserver instance, contact us at https://ontoserver.csiro.au/site/contact-us/ontoserver-contact-form/
 REACT_APP_ONTOSERVER_URL=https://r4.ontoserver.csiro.au/fhir
 
 # Questionnaire-hosting FHIR server
@@ -122,7 +122,7 @@ cd apps/smart-forms-react-app
 npm start
 ```
 
-5. Follow the instructions [here](https://github.com/aehrc/smart-forms/edit/main/README.md#running-on-a-smart-cms-client-the-preferred-way) but replace https://www.smartforms.io/launch with http://localhost:3000/launch
+5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://www.smartforms.io/launch with http://localhost:3000/launch
 
 ## I found a bug/the app crashed, now what?
 
