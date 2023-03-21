@@ -229,6 +229,21 @@ export function getExtensions(
   };
 }
 
+// Get urls with versions of subquestionnaires
+export function getUrls(subquestionnaires: Questionnaire[]): string[] {
+  const urls: string[] = [];
+  for (const subquestionnaire of subquestionnaires) {
+    if (subquestionnaire.url) {
+      let url = subquestionnaire.url;
+      if (subquestionnaire.version) {
+        url += '|' + subquestionnaire.version;
+      }
+      urls.push(url);
+    }
+  }
+  return urls;
+}
+
 export function isValidExtensions(
   obj: PropagatedExtensions | OperationOutcome
 ): obj is PropagatedExtensions {

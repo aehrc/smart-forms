@@ -19,6 +19,7 @@ import type { Extension, FhirResource, Questionnaire, QuestionnaireItem } from '
 
 export function propagateSubquestionnaireItems(
   parentQuestionnaire: Questionnaire,
+  urlsFromSubquestionnaires: string[],
   itemsFromSubquestionnaires: (QuestionnaireItem[] | null)[],
   containedResourcesFromSubquestionnaires: Record<string, FhirResource>,
   rootLevelExtensions: Extension[]
@@ -129,12 +130,10 @@ export function propagateSubquestionnaireItems(
   }
 
   // Add assembledFrom extension to assembled questionnaire
-  if (parentQuestionnaire.url) {
-    const rootQuestionnaireVersion = parentQuestionnaire.version ?? '';
-    const rootQuestionnaireUrl = `${parentQuestionnaire.url}|${rootQuestionnaireVersion}`;
+  for (const url of urlsFromSubquestionnaires) {
     extensions.push({
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom',
-      valueCanonical: rootQuestionnaireUrl
+      valueCanonical: url
     });
   }
 
