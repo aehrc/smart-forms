@@ -31,7 +31,7 @@ function Launch() {
     sessionStorage.setItem('questionnaireUrl', questionnaireUrl);
   }
 
-  const clientId = process.env.REACT_APP_LAUNCH_CLIENT_ID ?? 'smart-health-checks';
+  const clientId = process.env.REACT_APP_LAUNCH_CLIENT_ID ?? 'smart-forms';
   const scope =
     process.env.REACT_APP_LAUNCH_SCOPE ??
     'launch/patient patient/*.read offline_access openid fhirUser';

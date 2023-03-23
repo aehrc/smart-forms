@@ -16,6 +16,7 @@
  */
 
 import type { HumanName, Patient, Practitioner } from 'fhir/r5';
+
 /**
  * Construct a proper name from various name variations from different implementations
  *
