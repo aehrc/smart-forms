@@ -41,7 +41,7 @@ function RendererNavSection() {
           title="Back to Home"
           icon={<HomeIcon />}
           onClick={() => {
-            navigate('/questionnaires');
+            navigate('/');
           }}
         />
       </List>

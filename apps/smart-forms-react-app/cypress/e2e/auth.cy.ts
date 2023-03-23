@@ -53,7 +53,7 @@ describe('launch app', () => {
       cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
 
       cy.getByData('dashboard-questionnaires-container').contains('Questionnaires');
-      cy.location('pathname').should('eq', '/questionnaires');
+      cy.location('pathname').should('eq', '/');
     });
   });
 

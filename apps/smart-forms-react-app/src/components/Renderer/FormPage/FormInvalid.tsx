@@ -24,7 +24,7 @@ function FormInvalid() {
   const navigate = useNavigate();
 
   function handleClick() {
-    navigate('/questionnaires');
+    navigate('/');
   }
 
   return (
