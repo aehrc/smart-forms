@@ -150,7 +150,7 @@ export default function Router() {
           error.message.includes("No 'state' parameter found") ||
           error.message.includes('No state found')
         ) {
-          if (window.location.pathname !== '/launch') {
+          if (!window.location.pathname.startsWith('/launch')) {
             enqueueSnackbar('Intending to launch from a CMS? Try it out here!', {
               action: <GoToTestLauncher />,
               autoHideDuration: 7500
@@ -189,6 +189,10 @@ export default function Router() {
     },
     {
       path: '/launch',
+      element: <Launch />
+    },
+    {
+      path: '/launch.html',
       element: <Launch />
     },
     {
