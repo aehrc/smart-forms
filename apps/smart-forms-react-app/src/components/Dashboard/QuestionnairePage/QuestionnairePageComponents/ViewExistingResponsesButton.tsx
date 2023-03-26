@@ -27,7 +27,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
 import { useNavigate } from 'react-router-dom';
-import { SourceContext } from '../../../../Router';
+import { SourceContext } from '../../../../custom-contexts/SourceContext';
 import { useSnackbar } from 'notistack';
 
 function ViewExistingResponsesButton() {
@@ -43,10 +43,9 @@ function ViewExistingResponsesButton() {
 
   // Have different questionnaireRef config due to SMART Health IT limitation
   if (fhirClient) {
-    const questionnaireRef =
-      fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir'
-        ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
-        : selectedQuestionnaire?.resource?.url;
+    const questionnaireRef = fhirClient?.state.serverUrl.includes('/v/r4/fhir')
+      ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
+      : selectedQuestionnaire?.resource?.url;
 
     if (questionnaireRef) {
       questionnaireRefParam = `questionnaire=${questionnaireRef}&`;
@@ -84,7 +83,7 @@ function ViewExistingResponsesButton() {
 
   function handleClick() {
     setExistingResponses(existingResponses);
-    navigate('/responses');
+    navigate('/dashboard/responses');
   }
 
   return (
