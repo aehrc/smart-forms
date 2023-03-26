@@ -18,7 +18,7 @@
 import { Box, Typography } from '@mui/material';
 import csiroLogo from '../../data/images/csiro-logo.png';
 import React, { useContext, useEffect, useState } from 'react';
-import { DebugModeContext } from '../../Router';
+import { DebugModeContext } from '../../custom-contexts/DebugModeContext';
 import { useSnackbar } from 'notistack';
 import ConfettiExplosion from 'react-confetti-explosion';
 

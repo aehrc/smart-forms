@@ -28,7 +28,7 @@ import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../../custom-contexts/CalculatedExpressionContext';
 import { CurrentTabIndexContext, RendererContext } from '../RendererLayout';
 import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter';
-import { DebugModeContext } from '../../../Router';
+import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
 import { Helmet } from 'react-helmet';
 
 export const PreprocessedValueSetContext = React.createContext<Record<string, Coding[]>>({});

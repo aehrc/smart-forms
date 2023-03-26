@@ -24,7 +24,7 @@ function ViewerInvalid() {
   const navigate = useNavigate();
 
   function handleClick() {
-    navigate('/');
+    navigate('/dashboard/questionnaires');
   }
 
   return (

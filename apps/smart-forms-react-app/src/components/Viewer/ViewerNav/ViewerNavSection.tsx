@@ -41,7 +41,7 @@ function ViewerNavSection() {
           title={'Back to Home'}
           icon={<HomeIcon />}
           onClick={() => {
-            navigate('/');
+            navigate('/dashboard/questionnaires');
           }}
         />
       </List>

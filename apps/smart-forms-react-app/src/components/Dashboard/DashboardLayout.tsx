@@ -21,7 +21,7 @@ import DashboardNav from './DashboardNav/DashboardNav';
 import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
-import { DebugModeContext } from '../../Router';
+import { DebugModeContext } from '../../custom-contexts/DebugModeContext';
 import DashboardDebugFooter from './DashboardDebugFooter/DashboardDebugFooter';
 
 function DashboardLayout() {

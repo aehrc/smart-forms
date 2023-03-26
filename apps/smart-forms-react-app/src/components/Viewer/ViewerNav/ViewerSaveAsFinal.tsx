@@ -93,7 +93,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
         setIsSaving(false);
         handleClose();
         enqueueSnackbar('Response saved as final', { variant: 'success' });
-        navigate('/responses');
+        navigate('/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);

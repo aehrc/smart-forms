@@ -19,7 +19,7 @@ import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@
 import React, { memo, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
-import { SourceContext } from '../../../Router';
+import { SourceContext } from '../../../custom-contexts/SourceContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 

@@ -24,6 +24,8 @@ import LaunchContextProvider from './custom-contexts/LaunchContext';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
 import Router from './Router';
 import { SnackbarProvider } from 'notistack';
+import DebugModeContextProvider from './custom-contexts/DebugModeContext';
+import SourceContextProvider from './custom-contexts/SourceContext';
 
 const questionnaireProvider = new QuestionnaireProvider();
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
@@ -39,12 +41,17 @@ function App() {
     <ThemeProvider>
       <SnackbarProvider>
         <LaunchContextProvider>
-          <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
-            <QuestionnaireResponseProviderContext.Provider value={questionnaireResponseProvider}>
-              <CssBaseline />
-              <Router />
-            </QuestionnaireResponseProviderContext.Provider>
-          </QuestionnaireProviderContext.Provider>
+          <DebugModeContextProvider>
+            <SourceContextProvider>
+              <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
+                <QuestionnaireResponseProviderContext.Provider
+                  value={questionnaireResponseProvider}>
+                  <CssBaseline />
+                  <Router />
+                </QuestionnaireResponseProviderContext.Provider>
+              </QuestionnaireProviderContext.Provider>
+            </SourceContextProvider>
+          </DebugModeContextProvider>
         </LaunchContextProvider>
       </SnackbarProvider>
     </ThemeProvider>

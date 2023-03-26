@@ -98,7 +98,7 @@ function BlockerUnsavedFormDialog(props: Props) {
         setIsSaving(false);
         closeDialog();
         blocker.proceed?.();
-        navigate('/responses');
+        navigate('/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);
