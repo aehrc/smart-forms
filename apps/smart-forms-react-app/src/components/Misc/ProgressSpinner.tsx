@@ -21,7 +21,7 @@ import Box from '@mui/material/Box';
 import { Stack, Typography } from '@mui/material';
 
 interface Props {
-  message: string;
+  message?: string;
 }
 
 function ProgressSpinner(props: Props) {
@@ -37,9 +37,11 @@ function ProgressSpinner(props: Props) {
       <Box display="flex" flexDirection="row" justifyContent="center">
         <CircularProgress size={72} />
       </Box>
-      <Box textAlign="center" sx={{ mt: 2 }}>
-        <Typography variant="subtitle1">{message}</Typography>
-      </Box>
+      {message ? (
+        <Box textAlign="center" sx={{ mt: 2 }}>
+          <Typography variant="subtitle1">{message}</Typography>
+        </Box>
+      ) : null}
     </Stack>
   );
 }
