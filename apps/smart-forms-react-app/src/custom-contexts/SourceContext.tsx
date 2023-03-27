@@ -16,7 +16,7 @@
  */
 
 import React, { createContext, useContext, useState } from 'react';
-import { SourceContextType } from '../interfaces/ContextTypes';
+import type { SourceContextType } from '../interfaces/ContextTypes';
 import { LaunchContext } from './LaunchContext';
 
 export const SourceContext = createContext<SourceContextType>({

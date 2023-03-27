@@ -16,7 +16,7 @@
  */
 
 import React, { createContext, useState } from 'react';
-import { DebugModeContextType } from '../interfaces/ContextTypes';
+import type { DebugModeContextType } from '../interfaces/ContextTypes';
 
 export const DebugModeContext = createContext<DebugModeContextType>({
   debugMode: false,
