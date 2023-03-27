@@ -43,15 +43,17 @@ interface Props
 function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const { displayUnit, displayPrompt } = useRenderingExtensions(qItem);
-
+  // Init input value
   let valueString = '';
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;
   }
-
   const [input, setInput] = useState<string>(valueString);
 
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, readOnly } = useRenderingExtensions(qItem);
+
+  // Define error if present
   let hasError = false;
   if (qItem.maxLength && valueString) {
     hasError = valueString.length > qItem.maxLength;
@@ -83,6 +85,7 @@ function QItemString(props: Props) {
       value={input}
       onChange={handleChange}
       label={displayPrompt}
+      disabled={readOnly}
       InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
       data-test="q-item-string-field"
