@@ -16,7 +16,7 @@
  */
 
 import React, { memo, useCallback, useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, InputAdornment } from '@mui/material';
 
 import type {
   PropsWithIsRepeatedAttribute,
@@ -25,7 +25,7 @@ import type {
 } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import { getTextDisplayPrompt } from '../../../../../functions/QItemFunctions';
+import { getTextDisplayPrompt, getTextDisplayUnit } from '../../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
@@ -42,6 +42,8 @@ interface Props
 
 function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+
+  const displayUnit = getTextDisplayUnit(qItem);
 
   let valueString = '';
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
@@ -81,6 +83,7 @@ function QItemString(props: Props) {
       value={input}
       onChange={handleChange}
       label={getTextDisplayPrompt(qItem)}
+      InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
       data-test="q-item-string-field"
     />

@@ -65,7 +65,7 @@ function QItemDecimal(props: Props) {
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
-    if (calculatedExpression && calculatedExpression.value) {
+    if (calculatedExpression?.value && typeof calculatedExpression?.value === 'number') {
       const value = precision
         ? parseFloat(calculatedExpression.value.toFixed(precision))
         : calculatedExpression.value;
@@ -83,7 +83,7 @@ function QItemDecimal(props: Props) {
         });
       }
     }
-  }, [calculatedExpressions]);
+  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpressions changes
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;

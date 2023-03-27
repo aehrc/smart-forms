@@ -23,6 +23,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../../interfaces/Interfaces';
+import { CalculatedExpression } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItemWithUnit } from '../../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
@@ -49,6 +50,9 @@ function QItemInteger(props: Props) {
 
   const displayUnit = getTextDisplayUnit(qItem);
 
+  const calculatedExpression: CalculatedExpression | undefined =
+    calculatedExpressions[qItem.linkId];
+
   let valueInteger = 0;
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueInteger) {
     valueInteger = qrItem.answer[0].valueInteger;
@@ -58,24 +62,20 @@ function QItemInteger(props: Props) {
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
-    const expression = calculatedExpressions[qItem.linkId];
+    // only update questionnaireResponse if calculated value is different from current value
+    if (calculatedExpression?.value !== input && typeof calculatedExpression?.value === 'number') {
+      setCalExpIsCalculating(true);
+      setTimeout(() => {
+        setCalExpIsCalculating(false);
+      }, 500);
 
-    if (expression && expression.value) {
-      // only update questionnaireResponse if calculated value is different from current value
-      if (input !== expression.value) {
-        setCalExpIsCalculating(true);
-        setTimeout(() => {
-          setCalExpIsCalculating(false);
-        }, 500);
-
-        setInput(expression.value);
-        onQrItemChange({
-          ...createEmptyQrItemWithUnit(qItem, displayUnit),
-          answer: [{ valueInteger: expression.value }]
-        });
-      }
+      setInput(calculatedExpression.value);
+      onQrItemChange({
+        ...createEmptyQrItemWithUnit(qItem, displayUnit),
+        answer: [{ valueInteger: calculatedExpression.value }]
+      });
     }
-  }, [calculatedExpressions]);
+  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpressions changes
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let newInput = event.target.value;
@@ -105,6 +105,7 @@ function QItemInteger(props: Props) {
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
+      disabled={!!calculatedExpression}
       fullWidth
       isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
