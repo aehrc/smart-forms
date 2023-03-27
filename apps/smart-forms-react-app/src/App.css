@@ -51,13 +51,11 @@ ul {
 
 li {
   margin-top: 5px;
-
 }
 
 li::first-letter {
   text-transform: uppercase;
 }
-
 
 @keyframes App-logo-spin {
   from {
