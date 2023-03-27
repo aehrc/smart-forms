@@ -29,11 +29,11 @@ import { createEmptyQrItemWithUnit } from '../../../../../functions/QrItemFuncti
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import { getTextDisplayUnit } from '../../../../../functions/QItemFunctions';
 import { StandardOutlinedInput } from '../../../../StyledComponents/Textfield.styles';
 import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,7 +48,7 @@ function QItemInteger(props: Props) {
 
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
-  const displayUnit = getTextDisplayUnit(qItem);
+  const { displayUnit, displayPrompt } = useRenderingExtensions(qItem);
 
   const calculatedExpression: CalculatedExpression | undefined =
     calculatedExpressions[qItem.linkId];
@@ -75,7 +75,7 @@ function QItemInteger(props: Props) {
         answer: [{ valueInteger: calculatedExpression.value }]
       });
     }
-  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpressions changes
+  }, [calculatedExpression]); // Only trigger this effect if calculatedExpression changes
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let newInput = event.target.value;
@@ -108,6 +108,7 @@ function QItemInteger(props: Props) {
       disabled={!!calculatedExpression}
       fullWidth
       isTabled={isTabled}
+      label={displayPrompt}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
       endAdornment={
         <InputAdornment position={'end'}>
