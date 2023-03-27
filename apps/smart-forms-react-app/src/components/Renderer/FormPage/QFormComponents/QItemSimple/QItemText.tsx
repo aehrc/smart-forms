@@ -22,16 +22,15 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../../interfaces/Interfaces';
-import { CalculatedExpression } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import { getTextDisplayPrompt } from '../../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
 import CheckIcon from '@mui/icons-material/Check';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,35 +42,41 @@ interface Props
 function QItemText(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
-  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
-  const calculatedExpression: CalculatedExpression | undefined =
-    calculatedExpressions[qItem.linkId];
-
+  // Init input value
   let valueText = '';
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
     valueText = qrItem.answer[0].valueString;
   }
+  const [input, setInput] = useState(valueText);
 
-  const [input, setInput] = useState<string>(valueText);
+  // Get additional rendering extensions
+  const { displayPrompt, readOnly } = useRenderingExtensions(qItem);
+
+  // Update input value if calculated expression changes
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
-    if (calculatedExpression?.value !== input && typeof calculatedExpression?.value === 'string') {
-      // only update questionnaireResponse if calculated value is different from current value
-      if (input !== calculatedExpression.value) {
-        setCalExpIsCalculating(true);
-        setTimeout(() => {
-          setCalExpIsCalculating(false);
-        }, 500);
+    const calcExpression = calculatedExpressions[qItem.linkId];
 
-        setInput(calculatedExpression.value);
-        onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueString: calculatedExpression.value }]
-        });
-      }
+    // only update if calculated value is different from current value
+    if (calcExpression?.value !== input && typeof calcExpression?.value === 'string') {
+      // update ui to show calculated value changes
+      setCalExpIsCalculating(true);
+      const timeout = setTimeout(() => {
+        setCalExpIsCalculating(false);
+      }, 500);
+
+      // update questionnaireResponse
+      setInput(calcExpression.value);
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueString: calcExpression.value }]
+      });
+
+      return () => clearTimeout(timeout);
     }
-  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpressions changes
+  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression of item changes
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
@@ -95,8 +100,8 @@ function QItemText(props: Props) {
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
-      disabled={!!calculatedExpression}
-      label={getTextDisplayPrompt(qItem)}
+      disabled={readOnly}
+      label={displayPrompt}
       fullWidth
       multiline
       minRows={3}

@@ -44,6 +44,15 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
 }
 
 /**
+ * Check if item is readonly
+ *
+ * @author Sean Fong
+ */
+export function getReadOnly(qItem: QuestionnaireItem): boolean {
+  return !!qItem.readOnly;
+}
+
+/**
  * Get decimal text display unit for items with itemControlCode unit and has a unit childItem
  *
  * @author Sean Fong

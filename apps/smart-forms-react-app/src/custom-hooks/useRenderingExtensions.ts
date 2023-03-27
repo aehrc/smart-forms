@@ -15,53 +15,21 @@
  * limitations under the License.
  */
 
-.App {
-  text-align: center;
+import { getReadOnly, getTextDisplayPrompt, getTextDisplayUnit } from '../functions/QItemFunctions';
+import { QuestionnaireItem } from 'fhir/r5';
+
+interface RenderingExtensions {
+  displayUnit: string;
+  displayPrompt: string;
+  readOnly: boolean;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
+  return {
+    displayUnit: getTextDisplayUnit(qItem),
+    displayPrompt: getTextDisplayPrompt(qItem),
+    readOnly: getReadOnly(qItem)
+  };
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-ul {
-  list-style-position: inside;
-}
-
-li {
-  margin-top: 5px;
-}
-
-li::first-letter {
-  text-transform: uppercase;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+export default useRenderingExtensions;
