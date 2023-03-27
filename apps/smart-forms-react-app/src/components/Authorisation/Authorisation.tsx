@@ -165,7 +165,6 @@ function Authorisation() {
 
                   await questionnaireProvider.setQuestionnaire(questionnaire);
                   dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
-                  navigate('/renderer');
                 } else {
                   sessionStorage.removeItem('questionnaireUrl');
                   enqueueSnackbar(
@@ -224,6 +223,7 @@ function Authorisation() {
       typeof state.hasQuestionnaire === 'boolean'
     ) {
       if (state.hasQuestionnaire) {
+        sessionStorage.removeItem('questionnaireUrl');
         navigate('/renderer');
       } else {
         navigate('/dashboard/questionnaires');

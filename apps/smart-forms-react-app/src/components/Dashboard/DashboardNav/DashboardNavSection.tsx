@@ -39,10 +39,14 @@ function DashboardNavSection() {
         <Typography variant="overline">Pages</Typography>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
-        <NavItem title={'Questionnaires'} path={'/'} icon={<AssignmentIcon />} />
+        <NavItem
+          title={'Questionnaires'}
+          path={'/dashboard/questionnaires'}
+          icon={<AssignmentIcon />}
+        />
         <NavItem
           title={'Responses'}
-          path={'/responses'}
+          path={'/dashboard/responses'}
           icon={<AssignmentTurnedInIcon />}
           disabled={source === 'local'}
         />

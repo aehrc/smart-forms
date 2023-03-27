@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import DashboardNav from './DashboardNav/DashboardNav';
 import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
 import { DebugModeContext } from '../../custom-contexts/DebugModeContext';
 import DashboardDebugFooter from './DashboardDebugFooter/DashboardDebugFooter';
@@ -27,17 +27,6 @@ import DashboardDebugFooter from './DashboardDebugFooter/DashboardDebugFooter';
 function DashboardLayout() {
   const { debugMode } = useContext(DebugModeContext);
   const [open, setOpen] = useState(false);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Get initial questionnaire and redirect to renderer
-    const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
-    if (questionnaireUrl) {
-      navigate('/renderer');
-      sessionStorage.removeItem('questionnaireUrl');
-    }
-  }, []); // redirect to renderer on first render, leave dependency array empty
 
   return (
     <StyledRoot>
