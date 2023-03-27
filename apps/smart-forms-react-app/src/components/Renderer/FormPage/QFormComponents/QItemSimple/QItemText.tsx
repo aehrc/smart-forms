@@ -50,7 +50,8 @@ function QItemText(props: Props) {
   const [input, setInput] = useState(valueText);
 
   // Get additional rendering extensions
-  const { displayPrompt, readOnly } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
 
   // Update input value if calculated expression changes
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
@@ -63,7 +64,7 @@ function QItemText(props: Props) {
     if (calcExpression?.value !== input && typeof calcExpression?.value === 'string') {
       // update ui to show calculated value changes
       setCalExpIsCalculating(true);
-      const timeout = setTimeout(() => {
+      setTimeout(() => {
         setCalExpIsCalculating(false);
       }, 500);
 
@@ -73,8 +74,6 @@ function QItemText(props: Props) {
         ...createEmptyQrItem(qItem),
         answer: [{ valueString: calcExpression.value }]
       });
-
-      return () => clearTimeout(timeout);
     }
   }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression of item changes
 
@@ -111,6 +110,7 @@ function QItemText(props: Props) {
             <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
               <CheckIcon color="success" fontSize="small" />
             </Fade>
+            {displayUnit}
           </InputAdornment>
         )
       }}
@@ -128,7 +128,7 @@ function QItemText(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {textInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

@@ -18,7 +18,7 @@
 import React, { memo } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../../interfaces/Enums';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerValueSetCodings } from '../../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
@@ -31,6 +31,7 @@ import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import useValueSetCodings from '../../../../../custom-hooks/useValueSetCodings';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,13 +44,18 @@ interface Props
 function QItemChoiceRadioAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceRadio = qrItem ? qrItem : createEmptyQrItem(qItem);
+  // Init input value
+  const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
 
   let valueRadio: string | undefined;
-  if (qrChoiceRadio['answer']) {
-    valueRadio = qrChoiceRadio['answer'][0].valueCoding?.code;
+  if (qrChoiceRadio.answer) {
+    valueRadio = qrChoiceRadio.answer[0].valueCoding?.code;
   }
 
+  // Get additional rendering extensions
+  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -57,7 +63,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
       const qrAnswer = findInAnswerValueSetCodings(codings, event.target.value);
       if (qrAnswer) {
         onQrItemChange({
-          ...qrChoiceRadio,
+          ...createEmptyQrItem(qItem),
           answer: [{ valueCoding: qrAnswer }]
         });
       }
@@ -72,12 +78,13 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
         id={qItem.id}
         onChange={handleChange}
         value={valueRadio ?? null}>
-        {codings.map((coding) => {
+        {codings.map((coding: Coding) => {
           return (
             <QItemChoiceRadioSingle
               key={coding.code ?? ''}
               value={coding.code ?? ''}
               label={coding.display ?? `${coding.code}`}
+              readOnly={readOnly}
             />
           );
         })}
@@ -102,7 +109,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

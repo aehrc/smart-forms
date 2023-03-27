@@ -15,12 +15,18 @@
  * limitations under the License.
  */
 
-import { getReadOnly, getTextDisplayPrompt, getTextDisplayUnit } from '../functions/QItemFunctions';
-import { QuestionnaireItem } from 'fhir/r5';
+import {
+  getReadOnly,
+  getTextDisplayInstructions,
+  getTextDisplayPrompt,
+  getTextDisplayUnit
+} from '../functions/QItemFunctions';
+import type { QuestionnaireItem } from 'fhir/r5';
 
 interface RenderingExtensions {
   displayUnit: string;
   displayPrompt: string;
+  displayInstructions: string;
   readOnly: boolean;
 }
 
@@ -28,6 +34,7 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
   return {
     displayUnit: getTextDisplayUnit(qItem),
     displayPrompt: getTextDisplayPrompt(qItem),
+    displayInstructions: getTextDisplayInstructions(qItem),
     readOnly: getReadOnly(qItem)
   };
 }

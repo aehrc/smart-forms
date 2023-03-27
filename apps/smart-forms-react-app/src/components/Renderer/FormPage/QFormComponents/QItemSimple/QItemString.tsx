@@ -51,7 +51,8 @@ function QItemString(props: Props) {
   const [input, setInput] = useState<string>(valueString);
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, readOnly } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
 
   // Define error if present
   let hasError = false;
@@ -59,6 +60,7 @@ function QItemString(props: Props) {
     hasError = valueString.length > qItem.maxLength;
   }
 
+  // Event handlers
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
     setInput(newInput);
@@ -102,7 +104,7 @@ function QItemString(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {stringInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

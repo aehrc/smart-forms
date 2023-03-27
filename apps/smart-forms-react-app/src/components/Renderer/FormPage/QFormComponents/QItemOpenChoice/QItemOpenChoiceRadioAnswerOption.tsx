@@ -33,6 +33,7 @@ import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.st
 import QItemChoiceRadioSingle from '../QItemChoice/QItemChoiceRadioSingle';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../../functions/ChoiceFunctions';
 import QItemRadioButtonWithOpenLabel from '../QItemParts/QItemRadioButtonWithOpenLabel';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface QItemOpenChoiceRadioProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,15 +46,13 @@ interface QItemOpenChoiceRadioProps
 function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
   const { qItem, qrItem, onQrItemChange, orientation } = props;
 
-  const qrOpenChoiceRadio = qrItem ? qrItem : createEmptyQrItem(qItem);
+  // Init answers
+  const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
   let valueRadio: string | null = getQrChoiceValue(qrOpenChoiceRadio, true);
+  const answers = qrOpenChoiceRadio.answer ?? [];
 
-  // initialisation for empty open label
-  const answers = qrOpenChoiceRadio['answer'] ? qrOpenChoiceRadio['answer'] : [];
+  // Init empty open label
   const answerOptions = qItem.answerOption;
-
-  const openLabelText = getOpenLabelText(qItem);
-
   let initialOpenLabelValue = '';
   let initialOpenLabelSelected = false;
   if (answerOptions) {
@@ -73,6 +72,11 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
     valueRadio = '';
   }
 
+  // Get additional rendering extensions
+  const openLabelText = getOpenLabelText(qItem);
+  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Event handlers
   function handleValueChange(
     changedOptionValue: string | null,
     changedOpenLabelValue: string | null
@@ -129,6 +133,7 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
+              readOnly={readOnly}
             />
           );
         } else if (option['valueString']) {
@@ -137,6 +142,7 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
+              readOnly={readOnly}
             />
           );
         } else if (option['valueInteger']) {
@@ -145,6 +151,7 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
+              readOnly={readOnly}
             />
           );
         } else {
@@ -156,6 +163,7 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
         <QItemRadioButtonWithOpenLabel
           value={openLabelValue}
           label={openLabelText}
+          readOnly={readOnly}
           isSelected={openLabelSelected}
           onInputChange={(input) => handleValueChange(null, input)}
         />
@@ -171,7 +179,7 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
         </Grid>
         <Grid item xs={7}>
           {openChoiceRadio}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
