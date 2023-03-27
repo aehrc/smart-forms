@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../../interfaces/Enums';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -36,6 +36,7 @@ import {
 } from '../../../../../functions/OpenChoiceFunctions';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,12 +49,12 @@ interface QItemOpenChoiceCheckboxProps
 function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrOpenChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const answers = qrOpenChoiceCheckbox['answer'] ?? [];
+  // Init answers
+  const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
+  const answers = useMemo(() => qrOpenChoiceCheckbox.answer ?? [], [qrOpenChoiceCheckbox.answer]);
+
+  // Init options and open label value
   const answerOptions = qItem.answerOption;
-
-  const openLabelText = getOpenLabelText(qItem);
-
   let initialOpenLabelValue = '';
   let initialOpenLabelChecked = false;
   if (answerOptions) {
@@ -63,9 +64,14 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
       initialOpenLabelChecked = true;
     }
   }
-  const [openLabelValue, setOpenLabelValue] = useState<string>(initialOpenLabelValue);
-  const [openLabelChecked, setOpenLabelChecked] = useState<boolean>(initialOpenLabelChecked);
+  const [openLabelValue, setOpenLabelValue] = useState(initialOpenLabelValue);
+  const [openLabelChecked, setOpenLabelChecked] = useState(initialOpenLabelChecked);
 
+  // Get additional rendering extensions
+  const openLabelText = getOpenLabelText(qItem);
+  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Event handlers
   const handleValueChange = useCallback(
     (changedOptionValue: string | null, changedOpenLabelValue: string | null) => {
       if (!answerOptions) return null;
@@ -116,6 +122,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
+              readOnly={readOnly}
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer) === JSON.stringify(option)
               )}
@@ -128,6 +135,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
+              readOnly={readOnly}
               isChecked={answers.some((answer) => answer.valueString === option.valueString)}
               onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
             />
@@ -138,6 +146,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
+              readOnly={readOnly}
               isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
               onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
             />
@@ -173,7 +182,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
         </Grid>
         <Grid item xs={7}>
           {openChoiceCheckbox}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

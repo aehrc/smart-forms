@@ -23,19 +23,20 @@ import QItemChoiceRadioSingle from '../QItemChoice/QItemChoiceRadioSingle';
 interface Props {
   value: string | null;
   label: string;
+  readOnly: boolean;
   isSelected: boolean;
   onInputChange: (input: string) => unknown;
 }
 
 function QItemRadioButtonWithOpenLabel(props: Props) {
-  const { value, label, isSelected, onInputChange } = props;
+  const { value, label, readOnly, isSelected, onInputChange } = props;
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     onInputChange(event.target.value);
   }
 
   return (
     <Box data-test="q-item-radio-open-label-box">
-      <QItemChoiceRadioSingle value={value ?? ''} label={label + ':'} />
+      <QItemChoiceRadioSingle value={value ?? ''} label={label + ':'} readOnly={readOnly} />
       <StandardTextField
         disabled={!isSelected}
         value={value}

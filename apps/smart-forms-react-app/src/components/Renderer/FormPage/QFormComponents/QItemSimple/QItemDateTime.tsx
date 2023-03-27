@@ -33,6 +33,7 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,21 +46,25 @@ interface Props
 function QItemDateTime(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrDateTime = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const answerValue = qrDateTime['answer'] ? qrDateTime['answer'][0].valueDateTime : null;
+  // Init input value
+  const qrDateTime = qrItem ?? createEmptyQrItem(qItem);
+  const answerValue = qrDateTime.answer ? qrDateTime.answer[0].valueDateTime : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
-
   const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
 
   useEffect(() => {
     setValue(answerValueDayJs);
   }, [answerValueDayJs]);
 
+  // Get additional rendering extensions
+  const { displayPrompt, displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Event handlers
   function handleChange(newValue: Dayjs | null | undefined) {
     if (newValue) {
       setValue(newValue);
       onQrItemChange({
-        ...qrDateTime,
+        ...createEmptyQrItem(qItem),
         answer: [{ valueDateTime: newValue.format() }]
       });
     } else {
@@ -68,7 +73,13 @@ function QItemDateTime(props: Props) {
   }
 
   const renderQItemDateTime = isRepeated ? (
-    <QItemDateTimePicker value={value} onDateTimeChange={handleChange} isTabled={isTabled} />
+    <QItemDateTimePicker
+      value={value}
+      onDateTimeChange={handleChange}
+      isTabled={isTabled}
+      displayPrompt={displayPrompt}
+      readOnly={readOnly}
+    />
   ) : (
     <FullWidthFormComponentBox data-test="q-item-date-time-box">
       <Grid container columnSpacing={6}>
@@ -76,8 +87,14 @@ function QItemDateTime(props: Props) {
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <QItemDateTimePicker value={value} onDateTimeChange={handleChange} isTabled={isTabled} />
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDateTimePicker
+            value={value}
+            onDateTimeChange={handleChange}
+            isTabled={isTabled}
+            displayPrompt={displayPrompt}
+            readOnly={readOnly}
+          />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
@@ -89,16 +106,20 @@ function QItemDateTime(props: Props) {
 interface QItemDateTimePickerProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
   onDateTimeChange: (newValue: Dayjs | null) => unknown;
+  displayPrompt: string;
+  readOnly: boolean;
 }
 
 function QItemDateTimePicker(props: QItemDateTimePickerProps) {
-  const { value, onDateTimeChange, isTabled } = props;
+  const { value, onDateTimeChange, displayPrompt, readOnly, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
         inputFormat="DD/MM/YYYY hh:mm A"
         value={value}
+        disabled={readOnly}
+        label={displayPrompt}
         onChange={onDateTimeChange}
         renderInput={(params) => (
           <StandardTextField

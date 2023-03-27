@@ -17,27 +17,21 @@
 
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import type { QuestionnaireItem } from 'fhir/r5';
-import { getTextDisplayInstructions } from '../../../../../functions/QItemFunctions';
 
 interface Props {
-  qItem: QuestionnaireItem;
+  displayInstructions: string;
 }
 
 function QItemDisplayInstructions(props: Props) {
-  const { qItem } = props;
+  const { displayInstructions } = props;
 
-  const displayInstructions = getTextDisplayInstructions(qItem);
-
-  const renderQItemDisplayInstructions = displayInstructions ? (
+  return displayInstructions ? (
     <Box sx={{ color: 'text.secondary', textTransform: 'capitalize', mb: 1 }}>
       <Typography variant="caption" fontSize={10.5}>
         {displayInstructions}
       </Typography>
     </Box>
   ) : null;
-
-  return <>{renderQItemDisplayInstructions}</>;
 }
 
 export default QItemDisplayInstructions;

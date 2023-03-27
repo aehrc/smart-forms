@@ -121,16 +121,7 @@ function addQuestionnaireReference(
     // Plugging questionnaire.id in because SMART Health IT has these weird requirements for canonicals
     questionnaireReference = questionnaire.id ? `Questionnaire/${questionnaire.id}` : '';
   } else {
-    const assembleFromExtension = questionnaire.extension?.find(
-      (e) =>
-        e.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom'
-    );
-
-    if (assembleFromExtension && assembleFromExtension.valueCanonical) {
-      questionnaireReference = assembleFromExtension.valueCanonical;
-    } else {
-      questionnaireReference = questionnaire.url ?? '';
-    }
+    questionnaireReference = questionnaire.url ?? '';
   }
 
   // Add questionnaire reference if it is not an empty string

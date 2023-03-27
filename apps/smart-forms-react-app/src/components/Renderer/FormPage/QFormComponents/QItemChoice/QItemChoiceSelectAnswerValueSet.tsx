@@ -31,6 +31,7 @@ import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import useValueSetCodings from '../../../../../custom-hooks/useValueSetCodings';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,13 +44,18 @@ interface Props
 function QItemChoiceSelectAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrChoiceSelect = qrItem ? qrItem : createEmptyQrItem(qItem);
-
+  // Init input value
+  const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
   let valueCoding: Coding | undefined;
-  if (qrChoiceSelect['answer']) {
-    valueCoding = qrChoiceSelect['answer'][0].valueCoding;
+  if (qrChoiceSelect.answer) {
+    valueCoding = qrChoiceSelect.answer[0].valueCoding;
   }
 
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
 
   valueCoding = useMemo(() => {
@@ -60,16 +66,19 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   }, [codings, valueCoding]);
 
   // Check and remove populated answer if it is a string
+  // NOTE: $populate will try to populate answer as valueCoding,
+  //       but will fail if answer provided is not within options
   useEffect(() => {
-    if (qrChoiceSelect['answer'] && qrChoiceSelect['answer'][0].valueString) {
+    if (qrChoiceSelect.answer && qrChoiceSelect.answer[0].valueString) {
       onQrItemChange(createEmptyQrItem(qItem));
     }
-  }, []);
+  }, []); // Only run effect once - on populate
 
+  // Event handlers
   function handleChange(event: SyntheticEvent<Element, Event>, newValue: Coding | null) {
     if (newValue) {
       onQrItemChange({
-        ...qrChoiceSelect,
+        ...createEmptyQrItem(qItem),
         answer: [{ valueCoding: newValue }]
       });
       return;
@@ -88,10 +97,21 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         openOnFocus
         autoHighlight
         fullWidth
+        disabled={readOnly}
         renderInput={(params) => (
           <StandardTextField
             isTabled={isTabled}
+            label={displayPrompt}
             {...params}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {params.InputProps.endAdornment}
+                  {displayUnit}
+                </>
+              )
+            }}
             data-test="q-item-choice-dropdown-answer-value-set-field"
           />
         )}
@@ -116,7 +136,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerValueSet}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

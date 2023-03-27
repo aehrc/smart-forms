@@ -37,6 +37,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -50,11 +51,17 @@ function QItemChoiceAutocomplete(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem);
 
+  // Init input value
   let valueCoding: Coding | undefined;
-  if (qrChoice['answer']) {
-    valueCoding = qrChoice['answer'][0].valueCoding;
+  if (qrChoice.answer) {
+    valueCoding = qrChoice.answer[0].valueCoding;
   }
 
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Query ontoserver for options
   const answerValueSetUrl = qItem.answerValueSet;
   const maxList = 10;
 
@@ -70,6 +77,7 @@ function QItemChoiceAutocomplete(props: Props) {
 
   if (!answerValueSetUrl) return null;
 
+  // Event handlers
   function handleValueChange(event: SyntheticEvent<Element, Event>, newValue: Coding | null) {
     if (newValue === null) {
       setInput('');
@@ -103,6 +111,8 @@ function QItemChoiceAutocomplete(props: Props) {
             {...params}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
             isTabled={isTabled}
+            disabled={readOnly}
+            label={displayPrompt}
             InputProps={{
               ...params.InputProps,
 
@@ -131,6 +141,7 @@ function QItemChoiceAutocomplete(props: Props) {
                     </Fade>
                   ) : null}
                   {params.InputProps.endAdornment}
+                  {displayUnit}
                 </>
               )
             }}
@@ -150,7 +161,7 @@ function QItemChoiceAutocomplete(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

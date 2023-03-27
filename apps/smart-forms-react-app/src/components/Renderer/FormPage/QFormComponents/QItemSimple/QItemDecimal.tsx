@@ -19,7 +19,6 @@ import React, { memo, useCallback, useContext, useEffect, useState } from 'react
 import { Fade, Grid, InputAdornment } from '@mui/material';
 
 import type {
-  CalculatedExpression,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
@@ -28,13 +27,13 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItemWithUnit } from '../../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import { getDecimalPrecision } from '../../../../../functions/ItemControlFunctions';
-import { getTextDisplayUnit } from '../../../../../functions/QItemFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
-import { StandardOutlinedInput } from '../../../../StyledComponents/Textfield.styles';
+import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,36 +45,42 @@ interface Props
 
 function QItemDecimal(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
+  // Get additional rendering extensions
   const precision = getDecimalPrecision(qItem);
-  const displayUnit = getTextDisplayUnit(qItem);
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
 
-  const calculatedExpression: CalculatedExpression | undefined =
-    calculatedExpressions[qItem.linkId];
-
+  // Init input value
   let initialInput = '0';
   let valueDecimal = 0.0;
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueDecimal) {
     valueDecimal = qrItem.answer[0].valueDecimal;
     initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
-
   const [input, setInput] = useState(initialInput);
+
+  // Update input value if calculated expression changes
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
-    if (calculatedExpression && calculatedExpression.value) {
-      const value = precision
-        ? parseFloat(calculatedExpression.value.toFixed(precision))
-        : calculatedExpression.value;
+    const calcExpression = calculatedExpressions[qItem.linkId];
 
+    if (calcExpression?.value && typeof calcExpression?.value === 'number') {
+      const value = precision
+        ? parseFloat(calcExpression.value.toFixed(precision))
+        : calcExpression.value;
+
+      // only update if calculated value is different from current value
       if (value !== parseFloat(input)) {
+        // update ui to show calculated value changes
         setCalExpIsCalculating(true);
         setTimeout(() => {
           setCalExpIsCalculating(false);
         }, 500);
 
+        // update questionnaireResponse
         setInput(precision ? value.toFixed(precision) : value.toString());
         onQrItemChange({
           ...createEmptyQrItemWithUnit(qItem, displayUnit),
@@ -83,7 +88,7 @@ function QItemDecimal(props: Props) {
         });
       }
     }
-  }, [calculatedExpressions]);
+  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression changes
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;
@@ -128,25 +133,28 @@ function QItemDecimal(props: Props) {
   );
 
   const decimalInput = (
-    <StandardOutlinedInput
+    <StandardTextField
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
-      disabled={!!calculatedExpression}
+      disabled={readOnly}
+      label={displayPrompt}
       fullWidth
       isTabled={isTabled}
       inputProps={{
         inputMode: 'numeric',
         pattern: '[0-9]*'
       }}
-      endAdornment={
-        <InputAdornment position={'end'}>
-          <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
-            <CheckIcon color="success" fontSize="small" />
-          </Fade>
-          {displayUnit}
-        </InputAdornment>
-      }
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position={'end'}>
+            <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
+              <CheckIcon color="success" fontSize="small" />
+            </Fade>
+            {displayUnit}
+          </InputAdornment>
+        )
+      }}
       data-test="q-item-decimal-field"
     />
   );
@@ -161,7 +169,7 @@ function QItemDecimal(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {decimalInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

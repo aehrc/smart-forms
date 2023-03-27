@@ -16,7 +16,7 @@
  */
 
 import React, { memo, useCallback, useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, InputAdornment } from '@mui/material';
 
 import type {
   PropsWithIsRepeatedAttribute,
@@ -25,12 +25,12 @@ import type {
 } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import { getTextDisplayPrompt } from '../../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,18 +43,24 @@ interface Props
 function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
+  // Init input value
   let valueString = '';
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;
   }
-
   const [input, setInput] = useState<string>(valueString);
 
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Define error if present
   let hasError = false;
   if (qItem.maxLength && valueString) {
     hasError = valueString.length > qItem.maxLength;
   }
 
+  // Event handlers
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
     setInput(newInput);
@@ -80,7 +86,9 @@ function QItemString(props: Props) {
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
-      label={getTextDisplayPrompt(qItem)}
+      label={displayPrompt}
+      disabled={readOnly}
+      InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
       data-test="q-item-string-field"
     />
@@ -96,7 +104,7 @@ function QItemString(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {stringInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

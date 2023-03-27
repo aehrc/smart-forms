@@ -28,11 +28,11 @@ import { createEmptyQrItemWithUnit } from '../../../../../functions/QrItemFuncti
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import { getTextDisplayUnit } from '../../../../../functions/QItemFunctions';
-import { StandardOutlinedInput } from '../../../../StyledComponents/Textfield.styles';
+import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,37 +45,40 @@ interface Props
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
-
-  const displayUnit = getTextDisplayUnit(qItem);
-
+  // Init input value
   let valueInteger = 0;
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueInteger) {
     valueInteger = qrItem.answer[0].valueInteger;
   }
+  const [input, setInput] = useState(valueInteger);
 
-  const [input, setInput] = useState<number>(valueInteger);
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Update input value if calculated expression changes
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
   useEffect(() => {
-    const expression = calculatedExpressions[qItem.linkId];
+    const calcExpression = calculatedExpressions[qItem.linkId];
 
-    if (expression && expression.value) {
-      // only update questionnaireResponse if calculated value is different from current value
-      if (input !== expression.value) {
-        setCalExpIsCalculating(true);
-        setTimeout(() => {
-          setCalExpIsCalculating(false);
-        }, 500);
+    // only update if calculated value is different from current value
+    if (calcExpression?.value !== input && typeof calcExpression?.value === 'number') {
+      // update ui to show calculated value changes
+      setCalExpIsCalculating(true);
+      setTimeout(() => {
+        setCalExpIsCalculating(false);
+      }, 500);
 
-        setInput(expression.value);
-        onQrItemChange({
-          ...createEmptyQrItemWithUnit(qItem, displayUnit),
-          answer: [{ valueInteger: expression.value }]
-        });
-      }
+      // update questionnaireResponse
+      setInput(calcExpression.value);
+      onQrItemChange({
+        ...createEmptyQrItemWithUnit(qItem, displayUnit),
+        answer: [{ valueInteger: calcExpression.value }]
+      });
     }
-  }, [calculatedExpressions]);
+  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression of item changes
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     let newInput = event.target.value;
@@ -101,21 +104,25 @@ function QItemInteger(props: Props) {
   );
 
   const integerInput = (
-    <StandardOutlinedInput
+    <StandardTextField
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
+      disabled={readOnly}
+      label={displayPrompt}
       fullWidth
       isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-      endAdornment={
-        <InputAdornment position={'end'}>
-          <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
-            <CheckIcon color="success" fontSize="small" />
-          </Fade>
-          {displayUnit}
-        </InputAdornment>
-      }
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position={'end'}>
+            <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
+              <CheckIcon color="success" fontSize="small" />
+            </Fade>
+            {displayUnit}
+          </InputAdornment>
+        )
+      }}
       data-test="q-item-integer-field"
     />
   );
@@ -130,7 +137,7 @@ function QItemInteger(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {integerInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

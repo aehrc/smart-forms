@@ -30,6 +30,7 @@ import { QRadioGroup } from '../../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -42,14 +43,19 @@ interface Props
 function QItemChoiceRadioAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceRadio = qrItem ? qrItem : createEmptyQrItem(qItem);
+  // Init input value
+  const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
   const valueRadio = getQrChoiceValue(qrChoiceRadio);
 
+  // Get additional rendering extensions
+  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Event handlers
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (qItem.answerOption) {
       const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
       if (qrAnswer) {
-        onQrItemChange({ ...qrChoiceRadio, answer: [qrAnswer] });
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
       }
     }
   }
@@ -69,6 +75,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
+              readOnly={readOnly}
             />
           );
         } else if (option['valueString']) {
@@ -77,6 +84,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
+              readOnly={readOnly}
             />
           );
         } else if (option['valueInteger']) {
@@ -85,6 +93,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
+              readOnly={readOnly}
             />
           );
         } else {
@@ -104,7 +113,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import React, { memo, useCallback, useState } from 'react';
-import { Grid, TextField } from '@mui/material';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import { Fade, Grid, InputAdornment, TextField } from '@mui/material';
 
 import type {
   PropsWithIsRepeatedAttribute,
@@ -24,11 +24,13 @@ import type {
 } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import { getTextDisplayPrompt } from '../../../../../functions/QItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import { debounce } from 'lodash';
+import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
+import CheckIcon from '@mui/icons-material/Check';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -40,12 +42,40 @@ interface Props
 function QItemText(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
+  // Init input value
   let valueText = '';
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
     valueText = qrItem.answer[0].valueString;
   }
+  const [input, setInput] = useState(valueText);
 
-  const [input, setInput] = useState<string>(valueText);
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Update input value if calculated expression changes
+  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
+  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
+
+  useEffect(() => {
+    const calcExpression = calculatedExpressions[qItem.linkId];
+
+    // only update if calculated value is different from current value
+    if (calcExpression?.value !== input && typeof calcExpression?.value === 'string') {
+      // update ui to show calculated value changes
+      setCalExpIsCalculating(true);
+      setTimeout(() => {
+        setCalExpIsCalculating(false);
+      }, 500);
+
+      // update questionnaireResponse
+      setInput(calcExpression.value);
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueString: calcExpression.value }]
+      });
+    }
+  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression of item changes
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newInput = event.target.value;
@@ -69,10 +99,21 @@ function QItemText(props: Props) {
       id={qItem.linkId}
       value={input}
       onChange={handleChange}
-      label={getTextDisplayPrompt(qItem)}
+      disabled={readOnly}
+      label={displayPrompt}
       fullWidth
       multiline
       minRows={3}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position={'end'}>
+            <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
+              <CheckIcon color="success" fontSize="small" />
+            </Fade>
+            {displayUnit}
+          </InputAdornment>
+        )
+      }}
       data-test="q-item-text-field"
     />
   );
@@ -87,7 +128,7 @@ function QItemText(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {textInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

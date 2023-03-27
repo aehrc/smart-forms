@@ -17,7 +17,7 @@
 
 import React, { memo } from 'react';
 import type { SelectChangeEvent } from '@mui/material';
-import { Grid, MenuItem, Select } from '@mui/material';
+import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
 
 import type {
   PropsWithIsRepeatedAttribute,
@@ -29,6 +29,7 @@ import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -40,17 +41,23 @@ interface Props
 function QItemChoiceSelectAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
-  const qrChoiceSelect = qrItem ? qrItem : createEmptyQrItem(qItem);
+  // Init input value
+  const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
   let valueSelect = getQrChoiceValue(qrChoiceSelect);
   if (valueSelect === null) {
     valueSelect = '';
   }
 
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Event handlers
   function handleChange(e: SelectChangeEvent) {
     if (qItem.answerOption) {
       const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
       if (qrAnswer) {
-        onQrItemChange({ ...qrChoiceSelect, answer: [qrAnswer] });
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
         return;
       }
     }
@@ -58,7 +65,15 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   }
 
   const choiceSelectAnswerOption = (
-    <Select id={qItem.id} name={qItem.text} value={valueSelect} fullWidth onChange={handleChange}>
+    <Select
+      id={qItem.id}
+      name={qItem.text}
+      value={valueSelect}
+      disabled={readOnly}
+      fullWidth
+      label={displayPrompt}
+      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      onChange={handleChange}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
@@ -95,7 +110,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerOption}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

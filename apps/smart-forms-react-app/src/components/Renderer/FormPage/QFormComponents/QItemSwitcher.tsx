@@ -25,7 +25,6 @@ import QItemDisplay from './QItemSimple/QItemDisplay';
 import QItemInteger from './QItemSimple/QItemInteger';
 import QItemDateTime from './QItemSimple/QItemDateTime';
 import QItemDecimal from './QItemSimple/QItemDecimal';
-import QItemQuantity from './QItemSimple/QItemQuantity';
 import QItemChoice from './QItemChoice/QItemChoice';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import QItemTime from './QItemSimple/QItemTime';
@@ -153,16 +152,6 @@ function RenderQItem(props: Props) {
     case QItemType.Decimal:
       return (
         <QItemDecimal
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={isRepeated}
-          isTabled={isTabled}
-          onQrItemChange={onQrItemChange}
-        />
-      );
-    case QItemType.Quantity:
-      return (
-        <QItemQuantity
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}

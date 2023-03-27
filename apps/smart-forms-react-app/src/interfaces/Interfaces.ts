@@ -53,7 +53,7 @@ export interface UserData {
 
 export interface CalculatedExpression {
   expression: string;
-  value?: number;
+  value?: number | string;
 }
 
 export type EnableWhenItems = Record<string, EnableWhenItemProperties>;

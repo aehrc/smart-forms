@@ -15,28 +15,28 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import {
+  getReadOnly,
+  getTextDisplayInstructions,
+  getTextDisplayPrompt,
+  getTextDisplayUnit
+} from '../functions/QItemFunctions';
+import type { QuestionnaireItem } from 'fhir/r5';
 
-interface Props {
-  value: string;
-  label: string;
+interface RenderingExtensions {
+  displayUnit: string;
+  displayPrompt: string;
+  displayInstructions: string;
   readOnly: boolean;
-  isChecked: boolean;
-  onCheckedChange: (value: string) => unknown;
 }
 
-function QItemCheckboxSingle(props: Props) {
-  const { value, label, readOnly, isChecked, onCheckedChange } = props;
-
-  return (
-    <FormControlLabel
-      disabled={readOnly}
-      control={<Checkbox checked={isChecked} onChange={() => onCheckedChange(value)} />}
-      label={label}
-      sx={{ mr: 3 }}
-    />
-  );
+function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
+  return {
+    displayUnit: getTextDisplayUnit(qItem),
+    displayPrompt: getTextDisplayPrompt(qItem),
+    displayInstructions: getTextDisplayInstructions(qItem),
+    readOnly: getReadOnly(qItem)
+  };
 }
 
-export default QItemCheckboxSingle;
+export default useRenderingExtensions;

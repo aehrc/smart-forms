@@ -35,6 +35,7 @@ import { QFormGroup } from '../../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -47,11 +48,17 @@ interface Props
 function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
+  // Init input value
+  const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
+  const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
 
+  // Get additional rendering extensions
+  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
 
+  // Event handlers
   function handleCheckedChange(changedValue: string) {
     if (codings.length < 1) return null;
 
@@ -78,6 +85,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
               key={coding.code ?? ''}
               value={coding.code ?? ''}
               label={coding.display ?? `${coding.code}`}
+              readOnly={readOnly}
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer.valueCoding) === JSON.stringify(coding)
               )}
@@ -104,7 +112,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

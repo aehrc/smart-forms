@@ -23,6 +23,7 @@ import {
   getContainedResources,
   getExtensions,
   getSubquestionnaireItems,
+  getUrls,
   isValidExtensions,
   mergeExtensionsIntoItems
 } from './GetSubquestionnaireItems';
@@ -71,6 +72,9 @@ export async function assembleQuestionnaire(
   // Get items
   const items = getSubquestionnaireItems(subquestionnaires);
 
+  // Get urls with versions
+  const urls = getUrls(subquestionnaires);
+
   // Get contained resources
   const containedResources: Record<string, FhirResource> = getContainedResources(subquestionnaires);
 
@@ -85,6 +89,7 @@ export async function assembleQuestionnaire(
   // propagate items, contained resources and extensions into parent questionnaire
   return propagateSubquestionnaireItems(
     parentQuestionnaire,
+    urls,
     itemsWithExtensions,
     containedResources,
     rootLevelExtensions

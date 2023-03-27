@@ -31,9 +31,11 @@ function CsiroLogo() {
 
   useEffect(() => {
     if (clickCounter === 7) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setClickCounter(0);
       }, 2500);
+
+      return () => clearTimeout(timeout);
     }
   }, [clickCounter]);
 
