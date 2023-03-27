@@ -67,7 +67,7 @@ function QItemInteger(props: Props) {
     if (calcExpression?.value !== input && typeof calcExpression?.value === 'number') {
       // update ui to show calculated value changes
       setCalExpIsCalculating(true);
-      const timeout = setTimeout(() => {
+      setTimeout(() => {
         setCalExpIsCalculating(false);
       }, 500);
 
@@ -77,8 +77,6 @@ function QItemInteger(props: Props) {
         ...createEmptyQrItemWithUnit(qItem, displayUnit),
         answer: [{ valueInteger: calcExpression.value }]
       });
-
-      return () => clearTimeout(timeout);
     }
   }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression of item changes
 

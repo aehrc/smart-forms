@@ -76,7 +76,7 @@ function QItemDecimal(props: Props) {
       if (value !== parseFloat(input)) {
         // update ui to show calculated value changes
         setCalExpIsCalculating(true);
-        const timeout = setTimeout(() => {
+        setTimeout(() => {
           setCalExpIsCalculating(false);
         }, 500);
 
@@ -86,8 +86,6 @@ function QItemDecimal(props: Props) {
           ...createEmptyQrItemWithUnit(qItem, displayUnit),
           answer: [{ valueDecimal: value }]
         });
-
-        return () => clearTimeout(timeout);
       }
     }
   }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression changes
