@@ -31,6 +31,7 @@ import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import useValueSetCodings from '../../../../../custom-hooks/useValueSetCodings';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,15 +44,21 @@ interface Props
 function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
-  const qrOpenChoice = qrItem ? qrItem : createEmptyQrItem(qItem);
-
+  // Init input value
+  const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
   let valueSelect: Coding | undefined = undefined;
   if (qrOpenChoice['answer']) {
     valueSelect = qrOpenChoice['answer'][0].valueCoding;
   }
 
+  // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
 
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Event handlers
   function handleValueChange(
     event: SyntheticEvent<Element, Event>,
     newValue: Coding | string | null
@@ -85,7 +92,23 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         freeSolo
         autoHighlight
         fullWidth
-        renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
+        disabled={readOnly}
+        renderInput={(params) => (
+          <StandardTextField
+            isTabled={isTabled}
+            label={displayPrompt}
+            {...params}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {params.InputProps.endAdornment}
+                  {displayUnit}
+                </>
+              )
+            }}
+          />
+        )}
       />
       {serverError ? (
         <Typography variant="subtitle2">
@@ -105,7 +128,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {openChoiceSelectAnswerValueSet}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

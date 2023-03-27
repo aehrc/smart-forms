@@ -33,6 +33,7 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,6 +46,7 @@ interface Props
 function QItemTime(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
+  // Init input value
   const qrTime = qrItem ? qrItem : createEmptyQrItem(qItem);
   const answerValue = qrTime['answer'] ? qrTime['answer'][0].valueTime : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
@@ -55,6 +57,10 @@ function QItemTime(props: Props) {
     setValue(answerValueDayJs);
   }, [answerValueDayJs]);
 
+  // Get additional rendering extensions
+  const { displayPrompt, displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Event handlers
   function handleChange(newValue: Dayjs | null | undefined) {
     if (newValue) {
       setValue(newValue);
@@ -65,7 +71,13 @@ function QItemTime(props: Props) {
   }
 
   const renderQItemTime = isRepeated ? (
-    <QItemTimePicker value={value} onTimeChange={handleChange} isTabled={isTabled} />
+    <QItemTimePicker
+      value={value}
+      onTimeChange={handleChange}
+      isTabled={isTabled}
+      displayPrompt={displayPrompt}
+      readOnly={readOnly}
+    />
   ) : (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
@@ -73,8 +85,14 @@ function QItemTime(props: Props) {
           <QItemLabel qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          <QItemTimePicker value={value} onTimeChange={handleChange} isTabled={isTabled} />
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemTimePicker
+            value={value}
+            onTimeChange={handleChange}
+            isTabled={isTabled}
+            displayPrompt={displayPrompt}
+            readOnly={readOnly}
+          />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
@@ -85,16 +103,20 @@ function QItemTime(props: Props) {
 interface QItemTimePickerProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
   onTimeChange: (newValue: Dayjs | null) => unknown;
+  displayPrompt: string;
+  readOnly: boolean;
 }
 
 function QItemTimePicker(props: QItemTimePickerProps) {
-  const { value, onTimeChange, isTabled } = props;
+  const { value, onTimeChange, displayPrompt, readOnly, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimePicker
         showToolbar
         value={value}
+        disabled={readOnly}
+        label={displayPrompt}
         onChange={onTimeChange}
         renderInput={(params) => <StandardTextField fullWidth isTabled={isTabled} {...params} />}
       />

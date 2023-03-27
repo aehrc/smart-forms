@@ -21,13 +21,20 @@ import { FormControlLabel, Radio } from '@mui/material';
 interface Props {
   value: string;
   label: string;
+  readOnly: boolean;
 }
 
 function QItemChoiceRadioSingle(props: Props) {
-  const { value, label } = props;
+  const { value, label, readOnly } = props;
 
   return (
-    <FormControlLabel value={value} control={<Radio size="small" />} label={label} sx={{ mr: 3 }} />
+    <FormControlLabel
+      disabled={readOnly}
+      value={value}
+      control={<Radio size="small" />}
+      label={label}
+      sx={{ mr: 3 }}
+    />
   );
 }
 

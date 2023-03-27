@@ -33,6 +33,7 @@ import { TransitionGroup } from 'react-transition-group';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import { nanoid } from 'nanoid';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import useRenderingExtensions from '../../../../custom-hooks/useRenderingExtensions';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -61,6 +62,9 @@ function QItemRepeat(props: Props) {
       setAnswerIds([nanoid()]);
     }
   }, [qrItem]);
+
+  // Get additional rendering extensions
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event Handlers
   function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
@@ -135,7 +139,7 @@ function QItemRepeat(props: Props) {
               );
             })}
           </TransitionGroup>
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
 

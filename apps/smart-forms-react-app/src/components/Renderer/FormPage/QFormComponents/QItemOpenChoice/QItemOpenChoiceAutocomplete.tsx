@@ -37,6 +37,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoIcon from '@mui/icons-material/Info';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,11 +49,12 @@ interface Props
 
 function QItemOpenChoiceAutocomplete(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const qrOpenChoice = qrItem ? qrItem : createEmptyQrItem(qItem);
+  const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
 
+  // Init input value
   let valueAutocomplete: Coding | string | undefined;
-  if (qrOpenChoice['answer']) {
-    const answer = qrOpenChoice['answer'][0];
+  if (qrOpenChoice.answer) {
+    const answer = qrOpenChoice.answer[0];
     valueAutocomplete = answer.valueCoding ? answer.valueCoding : answer.valueString;
   }
 
@@ -60,6 +62,11 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     valueAutocomplete = '';
   }
 
+  // Get additional rendering extensions
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
+
+  // Query ontoserver for options
   const answerValueSetUrl = qItem.answerValueSet;
   const maxList = 10;
 
@@ -75,6 +82,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
 
   if (!answerValueSetUrl) return null;
 
+  // Event handlers
   function handleValueChange(
     event: SyntheticEvent<Element, Event>,
     newValue: Coding | string | null
@@ -132,6 +140,8 @@ function QItemOpenChoiceAutocomplete(props: Props) {
               }}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
               isTabled={isTabled}
+              disabled={readOnly}
+              label={displayPrompt}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
@@ -161,6 +171,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
                       </Fade>
                     ) : null}
                     {params.InputProps.endAdornment}
+                    {displayUnit}
                   </>
                 )
               }}
@@ -182,7 +193,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {openChoiceAutocomplete}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

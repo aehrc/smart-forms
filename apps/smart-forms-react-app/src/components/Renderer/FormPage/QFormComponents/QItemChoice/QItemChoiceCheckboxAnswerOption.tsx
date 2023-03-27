@@ -30,6 +30,7 @@ import { updateQrCheckboxAnswers } from '../../../../../functions/ChoiceFunction
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface QItemChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -42,9 +43,14 @@ interface QItemChoiceCheckboxProps
 function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
-  const qrChoiceCheckbox = qrItem ? qrItem : createEmptyQrItem(qItem);
-  const answers = qrChoiceCheckbox['answer'] ? qrChoiceCheckbox['answer'] : [];
+  // Init input value
+  const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
+  const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
 
+  // Get additional rendering extensions
+  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Event handlers
   function handleCheckedChange(changedValue: string) {
     const answerOptions = qItem.answerOption;
     if (!answerOptions) return null;
@@ -72,6 +78,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
+              readOnly={readOnly}
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer) === JSON.stringify(option)
               )}
@@ -84,6 +91,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
+              readOnly={readOnly}
               isChecked={answers.some((answer) => answer.valueString === option.valueString)}
               onCheckedChange={handleCheckedChange}
             />
@@ -94,6 +102,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
+              readOnly={readOnly}
               isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
               onCheckedChange={handleCheckedChange}
             />
@@ -113,7 +122,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

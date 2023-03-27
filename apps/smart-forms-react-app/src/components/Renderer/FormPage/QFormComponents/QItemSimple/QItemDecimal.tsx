@@ -48,7 +48,8 @@ function QItemDecimal(props: Props) {
 
   // Get additional rendering extensions
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, readOnly } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
 
   // Init input value
   let initialInput = '0';
@@ -170,7 +171,7 @@ function QItemDecimal(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {decimalInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

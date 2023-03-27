@@ -23,11 +23,12 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
 import { EnableWhenContext } from '../../../../../custom-contexts/EnableWhenContext';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -38,33 +39,41 @@ interface Props
 
 function QItemBoolean(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenLinkMap = { ...enableWhenContext.linkMap };
 
-  const qrBoolean = qrItem ? qrItem : createEmptyQrItem(qItem);
+  // Init input value
+  const qrBoolean = qrItem ?? createEmptyQrItem(qItem);
   const valueBoolean = qrBoolean['answer'] ? qrBoolean['answer'][0].valueBoolean : false;
-
   const [isChecked, setIsChecked] = useState(valueBoolean);
 
+  // Get additional rendering extensions
+  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+
+  // Trigger enableWhen on init - special case
+  const { linkMap } = useContext(EnableWhenContext);
   useEffect(() => {
     // if boolean item is an enableWhen linked question and it does not have an answer yet
     // set default answer to false - to trigger enableWhen == false
-    if (qItem.linkId in enableWhenLinkMap && !qrBoolean['answer']) {
+    if (qItem.linkId in linkMap && !qrBoolean.answer) {
       setIsChecked(false);
-      onQrItemChange({ ...qrBoolean, answer: [{ valueBoolean: false }] });
+      onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueBoolean: false }] });
     }
-  }, []);
+  }, []); // Only run effect on init
 
+  // Event handlers
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setIsChecked(event.target.checked);
     onQrItemChange({
-      ...qrBoolean,
+      ...createEmptyQrItem(qItem),
       answer: [{ valueBoolean: event.target.checked }]
     });
   }
 
   const booleanInput = (
-    <FormControlLabel control={<Checkbox checked={isChecked} onChange={handleChange} />} label="" />
+    <FormControlLabel
+      disabled={readOnly}
+      control={<Checkbox checked={isChecked} onChange={handleChange} />}
+      label=""
+    />
   );
 
   const renderQItemBoolean = isRepeated ? (
@@ -77,7 +86,7 @@ function QItemBoolean(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {booleanInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

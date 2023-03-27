@@ -53,7 +53,8 @@ function QItemInteger(props: Props) {
   const [input, setInput] = useState(valueInteger);
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, readOnly } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+    useRenderingExtensions(qItem);
 
   // Update input value if calculated expression changes
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
@@ -138,7 +139,7 @@ function QItemInteger(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {integerInput}
-          <QItemDisplayInstructions qItem={qItem} />
+          <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
