@@ -3665,6 +3665,10 @@
                         "language": "text/fhirpath",
                         "expression": "%ConditionRepeat.recordedDate"
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+                      "valueString": "DD-MM-YYYY"
                     }
                   ],
                   "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
