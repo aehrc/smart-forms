@@ -16,13 +16,14 @@
  */
 
 import {
-  getEntryFormat, getMaxLength,
+  getEntryFormat,
+  getMaxLength,
   getReadOnly,
   getRegexValidation,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit
-} from "../functions/ItemControlFunctions";
+} from '../functions/ItemControlFunctions';
 import type { QuestionnaireItem } from 'fhir/r5';
 
 interface RenderingExtensions {

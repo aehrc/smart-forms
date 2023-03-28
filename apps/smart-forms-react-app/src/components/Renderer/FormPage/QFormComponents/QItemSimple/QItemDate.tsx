@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 
@@ -51,10 +51,6 @@ function QItemDate(props: Props) {
   const answerValue = qrDate.answer ? qrDate.answer[0].valueDate : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
   const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
-
-  useEffect(() => {
-    setValue(answerValueDayJs);
-  }, [answerValueDayJs]);
 
   // Get additional rendering extensions
   const { displayPrompt, displayInstructions, readOnly, entryFormat } =
@@ -120,7 +116,7 @@ function QItemDatePicker(props: QItemDatePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DesktopDatePicker
-        inputFormat={entryFormat ?? 'DD/MM/YYYY'}
+        inputFormat={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
         value={value}
         disabled={readOnly}
         label={displayPrompt}

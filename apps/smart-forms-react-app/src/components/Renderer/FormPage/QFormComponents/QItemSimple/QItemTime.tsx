@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -52,10 +52,6 @@ function QItemTime(props: Props) {
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
 
   const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
-
-  useEffect(() => {
-    setValue(answerValueDayJs);
-  }, [answerValueDayJs]);
 
   // Get additional rendering extensions
   const { displayPrompt, displayInstructions, readOnly, entryFormat } =
@@ -117,7 +113,7 @@ function QItemTimePicker(props: QItemTimePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimePicker
-        inputFormat={entryFormat ?? 'HH:MM (A|P)M'}
+        inputFormat={entryFormat !== '' ? entryFormat : 'HH:MM (A|P)M'}
         showToolbar
         value={value}
         disabled={readOnly}

@@ -2010,11 +2010,6 @@
                     "language": "text/fhirpath",
                     "expression": "iif(%patient.name.where(use = 'official').exists(),%patient.name.where(use = 'official').first().select(given.first() & ' ' & family),%patient.name.text.first())"
                   }
-                },
-
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
-                  "valueString": "XX"
                 }
               ],
               "linkId": "17596726-34cf-4133-9960-7081e1d63558",
@@ -3641,6 +3636,10 @@
                         "language": "text/fhirpath",
                         "expression": "%ConditionRepeat.onset.ofType(dateTime)"
                       }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/entryFormat",
+                      "valueString": "DD-MM-YYYY"
                     }
                   ],
                   "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",

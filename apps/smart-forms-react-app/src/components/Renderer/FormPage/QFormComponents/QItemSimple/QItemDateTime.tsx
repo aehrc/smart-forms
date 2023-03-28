@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import type {
@@ -51,10 +51,6 @@ function QItemDateTime(props: Props) {
   const answerValue = qrDateTime.answer ? qrDateTime.answer[0].valueDateTime : null;
   const answerValueDayJs = answerValue ? dayjs(answerValue) : null;
   const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
-
-  useEffect(() => {
-    setValue(answerValueDayJs);
-  }, [answerValueDayJs]);
 
   // Get additional rendering extensions
   const { displayPrompt, displayInstructions, readOnly, entryFormat } =
@@ -120,7 +116,7 @@ function QItemDateTimePicker(props: QItemDateTimePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
-        inputFormat={entryFormat ?? 'DD/MM/YYYY hh:mm A'}
+        inputFormat={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY hh:mm A'}
         value={value}
         disabled={readOnly}
         label={displayPrompt}
