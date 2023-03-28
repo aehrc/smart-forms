@@ -57,7 +57,8 @@ function QItemDate(props: Props) {
   }, [answerValueDayJs]);
 
   // Get additional rendering extensions
-  const { displayPrompt, displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const { displayPrompt, displayInstructions, readOnly, entryFormat } =
+    useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: Dayjs | null | undefined) {
@@ -79,6 +80,7 @@ function QItemDate(props: Props) {
       isTabled={isTabled}
       displayPrompt={displayPrompt}
       readOnly={readOnly}
+      entryFormat={entryFormat}
     />
   ) : (
     <FullWidthFormComponentBox data-test="q-item-date-box">
@@ -93,6 +95,7 @@ function QItemDate(props: Props) {
             isTabled={isTabled}
             displayPrompt={displayPrompt}
             readOnly={readOnly}
+            entryFormat={entryFormat}
           />
           <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
@@ -108,15 +111,16 @@ interface QItemDatePickerProps extends PropsWithIsTabledAttribute {
   onDateChange: (newValue: Dayjs | null) => unknown;
   displayPrompt: string;
   readOnly: boolean;
+  entryFormat: string;
 }
 
 function QItemDatePicker(props: QItemDatePickerProps) {
-  const { value, onDateChange, displayPrompt, readOnly, isTabled } = props;
+  const { value, onDateChange, displayPrompt, readOnly, entryFormat, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DesktopDatePicker
-        inputFormat="DD/MM/YYYY"
+        inputFormat={entryFormat ?? 'DD/MM/YYYY'}
         value={value}
         disabled={readOnly}
         label={displayPrompt}

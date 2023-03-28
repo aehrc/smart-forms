@@ -53,7 +53,7 @@ function QItemInteger(props: Props) {
   const [input, setInput] = useState(valueInteger);
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Update input value if calculated expression changes
@@ -101,7 +101,7 @@ function QItemInteger(props: Props) {
       });
     }, 200),
     [onQrItemChange, qItem, displayUnit]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const integerInput = (
     <StandardTextField
@@ -110,6 +110,7 @@ function QItemInteger(props: Props) {
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
+      placeholder={entryFormat}
       fullWidth
       isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}

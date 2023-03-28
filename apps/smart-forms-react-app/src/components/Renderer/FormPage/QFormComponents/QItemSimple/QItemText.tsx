@@ -50,7 +50,7 @@ function QItemText(props: Props) {
   const [input, setInput] = useState(valueText);
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Update input value if calculated expression changes
@@ -92,7 +92,7 @@ function QItemText(props: Props) {
       }
     }, 200),
     [onQrItemChange, qItem]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const textInput = (
     <TextField
@@ -101,6 +101,7 @@ function QItemText(props: Props) {
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
+      placeholder={entryFormat}
       fullWidth
       multiline
       minRows={3}

@@ -49,7 +49,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   }
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Event handlers
@@ -71,6 +71,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
       value={valueSelect}
       disabled={readOnly}
       fullWidth
+      placeholder={entryFormat}
       label={displayPrompt}
       endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
       onChange={handleChange}>

@@ -51,7 +51,7 @@ function QItemString(props: Props) {
   const [input, setInput] = useState<string>(valueString);
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Define error if present
@@ -76,7 +76,7 @@ function QItemString(props: Props) {
       }
     }, 200),
     [onQrItemChange, qItem]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const stringInput = (
     <StandardTextField
@@ -87,6 +87,7 @@ function QItemString(props: Props) {
       value={input}
       onChange={handleChange}
       label={displayPrompt}
+      placeholder={entryFormat}
       disabled={readOnly}
       InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
       helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}

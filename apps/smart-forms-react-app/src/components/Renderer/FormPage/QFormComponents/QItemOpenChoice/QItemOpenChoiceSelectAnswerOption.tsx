@@ -49,7 +49,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Init input value
@@ -108,6 +108,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       autoHighlight
       fullWidth
       disabled={readOnly}
+      placeholder={entryFormat}
       renderInput={(params) => (
         <StandardTextField
           isTabled={isTabled}

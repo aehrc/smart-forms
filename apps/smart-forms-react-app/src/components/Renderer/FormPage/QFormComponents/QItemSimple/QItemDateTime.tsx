@@ -57,7 +57,8 @@ function QItemDateTime(props: Props) {
   }, [answerValueDayJs]);
 
   // Get additional rendering extensions
-  const { displayPrompt, displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const { displayPrompt, displayInstructions, readOnly, entryFormat } =
+    useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: Dayjs | null | undefined) {
@@ -79,6 +80,7 @@ function QItemDateTime(props: Props) {
       isTabled={isTabled}
       displayPrompt={displayPrompt}
       readOnly={readOnly}
+      entryFormat={entryFormat}
     />
   ) : (
     <FullWidthFormComponentBox data-test="q-item-date-time-box">
@@ -93,6 +95,7 @@ function QItemDateTime(props: Props) {
             isTabled={isTabled}
             displayPrompt={displayPrompt}
             readOnly={readOnly}
+            entryFormat={entryFormat}
           />
           <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
@@ -108,15 +111,16 @@ interface QItemDateTimePickerProps extends PropsWithIsTabledAttribute {
   onDateTimeChange: (newValue: Dayjs | null) => unknown;
   displayPrompt: string;
   readOnly: boolean;
+  entryFormat: string;
 }
 
 function QItemDateTimePicker(props: QItemDateTimePickerProps) {
-  const { value, onDateTimeChange, displayPrompt, readOnly, isTabled } = props;
+  const { value, onDateTimeChange, displayPrompt, readOnly, entryFormat, isTabled } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimePicker
-        inputFormat="DD/MM/YYYY hh:mm A"
+        inputFormat={entryFormat ?? 'DD/MM/YYYY hh:mm A'}
         value={value}
         disabled={readOnly}
         label={displayPrompt}

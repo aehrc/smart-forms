@@ -48,7 +48,7 @@ function QItemDecimal(props: Props) {
 
   // Get additional rendering extensions
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Init input value
@@ -130,7 +130,7 @@ function QItemDecimal(props: Props) {
       });
     }, 200),
     [onQrItemChange, qItem, displayUnit, precision]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const decimalInput = (
     <StandardTextField
@@ -139,6 +139,7 @@ function QItemDecimal(props: Props) {
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
+      placeholder={entryFormat}
       fullWidth
       isTabled={isTabled}
       inputProps={{
