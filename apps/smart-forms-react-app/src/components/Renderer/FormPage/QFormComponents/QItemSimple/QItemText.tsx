@@ -31,6 +31,7 @@ import { debounce } from 'lodash';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
 import CheckIcon from '@mui/icons-material/Check';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useValidationError from '../../../../../custom-hooks/useValidationError';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -42,6 +43,17 @@ interface Props
 function QItemText(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange } = props;
 
+  // Get additional rendering extensions
+  const {
+    displayUnit,
+    displayPrompt,
+    displayInstructions,
+    readOnly,
+    entryFormat,
+    regexValidation,
+    maxLength
+  } = useRenderingExtensions(qItem);
+
   // Init input value
   let valueText = '';
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
@@ -49,9 +61,9 @@ function QItemText(props: Props) {
   }
   const [input, setInput] = useState(valueText);
 
-  // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  // Perform validation checks
+  const [focused, setFocused] = useState(false);
+  const { feedback } = useValidationError(qItem, input, focused, regexValidation, maxLength);
 
   // Update input value if calculated expression changes
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
@@ -83,6 +95,7 @@ function QItemText(props: Props) {
     updateQrItemWithDebounce(newInput);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       if (input !== '') {
@@ -98,6 +111,9 @@ function QItemText(props: Props) {
     <TextField
       id={qItem.linkId}
       value={input}
+      error={!!feedback}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
@@ -115,6 +131,7 @@ function QItemText(props: Props) {
           </InputAdornment>
         )
       }}
+      helperText={feedback}
       data-test="q-item-text-field"
     />
   );

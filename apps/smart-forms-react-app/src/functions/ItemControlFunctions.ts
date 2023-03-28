@@ -278,3 +278,42 @@ export function getEntryFormat(qItem: QuestionnaireItem): string {
   }
   return '';
 }
+
+/**
+ * Get entry format if its extension is present
+ * i.e. DD-MM-YYYY for dates, HH:MM for times etc.
+ *
+ * @author Sean Fong
+ */
+export function getRegexValidation(qItem: QuestionnaireItem): RegExp | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/regex'
+  );
+
+  if (itemControl) {
+    const extensionString = itemControl.valueString;
+    if (extensionString) {
+      let regexString;
+      if (extensionString.includes('matches(')) {
+        regexString = extensionString.substring(
+          extensionString.indexOf("matches('") + "matches('".length,
+          extensionString.lastIndexOf("')")
+        );
+      } else {
+        regexString = extensionString;
+      }
+
+      return new RegExp(regexString);
+    }
+  }
+  return null;
+}
+
+/**
+ * Get maximum length of characters allowed if present
+ *
+ * @author Sean Fong
+ */
+export function getMaxLength(qItem: QuestionnaireItem): number | null {
+  return qItem.maxLength ?? null;
+}
