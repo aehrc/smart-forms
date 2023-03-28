@@ -16,11 +16,12 @@
  */
 
 import {
+  getEntryFormat,
   getReadOnly,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit
-} from '../functions/QItemFunctions';
+} from '../functions/ItemControlFunctions';
 import type { QuestionnaireItem } from 'fhir/r5';
 
 interface RenderingExtensions {
@@ -28,6 +29,7 @@ interface RenderingExtensions {
   displayPrompt: string;
   displayInstructions: string;
   readOnly: boolean;
+  entryFormat: string;
 }
 
 function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
@@ -35,7 +37,8 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
     displayUnit: getTextDisplayUnit(qItem),
     displayPrompt: getTextDisplayPrompt(qItem),
     displayInstructions: getTextDisplayInstructions(qItem),
-    readOnly: getReadOnly(qItem)
+    readOnly: getReadOnly(qItem),
+    entryFormat: getEntryFormat(qItem)
   };
 }
 

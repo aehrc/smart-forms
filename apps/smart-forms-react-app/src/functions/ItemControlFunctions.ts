@@ -200,3 +200,81 @@ export function getQuestionnaireNameFromResponse(
 
   return questionnaireResponse.id ?? 'Unnamed Response';
 }
+
+/**
+ * Get text display prompt for items with itemControlCode prompt and has a prompt childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'prompt')) {
+        const promptText = `${childItem.text}`;
+        return promptText[0].toUpperCase() + promptText.substring(1);
+      }
+    }
+  }
+  return '';
+}
+
+/**
+ * Check if item is readonly
+ *
+ * @author Sean Fong
+ */
+export function getReadOnly(qItem: QuestionnaireItem): boolean {
+  return !!qItem.readOnly;
+}
+
+/**
+ * Get decimal text display unit for items with itemControlCode unit and has a unit childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
+        return `${childItem.text}`;
+      }
+    }
+  }
+  return '';
+}
+
+/**
+ * Get text display instructions for items with itemControlCode instructions and has an instructions childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificDisplayCategory(childItem, 'instructions')) {
+        return `${childItem.text}`;
+      }
+    }
+  }
+  return '';
+}
+
+/**
+ * Get entry format if its extension is present
+ * i.e. DD-MM-YYYY for dates, HH:MM for times etc.
+ *
+ * @author Sean Fong
+ */
+export function getEntryFormat(qItem: QuestionnaireItem): string {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/entryFormat'
+  );
+
+  if (itemControl) {
+    if (itemControl.valueString) {
+      return itemControl.valueString;
+    }
+  }
+  return '';
+}
