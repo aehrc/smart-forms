@@ -67,6 +67,7 @@ Cypress.Commands.add('goToTab', (tabName: string) => {
 });
 
 Cypress.Commands.add('initAgeValue', (age: number) => {
+  cy.wait(50);
   cy.getByData('q-item-integer-box')
     .should('include.text', 'Age')
     .find('input')
