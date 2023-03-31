@@ -4,7 +4,6 @@
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
-      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular",
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp"
     ]
   },
@@ -4027,6 +4026,7 @@
               "answerInteger": 12
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -4087,8 +4087,7 @@
                   "operator": "<=",
                   "answerInteger": 24
                 }
-              ],
-              "repeats": false
+              ]
             },
             {
               "linkId": "9e991b80-7080-40d5-9ad9-447dc47e3a68",
@@ -4164,6 +4163,7 @@
               "answerInteger": 12
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -4310,6 +4310,7 @@
               "answerBoolean": true
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -4471,6 +4472,7 @@
               "answerBoolean": true
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -5083,6 +5085,7 @@
               "answerInteger": 12
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -5206,6 +5209,7 @@
               "answerInteger": 50
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -5367,6 +5371,7 @@
               "answerBoolean": true
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -6075,6 +6080,7 @@
               "answerInteger": 50
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -6504,6 +6510,7 @@
               "answerInteger": 12
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -6761,6 +6768,7 @@
               "answerBoolean": true
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -7825,7 +7833,7 @@
                           "valueCodeableConcept": {
                             "coding": [
                               {
-                                "system": "http://hl7.org/fhir/questionnaire-displayCategory",
+                                "system": "http://hl7.org/fhir/questionnaire-display-category",
                                 "code": "instructions"
                               }
                             ]
@@ -7841,8 +7849,7 @@
                           "operator": "<=",
                           "answerInteger": 12
                         }
-                      ],
-                      "repeats": false
+                      ]
                     },
                     {
                       "linkId": "2841915f-c8d2-4edb-8bc7-39b63385a2fb",
@@ -8350,6 +8357,7 @@
               "answerInteger": 24
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -8554,8 +8562,7 @@
                   "operator": "<=",
                   "answerInteger": 12
                 }
-              ],
-              "repeats": false
+              ]
             },
             {
               "linkId": "d77c527d-6fde-4ed7-97b9-c71acf817f39",
@@ -8567,8 +8574,7 @@
                   "operator": ">",
                   "answerInteger": 12
                 }
-              ],
-              "repeats": false
+              ]
             },
             {
               "linkId": "77d87581-d4d7-4267-9f3c-ad6541ad0f46",
@@ -8586,8 +8592,7 @@
                   "answerInteger": 24
                 }
               ],
-              "enableBehavior": "all",
-              "repeats": false
+              "enableBehavior": "all"
             },
             {
               "linkId": "a2631d2c-2b5c-4147-9aca-05ae655a56a5",
@@ -8605,8 +8610,7 @@
                   "answerInteger": 49
                 }
               ],
-              "enableBehavior": "all",
-              "repeats": false
+              "enableBehavior": "all"
             },
             {
               "extension": [
@@ -8730,8 +8734,7 @@
                   "operator": "<=",
                   "answerInteger": 12
                 }
-              ],
-              "repeats": false
+              ]
             },
             {
               "extension": [
@@ -9037,13 +9040,6 @@
                     "language": "text/fhirpath",
                     "expression": "%ObsBloodPressure.entry.resource.select(component[0].value.select(value.toString()) + '/' + component[1].value.select(value.toString()) )"
                   }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                  "valueCoding": {
-                    "system": "http://unitsofmeasure.org",
-                    "code": "mm[Hg]"
-                  }
                 }
               ],
               "linkId": "15200593-ab79-47ec-babe-4fdcb2327737",
@@ -9257,6 +9253,7 @@
               "answerBoolean": true
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -9531,6 +9528,7 @@
               "answerBoolean": true
             }
           ],
+          "enableBehavior": "all",
           "repeats": false,
           "item": [
             {
@@ -10004,8 +10002,7 @@
                   ],
                   "linkId": "b4110a63-8547-4aa2-84c6-c1f64f0d24da",
                   "text": "Consider what follow-up appointments can be made at the time of the health check.",
-                  "type": "display",
-                  "repeats": false
+                  "type": "display"
                 },
                 {
                   "extension": [
@@ -10023,8 +10020,7 @@
                   ],
                   "linkId": "c47cfd7e-0f15-4dd9-bd53-bb62851b677c",
                   "text": "Reminder: MBS follow up items for clients at risk of or with chronic disease are available to support follow-up of health checks",
-                  "type": "display",
-                  "repeats": false
+                  "type": "display"
                 },
                 {
                   "linkId": "1be25c55-2a2d-4b94-b826-bd17d9e35e92",
