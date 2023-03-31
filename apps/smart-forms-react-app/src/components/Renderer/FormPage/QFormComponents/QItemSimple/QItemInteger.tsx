@@ -33,6 +33,7 @@ import { debounce } from 'lodash';
 import CheckIcon from '@mui/icons-material/Check';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useValidationError from '../../../../../custom-hooks/useValidationError';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,6 +46,17 @@ interface Props
 function QItemInteger(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
+  // Get additional rendering extensions
+  const {
+    displayUnit,
+    displayPrompt,
+    displayInstructions,
+    readOnly,
+    entryFormat,
+    regexValidation,
+    maxLength
+  } = useRenderingExtensions(qItem);
+
   // Init input value
   let valueInteger = 0;
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueInteger) {
@@ -52,9 +64,15 @@ function QItemInteger(props: Props) {
   }
   const [input, setInput] = useState(valueInteger);
 
-  // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
-    useRenderingExtensions(qItem);
+  // Perform validation checks
+  const [focused, setFocused] = useState(false);
+  const { feedback } = useValidationError(
+    qItem,
+    input.toString(),
+    focused,
+    regexValidation,
+    maxLength
+  );
 
   // Update input value if calculated expression changes
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
@@ -93,6 +111,7 @@ function QItemInteger(props: Props) {
     updateQrItemWithDebounce(inputNumber);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((inputNumber: number) => {
       onQrItemChange({
@@ -101,15 +120,19 @@ function QItemInteger(props: Props) {
       });
     }, 200),
     [onQrItemChange, qItem, displayUnit]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const integerInput = (
     <StandardTextField
       id={qItem.linkId}
       value={input}
+      error={!!feedback}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
+      placeholder={entryFormat}
       fullWidth
       isTabled={isTabled}
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}

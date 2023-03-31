@@ -55,7 +55,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   const { codings, serverError } = useValueSetCodings(qItem);
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Event handlers
@@ -93,6 +93,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         autoHighlight
         fullWidth
         disabled={readOnly}
+        placeholder={entryFormat}
         renderInput={(params) => (
           <StandardTextField
             isTabled={isTabled}

@@ -63,7 +63,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
   }
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Query ontoserver for options
@@ -123,6 +123,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
           freeSolo
           autoHighlight
           fullWidth
+          placeholder={entryFormat}
           onChange={handleValueChange}
           filterOptions={(x) => x}
           renderInput={(params) => (

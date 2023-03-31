@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -53,12 +53,9 @@ function QItemTime(props: Props) {
 
   const [value, setValue] = useState<Dayjs | null>(answerValueDayJs);
 
-  useEffect(() => {
-    setValue(answerValueDayJs);
-  }, [answerValueDayJs]);
-
   // Get additional rendering extensions
-  const { displayPrompt, displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const { displayPrompt, displayInstructions, readOnly, entryFormat } =
+    useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: Dayjs | null | undefined) {
@@ -77,6 +74,7 @@ function QItemTime(props: Props) {
       isTabled={isTabled}
       displayPrompt={displayPrompt}
       readOnly={readOnly}
+      entryFormat={entryFormat}
     />
   ) : (
     <FullWidthFormComponentBox>
@@ -91,6 +89,7 @@ function QItemTime(props: Props) {
             isTabled={isTabled}
             displayPrompt={displayPrompt}
             readOnly={readOnly}
+            entryFormat={entryFormat}
           />
           <QItemDisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
@@ -105,14 +104,16 @@ interface QItemTimePickerProps extends PropsWithIsTabledAttribute {
   onTimeChange: (newValue: Dayjs | null) => unknown;
   displayPrompt: string;
   readOnly: boolean;
+  entryFormat: string;
 }
 
 function QItemTimePicker(props: QItemTimePickerProps) {
-  const { value, onTimeChange, displayPrompt, readOnly, isTabled } = props;
+  const { value, onTimeChange, displayPrompt, readOnly, isTabled, entryFormat } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimePicker
+        inputFormat={entryFormat !== '' ? entryFormat : 'HH:MM (A|P)M'}
         showToolbar
         value={value}
         disabled={readOnly}
