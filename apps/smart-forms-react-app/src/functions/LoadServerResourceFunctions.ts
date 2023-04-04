@@ -23,6 +23,7 @@ import QCvdRisk from '../data/resources/CVD Risk.json';
 import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 import QTestAssembled715 from '../data/resources/TestAssembled715.json';
+import QCvdRisk2023 from '../data/resources/CVD-Risk-2023.json';
 
 import * as FHIR from 'fhirclient';
 import { getFormsServerAssembledBundlePromise } from './DashboardFunctions';
@@ -128,6 +129,7 @@ export function getInitialQuestionnaireFromBundle(response: Bundle): Questionnai
  */
 export function loadQuestionnairesFromLocal() {
   const questionnaires = [
+    QCvdRisk2023,
     QTestAssembled715,
     Q715,
     QCvdCheck,
