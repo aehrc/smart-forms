@@ -204,6 +204,7 @@ function ResponsesPage() {
                             key={id}
                             tabIndex={-1}
                             selected={isSelected}
+                            sx={{ cursor: 'pointer' }}
                             data-test="response-list-row"
                             onClick={() => handleRowClick(row.id)}>
                             <TableCell padding="checkbox">

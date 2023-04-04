@@ -210,6 +210,7 @@ function QuestionnairesPage() {
                             key={id}
                             tabIndex={-1}
                             selected={isSelected}
+                            sx={{ cursor: 'pointer' }}
                             data-test="questionnaire-list-row"
                             onClick={() => handleRowClick(row.id)}>
                             <TableCell padding="checkbox">
