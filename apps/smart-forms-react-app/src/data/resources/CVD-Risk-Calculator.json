@@ -1,0 +1,1681 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "CVDRiskCalculator",
+  "meta": {
+    "versionId": "3",
+    "lastUpdated": "2023-04-03T08:32:28.603+00:00",
+    "source": "#CZBHrO743Sb4TK7u"
+  },
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "YesNoNA",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/YesNoNA",
+      "version": "0.1.0",
+      "name": "YesNoNA",
+      "title": "Yes No NA",
+      "status": "active",
+      "description": "Concepts for Yes, No and Not applicable",
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "concept": [
+              {
+                "code": "Y",
+                "display": "Yes"
+              },
+              {
+                "code": "N",
+                "display": "No"
+              }
+            ]
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "concept": [
+              {
+                "code": "NA",
+                "display": "N/A"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "7709b027-415d-4eff-abf0-dc8edb2dc8fa",
+        "timestamp": "2022-10-20T09:39:51+10:00",
+        "total": 3,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v2-0136|2.9"
+          },
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor|2018-08-12"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "version": "2.9",
+            "code": "Y",
+            "display": "Yes"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "version": "2.9",
+            "code": "N",
+            "display": "No"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "version": "2018-08-12",
+            "code": "NA",
+            "display": "not applicable"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "AboriginalTorresStraitIslander",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/AboriginalTorresStraitIslander",
+      "version": "0.1.0",
+      "name": "AboriginalTorresStraitIslander",
+      "title": "Aboriginal and/or Torres Strait Islander",
+      "status": "active",
+      "description": "The Aboriginal and/or Torres Strait Islander value set includes the Australian Indigenous statuses for Indigenous people.",
+      "compose": {
+        "include": [
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Aboriginal"
+              },
+              {
+                "code": "2",
+                "display": "Torres Strait Islander"
+              },
+              {
+                "code": "3",
+                "display": "Aboriginal and Torres Strait Islander"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "e2b013bd-1725-4299-a7a5-53635d42f1be",
+        "timestamp": "2022-10-20T11:38:45+10:00",
+        "total": 3,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1|1.0.3"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "1",
+            "display": "Aboriginal but not Torres Strait Islander origin"
+          },
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "2",
+            "display": "Torres Strait Islander but not Aboriginal origin"
+          },
+          {
+            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+            "code": "3",
+            "display": "Both Aboriginal and Torres Strait Islander origin"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "PrimaryCarerParentGrandparent",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/PrimaryCarerParentGrandparent",
+      "version": "0.1.0",
+      "name": "PrimaryCarerParentGrandparent",
+      "title": "Primary Carer Of Parent Or Grandparent",
+      "status": "active",
+      "description": "The Primary Carer Of Parent Or Grandparent value set includes values that can indicate whether a primary carer is one of the parents or a grandparent.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+            "concept": [
+              {
+                "code": "MTH"
+              },
+              {
+                "code": "FTH"
+              },
+              {
+                "code": "GRPRN"
+              }
+            ]
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "concept": [
+              {
+                "code": "NA"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "2809c2fa-28ec-4def-9b16-93a611d29da3",
+        "timestamp": "2022-10-20T11:42:30+10:00",
+        "total": 4,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v3-RoleCode|2018-08-12"
+          },
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor|2018-08-12"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+            "version": "2018-08-12",
+            "code": "MTH",
+            "display": "mother"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+            "version": "2018-08-12",
+            "code": "FTH",
+            "display": "father"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+            "version": "2018-08-12",
+            "code": "GRPRN",
+            "display": "grandparent"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+            "version": "2018-08-12",
+            "code": "NA",
+            "display": "not applicable"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "YesNo",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/YesNo",
+      "version": "0.1.0",
+      "name": "YesNo",
+      "title": "Yes No",
+      "status": "active",
+      "description": "Concepts for Yes and No",
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "concept": [
+              {
+                "code": "Y",
+                "display": "Yes"
+              },
+              {
+                "code": "N",
+                "display": "No"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "91d952b0-22ed-474a-aad7-da1db1d7dcc7",
+        "timestamp": "2022-10-20T09:43:07+10:00",
+        "total": 2,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/v2-0136|2.9"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "Y",
+            "display": "Yes"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+            "code": "N",
+            "display": "No"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistory",
+      "url": "https://smartforms.csiro.au/ig/ValueSet/MedicalHistory",
+      "version": "0.1.0",
+      "name": "MedicalHistory",
+      "title": "Medical History",
+      "status": "active",
+      "description": "The Medical History value set includes values that may be used to represent medical history, operations and hospital admissions.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "filter": [
+              {
+                "property": "constraint",
+                "op": "=",
+                "value": "^32570581000036105|Problem/Diagnosis reference set| OR ^32570141000036105|Procedure foundation reference set|"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListInfants",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListInfants",
+      "version": "0.1.0",
+      "name": "MedicalHistoryShortListInfants",
+      "title": "Medical History Short List for Infants",
+      "status": "active",
+      "description": "The Medical History Short List for Infants value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Infants.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "609496007",
+                "display": "Pregnancy complications"
+              },
+              {
+                "code": "199745000",
+                "display": "Birth complications"
+              },
+              {
+                "code": "80113008",
+                "display": "Problems after birth"
+              },
+              {
+                "code": "32485007",
+                "display": "Hospital admissions"
+              },
+              {
+                "code": "50417007",
+                "display": "Lower respiratory tract infection"
+              },
+              {
+                "code": "49727002",
+                "display": "Cough"
+              },
+              {
+                "code": "129127001",
+                "display": "Ear infection"
+              },
+              {
+                "code": "38394007",
+                "display": "Chronic otitis media with perforation"
+              },
+              {
+                "code": "78868004",
+                "display": "Chronic mucoid otitis media"
+              },
+              {
+                "code": "247253001",
+                "display": "Ventilation tube in tympanic membrane"
+              },
+              {
+                "code": "43381005",
+                "display": "Passive smoker"
+              },
+              {
+                "code": "195528001",
+                "display": "Acute rheumatic fever"
+              },
+              {
+                "code": "312591002",
+                "display": "Acute rheumatic heart disease"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "06bd5f41-3c10-4cdb-a304-b8127d72957f",
+        "timestamp": "2022-10-20T09:50:13+10:00",
+        "total": 13,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "609496007",
+            "display": "Complication occurring during pregnancy"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "199745000",
+            "display": "Complication occurring during labour and delivery"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "80113008",
+            "display": "Complication of the puerperium"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "32485007",
+            "display": "Hospital admission"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "50417007",
+            "display": "Lower respiratory tract infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "49727002",
+            "display": "Cough"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129127001",
+            "display": "Ear infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38394007",
+            "display": "Chronic otitis media with perforation"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "78868004",
+            "display": "Chronic mucoid otitis media"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "247253001",
+            "display": "Ventilation tube in tympanic membrane"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "43381005",
+            "display": "Passive smoker"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195528001",
+            "display": "Acute rheumatic fever"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "312591002",
+            "display": "Acute rheumatic heart disease"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListPrimarySchool",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListPrimarySchool",
+      "version": "0.1.0",
+      "name": "MedicalHistoryShortListPrimarySchool",
+      "title": "Medical History Short List for Primary School Children",
+      "status": "active",
+      "description": "The Medical History Short List for Primary School Children value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Primary School Children.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "50417007",
+                "display": "Lower respiratory tract infection"
+              },
+              {
+                "code": "49727002",
+                "display": "Cough"
+              },
+              {
+                "code": "129127001",
+                "display": "Ear infection"
+              },
+              {
+                "code": "38394007",
+                "display": "Chronic otitis media with perforation"
+              },
+              {
+                "code": "78868004",
+                "display": "Chronic mucoid otitis media"
+              },
+              {
+                "code": "247253001",
+                "display": "Ventilation tube in tympanic membrane"
+              },
+              {
+                "code": "129823000",
+                "display": "Childhood growth AND/OR development alteration"
+              },
+              {
+                "code": "195528001",
+                "display": "Acute rheumatic fever"
+              },
+              {
+                "code": "312591002",
+                "display": "Acute rheumatic heart disease"
+              },
+              {
+                "code": "43381005",
+                "display": "Passive smoker"
+              },
+              {
+                "code": "32485007",
+                "display": "Hospital admissions"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "455f4b6f-5083-4f56-8995-5ec798e47cc4",
+        "timestamp": "2022-10-20T09:54:05+10:00",
+        "total": 11,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "50417007",
+            "display": "Lower respiratory tract infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "49727002",
+            "display": "Cough"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129127001",
+            "display": "Ear infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38394007",
+            "display": "Chronic otitis media with perforation"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "78868004",
+            "display": "Chronic mucoid otitis media"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "247253001",
+            "display": "Ventilation tube in tympanic membrane"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129823000",
+            "display": "Childhood growth AND/OR development alteration"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195528001",
+            "display": "Acute rheumatic fever"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "312591002",
+            "display": "Acute rheumatic heart disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "43381005",
+            "display": "Passive smoker"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "32485007",
+            "display": "Hospital admission"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListAdolescents",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListAdolescents",
+      "version": "0.1.0",
+      "name": "MedicalHistoryShortListAdolescents",
+      "title": "Medical History Short List for Adolescents",
+      "status": "active",
+      "description": "The Medical History Short List for Adolescents value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Adolescents.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "129127001",
+                "display": "Ear infections"
+              },
+              {
+                "code": "300228004",
+                "display": "Hearing problems"
+              },
+              {
+                "code": "195967001",
+                "display": "Asthma"
+              },
+              {
+                "code": "38341003",
+                "display": "High blood pressure"
+              },
+              {
+                "code": "84757009",
+                "display": "Epilepsy"
+              },
+              {
+                "code": "25064002",
+                "display": "Headaches"
+              },
+              {
+                "code": "37796009",
+                "display": "Migraines"
+              },
+              {
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+              },
+              {
+                "code": "23685000",
+                "display": "Rheumatic heart disease"
+              },
+              {
+                "code": "90708001",
+                "display": "Kidney disease"
+              },
+              {
+                "code": "413307004",
+                "display": "Mental health"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "5b0bb9f4-1ca3-47e2-bb1d-91cad5454ce4",
+        "timestamp": "2022-10-20T09:45:56+10:00",
+        "total": 11,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "129127001",
+            "display": "Ear infection"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "300228004",
+            "display": "Hearing problem"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195967001",
+            "display": "Asthma"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38341003",
+            "display": "Hypertension"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "84757009",
+            "display": "Epilepsy"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "25064002",
+            "display": "Headache"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "37796009",
+            "display": "Migraine"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "73211009",
+            "display": "Diabetes mellitus"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "23685000",
+            "display": "Rheumatic heart disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "90708001",
+            "display": "Kidney disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "413307004",
+            "display": "Mental health problem"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistoryShortListAdultsAndOlderPeople",
+      "url": "https://aehrc.csiro.au/fhir/ValueSet/MedicalHistoryShortListAdults",
+      "version": "0.1.0",
+      "name": "MedicalHistoryShortListAdultsAndOlderPeople",
+      "title": "Medical History Short List for Adults and Older People",
+      "status": "active",
+      "description": "The Medical History Short List for Adults and Older People value set includes values to represent conditions for use in a pick list for the MBS 715 Health Check for Adults and Older People.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "concept": [
+              {
+                "code": "73211009",
+                "display": "Diabetes mellitus"
+              },
+              {
+                "code": "38341003",
+                "display": "Hypertension"
+              },
+              {
+                "code": "22298006",
+                "display": "Myocardial infarction"
+              },
+              {
+                "code": "230690007",
+                "display": "Stroke"
+              },
+              {
+                "code": "90708001",
+                "display": "Kidney disease"
+              },
+              {
+                "code": "15188001",
+                "display": "Hearing impairment"
+              },
+              {
+                "code": "84757009",
+                "display": "Epilepsy"
+              },
+              {
+                "code": "195967001",
+                "display": "Asthma"
+              },
+              {
+                "code": "13645005",
+                "display": "COPD"
+              },
+              {
+                "code": "23685000",
+                "display": "Rheumatic heart disease"
+              },
+              {
+                "code": "66071002",
+                "display": "HBV"
+              },
+              {
+                "code": "82271004",
+                "display": "Significant head trauma"
+              },
+              {
+                "code": "413307004",
+                "display": "Mental health"
+              }
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "1998291e-ed8a-49f2-ac11-9e6056efd7f3",
+        "timestamp": "2022-10-20T09:48:19+10:00",
+        "total": 13,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20220930"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "73211009",
+            "display": "Diabetes mellitus"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "38341003",
+            "display": "Hypertension"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "22298006",
+            "display": "Myocardial infarction"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "230690007",
+            "display": "Stroke"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "90708001",
+            "display": "Kidney disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "15188001",
+            "display": "Hearing loss"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "84757009",
+            "display": "Epilepsy"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "195967001",
+            "display": "Asthma"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "13645005",
+            "display": "COPD"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "23685000",
+            "display": "Rheumatic heart disease"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "66071002",
+            "display": "Hepatitis B"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "82271004",
+            "display": "Head injury"
+          },
+          {
+            "system": "http://snomed.info/sct",
+            "code": "413307004",
+            "display": "Mental health problem"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "condition-clinical",
+      "meta": {
+        "profile": ["http://hl7.org/fhir/StructureDefinition/shareablevalueset"]
+      },
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-wg",
+          "valueCode": "pc"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status",
+          "valueCode": "trial-use"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm",
+          "valueInteger": 3
+        }
+      ],
+      "url": "http://hl7.org/fhir/ValueSet/condition-clinical",
+      "identifier": [
+        {
+          "system": "urn:ietf:rfc:3986",
+          "value": "urn:oid:2.16.840.1.113883.4.642.3.164"
+        }
+      ],
+      "version": "4.3.0",
+      "name": "ConditionClinicalStatusCodes",
+      "title": "Condition Clinical Status Codes",
+      "status": "draft",
+      "experimental": false,
+      "publisher": "FHIR Project team",
+      "contact": [
+        {
+          "telecom": [
+            {
+              "system": "url",
+              "value": "http://hl7.org/fhir"
+            }
+          ]
+        }
+      ],
+      "description": "Preferred value set for Condition Clinical Status.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical"
+          }
+        ]
+      },
+      "expansion": {
+        "identifier": "5d4bed14-061a-42c4-853d-e6a624c4f483",
+        "timestamp": "2022-10-20T09:32:48+10:00",
+        "total": 6,
+        "offset": 0,
+        "parameter": [
+          {
+            "name": "version",
+            "valueUri": "http://terminology.hl7.org/CodeSystem/condition-clinical|4.0.1"
+          },
+          {
+            "name": "count",
+            "valueInteger": 2147483647
+          },
+          {
+            "name": "offset",
+            "valueInteger": 0
+          }
+        ],
+        "contains": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "active",
+            "display": "Active"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "inactive",
+            "display": "Inactive"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "recurrence",
+            "display": "Recurrence"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "relapse",
+            "display": "Relapse"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "remission",
+            "display": "Remission"
+          },
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            "code": "resolved",
+            "display": "Resolved"
+          }
+        ]
+      }
+    }
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "Condition",
+        "language": "application/x-fhir-query",
+        "expression": "Condition?patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsTobaccoSmokingStatus",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsBodyHeight",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsBodyWeight",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsBMI",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=39156-5&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsHeadCircumference",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=9843-4&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsWaistCircumference",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=8280-0&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsBloodPressure",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=85354-9&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsHeartRate",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsTotalCholesterol",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=14647-2&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObsHDLCholesterol",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=14646-4&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    },
+    {
+      "url": "https:///aehrc.csiro.au/fhir/StructureDefinition/RetainValueSet",
+      "extension": [
+        {
+          "url": "1",
+          "valueReference": {
+            "reference": "#YesNoNA"
+          }
+        },
+        {
+          "url": "2",
+          "valueReference": {
+            "reference": "#YesNo"
+          }
+        },
+        {
+          "url": "3",
+          "valueReference": {
+            "reference": "#MedicalHistory"
+          }
+        },
+        {
+          "url": "4",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListInfants"
+          }
+        },
+        {
+          "url": "5",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListPrimarySchool"
+          }
+        },
+        {
+          "url": "6",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListAdolescents"
+          }
+        },
+        {
+          "url": "7",
+          "valueReference": {
+            "reference": "#MedicalHistoryShortListAdultsAndOlderPeople"
+          }
+        },
+        {
+          "url": "8",
+          "valueReference": {
+            "reference": "#condition-clinical"
+          }
+        },
+        {
+          "url": "9",
+          "valueReference": {
+            "reference": "#AboriginalTorresStraitIslander"
+          }
+        },
+        {
+          "url": "10",
+          "valueReference": {
+            "reference": "#PrimaryCarerParentGrandparent"
+          }
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    }
+  ],
+  "url": "http://www.health.gov.au/assessments/CVDRiskCalculator",
+  "version": "0.1.0",
+  "name": "CVDRiskCalculator",
+  "title": "CVD Risk Calculator",
+  "status": "draft",
+  "experimental": true,
+  "subjectType": ["Patient"],
+  "date": "2023-04-03",
+  "publisher": "AEHRC CSIRO",
+  "contact": [
+    {
+      "name": "AEHRC CSIRO",
+      "telecom": [
+        {
+          "system": "url",
+          "value": "https://confluence.csiro.au/display/PCDQFPhase2/Primary+Care+Data+Quality+Foundations+-+Phase+2"
+        }
+      ]
+    }
+  ],
+  "jurisdiction": [
+    {
+      "coding": [
+        {
+          "system": "urn:iso:std:iso:3166",
+          "code": "AU"
+        }
+      ]
+    }
+  ],
+  "copyright": "CSIRO © 2022+; Licensed under Apache License, Version 2.0",
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "weight",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='c587e3b6-b91a-40dc-9a16-179342d001e9').item.where(linkId='2136abeb-d75d-475d-9cc7-eeda8d131b95').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "height",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='c587e3b6-b91a-40dc-9a16-179342d001e9').item.where(linkId='2d68889b-88c1-4c6d-8b00-db4178dc1f52').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "female",
+            "language": "text/fhirpath",
+            "expression": "iif(item.where(linkId='5b224753-9365-44e3-823b-9c17e7394005').item.where(linkId='418e4a02-de77-48a0-a92a-fe8fcc52b1aa').answer.value.code='female', 1, 0)"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "age",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='5b224753-9365-44e3-823b-9c17e7394005').item.where(linkId='e2a16e4d-2765-4b61-b286-82cfc6356b30').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cvdAge",
+            "language": "text/fhirpath",
+            "expression": "iif(%age > 74, 74, iif(%age < 35, 35, %age))"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "systolicBP",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='d95abe99-8ef2-4b97-bc88-a2901e2ebc9c').item.where(linkId='4b98f514-2f6a-41f3-ad9d-185abc68ae34').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "smoker",
+            "language": "text/fhirpath",
+            "expression": "iif(item.where(linkId='14a9fb5f-5b0e-4862-b143-08a11cd3ebf0').item.where(linkId='515eda6e-973a-4b10-910a-0d4bf4f2efff').item.where(linkId='b639a3a8-f476-4cc8-b5c7-f5d2abb23511').answer.value.code='77176002', 1, 0)"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "totalCh",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='d95abe99-8ef2-4b97-bc88-a2901e2ebc9c').item.where(linkId='f11feebc-fc4a-40d5-8481-b87d9f5a89aa').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "hdl",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='d95abe99-8ef2-4b97-bc88-a2901e2ebc9c').item.where(linkId='c47a7fae-0c60-40f8-8426-1019b1f0dd8f').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "diabetes",
+            "language": "text/fhirpath",
+            "expression": "iif(item.where(linkId='d95abe99-8ef2-4b97-bc88-a2901e2ebc9c').item.where(linkId='e8fed84e-6c15-4f62-bc95-cd08033af3f7').answer.value = true,1,0)"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "ecgLvh",
+            "language": "text/fhirpath",
+            "expression": "iif(item.where(linkId='d95abe99-8ef2-4b97-bc88-a2901e2ebc9c').item.where(linkId='b980624c-e91a-44d4-80ba-a9f34c0e1188').answer.value = true,1,0)"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cBase",
+            "language": "text/fhirpath",
+            "expression": "18.8144"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cFemale",
+            "language": "text/fhirpath",
+            "expression": "%female * -1.2146"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cAge",
+            "language": "text/fhirpath",
+            "expression": "%cvdAge.ln() * -1.8443"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cAgeFemale",
+            "language": "text/fhirpath",
+            "expression": "%female * %cvdAge.ln() * 0.3668"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cSBP",
+            "language": "text/fhirpath",
+            "expression": "%systolicBP.ln() * -1.4032"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cSmoker",
+            "language": "text/fhirpath",
+            "expression": "%smoker * -0.3899"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cTcHdl",
+            "language": "text/fhirpath",
+            "expression": "(%totalCh / %hdl).ln() * -0.539"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cDiabetes",
+            "language": "text/fhirpath",
+            "expression": "%diabetes * -0.3036"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cDiabetesFemale",
+            "language": "text/fhirpath",
+            "expression": "%female * %diabetes * -0.1697"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cEcgLvh",
+            "language": "text/fhirpath",
+            "expression": "%ecgLvh * -0.3362"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "sumOfCoeffs",
+            "language": "text/fhirpath",
+            "expression": "%cBase + %cFemale + %cAge + %cAgeFemale + %cSBP + %cSmoker + %cTcHdl + %cDiabetes + %cDiabetesFemale + %cEcgLvh"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cvdScale",
+            "language": "text/fhirpath",
+            "expression": "(0.6536 + (%sumOfCoeffs * -0.2402)).exp()"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cvdU",
+            "language": "text/fhirpath",
+            "expression": "(5.ln()-%sumOfCoeffs)/%cvdScale"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "cvdScore",
+            "language": "text/fhirpath",
+            "expression": "(1 - (%cvdU.exp()*-1).exp()) * 100"
+          }
+        }
+      ],
+      "linkId": "d95abe99-8ef2-4b97-bc88-a2901e2ebc9c",
+      "text": "Absolute cardiovascular risk calculation",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObsBloodPressure.entry.resource.component.where(code.coding.where(code='8480-6')).value.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "mm[Hg]"
+              }
+            }
+          ],
+          "linkId": "4b98f514-2f6a-41f3-ad9d-185abc68ae34",
+          "text": "Systolic Blood Pressure",
+          "type": "decimal",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "prompt"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "1624394a-1777-4692-b304-03cd42de4c27",
+              "text": "75 or more",
+              "type": "display"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "unit"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "414f230f-7b33-4e55-b323-724206f6825e",
+              "text": "mm Hg",
+              "type": "display"
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObsTotalCholesterol.entry.resource.value.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "mmol/L"
+              }
+            }
+          ],
+          "linkId": "f11feebc-fc4a-40d5-8481-b87d9f5a89aa",
+          "text": "Total Cholesterol",
+          "type": "decimal",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "prompt"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "0f260464-fcfc-46d1-b04b-c8fb061b781e",
+              "text": "2 or more",
+              "type": "display"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "unit"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "d5a18260-0376-4c73-97a9-a23198bccce1",
+              "text": "mmol/L",
+              "type": "display"
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObsHDLCholesterol.entry.resource.value.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "mmol/L"
+              }
+            }
+          ],
+          "linkId": "c47a7fae-0c60-40f8-8426-1019b1f0dd8f",
+          "text": "HDL Cholesterol",
+          "type": "decimal",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "prompt"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "9b05a756-40f6-4ae4-9ec9-179e55685531",
+              "text": "Between 0.2 - 5",
+              "type": "display"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "unit"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "28576058-6a24-4516-900a-42c9452722d3",
+              "text": "mmol/L",
+              "type": "display"
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Condition.entry.resource.code.coding.where(system='http://snomed.info/sct' and code='44054006').exists()"
+              }
+            }
+          ],
+          "linkId": "e8fed84e-6c15-4f62-bc95-cd08033af3f7",
+          "text": "Diabetes",
+          "type": "boolean",
+          "repeats": false
+        },
+        {
+          "linkId": "b980624c-e91a-44d4-80ba-a9f34c0e1188",
+          "text": "ECG LVH",
+          "type": "boolean",
+          "repeats": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+              "valueExpression": {
+                "description": "CVD Risk Score",
+                "language": "text/fhirpath",
+                "expression": "%cvdScore.round(0)"
+              }
+            }
+          ],
+          "linkId": "ca830916-e2ee-4b24-a4c1-13eee23f8733",
+          "text": "Cardiovascular disease risk calculated result",
+          "type": "integer",
+          "repeats": false,
+          "readOnly": true,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-display-category",
+                        "code": "instructions"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "1d0b746d-70a3-4c09-a33b-f67fd6db63a0",
+              "text": "https://auscvdrisk.com.au/risk-calculator",
+              "type": "display"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -245,7 +245,7 @@
   "version": "0.1.0",
   "name": "CVD Risk Calculator April 2023",
   "title": "CVD Risk Calculator April 2023",
-  "status": "draft",
+  "status": "active",
   "experimental": true,
   "subjectType": ["Patient"],
   "date": "2022-05-24",
