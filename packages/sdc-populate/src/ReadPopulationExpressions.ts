@@ -62,6 +62,15 @@ function readQuestionnaireItem(
       });
     }
 
+    // Read initial expression of qItem
+    const initialExpression = getInitialExpression(item);
+    if (initialExpression && initialExpression.expression) {
+      populationExpressions.initialExpressions[item.linkId] = {
+        expression: initialExpression.expression,
+        value: undefined
+      };
+    }
+
     return populationExpressions;
   }
 
