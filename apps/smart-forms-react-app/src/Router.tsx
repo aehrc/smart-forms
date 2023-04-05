@@ -30,7 +30,6 @@ import {
 } from './functions/LoadServerResourceFunctions';
 import { isStillAuthenticating } from './functions/LaunchContextFunctions';
 import ProgressSpinner from './components/Misc/ProgressSpinner';
-import PageSwitcherContextProvider from './custom-contexts/PageSwitcherContext';
 import QuestionnairesPage from './components/Dashboard/QuestionnairePage/QuestionnairesPage';
 import ResponsesPage from './components/Dashboard/ResponsesPage/ResponsesPage';
 import type { DebugModeContextType, SourceContextType } from './interfaces/ContextTypes';
@@ -54,14 +53,13 @@ export const DebugModeContext = createContext<DebugModeContextType>({
 });
 
 export default function Router() {
-  const { fhirClient, patient, user, setFhirClient, setPatient, setUser } =
-    useContext(LaunchContext);
+  const { patient, user, setFhirClient, setPatient, setUser } = useContext(LaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
   const [questionnaireIsLoading, setQuestionnaireIsLoading] = useState<boolean>(true);
 
-  const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
+  const [source, setSource] = useState<'local' | 'remote'>('remote');
   const [debugMode, setDebugMode] = useState(process.env.REACT_APP_SHOW_DEBUG_MODE === 'true');
 
   const { enqueueSnackbar } = useSnackbar();
@@ -206,10 +204,7 @@ export default function Router() {
       <SourceContext.Provider value={{ source, setSource }}>
         <DebugModeContext.Provider
           value={{ debugMode, activateDebugMode: () => setDebugMode(true) }}>
-          <PageSwitcherContextProvider
-            questionnairePresent={!!questionnaireProvider.questionnaire.item}>
-            <RouterProvider router={router} />
-          </PageSwitcherContextProvider>
+          <RouterProvider router={router} />
         </DebugModeContext.Provider>
       </SourceContext.Provider>
     );

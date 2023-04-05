@@ -31,7 +31,6 @@ import type {
   EnableWhenItems,
   Renderer
 } from './Interfaces';
-import type { PageType } from './Enums';
 import type { MutableRefObject } from 'react';
 
 export type EnableWhenContextType = {
@@ -53,11 +52,6 @@ export type LaunchContextType = {
   setFhirClient: (client: Client) => unknown;
   setPatient: (patient: Patient) => unknown;
   setUser: (user: Practitioner) => unknown;
-};
-
-export type PageSwitcherContextType = {
-  currentPage: PageType;
-  goToPage: (page: PageType) => unknown;
 };
 
 export type CachedQueriedValueSetContextType = {
