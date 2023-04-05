@@ -51,25 +51,7 @@ export enum QItemChoiceOrientation {
   Vertical = 'vertical'
 }
 
-export enum PageType {
-  ResponsePreview = 'responsePreview',
-  Renderer = 'renderer',
-  Picker = 'picker'
-}
-
 export enum CheckBoxOptionType {
   AnswerOption = 'answerOption',
   AnswerValueSet = 'answerValueSet'
-}
-
-export enum QuestionnaireSource {
-  Local = 'local',
-  Remote = 'remote'
-}
-
-export enum QrSortParam {
-  QuestionnaireName = 'questionnaireName',
-  AuthorName = 'authorName',
-  LastUpdated = 'lastUpdated',
-  Status = 'status'
 }
