@@ -1,7 +1,9 @@
 {
   "resourceType": "Questionnaire",
-  "id": "CVD-Risk-2023",
+  "id": "CVDRiskCalculator",
   "meta": {
+    "lastUpdated": "2023-04-03T08:32:28.603+00:00",
+    "source": "#CZBHrO743Sb4TK7u",
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp"
@@ -241,22 +243,22 @@
       "valueCanonical": "http://www.health.gov.au/assessments/mbs/715/FinalisingHealthCheck|0.1.0"
     }
   ],
-  "url": "http://www.health.gov.au/assessments/mbs/715-cvd-risk-2023",
+  "url": "http://www.health.gov.au/assessments/CVDRiskCalculator",
   "version": "0.1.0",
-  "name": "CVD Risk Calculator April 2023",
-  "title": "CVD Risk Calculator April 2023",
+  "name": "CVDRiskCalculator",
+  "title": "CVD Risk Calculator",
   "status": "active",
   "experimental": true,
   "subjectType": ["Patient"],
-  "date": "2022-05-24",
-  "publisher": "CSIRO",
+  "date": "2023-04-03",
+  "publisher": "AEHRC CSIRO",
   "contact": [
     {
-      "name": "CSIRO",
+      "name": "AEHRC CSIRO",
       "telecom": [
         {
           "system": "url",
-          "value": "https://github.com/aehrc"
+          "value": "https://confluence.csiro.au/display/PCDQFPhase2/Primary+Care+Data+Quality+Foundations+-+Phase+2"
         }
       ]
     }
@@ -271,6 +273,7 @@
       ]
     }
   ],
+  "copyright": "CSIRO © 2022+; Licensed under Apache License, Version 2.0",
   "item": [
     {
       "extension": [
