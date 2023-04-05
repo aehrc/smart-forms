@@ -39,6 +39,7 @@ import {
 import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
 import { readPopulationExpressions } from './ReadPopulationExpressions';
 import { evaluateItemPopulationContexts } from './EvaluateItemPopulationContexts';
+import { sortResourceArrays } from './SortBundles';
 
 /**
  * Main function of this populate module.
@@ -72,7 +73,10 @@ export default async function populate(
   // Add evaluate itemPopulationContexts and add them to context
   context = evaluateItemPopulationContexts(populationExpressions.itemPopulationContexts, context);
 
-  // Perform evaluate of initialExpressions based on context
+  // Sort resource bundles within context
+  context = sortResourceArrays(context);
+
+  // Perform evaluation of initialExpressions based on context
   const evaluatedInitialExpressions = evaluateInitialExpressions(
     populationExpressions.initialExpressions,
     context
