@@ -28,7 +28,6 @@ import type { QuestionnaireResponse } from 'fhir/r5';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
 import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
-import ProgressSpinner from '../Misc/ProgressSpinner';
 import { Outlet } from 'react-router-dom';
 import type {
   CurrentTabIndexContextType,
@@ -43,6 +42,7 @@ import { unstable_useBlocker as useBlocker } from 'react-router';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog';
 import { useSnackbar } from 'notistack';
 import NavExpandButton from './NavCollapseButton';
+import PopulationProgressSpinner from '../Misc/PopulationProgressSpinner';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -97,7 +97,7 @@ function RendererLayout() {
     fhirClient && patient && user && !renderer.response.id
       ? {
           isLoading: true,
-          message: 'Populating questionnaire form'
+          message: 'Populating form'
         }
       : { isLoading: false, message: '' };
 
@@ -200,7 +200,11 @@ function RendererLayout() {
             <CalculatedExpressionContextProvider>
               <CachedQueriedValueSetContextProvider>
                 <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
-                  {spinner.isLoading ? <ProgressSpinner message={spinner.message} /> : <Outlet />}
+                  {spinner.isLoading ? (
+                    <PopulationProgressSpinner message={spinner.message} />
+                  ) : (
+                    <Outlet />
+                  )}
                 </CurrentTabIndexContext.Provider>
               </CachedQueriedValueSetContextProvider>
             </CalculatedExpressionContextProvider>

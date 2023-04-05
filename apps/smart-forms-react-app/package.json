@@ -32,6 +32,7 @@
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
+    "react-spinners": "^0.13.8",
     "react-to-print": "^2.14.12",
     "sdc-assemble": "^0.2.0",
     "sdc-populate": "^1.0.2",
