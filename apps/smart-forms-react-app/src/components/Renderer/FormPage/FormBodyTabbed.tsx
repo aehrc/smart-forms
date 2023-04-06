@@ -30,17 +30,21 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   qForm: QuestionnaireItem;
   qrForm: QuestionnaireResponseItem;
   currentTabIndex: number;
+  hasTabContainer: boolean;
 }
 
 function FormBodyTabbed(props: Props) {
-  const { qForm, qrForm, currentTabIndex, onQrItemChange } = props;
+  const { qForm, qrForm, currentTabIndex, hasTabContainer, onQrItemChange } = props;
 
   const indexMap: Record<string, number> = useMemo(() => mapQItemsIndex(qForm), [qForm]);
 
   const qFormItems = qForm.item;
   const qrFormItems = qrForm.item;
 
-  const initialTabs = useMemo(() => constructTabsWithProperties(qFormItems), [qFormItems]);
+  const initialTabs = useMemo(
+    () => constructTabsWithProperties(qFormItems, hasTabContainer),
+    [hasTabContainer, qFormItems]
+  );
   const [tabs, setTabs] =
     useState<Record<string, { tabIndex: number; isComplete: boolean }>>(initialTabs);
 
@@ -59,6 +63,7 @@ function FormBodyTabbed(props: Props) {
             <FormBodyTabList
               qFormItems={qFormItems}
               currentTabIndex={currentTabIndex}
+              hasTabContainer={hasTabContainer}
               tabs={tabs}
             />
           </Grid>
@@ -67,7 +72,7 @@ function FormBodyTabbed(props: Props) {
             {qFormItems.map((qItem, i) => {
               const qrItem = qrFormItemsByIndex[i];
 
-              if (isTab(qItem) && !Array.isArray(qrItem)) {
+              if ((isTab(qItem) || hasTabContainer) && !Array.isArray(qrItem)) {
                 return (
                   <TabPanel
                     key={qItem.linkId}

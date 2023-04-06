@@ -29,11 +29,12 @@ import FormBodySingleTab from './FormBodySingleTab';
 interface Props {
   qFormItems: QuestionnaireItem[];
   currentTabIndex: number;
+  hasTabContainer: boolean;
   tabs: Record<string, { tabIndex: number; isComplete: boolean }>;
 }
 
 function FormBodyTabList(props: Props) {
-  const { qFormItems, currentTabIndex, tabs } = props;
+  const { qFormItems, currentTabIndex, hasTabContainer, tabs } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
 
@@ -43,7 +44,7 @@ function FormBodyTabList(props: Props) {
         <PrimarySelectableList dense disablePadding sx={{ my: 1 }} data-test="renderer-tab-list">
           <TransitionGroup>
             {qFormItems.map((qItem, i) => {
-              if (!isTab(qItem) || isHidden(qItem, enableWhenContext)) {
+              if ((!isTab(qItem) && !hasTabContainer) || isHidden(qItem, enableWhenContext)) {
                 return null;
               }
 
