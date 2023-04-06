@@ -216,7 +216,8 @@ describe('choice component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on selection of first checkbox', () => {
-      cy.getByData('q-item-choice-checkbox-answer-option-box')
+      cy.wait(100)
+        .getByData('q-item-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
         .eq(0)
         .find('input')
@@ -230,7 +231,8 @@ describe('choice component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on change of selection to second checkbox ', () => {
-      cy.getByData('q-item-choice-checkbox-answer-option-box')
+      cy.wait(100)
+        .getByData('q-item-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
         .eq(0)
         .find('input')
