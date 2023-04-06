@@ -35,6 +35,7 @@
     "react-to-print": "^2.14.12",
     "sdc-assemble": "^0.2.0",
     "sdc-populate": "^1.0.2",
+    "serve": "^14.2.0",
     "simplebar-react": "^3.2.1",
     "typescript": "^4.9.5",
     "uuidjs": "^4.2.13"
@@ -75,7 +76,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint -c .eslintrc.json .",
     "check-formatting": "prettier --check .",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "serve": "serve -s build"
   },
   "eslintConfig": {
     "extends": [
