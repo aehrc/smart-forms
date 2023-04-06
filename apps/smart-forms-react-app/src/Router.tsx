@@ -58,9 +58,9 @@ export default function Router() {
 
   const [hasClient, setHasClient] = useState<boolean | null>(null);
   const [questionnaireIsLoading, setQuestionnaireIsLoading] = useState<boolean>(true);
-
-  const [source, setSource] = useState<'local' | 'remote'>('remote');
   const [debugMode, setDebugMode] = useState(process.env.REACT_APP_SHOW_DEBUG_MODE === 'true');
+
+  const [source, setSource] = useState<'local' | 'remote'>(debugMode ? 'local' : 'remote');
 
   const { enqueueSnackbar } = useSnackbar();
 
