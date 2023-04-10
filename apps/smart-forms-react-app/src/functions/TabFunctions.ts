@@ -17,6 +17,7 @@
 
 import type { Coding, QuestionnaireItem } from 'fhir/r5';
 import type { EnableWhenItems } from '../interfaces/Interfaces';
+import { isSpecificItemControl } from './ItemControlFunctions';
 
 /**
  * Checks if any of the items in a qItem array is a tabbed item
@@ -27,6 +28,16 @@ import type { EnableWhenItems } from '../interfaces/Interfaces';
 export function containsTabs(items: QuestionnaireItem[]): boolean {
   const formTabs = getTabbedItems(items);
   return formTabs.length > 0;
+}
+
+/**
+ * Checks if qForm is a tab container
+ * All items within a tab container are tabbed items
+ *
+ * @author Sean Fong
+ */
+export function isTabContainer(qForm: QuestionnaireItem): boolean {
+  return isSpecificItemControl(qForm, 'tab-container');
 }
 
 /**
@@ -65,11 +76,15 @@ export function isTab(item: QuestionnaireItem) {
  * @author Sean Fong
  */
 export function constructTabsWithProperties(
-  qItems: QuestionnaireItem[] | undefined
+  qItems: QuestionnaireItem[] | undefined,
+  hasTabContainer: boolean
 ): Record<string, { tabIndex: number; isComplete: boolean }> {
   if (!qItems) return {};
 
-  const linkIds = qItems.filter(isTab).map((qItem) => qItem.linkId);
+  // FIXME automatically pass all items as tabs if tab container is present
+  const linkIds = hasTabContainer
+    ? qItems.map((qItem) => qItem.linkId)
+    : qItems.filter(isTab).map((qItem) => qItem.linkId);
 
   const tabs: Record<string, { tabIndex: number; isComplete: boolean }> = {};
   for (const [i, linkId] of linkIds.entries()) {

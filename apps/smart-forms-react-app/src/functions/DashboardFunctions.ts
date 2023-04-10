@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { filter } from 'lodash';
+import filter from 'lodash.filter';
 import type {
   ListItem,
   ListItemWithIndex,

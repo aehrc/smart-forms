@@ -27,7 +27,6 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r5';
-import { isTab } from './TabFunctions';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items
@@ -279,10 +278,6 @@ export function getEnableWhenItemProperties(
 
     if (qItem.enableBehavior) {
       enableWhenItemProperties.enableBehavior = qItem.enableBehavior;
-    }
-
-    if (isTab(qItem)) {
-      enableWhenItemProperties.isTab = true;
     }
 
     return enableWhenItemProperties;

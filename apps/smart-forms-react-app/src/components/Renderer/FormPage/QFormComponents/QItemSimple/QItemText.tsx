@@ -27,7 +27,7 @@ import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
 import CheckIcon from '@mui/icons-material/Check';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';

@@ -45,7 +45,7 @@ jobs:
           headed: true
           project: ./apps/smart-forms-react-app
           build: npm run build -w apps/smart-forms-react-app
-          start: npm start -w apps/smart-forms-react-app
+          start: npm run serve -w apps/smart-forms-react-app
           wait-on: 'http://localhost:3000'
   lint:
     name: Lint
