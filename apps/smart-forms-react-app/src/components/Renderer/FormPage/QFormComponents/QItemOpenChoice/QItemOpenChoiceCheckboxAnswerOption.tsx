@@ -35,7 +35,7 @@ import {
   updateQrOpenChoiceCheckboxAnswers
 } from '../../../../../functions/OpenChoiceFunctions';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 
 interface QItemOpenChoiceCheckboxProps

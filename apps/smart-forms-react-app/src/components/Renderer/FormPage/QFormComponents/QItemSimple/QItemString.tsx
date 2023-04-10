@@ -29,7 +29,7 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
 import useValidationError from '../../../../../custom-hooks/useValidationError';
 
