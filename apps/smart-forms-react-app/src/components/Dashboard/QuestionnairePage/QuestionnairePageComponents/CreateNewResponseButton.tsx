@@ -51,7 +51,7 @@ function CreateNewResponseButton(props: Props) {
     const questionnaireResource = selectedQuestionnaire.resource;
 
     // Post questionnaire to client if it is SMART Health IT
-    if (fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
+    if (fhirClient?.state.serverUrl.includes('/v/r4/fhir')) {
       questionnaireResource.id = questionnaireResource.id + '-SMARTcopy';
       postQuestionnaireToSMARTHealthIT(fhirClient, questionnaireResource);
     }

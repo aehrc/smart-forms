@@ -117,7 +117,7 @@ function addQuestionnaireReference(
   endpointUrl: string
 ): QuestionnaireResponse {
   let questionnaireReference: string;
-  if (endpointUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
+  if (endpointUrl.includes('/v/r4/fhir')) {
     // Plugging questionnaire.id in because SMART Health IT has these weird requirements for canonicals
     questionnaireReference = questionnaire.id ? `Questionnaire/${questionnaire.id}` : '';
   } else {

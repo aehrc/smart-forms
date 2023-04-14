@@ -43,10 +43,9 @@ function ViewExistingResponsesButton() {
 
   // Have different questionnaireRef config due to SMART Health IT limitation
   if (fhirClient) {
-    const questionnaireRef =
-      fhirClient?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir'
-        ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
-        : selectedQuestionnaire?.resource?.url;
+    const questionnaireRef = fhirClient?.state.serverUrl.includes('/v/r4/fhir')
+      ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
+      : selectedQuestionnaire?.resource?.url;
 
     if (questionnaireRef) {
       questionnaireRefParam = `questionnaire=${questionnaireRef}&`;
