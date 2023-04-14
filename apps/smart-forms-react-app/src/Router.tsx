@@ -112,7 +112,7 @@ export default function Router() {
               assembleIfRequired(questionnaire).then((questionnaire) => {
                 if (questionnaire) {
                   // Post questionnaire to client if it is SMART Health IT
-                  if (client?.state.serverUrl === 'https://launch.smarthealthit.org/v/r4/fhir') {
+                  if (client?.state.serverUrl.includes('/v/r4/fhir')) {
                     questionnaire.id = questionnaire.id + '-SMARTcopy';
                     postQuestionnaireToSMARTHealthIT(client, questionnaire);
                   }
