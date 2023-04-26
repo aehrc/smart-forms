@@ -35,8 +35,8 @@ describe('calculations via variables', () => {
 
     cy.goToTab('Examination');
 
-    cy.getByData('q-item-decimal-box').eq(0).find('input').type(heightInCm.toString());
-    cy.getByData('q-item-decimal-box').eq(1).find('input').type(weightInKg.toString());
+    cy.getByData('q-item-decimal-box').eq(0).find('input').clear().type(heightInCm.toString());
+    cy.getByData('q-item-decimal-box').eq(1).find('input').clear().type(weightInKg.toString());
     cy.getByData('q-item-decimal-box')
       .eq(2)
       .find('input')

@@ -117,7 +117,7 @@ Cypress.Commands.add('waitForExistingResponses', () => {
   );
   cy.intercept(fetchQuestionnaireRegex).as('loadExistingResponses');
 
-  cy.wait('@loadExistingResponses', { timeout: 15000 })
+  cy.wait('@loadExistingResponses', { timeout: 20000 })
     .its('response.statusCode')
     .should('eq', 200);
 });

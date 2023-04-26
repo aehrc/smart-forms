@@ -20,20 +20,17 @@ describe('navigate questionnaires page', () => {
 
   beforeEach(() => {
     cy.launchFromSMARTHealthIT();
-  });
-
-  it('View responses from a specified questionnaire', () => {
     cy.getByData('questionnaire-list-row').contains(questionnaireTitle).click();
 
     cy.waitForExistingResponses();
+  });
+
+  it('View responses from a specified questionnaire', () => {
     cy.getByData('button-view-responses').should('not.be.disabled').click();
     cy.getByData('responses-list-toolbar').should('include.text', questionnaireTitle);
   });
 
   it('Go back button displays and works as intended', () => {
-    cy.getByData('questionnaire-list-row').contains(questionnaireTitle).click();
-
-    cy.waitForExistingResponses();
     cy.getByData('button-view-responses').should('not.be.disabled').click();
     cy.getByData('button-responses-go-back').should('be.visible').click();
 
