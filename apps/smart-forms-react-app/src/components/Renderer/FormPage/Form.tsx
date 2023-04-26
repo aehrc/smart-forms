@@ -19,7 +19,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Box, Container, Divider, Fade, Typography } from '@mui/material';
 import type { Coding, QuestionnaireResponseItem } from 'fhir/r5';
 import FormBodyTabbed from './FormBodyTabbed';
-import { containsTabs } from '../../../functions/TabFunctions';
+import { containsTabs, isTabContainer } from '../../../functions/TabFunctions';
 import { QuestionnaireProviderContext } from '../../../App';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import FormInvalid from './FormInvalid';
@@ -88,11 +88,12 @@ function Form() {
                 </Typography>
               </Box>
               <Divider light sx={{ my: 1.5 }} />
-              {containsTabs(qForm.item) ? (
+              {containsTabs(qForm.item) || isTabContainer(qForm) ? (
                 <FormBodyTabbed
                   qForm={qForm}
                   qrForm={qrForm}
                   currentTabIndex={currentTabIndex}
+                  hasTabContainer={isTabContainer(qForm)}
                   onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
                 />
               ) : (

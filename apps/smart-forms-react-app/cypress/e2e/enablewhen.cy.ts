@@ -70,7 +70,7 @@ describe('enable when functionality', () => {
     cy.getByData('renderer-tab-list')
       .find('.MuiButtonBase-root')
       .should('be.visible')
-      .should('have.length', 19);
+      .should('have.length', 21);
   });
 
   it('reveal and hide items across multiple tabs', () => {

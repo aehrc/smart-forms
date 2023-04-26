@@ -17,11 +17,10 @@
 
 import type { Bundle, BundleEntry, FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
 import type Client from 'fhirclient/lib/Client';
-import Q715 from '../data/resources/715.R4.json';
-import QCvdCheck from '../data/resources/CVD Check.json';
-import QCvdRisk from '../data/resources/CVD Risk.json';
-import QCvdRiskHiso from '../data/resources/CVD Risk-HISO.json';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
+import QTestAssembled715 from '../data/resources/TestAssembled715.json';
+import QCvdRisk2023 from '../data/resources/CVD-Risk-2023.json';
+
 import * as FHIR from 'fhirclient';
 import { getFormsServerAssembledBundlePromise } from './DashboardFunctions';
 import {
@@ -126,10 +125,8 @@ export function getInitialQuestionnaireFromBundle(response: Bundle): Questionnai
  */
 export function loadQuestionnairesFromLocal() {
   const questionnaires = [
-    Q715,
-    QCvdCheck,
-    QCvdRisk,
-    QCvdRiskHiso,
+    QCvdRisk2023,
+    QTestAssembled715,
     QAboriginalTorresStraitIslanderHealthCheckAssembled
   ] as Questionnaire[];
 

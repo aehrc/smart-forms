@@ -58,7 +58,7 @@ function QItemChoiceAutocomplete(props: Props) {
   }
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
+  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
   // Query ontoserver for options
@@ -96,6 +96,7 @@ function QItemChoiceAutocomplete(props: Props) {
       <Autocomplete
         id={qItem.id}
         value={valueCoding ?? null}
+        placeholder={entryFormat}
         options={options}
         getOptionLabel={(option) => `${option.display}`}
         isOptionEqualToValue={(option, value) => option.id === value.id}

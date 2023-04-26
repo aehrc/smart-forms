@@ -26,14 +26,15 @@ import type {
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { createEmptyQrItemWithUnit } from '../../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
-import { getDecimalPrecision } from '../../../../../functions/ItemControlFunctions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import CheckIcon from '@mui/icons-material/Check';
 import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useValidationError from '../../../../../custom-hooks/useValidationError';
+import { getDecimalPrecision } from '../../../../../functions/ItemControlFunctions';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,8 +49,15 @@ function QItemDecimal(props: Props) {
 
   // Get additional rendering extensions
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
-    useRenderingExtensions(qItem);
+  const {
+    displayUnit,
+    displayPrompt,
+    displayInstructions,
+    readOnly,
+    entryFormat,
+    regexValidation,
+    maxLength
+  } = useRenderingExtensions(qItem);
 
   // Init input value
   let initialInput = '0';
@@ -59,6 +67,10 @@ function QItemDecimal(props: Props) {
     initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
   const [input, setInput] = useState(initialInput);
+
+  // Perform validation checks
+  const [focused, setFocused] = useState(false);
+  const { feedback } = useValidationError(qItem, input, focused, regexValidation, maxLength);
 
   // Update input value if calculated expression changes
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
@@ -120,6 +132,7 @@ function QItemDecimal(props: Props) {
     updateQrItemWithDebounce(parsedInput);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       onQrItemChange({
@@ -130,15 +143,19 @@ function QItemDecimal(props: Props) {
       });
     }, 200),
     [onQrItemChange, qItem, displayUnit, precision]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const decimalInput = (
     <StandardTextField
       id={qItem.linkId}
       value={input}
+      error={!!feedback}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
+      placeholder={entryFormat}
       fullWidth
       isTabled={isTabled}
       inputProps={{

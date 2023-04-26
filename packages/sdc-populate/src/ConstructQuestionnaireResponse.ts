@@ -137,15 +137,35 @@ function constructResponseItem(
       });
     }
 
-    return qrItems.length > 0
+    // Populate answers from initialExpressions if present
+    const initialExpression = initialExpressions[qItem.linkId];
+    let populatedAnswers: QuestionnaireResponseItemAnswer[] | undefined;
+    if (initialExpression) {
+      const initialValues = initialExpression.value;
+
+      if (initialValues && initialValues.length) {
+        const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
+        populatedAnswers = newValues;
+
+        if (expandRequired && qItem.answerValueSet) {
+          const valueSetUrl = qItem.answerValueSet;
+          getValueSetPromise(qItem, valueSetUrl, valueSetPromises);
+        }
+      }
+    }
+
+    return qrItems.length > 0 || populatedAnswers
       ? {
           linkId: qItem.linkId,
           text: qItem.text,
-          item: qrItems
+          item: qrItems,
+          ...(qrItems.length > 0 ? { item: qrItems } : {}),
+          ...(populatedAnswers ? { answer: populatedAnswers } : {})
         }
       : null;
   }
 
+  // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
   if (initialExpression) {
     const initialValues = initialExpression.value;

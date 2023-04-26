@@ -29,8 +29,9 @@ import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useValidationError from '../../../../../custom-hooks/useValidationError';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,22 +44,27 @@ interface Props
 function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
+  // Get additional rendering extensions
+  const {
+    displayUnit,
+    displayPrompt,
+    displayInstructions,
+    readOnly,
+    entryFormat,
+    regexValidation,
+    maxLength
+  } = useRenderingExtensions(qItem);
+
   // Init input value
   let valueString = '';
   if (qrItem && qrItem.answer && qrItem.answer.length && qrItem.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;
   }
-  const [input, setInput] = useState<string>(valueString);
+  const [input, setInput] = useState(valueString);
 
-  // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly } =
-    useRenderingExtensions(qItem);
-
-  // Define error if present
-  let hasError = false;
-  if (qItem.maxLength && valueString) {
-    hasError = valueString.length > qItem.maxLength;
-  }
+  // Perform validation checks
+  const [focused, setFocused] = useState(false);
+  const { feedback } = useValidationError(qItem, input, focused, regexValidation, maxLength);
 
   // Event handlers
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -67,6 +73,7 @@ function QItemString(props: Props) {
     updateQrItemWithDebounce(newInput);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       if (input !== '') {
@@ -76,20 +83,23 @@ function QItemString(props: Props) {
       }
     }, 200),
     [onQrItemChange, qItem]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const stringInput = (
     <StandardTextField
       fullWidth
       isTabled={isTabled}
-      error={hasError}
       id={qItem.linkId}
       value={input}
+      error={!!feedback}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       onChange={handleChange}
       label={displayPrompt}
+      placeholder={entryFormat}
       disabled={readOnly}
       InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
-      helperText={hasError && qItem.maxLength ? `${qItem.maxLength} character limit exceeded` : ''}
+      helperText={feedback}
       data-test="q-item-string-field"
     />
   );

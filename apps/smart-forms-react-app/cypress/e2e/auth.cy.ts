@@ -100,9 +100,7 @@ describe('launch app', () => {
       cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Authorising user');
 
       cy.wait('@populating');
-      cy.getByData('progress-spinner')
-        .find('.MuiTypography-root')
-        .contains('Populating questionnaire form');
+      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Populating form');
       cy.location('pathname').should('eq', '/renderer');
       cy.getByData('form-heading').should('be.visible');
     });

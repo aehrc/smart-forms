@@ -19,14 +19,12 @@ import { FormControlLabel, Switch, Typography } from '@mui/material';
 import React, { useContext } from 'react';
 import { SourceContext } from '../../custom-contexts/SourceContext';
 import { SelectedQuestionnaireContext } from '../../custom-contexts/SelectedQuestionnaireContext';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
 
 interface Props {
   setPage: (page: number) => void;
 }
 function SourceToggle(props: Props) {
   const { setPage } = props;
-  const { fhirClient } = useContext(LaunchContext);
   const { source, setSource } = useContext(SourceContext);
   const { clearSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
 
@@ -42,7 +40,6 @@ function SourceToggle(props: Props) {
           }}
         />
       }
-      disabled={!fhirClient}
       label={
         <Typography variant="subtitle2" textTransform="capitalize">
           {source}

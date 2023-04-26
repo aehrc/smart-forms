@@ -62,7 +62,7 @@ describe('navigate questionnaires page', () => {
     cy.clickOnNavPage('Back to Home');
   });
 
-  it.only('View responses from a specified questionnaire', () => {
+  it('View responses from a specified questionnaire', () => {
     cy.getByData('questionnaire-list-row').contains(questionnaireTitle).click();
 
     cy.waitForExistingResponses();

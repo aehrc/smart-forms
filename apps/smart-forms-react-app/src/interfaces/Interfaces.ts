@@ -62,7 +62,6 @@ export interface EnableWhenItemProperties {
   linked: EnableWhenLinkedItem[];
   isEnabled: boolean;
   enableBehavior?: QuestionnaireItem['enableBehavior'];
-  isTab?: boolean;
 }
 
 export interface EnableWhenLinkedItem {
