@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useRef, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -44,7 +44,7 @@ import {
 } from '../../../functions/DashboardFunctions';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r5';
-import { SourceContext } from '../../../Router';
+import { SourceContext } from '../../../custom-contexts/SourceContext';
 import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ResponseListToolbar from './ResponsesPageComponents/ResponseListToolbar';
@@ -71,6 +71,14 @@ function ResponsesPage() {
   const { fhirClient, patient } = useContext(LaunchContext);
   const { source } = useContext(SourceContext);
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
+
+  // Scroll to buttons row when response is selected - for screens with small height
+  const buttonsRef = useRef<HTMLDivElement | null>(null);
+  function executeScroll() {
+    if (buttonsRef.current) {
+      buttonsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -141,6 +149,7 @@ function ResponsesPage() {
     const selectedItem = filteredListItems.find((item) => item.id === id);
 
     if (selectedItem) {
+      executeScroll();
       if (selectedItem.id === selectedResponse?.listItem.id) {
         setSelectedResponse(null);
       } else {
@@ -283,7 +292,7 @@ function ResponsesPage() {
             </Box>
           </Card>
 
-          <Stack direction="row" alignItems="center" my={5}>
+          <Stack direction="row" alignItems="center" my={5} ref={buttonsRef}>
             <BackToQuestionnairesButton />
             <Box sx={{ flexGrow: 1 }} />
             <OpenResponseButton selectedResponse={selectedResponse} />

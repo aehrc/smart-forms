@@ -93,7 +93,7 @@ describe('response viewer', () => {
       cy.clickOnViewerOperation('Save as Final');
       cy.get('.MuiButtonBase-root').contains('Save as final').click();
       cy.wait('@saveAsFinal');
-      cy.location('pathname').should('eq', '/responses');
+      cy.location('pathname').should('eq', '/dashboard/responses');
 
       cy.getByData('response-list-sort-label').contains('Status').click();
       cy.getByData('response-list-row').eq(0).should('include.text', 'completed');

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useRef, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -48,7 +48,6 @@ import type { Bundle, Questionnaire } from 'fhir/r5';
 import useDebounce from '../../../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from './QuestionnairePageComponents/QuestionnaireListFeedback';
 import CreateNewResponseButton from './QuestionnairePageComponents/CreateNewResponseButton';
-import { DebugModeContext, SourceContext } from '../../../Router';
 import {
   constructBundle,
   loadQuestionnairesFromLocal
@@ -59,6 +58,8 @@ import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import SourceToggle from '../../Misc/SourceToggle';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
+import { SourceContext } from '../../../custom-contexts/SourceContext';
+import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -74,6 +75,14 @@ function QuestionnairesPage() {
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
+
+  // Scroll to buttons row when questionnaire is selected - for screens with small height
+  const buttonsRef = useRef<HTMLDivElement | null>(null);
+  function executeScroll() {
+    if (buttonsRef.current) {
+      buttonsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -144,6 +153,7 @@ function QuestionnairesPage() {
     const selectedItem = filteredListItems.find((item) => item.id === id);
 
     if (selectedItem) {
+      executeScroll();
       if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
         setSelectedQuestionnaire(null);
       } else {
@@ -279,7 +289,7 @@ function QuestionnairesPage() {
             />
           </Card>
 
-          <Stack direction="row-reverse" alignItems="center" gap={2} my={5}>
+          <Stack direction="row-reverse" alignItems="center" gap={2} my={5} ref={buttonsRef}>
             {fhirClient ? <ViewExistingResponsesButton /> : null}
             <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} />
           </Stack>

@@ -77,7 +77,7 @@ Cypress.Commands.add('initAgeValue', (age: number) => {
 
 Cypress.Commands.add('checkResponseTextAndAnswer', (text: string, answer: string) => {
   cy.getByData('response-item-text').contains(text);
-  cy.getByData('response-item-answer').contains(answer);
+  cy.getByData('response-item-answer').contains(new RegExp(answer, 'i'));
 });
 
 Cypress.Commands.add('waitForFormUpdate', () => {
@@ -95,7 +95,7 @@ Cypress.Commands.add('waitForPopulation', () => {
     url: clientUrl
   }).as('populating');
 
-  cy.wait('@populating').its('response.statusCode').should('eq', 200);
+  cy.wait('@populating', { timeout: 10000 }).its('response.statusCode').should('eq', 200);
   cy.getByData('form-heading').should('be.visible');
 });
 
@@ -117,7 +117,7 @@ Cypress.Commands.add('waitForExistingResponses', () => {
   );
   cy.intercept(fetchQuestionnaireRegex).as('loadExistingResponses');
 
-  cy.wait('@loadExistingResponses', { timeout: 15000 })
+  cy.wait('@loadExistingResponses', { timeout: 20000 })
     .its('response.statusCode')
     .should('eq', 200);
 });

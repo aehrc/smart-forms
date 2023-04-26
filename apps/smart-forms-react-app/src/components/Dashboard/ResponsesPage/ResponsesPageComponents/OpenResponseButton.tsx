@@ -125,7 +125,7 @@ function OpenResponseButton(props: Props) {
   return (
     <Button
       variant="contained"
-      disabled={!selectedResponse}
+      disabled={!selectedResponse || !referencedQuestionnaire}
       endIcon={
         isLoading ? (
           <CircularProgress size={20} sx={{ color: 'common.white' }} />

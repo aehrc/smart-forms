@@ -27,7 +27,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r5';
 import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
 import { useNavigate } from 'react-router-dom';
-import { SourceContext } from '../../../../Router';
+import { SourceContext } from '../../../../custom-contexts/SourceContext';
 import { useSnackbar } from 'notistack';
 
 function ViewExistingResponsesButton() {
@@ -83,7 +83,7 @@ function ViewExistingResponsesButton() {
 
   function handleClick() {
     setExistingResponses(existingResponses);
-    navigate('/responses');
+    navigate('/dashboard/responses');
   }
 
   return (

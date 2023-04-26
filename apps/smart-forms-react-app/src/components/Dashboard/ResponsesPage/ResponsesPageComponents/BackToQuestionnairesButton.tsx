@@ -38,7 +38,7 @@ function BackToQuestionnairesButton() {
         }
       }}
       onClick={() => {
-        navigate('/');
+        navigate('/dashboard/questionnaires');
       }}>
       Go back
     </Button>

@@ -119,7 +119,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
 
         // Wait until renderer.hasChanges is set to false before navigating away
         setTimeout(() => {
-          navigate('/responses');
+          navigate('/dashboard/responses');
           setIsSaving(false);
           handleClose();
         }, 1000);

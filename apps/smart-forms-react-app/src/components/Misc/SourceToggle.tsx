@@ -17,7 +17,7 @@
 
 import { FormControlLabel, Switch, Typography } from '@mui/material';
 import React, { useContext } from 'react';
-import { SourceContext } from '../../Router';
+import { SourceContext } from '../../custom-contexts/SourceContext';
 import { SelectedQuestionnaireContext } from '../../custom-contexts/SelectedQuestionnaireContext';
 
 interface Props {

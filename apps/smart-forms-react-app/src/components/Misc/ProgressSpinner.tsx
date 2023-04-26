@@ -22,7 +22,7 @@ import { HashLoader } from 'react-spinners';
 import { useTheme } from '@mui/material/styles';
 
 interface Props {
-  message: string;
+  message?: string;
 }
 
 function ProgressSpinner(props: Props) {
@@ -39,9 +39,11 @@ function ProgressSpinner(props: Props) {
       <Box display="flex" flexDirection="row" justifyContent="center">
         <HashLoader size={60} color={theme.palette.primary.main} />
       </Box>
-      <Box textAlign="center" sx={{ mt: 2 }}>
-        <Typography variant="subtitle1">{message}</Typography>
-      </Box>
+      {message ? (
+        <Box textAlign="center" sx={{ mt: 2 }}>
+          <Typography variant="subtitle1">{message}</Typography>
+        </Box>
+      ) : null}
     </Stack>
   );
 }

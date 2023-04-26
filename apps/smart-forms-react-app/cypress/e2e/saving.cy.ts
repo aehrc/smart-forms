@@ -76,7 +76,7 @@ describe('save response', () => {
       cy.get('.MuiButtonBase-root').contains('Save as final').click();
 
       cy.wait('@savingResponse');
-      cy.location('pathname').should('eq', '/responses');
+      cy.location('pathname').should('eq', '/dashboard/responses');
     });
   });
 });

@@ -187,9 +187,9 @@ describe('open choice component behaviour', () => {
 
   context('open choice autocomplete component', () => {
     const itemText = 'Other relevant medical history, operations, hospital admissions, etc';
-    const ontoserverExpandUrl =
-      'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://aehrc.csiro.au/fhir/ValueSet/MedicalHistory&filter=';
-    const trailingUrlWithCount = '&count=10';
+    const ontoserverExpandRegex = new RegExp(
+      /^https:\/\/r4\.ontoserver\.csiro\.au\/fhir\/ValueSet\/\$expand\?url=.*$/
+    );
     const firstInputToBeSearched = 'Diabetes';
     const secondInputToBeSearched = 'stone';
 
@@ -198,9 +198,7 @@ describe('open choice component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on selection of autocompleted input', () => {
-      cy.intercept(ontoserverExpandUrl + firstInputToBeSearched + trailingUrlWithCount).as(
-        'ontoserverExpand'
-      );
+      cy.intercept(ontoserverExpandRegex).as('ontoserverExpand');
 
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
@@ -222,19 +220,14 @@ describe('open choice component behaviour', () => {
     });
 
     it('reflects changes in questionnaire response on change of input and autocompleted input', () => {
-      cy.intercept(ontoserverExpandUrl + firstInputToBeSearched + trailingUrlWithCount).as(
-        'firstOntoserverExpand'
-      );
-      cy.intercept(ontoserverExpandUrl + secondInputToBeSearched + trailingUrlWithCount).as(
-        'secondOntoserverExpand'
-      );
+      cy.intercept(ontoserverExpandRegex).as('ontoserverExpand');
 
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
         .find('input')
         .clear()
         .type(firstInputToBeSearched);
-      cy.wait('@firstOntoserverExpand');
+      cy.wait('@ontoserverExpand');
 
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
@@ -245,7 +238,7 @@ describe('open choice component behaviour', () => {
         .should('contain.value', firstInputToBeSearched)
         .clear()
         .type(secondInputToBeSearched);
-      cy.wait('@secondOntoserverExpand');
+      cy.wait('@ontoserverExpand');
 
       cy.getByData('q-item-open-choice-autocomplete-field')
         .eq(0)
