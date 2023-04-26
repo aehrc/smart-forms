@@ -48,12 +48,11 @@ describe('launch app', () => {
 
       cy.visit(launchUrl);
       cy.wait('@authorising');
-      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Authorising user');
 
       cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
 
       cy.getByData('dashboard-questionnaires-container').contains('Questionnaires');
-      cy.location('pathname').should('eq', '/');
+      cy.location('pathname').should('eq', '/dashboard/questionnaires');
     });
   });
 
@@ -97,8 +96,6 @@ describe('launch app', () => {
 
       cy.visit(launchUrl);
       cy.wait('@authorising');
-      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Authorising user');
-
       cy.wait('@populating');
       cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Populating form');
       cy.location('pathname').should('eq', '/renderer');

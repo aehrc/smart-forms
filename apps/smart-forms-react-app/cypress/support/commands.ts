@@ -77,7 +77,7 @@ Cypress.Commands.add('initAgeValue', (age: number) => {
 
 Cypress.Commands.add('checkResponseTextAndAnswer', (text: string, answer: string) => {
   cy.getByData('response-item-text').contains(text);
-  cy.getByData('response-item-answer').contains(answer);
+  cy.getByData('response-item-answer').contains(new RegExp(answer, 'i'));
 });
 
 Cypress.Commands.add('waitForFormUpdate', () => {

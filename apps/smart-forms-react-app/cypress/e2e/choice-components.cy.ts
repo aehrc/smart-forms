@@ -211,13 +211,13 @@ describe('choice component behaviour', () => {
     beforeEach(() => {
       cy.goToPatientDetailsTab();
       cy.initAgeValue(49);
+      cy.wait(100);
 
       cy.goToTab('Genitourinary and sexual health');
     });
 
     it('reflects changes in questionnaire response on selection of first checkbox', () => {
-      cy.wait(100)
-        .getByData('q-item-choice-checkbox-answer-option-box')
+      cy.getByData('q-item-choice-checkbox-answer-option-box')
         .should('include.text', itemText)
         .eq(0)
         .find('input')
