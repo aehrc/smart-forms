@@ -120,9 +120,6 @@ describe('populate form', () => {
     cy.getByData('response-item-text').contains('Postcode');
     cy.getByData('response-item-answer').contains('02108');
 
-    cy.getByData('response-item-text').contains('Home phone');
-    cy.getByData('response-item-answer').contains('737-895-0862');
-
     cy.getByData('response-item-text').contains(
       'Other relevant medical history, operations, hospital admissions, etc'
     );

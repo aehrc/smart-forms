@@ -18,26 +18,22 @@
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import { Stack, Typography } from '@mui/material';
-import { HashLoader } from 'react-spinners';
 import { useTheme } from '@mui/material/styles';
+import { GridLoader } from 'react-spinners';
 
 interface Props {
   message: string;
 }
 
-function ProgressSpinner(props: Props) {
+function PopulationProgressSpinner(props: Props) {
   const { message } = props;
 
   const theme = useTheme();
 
   return (
-    <Stack
-      justifyContent="center"
-      spacing={2.5}
-      data-test="progress-spinner"
-      sx={{ height: '100%' }}>
+    <Stack justifyContent="center" spacing={3} data-test="progress-spinner" sx={{ height: '100%' }}>
       <Box display="flex" flexDirection="row" justifyContent="center">
-        <HashLoader size={60} color={theme.palette.primary.main} />
+        <GridLoader color={theme.palette.primary.main} />
       </Box>
       <Box textAlign="center" sx={{ mt: 2 }}>
         <Typography variant="subtitle1">{message}</Typography>
@@ -46,4 +42,4 @@ function ProgressSpinner(props: Props) {
   );
 }
 
-export default memo(ProgressSpinner);
+export default memo(PopulationProgressSpinner);
