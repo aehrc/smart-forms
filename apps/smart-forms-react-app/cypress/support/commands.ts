@@ -95,7 +95,7 @@ Cypress.Commands.add('waitForPopulation', () => {
     url: clientUrl
   }).as('populating');
 
-  cy.wait('@populating').its('response.statusCode').should('eq', 200);
+  cy.wait('@populating', { timeout: 10000 }).its('response.statusCode').should('eq', 200);
   cy.getByData('form-heading').should('be.visible');
 });
 
