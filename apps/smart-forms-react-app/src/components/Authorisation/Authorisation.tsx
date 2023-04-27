@@ -158,9 +158,9 @@ function Authorisation() {
               assembleIfRequired(questionnaire).then(async (questionnaire) => {
                 if (questionnaire) {
                   // Post questionnaire to client if it is SMART Health IT
-                  if (fhirClient?.state.serverUrl.includes('/v/r4/fhir')) {
+                  if (client.state.serverUrl.includes('/v/r4/fhir')) {
                     questionnaire.id = questionnaire.id + '-SMARTcopy';
-                    postQuestionnaireToSMARTHealthIT(fhirClient, questionnaire);
+                    postQuestionnaireToSMARTHealthIT(client, questionnaire);
                   }
 
                   await questionnaireProvider.setQuestionnaire(questionnaire);
