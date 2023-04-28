@@ -35,15 +35,12 @@ function Launch() {
   const scope =
     process.env.REACT_APP_LAUNCH_SCOPE ??
     'launch/patient patient/*.read offline_access openid fhirUser';
-  const redirectUri = window.location.origin + '/';
 
   if (iss && launch) {
     oauth2.authorize({
       iss: iss,
       clientId: clientId,
       scope: scope,
-      launch: launch,
-      redirectUri: redirectUri,
       pkceMode: 'required'
     });
   } else {
