@@ -25,11 +25,6 @@ function Launch() {
 
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
-  const questionnaireUrl = searchParams.get('questionnaireUrl');
-
-  if (questionnaireUrl) {
-    sessionStorage.setItem('questionnaireUrl', questionnaireUrl);
-  }
 
   const clientId = process.env.REACT_APP_LAUNCH_CLIENT_ID ?? 'smart-forms';
   const scope =

@@ -25,12 +25,13 @@ import {
 } from '@mui/material';
 import React, { useContext, useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
-import { getPatient, getUser } from '../../functions/LaunchFunctions';
 import {
-  assembleIfRequired,
-  getInitialQuestionnaireFromBundle,
-  getQuestionnaireFromUrl
-} from '../../functions/LoadServerResourceFunctions';
+  getPatient,
+  getQuestionnaireContext,
+  getQuestionnaireReference,
+  getUser
+} from '../../functions/LaunchFunctions';
+import { assembleIfRequired } from '../../functions/LoadServerResourceFunctions';
 import { postQuestionnaireToSMARTHealthIT } from '../../functions/SaveQrFunctions';
 import GoToTestLauncher from '../SnackbarActions/GoToTestLauncher';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
@@ -91,7 +92,7 @@ const initialAuthState: AuthState = {
 };
 
 function Authorisation() {
-  const { fhirClient, setFhirClient, setPatient, setUser } = useContext(LaunchContext);
+  const { setFhirClient, setPatient, setUser } = useContext(LaunchContext);
   const { setSource } = useContext(SourceContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
@@ -136,19 +137,15 @@ function Authorisation() {
             });
           });
 
-        const questionnaireUrl = sessionStorage.getItem('questionnaireUrl');
-        if (questionnaireUrl) {
-          getQuestionnaireFromUrl(questionnaireUrl)
-            .then((bundle) => {
-              const questionnaire = getInitialQuestionnaireFromBundle(bundle);
+        const questionnaireReference = getQuestionnaireReference(client);
+
+        if (questionnaireReference) {
+          getQuestionnaireContext(questionnaireReference)
+            .then((resource) => {
+              const questionnaire = resource.resourceType === 'Questionnaire' ? resource : null;
 
               // return early if no matching questionnaire
               if (!questionnaire) {
-                sessionStorage.removeItem('questionnaireUrl');
-                enqueueSnackbar(
-                  'An error occurred while fetching initially specified questionnaire',
-                  { variant: 'error' }
-                );
                 dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
                 return;
               }
@@ -166,7 +163,6 @@ function Authorisation() {
                   await questionnaireProvider.setQuestionnaire(questionnaire);
                   dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                 } else {
-                  sessionStorage.removeItem('questionnaireUrl');
                   enqueueSnackbar(
                     'An error occurred while fetching initially specified questionnaire',
                     { variant: 'error' }
@@ -176,10 +172,9 @@ function Authorisation() {
               });
             })
             .catch(() => {
-              enqueueSnackbar(
-                'An error occurred while fetching initially specified questionnaire',
-                { variant: 'error' }
-              );
+              enqueueSnackbar('An error occurred while fetching Questionnaire launch context', {
+                variant: 'error'
+              });
               dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
             });
         } else {
@@ -223,7 +218,6 @@ function Authorisation() {
       typeof state.hasQuestionnaire === 'boolean'
     ) {
       if (state.hasQuestionnaire) {
-        sessionStorage.removeItem('questionnaireUrl');
         navigate('/renderer');
       } else {
         navigate('/dashboard/questionnaires');
