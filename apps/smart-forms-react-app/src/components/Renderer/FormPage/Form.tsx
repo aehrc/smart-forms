@@ -58,7 +58,9 @@ function Form() {
   const questionnaire = questionnaireProvider.questionnaire;
   const { response } = renderer;
 
-  if (!questionnaire.item || !response.item) return <FormInvalid />;
+  if (!questionnaire.item || !response.item) {
+    return <FormInvalid questionnaire={questionnaire} />;
+  }
 
   const qForm = questionnaire.item[0];
   qrForm = response.item[0];
@@ -113,7 +115,7 @@ function Form() {
       </>
     );
   } else {
-    return <FormInvalid />;
+    return <FormInvalid questionnaire={questionnaire} />;
   }
 }
 

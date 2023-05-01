@@ -15,17 +15,34 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Iconify from '../../Misc/Iconify';
+import { Questionnaire } from 'fhir/r5';
 
-function FormInvalid() {
+interface Props {
+  questionnaire?: Questionnaire;
+}
+
+function FormInvalid(props: Props) {
+  const { questionnaire } = props;
+
   const navigate = useNavigate();
 
   function handleClick() {
     navigate('/dashboard/questionnaires');
   }
+
+  useEffect(() => {
+    // Questionnaire only has the minimum required implementation, which logically means that it was triggered by a refresh
+    // auto redirect to dashboard
+    if (questionnaire && Object.keys(questionnaire).length === 2) {
+      navigate('/dashboard/questionnaires');
+    }
+
+    return () => {};
+  }, [navigate, questionnaire]);
 
   return (
     <Fade in={true} timeout={500}>
