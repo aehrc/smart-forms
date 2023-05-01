@@ -113,7 +113,7 @@ function QItemTimePicker(props: QItemTimePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimePicker
-        inputFormat={entryFormat !== '' ? entryFormat : 'HH:MM (A|P)M'}
+        inputFormat={entryFormat !== '' ? entryFormat : 'HH:MM a'}
         showToolbar
         value={value}
         disabled={readOnly}
