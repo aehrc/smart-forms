@@ -31,7 +31,10 @@ describe('evaluate initial expressions', () => {
   >;
   const context = contextSample;
 
-  const evaluatedInitialExpressions = evaluateInitialExpressions(initialExpressions, context);
+  const evaluatedInitialExpressions = evaluateInitialExpressions(
+    initialExpressions,
+    context
+  ).initialExpressions;
 
   test('specifying age as key after evaluation should return 87', () => {
     expect(evaluatedInitialExpressions['age']?.value).toEqual([87]);

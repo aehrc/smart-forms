@@ -18,6 +18,7 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { InitialExpression } from './Interfaces';
+import type { OperationOutcome } from 'fhir/r5';
 
 const unimplementedFunctions = ['join', 'split', 'trim', 'encode', 'decode'];
 
@@ -30,7 +31,10 @@ const unimplementedFunctions = ['join', 'split', 'trim', 'encode', 'decode'];
 export function evaluateInitialExpressions(
   initialExpressions: Record<string, InitialExpression>,
   context: Record<string, any>
-): Record<string, InitialExpression> {
+): {
+  initialExpressions: Record<string, InitialExpression>;
+  errorOutcome?: OperationOutcome;
+} {
   for (const linkId in initialExpressions) {
     const initialExpression = initialExpressions[linkId];
     if (initialExpression) {
@@ -52,14 +56,27 @@ export function evaluateInitialExpressions(
         if (e instanceof Error) {
           console.error('Error: fhirpath evaluation for InitialExpression failed. Details below:');
           console.error(e);
+          const errorOutcome: OperationOutcome = {
+            resourceType: 'OperationOutcome',
+            issue: [
+              {
+                severity: 'error',
+                code: 'processing',
+                details: {
+                  text: e.message
+                }
+              }
+            ]
+          };
+          return { initialExpressions, errorOutcome };
         }
-        return initialExpressions;
+        return { initialExpressions };
       }
       initialExpressions[linkId] = initialExpression;
     }
   }
 
-  return initialExpressions;
+  return { initialExpressions };
 }
 
 /**

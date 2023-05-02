@@ -157,5 +157,10 @@ export interface ResponseParameter extends ParametersParameter {
 
 export interface IssuesParameter extends ParametersParameter {
   name: 'issues';
+  part: IssueParameter[];
+}
+
+interface IssueParameter extends ParametersParameter {
+  name: 'issue';
   resource: OperationOutcome;
 }

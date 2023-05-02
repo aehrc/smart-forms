@@ -47,7 +47,7 @@ export async function populateQuestionnaire(
   patient: Patient,
   user: Practitioner,
   populateForm: {
-    (questionnaireResponse: QuestionnaireResponse): void;
+    (questionnaireResponse: QuestionnaireResponse, hasError: boolean): void;
   },
   exitSpinner: { (): void }
 ) {
@@ -81,10 +81,12 @@ export async function populateQuestionnaire(
     const outputParameters = await populate(inputParameters);
     const questionnaireResponse = outputParameters.parameter[0].resource;
 
+    // An error occurred when populating form
     if (outputParameters.parameter[1]) {
-      console.error(outputParameters.parameter[1].resource);
+      populateForm(questionnaireResponse, true);
+    } else {
+      populateForm(questionnaireResponse, false);
     }
-    populateForm(questionnaireResponse);
   } else {
     exitSpinner();
   }
