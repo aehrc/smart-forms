@@ -109,8 +109,6 @@ function Authorisation() {
         setSource('remote');
         dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
-        // console.log(client.state.tokenResponse);
-
         getPatient(client)
           .then((patient) => {
             setPatient(patient);
@@ -251,13 +249,6 @@ function Authorisation() {
             <Button
               variant="contained"
               endIcon={<Iconify icon="material-symbols:arrow-forward" />}
-              sx={{
-                my: 1,
-                backgroundColor: 'warning.main',
-                '&:hover': {
-                  backgroundColor: 'warning.dark'
-                }
-              }}
               data-test="button-create-response"
               onClick={() => {
                 navigate('/dashboard/questionnaires');

@@ -26,6 +26,7 @@ import Router from './Router';
 import { SnackbarProvider } from 'notistack';
 import DebugModeContextProvider from './custom-contexts/DebugModeContext';
 import SourceContextProvider from './custom-contexts/SourceContext';
+import { CookiesProvider } from 'react-cookie';
 
 const questionnaireProvider = new QuestionnaireProvider();
 const questionnaireResponseProvider = new QuestionnaireResponseProvider();
@@ -40,19 +41,21 @@ function App() {
   return (
     <ThemeProvider>
       <SnackbarProvider>
-        <LaunchContextProvider>
-          <DebugModeContextProvider>
-            <SourceContextProvider>
-              <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
-                <QuestionnaireResponseProviderContext.Provider
-                  value={questionnaireResponseProvider}>
-                  <CssBaseline />
-                  <Router />
-                </QuestionnaireResponseProviderContext.Provider>
-              </QuestionnaireProviderContext.Provider>
-            </SourceContextProvider>
-          </DebugModeContextProvider>
-        </LaunchContextProvider>
+        <CookiesProvider>
+          <LaunchContextProvider>
+            <DebugModeContextProvider>
+              <SourceContextProvider>
+                <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
+                  <QuestionnaireResponseProviderContext.Provider
+                    value={questionnaireResponseProvider}>
+                    <CssBaseline />
+                    <Router />
+                  </QuestionnaireResponseProviderContext.Provider>
+                </QuestionnaireProviderContext.Provider>
+              </SourceContextProvider>
+            </DebugModeContextProvider>
+          </LaunchContextProvider>
+        </CookiesProvider>
       </SnackbarProvider>
     </ThemeProvider>
   );
