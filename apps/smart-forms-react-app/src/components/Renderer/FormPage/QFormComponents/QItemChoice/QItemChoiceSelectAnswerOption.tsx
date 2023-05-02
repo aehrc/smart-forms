@@ -21,9 +21,9 @@ import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
 
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../../interfaces/Interfaces';
-import { PropsWithIsTabledAttribute } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../../functions/ChoiceFunctions';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
