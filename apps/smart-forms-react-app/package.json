@@ -28,6 +28,7 @@
     "randomcolor": "^0.6.2",
     "react": "^18.2.0",
     "react-confetti-explosion": "^2.0.2",
+    "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.9.0",

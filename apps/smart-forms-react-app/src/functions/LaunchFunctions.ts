@@ -16,7 +16,10 @@
  */
 
 import type Client from 'fhirclient/lib/Client';
-import type { Patient, Practitioner } from 'fhir/r5';
+import type { OperationOutcome, Patient, Practitioner, Questionnaire } from 'fhir/r5';
+import type { fhirclient } from 'fhirclient/lib/types';
+import { headers } from './LoadServerResourceFunctions';
+import * as FHIR from 'fhirclient';
 
 export async function getPatient(client: Client): Promise<Patient> {
   return await client.patient.read();
@@ -24,4 +27,38 @@ export async function getPatient(client: Client): Promise<Patient> {
 
 export async function getUser(client: Client): Promise<Practitioner> {
   return (await client.user.read()) as Practitioner;
+}
+
+interface ResourceReference {
+  reference: string;
+}
+interface tokenResponseWithFhirContext extends fhirclient.TokenResponse {
+  fhirContext: ResourceReference[] | undefined;
+}
+
+export function getQuestionnaireReference(client: Client): string | null {
+  const tokenResponse = client.state.tokenResponse as tokenResponseWithFhirContext;
+  const fhirContext = tokenResponse.fhirContext;
+
+  if (!fhirContext) return null;
+
+  const questionnaireReferences = fhirContext.filter((resourceReference) =>
+    resourceReference.reference.includes('Questionnaire')
+  );
+
+  if (questionnaireReferences.length === 0) return null;
+
+  return questionnaireReferences[0].reference;
+}
+
+export function getQuestionnaireContext(
+  questionnaireReference: string
+): Promise<Questionnaire | OperationOutcome> {
+  const endpointUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+
+  return FHIR.client(endpointUrl).request({
+    url: questionnaireReference,
+    method: 'GET',
+    headers: headers
+  });
 }

@@ -20,6 +20,7 @@ import React from 'react';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 export interface NavButton {
   title: string;
@@ -30,6 +31,7 @@ export interface NavButton {
 
 function ViewerNavSection() {
   const navigate = useNavigate();
+  const { closeSnackbar } = useSnackbar();
 
   return (
     <Box sx={{ pb: 4 }}>
@@ -41,6 +43,7 @@ function ViewerNavSection() {
           title={'Back to Home'}
           icon={<HomeIcon />}
           onClick={() => {
+            closeSnackbar();
             navigate('/dashboard/questionnaires');
           }}
         />

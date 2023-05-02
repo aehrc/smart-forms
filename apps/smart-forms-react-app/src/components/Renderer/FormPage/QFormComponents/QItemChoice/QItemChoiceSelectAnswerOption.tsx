@@ -21,6 +21,7 @@ import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
 
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
@@ -33,13 +34,14 @@ import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExte
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function QItemChoiceSelectAnswerOption(props: Props) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
@@ -74,12 +76,13 @@ function QItemChoiceSelectAnswerOption(props: Props) {
       placeholder={entryFormat}
       label={displayPrompt}
       endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      sx={{ maxWidth: !isTabled ? 280 : 3000 }}
       onChange={handleChange}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
-            <MenuItem key={option.valueCoding.display} value={option.valueCoding.code}>
-              {option.valueCoding.display}
+            <MenuItem key={option.valueCoding.code} value={option.valueCoding.code}>
+              {option.valueCoding.display ?? option.valueCoding.code}
             </MenuItem>
           );
         } else if (option['valueString']) {
