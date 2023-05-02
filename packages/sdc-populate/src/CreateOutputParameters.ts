@@ -17,6 +17,7 @@
 
 import type { OperationOutcome, QuestionnaireResponse } from 'fhir/r5';
 import type {
+  IssuesParameter,
   PopulateOutputParameters,
   PopulateOutputParametersWithIssues,
   ResponseParameter
@@ -29,28 +30,32 @@ import type {
  */
 export function createOutputParameters(
   questionnaireResponse: QuestionnaireResponse,
-  issue?: OperationOutcome
+  issues: OperationOutcome[]
 ): PopulateOutputParameters | PopulateOutputParametersWithIssues {
   const responseParameter: ResponseParameter = {
     name: 'response',
     resource: questionnaireResponse
   };
 
-  if (issue) {
-    return {
-      resourceType: 'Parameters',
-      parameter: [
-        responseParameter,
-        {
-          name: 'issues',
-          resource: issue
-        }
-      ]
-    };
-  } else {
+  if (issues.length === 0) {
     return {
       resourceType: 'Parameters',
       parameter: [responseParameter]
+    };
+  } else {
+    const issuesParameter: IssuesParameter = {
+      name: 'issues',
+      part: issues.map((issue) => {
+        return {
+          name: 'issue',
+          resource: issue
+        };
+      })
+    };
+
+    return {
+      resourceType: 'Parameters',
+      parameter: [responseParameter, issuesParameter]
     };
   }
 }

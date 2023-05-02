@@ -26,7 +26,7 @@ import type {
 import { addVariablesToContext } from './VariableProcessing';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateOutputParameters';
-import type { Parameters, ParametersParameter } from 'fhir/r5';
+import type { OperationOutcome, Parameters, ParametersParameter } from 'fhir/r5';
 import {
   isLaunchPatientContent,
   isLaunchPatientName,
@@ -71,24 +71,39 @@ export default async function populate(
   }
 
   // Add evaluate itemPopulationContexts and add them to context
-  context = evaluateItemPopulationContexts(populationExpressions.itemPopulationContexts, context);
+  const evaluatedContext = evaluateItemPopulationContexts(
+    populationExpressions.itemPopulationContexts,
+    context
+  );
+  const evaluatedContextError = evaluatedContext.errorOutcome;
 
   // Sort resource bundles within context
-  context = sortResourceArrays(context);
+  context = sortResourceArrays(evaluatedContext.context);
 
   // Perform evaluation of initialExpressions based on context
-  const evaluatedInitialExpressions = evaluateInitialExpressions(
+  const evaluatedExpressions = evaluateInitialExpressions(
     populationExpressions.initialExpressions,
     context
   );
+  const evaluatedExpressionsError = evaluatedExpressions.errorOutcome;
 
   const questionnaireResponse = await constructResponse(
     questionnaire,
     subject,
-    evaluatedInitialExpressions
+    evaluatedExpressions.initialExpressions
   );
 
-  return createOutputParameters(questionnaireResponse);
+  // collect issues if there are any
+  const issues: OperationOutcome[] = [];
+  if (evaluatedContextError) {
+    issues.push(evaluatedContextError);
+  }
+
+  if (evaluatedExpressionsError) {
+    issues.push(evaluatedExpressionsError);
+  }
+
+  return createOutputParameters(questionnaireResponse, issues);
 }
 
 function getContextContent(

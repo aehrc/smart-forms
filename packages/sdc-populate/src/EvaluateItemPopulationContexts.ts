@@ -18,6 +18,7 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { ItemPopulationContext } from './Interfaces';
+import type { OperationOutcome } from 'fhir/r5';
 
 const unimplementedFunctions = ['join', 'split', 'trim', 'encode', 'decode'];
 
@@ -30,7 +31,7 @@ const unimplementedFunctions = ['join', 'split', 'trim', 'encode', 'decode'];
 export function evaluateItemPopulationContexts(
   itemPopulationContexts: ItemPopulationContext[],
   context: Record<string, any>
-): Record<string, any> {
+): { context: Record<string, any>; errorOutcome?: OperationOutcome } {
   for (const linkId in itemPopulationContexts) {
     const itemPopulationContext = itemPopulationContexts[linkId];
     if (itemPopulationContext) {
@@ -57,6 +58,19 @@ export function evaluateItemPopulationContexts(
             'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:'
           );
           console.error(e);
+          const errorOutcome: OperationOutcome = {
+            resourceType: 'OperationOutcome',
+            issue: [
+              {
+                severity: 'error',
+                code: 'processing',
+                details: {
+                  text: e.message
+                }
+              }
+            ]
+          };
+          return { context, errorOutcome };
         }
         continue;
       }
@@ -66,7 +80,7 @@ export function evaluateItemPopulationContexts(
     }
   }
 
-  return context;
+  return { context };
 }
 
 /**

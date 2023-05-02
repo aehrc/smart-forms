@@ -165,11 +165,18 @@ function RendererLayout() {
       questionnaireProvider.questionnaire,
       patient,
       user,
-      (populated) => {
+      (populated, hasError) => {
         questionnaireResponseProvider.setQuestionnaireResponse(populated);
         setRenderer({ ...renderer, response: populated });
         setSpinner({ ...spinner, isLoading: false });
-        enqueueSnackbar('Questionnaire form populated');
+        if (hasError) {
+          enqueueSnackbar(
+            'An error occurred while populating the form. View console for details.',
+            { variant: 'warning' }
+          );
+        } else {
+          enqueueSnackbar('Questionnaire form populated');
+        }
       },
       () => {
         setSpinner({ ...spinner, isLoading: false });
