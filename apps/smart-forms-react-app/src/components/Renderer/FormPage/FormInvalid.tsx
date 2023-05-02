@@ -40,8 +40,6 @@ function FormInvalid(props: Props) {
     if (questionnaire && Object.keys(questionnaire).length === 2) {
       navigate('/dashboard/questionnaires');
     }
-
-    return () => {};
   }, [navigate, questionnaire]);
 
   return (

@@ -16,7 +16,8 @@
  */
 
 import React, { memo } from 'react';
-import { Grid, InputAdornment, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
+import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
 
 import type {
   PropsWithIsRepeatedAttribute,

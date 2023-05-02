@@ -17,8 +17,7 @@
 
 import Q715Assembled from '../../src/data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 
-describe('launch app', () => {
-  const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
+describe('launch app in SMART Launcher', () => {
   const formsServerUrl = process.env.REACT_APP_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
   context('launch without authorisation', () => {
@@ -55,18 +54,20 @@ describe('launch app', () => {
       cy.location('pathname').should('eq', '/dashboard/questionnaires');
     });
   });
+});
+describe('launch app in simulated EHR', () => {
+  const clientUrl = 'https://launch.smartforms.io/v/r4/fhir';
 
   context('launch with authorisation with a questionnaire url parameter', () => {
     const questionnaireUrl = 'http://www.health.gov.au/assessments/mbs/715';
     const questionnaireId = 'AboriginalTorresStraitIslanderHealthCheck';
     const questionnaire = Q715Assembled;
     const launchUrl =
-      'http://localhost:3000/launch?questionnaireUrl=http%3A%2F%2Fwww.health.gov.au%2Fassessments%2Fmbs%2F715&iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
-
+      'http://localhost:3000/launch?iss=https%3A%2F%2Flaunch.smartforms.io%2Fv%2Fr4%2Ffhir&launch=WzAsImIyMThjZWU5LTAxOWQtNDdhNC1iMTYxLWU5N2MwZmQ2ZjczNiIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMSwie1wiUXVlc3Rpb25uYWlyZVwiOlwiQWJvcmlnaW5hbFRvcnJlc1N0cmFpdElzbGFuZGVySGVhbHRoQ2hlY2tcIn0iXQ';
     it('from launch page, fetch patient and redirect to renderer while populating form', () => {
       cy.intercept({
         method: 'POST',
-        url: 'https://launch.smarthealthit.org/v/r4/auth/token'
+        url: 'https://launch.smartforms.io/v/r4/auth/token'
       }).as('authorising');
       cy.intercept({
         method: 'POST',

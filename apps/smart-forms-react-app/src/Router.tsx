@@ -35,9 +35,9 @@ export default function Router() {
   const [cookies, setCookie] = useCookies(['client']);
 
   useEffect(() => {
-    if (fhirClient && cookies['client'] === 'undefined') {
+    if (fhirClient && cookies['client'] === undefined) {
       setCookie('client', fhirClient, { path: '/' });
-    } else if (!fhirClient && cookies['client'] !== 'undefined') {
+    } else if (!fhirClient && cookies['client'] !== undefined) {
       setFhirClient(cookies['client']);
     }
   });
