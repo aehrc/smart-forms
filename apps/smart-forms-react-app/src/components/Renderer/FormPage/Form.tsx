@@ -74,6 +74,10 @@ function Form() {
     updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables);
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
+  // TODO support multiple first-level items
+  if (questionnaire.item.length > 1) {
+    console.log('This app only supports one first-level Questionnaire items at the moment.');
+  }
 
   if (qForm.item && qrForm.item) {
     return (

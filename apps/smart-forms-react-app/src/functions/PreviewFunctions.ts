@@ -42,31 +42,64 @@ export function qrFormToHTML(questionnaireResponseForm: QuestionnaireResponseIte
   let formInHTML = '';
   const qrItems = questionnaireResponseForm.item;
   for (let i = 0; i < qrItems.length; i++) {
-    formInHTML = readQuestionnaireResponseItem(qrItems[i], qrItems[i + 1], formInHTML, 0);
+    formInHTML = readQuestionnaireResponseItem(
+      i === 0 ? undefined : qrItems[i - 1],
+      qrItems[i],
+      qrItems[i + 1],
+      formInHTML,
+      0
+    );
   }
 
   return formInHTML;
 }
 
+type RepeatGroupItemStatus = 'first' | 'last' | 'middle' | null;
 function readQuestionnaireResponseItem(
+  prevItem: QuestionnaireResponseItem | undefined,
   item: QuestionnaireResponseItem,
   nextItem: QuestionnaireResponseItem | undefined,
   formInHTML: string,
   nestedLevel: number
 ) {
+  let repeatGroupItemStatus: RepeatGroupItemStatus = null;
+
+  // determine if current item is repeat group item
+  if (prevItem || nextItem) {
+    if (item.linkId !== prevItem?.linkId && item.linkId === nextItem?.linkId) {
+      repeatGroupItemStatus = 'first';
+    } else if (item.linkId === prevItem?.linkId && item.linkId !== nextItem?.linkId) {
+      repeatGroupItemStatus = 'last';
+    } else if (item.linkId === prevItem?.linkId || item.linkId === nextItem?.linkId) {
+      repeatGroupItemStatus = 'middle';
+    }
+  }
+
   const items = item.item;
   if (items && items.length > 0) {
-    // Render group
-    formInHTML += renderGroupHeadingDiv(item, nestedLevel);
+    // Render group heading
+    if (repeatGroupItemStatus === 'first') {
+      formInHTML += renderGroupHeadingDiv(item, nestedLevel);
+      formInHTML += renderRepeatGroupItemHeadingDiv();
+    } else if (repeatGroupItemStatus === 'last') {
+      formInHTML += '';
+    } else if (repeatGroupItemStatus === 'middle') {
+      formInHTML += renderRepeatGroupItemHeadingDiv();
+    } else {
+      formInHTML += renderGroupHeadingDiv(item, nestedLevel);
+    }
+
+    // do compare next object linkId
     for (let i = 0; i < items.length; i++) {
       formInHTML = readQuestionnaireResponseItem(
+        i === 0 ? undefined : items[i - 1],
         items[i],
         items[i + 1],
         formInHTML,
         nestedLevel + 1
       );
     }
-    formInHTML += renderGroupBottomMargin();
+    formInHTML += renderGroupBottomMargin(repeatGroupItemStatus);
   } else {
     // Render item
     formInHTML += renderItemDiv(item, nestedLevel);
@@ -104,8 +137,12 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
 
 function renderGroupHeadingDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
   return `<div style="font-size: ${
-    nestedLevel === 0 ? '18px' : '16px'
+    nestedLevel === 0 ? '18px' : '15px'
   }; font-weight: bold; margin-top: 15px" data-test="response-group-heading">${item.text}</div>`;
+}
+
+function renderRepeatGroupItemHeadingDiv() {
+  return `<div style="margin-top: 15px" />`;
 }
 
 function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer): string {
@@ -127,8 +164,12 @@ function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer):
   return '';
 }
 
-function renderGroupBottomMargin() {
-  return `<div style="margin-bottom: 30px;"></div>`;
+function renderGroupBottomMargin(repeatGroupItemStatus: RepeatGroupItemStatus) {
+  if (repeatGroupItemStatus === 'first' || repeatGroupItemStatus === 'middle') {
+    return `<div style="height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px;"></div>`;
+  } else {
+    return `<div style="margin-bottom: 30px;"></div>`;
+  }
 }
 
 function renderGeneralBottomMargin(
