@@ -17,7 +17,7 @@
 
 import React, { useState } from 'react';
 import type { SelectedQuestionnaire } from '../interfaces/Interfaces';
-import type { QuestionnaireResponse } from 'fhir/r5';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 export interface SelectedQuestionnaireContextType {
   selectedQuestionnaire: SelectedQuestionnaire | null;

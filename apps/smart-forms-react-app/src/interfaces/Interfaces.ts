@@ -23,7 +23,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   ValueSet
-} from 'fhir/r5';
+} from 'fhir/r4';
 
 export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;

@@ -18,7 +18,7 @@
 import { StyledRoot } from '../../StyledComponents/DebugFooter.styles';
 import React, { useContext, useState } from 'react';
 import DebugResponse from './DebugResponse';
-import type { QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 import RendererDebugBar from './RendererDebugBar';
 import { QuestionnaireProviderContext } from '../../../App';
 import { RendererContext } from '../RendererLayout';

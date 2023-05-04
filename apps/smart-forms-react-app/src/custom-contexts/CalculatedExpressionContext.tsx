@@ -17,7 +17,7 @@
 
 import React, { useContext, useState } from 'react';
 import type { CalculatedExpressionContextType } from '../interfaces/ContextTypes';
-import type { Expression, QuestionnaireResponse } from 'fhir/r5';
+import type { Expression, QuestionnaireResponse } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces/Interfaces';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';

@@ -32,6 +32,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { OperationItem } from './ViewerOperationSection';
 import { useSnackbar } from 'notistack';
+import cloneDeep from 'lodash.clonedeep';
 
 function ViewerSaveAsFinal() {
   const { fhirClient } = useContext(LaunchContext);
@@ -78,7 +79,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     if (!(fhirClient && patient && user)) return;
 
     setIsSaving(true);
-    const responseToSave = JSON.parse(JSON.stringify(responseProvider.response));
+    const responseToSave = cloneDeep(responseProvider.response);
 
     responseToSave.status = 'completed';
     saveQuestionnaireResponse(

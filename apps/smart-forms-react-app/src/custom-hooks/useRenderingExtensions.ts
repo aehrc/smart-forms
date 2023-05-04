@@ -24,7 +24,7 @@ import {
   getTextDisplayPrompt,
   getTextDisplayUnit
 } from '../functions/ItemControlFunctions';
-import type { QuestionnaireItem } from 'fhir/r5';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 interface RenderingExtensions {
   displayUnit: string;

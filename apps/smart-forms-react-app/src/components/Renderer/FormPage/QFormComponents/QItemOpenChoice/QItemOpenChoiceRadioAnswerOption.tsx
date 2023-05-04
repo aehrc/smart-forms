@@ -18,7 +18,7 @@
 import React, { memo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../../interfaces/Enums';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
 import type {
   PropsWithIsRepeatedAttribute,

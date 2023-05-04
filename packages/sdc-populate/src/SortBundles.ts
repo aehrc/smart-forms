@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Condition, FhirResource, Observation } from 'fhir/r5';
+import type { Condition, FhirResource, Observation } from 'fhir/r4';
 import dayjs from 'dayjs';
 
 /**

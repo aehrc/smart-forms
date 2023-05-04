@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r5';
+import type { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type { PopulationExpressions } from './Interfaces';
 
 /**

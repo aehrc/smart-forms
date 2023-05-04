@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Bundle, BundleEntry, FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
+import type { Bundle, BundleEntry, FhirResource, OperationOutcome, Questionnaire } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 import QTestAssembled715 from '../data/resources/TestAssembled715.json';

@@ -34,6 +34,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import cloneDeep from 'lodash.clonedeep';
 
 function RendererSaveAsFinal() {
   const { fhirClient } = useContext(LaunchContext);
@@ -97,7 +98,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     if (!(fhirClient && patient && user)) return;
 
     setIsSaving(true);
-    let responseToSave = JSON.parse(JSON.stringify(response));
+    let responseToSave = cloneDeep(response);
     responseToSave = removeHiddenAnswers(
       questionnaireProvider.questionnaire,
       responseToSave,

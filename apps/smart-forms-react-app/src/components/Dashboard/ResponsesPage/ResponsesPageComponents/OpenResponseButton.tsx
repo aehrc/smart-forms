@@ -24,7 +24,7 @@ import {
   QuestionnaireResponseProviderContext
 } from '../../../../App';
 import { useQuery } from '@tanstack/react-query';
-import type { Bundle, Questionnaire } from 'fhir/r5';
+import type { Bundle, Questionnaire } from 'fhir/r4';
 import {
   getFormsServerBundleOrQuestionnairePromise,
   getReferencedQuestionnaire

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, QuestionnaireItem } from 'fhir/r5';
+import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { EnableWhenItems } from '../interfaces/Interfaces';
 import { isSpecificItemControl } from './ItemControlFunctions';
 

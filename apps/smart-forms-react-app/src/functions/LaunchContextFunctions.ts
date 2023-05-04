@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { HumanName } from 'fhir/r5';
+import type { HumanName } from 'fhir/r4';
 
 /**
  * Construct a proper name from various name variations from different implementations

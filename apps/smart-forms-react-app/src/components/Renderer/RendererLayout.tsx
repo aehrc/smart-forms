@@ -24,7 +24,7 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
 import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
-import type { QuestionnaireResponse } from 'fhir/r5';
+import type { QuestionnaireResponse } from 'fhir/r4';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
 import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';

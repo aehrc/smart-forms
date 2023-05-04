@@ -18,7 +18,7 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { InitialExpression } from './Interfaces';
-import type { OperationOutcome } from 'fhir/r5';
+import type { OperationOutcome } from 'fhir/r4';
 
 const unimplementedFunctions = ['join', 'split', 'trim', 'encode', 'decode'];
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { OperationOutcome, Parameters } from 'fhir/r5';
+import type { OperationOutcome, Parameters } from 'fhir/r4';
 import { assembleQuestionnaire } from './AssembleQuestionnaire';
 import type {
   AssembleInputParameters,

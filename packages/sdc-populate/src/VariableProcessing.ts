@@ -16,7 +16,7 @@
  */
 
 import type { InitialExpression } from './Interfaces';
-import type { Bundle } from 'fhir/r5';
+import type { Bundle } from 'fhir/r4';
 
 export function constructVariableMap(bundle: Bundle): Record<string, Bundle> {
   const variableMap: Record<string, Bundle> = {};

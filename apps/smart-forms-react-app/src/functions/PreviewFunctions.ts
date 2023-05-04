@@ -20,7 +20,7 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+} from 'fhir/r4';
 import dayjs from 'dayjs';
 import moment from 'moment';
 

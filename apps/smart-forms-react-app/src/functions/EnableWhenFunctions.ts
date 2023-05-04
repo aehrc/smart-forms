@@ -26,7 +26,8 @@ import type {
   QuestionnaireItemEnableWhen,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+} from 'fhir/r4';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items
@@ -199,7 +200,7 @@ export function setInitialAnswers(
   items: EnableWhenItems,
   linkedQuestionsMap: Record<string, string[]>
 ): EnableWhenItems {
-  let updatedItems = JSON.parse(JSON.stringify(items));
+  let updatedItems = cloneDeep(items);
 
   if (initialAnswers) {
     for (const linkId in initialAnswers) {

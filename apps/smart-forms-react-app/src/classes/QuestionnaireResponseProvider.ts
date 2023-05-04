@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponse } from 'fhir/r5';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 const emptyQResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',

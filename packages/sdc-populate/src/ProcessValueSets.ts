@@ -21,7 +21,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   ValueSet
-} from 'fhir/r5';
+} from 'fhir/r4';
 import type { ValueSetPromise } from './Interfaces';
 import * as FHIR from 'fhirclient';
 

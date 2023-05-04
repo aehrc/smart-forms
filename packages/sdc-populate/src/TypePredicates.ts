@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { ParametersParameter } from 'fhir/r5';
+import type { ParametersParameter } from 'fhir/r4';
 import type {
   LaunchPatientContent,
   LaunchPatientName,

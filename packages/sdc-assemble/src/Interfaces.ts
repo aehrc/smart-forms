@@ -21,7 +21,7 @@ import type {
   Parameters,
   ParametersParameter,
   Questionnaire
-} from 'fhir/r5';
+} from 'fhir/r4';
 
 export interface AssembleInputParameters extends Parameters {
   parameter: [QuestionnaireParameter];

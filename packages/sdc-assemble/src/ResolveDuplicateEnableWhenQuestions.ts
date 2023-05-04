@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
 export function resolveDuplicateEnableWhenQuestions(
   qItem: QuestionnaireItem,

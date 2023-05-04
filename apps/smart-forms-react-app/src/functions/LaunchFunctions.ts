@@ -16,7 +16,7 @@
  */
 
 import type Client from 'fhirclient/lib/Client';
-import type { OperationOutcome, Patient, Practitioner, Questionnaire } from 'fhir/r5';
+import type { OperationOutcome, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import type { fhirclient } from 'fhirclient/lib/types';
 import { headers } from './LoadServerResourceFunctions';
 import * as FHIR from 'fhirclient';

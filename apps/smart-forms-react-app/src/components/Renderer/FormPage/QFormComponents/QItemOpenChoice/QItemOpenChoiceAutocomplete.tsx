@@ -18,7 +18,7 @@
 import type { SyntheticEvent } from 'react';
 import React, { memo, useState } from 'react';
 import { Autocomplete, Box, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
-import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import type {
   PropsWithIsRepeatedAttribute,

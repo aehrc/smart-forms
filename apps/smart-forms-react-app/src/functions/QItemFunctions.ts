@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem } from 'fhir/r5';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension } from './ItemControlFunctions';
 import { getChoiceControlType } from './ChoiceFunctions';
 import { QItemChoiceControl, QItemOpenChoiceControl } from '../interfaces/Enums';
