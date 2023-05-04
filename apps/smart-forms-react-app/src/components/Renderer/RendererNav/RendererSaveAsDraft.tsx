@@ -24,6 +24,7 @@ import { RendererContext } from '../RendererLayout';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { OperationItem } from './RendererOperationSection';
 import { useSnackbar } from 'notistack';
+import cloneDeep from 'lodash.clonedeep';
 
 function RendererSaveAsDraft() {
   const { fhirClient, patient, user } = useContext(LaunchContext);
@@ -53,7 +54,7 @@ function RendererSaveAsDraft() {
       onClick={() => {
         if (!(fhirClient && patient && user)) return;
 
-        let responseToSave = JSON.parse(JSON.stringify(response));
+        let responseToSave = cloneDeep(response);
         responseToSave = removeHiddenAnswers(
           questionnaireProvider.questionnaire,
           responseToSave,

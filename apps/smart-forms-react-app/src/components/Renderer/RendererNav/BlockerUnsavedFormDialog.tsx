@@ -32,6 +32,7 @@ import {
   DialogTitle
 } from '@mui/material';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
+import cloneDeep from 'lodash.clonedeep';
 
 export interface Props {
   blocker: Blocker;
@@ -76,7 +77,7 @@ function BlockerUnsavedFormDialog(props: Props) {
     setIsSaving(true);
     setIsSaving(true);
 
-    let responseToSave = JSON.parse(JSON.stringify(response));
+    let responseToSave = cloneDeep(response);
     responseToSave = removeHiddenAnswers(
       questionnaireProvider.questionnaire,
       responseToSave,

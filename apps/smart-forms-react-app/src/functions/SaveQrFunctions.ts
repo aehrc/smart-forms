@@ -30,6 +30,7 @@ import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
 import type { EnableWhenContextType } from '../interfaces/ContextTypes';
 import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
@@ -67,9 +68,7 @@ export async function saveQuestionnaireResponse(
 ): Promise<QuestionnaireResponse> {
   let requestUrl = 'QuestionnaireResponse';
   let method = 'POST';
-  let questionnaireResponseToSave: QuestionnaireResponse = JSON.parse(
-    JSON.stringify(questionnaireResponse)
-  );
+  let questionnaireResponseToSave: QuestionnaireResponse = cloneDeep(questionnaireResponse);
 
   questionnaireResponseToSave = {
     ...questionnaireResponseToSave,

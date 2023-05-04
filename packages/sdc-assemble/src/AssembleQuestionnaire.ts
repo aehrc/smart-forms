@@ -28,13 +28,14 @@ import {
   mergeExtensionsIntoItems
 } from './GetSubquestionnaireItems';
 import { propagateSubquestionnaireItems } from './PropagateSubquestionnaireItems';
+import cloneDeep from 'lodash.clonedeep';
 
 export async function assembleQuestionnaire(
   questionnaire: Questionnaire,
   allCanonicals: string[],
   formsServerEndpoint: string
 ): Promise<Questionnaire | OperationOutcome> {
-  const parentQuestionnaire = JSON.parse(JSON.stringify(questionnaire));
+  const parentQuestionnaire = cloneDeep(questionnaire);
   const canonicals = getCanonicalUrls(parentQuestionnaire, allCanonicals);
   if (!Array.isArray(canonicals)) return canonicals;
 
