@@ -22,7 +22,7 @@ import type {
   ParametersParameter,
   Patient,
   Questionnaire
-} from 'fhir/r5';
+} from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import UUID from 'uuidjs';
 import { constructContextParameters, getBatchResponse } from './PrepopulateFunctions';

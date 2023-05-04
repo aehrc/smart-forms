@@ -23,7 +23,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   Reference
-} from 'fhir/r5';
+} from 'fhir/r4';
 import type { InitialExpression, ValueSetPromise } from './Interfaces';
 import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './ProcessValueSets';
 import dayjs from 'dayjs';

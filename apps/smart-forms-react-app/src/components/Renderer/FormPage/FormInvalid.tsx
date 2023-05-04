@@ -19,7 +19,7 @@ import React, { useEffect } from 'react';
 import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Iconify from '../../Misc/Iconify';
-import type { Questionnaire } from 'fhir/r5';
+import type { Questionnaire } from 'fhir/r4';
 
 interface Props {
   questionnaire?: Questionnaire;

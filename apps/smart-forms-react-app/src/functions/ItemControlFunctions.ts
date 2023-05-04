@@ -21,7 +21,7 @@ import type {
   Extension,
   QuestionnaireItem,
   QuestionnaireResponse
-} from 'fhir/r5';
+} from 'fhir/r4';
 
 /**
  * Check if the extension has an itemControl code equal to the given itemControlCode

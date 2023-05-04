@@ -26,7 +26,7 @@ import type {
   QuestionnaireItemEnableWhen,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+} from 'fhir/r4';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items

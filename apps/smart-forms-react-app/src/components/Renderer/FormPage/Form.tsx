@@ -17,7 +17,7 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Container, Divider, Fade, Typography } from '@mui/material';
-import type { Coding, QuestionnaireResponseItem } from 'fhir/r5';
+import type { Coding, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, isTabContainer } from '../../../functions/TabFunctions';
 import { QuestionnaireProviderContext } from '../../../App';

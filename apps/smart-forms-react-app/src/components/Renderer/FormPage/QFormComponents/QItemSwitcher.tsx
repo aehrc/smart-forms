@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { QItemType } from '../../../../interfaces/Enums';
 import QItemString from './QItemSimple/QItemString';
 import React, { memo, useCallback, useContext } from 'react';
 import QItemBoolean from './QItemSimple/QItemBoolean';
@@ -26,7 +25,7 @@ import QItemInteger from './QItemSimple/QItemInteger';
 import QItemDateTime from './QItemSimple/QItemDateTime';
 import QItemDecimal from './QItemSimple/QItemDecimal';
 import QItemChoice from './QItemChoice/QItemChoice';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemTime from './QItemSimple/QItemTime';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
@@ -35,6 +34,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../interfaces/Interfaces';
+import { Typography } from '@mui/material';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -79,7 +79,7 @@ function RenderQItem(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   switch (qItem.type) {
-    case QItemType.String:
+    case 'string':
       return (
         <QItemString
           qItem={qItem}
@@ -89,7 +89,7 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Boolean:
+    case 'boolean':
       return (
         <QItemBoolean
           qItem={qItem}
@@ -98,7 +98,7 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Time:
+    case 'time':
       return (
         <QItemTime
           qItem={qItem}
@@ -108,7 +108,7 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Date:
+    case 'date':
       return (
         <QItemDate
           qItem={qItem}
@@ -118,7 +118,7 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.DateTime:
+    case 'dateTime':
       return (
         <QItemDateTime
           qItem={qItem}
@@ -128,7 +128,7 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Text:
+    case 'text':
       return (
         <QItemText
           qItem={qItem}
@@ -137,9 +137,9 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Display:
+    case 'display':
       return <QItemDisplay qItem={qItem} />;
-    case QItemType.Integer:
+    case 'integer':
       return (
         <QItemInteger
           qItem={qItem}
@@ -149,7 +149,7 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Decimal:
+    case 'decimal':
       return (
         <QItemDecimal
           qItem={qItem}
@@ -159,39 +159,32 @@ function RenderQItem(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemType.Coding:
-      return <div>Coding Placeholder</div>;
+    case 'choice':
+      return (
+        <QItemChoice
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    case 'open-choice':
+      return (
+        <QItemOpenChoice
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     default:
-      // TODO temporary fix for choice and open-choice types
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (qItem.type === QItemType.Choice) {
-        return (
-          <QItemChoice
-            qItem={qItem}
-            qrItem={qrItem}
-            isRepeated={isRepeated}
-            isTabled={isTabled}
-            onQrItemChange={onQrItemChange}
-          />
-        );
-      }
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (qItem.type === QItemType.OpenChoice) {
-        return (
-          <QItemOpenChoice
-            qItem={qItem}
-            qrItem={qrItem}
-            isRepeated={isRepeated}
-            isTabled={isTabled}
-            onQrItemChange={onQrItemChange}
-          />
-        );
-      }
-
-      return <div>Default</div>;
+      return (
+        <Typography>
+          Item type not supported. Only R4 datatypes are supported at the moment.
+        </Typography>
+      );
   }
 }
 

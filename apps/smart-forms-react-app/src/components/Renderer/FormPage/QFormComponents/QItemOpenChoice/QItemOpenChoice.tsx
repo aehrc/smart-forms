@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { QItemOpenChoiceControl } from '../../../../../interfaces/Enums';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemOpenChoiceSelectAnswerOption from './QItemOpenChoiceSelectAnswerOption';
 import QItemOpenChoiceSelectAnswerValueSet from './QItemOpenChoiceSelectAnswerValueSet';
 import QItemOpenChoiceAutocomplete from './QItemOpenChoiceAutocomplete';

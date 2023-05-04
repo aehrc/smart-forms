@@ -44,7 +44,7 @@ import {
 import QuestionnaireLabel from './QuestionnaireLabel';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
-import type { Bundle, Questionnaire } from 'fhir/r5';
+import type { Bundle, Questionnaire } from 'fhir/r4';
 import useDebounce from '../../../custom-hooks/useDebounce';
 import QuestionnaireListFeedback from './QuestionnairePageComponents/QuestionnaireListFeedback';
 import CreateNewResponseButton from './QuestionnairePageComponents/CreateNewResponseButton';

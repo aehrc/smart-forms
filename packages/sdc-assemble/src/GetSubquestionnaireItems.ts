@@ -21,7 +21,7 @@ import type {
   OperationOutcome,
   Questionnaire,
   QuestionnaireItem
-} from 'fhir/r5';
+} from 'fhir/r4';
 import { createOperationOutcome } from './index';
 import type { PropagatedExtensions } from './Interfaces';
 import { resolveDuplicateLinkIds } from './ResolveDuplicateLinkIds';

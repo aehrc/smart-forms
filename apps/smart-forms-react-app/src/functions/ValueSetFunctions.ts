@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, ValueSet } from 'fhir/r5';
+import type { Coding, ValueSet } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import type { ValueSetPromise } from '../interfaces/Interfaces';
 

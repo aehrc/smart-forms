@@ -17,7 +17,7 @@
 
 import express from 'express';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
-import type { OperationOutcome } from 'fhir/r5';
+import type { OperationOutcome } from 'fhir/r4';
 
 const app = express();
 const port = 3001;

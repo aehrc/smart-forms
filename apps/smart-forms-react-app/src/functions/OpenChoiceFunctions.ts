@@ -21,7 +21,7 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+} from 'fhir/r4';
 import { CheckBoxOptionType, QItemOpenChoiceControl } from '../interfaces/Enums';
 import { isSpecificItemControl } from './ItemControlFunctions';
 import { findInAnswerOptions, findInAnswerValueSetCodings } from './ChoiceFunctions';

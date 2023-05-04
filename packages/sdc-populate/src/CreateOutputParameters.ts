@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { OperationOutcome, QuestionnaireResponse } from 'fhir/r5';
+import type { OperationOutcome, QuestionnaireResponse } from 'fhir/r4';
 import type {
   IssuesParameter,
   PopulateOutputParameters,

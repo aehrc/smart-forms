@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import type { QuestionnaireItem } from 'fhir/r5';
+import type { QuestionnaireItem } from 'fhir/r4';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 

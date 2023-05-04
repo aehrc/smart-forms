@@ -23,7 +23,7 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+} from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import type {
   CalculatedExpression,

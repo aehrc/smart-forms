@@ -25,7 +25,7 @@ import {
   readInitialAnswers,
   setInitialAnswers
 } from './EnableWhenFunctions';
-import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r5';
+import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 describe('verify correctness of linked questions map created from enable when items', () => {
   const enableWhenItems = enableWhenItemsSample as EnableWhenItems;

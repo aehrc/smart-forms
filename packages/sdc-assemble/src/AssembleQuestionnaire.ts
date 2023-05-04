@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { FhirResource, OperationOutcome, Questionnaire } from 'fhir/r5';
+import type { FhirResource, OperationOutcome, Questionnaire } from 'fhir/r4';
 import { fetchSubquestionnaires, getCanonicalUrls } from './SubQuestionnaires';
 import {
   checkMatchingLanguage,

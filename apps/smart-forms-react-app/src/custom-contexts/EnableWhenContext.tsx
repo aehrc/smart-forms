@@ -18,7 +18,7 @@
 import React, { useState } from 'react';
 import type { EnableWhenItems } from '../interfaces/Interfaces';
 import type { EnableWhenContextType } from '../interfaces/ContextTypes';
-import type { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r5';
+import type { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import {
   createLinkedQuestionsMap,
   readInitialAnswers,

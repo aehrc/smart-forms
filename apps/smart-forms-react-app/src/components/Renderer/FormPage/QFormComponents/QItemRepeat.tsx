@@ -24,7 +24,7 @@ import type {
   QuestionnaireItem,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
-} from 'fhir/r5';
+} from 'fhir/r4';
 import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';

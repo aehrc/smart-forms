@@ -23,7 +23,7 @@ import type {
   ResponseListItem
 } from '../interfaces/Interfaces';
 import * as FHIR from 'fhirclient';
-import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
 import { getQuestionnaireNameFromResponse } from './ItemControlFunctions';

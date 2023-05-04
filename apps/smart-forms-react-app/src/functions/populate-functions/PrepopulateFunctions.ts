@@ -23,7 +23,7 @@ import type {
   Practitioner,
   Questionnaire,
   QuestionnaireResponse
-} from 'fhir/r5';
+} from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
 import {
@@ -60,7 +60,7 @@ export async function populateQuestionnaire(
   }
 
   // Define population input parameters from PrePopQuery and x-fhir-query variables
-  const inputParameters = definePopulationParameters(questionnaire, patient);
+  const inputParameters: Parameters = definePopulationParameters(questionnaire, patient);
 
   if (prePopQuery) {
     const prePopQueryContext = await constructPrePopQueryContextParameters(

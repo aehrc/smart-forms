@@ -16,7 +16,7 @@
  */
 
 import { readPopulationExpressions } from './ReadPopulationExpressions';
-import type { Questionnaire } from 'fhir/r5';
+import type { Questionnaire } from 'fhir/r4';
 import Q715XFhirQuery from './resources/715-v.json';
 
 describe('read initial expressions', () => {

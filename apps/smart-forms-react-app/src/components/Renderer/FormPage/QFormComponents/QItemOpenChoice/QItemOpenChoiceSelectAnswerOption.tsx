@@ -28,7 +28,7 @@ import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem
-} from 'fhir/r5';
+} from 'fhir/r4';
 import { getAnswerOptionLabel } from '../../../../../functions/OpenChoiceFunctions';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';

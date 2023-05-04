@@ -25,7 +25,7 @@ import type {
   QuestionnaireResponse,
   Reference,
   ValueSet
-} from 'fhir/r5';
+} from 'fhir/r4';
 
 export interface InitialExpression {
   expression: string;

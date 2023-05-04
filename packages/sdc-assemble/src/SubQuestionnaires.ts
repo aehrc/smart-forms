@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r5';
+import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
 import axios from 'axios';
 import { createOperationOutcome } from './index';
 

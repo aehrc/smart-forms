@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Extension, FhirResource, Questionnaire, QuestionnaireItem } from 'fhir/r5';
+import type { Extension, FhirResource, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 export function propagateSubquestionnaireItems(
   parentQuestionnaire: Questionnaire,

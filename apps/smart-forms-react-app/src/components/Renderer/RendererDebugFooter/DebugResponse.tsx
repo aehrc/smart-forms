@@ -17,7 +17,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
-import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r5';
+import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { RoundButton } from '../../StyledComponents/Buttons.styles';

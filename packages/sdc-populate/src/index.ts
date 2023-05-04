@@ -26,7 +26,7 @@ import type {
 import { addVariablesToContext } from './VariableProcessing';
 import { constructResponse } from './ConstructQuestionnaireResponse';
 import { createOutputParameters } from './CreateOutputParameters';
-import type { OperationOutcome, Parameters, ParametersParameter } from 'fhir/r5';
+import type { OperationOutcome, Parameters, ParametersParameter } from 'fhir/r4';
 import {
   isLaunchPatientContent,
   isLaunchPatientName,

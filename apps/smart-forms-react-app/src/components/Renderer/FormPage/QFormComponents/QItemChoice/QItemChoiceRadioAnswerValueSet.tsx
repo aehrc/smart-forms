@@ -18,7 +18,7 @@
 import React, { memo } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../../interfaces/Enums';
-import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerValueSetCodings } from '../../../../../functions/ChoiceFunctions';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
 import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';

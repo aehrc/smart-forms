@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { QItemChoiceControl } from '../../../../../interfaces/Enums';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r5';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemChoiceRadioAnswerOption from './QItemChoiceRadioAnswerOption';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
 import QItemChoiceCheckboxAnswerOption from './QItemChoiceCheckboxAnswerOption';
