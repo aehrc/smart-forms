@@ -18,7 +18,7 @@ applications:
               npx sentry-cli releases set-commits $VERSION --local --ignore-empty --ignore-missing && \
               npx sentry-cli releases files $VERSION upload-sourcemaps build
       artifacts:
-        baseDirectory: apps/smart-forms-app/build
+        baseDirectory: apps/smart-forms-app/dist
         files:
           - '**/*'
       cache:
