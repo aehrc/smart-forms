@@ -21,7 +21,6 @@
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedParameters": true,
-    "importsNotUsedAsValues": "error",
     "checkJs": true
   },
   "include": ["src"]
