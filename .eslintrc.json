@@ -20,8 +20,9 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks", "@typescript-eslint"],
+  "plugins": ["react", "react-hooks", "@typescript-eslint", "react-refresh"],
   "rules": {
+    "react-refresh/only-export-components": "warn",
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/consistent-type-imports": "error",
     "react/react-in-jsx-scope": "off",
