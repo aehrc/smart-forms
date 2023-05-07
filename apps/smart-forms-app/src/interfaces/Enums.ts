@@ -15,23 +15,6 @@
  * limitations under the License.
  */
 
-export enum QItemType {
-  Group = 'group',
-  String = 'string',
-  Boolean = 'boolean',
-  Date = 'date',
-  Time = 'time',
-  DateTime = 'dateTime',
-  Text = 'text',
-  Display = 'display',
-  Integer = 'integer',
-  Decimal = 'decimal',
-  Quantity = 'quantity',
-  Coding = 'coding',
-  Choice = 'choice',
-  OpenChoice = 'open-choice'
-}
-
 export enum QItemChoiceControl {
   Radio = 'radio',
   Select = 'select',

@@ -20,8 +20,6 @@ import type Client from 'fhirclient/lib/Client';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
 import QTestAssembled715 from '../data/resources/TestAssembled715.json';
 import QCvdRisk2023 from '../data/resources/CVD-Risk-2023.json';
-
-import * as FHIR from 'fhirclient';
 import { getFormsServerAssembledBundlePromise } from './DashboardFunctions';
 import {
   assembleQuestionnaire,
@@ -34,8 +32,6 @@ export const headers = {
   'Content-Type': 'application/json+fhir; charset=UTF-8',
   Accept: 'application/json+fhir; charset=utf-8'
 };
-
-const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
 export function fetchQuestionnaireById(
   client: Client,
@@ -78,30 +74,6 @@ export async function assembleIfRequired(
 
   // questionnaire does not require assembly, return as usual
   return questionnaire;
-}
-
-export function getQuestionnaireFromUrl(canonicalUrl: string): Promise<Bundle> {
-  let queryUrl = `Questionnaire?_sort=-date&url=${canonicalUrl}&`;
-  queryUrl = queryUrl.replace('|', '&version=');
-
-  return FHIR.client(endpointUrl).request({
-    url: queryUrl,
-    method: 'GET',
-    headers: headers
-  });
-}
-
-export function getInitialQuestionnaireFromBundle(response: Bundle): Questionnaire | null {
-  const bundleEntries = response.entry;
-  if (bundleEntries && bundleEntries.length > 0) {
-    for (const entry of bundleEntries) {
-      if (entry.resource?.resourceType === 'Questionnaire') {
-        return entry.resource;
-      }
-    }
-  }
-
-  return null;
 }
 
 /**

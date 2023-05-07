@@ -17,7 +17,6 @@
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { isRepeatItemAndNotCheckbox } from './QItemFunctions';
-import { QItemType } from '../interfaces/Enums';
 
 /**
  * Generate an array of QuestionnaireResponseItems corresponding to its QuestionnaireItem indexes an array.
@@ -55,8 +54,7 @@ export function getQrItemsIndex(
 
       // Assign either a qrItem array or a single qrItem based on whether it is a repeatGroup or not
       qrItemsCollected[linkId] =
-        isRepeatItemAndNotCheckbox(qItems[qItemIndex]) &&
-        qItems[qItemIndex].type === QItemType.Group
+        isRepeatItemAndNotCheckbox(qItems[qItemIndex]) && qItems[qItemIndex].type === 'group'
           ? [qrItem]
           : qrItem;
     }
@@ -68,7 +66,7 @@ export function getQrItemsIndex(
     (mapping: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[], qItem, i) => {
       const qrItemOrItems = qrItemsCollected[qItem.linkId];
       // If qItem is a repeat group, default its value to an array instead of undefined
-      if (isRepeatItemAndNotCheckbox(qItem) && qItem.type === QItemType.Group) {
+      if (isRepeatItemAndNotCheckbox(qItem) && qItem.type === 'group') {
         mapping[i] = qrItemOrItems ? qrItemsCollected[qItem.linkId] : [];
       } else {
         mapping[i] = qrItemsCollected[qItem.linkId];

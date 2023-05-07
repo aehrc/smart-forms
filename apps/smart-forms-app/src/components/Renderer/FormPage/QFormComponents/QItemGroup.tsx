@@ -17,7 +17,6 @@
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Card, Divider, IconButton, Tooltip } from '@mui/material';
-import { QItemType } from '../../../../interfaces/Enums';
 import QItemSwitcher from './QItemSwitcher';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../../functions/IndexFunctions';
 import QItemRepeatGroup from './QItemRepeatGroup';
@@ -146,7 +145,7 @@ function QItemGroup(props: Props) {
               const qrItems = qrItemOrItems;
 
               // qItem should always be either a repeatGroup or a groupTable item
-              if (qItem.repeats && qItem.type === QItemType.Group) {
+              if (qItem.repeats && qItem.type === 'group') {
                 if (isSpecificItemControl(qItem, 'gtable')) {
                   return (
                     <QItemGroupTable
@@ -180,7 +179,7 @@ function QItemGroup(props: Props) {
               const qrItem = qrItemOrItems;
 
               if (isRepeatItemAndNotCheckbox(qItem)) {
-                if (qItem.type === QItemType.Group) {
+                if (qItem.type === 'group') {
                   // If qItem is RepeatGroup or a groupTable item in this decision branch,
                   // their qrItem should always be undefined
                   if (isSpecificItemControl(qItem, 'gtable')) {
@@ -215,7 +214,7 @@ function QItemGroup(props: Props) {
                     />
                   );
                 }
-              } else if (qItem.type === QItemType.Group) {
+              } else if (qItem.type === 'group') {
                 // if qItem is not a repeating question or is a checkbox
                 return (
                   <QItemGroup
