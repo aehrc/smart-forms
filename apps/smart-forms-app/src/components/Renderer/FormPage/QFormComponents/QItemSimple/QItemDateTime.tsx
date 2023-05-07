@@ -109,25 +109,19 @@ interface QItemDateTimePickerProps extends PropsWithIsTabledAttribute {
 }
 
 function QItemDateTimePicker(props: QItemDateTimePickerProps) {
-  const { value, onDateTimeChange, displayPrompt, readOnly, entryFormat } = props;
+  const { value, onDateTimeChange, displayPrompt, readOnly, isTabled, entryFormat } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateTimeField
         format={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY hh:mm A'}
         value={value}
+        fullWidth
         disabled={readOnly}
         label={displayPrompt}
+        sx={{ maxWidth: !isTabled ? 280 : 3000 }}
         onChange={onDateTimeChange}
         data-test="q-item-date-time-field"
-        // renderInput={(params) => (
-        //   <StandardTextField
-        //     fullWidth
-        //     isTabled={isTabled}
-        //     {...params}
-        //     data-test="q-item-date-time-field"
-        //   />
-        // )}
       />
     </LocalizationProvider>
   );

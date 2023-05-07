@@ -107,19 +107,18 @@ interface QItemTimePickerProps extends PropsWithIsTabledAttribute {
 }
 
 function QItemTimePicker(props: QItemTimePickerProps) {
-  const { value, onTimeChange, displayPrompt, readOnly, entryFormat } = props;
+  const { value, onTimeChange, displayPrompt, readOnly, isTabled, entryFormat } = props;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimeField
         format={entryFormat !== '' ? entryFormat : 'HH:MM a'}
         value={value}
+        fullWidth
         disabled={readOnly}
         label={displayPrompt}
+        sx={{ maxWidth: !isTabled ? 280 : 3000 }}
         onChange={onTimeChange}
-        // renderInput={(params: any) => (
-        //   <StandardTextField fullWidth isTabled={isTabled} {...params} />
-        // )}
       />
     </LocalizationProvider>
   );
