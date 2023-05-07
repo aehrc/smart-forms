@@ -19,9 +19,9 @@ import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@
 import { memo, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
-import { SourceContext } from '../../../custom-contexts/SourceContext';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import { LaunchContext } from '../../../custom-contexts/LaunchContext.tsx';
 
 export interface NavButton {
   title: string;
@@ -31,7 +31,7 @@ export interface NavButton {
 }
 
 function DashboardNavSection() {
-  const { source } = useContext(SourceContext);
+  const { fhirClient } = useContext(LaunchContext);
 
   return (
     <Box sx={{ pb: 4 }}>
@@ -48,7 +48,7 @@ function DashboardNavSection() {
           title={'Responses'}
           path={'/dashboard/responses'}
           icon={<AssignmentTurnedInIcon />}
-          disabled={source === 'local'}
+          disabled={!fhirClient}
         />
       </List>
     </Box>
