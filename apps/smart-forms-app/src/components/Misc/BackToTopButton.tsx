@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { Box, Fade, useScrollTrigger } from '@mui/material';
 
 interface Props {

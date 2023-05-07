@@ -1,2 +1,4 @@
 lib
+dist
+coverage
 README.md

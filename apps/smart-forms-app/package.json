@@ -8,8 +8,7 @@
     "start": "vite",
     "build": "tsc && CI=false vite build",
     "test": "jest --config ./jest.config.ts",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
+    "preview": "vite preview --port 5173",
     "cypress:open": "cypress open"
   },
   "dependencies": {

@@ -18,7 +18,7 @@
 import { forwardRef } from 'react';
 import type { SxProps, Theme } from '@mui/material';
 import { Box, Typography } from '@mui/material';
-import { ReactComponent as AppLogo } from '../../data/images/logo.svg';
+import AppLogo from '../../data/images/logo.svg';
 
 interface Props {
   sx?: SxProps<Theme>;
@@ -30,15 +30,15 @@ const Logo = forwardRef((props: Props, ref) => {
   const logo = (
     <Box
       ref={ref}
-      component="div"
+      component="img"
+      src={AppLogo}
       sx={{
         width: 40,
         height: 40,
         display: 'inline-flex',
         ...sx
-      }}>
-      <AppLogo />
-    </Box>
+      }}
+    />
   );
 
   return (

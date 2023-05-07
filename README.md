@@ -96,7 +96,7 @@ REACT_APP_LAUNCH_CLIENT_ID=smart-forms
 
 ```
 
-In development mode, create a `.env.local` file in the `apps/smart-forms-react-app` directory and tweak the environment variables as needed.
+In development mode, create a `.env.local` file in the `apps/smart-forms-app` directory and tweak the environment variables as needed.
 
 
 
@@ -113,7 +113,7 @@ npm install
 3. Change directory into the directory containing the Smart Forms app.
 
 ```sh
-cd apps/smart-forms-react-app
+cd apps/smart-forms-app
 ```
 
 4. Start the local server.

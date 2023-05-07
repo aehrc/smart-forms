@@ -9,7 +9,7 @@ applications:
           commands:
             - |
               export REACT_APP_SENTRY_RELEASE=`git rev-parse --short HEAD`
-              npm run build -w apps/smart-forms-react-app
+              npm run build -w apps/smart-forms-app
         postBuild:
           commands:
             - |
@@ -18,7 +18,7 @@ applications:
               npx sentry-cli releases set-commits $VERSION --local --ignore-empty --ignore-missing && \
               npx sentry-cli releases files $VERSION upload-sourcemaps build
       artifacts:
-        baseDirectory: apps/smart-forms-react-app/build
+        baseDirectory: apps/smart-forms-app/build
         files:
           - '**/*'
       cache:

@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { ChangeEvent, memo, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import { memo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../../interfaces/Enums';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';

@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build application
-        run: npm run build -w apps/smart-forms-react-app
+        run: npm run build -w apps/smart-forms-app
   jest-test:
     name: Jest Tests
     runs-on: ubuntu-latest
@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run jest tests
-        run: npm run test -w apps/smart-forms-react-app
+        run: npm run test -w apps/smart-forms-app
       - uses: codecov/codecov-action@v3
   cypress-test:
     name: Cypress Tests
@@ -43,10 +43,10 @@ jobs:
         with:
           browser: chrome
           headed: true
-          project: ./apps/smart-forms-react-app
-          build: npm run build -w apps/smart-forms-react-app
-          start: npm run serve -w apps/smart-forms-react-app
-          wait-on: 'http://localhost:3000'
+          project: ./apps/smart-forms-app
+          build: npm run build -w apps/smart-forms-app
+          start: npm run preview -w apps/smart-forms-app
+          wait-on: 'http://localhost:5173'
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
