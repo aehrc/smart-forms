@@ -52,7 +52,7 @@
     "@sentry/cli": "^2.17.5",
     "@tanstack/react-query-devtools": "^4.29.6",
     "@testing-library/jest-dom": "^5.16.5",
-    "@types/fhir": "^0.0.36",
+    "@types/fhir": "^0.0.37",
     "@types/jest": "^29.5.1",
     "@types/lodash.clonedeep": "^4.5.7",
     "@types/lodash.debounce": "^4.0.7",
