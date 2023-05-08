@@ -53,9 +53,14 @@ function Form() {
     linkId: ''
   };
 
-  useEffect(() => {
-    enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
-  }, []); // init enableWhen items on first entry into renderer, leave dependency array empty
+  useEffect(
+    () => {
+      enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
+    },
+    // init enableWhen items on first entry into renderer, leave dependency array empty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const questionnaire = questionnaireProvider.questionnaire;
   const { response } = renderer;

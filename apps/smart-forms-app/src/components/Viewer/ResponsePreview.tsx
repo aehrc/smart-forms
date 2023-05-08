@@ -34,9 +34,14 @@ function ResponsePreview() {
   const { setComponentRef } = useContext(PrintComponentRefContext);
   const componentRef = useRef(null);
 
-  useEffect(() => {
-    setComponentRef(componentRef);
-  }, []); // init componentRef on first render, leave dependency array empty
+  useEffect(
+    () => {
+      setComponentRef(componentRef);
+    },
+    // init componentRef on first render, leave dependency array empty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const questionnaire = questionnaireProvider.questionnaire;
   const response = questionnaireResponseProvider.response;

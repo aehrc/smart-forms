@@ -129,17 +129,22 @@ function RendererLayout() {
    * TODO prompt user that there are changes from the server
    *  overwrite prompt - to implement in next phase
    */
-  useEffect(() => {
-    if (!questionnaireResponseProvider.response.item) return;
+  useEffect(
+    () => {
+      if (!questionnaireResponseProvider.response.item) return;
 
-    const qrFormCleaned = removeNoAnswerQrItem(questionnaireResponseProvider.response.item[0]);
-    if (qrFormCleaned) {
-      setRenderer({
-        ...renderer,
-        response: { ...questionnaireResponseProvider.response, item: [qrFormCleaned] }
-      });
-    }
-  }, [questionnaireResponseProvider.response]); // init update renderer response only when server-side changes occur, leave dependency array empty
+      const qrFormCleaned = removeNoAnswerQrItem(questionnaireResponseProvider.response.item[0]);
+      if (qrFormCleaned) {
+        setRenderer({
+          ...renderer,
+          response: { ...questionnaireResponseProvider.response, item: [qrFormCleaned] }
+        });
+      }
+    },
+    // init update renderer response only when server-side changes occur, leave dependency array empty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [questionnaireResponseProvider.response]
+  );
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:

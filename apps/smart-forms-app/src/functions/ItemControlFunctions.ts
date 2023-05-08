@@ -358,13 +358,16 @@ export function getMaxLength(qItem: QuestionnaireItem): number | null {
 
 export function getVariables(qItem: QuestionnaireItem): Expression[] {
   if (qItem.extension) {
-    return qItem.extension
-      .filter(
-        (extension) =>
-          extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
-          extension.valueExpression
-      )
-      .map((extension) => extension.valueExpression!);
+    return (
+      qItem.extension
+        .filter(
+          (extension) =>
+            extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
+            extension.valueExpression
+        )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((extension) => extension.valueExpression!)
+    );
   }
 
   return [];

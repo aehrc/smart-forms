@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-import type { Coding, Expression, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { Extension } from 'fhir/r4';
+import type { Coding, Expression, Extension, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import type { ValueSetPromise } from '../interfaces/Interfaces';
 
 const ONTOSERVER_ENDPOINT =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
 
-const VALID_VALUESET_URL_REGEX =
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*ValueSet[-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+const VALID_VALUE_SET_URL_REGEX =
+  /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;
 
 const VALID_FHIRPATH_VARIABLE_REGEX = /%(.*?)\./;
 
@@ -127,18 +126,21 @@ export function evaluateAnswerExpressionValueSet(
   const valueSetExpression = matchedVariable.expression;
   if (!valueSetExpression) return [];
 
-  if (!VALID_VALUESET_URL_REGEX.test(valueSetExpression)) return [];
+  if (!VALID_VALUE_SET_URL_REGEX.test(valueSetExpression)) return [];
 
   return preprocessedCodings[valueSetExpression] ?? [];
 }
 
 export function getValueSetsToBeExpandedFromVariables(variables: Expression[]): string[] {
   if (variables) {
-    return variables
-      .filter(
-        (variable) => variable.expression && VALID_VALUESET_URL_REGEX.test(variable.expression)
-      )
-      .map((variable) => variable.expression!);
+    return (
+      variables
+        .filter(
+          (variable) => variable.expression && VALID_VALUE_SET_URL_REGEX.test(variable.expression)
+        )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((variable) => variable.expression!)
+    );
   }
 
   return [];

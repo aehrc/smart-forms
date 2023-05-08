@@ -77,31 +77,36 @@ function QItemDecimal(props: Props) {
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
-  useEffect(() => {
-    const calcExpression = calculatedExpressions[qItem.linkId];
+  useEffect(
+    () => {
+      const calcExpression = calculatedExpressions[qItem.linkId];
 
-    if (calcExpression?.value && typeof calcExpression?.value === 'number') {
-      const value = precision
-        ? parseFloat(calcExpression.value.toFixed(precision))
-        : calcExpression.value;
+      if (calcExpression?.value && typeof calcExpression?.value === 'number') {
+        const value = precision
+          ? parseFloat(calcExpression.value.toFixed(precision))
+          : calcExpression.value;
 
-      // only update if calculated value is different from current value
-      if (value !== parseFloat(input)) {
-        // update ui to show calculated value changes
-        setCalExpIsCalculating(true);
-        setTimeout(() => {
-          setCalExpIsCalculating(false);
-        }, 500);
+        // only update if calculated value is different from current value
+        if (value !== parseFloat(input)) {
+          // update ui to show calculated value changes
+          setCalExpIsCalculating(true);
+          setTimeout(() => {
+            setCalExpIsCalculating(false);
+          }, 500);
 
-        // update questionnaireResponse
-        setInput(precision ? value.toFixed(precision) : value.toString());
-        onQrItemChange({
-          ...createEmptyQrItemWithUnit(qItem, displayUnit),
-          answer: [{ valueDecimal: value }]
-        });
+          // update questionnaireResponse
+          setInput(precision ? value.toFixed(precision) : value.toString());
+          onQrItemChange({
+            ...createEmptyQrItemWithUnit(qItem, displayUnit),
+            answer: [{ valueDecimal: value }]
+          });
+        }
       }
-    }
-  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression changes
+    },
+    // Only trigger this effect if calculatedExpression changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [calculatedExpressions]
+  );
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;

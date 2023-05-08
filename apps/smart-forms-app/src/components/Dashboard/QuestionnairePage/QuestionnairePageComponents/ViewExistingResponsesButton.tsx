@@ -57,6 +57,7 @@ function ViewExistingResponsesButton() {
 
   const { data, isInitialLoading, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => getClientBundlePromise(fhirClient!, queryUrl),
     {
       enabled:

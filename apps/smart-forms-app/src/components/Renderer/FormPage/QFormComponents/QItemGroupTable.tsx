@@ -59,9 +59,13 @@ function QItemGroupTable(props: Props) {
 
   const [tableRows, setTableRows] = useState(qrGroupTableRows);
 
-  useEffect(() => {
-    setTableRows(qrGroupTableRows);
-  }, [qrItems]);
+  useEffect(
+    () => {
+      setTableRows(qrGroupTableRows);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [qrItems]
+  );
 
   // Generate item labels as table headers
   const itemLabels: string[] = useMemo(

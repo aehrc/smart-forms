@@ -99,6 +99,7 @@ function ResponsesPage() {
 
   const { data, status, error, isFetching } = useQuery<Bundle>(
     ['response', queryUrl],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => getClientBundlePromise(fhirClient!, queryUrl),
     {
       enabled: source === 'remote' && !!fhirClient && debouncedInput === searchInput

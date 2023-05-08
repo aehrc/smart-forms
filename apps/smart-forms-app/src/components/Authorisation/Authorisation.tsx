@@ -101,111 +101,116 @@ function Authorisation() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    oauth2
-      .ready()
-      .then((client) => {
-        setFhirClient(client);
-        setSource('remote');
-        dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
+  useEffect(
+    () => {
+      oauth2
+        .ready()
+        .then((client) => {
+          setFhirClient(client);
+          setSource('remote');
+          dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
-        getPatient(client)
-          .then((patient) => {
-            setPatient(patient);
-            dispatch({ type: 'UPDATE_HAS_PATIENT', payload: true });
-          })
-          .catch((error) => {
-            console.error(error);
-            dispatch({ type: 'UPDATE_HAS_PATIENT', payload: false });
-            enqueueSnackbar('Fail to fetch patient. Try launching the app again', {
-              variant: 'error'
-            });
-          });
-
-        getUser(client)
-          .then((user) => {
-            setUser(user);
-            dispatch({ type: 'UPDATE_HAS_USER', payload: true });
-          })
-          .catch((error) => {
-            console.error(error);
-            dispatch({ type: 'UPDATE_HAS_USER', payload: false });
-            enqueueSnackbar('Fail to fetch user. Try launching the app again', {
-              variant: 'error'
-            });
-          });
-
-        const questionnaireReference = getQuestionnaireReference(client);
-
-        if (questionnaireReference) {
-          getQuestionnaireContext(questionnaireReference)
-            .then((resource) => {
-              const questionnaire = resource.resourceType === 'Questionnaire' ? resource : null;
-
-              // return early if no matching questionnaire
-              if (!questionnaire) {
-                dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
-                return;
-              }
-
-              // set questionnaire in provider context
-              // perform assembly if required
-              assembleIfRequired(questionnaire).then(async (questionnaire) => {
-                if (questionnaire) {
-                  // Post questionnaire to client if it is SMART Health IT
-                  if (client.state.serverUrl.includes('/v/r4/fhir')) {
-                    questionnaire.id = questionnaire.id + '-SMARTcopy';
-                    postQuestionnaireToSMARTHealthIT(client, questionnaire);
-                  }
-
-                  await questionnaireProvider.setQuestionnaire(questionnaire);
-                  dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
-                } else {
-                  enqueueSnackbar(
-                    'An error occurred while fetching initially specified questionnaire',
-                    { variant: 'error' }
-                  );
-                  dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
-                }
-              });
+          getPatient(client)
+            .then((patient) => {
+              setPatient(patient);
+              dispatch({ type: 'UPDATE_HAS_PATIENT', payload: true });
             })
-            .catch(() => {
-              enqueueSnackbar('An error occurred while fetching Questionnaire launch context', {
+            .catch((error) => {
+              console.error(error);
+              dispatch({ type: 'UPDATE_HAS_PATIENT', payload: false });
+              enqueueSnackbar('Fail to fetch patient. Try launching the app again', {
                 variant: 'error'
               });
-              dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
-            });
-        } else {
-          dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
-        }
-      })
-      .catch((error: Error) => {
-        // Prompt user to launch app if app is unlaunched
-        // Otherwise app is launched but failed, display error message
-        if (
-          error.message.includes("No 'state' parameter found") ||
-          error.message.includes('No state found')
-        ) {
-          if (!window.location.pathname.startsWith('/launch')) {
-            enqueueSnackbar('Intending to launch from a CMS? Try it out here!', {
-              action: <GoToTestLauncher />,
-              autoHideDuration: 7500,
-              preventDuplicate: true
             });
 
-            const timeout = setTimeout(() => {
-              navigate('/dashboard/questionnaires');
-            }, 300);
+          getUser(client)
+            .then((user) => {
+              setUser(user);
+              dispatch({ type: 'UPDATE_HAS_USER', payload: true });
+            })
+            .catch((error) => {
+              console.error(error);
+              dispatch({ type: 'UPDATE_HAS_USER', payload: false });
+              enqueueSnackbar('Fail to fetch user. Try launching the app again', {
+                variant: 'error'
+              });
+            });
 
-            return () => clearTimeout(timeout);
+          const questionnaireReference = getQuestionnaireReference(client);
+
+          if (questionnaireReference) {
+            getQuestionnaireContext(questionnaireReference)
+              .then((resource) => {
+                const questionnaire = resource.resourceType === 'Questionnaire' ? resource : null;
+
+                // return early if no matching questionnaire
+                if (!questionnaire) {
+                  dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
+                  return;
+                }
+
+                // set questionnaire in provider context
+                // perform assembly if required
+                assembleIfRequired(questionnaire).then(async (questionnaire) => {
+                  if (questionnaire) {
+                    // Post questionnaire to client if it is SMART Health IT
+                    if (client.state.serverUrl.includes('/v/r4/fhir')) {
+                      questionnaire.id = questionnaire.id + '-SMARTcopy';
+                      postQuestionnaireToSMARTHealthIT(client, questionnaire);
+                    }
+
+                    await questionnaireProvider.setQuestionnaire(questionnaire);
+                    dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
+                  } else {
+                    enqueueSnackbar(
+                      'An error occurred while fetching initially specified questionnaire',
+                      { variant: 'error' }
+                    );
+                    dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
+                  }
+                });
+              })
+              .catch(() => {
+                enqueueSnackbar('An error occurred while fetching Questionnaire launch context', {
+                  variant: 'error'
+                });
+                dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
+              });
+          } else {
+            dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
           }
-        } else {
-          console.error(error);
-          dispatch({ type: 'FAIL_AUTH', payload: error.message });
-          enqueueSnackbar('An error occurred while launching the app', { variant: 'error' });
-        }
-      });
-  }, []); // only authenticate once, leave dependency array empty
+        })
+        .catch((error: Error) => {
+          // Prompt user to launch app if app is unlaunched
+          // Otherwise app is launched but failed, display error message
+          if (
+            error.message.includes("No 'state' parameter found") ||
+            error.message.includes('No state found')
+          ) {
+            if (!window.location.pathname.startsWith('/launch')) {
+              enqueueSnackbar('Intending to launch from a CMS? Try it out here!', {
+                action: <GoToTestLauncher />,
+                autoHideDuration: 7500,
+                preventDuplicate: true
+              });
+
+              const timeout = setTimeout(() => {
+                navigate('/dashboard/questionnaires');
+              }, 300);
+
+              return () => clearTimeout(timeout);
+            }
+          } else {
+            console.error(error);
+            dispatch({ type: 'FAIL_AUTH', payload: error.message });
+            enqueueSnackbar('An error occurred while launching the app', { variant: 'error' });
+          }
+        });
+    },
+    // only authenticate once, leave dependency array empty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   // Perform redirect if launch authorisation is successful
   useEffect(() => {

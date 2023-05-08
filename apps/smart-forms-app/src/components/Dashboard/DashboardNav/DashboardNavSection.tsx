@@ -23,7 +23,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext.tsx';
 
-export interface NavButton {
+interface NavButton {
   title: string;
   path: string;
   icon: JSX.Element;

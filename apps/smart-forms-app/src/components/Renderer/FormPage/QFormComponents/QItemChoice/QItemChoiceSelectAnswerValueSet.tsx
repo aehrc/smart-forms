@@ -70,11 +70,16 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   // Check and remove populated answer if it is a string
   // NOTE: $populate will try to populate answer as valueCoding,
   //       but will fail if answer provided is not within options
-  useEffect(() => {
-    if (qrChoiceSelect.answer && qrChoiceSelect.answer[0].valueString) {
-      onQrItemChange(createEmptyQrItem(qItem));
-    }
-  }, []); // Only run effect once - on populate
+  useEffect(
+    () => {
+      if (qrChoiceSelect.answer && qrChoiceSelect.answer[0].valueString) {
+        onQrItemChange(createEmptyQrItem(qItem));
+      }
+    },
+    // Only run effect once - on populate
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   // Event handlers
   function handleChange(_: SyntheticEvent<Element, Event>, newValue: Coding | null) {

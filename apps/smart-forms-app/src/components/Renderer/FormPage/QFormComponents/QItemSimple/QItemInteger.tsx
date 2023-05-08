@@ -73,25 +73,30 @@ function QItemInteger(props: Props) {
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
   const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
 
-  useEffect(() => {
-    const calcExpression = calculatedExpressions[qItem.linkId];
+  useEffect(
+    () => {
+      const calcExpression = calculatedExpressions[qItem.linkId];
 
-    // only update if calculated value is different from current value
-    if (calcExpression?.value !== input && typeof calcExpression?.value === 'number') {
-      // update ui to show calculated value changes
-      setCalExpIsCalculating(true);
-      setTimeout(() => {
-        setCalExpIsCalculating(false);
-      }, 500);
+      // only update if calculated value is different from current value
+      if (calcExpression?.value !== input && typeof calcExpression?.value === 'number') {
+        // update ui to show calculated value changes
+        setCalExpIsCalculating(true);
+        setTimeout(() => {
+          setCalExpIsCalculating(false);
+        }, 500);
 
-      // update questionnaireResponse
-      setInput(calcExpression.value);
-      onQrItemChange({
-        ...createEmptyQrItemWithUnit(qItem, displayUnit),
-        answer: [{ valueInteger: calcExpression.value }]
-      });
-    }
-  }, [calculatedExpressions]); // Only trigger this effect if calculatedExpression of item changes
+        // update questionnaireResponse
+        setInput(calcExpression.value);
+        onQrItemChange({
+          ...createEmptyQrItemWithUnit(qItem, displayUnit),
+          answer: [{ valueInteger: calcExpression.value }]
+        });
+      }
+    },
+    // Only trigger this effect if calculatedExpression of item changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [calculatedExpressions]
+  );
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     let newInput = event.target.value;

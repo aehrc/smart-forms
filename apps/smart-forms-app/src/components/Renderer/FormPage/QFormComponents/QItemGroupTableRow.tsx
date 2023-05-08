@@ -39,9 +39,13 @@ function QItemGroupTableRow(props: Props) {
 
   const [row, setRow] = useState(qrRowFromProps);
 
-  useEffect(() => {
-    setRow(qrRowFromProps);
-  }, [qrItem]);
+  useEffect(
+    () => {
+      setRow(qrRowFromProps);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [qrItem]
+  );
 
   if (!rowItems || !rowQrItems) return null;
 
