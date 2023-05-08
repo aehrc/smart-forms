@@ -23,9 +23,12 @@ const ontoserverEndpoint =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
 
 export function getValueSetPromise(url: string): Promise<ValueSet> {
-  const valueSetUrl = url.includes('ValueSet/$expand?url=')
-    ? url.split('ValueSet/$expand?url=')[1]
-    : url;
+  let valueSetUrl = url;
+  if (url.includes('ValueSet/$expand?url=')) {
+    valueSetUrl = url.split('ValueSet/$expand?url=')[1];
+  }
+
+  valueSetUrl = valueSetUrl.replace('|', '&version=');
 
   return FHIR.client({ serverUrl: ontoserverEndpoint }).request({
     url: 'ValueSet/$expand?url=' + valueSetUrl
