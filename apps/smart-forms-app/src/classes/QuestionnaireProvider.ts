@@ -26,6 +26,7 @@ import { getCalculatedExpression } from '../functions/ItemControlFunctions';
 import {
   getValueSetCodings,
   getValueSetPromise,
+  getValueSetUrlFromContained,
   resolvePromises
 } from '../functions/ValueSetFunctions';
 
@@ -84,17 +85,29 @@ export class QuestionnaireProvider {
   async preprocessQuestionnaire() {
     if (!this.questionnaire.item) return;
 
-    // Store contained valueSet codings
+    const valueSetPromiseMap: Record<string, ValueSetPromise> = {};
+
+    // Process contained ValueSets
     if (this.questionnaire.contained && this.questionnaire.contained.length > 0) {
       this.questionnaire.contained.forEach((entry) => {
         if (entry.resourceType === 'ValueSet' && entry.id) {
-          this.preprocessedValueSetCodings[entry.id] = getValueSetCodings(entry);
+          if (entry.expansion) {
+            // Store contained valueSet codings
+            this.preprocessedValueSetCodings[entry.id] = getValueSetCodings(entry);
+          } else {
+            // Add unexpanded contained ValueSets to valueSetPromiseMap
+            const valueSetUrl = getValueSetUrlFromContained(entry);
+            if (valueSetUrl) {
+              valueSetPromiseMap[entry.id] = {
+                promise: getValueSetPromise(valueSetUrl)
+              };
+            }
+          }
         }
       });
     }
 
     // Read enableWhen items, calculated expressions and valueSets to be expanded
-    const valueSetPromiseMap: Record<string, ValueSetPromise> = {};
     this.questionnaire.item.forEach((item) => {
       this.readQuestionnaireItem(item, valueSetPromiseMap);
     });

@@ -35,6 +35,19 @@ export function getValueSetPromise(url: string): Promise<ValueSet> {
   });
 }
 
+/**
+ * Sets an array of codings with the values from a valueSet
+ *
+ * @author Sean Fong
+ */
+export function getValueSetUrlFromContained(valueSet: ValueSet): string {
+  const urls = valueSet.compose?.include?.map((include) =>
+    include.valueSet?.[0] ? include.valueSet[0] : ''
+  );
+
+  return urls && urls.length > 0 ? urls[0] : '';
+}
+
 export async function resolvePromises(
   valueSetPromises: Record<string, ValueSetPromise>
 ): Promise<Record<string, ValueSetPromise>> {
