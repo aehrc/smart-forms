@@ -33,6 +33,8 @@ import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import useValueSetCodings from '../../../../../custom-hooks/useValueSetCodings';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import { StyledAlert } from '../../../../StyledComponents/Nav.styles.tsx';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -91,13 +93,19 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
         })}
       </QRadioGroup>
     ) : serverError ? (
-      <Typography variant="subtitle2">
-        There was an error fetching options from the terminology server.
-      </Typography>
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">
+          There was an error fetching options from the terminology server
+        </Typography>
+      </StyledAlert>
     ) : (
-      <Typography variant="subtitle2">
-        Unable to fetch options, contained resources not found in questionnaire.
-      </Typography>
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">
+          Unable to fetch options from the questionnaire or launch context
+        </Typography>
+      </StyledAlert>
     );
 
   const renderQItemChoiceRadio = isRepeated ? (
