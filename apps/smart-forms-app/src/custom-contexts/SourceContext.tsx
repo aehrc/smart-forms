@@ -16,9 +16,8 @@
  */
 
 import type { ReactNode } from 'react';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useState } from 'react';
 import type { SourceContextType } from '../interfaces/ContextTypes';
-import { LaunchContext } from './LaunchContext';
 
 export const SourceContext = createContext<SourceContextType>({
   source: 'local',
@@ -27,9 +26,8 @@ export const SourceContext = createContext<SourceContextType>({
 
 function SourceContextProvider(props: { children: ReactNode }) {
   const { children } = props;
-  const { fhirClient } = useContext(LaunchContext);
 
-  const [source, setSource] = useState<'local' | 'remote'>(fhirClient ? 'remote' : 'local');
+  const [source, setSource] = useState<'local' | 'remote'>('remote');
 
   const sourceContext: SourceContextType = {
     source,
