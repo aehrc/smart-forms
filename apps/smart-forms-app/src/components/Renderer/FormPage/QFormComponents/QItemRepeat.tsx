@@ -128,7 +128,7 @@ function QItemRepeat(props: Props) {
                         <IconButton
                           size="small"
                           color="error"
-                          disabled={!answer}
+                          disabled={!answer || repeatAnswers.length === 1}
                           onClick={() => deleteAnswer(index)}>
                           <RemoveCircleOutlineIcon fontSize="small" />
                         </IconButton>

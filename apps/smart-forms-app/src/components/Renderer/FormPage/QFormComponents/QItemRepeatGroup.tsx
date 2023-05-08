@@ -130,7 +130,7 @@ function QItemRepeatGroup(props: Props) {
                       <IconButton
                         size="small"
                         color="error"
-                        disabled={!singleGroup}
+                        disabled={!singleGroup || repeatGroups.length === 1}
                         onClick={() => deleteAnswerItem(index)}>
                         <RemoveCircleOutlineIcon />
                       </IconButton>
