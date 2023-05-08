@@ -67,6 +67,10 @@ This method of running the app does not allow you to save responses as it is not
 
 NOTE: The app will not be able to view or save responses as it is not connected to a CMS client.
 
+### Adding my own questionnaires
+
+1. Use Postman (or any other API platform) to POST your questionnaire(s) to https://api.smartforms.io/fhir.
+2. Your questionnaire should show up on the Questionnaire page within the app. In case it does not, try using the search to filter down the results.
 
 ## Configuration
 
@@ -122,6 +126,7 @@ npm start
 ## I found a bug/the app crashed, now what? 
 
 Report it to us! [Create an issue within the repo](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed as soon as possible.
+If you do have any feedback on the app's behaviour/user experience or anything else, feel free to also create an issue!
 
 
 ## Licensing and attribution
