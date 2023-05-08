@@ -34,9 +34,9 @@ export function getValueSetPromise(
 ) {
   let valueSetUrl = fullUrl;
   if (fullUrl.includes('ValueSet/$expand?url=')) {
-    const splitStrs = fullUrl.split('ValueSet/$expand?url=');
-    if (splitStrs[1]) {
-      valueSetUrl = splitStrs[1];
+    const splitUrl = fullUrl.split('ValueSet/$expand?url=');
+    if (splitUrl[1]) {
+      valueSetUrl = splitUrl[1];
     }
   }
 

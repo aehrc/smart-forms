@@ -15,22 +15,42 @@
  * limitations under the License.
  */
 
-import type { Coding, ValueSet } from 'fhir/r4';
+import type { Coding, Expression, QuestionnaireItem, ValueSet } from 'fhir/r4';
+import { Extension } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import type { ValueSetPromise } from '../interfaces/Interfaces';
 
-const ontoserverEndpoint =
+const ONTOSERVER_ENDPOINT =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
 
-export function getValueSetPromise(url: string): Promise<ValueSet> {
+const VALID_VALUESET_URL_REGEX =
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*ValueSet[-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+
+const VALID_FHIRPATH_VARIABLE_REGEX = /%(.*?)\./;
+
+export function getTerminologyServerUrl(qItem: QuestionnaireItem): string | undefined {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/terminology-server'
+  );
+  if (itemControl) {
+    return itemControl.valueUrl;
+  }
+  return undefined;
+}
+
+export function getValueSetPromise(url: string, terminologyServer?: string): Promise<ValueSet> {
   let valueSetUrl = url;
+
   if (url.includes('ValueSet/$expand?url=')) {
-    valueSetUrl = url.split('ValueSet/$expand?url=')[1];
+    const splitUrl = url.split('ValueSet/$expand?url=');
+    terminologyServer = splitUrl[0];
+    valueSetUrl = splitUrl[1];
   }
 
   valueSetUrl = valueSetUrl.replace('|', '&version=');
 
-  return FHIR.client({ serverUrl: ontoserverEndpoint }).request({
+  return FHIR.client({ serverUrl: terminologyServer ?? ONTOSERVER_ENDPOINT }).request({
     url: 'ValueSet/$expand?url=' + valueSetUrl
   });
 }
@@ -82,4 +102,44 @@ export async function resolvePromises(
  */
 export function getValueSetCodings(valueSet: ValueSet): Coding[] {
   return valueSet.expansion?.contains?.map((coding) => coding) ?? [];
+}
+
+/**
+ * Evaluate valueSets in answerExpression with fhirpath
+ *
+ * @author Sean Fong
+ */
+export function evaluateAnswerExpressionValueSet(
+  answerExpression: Expression,
+  variables: Expression[],
+  preprocessedCodings: Record<string, Coding[]>
+): Coding[] {
+  const expression = answerExpression.expression;
+  if (!expression) return [];
+
+  const match = expression.match(VALID_FHIRPATH_VARIABLE_REGEX);
+  const variableName = match?.[1];
+  if (!variableName) return [];
+
+  const matchedVariable = variables?.find((variable) => variable.name === variableName);
+  if (!matchedVariable) return [];
+
+  const valueSetExpression = matchedVariable.expression;
+  if (!valueSetExpression) return [];
+
+  if (!VALID_VALUESET_URL_REGEX.test(valueSetExpression)) return [];
+
+  return preprocessedCodings[valueSetExpression] ?? [];
+}
+
+export function getValueSetsToBeExpandedFromVariables(variables: Expression[]): string[] {
+  if (variables) {
+    return variables
+      .filter(
+        (variable) => variable.expression && VALID_VALUESET_URL_REGEX.test(variable.expression)
+      )
+      .map((variable) => variable.expression!);
+  }
+
+  return [];
 }

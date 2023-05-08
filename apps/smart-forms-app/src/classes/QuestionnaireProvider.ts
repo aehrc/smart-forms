@@ -22,10 +22,12 @@ import type {
   ValueSetPromise
 } from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
-import { getCalculatedExpression } from '../functions/ItemControlFunctions';
+import { getCalculatedExpression, getVariables } from '../functions/ItemControlFunctions';
 import {
+  getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise,
+  getValueSetsToBeExpandedFromVariables,
   getValueSetUrlFromContained,
   resolvePromises
 } from '../functions/ValueSetFunctions';
@@ -49,32 +51,13 @@ export class QuestionnaireProvider {
   }
 
   async setQuestionnaire(questionnaire: Questionnaire): Promise<void> {
+    this.variables = [];
+    this.calculatedExpressions = {};
+    this.enableWhenItems = {};
+    this.preprocessedValueSetCodings = {};
+
     this.questionnaire = questionnaire;
     await this.preprocessQuestionnaire();
-    this.readVariables();
-  }
-
-  /**
-   * Check if an extension is a variable and gets all variable expressions
-   *
-   * @author Sean Fong
-   */
-  readVariables() {
-    if (!this.questionnaire.item) return;
-
-    this.questionnaire.item.forEach((item) => {
-      if (item.extension) {
-        item.extension
-          .filter(
-            (extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/variable'
-          )
-          .forEach((extension) => {
-            if (extension.valueExpression) {
-              this.variables.push(extension.valueExpression);
-            }
-          });
-      }
-    });
   }
 
   /**
@@ -107,7 +90,7 @@ export class QuestionnaireProvider {
       });
     }
 
-    // Read enableWhen items, calculated expressions and valueSets to be expanded
+    // Recursively read enableWhen items, calculated expressions and valueSets to be expanded
     this.questionnaire.item.forEach((item) => {
       this.readQuestionnaireItem(item, valueSetPromiseMap);
     });
@@ -140,7 +123,7 @@ export class QuestionnaireProvider {
       });
     }
 
-    // Read enableWhen items, calculated expressions and valueSets from qItem
+    // Read calculated expressions, enable when items, variables and valueSets from qItem
     const calculatedExpression = getCalculatedExpression(item);
     if (calculatedExpression) {
       this.calculatedExpressions[item.linkId] = {
@@ -153,13 +136,25 @@ export class QuestionnaireProvider {
       this.enableWhenItems[item.linkId] = enableWhenItemProperties;
     }
 
+    const variables = getVariables(item);
+    this.variables.push(...variables);
+
     const valueSetUrl = item.answerValueSet;
     if (valueSetUrl) {
       if (!valueSetPromiseMap[valueSetUrl] && !valueSetUrl.startsWith('#')) {
+        const terminologyServerUrl = getTerminologyServerUrl(item);
         valueSetPromiseMap[valueSetUrl] = {
-          promise: getValueSetPromise(valueSetUrl)
+          promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
         };
       }
+    }
+
+    // Get valueSets from variables if present
+    const valueSetUrls = getValueSetsToBeExpandedFromVariables(variables);
+    for (const valueSetUrl of valueSetUrls) {
+      valueSetPromiseMap[valueSetUrl] = {
+        promise: getValueSetPromise(valueSetUrl)
+      };
     }
   }
 }

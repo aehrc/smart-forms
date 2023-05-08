@@ -81,7 +81,6 @@ export function constructTabsWithProperties(
 ): Record<string, { tabIndex: number; isComplete: boolean }> {
   if (!qItems) return {};
 
-  // FIXME automatically pass all items as tabs if tab container is present
   const linkIds = hasTabContainer
     ? qItems.map((qItem) => qItem.linkId)
     : qItems.filter(isTab).map((qItem) => qItem.linkId);

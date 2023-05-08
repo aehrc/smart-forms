@@ -48,17 +48,7 @@ function QItemChoice(props: Props) {
 
   switch (getChoiceControlType(qItem)) {
     case QItemChoiceControl.Radio:
-      if (qItem.answerValueSet) {
-        return (
-          <QItemChoiceRadioAnswerValueSet
-            qItem={qItem}
-            qrItem={qrItem}
-            isRepeated={isRepeated}
-            onQrItemChange={onQrItemChange}
-            orientation={orientation}
-          />
-        );
-      } else {
+      if (qItem.answerOption) {
         return (
           <QItemChoiceRadioAnswerOption
             qItem={qItem}
@@ -68,11 +58,21 @@ function QItemChoice(props: Props) {
             orientation={orientation}
           />
         );
+      } else {
+        return (
+          <QItemChoiceRadioAnswerValueSet
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={isRepeated}
+            onQrItemChange={onQrItemChange}
+            orientation={orientation}
+          />
+        );
       }
     case QItemChoiceControl.Checkbox:
-      if (qItem.answerValueSet) {
+      if (qItem.answerOption) {
         return (
-          <QItemChoiceCheckboxAnswerValueSet
+          <QItemChoiceCheckboxAnswerOption
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem['repeats'] ?? false}
@@ -82,7 +82,7 @@ function QItemChoice(props: Props) {
         );
       } else {
         return (
-          <QItemChoiceCheckboxAnswerOption
+          <QItemChoiceCheckboxAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem['repeats'] ?? false}
@@ -102,9 +102,9 @@ function QItemChoice(props: Props) {
         />
       );
     case QItemChoiceControl.Select:
-      if (qItem.answerValueSet) {
+      if (qItem.answerOption) {
         return (
-          <QItemChoiceSelectAnswerValueSet
+          <QItemChoiceSelectAnswerOption
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
@@ -114,7 +114,7 @@ function QItemChoice(props: Props) {
         );
       } else {
         return (
-          <QItemChoiceSelectAnswerOption
+          <QItemChoiceSelectAnswerValueSet
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
