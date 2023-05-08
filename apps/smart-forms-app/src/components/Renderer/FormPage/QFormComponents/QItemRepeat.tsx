@@ -56,12 +56,16 @@ function QItemRepeat(props: Props) {
   const [repeatAnswers, setRepeatAnswers] = useState(initialRepeatAnswers);
   const [answerIds, setAnswerIds] = useState(initialRepeatAnswers.map(() => nanoid()));
 
-  useEffect(() => {
-    if (repeatAnswers.length === 0) {
-      setRepeatAnswers([undefined]);
-      setAnswerIds([nanoid()]);
-    }
-  }, [qrItem]);
+  useEffect(
+    () => {
+      if (repeatAnswers.length === 0) {
+        setRepeatAnswers([undefined]);
+        setAnswerIds([nanoid()]);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [qrItem]
+  );
 
   // Get additional rendering extensions
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -128,7 +132,7 @@ function QItemRepeat(props: Props) {
                         <IconButton
                           size="small"
                           color="error"
-                          disabled={!answer}
+                          disabled={!answer || repeatAnswers.length === 1}
                           onClick={() => deleteAnswer(index)}>
                           <RemoveCircleOutlineIcon fontSize="small" />
                         </IconButton>

@@ -17,10 +17,11 @@
 
 import { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getXHtmlString } from '../../../../../functions/ItemControlFunctions';
+import { getMarkdownString, getXHtmlString } from '../../../../../functions/ItemControlFunctions';
 import { QItemTypography } from '../../../../StyledComponents/Item.styles';
 import parse from 'html-react-parser';
 import { Box } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
 
 interface Props {
   qItem: QuestionnaireItem;
@@ -29,16 +30,27 @@ interface Props {
 function QItemLabel(props: Props) {
   const { qItem } = props;
 
+  // parse xHTML if found
   const xHtmlString = getXHtmlString(qItem);
-
   if (xHtmlString) {
     return <Box sx={{ mt: 0.5 }}>{parse(xHtmlString)}</Box>;
+  }
+
+  // parse xHTML if found
+  const markdownString = getMarkdownString(qItem);
+  if (markdownString) {
+    return (
+      <Box sx={{ mt: 0.5 }}>
+        <ReactMarkdown>{markdownString}</ReactMarkdown>
+      </Box>
+    );
+  }
+
+  // parse regular text
+  if (qItem.type === 'group') {
+    return <>{qItem.text}</>;
   } else {
-    if (qItem.type === 'group') {
-      return <>{qItem.text}</>;
-    } else {
-      return <QItemTypography>{qItem.text}</QItemTypography>;
-    }
+    return <QItemTypography>{qItem.text}</QItemTypography>;
   }
 }
 

@@ -50,12 +50,16 @@ function QItemRepeatGroup(props: Props) {
   const [repeatGroups, setRepeatGroups] = useState(qrRepeatGroups);
   const [groupIds, setGroupIds] = useState(qrRepeatGroups.map(() => nanoid()));
 
-  useEffect(() => {
-    if (qrRepeatGroups.length === 0) {
-      setRepeatGroups([undefined]);
-      setGroupIds([nanoid()]);
-    }
-  }, [qrItems]);
+  useEffect(
+    () => {
+      if (qrRepeatGroups.length === 0) {
+        setRepeatGroups([undefined]);
+        setGroupIds([nanoid()]);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [qrItems]
+  );
 
   // Event Handlers
   function handleAnswerItemsChange(newQrGroup: QuestionnaireResponseItem, index: number) {
@@ -130,7 +134,7 @@ function QItemRepeatGroup(props: Props) {
                       <IconButton
                         size="small"
                         color="error"
-                        disabled={!singleGroup}
+                        disabled={!singleGroup || repeatGroups.length === 1}
                         onClick={() => deleteAnswerItem(index)}>
                         <RemoveCircleOutlineIcon />
                       </IconButton>

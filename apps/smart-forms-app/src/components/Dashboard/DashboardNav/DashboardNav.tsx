@@ -21,11 +21,12 @@ import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import NavSection from './DashboardNavSection';
-import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
 import NavAccounts from '../../Nav/NavAccounts';
 import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import CsiroLogo from '../../Misc/CsiroLogo';
+
+const NAV_WIDTH = 240;
 
 interface Props {
   openNav: boolean;

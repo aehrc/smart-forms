@@ -125,6 +125,25 @@ export function getCalculatedExpression(qItem: QuestionnaireItem): Expression | 
 }
 
 /**
+ * Check if an answerExpression extension is present
+ *
+ * @author Sean Fong
+ */
+export function getAnswerExpression(qItem: QuestionnaireItem): Expression | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression'
+  );
+  if (itemControl) {
+    if (itemControl.valueExpression) {
+      return itemControl.valueExpression;
+    }
+  }
+  return null;
+}
+
+/**
  * Check if the extension has url for items that use open label
  *
  * @author Sean Fong
@@ -174,6 +193,25 @@ export function getXHtmlString(qItem: QuestionnaireItem): string | null {
   if (itemControl) {
     if (itemControl.valueString) {
       return itemControl.valueString;
+    }
+  }
+  return null;
+}
+
+/**
+ * Check if the item label (text) has a valueMarkdown extension
+ *
+ * @author Sean Fong
+ */
+export function getMarkdownString(qItem: QuestionnaireItem): string | null {
+  const itemControl = qItem._text?.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-markdown'
+  );
+
+  if (itemControl) {
+    if (itemControl.valueMarkdown) {
+      return itemControl.valueMarkdown;
     }
   }
   return null;
@@ -316,4 +354,21 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegExp | null {
  */
 export function getMaxLength(qItem: QuestionnaireItem): number | null {
   return qItem.maxLength ?? null;
+}
+
+export function getVariables(qItem: QuestionnaireItem): Expression[] {
+  if (qItem.extension) {
+    return (
+      qItem.extension
+        .filter(
+          (extension) =>
+            extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
+            extension.valueExpression
+        )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((extension) => extension.valueExpression!)
+    );
+  }
+
+  return [];
 }

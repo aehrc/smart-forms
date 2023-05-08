@@ -36,6 +36,8 @@ import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { StyledAlert } from '../../../../StyledComponents/Nav.styles.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -94,13 +96,19 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
         })}
       </QFormGroup>
     ) : serverError ? (
-      <Typography variant="subtitle2">
-        There was an error fetching options from the terminology server.
-      </Typography>
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">
+          There was an error fetching options from the terminology server
+        </Typography>
+      </StyledAlert>
     ) : (
-      <Typography variant="subtitle2">
-        Unable to fetch options, contained resources not found in questionnaire.
-      </Typography>
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">
+          Unable to fetch options from the questionnaire or launch context
+        </Typography>
+      </StyledAlert>
     );
 
   return (

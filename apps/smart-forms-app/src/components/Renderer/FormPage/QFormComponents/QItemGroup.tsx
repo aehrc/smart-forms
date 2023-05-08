@@ -75,12 +75,16 @@ function QItemGroup(props: Props) {
 
   const [group, setGroup] = useState(groupFromProps);
 
-  useEffect(() => {
-    const groupStateIsSame = JSON.stringify(group) === JSON.stringify(groupFromProps);
-    if (!groupStateIsSame) {
-      setGroup(groupFromProps);
-    }
-  }, [qrItem]);
+  useEffect(
+    () => {
+      const groupStateIsSame = JSON.stringify(group) === JSON.stringify(groupFromProps);
+      if (!groupStateIsSame) {
+        setGroup(groupFromProps);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [qrItem]
+  );
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 

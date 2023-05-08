@@ -15,34 +15,52 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFunctions';
+import {
+  evaluateAnswerExpressionValueSet,
+  getValueSetCodings,
+  getValueSetPromise
+} from '../functions/ValueSetFunctions';
 import { PreprocessedValueSetContext } from '../components/Renderer/FormPage/Form';
 import { CachedQueriedValueSetContext } from '../custom-contexts/CachedValueSetContext';
+import { getAnswerExpression } from '../functions/ItemControlFunctions.ts';
+import { QuestionnaireProviderContext } from '../App.tsx';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
   const preprocessedCodings = useContext(PreprocessedValueSetContext);
   const { cachedValueSetCodings, addCodingToCache } = useContext(CachedQueriedValueSetContext);
+  const { variables } = useContext(QuestionnaireProviderContext);
 
   let valueSetUrl = qItem.answerValueSet;
+  const initialCodings = useMemo(() => {
+    // set options from cached answer options if present
+    if (valueSetUrl) {
+      if (valueSetUrl.startsWith('#')) {
+        valueSetUrl = valueSetUrl.slice(1);
+      }
 
-  let initialCodings: Coding[] = [];
+      // attempt to get codings from value sets preprocessed when loading questionnaire
+      if (preprocessedCodings[valueSetUrl]) {
+        return preprocessedCodings[valueSetUrl];
+      }
 
-  // set options from cached answer options if present
-  if (valueSetUrl) {
-    if (valueSetUrl.startsWith('#')) {
-      valueSetUrl = valueSetUrl.slice(1);
-    }
-
-    // attempt to get codings from value sets preprocessed when loading questionnaire
-    initialCodings = preprocessedCodings[valueSetUrl] ?? [];
-
-    if (initialCodings.length === 0) {
       // attempt to get codings from cached queried value sets
-      initialCodings = cachedValueSetCodings[valueSetUrl] ?? [];
+      if (cachedValueSetCodings[valueSetUrl]) {
+        return cachedValueSetCodings[valueSetUrl];
+      }
     }
-  }
+
+    // get valueSet from sdc-questionnaire-answerExpression extension if answerValueSet is not present
+    if (!valueSetUrl) {
+      const answerExpression = getAnswerExpression(qItem);
+      if (answerExpression) {
+        return evaluateAnswerExpressionValueSet(answerExpression, variables, preprocessedCodings);
+      }
+    }
+
+    return [];
+  }, [valueSetUrl, qItem, variables, preprocessedCodings, cachedValueSetCodings]);
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [serverError, setServerError] = useState<Error | null>(null);

@@ -36,11 +36,15 @@ function DebugResponse(props: Props) {
     data: Questionnaire | QuestionnaireResponse | Bundle;
   }>({ name: 'Questionnaire Response', data: questionnaireResponse });
 
-  useEffect(() => {
-    if (displayInfo.name === 'Questionnaire Response') {
-      setDisplayInfo({ ...displayInfo, data: questionnaireResponse });
-    }
-  }, [questionnaireResponse]);
+  useEffect(
+    () => {
+      if (displayInfo.name === 'Questionnaire Response') {
+        setDisplayInfo({ ...displayInfo, data: questionnaireResponse });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [questionnaireResponse]
+  );
 
   return (
     <Box sx={{ pt: 6 }}>

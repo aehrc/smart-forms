@@ -21,6 +21,12 @@ import { createOperationOutcome } from './index';
 
 import SQ715AboutTheHealthCheck from './resources/subquestionnaires/Questionnaire-715AboutTheHealthCheck.json';
 
+const HEADERS = {
+  'Cache-Control': 'no-cache',
+  'Content-Type': 'application/json+fhir; charset=UTF-8',
+  Accept: 'application/json+fhir; charset=utf-8'
+};
+
 export function getCanonicalUrls(
   parentQuestionnaire: Questionnaire,
   allCanonicals: string[]
@@ -126,18 +132,11 @@ async function fetchQuestionnaireByCanonical(
   canonicalUrl: string,
   formsServerEndpoint: string
 ): Promise<any> {
-  const headers = {
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'application/json+fhir; charset=UTF-8',
-    Accept: 'application/json+fhir; charset=utf-8'
-  };
+  canonicalUrl = canonicalUrl.replace('|', '&version=');
 
-  // FIXME version search i.e. "|0.1.0" doesnt work on SMART Health IT, remove version temporarily
-  const canonicalUrlWithoutVersion = canonicalUrl.slice(0, -6);
-
-  return axios.get(`${formsServerEndpoint}/Questionnaire?url=${canonicalUrlWithoutVersion}`, {
+  return axios.get(`${formsServerEndpoint}/Questionnaire?url=${canonicalUrl}`, {
     method: 'GET',
-    headers: headers
+    headers: HEADERS
   });
 }
 

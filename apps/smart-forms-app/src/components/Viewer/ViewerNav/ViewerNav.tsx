@@ -20,7 +20,6 @@ import { Box, Drawer } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import Scrollbar from '../../Scrollbar/Scrollbar';
-import { NAV_WIDTH } from '../../StyledComponents/Nav.styles';
 import NavAccounts from '../../Nav/NavAccounts';
 import ViewerNavSection from './ViewerNavSection';
 import ViewerOperationSection from './ViewerOperationSection';
@@ -28,6 +27,8 @@ import { LaunchContext } from '../../../custom-contexts/LaunchContext';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import CsiroLogo from '../../Misc/CsiroLogo';
+
+const NAV_WIDTH = 240;
 
 interface Props {
   openNav: boolean;

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import type { ThemeOptions } from '@mui/material';
 import { CssBaseline } from '@mui/material';
@@ -69,7 +70,7 @@ declare module '@mui/material/styles' {
 // ----------------------------------------------------------------------
 
 interface Props {
-  children: any;
+  children: ReactNode;
 }
 
 function ThemeProvider({ children }: Props) {

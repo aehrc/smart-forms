@@ -32,9 +32,15 @@ export function getValueSetPromise(
   fullUrl: string,
   valueSetPromiseMap: Record<string, ValueSetPromise>
 ) {
-  const valueSetUrl = fullUrl.includes('ValueSet/$expand?url=')
-    ? fullUrl.split('ValueSet/$expand?url=')[1]
-    : fullUrl;
+  let valueSetUrl = fullUrl;
+  if (fullUrl.includes('ValueSet/$expand?url=')) {
+    const splitUrl = fullUrl.split('ValueSet/$expand?url=');
+    if (splitUrl[1]) {
+      valueSetUrl = splitUrl[1];
+    }
+  }
+
+  valueSetUrl = valueSetUrl.replace('|', '&version=');
 
   valueSetPromiseMap[qItem.linkId] = {
     promise: FHIR.client({ serverUrl: ONTOSERVER_ENDPOINT }).request({

@@ -32,6 +32,8 @@ import { StandardTextField } from '../../../../StyledComponents/Textfield.styles
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import useValueSetCodings from '../../../../../custom-hooks/useValueSetCodings';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import { StyledAlert } from '../../../../StyledComponents/Nav.styles.tsx';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -68,11 +70,16 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   // Check and remove populated answer if it is a string
   // NOTE: $populate will try to populate answer as valueCoding,
   //       but will fail if answer provided is not within options
-  useEffect(() => {
-    if (qrChoiceSelect.answer && qrChoiceSelect.answer[0].valueString) {
-      onQrItemChange(createEmptyQrItem(qItem));
-    }
-  }, []); // Only run effect once - on populate
+  useEffect(
+    () => {
+      if (qrChoiceSelect.answer && qrChoiceSelect.answer[0].valueString) {
+        onQrItemChange(createEmptyQrItem(qItem));
+      }
+    },
+    // Only run effect once - on populate
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   // Event handlers
   function handleChange(_: SyntheticEvent<Element, Event>, newValue: Coding | null) {
@@ -118,13 +125,19 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         )}
       />
     ) : serverError ? (
-      <Typography variant="subtitle2">
-        There was an error fetching options from the terminology server.
-      </Typography>
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">
+          There was an error fetching options from the terminology server
+        </Typography>
+      </StyledAlert>
     ) : (
-      <Typography variant="subtitle2">
-        Unable to fetch options, contained resources not found in questionnaire.
-      </Typography>
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">
+          Unable to fetch options from the questionnaire or launch context
+        </Typography>
+      </StyledAlert>
     );
 
   const renderQItemChoiceSelectAnswerValueSet = isRepeated ? (

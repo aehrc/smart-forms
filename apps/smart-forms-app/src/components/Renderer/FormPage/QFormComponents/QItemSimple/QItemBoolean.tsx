@@ -51,14 +51,19 @@ function QItemBoolean(props: Props) {
 
   // Trigger enableWhen on init - special case
   const { linkMap } = useContext(EnableWhenContext);
-  useEffect(() => {
-    // if boolean item is an enableWhen linked question and it does not have an answer yet
-    // set default answer to false - to trigger enableWhen == false
-    if (qItem.linkId in linkMap && !qrBoolean.answer) {
-      setIsChecked(false);
-      onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueBoolean: false }] });
-    }
-  }, []); // Only run effect on init
+  useEffect(
+    () => {
+      // if boolean item is an enableWhen linked question and it does not have an answer yet
+      // set default answer to false - to trigger enableWhen == false
+      if (qItem.linkId in linkMap && !qrBoolean.answer) {
+        setIsChecked(false);
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueBoolean: false }] });
+      }
+    },
+    // Only run effect on init
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   // Event handlers
   function handleChange(event: ChangeEvent<HTMLInputElement>) {

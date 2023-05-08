@@ -18,8 +18,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
-export const NAV_WIDTH = 240;
-
 export const StyledAccount = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',

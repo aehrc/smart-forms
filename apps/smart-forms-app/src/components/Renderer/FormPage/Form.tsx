@@ -30,6 +30,8 @@ import { CurrentTabIndexContext, RendererContext } from '../RendererLayout';
 import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter';
 import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
 import { Helmet } from 'react-helmet';
+import { StyledAlert } from '../../StyledComponents/Nav.styles.tsx';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
@@ -51,9 +53,14 @@ function Form() {
     linkId: ''
   };
 
-  useEffect(() => {
-    enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
-  }, []); // init enableWhen items on first entry into renderer, leave dependency array empty
+  useEffect(
+    () => {
+      enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
+    },
+    // init enableWhen items on first entry into renderer, leave dependency array empty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const questionnaire = questionnaireProvider.questionnaire;
   const { response } = renderer;
@@ -73,10 +80,6 @@ function Form() {
 
     updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables);
     setRenderer({ response: updatedResponse, hasChanges: true });
-  }
-  // TODO support multiple first-level items
-  if (questionnaire.item.length > 1) {
-    console.log('This app only supports one first-level Questionnaire items at the moment.');
   }
 
   if (qForm.item && qrForm.item) {
@@ -112,6 +115,15 @@ function Form() {
                   isRepeated={false}
                 />
               )}
+              {/*  Alert for providing feedback that only one top-level item is supported */}
+              {questionnaire.item.length > 1 ? (
+                <StyledAlert color="error">
+                  <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+                  <Typography variant="subtitle2">
+                    This app only supports one top-level item currently
+                  </Typography>
+                </StyledAlert>
+              ) : null}
             </Container>
           </Fade>
           {debugMode ? <RendererDebugFooter /> : null}

@@ -15,21 +15,56 @@
  * limitations under the License.
  */
 
-import type { Coding, ValueSet } from 'fhir/r4';
+import type { Coding, Expression, Extension, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import type { ValueSetPromise } from '../interfaces/Interfaces';
 
-const ontoserverEndpoint =
+const ONTOSERVER_ENDPOINT =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
 
-export function getValueSetPromise(url: string): Promise<ValueSet> {
-  const valueSetUrl = url.includes('ValueSet/$expand?url=')
-    ? url.split('ValueSet/$expand?url=')[1]
-    : url;
+const VALID_VALUE_SET_URL_REGEX =
+  /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;
 
-  return FHIR.client({ serverUrl: ontoserverEndpoint }).request({
+const VALID_FHIRPATH_VARIABLE_REGEX = /%(.*?)\./;
+
+export function getTerminologyServerUrl(qItem: QuestionnaireItem): string | undefined {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/terminology-server'
+  );
+  if (itemControl) {
+    return itemControl.valueUrl;
+  }
+  return undefined;
+}
+
+export function getValueSetPromise(url: string, terminologyServer?: string): Promise<ValueSet> {
+  let valueSetUrl = url;
+
+  if (url.includes('ValueSet/$expand?url=')) {
+    const splitUrl = url.split('ValueSet/$expand?url=');
+    terminologyServer = splitUrl[0];
+    valueSetUrl = splitUrl[1];
+  }
+
+  valueSetUrl = valueSetUrl.replace('|', '&version=');
+
+  return FHIR.client({ serverUrl: terminologyServer ?? ONTOSERVER_ENDPOINT }).request({
     url: 'ValueSet/$expand?url=' + valueSetUrl
   });
+}
+
+/**
+ * Sets an array of codings with the values from a valueSet
+ *
+ * @author Sean Fong
+ */
+export function getValueSetUrlFromContained(valueSet: ValueSet): string {
+  const urls = valueSet.compose?.include?.map((include) =>
+    include.valueSet?.[0] ? include.valueSet[0] : ''
+  );
+
+  return urls && urls.length > 0 ? urls[0] : '';
 }
 
 export async function resolvePromises(
@@ -66,4 +101,47 @@ export async function resolvePromises(
  */
 export function getValueSetCodings(valueSet: ValueSet): Coding[] {
   return valueSet.expansion?.contains?.map((coding) => coding) ?? [];
+}
+
+/**
+ * Evaluate valueSets in answerExpression with fhirpath
+ *
+ * @author Sean Fong
+ */
+export function evaluateAnswerExpressionValueSet(
+  answerExpression: Expression,
+  variables: Expression[],
+  preprocessedCodings: Record<string, Coding[]>
+): Coding[] {
+  const expression = answerExpression.expression;
+  if (!expression) return [];
+
+  const match = expression.match(VALID_FHIRPATH_VARIABLE_REGEX);
+  const variableName = match?.[1];
+  if (!variableName) return [];
+
+  const matchedVariable = variables?.find((variable) => variable.name === variableName);
+  if (!matchedVariable) return [];
+
+  const valueSetExpression = matchedVariable.expression;
+  if (!valueSetExpression) return [];
+
+  if (!VALID_VALUE_SET_URL_REGEX.test(valueSetExpression)) return [];
+
+  return preprocessedCodings[valueSetExpression] ?? [];
+}
+
+export function getValueSetsToBeExpandedFromVariables(variables: Expression[]): string[] {
+  if (variables) {
+    return (
+      variables
+        .filter(
+          (variable) => variable.expression && VALID_VALUE_SET_URL_REGEX.test(variable.expression)
+        )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((variable) => variable.expression!)
+    );
+  }
+
+  return [];
 }
