@@ -1,7 +1,7 @@
 {
   "name": "sdc-assemble",
   "version": "0.2.0",
-  "description": "Performs assembly on modular forms from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/modular.html",
+  "description": "Performs the $assemble operation for modular forms from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/modular.html",
   "main": "lib/index.js",
   "scripts": {
     "prepare": "npm run compile",
@@ -12,11 +12,11 @@
   "author": "Sean Fong",
   "license": "ISC",
   "dependencies": {
-    "@types/fhir": "^0.0.36",
-    "axios": "^1.3.0",
+    "axios": "^1.4.0",
     "lodash.clonedeep": "^4.5.0"
   },
   "devDependencies": {
+    "@types/fhir": "^0.0.36",
     "@types/lodash.clonedeep": "^4.5.7"
   }
 }

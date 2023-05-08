@@ -13,7 +13,7 @@ Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web applic
 
 The web app is intended to demonstrate the use of [HL7 FHIR](https://hl7.org/fhir/) specifications, such as the [Questionnaire](https://hl7.org/fhir/questionnaire.html) and [QuestionnaireResponse](https://hl7.org/fhir/questionnaireresponse.html) resources, the Structured Data Capture (SDC) implementation guide, and most notably it leverages [SMART on FHIR capabilities](https://hl7.org/fhir/smart-app-launch/index.html) that allows the app to be launched by a primary care Clinical Management System (CMS) and capture standardised health check information for healthcare clients.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Vite](https://vitejs.dev/).
 
 
 ## Functionalities
@@ -58,10 +58,6 @@ NOTE: The patients featured in the screenshots are synthetic and do not represen
 
 ![image](https://user-images.githubusercontent.com/52597778/223016492-882abdaf-33e9-4039-8c32-301c4cf58e91.png)
 
-3. Alternatively, launch a specified questionnaire directly with `https://www.smartforms.io/launch?questionnaireUrl={questionnaire.url}`, with questionnaire.url being the absolute URI of the questionnaire: https://hl7.org/FHIR/questionnaire-definitions.html#Questionnaire.url. The questionnaire has to be stored in the forms server before you can launch it directly. You can use [Postman](https://www.postman.com/) to do so.
-
-![image](https://user-images.githubusercontent.com/52597778/223016795-1b7b66d9-70c5-4a00-9fe6-b8e873a62c5b.png)
-
 ### Running in an unlaunched state
 
 This method of running the app does not allow you to save responses as it is not connected to a CMS client.
@@ -77,26 +73,25 @@ NOTE: The app will not be able to view or save responses as it is not connected 
 ### Environment
 
 The default configuration is set to:
-
 ```
 # Ontoserver endpoint for $expand operations
 # To run your own Ontoserver instance, contact us at https://ontoserver.csiro.au/site/contact-us/ontoserver-contact-form/
-REACT_APP_ONTOSERVER_URL=https://r4.ontoserver.csiro.au/fhir
+VITE_ONTOSERVER_URL=https://r4.ontoserver.csiro.au/fhir
 
 # Questionnaire-hosting FHIR server
-REACT_APP_FORMS_SERVER_URL=https://api.smartforms.io/fhir
+VITE_FORMS_SERVER_URL=https://api.smartforms.io/fhir
 
 # Debug mode - set to true in dev mode
-REACT_APP_SHOW_DEBUG_MODE=false
+VITE_SHOW_DEBUG_MODE=false
 
 # SMART App Launch scopes and launch contexts
-# It will be necessary to tweak these variables if you are connecting the app to your own client CMS
-REACT_APP_LAUNCH_SCOPE=launch/patient patient/*.read offline_access openid fhirUser
-REACT_APP_LAUNCH_CLIENT_ID=smart-forms
+# It will be necessary to tweak these variables if you are connecting the app to your own SMART on FHIR enabled CMS/EHR
+VITE_LAUNCH_SCOPE=launch/patient patient/*.read offline_access openid fhirUser
+VITE_LAUNCH_CLIENT_ID=smart-forms
 
 ```
 
-In development mode, create a `.env.local` file in the `apps/smart-forms-react-app` directory and tweak the environment variables as needed.
+In development mode, create a `.env.local` file in the `apps/smart-forms-app` directory and tweak the environment variables as needed.
 
 
 
@@ -113,7 +108,7 @@ npm install
 3. Change directory into the directory containing the Smart Forms app.
 
 ```sh
-cd apps/smart-forms-react-app
+cd apps/smart-forms-app
 ```
 
 4. Start the local server.
@@ -122,11 +117,11 @@ cd apps/smart-forms-react-app
 npm start
 ```
 
-5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://www.smartforms.io/launch with http://localhost:3000/launch
+5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://www.smartforms.io/launch with http://localhost:5173/launch
 
-## I found a bug/the app crashed, now what?
+## I found a bug/the app crashed, now what? 
 
-Definitely report it to us! [Create an issue within the repo](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed as soon as possible.
+Report it to us! [Create an issue within the repo](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed as soon as possible.
 
 
 ## Licensing and attribution
@@ -138,3 +133,5 @@ the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 This means that you are free to use, modify and redistribute the software as
 you wish, even for commercial purposes.
+
+**Smart Forms is experimental software at the moment, use it at your own risk!**

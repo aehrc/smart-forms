@@ -25,19 +25,19 @@ import type {
 import type { ValueSetPromise } from './Interfaces';
 import * as FHIR from 'fhirclient';
 
+const ONTOSERVER_ENDPOINT = 'https://r4.ontoserver.csiro.au/fhir/';
+
 export function getValueSetPromise(
   qItem: QuestionnaireItem,
   fullUrl: string,
   valueSetPromiseMap: Record<string, ValueSetPromise>
 ) {
-  const ontoserver = process.env.REACT_APP_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
-
   const valueSetUrl = fullUrl.includes('ValueSet/$expand?url=')
     ? fullUrl.split('ValueSet/$expand?url=')[1]
     : fullUrl;
 
   valueSetPromiseMap[qItem.linkId] = {
-    promise: FHIR.client({ serverUrl: ontoserver }).request({
+    promise: FHIR.client({ serverUrl: ONTOSERVER_ENDPOINT }).request({
       url: 'ValueSet/$expand?url=' + valueSetUrl
     })
   };
