@@ -180,6 +180,25 @@ export function getXHtmlString(qItem: QuestionnaireItem): string | null {
 }
 
 /**
+ * Check if the item label (text) has a valueMarkdown extension
+ *
+ * @author Sean Fong
+ */
+export function getMarkdownString(qItem: QuestionnaireItem): string | null {
+  const itemControl = qItem._text?.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-markdown'
+  );
+
+  if (itemControl) {
+    if (itemControl.valueMarkdown) {
+      return itemControl.valueMarkdown;
+    }
+  }
+  return null;
+}
+
+/**
  * Get questionnaire name from questionnaireResponse
  * If questionnaireResponse does not have a name, fallback to questionnaireResponse questionnaireId
  *
