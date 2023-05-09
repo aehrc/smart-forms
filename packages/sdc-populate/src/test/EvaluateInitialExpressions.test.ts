@@ -19,10 +19,10 @@ import {
   evaluateInitialExpressions,
   findMatchingClosingBracketIndex,
   removeUnimplementedFunction
-} from './EvaluateInitialExpressions';
+} from '../EvaluateInitialExpressions';
 import initialExpressionsSample from './resources/initial-expressions-sample.json';
 import contextSample from './resources/context-sample.json';
-import type { InitialExpression } from './Interfaces';
+import type { InitialExpression } from '../Interfaces';
 
 describe('evaluate initial expressions', () => {
   const initialExpressions = initialExpressionsSample as unknown as Record<
