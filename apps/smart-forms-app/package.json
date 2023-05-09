@@ -19,7 +19,7 @@
     "@mui/lab": "^5.0.0-alpha.129",
     "@mui/material": "^5.12.3",
     "@mui/x-date-pickers": "^6.3.1",
-    "@sentry/react": "^7.50.0",
+    "@sentry/react": "^7.51.1",
     "@sentry/tracing": "^7.50.0",
     "@tanstack/react-query": "^4.29.5",
     "dayjs": "^1.11.7",
