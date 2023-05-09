@@ -43,7 +43,7 @@
     "react-router-dom": "6.9.0",
     "react-spinners": "^0.13.8",
     "react-to-print": "^2.14.12",
-    "sdc-assemble": "^0.2.0",
+    "sdc-assemble": "^1.0.0",
     "sdc-populate": "^1.0.2",
     "simplebar-react": "^3.2.4",
     "uuidjs": "^5.0.1"
