@@ -15,41 +15,35 @@
  * limitations under the License.
  */
 
-import type { OperationOutcome, Questionnaire } from 'fhir/r4';
-import type { AssembleOutputParameters, AssembleOutputParametersWithIssues } from './Interfaces';
+import type { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
 
 /**
- * Create output parameters as a response to be returned to the renderer without any issues.
+ * Create an OperationOutcome error with a supplied error message
  *
  * @author Sean Fong
  */
-export function createOutputParameters(assembled: Questionnaire): AssembleOutputParameters {
+export function createErrorOutcome(errorMessage: string): OperationOutcome {
   return {
-    resourceType: 'Parameters',
-    parameter: [
+    resourceType: 'OperationOutcome',
+    issue: [
       {
-        name: 'return',
-        resource: assembled
+        severity: 'error',
+        code: 'invalid',
+        details: { text: errorMessage }
       }
     ]
   };
 }
 
 /**
- * Create output parameters as a response to be returned to the renderer with issues.
+ * Create an OperationOutcome issue of severity warning with a supplied warning message
  *
  * @author Sean Fong
  */
-export function createOutputParametersWithIssues(
-  outcome: OperationOutcome
-): AssembleOutputParametersWithIssues {
+export function createWarningIssue(warningMessage: string): OperationOutcomeIssue {
   return {
-    resourceType: 'Parameters',
-    parameter: [
-      {
-        name: 'outcome',
-        resource: outcome
-      }
-    ]
+    severity: 'warning',
+    code: 'invalid',
+    details: { text: warningMessage }
   };
 }

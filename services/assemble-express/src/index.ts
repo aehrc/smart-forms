@@ -17,7 +17,8 @@
 
 import express from 'express';
 import cors from 'cors';
-import assemble, { createOperationOutcome, isAssembleInputParameters } from 'sdc-assemble';
+import { assemble, isInputParameters } from 'sdc-assemble';
+import { fetchQuestionnaireCallback } from './callback';
 
 const app = express();
 const port = 3002;
@@ -37,19 +38,26 @@ app.get('/fhir/Questionnaire/\\$assemble', (_, res) => {
 });
 
 app.post('/fhir/Questionnaire/\\$assemble', (req, res) => {
-  const formsServerEndpoint = 'https://api.smartforms.io/fhir';
-
   const parameters = req.body;
-  if (isAssembleInputParameters(req.body)) {
-    assemble(parameters, formsServerEndpoint)
-      .then((outputParams) => {
-        res.json(outputParams);
+
+  if (isInputParameters(parameters)) {
+    assemble(parameters, fetchQuestionnaireCallback)
+      .then((output) => {
+        res.json(output);
       })
-      .catch((err) => res.status(400).json(err));
+      .catch((e) => res.status(400).json(e));
   } else {
-    const operationOutcome = createOperationOutcome(
-      'Parameters provided is invalid against the $assemble specification.'
-    );
+    const operationOutcome = {
+      resourceType: 'OperationOutcome',
+      issue: [
+        {
+          severity: 'error',
+          code: 'invalid',
+          details: { text: 'Parameters provided is invalid against the $assemble specification.' }
+        }
+      ]
+    };
+
     res.status(400).json(operationOutcome);
   }
 });

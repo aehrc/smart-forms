@@ -15,18 +15,14 @@
  * limitations under the License.
  */
 
-import { checkIsDate } from './ConstructQuestionnaireResponse';
+import axios from 'axios';
+import type { FetchQuestionnaireCallback } from 'sdc-assemble';
 
-describe('check if a value is a date', () => {
-  test('string value of 2021-01-04 should return true', () => {
-    expect(checkIsDate('2021-01-04')).toEqual(true);
-  });
+const FORMS_SERVER_ENDPOINT = 'https://api.smartforms.io/fhir';
 
-  test('string value of 2021/01/04 should return false', () => {
-    expect(checkIsDate('2021/01/04')).toEqual(false);
+export const fetchQuestionnaireCallback: FetchQuestionnaireCallback = (canonicalUrl: string) => {
+  return axios.get(`${FORMS_SERVER_ENDPOINT}/Questionnaire?url=${canonicalUrl}`, {
+    method: 'GET',
+    headers: { 'Cache-Control': 'no-cache', Accept: 'application/json+fhir; charset=utf-8' }
   });
-
-  test('string value of 0 should return false', () => {
-    expect(checkIsDate('0')).toEqual(false);
-  });
-});
+};
