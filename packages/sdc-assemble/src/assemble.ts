@@ -15,11 +15,31 @@
  * limitations under the License.
  */
 
-import type { OperationOutcome, OperationOutcomeIssue, Questionnaire } from 'fhir/r4';
+import type {
+  FhirResource,
+  OperationOutcome,
+  OperationOutcomeIssue,
+  Questionnaire,
+  QuestionnaireItem
+} from 'fhir/r4';
 import type { InputParameters, OutputParameters } from './interfaces/parameters.interface';
-import { assembleQuestionnaire } from './assembleQuestionnaire';
 import type { FetchQuestionnaireCallback } from './interfaces/callback.interface';
 import { createOutputParameters } from './parameters';
+import { fetchSubquestionnaires } from './fetchSubquestionnaires';
+import type { PropagatedExtensions } from './getProperties';
+import {
+  checkMatchingLanguage,
+  checkProhibitedAttributes,
+  getContainedResources,
+  getExtensions,
+  getItems,
+  getUrls,
+  isValidExtensions,
+  mergeExtensionsIntoItems
+} from './getProperties';
+import { propagateProperties } from './propagate';
+import cloneDeep from 'lodash.clonedeep';
+import { getCanonicalUrls } from './canonical';
 
 /**
  * The $assemble operation - https://build.fhir.org/ig/HL7/sdc/OperationDefinition-Questionnaire-assemble.html
@@ -68,4 +88,114 @@ export async function assemble(
       return result;
     }
   }
+}
+
+/**
+ * Assembles a Questionnaire resource from a root Questionnaire resource recursively
+ *
+ * @param rootQuestionnaire - The root Questionnaire resource
+ * @param totalCanonicals - An array of all the recorded canonical urls within the root Questionnaire recursively
+ * @param issues - A list of OperationOutcome warnings
+ * @param fetchQuestionnaireCallback - A callback function defined by the implementer to fetch Questionnaire resources by canonical url
+ * @returns An assembled Questionnaire resource or an OperationOutcome error
+ *
+ * @author Sean Fong
+ */
+async function assembleQuestionnaire(
+  rootQuestionnaire: Questionnaire,
+  totalCanonicals: string[],
+  issues: OperationOutcomeIssue[],
+  fetchQuestionnaireCallback: FetchQuestionnaireCallback
+): Promise<Questionnaire | OperationOutcome> {
+  const parentQuestionnaire = cloneDeep(rootQuestionnaire);
+
+  // Get subquestionnaire canonical urls from parent questionnaire items
+  const canonicals: string[] | OperationOutcome = getCanonicalUrls(
+    parentQuestionnaire,
+    totalCanonicals
+  );
+  if (!Array.isArray(canonicals)) {
+    return canonicals;
+  }
+
+  // Exit operation if there are no subquestionnaires to be assembled
+  if (canonicals.length === 0) {
+    return parentQuestionnaire;
+  }
+
+  // Keep a record of all traversed canonical urls to prevent an infinite loop situation
+  totalCanonicals.push(...canonicals);
+
+  // Fetch subquestionnaire resources from FHIR server
+  const subquestionnaires: Questionnaire[] | OperationOutcome = await fetchSubquestionnaires(
+    canonicals,
+    fetchQuestionnaireCallback
+  );
+  if (!Array.isArray(subquestionnaires)) {
+    return subquestionnaires;
+  }
+
+  // Recursively assemble subquestionnaires if required
+  for (let subquestionnaire of subquestionnaires) {
+    const assembled: Questionnaire | OperationOutcome = await assembleQuestionnaire(
+      subquestionnaire,
+      totalCanonicals,
+      issues,
+      fetchQuestionnaireCallback
+    );
+
+    // Prematurely end the operation if there is an error within further assembly operations
+    if (assembled.resourceType === 'OperationOutcome') {
+      return assembled;
+    }
+
+    subquestionnaire = assembled;
+  }
+
+  // Check for prohibited attributes and compare matching language properties
+  const prohibitedAttributesOutcome: OperationOutcome | null =
+    checkProhibitedAttributes(subquestionnaires);
+  if (prohibitedAttributesOutcome) {
+    return prohibitedAttributesOutcome;
+  }
+
+  const matchingLanguageOutcome: OperationOutcome | null = checkMatchingLanguage(
+    subquestionnaires,
+    parentQuestionnaire
+  );
+  if (matchingLanguageOutcome) {
+    return matchingLanguageOutcome;
+  }
+
+  // Get items
+  const items: (QuestionnaireItem[] | null)[] = getItems(subquestionnaires);
+
+  // Get urls with versions
+  const urls: string[] = getUrls(subquestionnaires);
+
+  // Get contained resources
+  const containedResources: Record<string, FhirResource> = getContainedResources(subquestionnaires);
+
+  // Get extensions
+  const extensions: PropagatedExtensions | OperationOutcome = getExtensions(subquestionnaires);
+  if (!isValidExtensions(extensions)) {
+    return extensions;
+  }
+
+  const { rootLevelExtensions, itemLevelExtensions } = extensions;
+
+  // Merge item-level extensions into items
+  const itemsWithExtensions: (QuestionnaireItem[] | null)[] = mergeExtensionsIntoItems(
+    items,
+    itemLevelExtensions
+  );
+
+  // propagate items, contained resources and extensions into parent questionnaire
+  return propagateProperties(
+    parentQuestionnaire,
+    urls,
+    itemsWithExtensions,
+    containedResources,
+    rootLevelExtensions
+  );
 }
