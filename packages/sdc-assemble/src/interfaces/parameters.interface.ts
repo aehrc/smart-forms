@@ -24,12 +24,12 @@ import type { OperationOutcome, Parameters, ParametersParameter, Questionnaire }
  * @author Sean Fong
  */
 export interface InputParameters extends Parameters {
-  parameter: [QuestionnaireParameter];
-}
-
-export interface QuestionnaireParameter extends ParametersParameter {
-  name: 'questionnaire';
-  resource: Questionnaire;
+  parameter: [
+    {
+      name: 'questionnaire';
+      resource: Questionnaire;
+    }
+  ];
 }
 
 /**

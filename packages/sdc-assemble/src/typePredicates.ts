@@ -16,13 +16,7 @@
  */
 
 import type { Parameters, ParametersParameter } from 'fhir/r4';
-import type { InputParameters, QuestionnaireParameter } from './interfaces/parameters.interface';
-
-function isQuestionnaireParameter(
-  parameter: ParametersParameter
-): parameter is QuestionnaireParameter {
-  return parameter.name === 'questionnaire' && parameter.resource?.resourceType === 'Questionnaire';
-}
+import type { InputParameters } from './interfaces/parameters.interface';
 
 /**
  * Check if the given parameters is a valid InputParameters for $assemble
@@ -34,5 +28,8 @@ function isQuestionnaireParameter(
  * @author Sean Fong
  */
 export function isInputParameters(parameters: Parameters): parameters is InputParameters {
-  return !!parameters.parameter?.find(isQuestionnaireParameter);
+  return !!parameters.parameter?.find(
+    (param: ParametersParameter) =>
+      param.name === 'questionnaire' && param.resource?.resourceType === 'Questionnaire'
+  );
 }
