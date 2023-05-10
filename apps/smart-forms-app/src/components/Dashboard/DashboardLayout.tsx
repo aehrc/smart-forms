@@ -15,18 +15,30 @@
  * limitations under the License.
  */
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import DashboardNav from './DashboardNav/DashboardNav';
 import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
 import { DebugModeContext } from '../../custom-contexts/DebugModeContext';
 import DashboardDebugFooter from './DashboardDebugFooter/DashboardDebugFooter';
+import { LaunchContext } from '../../custom-contexts/LaunchContext.tsx';
 
 function DashboardLayout() {
+  const { fhirClient } = useContext(LaunchContext);
   const { debugMode } = useContext(DebugModeContext);
   const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // check if fhirClient is not present but app was previously authorised - happens when user refreshes the page
+    // redirects user to authorisation page to be authorised again
+    if (!fhirClient && localStorage.getItem('authorised') === 'true') {
+      navigate('/');
+    }
+  });
 
   return (
     <StyledRoot>

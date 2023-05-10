@@ -18,13 +18,29 @@
 import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Iconify from '../../Misc/Iconify';
+import { useEffect } from 'react';
+import type { Questionnaire } from 'fhir/r4';
 
-function ViewerInvalid() {
+interface Props {
+  questionnaire?: Questionnaire;
+}
+
+function ViewerInvalid(props: Props) {
+  const { questionnaire } = props;
+
   const navigate = useNavigate();
 
   function handleClick() {
     navigate('/dashboard/questionnaires');
   }
+
+  useEffect(() => {
+    // Questionnaire only has the minimum required implementation, which logically means that it was triggered by a refresh
+    // auto redirect to dashboard
+    if (questionnaire && Object.keys(questionnaire).length === 2) {
+      navigate('/dashboard/questionnaires');
+    }
+  }, [navigate, questionnaire]);
 
   return (
     <Fade in={true} timeout={500}>
