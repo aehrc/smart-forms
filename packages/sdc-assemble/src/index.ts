@@ -15,58 +15,12 @@
  * limitations under the License.
  */
 
-import type { OperationOutcome, Parameters } from 'fhir/r4';
-import { assembleQuestionnaire } from './AssembleQuestionnaire';
-import type {
-  AssembleInputParameters,
-  AssembleOutputParameters,
-  AssembleOutputParametersWithIssues
-} from './Interfaces';
-import { createOutputParameters } from './CreateOutputParameters';
-import { isQuestionnaireParameter } from './TypePredicates';
+// Interfaces
+export { InputParameters } from './interfaces/parameters.interface';
+export { FetchQuestionnaireCallback } from './interfaces/callback.interface';
 
-/**
- * Main function of this populate module.
- * Input and output specific parameters conformant to the SDC populate specification.
- *
- * @author Sean Fong
- */
-export default async function assemble(
-  parameters: AssembleInputParameters,
-  formsServerEndpoint: string
-): Promise<AssembleOutputParameters | AssembleOutputParametersWithIssues> {
-  const masterQuestionnaire = parameters.parameter[0].resource;
-  const allCanonicals: string[] = [];
+// Type predicates
+export { isInputParameters } from './typePredicates';
 
-  const assembledResult = await assembleQuestionnaire(
-    masterQuestionnaire,
-    allCanonicals,
-    formsServerEndpoint
-  );
-
-  return createOutputParameters(assembledResult);
-}
-
-export function isAssembleInputParameters(
-  parameters: Parameters
-): parameters is AssembleInputParameters {
-  return !!parameters.parameter?.find(isQuestionnaireParameter);
-}
-
-/**
- * Return an OperationOutcome with a supplied errorMessage
- *
- * @author Sean Fong
- */
-export function createOperationOutcome(errorMessage: string): OperationOutcome {
-  return {
-    resourceType: 'OperationOutcome',
-    issue: [
-      {
-        severity: 'error',
-        code: 'invalid',
-        details: { text: errorMessage }
-      }
-    ]
-  };
-}
+// Functions
+export { assemble } from './assemble';

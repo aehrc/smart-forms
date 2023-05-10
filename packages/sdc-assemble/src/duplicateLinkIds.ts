@@ -17,6 +17,15 @@
 
 import type { QuestionnaireItem } from 'fhir/r4';
 
+/**
+ * Resolve duplicate linkIds in a Questionnaire item recursively
+ *
+ * @param qItem - A group/non-group Questionnaire item
+ * @param linkIds - A set of linkIds recorded so far
+ * @param duplicateLinkIds - A key-value pair of duplicate linkIds and their respective resolved linkIds
+ *
+ * @author Sean Fong
+ */
 export function resolveDuplicateLinkIds(
   qItem: QuestionnaireItem,
   linkIds: Set<string>,
@@ -59,15 +68,25 @@ export function resolveDuplicateLinkIds(
   return null;
 }
 
-function assignLinkIdPrefix(itemLinkId: string, linkIds: Set<string>) {
-  const linkIdPrefix = 'linkIdPrefix';
-  let prefixedId = linkIdPrefix + '-' + itemLinkId;
+const LINK_ID_PREFIX = 'linkIdPrefix';
+
+/**
+ * Prepend a linkId prefix to linkId if it's a duplicate
+ *
+ * @param itemLinkId - A duplicate linkId to be resolved
+ * @param linkIds - A set of linkIds recorded so far
+ * @return The resolved duplicate linkId
+ *
+ * @author Sean Fong
+ */
+function assignLinkIdPrefix(itemLinkId: string, linkIds: Set<string>): string {
+  let prefixedLinkId = LINK_ID_PREFIX + '-' + itemLinkId;
 
   // Increment prefixCount on linkIdPrefix until it is not a duplicate
   let prefixCount = 0;
-  while (linkIds.has(prefixedId)) {
+  while (linkIds.has(prefixedLinkId)) {
     prefixCount++;
-    prefixedId = linkIdPrefix + '-' + prefixCount.toString() + '-' + itemLinkId;
+    prefixedLinkId = LINK_ID_PREFIX + '-' + prefixCount.toString() + '-' + itemLinkId;
   }
-  return prefixedId;
+  return prefixedLinkId;
 }

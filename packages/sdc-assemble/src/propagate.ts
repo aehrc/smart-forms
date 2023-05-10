@@ -17,7 +17,19 @@
 
 import type { Extension, FhirResource, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
-export function propagateSubquestionnaireItems(
+/**
+ * Propagate (assemble) collected properties from subquestionnaires to the parent questionnaire.
+ *
+ * @param parentQuestionnaire - The parent Questionnaire resource
+ * @param urlsFromSubquestionnaires - The urls of the subquestionnaires
+ * @param itemsFromSubquestionnaires - The items from the subquestionnaires
+ * @param containedResourcesFromSubquestionnaires - The contained resources from the subquestionnaires
+ * @param rootLevelExtensions - The root level extensions collected from the subquestionnaires
+ * @returns The complete assembled Questionnaire resource
+ *
+ * @author Sean Fong
+ */
+export function propagateProperties(
   parentQuestionnaire: Questionnaire,
   urlsFromSubquestionnaires: string[],
   itemsFromSubquestionnaires: (QuestionnaireItem[] | null)[],
@@ -28,13 +40,9 @@ export function propagateSubquestionnaireItems(
     return parentQuestionnaire;
   }
 
-  const parentQuestionnaireForm = parentQuestionnaire.item[0];
+  const parentQuestionnaireForm: QuestionnaireItem | undefined = parentQuestionnaire.item[0];
 
-  if (
-    !parentQuestionnaireForm ||
-    !parentQuestionnaireForm.item ||
-    parentQuestionnaireForm.item.length === 0
-  ) {
+  if (!parentQuestionnaireForm?.item || parentQuestionnaireForm?.item?.length === 0) {
     return parentQuestionnaire;
   }
 
@@ -101,18 +109,17 @@ export function propagateSubquestionnaireItems(
     }
 
     // Propagate launchContext extensions
-    let mergedLaunchContexts: Record<string, Extension> = {};
-    mergedLaunchContexts = mergeLaunchContextsFromExtensions(
+    let launchContextExtensions: Record<string, Extension> = {};
+    launchContextExtensions = getLaunchContextExtensions(
       extensionsFromParent,
-      mergedLaunchContexts
+      launchContextExtensions
     );
-
-    mergedLaunchContexts = mergeLaunchContextsFromExtensions(
+    launchContextExtensions = getLaunchContextExtensions(
       rootLevelExtensions,
-      mergedLaunchContexts
+      launchContextExtensions
     );
 
-    cqfLibraryAndLaunchContexts.push(...Object.values(mergedLaunchContexts));
+    cqfLibraryAndLaunchContexts.push(...Object.values(launchContextExtensions));
 
     // Filter initial cqfLibrary and LaunchContext extensions from parent extensions before merging new extensions
     const initialExtensions = extensionsFromParent.filter(
@@ -145,7 +152,16 @@ export function propagateSubquestionnaireItems(
   return parentQuestionnaire;
 }
 
-function mergeLaunchContextsFromExtensions(
+/**
+ * Get launchContext extensions from parent Questionnaire extensions or root-level extensions
+ *
+ * @param extensions - An extension array from parent Questionnaire or root-level extensions
+ * @param mergedLaunchContexts - A key-value pair of launchContext extensions (to prevent duplicate launchContexts)
+ * @returns A key-value pair of launchContext extensions
+ *
+ * @author Sean Fong
+ */
+function getLaunchContextExtensions(
   extensions: Extension[],
   mergedLaunchContexts: Record<string, Extension>
 ) {

@@ -15,19 +15,28 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 
-export function resolveDuplicateEnableWhenQuestions(
+/**
+ * Resolve duplicate linkIds in a Questionnaire item's enableWhen recursively
+ *
+ * @param qItem - A group/non-group Questionnaire item
+ * @param duplicateLinkIds - A key-value pair of duplicate linkIds and their respective resolved linkIds
+ * @return A Questionnaire item with resolved duplicate linkIds in its enableWhen
+ *
+ * @author Sean Fong
+ */
+export function resolveDuplicateEnableWhen(
   qItem: QuestionnaireItem,
   duplicateLinkIds: Record<string, string>
-) {
+): QuestionnaireItem {
   const items = qItem.item;
   if (items && items.length > 0) {
     // iterate through items of item recursively
     const resolvedItems: QuestionnaireItem[] = [];
 
     items.forEach((item) => {
-      const resolvedItem = resolveDuplicateEnableWhenQuestions(item, duplicateLinkIds);
+      const resolvedItem = resolveDuplicateEnableWhen(item, duplicateLinkIds);
       if (resolvedItem) {
         resolvedItems.push(resolvedItem);
       } else {
@@ -42,20 +51,27 @@ export function resolveDuplicateEnableWhenQuestions(
   return resolveSingleItemEnableWhen(qItem, duplicateLinkIds);
 }
 
+/**
+ * Resolve duplicate linkIds in a single Questionnaire item's enableWhen
+ *
+ * @param qItem - A group/non-group Questionnaire item
+ * @param duplicateLinkIds - A key-value pair of duplicate linkIds and their respective resolved linkIds
+ * @return A single Questionnaire item with resolved duplicate linkIds in its enableWhen
+ *
+ * @author Sean Fong
+ */
 function resolveSingleItemEnableWhen(
   qItem: QuestionnaireItem,
   duplicateLinkIds: Record<string, string>
 ): QuestionnaireItem {
   if (qItem.enableWhen && qItem.enableWhen.length > 0) {
-    const resolvedEnableWhen: QuestionnaireItemEnableWhen[] = [];
-    for (const entry of qItem.enableWhen) {
+    qItem.enableWhen = qItem.enableWhen.map((entry) => {
       const duplicateLinkedItemId = duplicateLinkIds[entry.question];
       if (duplicateLinkedItemId) {
         entry.question = duplicateLinkedItemId;
       }
-      resolvedEnableWhen.push(entry);
-    }
-    qItem.enableWhen = resolvedEnableWhen;
+      return entry;
+    });
   }
   return qItem;
 }

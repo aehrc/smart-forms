@@ -1,6 +1,6 @@
 {
   "name": "sdc-assemble",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Performs the $assemble operation for modular forms from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/modular.html",
   "main": "lib/index.js",
   "scripts": {

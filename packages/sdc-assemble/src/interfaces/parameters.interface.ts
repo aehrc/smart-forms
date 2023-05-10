@@ -15,25 +15,31 @@
  * limitations under the License.
  */
 
-import type {
-  Extension,
-  OperationOutcome,
-  Parameters,
-  ParametersParameter,
-  Questionnaire
-} from 'fhir/r4';
+import type { OperationOutcome, Parameters, ParametersParameter, Questionnaire } from 'fhir/r4';
 
-export interface AssembleInputParameters extends Parameters {
-  parameter: [QuestionnaireParameter];
+/**
+ * Input parameters for the $assemble operation
+ * @see {@link http://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble}
+ *
+ * @author Sean Fong
+ */
+export interface InputParameters extends Parameters {
+  parameter: [
+    {
+      name: 'questionnaire';
+      resource: Questionnaire;
+    }
+  ];
 }
 
-export interface QuestionnaireParameter extends ParametersParameter {
-  name: 'questionnaire';
-  resource: Questionnaire;
-}
-
-export interface AssembleOutputParameters extends Parameters {
-  parameter: [ReturnParameter];
+/**
+ * Output parameters for the $assemble operation
+ * @see {@link http://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble}
+ *
+ * @author Sean Fong
+ */
+export interface OutputParameters extends Parameters {
+  parameter: [ReturnParameter, OutcomeParameter];
 }
 
 export interface ReturnParameter extends ParametersParameter {
@@ -41,16 +47,7 @@ export interface ReturnParameter extends ParametersParameter {
   resource: Questionnaire;
 }
 
-export interface AssembleOutputParametersWithIssues extends Parameters {
-  parameter: [OutcomeParameter];
-}
-
 export interface OutcomeParameter extends ParametersParameter {
   name: 'outcome';
   resource: OperationOutcome;
-}
-
-export interface PropagatedExtensions {
-  rootLevelExtensions: Extension[];
-  itemLevelExtensions: (Extension[] | null)[];
 }

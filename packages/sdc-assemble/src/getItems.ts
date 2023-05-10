@@ -22,34 +22,46 @@ import type {
   Questionnaire,
   QuestionnaireItem
 } from 'fhir/r4';
-import { createOperationOutcome } from './index';
-import type { PropagatedExtensions } from './Interfaces';
-import { resolveDuplicateLinkIds } from './ResolveDuplicateLinkIds';
-import { resolveDuplicateEnableWhenQuestions } from './ResolveDuplicateEnableWhenQuestions';
+import { resolveDuplicateEnableWhen } from './duplicateEnableWhen';
+import { createErrorOutcome } from './operationOutcome';
+import { resolveDuplicateLinkIds } from './duplicateLinkIds';
 
+/**
+ * Checks prohibited attributes within the subquestionnaires
+ *
+ * @param subquestionnaires - An array of subquestionnaires to perform the checks on
+ * @returns An OperationOutcome error if there are prohibited attributes, or null if there are none
+ *
+ * @author Sean Fong
+ */
 export function checkProhibitedAttributes(
   subquestionnaires: Questionnaire[]
 ): OperationOutcome | null {
   for (const subquestionnaire of subquestionnaires) {
     if (subquestionnaire.implicitRules) {
-      return createOperationOutcome(
-        'The subquestionnaire ' +
-          subquestionnaire.url +
-          ' contains implicitRules, which is prohibited.'
+      return createErrorOutcome(
+        `The subquestionnaire ${subquestionnaire.url} contains implicitRules, which is prohibited.`
       );
     }
 
     if (subquestionnaire.modifierExtension) {
-      return createOperationOutcome(
-        'The subquestionnaire ' +
-          subquestionnaire.url +
-          ' contains a modifierExtension, which is prohibited.'
+      return createErrorOutcome(
+        `The subquestionnaire ${subquestionnaire.url} contains a modifierExtension, which is prohibited.`
       );
     }
   }
   return null;
 }
 
+/**
+ * Checks the language properties between parent questionnaire and subquestionnaires
+ *
+ * @param subquestionnaires - An array of subquestionnaires to perform the checks on
+ * @param parentQuestionnaire - The parent questionnaire to perform the checks on
+ * @returns An OperationOutcome error if there are any disparity in language properties, or null if there are none
+ *
+ * @author Sean Fong
+ */
 export function checkMatchingLanguage(
   subquestionnaires: Questionnaire[],
   parentQuestionnaire: Questionnaire
@@ -57,21 +69,14 @@ export function checkMatchingLanguage(
   for (const subquestionnaire of subquestionnaires) {
     if (subquestionnaire.language) {
       if (!parentQuestionnaire.language) {
-        return createOperationOutcome(
-          'The subquestionnaire ' +
-            subquestionnaire.url +
-            ' contains a language attribute but its parent questionnaire ' +
-            parentQuestionnaire.url +
-            " doesn't."
+        return createErrorOutcome(
+          `The subquestionnaire ${subquestionnaire.url} contains a language property but its parent questionnaire ${parentQuestionnaire.url} doesn't.`
         );
       }
 
       if (subquestionnaire.language !== parentQuestionnaire.language) {
-        return createOperationOutcome(
-          'The subquestionnaire ' +
-            subquestionnaire.url +
-            ' has a different language from its parent questionnaire ' +
-            parentQuestionnaire.url
+        return createErrorOutcome(
+          `The subquestionnaire ${subquestionnaire.url} has a different language from its parent questionnaire ${parentQuestionnaire.url}`
         );
       }
     }
@@ -79,6 +84,15 @@ export function checkMatchingLanguage(
   return null;
 }
 
+/**
+ * Get contained resources from subquestionnaires
+ * WARNING: This function will not resolve duplicate contained resources.
+ *
+ * @param subquestionnaires - An array of subquestionnaires to retrieve contained resources from
+ * @returns A key-value pair of contained resources
+ *
+ * @author Sean Fong
+ */
 export function getContainedResources(
   subquestionnaires: Questionnaire[]
 ): Record<string, FhirResource> {
@@ -122,6 +136,20 @@ export function getContainedResources(
 //   return prefixedId;
 // }
 
+export interface PropagatedExtensions {
+  rootLevelExtensions: Extension[];
+  itemLevelExtensions: (Extension[] | null)[];
+}
+
+/**
+ * Get extensions from subquestionnaires
+ * categorises extensions to root level extensions and item level extensions
+ *
+ * @param subquestionnaires - An array of subquestionnaires to retrieve extensions from
+ * @returns An object containing root level extensions and item level extensions or an OperationOutcome error
+ *
+ * @author Sean Fong
+ */
 export function getExtensions(
   subquestionnaires: Questionnaire[]
 ): PropagatedExtensions | OperationOutcome {
@@ -172,7 +200,7 @@ export function getExtensions(
         case 'http://hl7.org/fhir/StructureDefinition/variable':
           if (extension.valueExpression && extension.valueExpression.name) {
             if (variables[extension.valueExpression.name]) {
-              return createOperationOutcome(
+              return createErrorOutcome(
                 'The subquestionnaire ' +
                   subquestionnaire.url +
                   ' has a different language from its parent questionnaire '
@@ -184,7 +212,7 @@ export function getExtensions(
           break;
         case 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext':
           if (itemPopulationContext) {
-            return createOperationOutcome(
+            return createErrorOutcome(
               'The subquestionnaire is trying to propagate ' +
                 subquestionnaire.url +
                 ' more than one itemPopulationContext.'
@@ -195,7 +223,7 @@ export function getExtensions(
           break;
         case 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext':
           if (itemExtractionContext) {
-            return createOperationOutcome(
+            return createErrorOutcome(
               'The subquestionnaire is trying to propagate ' +
                 subquestionnaire.url +
                 ' more than one itemExtractionContext.'
@@ -229,7 +257,15 @@ export function getExtensions(
   };
 }
 
-// Get urls with versions of subquestionnaires
+/**
+ * Get urls from subquestionnaires
+ * also appends subquestionnaire version to url
+ *
+ * @param subquestionnaires - An array of subquestionnaires to retrieve extensions from
+ * @returns An array of urls retrieved
+ *
+ * @author Sean Fong
+ */
 export function getUrls(subquestionnaires: Questionnaire[]): string[] {
   const urls: string[] = [];
   for (const subquestionnaire of subquestionnaires) {
@@ -244,18 +280,35 @@ export function getUrls(subquestionnaires: Questionnaire[]): string[] {
   return urls;
 }
 
+/**
+ * Check if the object is a valid PropogatedExtensions object
+ * used to ensure the object isn't an OperationOutcome
+ *
+ * @param obj - object to perform the check on
+ * @return boolean value of whether the object is PropagatedExtensions
+ *
+ * @author Sean Fong
+ */
 export function isValidExtensions(
   obj: PropagatedExtensions | OperationOutcome
 ): obj is PropagatedExtensions {
   return 'rootLevelExtensions' in obj && 'itemLevelExtensions' in obj;
 }
 
-export function getSubquestionnaireItems(
-  subquestionnaires: Questionnaire[]
-): (QuestionnaireItem[] | null)[] {
+/**
+ * Get items from subquestionnaires
+ * also a starting point for resolving duplicate linkIds in items and their enableWhens recursively
+ *
+ * @param subquestionnaires - An array of subquestionnaires to retrieve items from
+ * @returns An array of items or an OperationOutcome error
+ *
+ * @author Sean Fong
+ */
+export function getItems(subquestionnaires: Questionnaire[]): (QuestionnaireItem[] | null)[] {
   const items: (QuestionnaireItem[] | null)[] = [];
   const linkIds: Set<string> = new Set();
   for (const subquestionnaire of subquestionnaires) {
+    // Skip if subquestionnaire does not have an item
     if (!subquestionnaire.item) {
       items.push(null);
       continue;
@@ -265,23 +318,28 @@ export function getSubquestionnaireItems(
     let subquestionnaireItems = [];
     const duplicateLinkIds: Record<string, string> = {};
     for (const item of subquestionnaire.item) {
-      const resolvedItem = resolveDuplicateLinkIds(item, linkIds, duplicateLinkIds);
+      const resolvedItem: QuestionnaireItem | null = resolveDuplicateLinkIds(
+        item,
+        linkIds,
+        duplicateLinkIds
+      );
+
       if (resolvedItem) {
+        // Item has its duplicate linkId resolved
         subquestionnaireItems.push(resolvedItem);
         linkIds.add(resolvedItem.linkId);
       } else {
+        // Item does not have any duplicate linkIds
         subquestionnaireItems.push(item);
         linkIds.add(item.linkId);
       }
     }
 
-    // Prepend linkIdPrefix to EnableWhen.question of linked items with duplicate linkIds recursively
+    // Resolve duplicate linkIds at enableWhen.question of linked items too recursively
     if (duplicateLinkIds && Object.keys(duplicateLinkIds).length > 0) {
-      const newSubquestionnaireItems: QuestionnaireItem[] = [];
-      for (const item of subquestionnaireItems) {
-        const resolvedItem = resolveDuplicateEnableWhenQuestions(item, duplicateLinkIds);
-        newSubquestionnaireItems.push(resolvedItem);
-      }
+      const newSubquestionnaireItems: QuestionnaireItem[] = subquestionnaireItems.map((item) =>
+        resolveDuplicateEnableWhen(item, duplicateLinkIds)
+      );
       subquestionnaireItems = [...newSubquestionnaireItems];
     }
 
@@ -290,6 +348,15 @@ export function getSubquestionnaireItems(
   return items;
 }
 
+/**
+ * Merges item-level extensions into subquestionnaire items
+ *
+ * @param items - An array of subquestionnaire items to merge extensions into
+ * @param itemLevelExtensions - An array of item-level extensions to merge into subquestionnaire items
+ * @returns An array of subquestionnaire items with extensions merged
+ *
+ * @author Sean Fong
+ */
 export function mergeExtensionsIntoItems(
   items: (QuestionnaireItem[] | null)[],
   itemLevelExtensions: (Extension[] | null)[]

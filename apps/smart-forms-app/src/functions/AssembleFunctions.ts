@@ -16,7 +16,7 @@
  */
 
 import type { Extension, OperationOutcome, Parameters, Questionnaire } from 'fhir/r4';
-import { isAssembleInputParameters } from 'sdc-assemble';
+import { isInputParameters } from 'sdc-assemble';
 import { headers } from './LoadServerResourceFunctions';
 import * as FHIR from 'fhirclient';
 
@@ -47,7 +47,7 @@ export async function assembleQuestionnaire(
   questionnaire: Questionnaire
 ): Promise<Questionnaire | OperationOutcome> {
   const parameters = defineAssembleParameters(questionnaire);
-  if (isAssembleInputParameters(parameters)) {
+  if (isInputParameters(parameters)) {
     const outputAssembleParams = await FHIR.client(endpointUrl).request({
       url: 'Questionnaire/$assemble',
       method: 'POST',
