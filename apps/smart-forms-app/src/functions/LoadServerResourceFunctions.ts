@@ -29,6 +29,7 @@ import {
 
 export const headers = {
   'Cache-Control': 'no-cache',
+  'Content-Type': 'application/json+fhir; charset=UTF-8',
   Accept: 'application/json+fhir; charset=utf-8'
 };
 
@@ -85,7 +86,7 @@ export async function assembleIfRequired(
  *    i.e. import QNew from '../data/resources/NewQuestionnaire.json';
  *
  * 3. Add imported questionnaire in localFiles array below
- *    i.e. const localFiles = [
+ *    i.e. return [
  *            Q715,
  *            QAssembled,
  *            QCvdCheck,
@@ -95,13 +96,11 @@ export async function assembleIfRequired(
  * @author Sean Fong
  */
 export function loadQuestionnairesFromLocal() {
-  const questionnaires = [
+  return [
     QCvdRisk2023,
     QTestAssembled715,
     QAboriginalTorresStraitIslanderHealthCheckAssembled
   ] as Questionnaire[];
-
-  return questionnaires;
 }
 
 export function constructBundle(resources: FhirResource[]): Bundle {
