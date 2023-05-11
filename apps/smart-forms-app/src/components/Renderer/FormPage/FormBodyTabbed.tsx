@@ -27,41 +27,44 @@ import { updateLinkedItem } from '../../../functions/QrItemFunctions';
 import FormBodyTabList from './Tabs/FormBodyTabList';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
-  qForm: QuestionnaireItem;
-  qrForm: QuestionnaireResponseItem;
+  topLevelQItem: QuestionnaireItem;
+  topLevelQRItem: QuestionnaireResponseItem;
   currentTabIndex: number;
   hasTabContainer: boolean;
 }
 
 function FormBodyTabbed(props: Props) {
-  const { qForm, qrForm, currentTabIndex, hasTabContainer, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, currentTabIndex, hasTabContainer, onQrItemChange } = props;
 
-  const indexMap: Record<string, number> = useMemo(() => mapQItemsIndex(qForm), [qForm]);
+  const indexMap: Record<string, number> = useMemo(
+    () => mapQItemsIndex(topLevelQItem),
+    [topLevelQItem]
+  );
 
-  const qFormItems = qForm.item;
-  const qrFormItems = qrForm.item;
+  const qItems = topLevelQItem.item;
+  const qrItems = topLevelQRItem.item;
 
   const initialTabs = useMemo(
-    () => constructTabsWithProperties(qFormItems, hasTabContainer),
-    [hasTabContainer, qFormItems]
+    () => constructTabsWithProperties(qItems, hasTabContainer),
+    [hasTabContainer, qItems]
   );
   const [tabs, setTabs] =
     useState<Record<string, { tabIndex: number; isComplete: boolean }>>(initialTabs);
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    updateLinkedItem(qrItem, null, qrForm, indexMap);
-    onQrItemChange(qrForm);
+    updateLinkedItem(qrItem, null, topLevelQRItem, indexMap);
+    onQrItemChange(topLevelQRItem);
   }
 
-  if (qFormItems && qrFormItems) {
-    const qrFormItemsByIndex = getQrItemsIndex(qFormItems, qrFormItems, indexMap);
+  if (qItems && qrItems) {
+    const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
 
     return (
       <Grid container spacing={2}>
         <TabContext value={currentTabIndex.toString()}>
           <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
             <FormBodyTabList
-              qFormItems={qFormItems}
+              qFormItems={qItems}
               currentTabIndex={currentTabIndex}
               hasTabContainer={hasTabContainer}
               tabs={tabs}
@@ -69,8 +72,8 @@ function FormBodyTabbed(props: Props) {
           </Grid>
 
           <Grid item xs={12} md={8.5} lg={9} xl={9.25}>
-            {qFormItems.map((qItem, i) => {
-              const qrItem = qrFormItemsByIndex[i];
+            {qItems.map((qItem, i) => {
+              const qrItem = qrItemsByIndex[i];
 
               if ((isTab(qItem) || hasTabContainer) && !Array.isArray(qrItem)) {
                 return (

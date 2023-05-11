@@ -25,19 +25,23 @@ import { isSpecificItemControl } from './ItemControlFunctions';
  *
  * @author Sean Fong
  */
-export function containsTabs(items: QuestionnaireItem[]): boolean {
-  const formTabs = getTabbedItems(items);
-  return formTabs.length > 0;
+export function containsTabs(topLevelQItem: QuestionnaireItem): boolean {
+  if (!topLevelQItem.item) {
+    return false;
+  }
+
+  const tabs = getTabbedItems(topLevelQItem.item);
+  return tabs.length > 0;
 }
 
 /**
- * Checks if qForm is a tab container
+ * Checks if a top-level QItem is a tab container
  * All items within a tab container are tabbed items
  *
  * @author Sean Fong
  */
-export function isTabContainer(qForm: QuestionnaireItem): boolean {
-  return isSpecificItemControl(qForm, 'tab-container');
+export function isTabContainer(topLevelQItem: QuestionnaireItem): boolean {
+  return isSpecificItemControl(topLevelQItem, 'tab-container');
 }
 
 /**

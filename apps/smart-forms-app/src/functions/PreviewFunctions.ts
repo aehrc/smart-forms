@@ -27,16 +27,22 @@ import moment from 'moment';
 export function qrToHTML(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
-) {
-  if (!questionnaireResponse.item) return '';
+): string {
+  if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) return '';
 
-  const title = `<div style="font-size:24px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
-  const qrForm = qrFormToHTML(questionnaireResponse.item[0]);
+  let QrHtml = `<div style="font-size:24px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
 
-  return `<div>${title + qrForm}</div>`;
+  for (const topLevelQRItem of questionnaireResponse.item) {
+    const topLevelQRItemHTML = qrItemToHTML(topLevelQRItem);
+    if (topLevelQRItemHTML) {
+      QrHtml += topLevelQRItemHTML;
+    }
+  }
+
+  return `<div>${QrHtml}</div>`;
 }
 
-export function qrFormToHTML(questionnaireResponseForm: QuestionnaireResponseItem) {
+export function qrItemToHTML(questionnaireResponseForm: QuestionnaireResponseItem) {
   if (!questionnaireResponseForm.item) return null;
 
   let formInHTML = '';

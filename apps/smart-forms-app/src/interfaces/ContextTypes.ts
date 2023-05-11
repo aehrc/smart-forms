@@ -21,7 +21,6 @@ import type {
   Patient,
   Practitioner,
   QuestionnaireResponse,
-  QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
@@ -39,7 +38,7 @@ export type EnableWhenContextType = {
   isActivated: boolean;
   setItems: (
     enableWhenItems: EnableWhenItems,
-    questionnaireResponseForm: QuestionnaireResponseItem
+    questionnaireResponse: QuestionnaireResponse
   ) => unknown;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
   toggleActivation: (toggled: boolean) => unknown;
