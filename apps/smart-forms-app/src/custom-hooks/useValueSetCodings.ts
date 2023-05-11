@@ -17,50 +17,52 @@
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import {
-  evaluateAnswerExpressionValueSet,
-  getValueSetCodings,
-  getValueSetPromise
-} from '../functions/ValueSetFunctions';
+import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFunctions';
 import { PreprocessedValueSetContext } from '../components/Renderer/FormPage/Form';
 import { CachedQueriedValueSetContext } from '../custom-contexts/CachedValueSetContext';
-import { getAnswerExpression } from '../functions/ItemControlFunctions.ts';
-import { QuestionnaireProviderContext } from '../App.tsx';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
   const preprocessedCodings = useContext(PreprocessedValueSetContext);
   const { cachedValueSetCodings, addCodingToCache } = useContext(CachedQueriedValueSetContext);
-  const { variables } = useContext(QuestionnaireProviderContext);
+  // const { variables } = useContext(QuestionnaireProviderContext);
 
-  let valueSetUrl = qItem.answerValueSet;
+  const valueSetUrl = qItem.answerValueSet;
   const initialCodings = useMemo(() => {
     // set options from cached answer options if present
     if (valueSetUrl) {
+      let cleanValueSetUrl = valueSetUrl;
       if (valueSetUrl.startsWith('#')) {
-        valueSetUrl = valueSetUrl.slice(1);
+        cleanValueSetUrl = valueSetUrl.slice(1);
       }
 
       // attempt to get codings from value sets preprocessed when loading questionnaire
-      if (preprocessedCodings[valueSetUrl]) {
-        return preprocessedCodings[valueSetUrl];
+      if (preprocessedCodings[cleanValueSetUrl]) {
+        return preprocessedCodings[cleanValueSetUrl];
       }
 
       // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[valueSetUrl]) {
-        return cachedValueSetCodings[valueSetUrl];
+      if (cachedValueSetCodings[cleanValueSetUrl]) {
+        return cachedValueSetCodings[cleanValueSetUrl];
       }
     }
 
     // get valueSet from sdc-questionnaire-answerExpression extension if answerValueSet is not present
-    if (!valueSetUrl) {
-      const answerExpression = getAnswerExpression(qItem);
-      if (answerExpression) {
-        return evaluateAnswerExpressionValueSet(answerExpression, variables, preprocessedCodings);
-      }
-    }
+    // if (!valueSetUrl) {
+    //   const answerExpression = getAnswerExpression(qItem);
+    //   const itemLevelVariables = variables.itemLevelVariables[qItem.linkId];
+    //   // possibly need to rethink this,
+    //   // might need to reintroduce this as a hook or context, like calculatedexpressions
+    //   if (answerExpression) {
+    //     return evaluateAnswerExpressionValueSet(
+    //       answerExpression,
+    //       itemLevelVariables,
+    //       preprocessedCodings
+    //     );
+    //   }
+    // }
 
     return [];
-  }, [valueSetUrl, qItem, variables, preprocessedCodings, cachedValueSetCodings]);
+  }, [cachedValueSetCodings, preprocessedCodings, valueSetUrl]);
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [serverError, setServerError] = useState<Error | null>(null);

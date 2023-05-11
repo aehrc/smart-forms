@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import type { Coding, Expression, Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type { Coding, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type {
   CalculatedExpression,
   EnableWhenItemProperties,
-  ValueSetPromise
+  ValueSetPromise,
+  Variables
 } from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
 import { getCalculatedExpression, getVariables } from '../functions/ItemControlFunctions';
@@ -34,7 +35,7 @@ import {
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
-  variables: Expression[];
+  variables: Variables;
   calculatedExpressions: Record<string, CalculatedExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
   preprocessedValueSetCodings: Record<string, Coding[]>;
@@ -44,14 +45,14 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'active'
     };
-    this.variables = [];
+    this.variables = { questionnaireLevelVariables: [], itemLevelVariables: {} };
     this.calculatedExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
   }
 
   async setQuestionnaire(questionnaire: Questionnaire): Promise<void> {
-    this.variables = [];
+    this.variables = { questionnaireLevelVariables: [], itemLevelVariables: {} };
     this.calculatedExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
@@ -90,6 +91,18 @@ export class QuestionnaireProvider {
       });
     }
 
+    // Store questionnaire-level variables
+    if (this.questionnaire.extension && this.questionnaire.extension.length > 0) {
+      this.variables.questionnaireLevelVariables = this.questionnaire.extension
+        .filter(
+          (extension) =>
+            extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
+            extension.valueExpression
+        )
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .map((extension) => extension.valueExpression!);
+    }
+
     // Recursively read enableWhen items, calculated expressions and valueSets to be expanded
     this.questionnaire.item.forEach((item) => {
       this.readQuestionnaireItem(item, valueSetPromiseMap);
@@ -123,7 +136,7 @@ export class QuestionnaireProvider {
       });
     }
 
-    // Read calculated expressions, enable when items, variables and valueSets from qItem
+    // Read calculated expressions, enable when items, valueSets and variables from qItem
     const calculatedExpression = getCalculatedExpression(item);
     if (calculatedExpression) {
       this.calculatedExpressions[item.linkId] = {
@@ -136,9 +149,6 @@ export class QuestionnaireProvider {
       this.enableWhenItems[item.linkId] = enableWhenItemProperties;
     }
 
-    const variables = getVariables(item);
-    this.variables.push(...variables);
-
     const valueSetUrl = item.answerValueSet;
     if (valueSetUrl) {
       if (!valueSetPromiseMap[valueSetUrl] && !valueSetUrl.startsWith('#')) {
@@ -149,12 +159,17 @@ export class QuestionnaireProvider {
       }
     }
 
-    // Get valueSets from variables if present
-    const valueSetUrls = getValueSetsToBeExpandedFromVariables(variables);
-    for (const valueSetUrl of valueSetUrls) {
-      valueSetPromiseMap[valueSetUrl] = {
-        promise: getValueSetPromise(valueSetUrl)
-      };
+    const variables = getVariables(item);
+    if (variables.length > 0) {
+      this.variables.itemLevelVariables[item.linkId] = variables;
+
+      // Get valueSets from variables if present
+      const valueSetUrls = getValueSetsToBeExpandedFromVariables(variables);
+      for (const valueSetUrl of valueSetUrls) {
+        valueSetPromiseMap[valueSetUrl] = {
+          promise: getValueSetPromise(valueSetUrl)
+        };
+      }
     }
   }
 }

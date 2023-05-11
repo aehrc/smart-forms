@@ -58,10 +58,7 @@ describe('verify correctness of initial answers created from linked questions ma
   const linkedQuestionsMap = linkedQuestionsMapSample as Record<string, string[]>;
   const questionnaireResponse = questionnaireResponseSample as QuestionnaireResponse;
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const qrForm = questionnaireResponse.item![0];
-
-  const initialAnswers = readInitialAnswers(qrForm, linkedQuestionsMap);
+  const initialAnswers = readInitialAnswers(questionnaireResponse, linkedQuestionsMap);
   const ageKey = 'e2a16e4d-2765-4b61-b286-82cfc6356b30';
 
   test('specifying age as key in initial answers should return valueInteger of 86', () => {

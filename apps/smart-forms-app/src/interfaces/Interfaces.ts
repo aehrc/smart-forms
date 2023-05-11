@@ -16,6 +16,7 @@
  */
 
 import type {
+  Expression,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
@@ -125,4 +126,9 @@ export interface SelectedResponse {
 export interface Renderer {
   response: QuestionnaireResponse;
   hasChanges: boolean;
+}
+
+export interface Variables {
+  questionnaireLevelVariables: Expression[];
+  itemLevelVariables: Record<string, Expression[]>;
 }

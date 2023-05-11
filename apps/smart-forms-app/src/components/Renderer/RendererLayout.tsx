@@ -134,15 +134,24 @@ function RendererLayout() {
       const responseFromProvider = questionnaireResponseProvider.response;
       if (!responseFromProvider.item || responseFromProvider.item.length === 0) return;
 
+      let shouldUpdateResponse = false;
       const updatedTopLevelQRItems = responseFromProvider.item.map((topLevelQRItem) => {
         const topLevelQRItemCleaned = removeNoAnswerQrItem(topLevelQRItem);
-        return topLevelQRItemCleaned ?? topLevelQRItem;
+
+        if (topLevelQRItemCleaned) {
+          shouldUpdateResponse = true;
+          return topLevelQRItemCleaned;
+        } else {
+          return topLevelQRItem;
+        }
       });
 
-      setRenderer({
-        ...renderer,
-        response: { ...questionnaireResponseProvider.response, item: updatedTopLevelQRItems }
-      });
+      if (shouldUpdateResponse) {
+        setRenderer({
+          ...renderer,
+          response: { ...questionnaireResponseProvider.response, item: updatedTopLevelQRItems }
+        });
+      }
     },
     // init update renderer response only when server-side changes occur, leave dependency array empty
     // eslint-disable-next-line react-hooks/exhaustive-deps

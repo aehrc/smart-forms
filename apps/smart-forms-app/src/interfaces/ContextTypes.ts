@@ -17,7 +17,6 @@
 
 import type {
   Coding,
-  Expression,
   Patient,
   Practitioner,
   QuestionnaireResponse,
@@ -28,7 +27,8 @@ import type {
   CalculatedExpression,
   EnableWhenItemProperties,
   EnableWhenItems,
-  Renderer
+  Renderer,
+  Variables
 } from './Interfaces';
 import type { MutableRefObject } from 'react';
 
@@ -62,7 +62,7 @@ export type CalculatedExpressionContextType = {
   calculatedExpressions: Record<string, CalculatedExpression>;
   updateCalculatedExpressions: (
     questionnaireResponse: QuestionnaireResponse,
-    variables: Expression[]
+    variables: Variables
   ) => unknown;
 };
 
