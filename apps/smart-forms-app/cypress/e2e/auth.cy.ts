@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import Q715Assembled from '../../src/data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
-
 describe('launch app in SMART Launcher', () => {
   const formsServerUrl = 'https://api.smartforms.io/fhir';
 
@@ -55,52 +53,54 @@ describe('launch app in SMART Launcher', () => {
     });
   });
 });
-describe('launch app in simulated EHR', () => {
-  const clientUrl = 'https://launch.smartforms.io/v/r4/fhir';
 
-  context('launch with authorisation with a questionnaire url parameter', () => {
-    const questionnaireUrl = 'http://www.health.gov.au/assessments/mbs/715';
-    const questionnaireId = 'AboriginalTorresStraitIslanderHealthCheck';
-    const questionnaire = Q715Assembled;
-    const launchUrl =
-      'http://localhost:5173/launch?iss=https%3A%2F%2Flaunch.smartforms.io%2Fv%2Fr4%2Ffhir&launch=WzAsImIyMThjZWU5LTAxOWQtNDdhNC1iMTYxLWU5N2MwZmQ2ZjczNiIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMSwie1wiUXVlc3Rpb25uYWlyZVwiOlwiQWJvcmlnaW5hbFRvcnJlc1N0cmFpdElzbGFuZGVySGVhbHRoQ2hlY2tcIn0iXQ';
-    it('from launch page, fetch patient and redirect to renderer while populating form', () => {
-      cy.intercept({
-        method: 'POST',
-        url: 'https://launch.smartforms.io/v/r4/auth/token'
-      }).as('authorising');
-      cy.intercept({
-        method: 'POST',
-        url: clientUrl
-      }).as('populating');
-
-      cy.request({
-        method: 'GET',
-        url: `${clientUrl}/Questionnaire?url=${questionnaireUrl}`
-      }).then((response) => {
-        expect(response.status).to.eq(200);
-        expect(response.body).to.have.property('total');
-
-        // PUT questionnaire if it doesn't already exist
-        if (response.body.total === 0) {
-          cy.request({
-            method: 'PUT',
-            url: `${clientUrl}/Questionnaire/${questionnaireId}`,
-            body: questionnaire
-          }).then((response) => {
-            expect(response.status).to.satisfy((statusCode: string) => /^2\d\d$/.test(statusCode));
-            expect(response.body).to.have.property('resourceType', 'Questionnaire');
-            expect(response.body).to.have.property('id', questionnaireId);
-          });
-        }
-      });
-
-      cy.visit(launchUrl);
-      cy.wait('@authorising');
-      cy.wait('@populating');
-      cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Populating form');
-      cy.location('pathname').should('eq', '/renderer');
-      cy.getByData('form-heading').should('be.visible');
-    });
-  });
-});
+// FIXME commenting out this test as https://launch.smartforms.io/v/r4/fhir is not deployed
+// describe('launch app in simulated EHR', () => {
+//   const clientUrl = 'https://launch.smartforms.io/v/r4/fhir';
+//
+//   context('launch with authorisation with a questionnaire url parameter', () => {
+//     const questionnaireUrl = 'http://www.health.gov.au/assessments/mbs/715';
+//     const questionnaireId = 'AboriginalTorresStraitIslanderHealthCheck';
+//     const questionnaire = Q715Assembled;
+//     const launchUrl =
+//       'http://localhost:5173/launch?iss=https%3A%2F%2Flaunch.smartforms.io%2Fv%2Fr4%2Ffhir&launch=WzAsImIyMThjZWU5LTAxOWQtNDdhNC1iMTYxLWU5N2MwZmQ2ZjczNiIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMSwie1wiUXVlc3Rpb25uYWlyZVwiOlwiQWJvcmlnaW5hbFRvcnJlc1N0cmFpdElzbGFuZGVySGVhbHRoQ2hlY2tcIn0iXQ';
+//     it('from launch page, fetch patient and redirect to renderer while populating form', () => {
+//       cy.intercept({
+//         method: 'POST',
+//         url: 'https://launch.smartforms.io/v/r4/auth/token'
+//       }).as('authorising');
+//       cy.intercept({
+//         method: 'POST',
+//         url: clientUrl
+//       }).as('populating');
+//
+//       cy.request({
+//         method: 'GET',
+//         url: `${clientUrl}/Questionnaire?url=${questionnaireUrl}`
+//       }).then((response) => {
+//         expect(response.status).to.eq(200);
+//         expect(response.body).to.have.property('total');
+//
+//         // PUT questionnaire if it doesn't already exist
+//         if (response.body.total === 0) {
+//           cy.request({
+//             method: 'PUT',
+//             url: `${clientUrl}/Questionnaire/${questionnaireId}`,
+//             body: questionnaire
+//           }).then((response) => {
+//             expect(response.status).to.satisfy((statusCode: string) => /^2\d\d$/.test(statusCode));
+//             expect(response.body).to.have.property('resourceType', 'Questionnaire');
+//             expect(response.body).to.have.property('id', questionnaireId);
+//           });
+//         }
+//       });
+//
+//       cy.visit(launchUrl);
+//       cy.wait('@authorising');
+//       cy.wait('@populating');
+//       cy.getByData('progress-spinner').find('.MuiTypography-root').contains('Populating form');
+//       cy.location('pathname').should('eq', '/renderer');
+//       cy.getByData('form-heading').should('be.visible');
+//     });
+//   });
+// });
