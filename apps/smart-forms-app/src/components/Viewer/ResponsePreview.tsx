@@ -46,7 +46,7 @@ function ResponsePreview() {
   const questionnaire = questionnaireProvider.questionnaire;
   const response = questionnaireResponseProvider.response;
 
-  if (!questionnaire.item || !response.item) return <ViewerInvalid />;
+  if (!questionnaire.item || !response.item) return <ViewerInvalid questionnaire={questionnaire} />;
 
   const responseCleaned = removeHiddenAnswers(questionnaire, response, enableWhenContext);
   const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));

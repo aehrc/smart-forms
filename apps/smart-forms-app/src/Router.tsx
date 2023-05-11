@@ -18,7 +18,6 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import DashboardLayout from './components/Dashboard/DashboardLayout';
 import Launch from './components/Launch/Launch';
-import { useContext, useEffect } from 'react';
 import QuestionnairesPage from './components/Dashboard/QuestionnairePage/QuestionnairesPage';
 import ResponsesPage from './components/Dashboard/ResponsesPage/ResponsesPage';
 import RendererLayout from './components/Renderer/RendererLayout';
@@ -27,21 +26,8 @@ import FormPreview from './components/Renderer/FormPreviewPage/FormPreview';
 import ViewerLayout from './components/Viewer/ViewerLayout';
 import ResponsePreview from './components/Viewer/ResponsePreview';
 import Authorisation from './components/Authorisation/Authorisation';
-import { useCookies } from 'react-cookie';
-import { LaunchContext } from './custom-contexts/LaunchContext';
 
 export default function Router() {
-  const { fhirClient, setFhirClient } = useContext(LaunchContext);
-  const [cookies, setCookie] = useCookies(['client']);
-
-  useEffect(() => {
-    if (fhirClient && cookies['client'] === undefined) {
-      setCookie('client', fhirClient, { path: '/' });
-    } else if (!fhirClient && cookies['client'] !== undefined) {
-      setFhirClient(cookies['client']);
-    }
-  });
-
   const router = createBrowserRouter([
     {
       path: '/',
@@ -78,7 +64,7 @@ export default function Router() {
     },
     {
       path: '*',
-      element: <Navigate to="/dashboard/questionnaires" replace />
+      element: <Navigate to="/" replace />
     }
   ]);
 
