@@ -35,7 +35,7 @@ function DashboardLayout() {
   useEffect(() => {
     // check if fhirClient is not present but app was previously authorised - happens when user refreshes the page
     // redirects user to authorisation page to be authorised again
-    if (!fhirClient && localStorage.getItem('authorised') === 'true') {
+    if (!fhirClient && sessionStorage.getItem('authorised') === 'true') {
       navigate('/');
     }
   });

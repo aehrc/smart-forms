@@ -108,7 +108,7 @@ function Authorisation() {
         .then((client) => {
           setFhirClient(client);
           setSource('remote');
-          localStorage.setItem('authorised', 'true');
+          sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
           getPatient(client)
