@@ -26,6 +26,7 @@ import {
 import { useContext, useEffect, useReducer, useState } from 'react';
 import { oauth2 } from 'fhirclient';
 import {
+  getEncounter,
   getPatient,
   getQuestionnaireContext,
   getQuestionnaireReference,
@@ -92,7 +93,7 @@ const initialAuthState: AuthState = {
 };
 
 function Authorisation() {
-  const { setFhirClient, setPatient, setUser } = useContext(LaunchContext);
+  const { setFhirClient, setPatient, setUser, setEncounter } = useContext(LaunchContext);
   const { setSource } = useContext(SourceContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
@@ -135,6 +136,14 @@ function Authorisation() {
               enqueueSnackbar('Fail to fetch user. Try launching the app again', {
                 variant: 'error'
               });
+            });
+
+          getEncounter(client)
+            .then((encounter) => {
+              setEncounter(encounter);
+            })
+            .catch((error) => {
+              console.error(error);
             });
 
           const questionnaireReference = getQuestionnaireReference(client);

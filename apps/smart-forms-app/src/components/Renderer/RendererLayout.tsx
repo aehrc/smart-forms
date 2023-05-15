@@ -23,7 +23,7 @@ import { Main } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
-import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
+import { populateQuestionnaire } from '../../functions/populate-functions/populateFunctions.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
@@ -69,7 +69,7 @@ function RendererLayout() {
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient, patient, user } = useContext(LaunchContext);
+  const { fhirClient, patient, user, encounter } = useContext(LaunchContext);
 
   // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
   let initialResponse: QuestionnaireResponse;
@@ -161,11 +161,13 @@ function RendererLayout() {
   /*
    * Perform pre-population if all the following requirements are fulfilled:
    * 1. App is connected to a CMS
-   * 2. Pre-pop queries exist in the form of contained resources or extensions
+   * 2. Pre-pop queries exist in the form of questionnaire-level extensions or contained resources
    * 3. QuestionnaireResponse does not have answer items
    * 4. QuestionnaireResponse is not from a saved draft response
    */
-  const qrFormItem = initialResponse.item?.[0].item;
+  const responseHasNoAnswers: boolean =
+    !initialResponse.item?.[0].item || initialResponse.item?.[0].item.length === 0;
+
   if (
     fhirClient &&
     patient &&
@@ -173,14 +175,16 @@ function RendererLayout() {
     spinner.isLoading &&
     (questionnaireProvider.questionnaire.contained ||
       questionnaireProvider.questionnaire.extension) &&
-    (!qrFormItem || qrFormItem.length === 0) &&
+    responseHasNoAnswers &&
     !questionnaireResponseProvider.response.id
   ) {
     // obtain questionnaireResponse for pre-population
     populateQuestionnaire(
-      fhirClient,
       questionnaireProvider.questionnaire,
       patient,
+      user,
+      encounter,
+      // questionnaireProvider.variables.xFhirQueryVariables
       (populated, hasError) => {
         questionnaireResponseProvider.setQuestionnaireResponse(populated);
         setRenderer({ ...renderer, response: populated });

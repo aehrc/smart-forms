@@ -19,6 +19,7 @@ import type {
   Expression,
   Questionnaire,
   QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
@@ -42,19 +43,14 @@ export interface PropsWithIsTabledAttribute {
   isTabled: boolean;
 }
 
-export interface PatientData {
-  name: string;
-  gender: string;
-  dateOfBirth: string;
-}
-
-export interface UserData {
-  name: string;
-}
-
 export interface CalculatedExpression {
   expression: string;
   value?: number | string;
+}
+
+export interface AnswerExpression {
+  expression: string;
+  value?: QuestionnaireItemAnswerOption;
 }
 
 export type EnableWhenItems = Record<string, EnableWhenItemProperties>;
@@ -129,6 +125,11 @@ export interface Renderer {
 }
 
 export interface Variables {
-  questionnaireLevelVariables: Expression[];
-  itemLevelVariables: Record<string, Expression[]>;
+  fhirPathVariables: Record<string, Expression[]>;
+  xFhirQueryVariables: Record<string, VariableXFhirQuery>;
+}
+
+export interface VariableXFhirQuery {
+  valueExpression: Expression;
+  result?: QuestionnaireItemAnswerOption;
 }

@@ -80,7 +80,7 @@ function Form() {
       item: updatedItems
     };
 
-    updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables);
+    updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables.fhirPathVariables);
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
 

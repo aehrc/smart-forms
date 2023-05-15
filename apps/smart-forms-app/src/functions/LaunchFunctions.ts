@@ -16,7 +16,7 @@
  */
 
 import type Client from 'fhirclient/lib/Client';
-import type { OperationOutcome, Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Encounter, OperationOutcome, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import type { fhirclient } from 'fhirclient/lib/types';
 import { headers } from './LoadServerResourceFunctions';
 import * as FHIR from 'fhirclient';
@@ -29,6 +29,10 @@ export async function getPatient(client: Client): Promise<Patient> {
 
 export async function getUser(client: Client): Promise<Practitioner> {
   return (await client.user.read()) as Practitioner;
+}
+
+export async function getEncounter(client: Client): Promise<Encounter> {
+  return (await client.encounter.read()) as Encounter;
 }
 
 interface ResourceReference {

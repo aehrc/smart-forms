@@ -18,8 +18,8 @@
 import type { ReactNode } from 'react';
 import { createContext, useContext, useState } from 'react';
 import type { CalculatedExpressionContextType } from '../interfaces/ContextTypes';
-import type { QuestionnaireResponse } from 'fhir/r4';
-import type { CalculatedExpression, Variables } from '../interfaces/Interfaces';
+import type { Expression, QuestionnaireResponse } from 'fhir/r4';
+import type { CalculatedExpression } from '../interfaces/Interfaces';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { QuestionnaireProviderContext } from '../App';
@@ -47,7 +47,7 @@ function CalculatedExpressionContextProvider(props: { children: ReactNode }) {
      */
     updateCalculatedExpressions: (
       questionnaireResponse: QuestionnaireResponse,
-      variables: Variables
+      variablesFhirPath: Record<string, Expression[]>
     ) => {
       // Evaluate top-level items' variables
       let isUpdated = false;
@@ -56,7 +56,7 @@ function CalculatedExpressionContextProvider(props: { children: ReactNode }) {
         const context: Record<string, any> = {};
 
         for (const topLevelItem of questionnaireResponse.item) {
-          const variablesTopLevelItem = variables.itemLevelVariables[topLevelItem.linkId];
+          const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
           if (variablesTopLevelItem.length > 0) {
             variablesTopLevelItem.forEach((variable) => {
               context[`${variable.name}`] = fhirpath.evaluate(

@@ -19,15 +19,17 @@ import type { ReactNode } from 'react';
 import { createContext, useState } from 'react';
 import type { LaunchContextType } from '../interfaces/ContextTypes';
 import type Client from 'fhirclient/lib/Client';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 
 export const LaunchContext = createContext<LaunchContextType>({
   fhirClient: null,
   patient: null,
   user: null,
+  encounter: null,
   setFhirClient: () => void 0,
   setPatient: () => void 0,
-  setUser: () => void 0
+  setUser: () => void 0,
+  setEncounter: () => void 0
 });
 
 function LaunchContextProvider(props: { children: ReactNode }) {
@@ -35,11 +37,13 @@ function LaunchContextProvider(props: { children: ReactNode }) {
   const [client, setClient] = useState<Client | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
+  const [encounter, setEncounter] = useState<Encounter | null>(null);
 
   const launchContext: LaunchContextType = {
     fhirClient: client,
     patient: patient,
     user: user,
+    encounter: encounter,
     setFhirClient: (client: Client) => {
       setClient(client);
     },
@@ -48,6 +52,9 @@ function LaunchContextProvider(props: { children: ReactNode }) {
     },
     setUser: (user: Practitioner) => {
       setUser(user);
+    },
+    setEncounter: (encounter: Encounter) => {
+      setEncounter(encounter);
     }
   };
   return <LaunchContext.Provider value={launchContext}>{children}</LaunchContext.Provider>;

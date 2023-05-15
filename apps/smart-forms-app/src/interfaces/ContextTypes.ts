@@ -17,6 +17,8 @@
 
 import type {
   Coding,
+  Encounter,
+  Expression,
   Patient,
   Practitioner,
   QuestionnaireResponse,
@@ -27,8 +29,7 @@ import type {
   CalculatedExpression,
   EnableWhenItemProperties,
   EnableWhenItems,
-  Renderer,
-  Variables
+  Renderer
 } from './Interfaces';
 import type { MutableRefObject } from 'react';
 
@@ -48,9 +49,11 @@ export type LaunchContextType = {
   fhirClient: Client | null;
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
   setFhirClient: (client: Client) => unknown;
   setPatient: (patient: Patient) => unknown;
   setUser: (user: Practitioner) => unknown;
+  setEncounter: (user: Encounter) => unknown;
 };
 
 export type CachedQueriedValueSetContextType = {
@@ -62,7 +65,7 @@ export type CalculatedExpressionContextType = {
   calculatedExpressions: Record<string, CalculatedExpression>;
   updateCalculatedExpressions: (
     questionnaireResponse: QuestionnaireResponse,
-    variables: Variables
+    variablesFhirPath: Record<string, Expression[]>
   ) => unknown;
 };
 
