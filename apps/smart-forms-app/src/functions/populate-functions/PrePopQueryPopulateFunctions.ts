@@ -15,58 +15,26 @@
  * limitations under the License.
  */
 
-import type { Bundle, ParametersParameter, Patient, Questionnaire } from 'fhir/r4';
-import type Client from 'fhirclient/lib/Client';
-import { constructContextParameters, getBatchResponse } from './PrepopulateFunctions';
+import type { Questionnaire } from 'fhir/r4';
+import { isLaunchContext, isSourceQuery } from './populateTypePredicates.ts';
+import type { LaunchContext } from './launchContext.interface.ts';
+import type { SourceQuery } from './sourceQueries.interface.ts';
 
-/**
- * Get pre-population query bundle from the questionnaire's contained resources
- *
- * @author Sean Fong
- */
-export function getPrePopQuery(questionnaire: Questionnaire): Bundle | null {
-  if (!questionnaire.contained || questionnaire.contained.length === 0) return null;
-
-  for (const entry of questionnaire.contained) {
-    if (entry.resourceType === 'Bundle' && entry.id === 'PrePopQuery') {
-      return entry;
-    }
+export function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) =>
+      isLaunchContext(extension)
+    ) as LaunchContext[];
   }
 
-  return null;
+  return [];
 }
 
-/**
- * Construct PrePopQuery context parameter from PrePopQuery bundle defined in the questionnaire's contained resources
- *
- * @author Sean Fong
- */
-export async function constructPrePopQueryContextParameters(
-  client: Client,
-  patient: Patient,
-  prePopQuery: Bundle
-): Promise<ParametersParameter> {
-  // replace all instances of patientId placeholder with patient id
-  prePopQuery = replacePatientIdInstances(prePopQuery, patient);
-
-  // perform batch query to CMS
-  const batchResponse = await getBatchResponse(client, prePopQuery);
-
-  // construct context parameters for PrePopQuery
-  return constructContextParameters('PrePopQuery', batchResponse);
-}
-
-/**
- * Replace patientId variable instances in batch query entries with CMS Patient ID
- *
- * @author Sean Fong
- */
-function replacePatientIdInstances(batchQuery: Bundle, patient: Patient): Bundle {
-  if (batchQuery.entry) {
-    batchQuery.entry.forEach((entry) => {
-      if (entry.request && patient.id)
-        entry.request.url = entry.request.url.replace('{{%patient.id}}', patient.id);
-    });
+// get source query references
+export function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) => isSourceQuery(extension)) as SourceQuery[];
   }
-  return { ...batchQuery };
+
+  return [];
 }

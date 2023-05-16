@@ -29,13 +29,13 @@ import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './Proce
 import dayjs from 'dayjs';
 import moment from 'moment';
 
-const emptyQuestionnaireResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress'
-};
-
 /**
- * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions.
+ * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
+ *
+ * @param questionnaire - The questionnaire resource to construct a response from
+ * @param subject - A subject reference to form the subject within the response
+ * @param initialExpressions - A key-value pair of <linkId, initialExpressions> to be used for population
+ * @returns A populated questionnaire response wrapped within a Promise
  *
  * @author Sean Fong
  */
@@ -44,10 +44,17 @@ export async function constructResponse(
   subject: Reference,
   initialExpressions: Record<string, InitialExpression>
 ): Promise<QuestionnaireResponse> {
-  const questionnaireResponse = emptyQuestionnaireResponse;
+  const questionnaireResponse: QuestionnaireResponse = {
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress'
+  };
+
   let valueSetPromises: Record<string, ValueSetPromise> = {};
 
-  if (!questionnaire.item) return questionnaireResponse;
+  if (!questionnaire.item) {
+    return questionnaireResponse;
+  }
+
   const qForm = questionnaire.item[0];
 
   if (!qForm) return questionnaireResponse;

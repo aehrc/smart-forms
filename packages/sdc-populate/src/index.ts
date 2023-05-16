@@ -15,31 +15,28 @@
  * limitations under the License.
  */
 
-import type {
-  InitialExpression,
-  PopulateInputParameters,
-  PopulateOutputParameters,
-  PopulateOutputParametersWithIssues,
-  PrePopQueryContextParameter,
-  VariablesContextParameter
-} from './Interfaces';
-import { addVariablesToContext } from './VariableProcessing';
-import { constructResponse } from './ConstructQuestionnaireResponse';
-import { createOutputParameters } from './CreateOutputParameters';
-import type { OperationOutcome, Parameters, ParametersParameter } from 'fhir/r4';
-import {
-  isLaunchPatientContent,
-  isLaunchPatientName,
-  isPrePopQueryName,
-  isPrePopQueryOrVariablesContent,
-  isQuestionnaireParameter,
-  isSubjectParameter,
-  isVariablesName
-} from './TypePredicates';
-import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
+import type { PopulateInputParameters } from './Interfaces';
+import type { OperationOutcome, Parameters, Reference } from 'fhir/r4';
+import { OperationOutcomeIssue } from 'fhir/r4';
+import { isQuestionnaireDataParameter, isSubjectParameter } from './TypePredicates';
+import type { InputParameters } from './interfaces/inputParameters.interface';
+import { FetchResourceCallback } from './interfaces/callback.interface';
+import { fetchQuestionnaire } from './getQuestionnaire';
+import { getContextMap } from './getContexts';
 import { readPopulationExpressions } from './ReadPopulationExpressions';
-import { evaluateItemPopulationContexts } from './EvaluateItemPopulationContexts';
 import { sortResourceArrays } from './SortBundles';
+import { constructResponse } from './ConstructQuestionnaireResponse';
+import { evaluateItemPopulationContexts } from './EvaluateItemPopulationContexts';
+import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
+import { createOutputParameters } from './CreateOutputParameters';
+import type { OutputParameters } from './interfaces/outputParameters.interface';
+
+export { FetchResourceCallback } from './interfaces/callback.interface';
+export {
+  IdentifierParameter,
+  QuestionnaireRefParameter
+} from './interfaces/inputParameters.interface';
+export { IssuesParameter, ResponseParameter } from './interfaces/outputParameters.interface';
 
 /**
  * Main function of this populate module.
@@ -48,81 +45,56 @@ import { sortResourceArrays } from './SortBundles';
  * @author Sean Fong
  */
 export default async function populate(
-  parameters: PopulateInputParameters
-): Promise<PopulateOutputParameters | PopulateOutputParametersWithIssues> {
-  const params = parameters.parameter;
+  parameters: InputParameters,
+  fetchResourceCallback: FetchResourceCallback,
+  requestConfig: any
+): Promise<OutputParameters | OperationOutcome> {
+  const issues: OperationOutcomeIssue[] = [];
 
-  const questionnaire = params[0].resource;
-  const subject = params[1].valueReference;
-  const launchPatient = params[2].part[1].resource;
-
-  const populationExpressions = readPopulationExpressions(questionnaire);
-  let context: Record<string, any> = {
-    patient: launchPatient
-  };
-
-  // Add PrePopQuery and variables to context
-  if (params.length === 5) {
-    for (const param of [params[3], params[4]]) {
-      context = getContextContent(param, context, populationExpressions.initialExpressions);
-    }
-  } else {
-    context = getContextContent(params[3], context, populationExpressions.initialExpressions);
+  const questionnaire = await fetchQuestionnaire(parameters, fetchResourceCallback, requestConfig);
+  if (questionnaire.resourceType === 'OperationOutcome') {
+    return questionnaire;
   }
 
-  // Add evaluate itemPopulationContexts and add them to context
-  const evaluatedContext = evaluateItemPopulationContexts(
+  const subjectReference = parameters.parameter.find((param) => isSubjectParameter(param))
+    ?.valueReference as Reference;
+
+  // Create contextMap to hold variables for population
+  let contextMap = await getContextMap(
+    parameters,
+    questionnaire,
+    fetchResourceCallback,
+    requestConfig,
+    issues
+  );
+
+  // Read expressions to be populated from questionnaire recursively
+  // i.e. itemPopulationContext, initialExpression
+  const populationExpressions = readPopulationExpressions(questionnaire);
+
+  // Evaluate itemPopulationContexts and add them to contextMap
+  contextMap = evaluateItemPopulationContexts(
     populationExpressions.itemPopulationContexts,
-    context
+    contextMap,
+    issues
   );
-  const evaluatedContextError = evaluatedContext.errorOutcome;
+  contextMap = sortResourceArrays(contextMap);
 
-  // Sort resource bundles within context
-  context = sortResourceArrays(evaluatedContext.context);
-
-  // Perform evaluation of initialExpressions based on context
-  const evaluatedExpressions = evaluateInitialExpressions(
+  // Evaluate initialExpressions
+  const evaluatedInitialExpressions = evaluateInitialExpressions(
     populationExpressions.initialExpressions,
-    context
+    contextMap,
+    issues
   );
-  const evaluatedExpressionsError = evaluatedExpressions.errorOutcome;
 
+  // Construct response from initialExpressions
   const questionnaireResponse = await constructResponse(
     questionnaire,
-    subject,
-    evaluatedExpressions.initialExpressions
+    subjectReference,
+    evaluatedInitialExpressions
   );
 
-  // collect issues if there are any
-  const issues: OperationOutcome[] = [];
-  if (evaluatedContextError) {
-    issues.push(evaluatedContextError);
-  }
-
-  if (evaluatedExpressionsError) {
-    issues.push(evaluatedExpressionsError);
-  }
-
   return createOutputParameters(questionnaireResponse, issues);
-}
-
-function getContextContent(
-  param: PrePopQueryContextParameter | VariablesContextParameter,
-  context: Record<string, any>,
-  initialExpressions: Record<string, InitialExpression>
-) {
-  const contextName = param.part[0].valueString;
-  const contextContent = param.part[1].resource;
-
-  switch (contextName) {
-    case 'PrePopQuery':
-      context['PrePopQuery'] = contextContent;
-      break;
-    case 'Variables':
-      context = addVariablesToContext(initialExpressions, context, contextContent);
-      break;
-  }
-  return context;
 }
 
 /**
@@ -133,35 +105,9 @@ function getContextContent(
 export function isPopulateInputParameters(
   parameters: Parameters
 ): parameters is PopulateInputParameters {
-  const questionnairePresent = !!parameters.parameter?.find(isQuestionnaireParameter);
+  const questionnairePresent = !!parameters.parameter?.find(isQuestionnaireDataParameter);
 
   const subjectPresent = !!parameters.parameter?.find(isSubjectParameter);
 
-  const launchPatientPresent = !!parameters.parameter?.find(
-    (parameter: ParametersParameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find(isLaunchPatientName) &&
-      parameter.part?.find(isLaunchPatientContent)
-  );
-
-  const prePopQueryPresent = !!parameters.parameter?.find(
-    (parameter: ParametersParameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find(isPrePopQueryName) &&
-      parameter.part?.find(isPrePopQueryOrVariablesContent)
-  );
-
-  const variablesPresent = !!parameters.parameter?.find(
-    (parameter: ParametersParameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find(isVariablesName) &&
-      parameter.part?.find(isPrePopQueryOrVariablesContent)
-  );
-
-  return (
-    questionnairePresent &&
-    subjectPresent &&
-    launchPatientPresent &&
-    (prePopQueryPresent || variablesPresent)
-  );
+  return questionnairePresent && subjectPresent;
 }

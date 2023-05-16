@@ -20,12 +20,12 @@ import axios from 'axios';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-interface RequestConfig {
+export interface RequestConfig {
   clientEndpoint: string;
   authToken: string;
 }
 
-export const fetchQuestionnaireCallback: FetchResourceCallback = (
+export const fetchResourceCallback: FetchResourceCallback = (
   query: string,
   requestConfig: RequestConfig
 ) => {
@@ -34,6 +34,10 @@ export const fetchQuestionnaireCallback: FetchResourceCallback = (
     Accept: 'application/json+fhir; charset=utf-8',
     Authorization: `Bearer ${requestConfig.authToken}`
   };
+
+  if (!requestConfig.clientEndpoint.endsWith('/')) {
+    requestConfig.clientEndpoint += '/';
+  }
 
   if (ABSOLUTE_URL_REGEX.test(query)) {
     return axios.get(query, {

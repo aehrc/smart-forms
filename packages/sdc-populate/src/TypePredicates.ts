@@ -16,47 +16,35 @@
  */
 
 import type { ParametersParameter } from 'fhir/r4';
-import type {
-  LaunchPatientContent,
-  LaunchPatientName,
-  PrePopQueryContent,
-  PrePopQueryName,
-  QuestionnaireParameter,
-  SubjectParameter
-} from './Interfaces';
+import type { QuestionnaireParameter, SubjectParameter } from './Interfaces';
+import type { CanonicalParameter, ContextParameter } from './interfaces/inputParameters.interface';
 
-export function isQuestionnaireParameter(
+export function isQuestionnaireDataParameter(
   parameter: ParametersParameter
 ): parameter is QuestionnaireParameter {
-  return parameter.name === 'questionnaire' && parameter.resource?.resourceType === 'Questionnaire';
+  return (
+    (parameter.name === 'identifier' && !!parameter.valueIdentifier) ||
+    (parameter.name === 'questionnaire' && parameter.resource?.resourceType === 'Questionnaire') ||
+    (parameter.name === 'questionnaireRef' && !!parameter.valueReference)
+  );
+}
+
+export function isCanonicalParameter(
+  parameter: ParametersParameter
+): parameter is CanonicalParameter {
+  return parameter.name === 'canonical' && !!parameter.valueCanonical;
 }
 
 export function isSubjectParameter(parameter: ParametersParameter): parameter is SubjectParameter {
-  return parameter.name === 'subject' && parameter.valueReference !== undefined;
+  return parameter.name === 'subject' && !!parameter.valueReference;
 }
 
-export function isLaunchPatientName(
-  parameter: ParametersParameter
-): parameter is LaunchPatientName {
-  return parameter.name === 'name' && parameter.valueString === 'LaunchPatient';
-}
-
-export function isLaunchPatientContent(
-  parameter: ParametersParameter
-): parameter is LaunchPatientContent {
-  return parameter.name === 'content' && parameter.resource?.resourceType === 'Patient';
-}
-
-export function isPrePopQueryName(parameter: ParametersParameter): parameter is PrePopQueryName {
-  return parameter.name === 'name' && parameter.valueString === 'PrePopQuery';
-}
-
-export function isVariablesName(parameter: ParametersParameter): parameter is PrePopQueryName {
-  return parameter.name === 'name' && parameter.valueString === 'Variables';
-}
-
-export function isPrePopQueryOrVariablesContent(
-  parameter: ParametersParameter
-): parameter is PrePopQueryContent {
-  return parameter.name === 'content' && parameter.resource?.resourceType === 'Bundle';
+export function isContextParameter(parameter: ParametersParameter): parameter is ContextParameter {
+  return (
+    parameter.name === 'context' &&
+    parameter.part?.[0]?.name === 'name' &&
+    !!parameter.part?.[0]?.valueString &&
+    parameter.part?.[1]?.name === 'content' &&
+    !!(parameter.part?.[1]?.resource || parameter.part?.[1]?.valueReference)
+  );
 }

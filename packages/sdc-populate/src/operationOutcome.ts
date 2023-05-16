@@ -15,23 +15,30 @@
  * limitations under the License.
  */
 
-import type { Questionnaire } from 'fhir/r4';
-import { isXFhirQueryVariable } from './populateTypePredicates.ts';
-import type { QuestionnaireLevelXFhirQueryVariable } from './sourceQueries.interface.ts';
+import { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
+
+export function createErrorOutcome(errorMessage: string): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: { text: errorMessage }
+      }
+    ]
+  };
+}
 
 /**
- * Filter x-fhir-query variables from questionnaire's extensions needed for population
+ * Create an OperationOutcome issue of severity warning with a supplied warning message
  *
  * @author Sean Fong
  */
-export function getQuestionnaireLevelXFhirQueryVariables(
-  questionnaire: Questionnaire
-): QuestionnaireLevelXFhirQueryVariable[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isXFhirQueryVariable(extension)
-    ) as QuestionnaireLevelXFhirQueryVariable[];
-  }
-
-  return [];
+export function createWarningIssue(warningMessage: string): OperationOutcomeIssue {
+  return {
+    severity: 'warning',
+    code: 'invalid',
+    details: { text: warningMessage }
+  };
 }

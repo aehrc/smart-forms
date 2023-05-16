@@ -15,23 +15,31 @@
  * limitations under the License.
  */
 
-import type { Questionnaire } from 'fhir/r4';
-import { isXFhirQueryVariable } from './populateTypePredicates.ts';
-import type { QuestionnaireLevelXFhirQueryVariable } from './sourceQueries.interface.ts';
+import type {
+  OperationOutcome,
+  Parameters,
+  ParametersParameter,
+  QuestionnaireResponse
+} from 'fhir/r4';
 
 /**
- * Filter x-fhir-query variables from questionnaire's extensions needed for population
+ * Output parameters for the $populate operation
+ * @see {@link http://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate}
  *
  * @author Sean Fong
  */
-export function getQuestionnaireLevelXFhirQueryVariables(
-  questionnaire: Questionnaire
-): QuestionnaireLevelXFhirQueryVariable[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isXFhirQueryVariable(extension)
-    ) as QuestionnaireLevelXFhirQueryVariable[];
-  }
+export interface OutputParameters extends Parameters {
+  parameter: OutputParamArray;
+}
 
-  return [];
+type OutputParamArray = [ResponseParameter, IssuesParameter] | [ResponseParameter];
+
+export interface ResponseParameter extends ParametersParameter {
+  name: 'response';
+  resource: QuestionnaireResponse;
+}
+
+export interface IssuesParameter extends ParametersParameter {
+  name: 'issues';
+  resource: OperationOutcome;
 }

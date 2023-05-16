@@ -42,12 +42,12 @@ export interface OutputParameters extends Parameters {
   parameter: [ReturnParameter, OutcomeParameter];
 }
 
-export interface ReturnParameter extends ParametersParameter {
+interface ReturnParameter extends ParametersParameter {
   name: 'return';
   resource: Questionnaire;
 }
 
-export interface OutcomeParameter extends ParametersParameter {
+interface OutcomeParameter extends ParametersParameter {
   name: 'outcome';
   resource: OperationOutcome;
 }

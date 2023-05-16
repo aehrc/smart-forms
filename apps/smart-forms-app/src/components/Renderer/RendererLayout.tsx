@@ -23,7 +23,7 @@ import { Main } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
-import { populateQuestionnaire } from '../../functions/populate-functions/populateFunctions.ts';
+import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
@@ -181,17 +181,17 @@ function RendererLayout() {
     // obtain questionnaireResponse for pre-population
     populateQuestionnaire(
       questionnaireProvider.questionnaire,
+      fhirClient,
       patient,
       user,
       encounter,
-      // questionnaireProvider.variables.xFhirQueryVariables
-      (populated, hasError) => {
+      (populated: QuestionnaireResponse, hasWarnings: boolean) => {
         questionnaireResponseProvider.setQuestionnaireResponse(populated);
         setRenderer({ ...renderer, response: populated });
         setSpinner({ ...spinner, isLoading: false });
-        if (hasError) {
+        if (hasWarnings) {
           enqueueSnackbar(
-            'An error occurred while populating the form. View console for details.',
+            'Questionnaire form partially populated, there might be issues while populating the form. View console for details.',
             { variant: 'warning' }
           );
         } else {
