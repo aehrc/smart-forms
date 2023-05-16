@@ -15,18 +15,24 @@
  * limitations under the License.
  */
 
-import { checkIsDate } from '../ConstructQuestionnaireResponse';
+import type { ValueSet } from 'fhir/r4';
 
-describe('check if a value is a date', () => {
-  test('string value of 2021-01-04 should return true', () => {
-    expect(checkIsDate('2021-01-04')).toEqual(true);
-  });
+export interface InitialExpression {
+  expression: string;
+  value: any[] | undefined;
+}
 
-  test('string value of 2021/01/04 should return false', () => {
-    expect(checkIsDate('2021/01/04')).toEqual(false);
-  });
+export interface ItemPopulationContext {
+  name: string;
+  expression: string;
+}
 
-  test('string value of 0 should return false', () => {
-    expect(checkIsDate('0')).toEqual(false);
-  });
-});
+export interface PopulationExpressions {
+  initialExpressions: Record<string, InitialExpression>;
+  itemPopulationContexts: ItemPopulationContext[];
+}
+
+export interface ValueSetPromise {
+  promise: Promise<ValueSet>;
+  valueSet?: ValueSet;
+}

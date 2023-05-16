@@ -17,11 +17,11 @@
 
 import type { Questionnaire } from 'fhir/r4';
 import { isLaunchContext, isSourceQuery, isXFhirQueryVariable } from './typePredicates.ts';
-import type { LaunchContext } from '../../interfaces/populateInterfaces/launchContext.interface.ts';
 import type {
+  LaunchContext,
   QuestionnaireLevelXFhirQueryVariable,
   SourceQuery
-} from '../../interfaces/populateInterfaces/sourceQueries.interface.ts';
+} from '../../interfaces/populate.interface.ts';
 
 export function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
   if (questionnaire.extension && questionnaire.extension.length > 0) {

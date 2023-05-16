@@ -15,20 +15,18 @@
  * limitations under the License.
  */
 
-import type { Expression, Extension, Reference } from 'fhir/r4';
+import { checkIsDate } from '../constructResponse';
 
-export interface SourceQuery extends Extension {
-  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries';
-  valueReference: Reference;
-}
+describe('check if a value is a date', () => {
+  test('string value of 2021-01-04 should return true', () => {
+    expect(checkIsDate('2021-01-04')).toEqual(true);
+  });
 
-export interface QuestionnaireLevelXFhirQueryVariable extends Extension {
-  url: 'http://hl7.org/fhir/StructureDefinition/variable';
-  valueExpression: XFhirQueryVariableExpression;
-}
+  test('string value of 2021/01/04 should return false', () => {
+    expect(checkIsDate('2021/01/04')).toEqual(false);
+  });
 
-interface XFhirQueryVariableExpression extends Expression {
-  name: string;
-  language: 'application/x-fhir-query';
-  expression: string;
-}
+  test('string value of 0 should return false', () => {
+    expect(checkIsDate('0')).toEqual(false);
+  });
+});

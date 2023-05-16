@@ -15,13 +15,31 @@
  * limitations under the License.
  */
 
-import type { ParametersParameter } from 'fhir/r4';
-import type { QuestionnaireParameter, SubjectParameter } from './Interfaces';
-import type { CanonicalParameter, ContextParameter } from './interfaces/inputParameters.interface';
+import type { Parameters, ParametersParameter } from 'fhir/r4';
+import type {
+  CanonicalParameter,
+  ContextParameter,
+  InputParameters,
+  QuestionnaireDataParameter,
+  SubjectParameter
+} from './interfaces/inputParameters.interface';
+
+/**
+ * Checks if the parameters passed satisfies the conditions of populateInputParameters.
+ *
+ * @author Sean Fong
+ */
+export function isInputParameters(parameters: Parameters): parameters is InputParameters {
+  const questionnairePresent = !!parameters.parameter?.find(isQuestionnaireDataParameter);
+
+  const subjectPresent = !!parameters.parameter?.find(isSubjectParameter);
+
+  return questionnairePresent && subjectPresent;
+}
 
 export function isQuestionnaireDataParameter(
   parameter: ParametersParameter
-): parameter is QuestionnaireParameter {
+): parameter is QuestionnaireDataParameter {
   return (
     (parameter.name === 'identifier' && !!parameter.valueIdentifier) ||
     (parameter.name === 'questionnaire' && parameter.resource?.resourceType === 'Questionnaire') ||

@@ -17,7 +17,7 @@
 
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import type { InitialExpression } from './Interfaces';
+import type { InitialExpression, ItemPopulationContext } from './interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createWarningIssue } from './operationOutcome';
 
@@ -27,7 +27,7 @@ import { createWarningIssue } from './operationOutcome';
  *
  * @author Sean Fong
  */
-export function evaluateInitialExpressions(
+export function evaluateExpressions(
   initialExpressions: Record<string, InitialExpression>,
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[]
@@ -53,4 +53,43 @@ export function evaluateInitialExpressions(
   }
 
   return initialExpressions;
+}
+
+/**
+ * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
+ * There are some functions that are yet to be implemented in FHIRPath.js - these functions would be removed from the expressions to avoid errors.
+ *
+ * @author Sean Fong
+ */
+export function evaluateItemPopulationContexts(
+  itemPopulationContexts: ItemPopulationContext[],
+  contextMap: Record<string, any>,
+  issues: OperationOutcomeIssue[]
+): Record<string, any> {
+  for (const linkId in itemPopulationContexts) {
+    const itemPopulationContext = itemPopulationContexts[linkId];
+    if (itemPopulationContext) {
+      let evaluatedResult: any[];
+      const expression = itemPopulationContext.expression;
+
+      // Evaluate expression by LaunchPatient or PrePopQuery
+      try {
+        evaluatedResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model);
+      } catch (e) {
+        if (e instanceof Error) {
+          console.error(
+            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:'
+          );
+          console.error(e);
+          issues.push(createWarningIssue(e.message));
+        }
+        continue;
+      }
+
+      // Save evaluated item population context result into context object
+      contextMap[itemPopulationContext.name] = evaluatedResult;
+    }
+  }
+
+  return contextMap;
 }

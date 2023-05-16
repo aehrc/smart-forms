@@ -24,8 +24,8 @@ import type {
   QuestionnaireResponseItemAnswer,
   Reference
 } from 'fhir/r4';
-import type { InitialExpression, ValueSetPromise } from './Interfaces';
-import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './ProcessValueSets';
+import type { InitialExpression, ValueSetPromise } from './interfaces/expressions.interface';
+import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './processValueSets';
 import dayjs from 'dayjs';
 import moment from 'moment';
 

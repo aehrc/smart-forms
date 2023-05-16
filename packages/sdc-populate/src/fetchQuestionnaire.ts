@@ -20,8 +20,8 @@ import type {
   InputParameters,
   QuestionnaireRefParameter
 } from './interfaces/inputParameters.interface';
+import { isCanonicalParameter } from './typePredicates';
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
-import { isCanonicalParameter } from './TypePredicates';
 import type { FetchResourceCallback } from './interfaces/callback.interface';
 import { createErrorOutcome } from './operationOutcome';
 

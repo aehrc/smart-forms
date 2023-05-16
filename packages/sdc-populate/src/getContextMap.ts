@@ -20,7 +20,7 @@ import type {
   ReferenceContext,
   ResourceContext
 } from './interfaces/inputParameters.interface';
-import { isContextParameter } from './TypePredicates';
+import { isContextParameter } from './typePredicates';
 import fhirpath from 'fhirpath';
 import type { Bundle, FhirResource, OperationOutcomeIssue, Questionnaire } from 'fhir/r4';
 import axios from 'axios';

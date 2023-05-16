@@ -16,11 +16,11 @@
  */
 
 import type { Extension } from 'fhir/r4';
-import type { LaunchContext } from '../../interfaces/populateInterfaces/launchContext.interface.ts';
 import type {
+  LaunchContext,
   QuestionnaireLevelXFhirQueryVariable,
   SourceQuery
-} from '../../interfaces/populateInterfaces/sourceQueries.interface.ts';
+} from '../../interfaces/populate.interface.ts';
 
 export function isLaunchContext(extension: Extension): extension is LaunchContext {
   const hasLaunchContextName =

@@ -17,30 +17,22 @@
 
 import type {
   Encounter,
-  FhirResource,
-  Parameters,
-  ParametersParameter,
   Patient,
   Practitioner,
   Questionnaire,
-  QuestionnaireResponse,
-  Reference
+  QuestionnaireResponse
 } from 'fhir/r4';
 import {
   getLaunchContexts,
   getQuestionnaireLevelXFhirQueryVariables,
   getSourceQueries
 } from './getPopulateExtensions.ts';
-import type { LaunchContext } from '../../interfaces/populateInterfaces/launchContext.interface.ts';
-import type {
-  QuestionnaireLevelXFhirQueryVariable,
-  SourceQuery
-} from '../../interfaces/populateInterfaces/sourceQueries.interface.ts';
 import type { IssuesParameter, ResponseParameter } from 'sdc-populate';
-import populate, { isPopulateInputParameters } from 'sdc-populate';
+import { isInputParameters, populate } from 'sdc-populate';
 import type { RequestConfig } from './callback.ts';
 import { fetchResourceCallback } from './callback.ts';
 import type Client from 'fhirclient/lib/Client';
+import { createPopulateInputParameters } from './createInputParameters.ts';
 
 /**
  * Pre-populate questionnaire from CMS patient data to form a populated questionnaireResponse
@@ -89,7 +81,7 @@ export async function populateQuestionnaire(
   }
 
   // Perform population if parameters satisfies input parameters
-  if (isPopulateInputParameters(inputParameters)) {
+  if (isInputParameters(inputParameters)) {
     const requestConfig: RequestConfig = {
       clientEndpoint: fhirClient.state.serverUrl,
       authToken: fhirClient.state.tokenResponse!.access_token!
@@ -120,214 +112,4 @@ export async function populateQuestionnaire(
   } else {
     exitSpinner();
   }
-}
-
-// If none are specified, then the subject is unlimited.
-function createPatientSubject(questionnaire: Questionnaire, patient: Patient): Reference | null {
-  const subjectTypes = questionnaire.subjectType;
-
-  // If subjectTypes array is not empty AND "Patient" is not in the array, we cannot create a Patient subject reference.
-  if (subjectTypes && subjectTypes.length > 0) {
-    const patientSubject = subjectTypes.find((subject) => subject === 'Patient');
-    if (!patientSubject) {
-      return null;
-    }
-  }
-
-  return {
-    type: 'Patient',
-    reference: 'Patient/' + patient.id
-  };
-}
-
-function createCanonicalParam(canonicalUrl: string): ParametersParameter {
-  return {
-    name: 'canonical',
-    valueString: canonicalUrl
-  };
-}
-
-// setting local parameter as false as we are calling $populate with an NPM package, not a server
-// package doesn't contain any fhir resources to "know" the context from
-function createLocalParam(): ParametersParameter {
-  return {
-    name: 'local',
-    valueBoolean: false
-  };
-}
-
-function createLaunchContextParam(
-  launchContext: LaunchContext,
-  patient: Patient,
-  user: Practitioner,
-  encounter: Encounter | null
-): ParametersParameter | null {
-  const name = launchContext.extension[0].valueId ?? launchContext.extension[0].valueCoding?.code;
-  if (!name) {
-    return null;
-  }
-
-  // let resource :string
-  const resourceType = launchContext.extension[1].valueCode;
-  let resource: FhirResource | null;
-  switch (resourceType) {
-    case 'Patient':
-      resource = patient;
-      break;
-    case 'Practitioner':
-      resource = user;
-      break;
-    case 'Encounter':
-      resource = encounter;
-      break;
-    default:
-      return null;
-  }
-
-  if (!resource) {
-    return null;
-  }
-
-  return {
-    name: 'context',
-    part: [
-      {
-        name: 'name',
-        valueString: name
-      },
-      {
-        name: 'content',
-        resource: resource
-      }
-    ]
-  };
-}
-
-function createSourceQueryParams(sourceQuery: SourceQuery, index: number): ParametersParameter {
-  const reference = sourceQuery.valueReference.reference;
-  if (reference && reference.startsWith('#')) {
-    const containedReference = reference.slice(1);
-    return {
-      name: 'context',
-      part: [
-        {
-          name: 'name',
-          valueString: containedReference
-        },
-        {
-          name: 'content',
-          valueReference: sourceQuery.valueReference
-        }
-      ]
-    };
-  }
-
-  // if sourceQuery cannot be referenced to a contained bundle, return itself as a context
-  // this most likely shouldn't happen
-  return {
-    name: 'context',
-    part: [
-      {
-        name: 'name',
-        valueString: `sourceQuery${index}`
-      },
-      {
-        name: 'content',
-        valueReference: sourceQuery.valueReference
-      }
-    ]
-  };
-}
-
-function createVariableParam(variable: QuestionnaireLevelXFhirQueryVariable): ParametersParameter {
-  const query = variable.valueExpression.expression;
-  const resourceType = query.split('?')[0];
-
-  return {
-    name: 'context',
-    part: [
-      {
-        name: 'name',
-        valueString: variable.valueExpression.name
-      },
-      {
-        name: 'content',
-        valueReference: { reference: query, type: resourceType }
-      }
-    ]
-  };
-}
-
-/**
- * Define population input parameters without any batch response contexts
- *
- * @author Sean Fong
- */
-function createPopulateInputParameters(
-  questionnaire: Questionnaire,
-  patient: Patient,
-  user: Practitioner,
-  encounter: Encounter | null,
-  launchContexts: LaunchContext[],
-  sourceQueries: SourceQuery[],
-  questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[]
-): Parameters | null {
-  const patientSubject = createPatientSubject(questionnaire, patient);
-  if (!patientSubject) {
-    return null;
-  }
-
-  const inputParameters: Parameters = {
-    resourceType: 'Parameters',
-    parameter: [
-      {
-        name: 'questionnaire',
-        resource: questionnaire
-      },
-      {
-        name: 'subject',
-        valueReference: patientSubject
-      }
-    ]
-  };
-
-  // canonical
-  if (questionnaire.url) {
-    inputParameters.parameter?.push(createCanonicalParam(questionnaire.url));
-  }
-
-  // contexts
-  const contexts: ParametersParameter[] = [];
-  // add launch contexts
-  if (launchContexts.length > 0) {
-    for (const launchContext of launchContexts) {
-      const launchContextParam = createLaunchContextParam(launchContext, patient, user, encounter);
-      if (launchContextParam) {
-        contexts.push(launchContextParam);
-      }
-    }
-  }
-
-  // add source queries
-  if (sourceQueries.length > 0) {
-    for (const [index, sourceQuery] of sourceQueries.entries()) {
-      contexts.push(createSourceQueryParams(sourceQuery, index));
-    }
-  }
-
-  // add questionnaire-level variables
-  if (questionnaireLevelVariables.length > 0) {
-    for (const variable of questionnaireLevelVariables) {
-      contexts.push(createVariableParam(variable));
-    }
-  }
-
-  if (contexts.length > 0) {
-    inputParameters.parameter?.push(...contexts);
-  }
-
-  // local
-  inputParameters.parameter?.push(createLocalParam());
-
-  return inputParameters;
 }

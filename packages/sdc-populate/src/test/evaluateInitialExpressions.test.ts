@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { evaluateInitialExpressions } from '../EvaluateInitialExpressions';
+import { evaluateExpressions } from '../evaluateExpressions';
 import initialExpressionsSample from './resources/initial-expressions-sample.json';
 import contextSample from './resources/context-sample.json';
-import type { InitialExpression } from '../Interfaces';
+import type { InitialExpression } from '../interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 
 describe('evaluate initial expressions', () => {
@@ -28,11 +28,7 @@ describe('evaluate initial expressions', () => {
   >;
   const context = contextSample;
   const issues: OperationOutcomeIssue[] = [];
-  const evaluatedInitialExpressions = evaluateInitialExpressions(
-    initialExpressions,
-    context,
-    issues
-  );
+  const evaluatedInitialExpressions = evaluateExpressions(initialExpressions, context, issues);
 
   test('specifying age as key after evaluation should return 87', () => {
     expect(evaluatedInitialExpressions['age']?.value).toEqual([87]);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, Extension } from 'fhir/r4';
+import type { Coding, Expression, Extension, Reference } from 'fhir/r4';
 
 export interface LaunchContext extends Extension {
   url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext';
@@ -200,3 +200,19 @@ export type FhirResourceString =
   | 'ValueSet'
   | 'VerificationResult'
   | 'VisionPrescription';
+
+export interface SourceQuery extends Extension {
+  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries';
+  valueReference: Reference;
+}
+
+export interface QuestionnaireLevelXFhirQueryVariable extends Extension {
+  url: 'http://hl7.org/fhir/StructureDefinition/variable';
+  valueExpression: XFhirQueryVariableExpression;
+}
+
+interface XFhirQueryVariableExpression extends Expression {
+  name: string;
+  language: 'application/x-fhir-query';
+  expression: string;
+}
