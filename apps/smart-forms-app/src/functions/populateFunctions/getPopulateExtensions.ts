@@ -16,8 +16,31 @@
  */
 
 import type { Questionnaire } from 'fhir/r4';
-import { isXFhirQueryVariable } from './populateTypePredicates.ts';
-import type { QuestionnaireLevelXFhirQueryVariable } from './sourceQueries.interface.ts';
+import { isLaunchContext, isSourceQuery, isXFhirQueryVariable } from './typePredicates.ts';
+import type { LaunchContext } from '../../interfaces/populateInterfaces/launchContext.interface.ts';
+import type {
+  QuestionnaireLevelXFhirQueryVariable,
+  SourceQuery
+} from '../../interfaces/populateInterfaces/sourceQueries.interface.ts';
+
+export function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) =>
+      isLaunchContext(extension)
+    ) as LaunchContext[];
+  }
+
+  return [];
+}
+
+// get source query references
+export function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) => isSourceQuery(extension)) as SourceQuery[];
+  }
+
+  return [];
+}
 
 /**
  * Filter x-fhir-query variables from questionnaire's extensions needed for population

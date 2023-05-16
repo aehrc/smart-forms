@@ -23,7 +23,7 @@ import { Main } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import { LaunchContext } from '../../custom-contexts/LaunchContext';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
-import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
+import { populateQuestionnaire } from '../../functions/populateFunctions/populateQuestionnaire';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';

@@ -26,13 +26,16 @@ import type {
   QuestionnaireResponse,
   Reference
 } from 'fhir/r4';
-import { getQuestionnaireLevelXFhirQueryVariables } from './VariablePopulateFunctions';
-import { getLaunchContexts, getSourceQueries } from './PrePopQueryPopulateFunctions';
-import type { LaunchContext } from './launchContext.interface.ts';
+import {
+  getLaunchContexts,
+  getQuestionnaireLevelXFhirQueryVariables,
+  getSourceQueries
+} from './getPopulateExtensions.ts';
+import type { LaunchContext } from '../../interfaces/populateInterfaces/launchContext.interface.ts';
 import type {
   QuestionnaireLevelXFhirQueryVariable,
   SourceQuery
-} from './sourceQueries.interface.ts';
+} from '../../interfaces/populateInterfaces/sourceQueries.interface.ts';
 import type { IssuesParameter, ResponseParameter } from 'sdc-populate';
 import populate, { isPopulateInputParameters } from 'sdc-populate';
 import type { RequestConfig } from './callback.ts';
@@ -55,7 +58,7 @@ export async function populateQuestionnaire(
   },
   exitSpinner: { (): void }
 ) {
-  // Get launch contexts and questionnaire-level variables
+  // Get launch contexts, source queries and questionnaire-level variables
   const launchContexts = getLaunchContexts(questionnaire);
   const sourceQueries = getSourceQueries(questionnaire);
   const questionnaireLevelVariables = getQuestionnaireLevelXFhirQueryVariables(questionnaire);
@@ -69,8 +72,8 @@ export async function populateQuestionnaire(
     return;
   }
 
-  // Define population input parameters from PrePopQuery and x-fhir-query variables
-  const inputParameters = createPopulationInputParameters(
+  // Define population input parameters from launch contexts, source queries and questionnaire-level variables
+  const inputParameters = createPopulateInputParameters(
     questionnaire,
     patient,
     user,
@@ -260,7 +263,7 @@ function createVariableParam(variable: QuestionnaireLevelXFhirQueryVariable): Pa
  *
  * @author Sean Fong
  */
-function createPopulationInputParameters(
+function createPopulateInputParameters(
   questionnaire: Questionnaire,
   patient: Patient,
   user: Practitioner,
