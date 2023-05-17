@@ -42,11 +42,13 @@ export function qrToHTML(
   return `<div>${QrHtml}</div>`;
 }
 
-export function qrItemToHTML(questionnaireResponseForm: QuestionnaireResponseItem) {
-  if (!questionnaireResponseForm.item) return null;
-
+export function qrItemToHTML(topLevelQRItem: QuestionnaireResponseItem) {
   let formInHTML = '';
-  const qrItems = questionnaireResponseForm.item;
+  if (!topLevelQRItem.item) {
+    return readQuestionnaireResponseItem(undefined, topLevelQRItem, undefined, formInHTML, 0);
+  }
+
+  const qrItems = topLevelQRItem.item;
   for (let i = 0; i < qrItems.length; i++) {
     formInHTML = readQuestionnaireResponseItem(
       i === 0 ? undefined : qrItems[i - 1],

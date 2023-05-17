@@ -38,7 +38,7 @@ function FormPreview() {
   const topLevelQItems = questionnaire.item;
   const topLevelQRItems = response.item;
 
-  if (topLevelQItems[0].item && topLevelQRItems[0].item) {
+  if (topLevelQItems[0] && topLevelQRItems[0]) {
     const responseCleaned = removeHiddenAnswers(questionnaire, response, enableWhenContext);
     const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 

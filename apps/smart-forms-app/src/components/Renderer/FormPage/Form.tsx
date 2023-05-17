@@ -30,6 +30,7 @@ import { CurrentTabIndexContext, RendererContext } from '../RendererLayout';
 import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter';
 import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
 import { Helmet } from 'react-helmet';
+import QItemSwitcher from './QFormComponents/QItemSwitcher.tsx';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
@@ -84,7 +85,7 @@ function Form() {
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
 
-  if (topLevelQItems[0].item && topLevelQRItems[0].item) {
+  if (topLevelQItems[0] && topLevelQRItems[0]) {
     return (
       <>
         <Helmet>
@@ -112,13 +113,24 @@ function Form() {
                       onTopLevelQRItemChange(newTopLevelQRItem, index)
                     }
                   />
-                ) : (
-                  // If form is untabbed, it is rendered as a regular group
+                ) : // If form is untabbed, it is rendered as a regular group
+                qItem.type === 'group' ? (
                   <QItemGroup
                     key={qItem.linkId}
                     qItem={qItem}
                     qrItem={qrItem}
                     groupCardElevation={1}
+                    onQrItemChange={(newTopLevelQRItem) =>
+                      onTopLevelQRItemChange(newTopLevelQRItem, index)
+                    }
+                    isRepeated={false}
+                  />
+                ) : (
+                  <QItemSwitcher
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    isTabled={false}
                     onQrItemChange={(newTopLevelQRItem) =>
                       onTopLevelQRItemChange(newTopLevelQRItem, index)
                     }

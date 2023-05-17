@@ -17,7 +17,11 @@
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFunctions';
+import {
+  getTerminologyServerUrl,
+  getValueSetCodings,
+  getValueSetPromise
+} from '../functions/ValueSetFunctions';
 import { PreprocessedValueSetContext } from '../components/Renderer/FormPage/Form';
 import { CachedQueriedValueSetContext } from '../custom-contexts/CachedValueSetContext';
 
@@ -72,7 +76,8 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
     const valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl || codings.length > 0) return;
 
-    const promise = getValueSetPromise(valueSetUrl);
+    const terminologyServer = getTerminologyServerUrl(qItem);
+    const promise = getValueSetPromise(valueSetUrl, terminologyServer);
     if (promise) {
       promise
         .then((valueSet: ValueSet) => {
