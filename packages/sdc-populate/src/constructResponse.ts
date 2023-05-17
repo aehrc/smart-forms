@@ -52,8 +52,7 @@ export async function constructResponse(
   let valueSetPromises: Record<string, ValueSetPromise> = {};
 
   const topLevelQItems = questionnaire.item;
-
-  if (!topLevelQItems) {
+  if (!topLevelQItems || !topLevelQItems[0]) {
     return questionnaireResponse;
   }
 
@@ -62,14 +61,13 @@ export async function constructResponse(
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
   const topLevelQRItems: QuestionnaireResponseItem[] = [];
   for (const qItem of topLevelQItems) {
-    const topLevelQRItem: QuestionnaireResponseItem = {
-      linkId: qItem.linkId,
-      text: qItem.text,
-      item: []
-    };
     const newTopLevelQRItem = constructResponseItem(
       qItem,
-      topLevelQRItem,
+      {
+        linkId: qItem.linkId,
+        text: qItem.text,
+        item: []
+      },
       initialExpressions,
       valueSetPromises
     );
@@ -78,13 +76,19 @@ export async function constructResponse(
       topLevelQRItems.push(...newTopLevelQRItem);
     } else if (newTopLevelQRItem) {
       topLevelQRItems.push(newTopLevelQRItem);
+    } else {
+      topLevelQRItems.push({
+        linkId: qItem.linkId,
+        text: qItem.text,
+        item: []
+      });
     }
   }
 
   valueSetPromises = await resolvePromises(valueSetPromises);
-  const updatedTopLevelQRItems = topLevelQRItems.map((qrItem) => {
-    return addValueSetAnswers(qrItem, valueSetPromises);
-  });
+  const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems.map((qrItem) =>
+    addValueSetAnswers(qrItem, valueSetPromises)
+  );
 
   questionnaireResponse.questionnaire = questionnaire.url;
   questionnaireResponse.item = updatedTopLevelQRItems;
