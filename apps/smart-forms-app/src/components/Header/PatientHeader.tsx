@@ -17,7 +17,7 @@
 
 import { Avatar, Box, Tooltip, Typography, useTheme } from '@mui/material';
 import { useContext } from 'react';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import { AccountDetailsTypography, AccountNameTypography } from '../Misc/Typography';
 import FaceIcon from '@mui/icons-material/Face';
 import { constructName } from '../../functions/LaunchContextFunctions';
@@ -25,7 +25,7 @@ import dayjs from 'dayjs';
 
 function PatientHeader() {
   const theme = useTheme();
-  const { patient } = useContext(LaunchContext);
+  const { patient } = useContext(SmartAppLaunchContext);
 
   return (
     <Box display="flex" alignItems="center" gap={1.5}>

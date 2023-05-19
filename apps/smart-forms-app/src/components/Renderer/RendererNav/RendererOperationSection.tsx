@@ -23,7 +23,7 @@ import RendererSaveAsFinal from './RendererSaveAsFinal';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext } from '../../../App';
 
 export interface NavButton {
@@ -34,7 +34,7 @@ export interface NavButton {
 }
 
 function RendererOperationSection() {
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const navigate = useNavigate();

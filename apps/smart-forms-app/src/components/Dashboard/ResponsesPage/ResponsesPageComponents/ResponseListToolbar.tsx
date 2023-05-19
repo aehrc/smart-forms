@@ -26,7 +26,7 @@ import dayjs from 'dayjs';
 import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
-import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../../custom-contexts/SmartAppLaunchContext.tsx';
 import { constructName } from '../../../../functions/LaunchContextFunctions';
 
 interface Props {
@@ -42,7 +42,7 @@ function ResponseListToolbar(props: Props) {
   const { selectedQuestionnaire, existingResponses, clearSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
-  const { patient } = useContext(LaunchContext);
+  const { patient } = useContext(SmartAppLaunchContext);
   const theme = useTheme();
 
   const selectedQuestionnaireTitle =

@@ -21,7 +21,7 @@ import RendererNav from './RendererNav/RendererNav';
 import { StyledRoot } from '../StyledComponents/Layout.styles';
 import { Main } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
 import { populateQuestionnaire } from '../../functions/populateFunctions/populateQuestionnaire';
 import type { QuestionnaireResponse } from 'fhir/r4';
@@ -69,7 +69,7 @@ function RendererLayout() {
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient, patient, user, encounter } = useContext(LaunchContext);
+  const { fhirClient, patient, user, encounter } = useContext(SmartAppLaunchContext);
 
   // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
   let initialResponse: QuestionnaireResponse;

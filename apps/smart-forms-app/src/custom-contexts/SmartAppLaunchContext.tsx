@@ -17,11 +17,11 @@
 
 import type { ReactNode } from 'react';
 import { createContext, useState } from 'react';
-import type { LaunchContextType } from '../interfaces/ContextTypes';
+import type { SmartAppLaunchContextType } from '../interfaces/ContextTypes';
 import type Client from 'fhirclient/lib/Client';
 import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 
-export const LaunchContext = createContext<LaunchContextType>({
+export const SmartAppLaunchContext = createContext<SmartAppLaunchContextType>({
   fhirClient: null,
   patient: null,
   user: null,
@@ -32,14 +32,14 @@ export const LaunchContext = createContext<LaunchContextType>({
   setEncounter: () => void 0
 });
 
-function LaunchContextProvider(props: { children: ReactNode }) {
+function SmartAppLaunchContextProvider(props: { children: ReactNode }) {
   const { children } = props;
   const [client, setClient] = useState<Client | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [user, setUser] = useState<Practitioner | null>(null);
   const [encounter, setEncounter] = useState<Encounter | null>(null);
 
-  const launchContext: LaunchContextType = {
+  const launchContext: SmartAppLaunchContextType = {
     fhirClient: client,
     patient: patient,
     user: user,
@@ -57,7 +57,12 @@ function LaunchContextProvider(props: { children: ReactNode }) {
       setEncounter(encounter);
     }
   };
-  return <LaunchContext.Provider value={launchContext}>{children}</LaunchContext.Provider>;
+
+  return (
+    <SmartAppLaunchContext.Provider value={launchContext}>
+      {children}
+    </SmartAppLaunchContext.Provider>
+  );
 }
 
-export default LaunchContextProvider;
+export default SmartAppLaunchContextProvider;

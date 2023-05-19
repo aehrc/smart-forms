@@ -22,7 +22,7 @@ import Logo from '../../Misc/Logo';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import NavSection from './DashboardNavSection';
 import NavAccounts from '../../Nav/NavAccounts';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import CsiroLogo from '../../Misc/CsiroLogo';
 
@@ -36,7 +36,7 @@ interface Props {
 export default function DashboardNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   const isDesktop = useResponsive('up', 'lg');
 

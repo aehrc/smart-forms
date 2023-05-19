@@ -17,6 +17,7 @@
 
 import type {
   Expression,
+  FhirResource,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -131,5 +132,5 @@ export interface Variables {
 
 export interface VariableXFhirQuery {
   valueExpression: Expression;
-  result?: QuestionnaireItemAnswerOption;
+  result?: FhirResource;
 }

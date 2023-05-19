@@ -21,7 +21,7 @@ import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 
 interface NavButton {
   title: string;
@@ -31,7 +31,7 @@ interface NavButton {
 }
 
 function DashboardNavSection() {
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   return (
     <Box sx={{ pb: 4 }}>

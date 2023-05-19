@@ -38,10 +38,13 @@ import {
   getValueSetUrlFromContained,
   resolvePromises
 } from '../functions/ValueSetFunctions';
+import { isLaunchContext } from '../functions/populateFunctions/typePredicates.ts';
+import type { LaunchContext } from '../interfaces/populate.interface.ts';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
   variables: Variables;
+  launchContexts: Record<string, LaunchContext>;
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
@@ -53,6 +56,7 @@ export class QuestionnaireProvider {
       status: 'active'
     };
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
+    this.launchContexts = {};
     this.calculatedExpressions = {};
     this.answerExpressions = {};
     this.enableWhenItems = {};
@@ -61,6 +65,7 @@ export class QuestionnaireProvider {
 
   async setQuestionnaire(questionnaire: Questionnaire): Promise<void> {
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
+    this.launchContexts = {};
     this.calculatedExpressions = {};
     this.answerExpressions = {};
     this.enableWhenItems = {};
@@ -78,9 +83,20 @@ export class QuestionnaireProvider {
   async preprocessQuestionnaire() {
     if (!this.questionnaire.item) return;
 
-    const valueSetPromiseMap: Record<string, ValueSetPromise> = {};
+    // Store launch contexts
+    if (this.questionnaire.extension && this.questionnaire.extension.length > 0) {
+      for (const ext of this.questionnaire.extension) {
+        if (isLaunchContext(ext)) {
+          const launchContextName = ext.extension[0].valueId ?? ext.extension[0].valueCoding?.code;
+          if (launchContextName) {
+            this.launchContexts[launchContextName] = ext;
+          }
+        }
+      }
+    }
 
     // Process contained ValueSets
+    const valueSetPromiseMap: Record<string, ValueSetPromise> = {};
     if (this.questionnaire.contained && this.questionnaire.contained.length > 0) {
       this.questionnaire.contained.forEach((entry) => {
         if (entry.resourceType === 'ValueSet' && entry.id) {

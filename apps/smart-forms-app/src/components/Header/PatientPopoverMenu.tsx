@@ -17,7 +17,7 @@
 
 import { Box } from '@mui/material';
 import { useContext } from 'react';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import {
   AccountDetailsTypography,
   AccountDetailsTypographyNoCaps,
@@ -27,7 +27,7 @@ import { constructName } from '../../functions/LaunchContextFunctions';
 import dayjs from 'dayjs';
 
 function PatientPopoverMenu() {
-  const { patient } = useContext(LaunchContext);
+  const { patient } = useContext(SmartAppLaunchContext);
 
   return (
     <Box sx={{ my: 1.5, px: 2.5 }}>

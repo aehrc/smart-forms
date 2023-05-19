@@ -23,7 +23,7 @@ import Scrollbar from '../../Scrollbar/Scrollbar';
 import NavAccounts from '../../Nav/NavAccounts';
 import ViewerNavSection from './ViewerNavSection';
 import ViewerOperationSection from './ViewerOperationSection';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import CsiroLogo from '../../Misc/CsiroLogo';
@@ -40,7 +40,7 @@ function ViewerNav(props: Props) {
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   const isDesktop = useResponsive('up', 'lg');
 

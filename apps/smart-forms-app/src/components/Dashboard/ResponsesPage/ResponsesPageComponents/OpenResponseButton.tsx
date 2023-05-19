@@ -33,7 +33,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { assembleIfRequired } from '../../../../functions/LoadServerResourceFunctions';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../functions/SaveQrFunctions';
-import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../../custom-contexts/SmartAppLaunchContext.tsx';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
@@ -43,7 +43,7 @@ function OpenResponseButton(props: Props) {
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   const [isLoading, setIsLoading] = useState(false);
 

@@ -35,7 +35,7 @@ import {
 import { assembleIfRequired } from '../../functions/LoadServerResourceFunctions';
 import { postQuestionnaireToSMARTHealthIT } from '../../functions/SaveQrFunctions';
 import GoToTestLauncher from '../SnackbarActions/GoToTestLauncher';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext } from '../../App';
 import { useSnackbar } from 'notistack';
 import { SourceContext } from '../../custom-contexts/SourceContext';
@@ -93,7 +93,7 @@ const initialAuthState: AuthState = {
 };
 
 function Authorisation() {
-  const { setFhirClient, setPatient, setUser, setEncounter } = useContext(LaunchContext);
+  const { setFhirClient, setPatient, setUser, setEncounter } = useContext(SmartAppLaunchContext);
   const { setSource } = useContext(SourceContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 

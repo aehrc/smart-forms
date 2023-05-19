@@ -45,7 +45,7 @@ export type EnableWhenContextType = {
   toggleActivation: (toggled: boolean) => unknown;
 };
 
-export type LaunchContextType = {
+export type SmartAppLaunchContextType = {
   fhirClient: Client | null;
   patient: Patient | null;
   user: Practitioner | null;

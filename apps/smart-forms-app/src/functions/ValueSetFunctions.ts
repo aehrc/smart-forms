@@ -15,9 +15,20 @@
  * limitations under the License.
  */
 
-import type { Coding, Expression, Extension, QuestionnaireItem, ValueSet } from 'fhir/r4';
+import type {
+  Coding,
+  Encounter,
+  Expression,
+  Extension,
+  FhirResource,
+  Patient,
+  Practitioner,
+  QuestionnaireItem,
+  ValueSet
+} from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import type { ValueSetPromise, VariableXFhirQuery } from '../interfaces/Interfaces';
+import type { FhirResourceString } from '../interfaces/populate.interface.ts';
 
 const ONTOSERVER_ENDPOINT =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
@@ -142,4 +153,21 @@ export function createValueSetToXFhirQueryVariableNameMap(
     }
   }
   return valueSetToNameMap;
+}
+
+export function getResourceFromLaunchContext(
+  resourceType: FhirResourceString,
+  patient: Patient | null,
+  user: Practitioner | null,
+  encounter: Encounter | null
+): FhirResource | null {
+  switch (resourceType) {
+    case 'Patient':
+      return patient;
+    case 'Practitioner':
+      return user;
+    case 'Encounter':
+      return encounter;
+  }
+  return null;
 }

@@ -18,7 +18,7 @@
 import { Button, CircularProgress } from '@mui/material';
 import { useContext, useMemo } from 'react';
 import Iconify from '../../../Misc/Iconify';
-import { LaunchContext } from '../../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../../custom-contexts/SmartAppLaunchContext.tsx';
 import {
   getClientBundlePromise,
   getResponsesFromBundle
@@ -32,7 +32,7 @@ import { useSnackbar } from 'notistack';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
-  const { fhirClient, patient } = useContext(LaunchContext);
+  const { fhirClient, patient } = useContext(SmartAppLaunchContext);
   const { source } = useContext(SourceContext);
 
   const navigate = useNavigate();

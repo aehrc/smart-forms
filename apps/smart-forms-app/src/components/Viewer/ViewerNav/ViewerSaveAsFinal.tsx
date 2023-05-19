@@ -18,7 +18,7 @@
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useContext, useState } from 'react';
 import { saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import {
   Button,
@@ -35,7 +35,7 @@ import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
 
 function ViewerSaveAsFinal() {
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -61,7 +61,7 @@ export interface Props {
 
 function ConfirmSaveAsFinalDialog(props: Props) {
   const { open, closeDialog } = props;
-  const { fhirClient, patient, user } = useContext(LaunchContext);
+  const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const responseProvider = useContext(QuestionnaireResponseProviderContext);
 

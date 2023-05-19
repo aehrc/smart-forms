@@ -19,7 +19,7 @@ import { createContext } from 'react';
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/Theme';
 import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
-import LaunchContextProvider from './custom-contexts/LaunchContext';
+import SmartAppLaunchContextProvider from './custom-contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
 import Router from './Router';
 import { SnackbarProvider } from 'notistack';
@@ -41,7 +41,7 @@ function App() {
     <ThemeProvider>
       <SnackbarProvider>
         <CookiesProvider>
-          <LaunchContextProvider>
+          <SmartAppLaunchContextProvider>
             <DebugModeContextProvider>
               <SourceContextProvider>
                 <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
@@ -53,7 +53,7 @@ function App() {
                 </QuestionnaireProviderContext.Provider>
               </SourceContextProvider>
             </DebugModeContextProvider>
-          </LaunchContextProvider>
+          </SmartAppLaunchContextProvider>
         </CookiesProvider>
       </SnackbarProvider>
     </ThemeProvider>
