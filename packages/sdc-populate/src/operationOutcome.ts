@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
+import type { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
 
 export function createErrorOutcome(errorMessage: string): OperationOutcome {
   return {
