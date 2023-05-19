@@ -18,20 +18,22 @@
 /**
  * To define a method to fetch Questionnaire resources from the FHIR server with the given canonical URL
  * @see {@link https://www.hl7.org/fhir/questionnaire.html}
+ *
+ * @param canonicalUrl - The canonical URL of the Questionnaire resource
+ * @param requestConfig - Any kind of request configuration necessary (auth, token, etc)
+ * @returns A promise of the Questionnaire Bundle resource (or an error)!
+ *
  * @example
- * const fetchQuestionnaireCallback: FetchQuestionnaireCallback = (canonicalUrl: string) => {
- *   return axios.get(`${FORMS_SERVER_ENDPOINT}/Questionnaire?url=${canonicalUrl}`, {
+ * const fetchQuestionnaireCallback: FetchQuestionnaireCallback = (canonicalUrl: string, requestConfig: any) => {
+ *   const { endpoint, token } = requestConfig;
+ *   return axios.get(`${endpoint}/Questionnaire?url=${canonicalUrl}`, {
  *     method: 'GET',
  *     headers: { Accept: 'application/json+fhir; charset=utf-8', Authorization: `Bearer ${token}`, }
  *   });
  * };
  *
- * @param canonicalUrl - The canonical URL of the Questionnaire resource
- * @returns A promise of the Questionnaire Bundle resource (or an error)!
- *
- *
  * @author Sean Fong
  */
 export interface FetchQuestionnaireCallback {
-  (canonicalUrl: string): Promise<any>;
+  (canonicalUrl: string, requestConfig?: any): Promise<any>;
 }

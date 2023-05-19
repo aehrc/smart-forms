@@ -26,20 +26,20 @@
  * @example
  * const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
  *
- * const fetchResourceCallback: FetchResourceCallback = (canonicalUrl: string) => {
+ * const fetchResourceCallback: FetchResourceCallback = (canonicalUrl: string, requestConfig: any) => {
+ * const { clientEndpoint, authToken } = requestConfig
  * const headers = {
  *     'Cache-Control': 'no-cache',
  *     Accept: 'application/json+fhir; charset=utf-8',
- *     Authorization: `Bearer ${requestConfig.authToken}`
+ *     Authorization: `Bearer ${authToken}`
  *   };
- *
  *
  *   if (ABSOLUTE_URL_REGEX.test(query)) {
  *     return axios.get(query, {
  *       headers: headers
  *     });
  *   } else {
- *     return axios.get(requestConfig.clientEndpoint + query, {
+ *     return axios.get(clientEndpoint + query, {
  *       headers: headers
  *     });
  *   }
@@ -49,5 +49,5 @@
  * @author Sean Fong
  */
 export interface FetchResourceCallback {
-  (query: string, requestConfig: any): Promise<any>;
+  (query: string, requestConfig?: any): Promise<any>;
 }

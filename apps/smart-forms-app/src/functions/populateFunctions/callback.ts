@@ -29,14 +29,17 @@ export const fetchResourceCallback: FetchResourceCallback = (
   query: string,
   requestConfig: RequestConfig
 ) => {
+  let { clientEndpoint } = requestConfig;
+  const { authToken } = requestConfig;
+
   const headers = {
     'Cache-Control': 'no-cache',
     Accept: 'application/json+fhir; charset=utf-8',
-    Authorization: `Bearer ${requestConfig.authToken}`
+    Authorization: `Bearer ${authToken}`
   };
 
-  if (!requestConfig.clientEndpoint.endsWith('/')) {
-    requestConfig.clientEndpoint += '/';
+  if (!clientEndpoint.endsWith('/')) {
+    clientEndpoint += '/';
   }
 
   if (ABSOLUTE_URL_REGEX.test(query)) {
@@ -44,7 +47,7 @@ export const fetchResourceCallback: FetchResourceCallback = (
       headers: headers
     });
   } else {
-    return axios.get(requestConfig.clientEndpoint + query, {
+    return axios.get(clientEndpoint + query, {
       headers: headers
     });
   }
