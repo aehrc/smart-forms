@@ -24,6 +24,7 @@ import type {
   Quantity,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
+  QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
@@ -150,13 +151,13 @@ function answerOperatorSwitcher(
  * @author Sean Fong
  */
 export function readInitialAnswers(
-  questionnaireResponseForm: QuestionnaireResponseItem,
+  questionnaireResponse: QuestionnaireResponse,
   linkedQuestionsMap: Record<string, string[]>
 ): Record<string, QuestionnaireResponseItemAnswer[]> {
-  if (!questionnaireResponseForm.item) return {};
+  if (!questionnaireResponse.item) return {};
 
   const initialValuesMap: Record<string, QuestionnaireResponseItemAnswer[]> = {};
-  questionnaireResponseForm.item.forEach((item) => {
+  questionnaireResponse.item.forEach((item) => {
     readQuestionnaireResponseItem(item, initialValuesMap, linkedQuestionsMap);
   });
   return initialValuesMap;

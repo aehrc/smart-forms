@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
-import type { OperationOutcome, QuestionnaireResponse } from 'fhir/r4';
-import type {
-  IssuesParameter,
-  PopulateOutputParameters,
-  PopulateOutputParametersWithIssues,
-  ResponseParameter
-} from './Interfaces';
+import type { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
+import type { OutputParameters, ResponseParameter } from './interfaces/outputParameters.interface';
 
 /**
  * Create output parameters as a response to be returned to the renderer. If they are issues, return with an issues parameter.
@@ -30,8 +25,8 @@ import type {
  */
 export function createOutputParameters(
   questionnaireResponse: QuestionnaireResponse,
-  issues: OperationOutcome[]
-): PopulateOutputParameters | PopulateOutputParametersWithIssues {
+  issues: OperationOutcomeIssue[]
+): OutputParameters {
   const responseParameter: ResponseParameter = {
     name: 'response',
     resource: questionnaireResponse
@@ -43,19 +38,18 @@ export function createOutputParameters(
       parameter: [responseParameter]
     };
   } else {
-    const issuesParameter: IssuesParameter = {
-      name: 'issues',
-      part: issues.map((issue) => {
-        return {
-          name: 'issue',
-          resource: issue
-        };
-      })
-    };
-
     return {
       resourceType: 'Parameters',
-      parameter: [responseParameter, issuesParameter]
+      parameter: [
+        responseParameter,
+        {
+          name: 'issues',
+          resource: {
+            resourceType: 'OperationOutcome',
+            issue: issues
+          }
+        }
+      ]
     };
   }
 }

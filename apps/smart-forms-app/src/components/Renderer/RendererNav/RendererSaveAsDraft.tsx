@@ -18,7 +18,7 @@
 import SaveIcon from '@mui/icons-material/Save';
 import { useContext, useEffect, useState } from 'react';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import { RendererContext } from '../RendererLayout';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
@@ -27,7 +27,7 @@ import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
 
 function RendererSaveAsDraft() {
-  const { fhirClient, patient, user } = useContext(LaunchContext);
+  const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const responseProvider = useContext(QuestionnaireResponseProviderContext);
   const { renderer, setRenderer } = useContext(RendererContext);

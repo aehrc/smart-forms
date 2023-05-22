@@ -18,10 +18,10 @@
 import { StyledRoot } from '../../StyledComponents/DebugFooter.styles';
 import { useContext } from 'react';
 import { Box, Typography } from '@mui/material';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 
 function DashboardDebugFooter() {
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   return (
     <>

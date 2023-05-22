@@ -23,31 +23,42 @@ import RendererDebugBar from './RendererDebugBar';
 import { QuestionnaireProviderContext } from '../../../App';
 import { RendererContext } from '../RendererLayout';
 
+const clearTopLevelQRItem: QuestionnaireResponseItem = {
+  linkId: 'clearedItem',
+  text: 'Cleared',
+  item: []
+};
+
 function RendererDebugFooter() {
   const [isHidden, setIsHidden] = useState(true);
   const { questionnaire } = useContext(QuestionnaireProviderContext);
   const { renderer, setRenderer } = useContext(RendererContext);
+  const { response } = renderer;
+
+  function clearQuestionnaireResponse() {
+    if (!response.item || response.item.length === 0) {
+      return;
+    }
+
+    const clearTopLevelQRItems: QuestionnaireResponseItem[] = Array(response.item.length).fill(
+      clearTopLevelQRItem
+    );
+    setRenderer({
+      response: {
+        ...response,
+        item: clearTopLevelQRItems
+      },
+      hasChanges: false
+    });
+  }
 
   return (
     <>
       {isHidden ? null : (
         <DebugResponse
           questionnaire={questionnaire}
-          questionnaireResponse={renderer.response}
-          clearQResponse={() => {
-            const clearQrForm: QuestionnaireResponseItem = {
-              linkId: 'clearedItem',
-              text: 'Cleared',
-              item: []
-            };
-            setRenderer({
-              response: {
-                ...renderer.response,
-                item: [clearQrForm]
-              },
-              hasChanges: false
-            });
-          }}
+          questionnaireResponse={response}
+          clearQResponse={() => clearQuestionnaireResponse()}
         />
       )}
       <StyledRoot>

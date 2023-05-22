@@ -17,14 +17,14 @@
 
 import { Avatar, Box, useTheme } from '@mui/material';
 import { useContext } from 'react';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import { AccountDetailsTypography, AccountNameTypography } from '../Misc/Typography';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 
 function UserHeader() {
   const theme = useTheme();
-  const { user } = useContext(LaunchContext);
+  const { user } = useContext(SmartAppLaunchContext);
 
   return (
     <Box display="flex" alignItems="center" gap={1.5}>

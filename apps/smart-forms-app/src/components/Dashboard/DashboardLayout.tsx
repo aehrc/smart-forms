@@ -23,10 +23,10 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
 import { DebugModeContext } from '../../custom-contexts/DebugModeContext';
 import DashboardDebugFooter from './DashboardDebugFooter/DashboardDebugFooter';
-import { LaunchContext } from '../../custom-contexts/LaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 
 function DashboardLayout() {
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
   const { debugMode } = useContext(DebugModeContext);
   const [open, setOpen] = useState(false);
 

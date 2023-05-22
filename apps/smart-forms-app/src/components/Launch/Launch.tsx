@@ -34,8 +34,7 @@ function Launch() {
     oauth2.authorize({
       iss: iss,
       clientId: clientId,
-      scope: scope,
-      pkceMode: 'required'
+      scope: scope
     });
   } else {
     window.location.replace('/');

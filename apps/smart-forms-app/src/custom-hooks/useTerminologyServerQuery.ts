@@ -21,11 +21,12 @@ import { getValueSetCodings, getValueSetPromise } from '../functions/ValueSetFun
 
 import type { AlertColor } from '@mui/material';
 
-function useOntoserverQuery(
+function useTerminologyServerQuery(
   answerValueSetUrl: string | undefined,
   maxList: number,
   input: string,
-  searchTerm: string
+  searchTerm: string,
+  terminologyServerUrl?: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
   let fullUrl = '';
 
@@ -51,7 +52,7 @@ function useOntoserverQuery(
   // Perform query
   const { isInitialLoading, error, data } = useQuery<ValueSet>(
     ['expandValueSet', fullUrl],
-    () => getValueSetPromise(fullUrl),
+    () => getValueSetPromise(fullUrl, terminologyServerUrl),
     {
       enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined
     }
@@ -82,4 +83,4 @@ function useOntoserverQuery(
 
   return { options, loading, feedback };
 }
-export default useOntoserverQuery;
+export default useTerminologyServerQuery;

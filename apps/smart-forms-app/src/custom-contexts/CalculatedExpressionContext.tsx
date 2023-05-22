@@ -40,34 +40,40 @@ function CalculatedExpressionContextProvider(props: { children: ReactNode }) {
   const calculatedExpressionContext: CalculatedExpressionContextType = {
     calculatedExpressions: calculatedExpressions,
     /**
-     * Evaluate all calculated expressions after a change has been made in a questionnaireRespoonse
+     * Evaluate all calculated expressions after a change has been made in a questionnaireResponse
      * Evaluation is done using fhirpath.evaluate function
      *
      * @author Sean Fong
      */
     updateCalculatedExpressions: (
       questionnaireResponse: QuestionnaireResponse,
-      variables: Expression[]
+      variablesFhirPath: Record<string, Expression[]>
     ) => {
+      // Evaluate top-level items' variables
       let isUpdated = false;
       const updatedCalculatedExpressions = { ...calculatedExpressions };
       if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
         const context: Record<string, any> = {};
-        const qrForm = questionnaireResponse.item[0];
 
-        if (variables.length > 0 && qrForm) {
-          variables.forEach((variable) => {
-            context[`${variable.name}`] = fhirpath.evaluate(
-              qrForm,
-              {
-                base: 'QuestionnaireResponse.item',
-                expression: `${variable.expression}`
-              },
-              context,
-              fhirpath_r4_model
-            );
-          });
+        for (const topLevelItem of questionnaireResponse.item) {
+          const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
+          if (variablesTopLevelItem.length > 0) {
+            variablesTopLevelItem.forEach((variable) => {
+              context[`${variable.name}`] = fhirpath.evaluate(
+                topLevelItem,
+                {
+                  base: 'QuestionnaireResponse.item',
+                  expression: `${variable.expression}`
+                },
+                context,
+                fhirpath_r4_model
+              );
+            });
+          }
+        }
 
+        // Update calculatedExpressions
+        if (Object.keys(context).length > 0) {
           for (const linkId in calculatedExpressions) {
             const result = fhirpath.evaluate(
               questionnaireResponse,

@@ -55,7 +55,7 @@ import Scrollbar from '../../Scrollbar/Scrollbar';
 import { constructBundle } from '../../../functions/LoadServerResourceFunctions';
 import BackToQuestionnairesButton from './ResponsesPageComponents/BackToQuestionnairesButton';
 import OpenResponseButton from './ResponsesPageComponents/OpenResponseButton';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import useDebounce from '../../../custom-hooks/useDebounce';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
@@ -68,7 +68,7 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function ResponsesPage() {
-  const { fhirClient, patient } = useContext(LaunchContext);
+  const { fhirClient, patient } = useContext(SmartAppLaunchContext);
   const { source } = useContext(SourceContext);
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
 

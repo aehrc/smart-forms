@@ -17,7 +17,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Box, Container, Divider, Fade, Typography } from '@mui/material';
-import type { Coding, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, isTabContainer } from '../../../functions/TabFunctions';
 import { QuestionnaireProviderContext } from '../../../App';
@@ -30,8 +30,7 @@ import { CurrentTabIndexContext, RendererContext } from '../RendererLayout';
 import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter';
 import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
 import { Helmet } from 'react-helmet';
-import { StyledAlert } from '../../StyledComponents/Nav.styles.tsx';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import QItemSwitcher from './QFormComponents/QItemSwitcher.tsx';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
@@ -49,40 +48,44 @@ function Form() {
     questionnaireProvider.preprocessedValueSetCodings
   );
 
-  let qrForm: QuestionnaireResponseItem = {
-    linkId: ''
-  };
+  const { response } = renderer;
+  const questionnaire = questionnaireProvider.questionnaire;
 
   useEffect(
     () => {
-      enableWhenContext.setItems(questionnaireProvider.enableWhenItems, qrForm);
+      enableWhenContext.setItems(questionnaireProvider.enableWhenItems, response);
     },
     // init enableWhen items on first entry into renderer, leave dependency array empty
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  const questionnaire = questionnaireProvider.questionnaire;
-  const { response } = renderer;
+  const topLevelQItems = questionnaire.item;
+  const topLevelQRItems = response.item;
 
-  if (!questionnaire.item || !response.item) {
+  if (!topLevelQItems || !topLevelQRItems) {
     return <FormInvalid questionnaire={questionnaire} />;
   }
 
-  const qForm = questionnaire.item[0];
-  qrForm = response.item[0];
+  // event handlers
+  function onTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
+    if (!response.item || response.item.length === 0) {
+      return;
+    }
 
-  function onQrFormChange(newQrForm: QuestionnaireResponseItem) {
-    const updatedResponse = {
+    const updatedItems = [...response.item]; // Copy the original array of items
+    updatedItems[index] = newTopLevelQItem; // Modify the item at the specified index
+
+    const updatedResponse: QuestionnaireResponse = {
       ...response,
-      item: [newQrForm]
+      item: updatedItems
     };
 
-    updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables);
+    updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables.fhirPathVariables);
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
 
-  if (qForm.item && qrForm.item) {
+  if (topLevelQItems[0] && topLevelQRItems[0]) {
     return (
       <>
         <Helmet>
@@ -97,33 +100,44 @@ function Form() {
                 </Typography>
               </Box>
               <Divider light sx={{ my: 1.5 }} />
-              {containsTabs(qForm.item) || isTabContainer(qForm) ? (
-                <FormBodyTabbed
-                  qForm={qForm}
-                  qrForm={qrForm}
-                  currentTabIndex={currentTabIndex}
-                  hasTabContainer={isTabContainer(qForm)}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                />
-              ) : (
-                // If form is untabbed, it is rendered as a regular group
-                <QItemGroup
-                  qItem={qForm}
-                  qrItem={qrForm}
-                  groupCardElevation={1}
-                  onQrItemChange={(newQrForm) => onQrFormChange(newQrForm)}
-                  isRepeated={false}
-                />
-              )}
-              {/*  Alert for providing feedback that only one top-level item is supported */}
-              {questionnaire.item.length > 1 ? (
-                <StyledAlert color="error">
-                  <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-                  <Typography variant="subtitle2">
-                    This app only supports one top-level item currently
-                  </Typography>
-                </StyledAlert>
-              ) : null}
+              {topLevelQItems.map((qItem, index) => {
+                const qrItem = topLevelQRItems[index];
+                return containsTabs(qItem) || isTabContainer(qItem) ? (
+                  <FormBodyTabbed
+                    key={qItem.linkId}
+                    topLevelQItem={qItem}
+                    topLevelQRItem={qrItem}
+                    currentTabIndex={currentTabIndex}
+                    hasTabContainer={isTabContainer(qItem)}
+                    onQrItemChange={(newTopLevelQRItem) =>
+                      onTopLevelQRItemChange(newTopLevelQRItem, index)
+                    }
+                  />
+                ) : // If form is untabbed, it is rendered as a regular group
+                qItem.type === 'group' ? (
+                  <QItemGroup
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    groupCardElevation={1}
+                    onQrItemChange={(newTopLevelQRItem) =>
+                      onTopLevelQRItemChange(newTopLevelQRItem, index)
+                    }
+                    isRepeated={false}
+                  />
+                ) : (
+                  <QItemSwitcher
+                    key={qItem.linkId}
+                    qItem={qItem}
+                    qrItem={qrItem}
+                    isTabled={false}
+                    onQrItemChange={(newTopLevelQRItem) =>
+                      onTopLevelQRItemChange(newTopLevelQRItem, index)
+                    }
+                    isRepeated={false}
+                  />
+                );
+              })}
             </Container>
           </Fade>
           {debugMode ? <RendererDebugFooter /> : null}

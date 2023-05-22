@@ -15,18 +15,30 @@
  * limitations under the License.
  */
 
-import { checkIsDate } from '../ConstructQuestionnaireResponse';
+import type { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
 
-describe('check if a value is a date', () => {
-  test('string value of 2021-01-04 should return true', () => {
-    expect(checkIsDate('2021-01-04')).toEqual(true);
-  });
+export function createErrorOutcome(errorMessage: string): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: { text: errorMessage }
+      }
+    ]
+  };
+}
 
-  test('string value of 2021/01/04 should return false', () => {
-    expect(checkIsDate('2021/01/04')).toEqual(false);
-  });
-
-  test('string value of 0 should return false', () => {
-    expect(checkIsDate('0')).toEqual(false);
-  });
-});
+/**
+ * Create an OperationOutcome issue of severity warning with a supplied warning message
+ *
+ * @author Sean Fong
+ */
+export function createWarningIssue(warningMessage: string): OperationOutcomeIssue {
+  return {
+    severity: 'warning',
+    code: 'invalid',
+    details: { text: warningMessage }
+  };
+}

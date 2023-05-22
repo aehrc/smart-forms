@@ -22,7 +22,7 @@ import type {
   QuestionnaireResponseItemAnswer,
   ValueSet
 } from 'fhir/r4';
-import type { ValueSetPromise } from './Interfaces';
+import type { ValueSetPromise } from './interfaces/expressions.interface';
 import * as FHIR from 'fhirclient';
 
 const ONTOSERVER_ENDPOINT = 'https://r4.ontoserver.csiro.au/fhir/';
@@ -71,30 +71,11 @@ export async function resolvePromises(
 }
 
 /**
- * Read items within a questionnaire recursively and generates a questionnaireResponseItem to be added to the populated response.
+ * Read a questionnaire response item recursively and retrieve valueSet answers if present
  *
  * @author Sean Fong
  */
 export function addValueSetAnswers(
-  qrForm: QuestionnaireResponseItem,
-  valueSetPromises: Record<string, ValueSetPromise>
-): QuestionnaireResponseItem {
-  if (!qrForm.item) return qrForm;
-
-  const newQrGroups: QuestionnaireResponseItem[] = [];
-  for (const qrGroup of qrForm.item) {
-    newQrGroups.push(readQuestionnaireResponseItem(qrGroup, valueSetPromises));
-  }
-  qrForm.item = newQrGroups;
-  return qrForm;
-}
-
-/**
- * Read a single questionnaire item/group recursively and generating questionnaire response items from initialExpressions if present
- *
- * @author Sean Fong
- */
-function readQuestionnaireResponseItem(
   qrItem: QuestionnaireResponseItem,
   valueSetPromises: Record<string, ValueSetPromise>
 ): QuestionnaireResponseItem {
@@ -102,12 +83,9 @@ function readQuestionnaireResponseItem(
 
   if (items && items.length > 0) {
     // iterate through items of item recursively
-    const qrItems: QuestionnaireResponseItem[] = [];
-
-    items.forEach((item) => {
-      const newQrItem = readQuestionnaireResponseItem(item, valueSetPromises);
-      qrItems.push(newQrItem);
-    });
+    const qrItems: QuestionnaireResponseItem[] = items.map((item) =>
+      addValueSetAnswers(item, valueSetPromises)
+    );
 
     return { ...qrItem, item: qrItems };
   }

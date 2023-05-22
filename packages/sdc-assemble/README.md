@@ -23,10 +23,11 @@ You would need to implement the following interfaces:
 ```FetchQuestionnaireCallback``` - A callback to fetch resources from your FHIR server
 
 ```ts
-function fetchQuestionnaireCallback (canonicalUrl: string) {
-  return axios.get(`${YOUR_FHIR_ENDPOINT}/Questionnaire?url=${canonicalUrl}`, {
+function fetchQuestionnaireCallback (canonicalUrl: string, requestConfig: any) {
+  const { endpoint, token } = requestConfig;
+  return axios.get(`${endpoint}/Questionnaire?url=${canonicalUrl}`, {
     method: 'GET',
-    headers: { Accept: 'application/json+fhir; charset=utf-8', Authorization: `Bearer ${YOUR_BEARER_TOKEN}`, }
+    headers: { Accept: 'application/json+fhir; charset=utf-8', Authorization: `Bearer ${token}`, }
   });
 };
 ```

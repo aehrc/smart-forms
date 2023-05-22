@@ -19,7 +19,7 @@ import { Box } from '@mui/material';
 import { StyledAccount } from '../StyledComponents/Nav.styles';
 import FaceIcon from '@mui/icons-material/Face';
 import { useContext } from 'react';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import { constructName } from '../../functions/LaunchContextFunctions';
 import dayjs from 'dayjs';
 import { AccountDetailsTypography, AccountNameTypography } from '../Misc/Typography';
@@ -29,7 +29,7 @@ import { useTheme } from '@mui/material/styles';
 dayjs.extend(localizedFormat);
 
 function NavAccounts() {
-  const { patient } = useContext(LaunchContext);
+  const { patient } = useContext(SmartAppLaunchContext);
 
   const theme = useTheme();
 

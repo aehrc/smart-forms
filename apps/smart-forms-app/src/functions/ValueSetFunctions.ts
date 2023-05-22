@@ -15,9 +15,20 @@
  * limitations under the License.
  */
 
-import type { Coding, Expression, Extension, QuestionnaireItem, ValueSet } from 'fhir/r4';
+import type {
+  Coding,
+  Encounter,
+  Expression,
+  Extension,
+  FhirResource,
+  Patient,
+  Practitioner,
+  QuestionnaireItem,
+  ValueSet
+} from 'fhir/r4';
 import * as FHIR from 'fhirclient';
-import type { ValueSetPromise } from '../interfaces/Interfaces';
+import type { ValueSetPromise, VariableXFhirQuery } from '../interfaces/Interfaces';
+import type { FhirResourceString } from '../interfaces/populate.interface.ts';
 
 const ONTOSERVER_ENDPOINT =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
@@ -110,7 +121,7 @@ export function getValueSetCodings(valueSet: ValueSet): Coding[] {
  */
 export function evaluateAnswerExpressionValueSet(
   answerExpression: Expression,
-  variables: Expression[],
+  itemLevelVariables: Expression[],
   preprocessedCodings: Record<string, Coding[]>
 ): Coding[] {
   const expression = answerExpression.expression;
@@ -120,7 +131,7 @@ export function evaluateAnswerExpressionValueSet(
   const variableName = match?.[1];
   if (!variableName) return [];
 
-  const matchedVariable = variables?.find((variable) => variable.name === variableName);
+  const matchedVariable = itemLevelVariables?.find((variable) => variable.name === variableName);
   if (!matchedVariable) return [];
 
   const valueSetExpression = matchedVariable.expression;
@@ -131,17 +142,32 @@ export function evaluateAnswerExpressionValueSet(
   return preprocessedCodings[valueSetExpression] ?? [];
 }
 
-export function getValueSetsToBeExpandedFromVariables(variables: Expression[]): string[] {
-  if (variables) {
-    return (
-      variables
-        .filter(
-          (variable) => variable.expression && VALID_VALUE_SET_URL_REGEX.test(variable.expression)
-        )
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        .map((variable) => variable.expression!)
-    );
+export function createValueSetToXFhirQueryVariableNameMap(
+  variables: Record<string, VariableXFhirQuery>
+): Record<string, string> {
+  const valueSetToNameMap: Record<string, string> = {};
+  for (const [name, variable] of Object.entries(variables)) {
+    const expressionStr = variable.valueExpression.expression;
+    if (expressionStr && VALID_VALUE_SET_URL_REGEX.test(expressionStr)) {
+      valueSetToNameMap[expressionStr] = name;
+    }
   }
+  return valueSetToNameMap;
+}
 
-  return [];
+export function getResourceFromLaunchContext(
+  resourceType: FhirResourceString,
+  patient: Patient | null,
+  user: Practitioner | null,
+  encounter: Encounter | null
+): FhirResource | null {
+  switch (resourceType) {
+    case 'Patient':
+      return patient;
+    case 'Practitioner':
+      return user;
+    case 'Encounter':
+      return encounter;
+  }
+  return null;
 }

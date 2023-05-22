@@ -23,7 +23,7 @@ import Scrollbar from '../../Scrollbar/Scrollbar';
 import NavAccounts from '../../Nav/NavAccounts';
 import RendererNavSection from './RendererNavSection';
 import RendererOperationSection from './RendererOperationSection';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import CsiroLogo from '../../Misc/CsiroLogo';
@@ -40,7 +40,7 @@ interface Props {
 function RendererNav(props: Props) {
   const { openNav, onCloseNav, navCollapsed, setNavCollapsed } = props;
 
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   const isDesktop = useResponsive('up', 'lg');
 

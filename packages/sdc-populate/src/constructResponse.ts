@@ -24,18 +24,18 @@ import type {
   QuestionnaireResponseItemAnswer,
   Reference
 } from 'fhir/r4';
-import type { InitialExpression, ValueSetPromise } from './Interfaces';
-import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './ProcessValueSets';
+import type { InitialExpression, ValueSetPromise } from './interfaces/expressions.interface';
+import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './processValueSets';
 import dayjs from 'dayjs';
 import moment from 'moment';
 
-const emptyQuestionnaireResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress'
-};
-
 /**
- * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions.
+ * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
+ *
+ * @param questionnaire - The questionnaire resource to construct a response from
+ * @param subject - A subject reference to form the subject within the response
+ * @param initialExpressions - A key-value pair of <linkId, initialExpressions> to be used for population
+ * @returns A populated questionnaire response wrapped within a Promise
  *
  * @author Sean Fong
  */
@@ -44,63 +44,57 @@ export async function constructResponse(
   subject: Reference,
   initialExpressions: Record<string, InitialExpression>
 ): Promise<QuestionnaireResponse> {
-  const questionnaireResponse = emptyQuestionnaireResponse;
+  const questionnaireResponse: QuestionnaireResponse = {
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress'
+  };
+
   let valueSetPromises: Record<string, ValueSetPromise> = {};
 
-  if (!questionnaire.item) return questionnaireResponse;
-  const qForm = questionnaire.item[0];
-
-  if (!qForm) return questionnaireResponse;
-  let qrForm: QuestionnaireResponseItem = {
-    linkId: qForm.linkId,
-    text: qForm.text,
-    item: []
-  };
+  const topLevelQItems = questionnaire.item;
+  if (!topLevelQItems || !topLevelQItems[0]) {
+    return questionnaireResponse;
+  }
 
   // Populate questionnaire response as a two-step process
   // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
-  qrForm = populateResponseFromQuestionnaire(
-    questionnaire,
-    qrForm,
-    initialExpressions,
-    valueSetPromises
-  );
+  const topLevelQRItems: QuestionnaireResponseItem[] = [];
+  for (const qItem of topLevelQItems) {
+    const newTopLevelQRItem = constructResponseItem(
+      qItem,
+      {
+        linkId: qItem.linkId,
+        text: qItem.text,
+        item: []
+      },
+      initialExpressions,
+      valueSetPromises
+    );
+
+    if (Array.isArray(newTopLevelQRItem)) {
+      topLevelQRItems.push(...newTopLevelQRItem);
+    } else if (newTopLevelQRItem) {
+      topLevelQRItems.push(newTopLevelQRItem);
+    } else {
+      topLevelQRItems.push({
+        linkId: qItem.linkId,
+        text: qItem.text,
+        item: []
+      });
+    }
+  }
 
   valueSetPromises = await resolvePromises(valueSetPromises);
-  qrForm = addValueSetAnswers(qrForm, valueSetPromises);
+  const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems.map((qrItem) =>
+    addValueSetAnswers(qrItem, valueSetPromises)
+  );
 
   questionnaireResponse.questionnaire = questionnaire.url;
-  questionnaireResponse.item = [qrForm];
+  questionnaireResponse.item = updatedTopLevelQRItems;
   questionnaireResponse.subject = subject;
 
   return questionnaireResponse;
-}
-
-/**
- * Read items within a questionnaire recursively and generates a questionnaireResponseItem to be added to the populated response.
- *
- * @author Sean Fong
- */
-function populateResponseFromQuestionnaire(
-  questionnaire: Questionnaire,
-  qrForm: QuestionnaireResponseItem,
-  initialExpressions: Record<string, InitialExpression>,
-  valueSetPromises: Record<string, ValueSetPromise>
-): QuestionnaireResponseItem {
-  if (!questionnaire.item) return qrForm;
-
-  questionnaire.item.forEach((item) => {
-    const newQrForm = constructResponseItem(item, qrForm, initialExpressions, valueSetPromises);
-    if (Array.isArray(newQrForm)) {
-      console.error(
-        `Error: this population method currently doesn't support top-level repeat groups, returning empty questionnaire response.`
-      );
-    } else if (newQrForm) {
-      qrForm = { ...newQrForm };
-    }
-  });
-  return qrForm;
 }
 
 /**

@@ -17,12 +17,12 @@
 
 import { Box } from '@mui/material';
 import { useContext } from 'react';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import { AccountDetailsTypography, AccountNameTypographyNoWrap } from '../Misc/Typography';
 import { constructName } from '../../functions/LaunchContextFunctions';
 
 function UserPopoverMenu() {
-  const { user } = useContext(LaunchContext);
+  const { user } = useContext(SmartAppLaunchContext);
 
   return (
     <Box sx={{ my: 1.5, px: 2.5 }}>

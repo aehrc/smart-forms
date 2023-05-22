@@ -112,7 +112,7 @@ function QItemTimePicker(props: QItemTimePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TimeField
-        format={entryFormat !== '' ? entryFormat : 'HH:MM a'}
+        format={entryFormat !== '' ? entryFormat : 'hh:mm a'}
         value={value}
         fullWidth
         disabled={readOnly}

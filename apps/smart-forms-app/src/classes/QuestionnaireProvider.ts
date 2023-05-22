@@ -15,27 +15,38 @@
  * limitations under the License.
  */
 
-import type { Coding, Expression, Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type { Coding, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type {
+  AnswerExpression,
   CalculatedExpression,
   EnableWhenItemProperties,
-  ValueSetPromise
+  ValueSetPromise,
+  Variables
 } from '../interfaces/Interfaces';
 import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
-import { getCalculatedExpression, getVariables } from '../functions/ItemControlFunctions';
 import {
+  getAnswerExpression,
+  getCalculatedExpression,
+  getFhirPathVariables,
+  getXFhirQueryVariables
+} from '../functions/ItemControlFunctions';
+import {
+  createValueSetToXFhirQueryVariableNameMap,
   getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise,
-  getValueSetsToBeExpandedFromVariables,
   getValueSetUrlFromContained,
   resolvePromises
 } from '../functions/ValueSetFunctions';
+import { isLaunchContext } from '../functions/populateFunctions/typePredicates.ts';
+import type { LaunchContext } from '../interfaces/populate.interface.ts';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
-  variables: Expression[];
+  variables: Variables;
+  launchContexts: Record<string, LaunchContext>;
   calculatedExpressions: Record<string, CalculatedExpression>;
+  answerExpressions: Record<string, AnswerExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
   preprocessedValueSetCodings: Record<string, Coding[]>;
 
@@ -44,15 +55,19 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'active'
     };
-    this.variables = [];
+    this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
+    this.launchContexts = {};
     this.calculatedExpressions = {};
+    this.answerExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
   }
 
   async setQuestionnaire(questionnaire: Questionnaire): Promise<void> {
-    this.variables = [];
+    this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
+    this.launchContexts = {};
     this.calculatedExpressions = {};
+    this.answerExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
 
@@ -68,9 +83,20 @@ export class QuestionnaireProvider {
   async preprocessQuestionnaire() {
     if (!this.questionnaire.item) return;
 
-    const valueSetPromiseMap: Record<string, ValueSetPromise> = {};
+    // Store launch contexts
+    if (this.questionnaire.extension && this.questionnaire.extension.length > 0) {
+      for (const ext of this.questionnaire.extension) {
+        if (isLaunchContext(ext)) {
+          const launchContextName = ext.extension[0].valueId ?? ext.extension[0].valueCoding?.code;
+          if (launchContextName) {
+            this.launchContexts[launchContextName] = ext;
+          }
+        }
+      }
+    }
 
     // Process contained ValueSets
+    const valueSetPromiseMap: Record<string, ValueSetPromise> = {};
     if (this.questionnaire.contained && this.questionnaire.contained.length > 0) {
       this.questionnaire.contained.forEach((entry) => {
         if (entry.resourceType === 'ValueSet' && entry.id) {
@@ -90,18 +116,57 @@ export class QuestionnaireProvider {
       });
     }
 
+    // Store questionnaire-level variables
+    if (this.questionnaire.extension && this.questionnaire.extension.length > 0) {
+      this.variables.fhirPathVariables['QuestionnaireLevel'] = getFhirPathVariables(
+        this.questionnaire.extension
+      );
+
+      for (const expression of getXFhirQueryVariables(this.questionnaire.extension)) {
+        if (expression.name) {
+          this.variables.xFhirQueryVariables[expression.name] = {
+            valueExpression: expression
+          };
+        }
+      }
+    }
+
     // Recursively read enableWhen items, calculated expressions and valueSets to be expanded
     this.questionnaire.item.forEach((item) => {
       this.readQuestionnaireItem(item, valueSetPromiseMap);
     });
 
+    // Create a <valueSetUrl, XFhirQueryVariableName> map
+    const valueSetToXFhirQueryVariableNameMap: Record<string, string> =
+      createValueSetToXFhirQueryVariableNameMap(this.variables.xFhirQueryVariables);
+
+    if (Object.keys(valueSetToXFhirQueryVariableNameMap).length > 0) {
+      for (const valueSetUrl in valueSetToXFhirQueryVariableNameMap) {
+        valueSetPromiseMap[valueSetUrl] = {
+          promise: getValueSetPromise(valueSetUrl)
+        };
+      }
+    }
+
+    // Resolve promises and store valueSet codings in preprocessedValueSetCodings AND XFhirQueryVariables
     const valueSetPromises = await resolvePromises(valueSetPromiseMap);
 
-    // Store valueSet codings
     for (const valueSetUrl in valueSetPromises) {
       const valueSet = valueSetPromises[valueSetUrl].valueSet;
+
       if (valueSet) {
-        this.preprocessedValueSetCodings[valueSetUrl] = getValueSetCodings(valueSet);
+        if (valueSetToXFhirQueryVariableNameMap[valueSetUrl]) {
+          // valueSetUrl is in x-fhir-query variables, save to variable
+          const variableName = valueSetToXFhirQueryVariableNameMap[valueSetUrl];
+          const variable = this.variables.xFhirQueryVariables[variableName];
+          this.variables.xFhirQueryVariables[variableName] = {
+            ...variable,
+            result: valueSetPromises[valueSetUrl].valueSet
+          };
+        } else {
+          // valueSetUrl is in x-fhir-query variables, save to preprocessedValueSetCodings
+          this.preprocessedValueSetCodings[valueSetUrl] = getValueSetCodings(valueSet);
+        }
       }
     }
   }
@@ -123,7 +188,7 @@ export class QuestionnaireProvider {
       });
     }
 
-    // Read calculated expressions, enable when items, variables and valueSets from qItem
+    // Read calculated/answer expressions, enable when items, valueSets and variables from qItem
     const calculatedExpression = getCalculatedExpression(item);
     if (calculatedExpression) {
       this.calculatedExpressions[item.linkId] = {
@@ -131,13 +196,17 @@ export class QuestionnaireProvider {
       };
     }
 
+    const answerExpression = getAnswerExpression(item);
+    if (answerExpression) {
+      this.answerExpressions[item.linkId] = {
+        expression: `${answerExpression.expression}`
+      };
+    }
+
     const enableWhenItemProperties = getEnableWhenItemProperties(item);
     if (enableWhenItemProperties) {
       this.enableWhenItems[item.linkId] = enableWhenItemProperties;
     }
-
-    const variables = getVariables(item);
-    this.variables.push(...variables);
 
     const valueSetUrl = item.answerValueSet;
     if (valueSetUrl) {
@@ -149,12 +218,16 @@ export class QuestionnaireProvider {
       }
     }
 
-    // Get valueSets from variables if present
-    const valueSetUrls = getValueSetsToBeExpandedFromVariables(variables);
-    for (const valueSetUrl of valueSetUrls) {
-      valueSetPromiseMap[valueSetUrl] = {
-        promise: getValueSetPromise(valueSetUrl)
-      };
+    if (item.extension) {
+      this.variables.fhirPathVariables[item.linkId] = getFhirPathVariables(item.extension);
+
+      for (const expression of getXFhirQueryVariables(item.extension)) {
+        if (expression.name) {
+          this.variables.xFhirQueryVariables[expression.name] = {
+            valueExpression: expression
+          };
+        }
+      }
     }
   }
 }

@@ -27,20 +27,28 @@ import moment from 'moment';
 export function qrToHTML(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
-) {
-  if (!questionnaireResponse.item) return '';
+): string {
+  if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) return '';
 
-  const title = `<div style="font-size:24px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
-  const qrForm = qrFormToHTML(questionnaireResponse.item[0]);
+  let QrHtml = `<div style="font-size:24px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
 
-  return `<div>${title + qrForm}</div>`;
+  for (const topLevelQRItem of questionnaireResponse.item) {
+    const topLevelQRItemHTML = qrItemToHTML(topLevelQRItem);
+    if (topLevelQRItemHTML) {
+      QrHtml += topLevelQRItemHTML;
+    }
+  }
+
+  return `<div>${QrHtml}</div>`;
 }
 
-export function qrFormToHTML(questionnaireResponseForm: QuestionnaireResponseItem) {
-  if (!questionnaireResponseForm.item) return null;
-
+export function qrItemToHTML(topLevelQRItem: QuestionnaireResponseItem) {
   let formInHTML = '';
-  const qrItems = questionnaireResponseForm.item;
+  if (!topLevelQRItem.item) {
+    return readQuestionnaireResponseItem(undefined, topLevelQRItem, undefined, formInHTML, 0);
+  }
+
+  const qrItems = topLevelQRItem.item;
   for (let i = 0; i < qrItems.length; i++) {
     formInHTML = readQuestionnaireResponseItem(
       i === 0 ? undefined : qrItems[i - 1],

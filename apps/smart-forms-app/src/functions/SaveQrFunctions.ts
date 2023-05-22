@@ -167,17 +167,22 @@ export function removeHiddenAnswers(
   questionnaireResponse: QuestionnaireResponse,
   enableWhenContext: EnableWhenContextType
 ): QuestionnaireResponse {
-  const qFormItem = questionnaire.item;
-  const qrFormItem = questionnaireResponse.item;
-  if (!qFormItem || qFormItem.length === 0 || !qrFormItem || qrFormItem.length === 0) {
+  const topLevelQItems = questionnaire.item;
+  const topLevelQRItems = questionnaireResponse.item;
+  if (
+    !topLevelQItems ||
+    topLevelQItems.length === 0 ||
+    !topLevelQRItems ||
+    topLevelQRItems.length === 0
+  ) {
     return questionnaireResponse;
   }
 
-  qrFormItem.forEach((qrItem, i) => {
-    const qItem = qFormItem[i];
-    const newQrForm = readQuestionnaireResponseItem(qItem, qrItem, enableWhenContext);
-    if (newQrForm && questionnaireResponse.item) {
-      questionnaireResponse.item[i] = { ...newQrForm };
+  topLevelQRItems.forEach((qrItem, i) => {
+    const qItem = topLevelQItems[i];
+    const newTopLevelQRItem = readQuestionnaireResponseItem(qItem, qrItem, enableWhenContext);
+    if (newTopLevelQRItem && questionnaireResponse.item) {
+      questionnaireResponse.item[i] = { ...newTopLevelQRItem };
     }
   });
 

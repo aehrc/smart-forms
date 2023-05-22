@@ -32,12 +32,13 @@ import { StandardTextField } from '../../../../StyledComponents/Textfield.styles
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import SearchIcon from '@mui/icons-material/Search';
 import useDebounce from '../../../../../custom-hooks/useDebounce';
-import useOntoserverQuery from '../../../../../custom-hooks/useOntoserverQuery';
+import useTerminologyServerQuery from '../../../../../custom-hooks/useTerminologyServerQuery.ts';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoIcon from '@mui/icons-material/Info';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import { getTerminologyServerUrl } from '../../../../../functions/ValueSetFunctions.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -67,17 +68,19 @@ function QItemOpenChoiceAutocomplete(props: Props) {
     useRenderingExtensions(qItem);
 
   // Query ontoserver for options
-  const answerValueSetUrl = qItem.answerValueSet;
   const maxList = 10;
 
   const [input, setInput] = useState('');
   const debouncedInput = useDebounce(input, 300);
 
-  const { options, loading, feedback } = useOntoserverQuery(
+  const answerValueSetUrl = qItem.answerValueSet;
+  const terminologyServerUrl = getTerminologyServerUrl(qItem);
+  const { options, loading, feedback } = useTerminologyServerQuery(
     answerValueSetUrl,
     maxList,
     input,
-    debouncedInput
+    debouncedInput,
+    terminologyServerUrl
   );
 
   if (!answerValueSetUrl) return null;

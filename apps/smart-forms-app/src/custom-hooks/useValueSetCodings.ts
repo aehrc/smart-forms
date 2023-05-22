@@ -16,9 +16,10 @@
  */
 
 import { useContext, useEffect, useMemo, useState } from 'react';
-import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
+import type { Coding, FhirResource, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import {
-  evaluateAnswerExpressionValueSet,
+  getResourceFromLaunchContext,
+  getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise
 } from '../functions/ValueSetFunctions';
@@ -26,41 +27,92 @@ import { PreprocessedValueSetContext } from '../components/Renderer/FormPage/For
 import { CachedQueriedValueSetContext } from '../custom-contexts/CachedValueSetContext';
 import { getAnswerExpression } from '../functions/ItemControlFunctions.ts';
 import { QuestionnaireProviderContext } from '../App.tsx';
+import { SmartAppLaunchContext } from '../custom-contexts/SmartAppLaunchContext.tsx';
+import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
   const preprocessedCodings = useContext(PreprocessedValueSetContext);
   const { cachedValueSetCodings, addCodingToCache } = useContext(CachedQueriedValueSetContext);
-  const { variables } = useContext(QuestionnaireProviderContext);
+  const { patient, user, encounter } = useContext(SmartAppLaunchContext);
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const launchContexts = questionnaireProvider.launchContexts;
+  const variablesXFhirQuery = questionnaireProvider.variables.xFhirQueryVariables;
 
-  let valueSetUrl = qItem.answerValueSet;
-  const initialCodings = useMemo(() => {
+  const valueSetUrl = qItem.answerValueSet;
+  let initialCodings = useMemo(() => {
     // set options from cached answer options if present
     if (valueSetUrl) {
+      let cleanValueSetUrl = valueSetUrl;
       if (valueSetUrl.startsWith('#')) {
-        valueSetUrl = valueSetUrl.slice(1);
+        cleanValueSetUrl = valueSetUrl.slice(1);
       }
 
       // attempt to get codings from value sets preprocessed when loading questionnaire
-      if (preprocessedCodings[valueSetUrl]) {
-        return preprocessedCodings[valueSetUrl];
+      if (preprocessedCodings[cleanValueSetUrl]) {
+        return preprocessedCodings[cleanValueSetUrl];
       }
 
       // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[valueSetUrl]) {
-        return cachedValueSetCodings[valueSetUrl];
-      }
-    }
-
-    // get valueSet from sdc-questionnaire-answerExpression extension if answerValueSet is not present
-    if (!valueSetUrl) {
-      const answerExpression = getAnswerExpression(qItem);
-      if (answerExpression) {
-        return evaluateAnswerExpressionValueSet(answerExpression, variables, preprocessedCodings);
+      if (cachedValueSetCodings[cleanValueSetUrl]) {
+        return cachedValueSetCodings[cleanValueSetUrl];
       }
     }
 
     return [];
-  }, [valueSetUrl, qItem, variables, preprocessedCodings, cachedValueSetCodings]);
+  }, [cachedValueSetCodings, preprocessedCodings, valueSetUrl]);
+
+  const answerExpression = getAnswerExpression(qItem)?.expression;
+  initialCodings = useMemo(() => {
+    if (initialCodings.length === 0 && answerExpression) {
+      const variable = answerExpression.substring(
+        answerExpression.indexOf('%') + 1,
+        answerExpression.indexOf('.')
+      );
+      const contextMap: Record<string, FhirResource> = {};
+
+      // get answer expression resource from launch contexts
+      if (launchContexts[variable]) {
+        const resourceType = launchContexts[variable].extension[1].valueCode;
+        const resource = getResourceFromLaunchContext(resourceType, patient, user, encounter);
+        if (resource) {
+          contextMap[variable] = resource;
+        }
+      } else if (variablesXFhirQuery[variable]) {
+        const resource = variablesXFhirQuery[variable].result;
+        if (resource) {
+          contextMap[variable] = resource;
+        }
+      }
+
+      if (contextMap[variable]) {
+        const evaluated: any[] = fhirpath.evaluate(
+          {},
+          answerExpression,
+          contextMap,
+          fhirpath_r4_model
+        );
+
+        if (evaluated[0].system || evaluated[0].code) {
+          // determine if the evaluated array is a coding array
+          return evaluated;
+        } else if (evaluated[0].coding) {
+          // determine and return if the evaluated array is a codeable concept
+          return evaluated[0].coding;
+        }
+      }
+    }
+
+    return initialCodings;
+  }, [
+    answerExpression,
+    encounter,
+    initialCodings,
+    launchContexts,
+    patient,
+    user,
+    variablesXFhirQuery
+  ]);
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [serverError, setServerError] = useState<Error | null>(null);
@@ -70,7 +122,8 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
     const valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl || codings.length > 0) return;
 
-    const promise = getValueSetPromise(valueSetUrl);
+    const terminologyServer = getTerminologyServerUrl(qItem);
+    const promise = getValueSetPromise(valueSetUrl, terminologyServer);
     if (promise) {
       promise
         .then((valueSet: ValueSet) => {

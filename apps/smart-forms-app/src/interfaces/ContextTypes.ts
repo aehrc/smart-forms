@@ -17,11 +17,11 @@
 
 import type {
   Coding,
+  Encounter,
   Expression,
   Patient,
   Practitioner,
   QuestionnaireResponse,
-  QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
@@ -39,19 +39,21 @@ export type EnableWhenContextType = {
   isActivated: boolean;
   setItems: (
     enableWhenItems: EnableWhenItems,
-    questionnaireResponseForm: QuestionnaireResponseItem
+    questionnaireResponse: QuestionnaireResponse
   ) => unknown;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
   toggleActivation: (toggled: boolean) => unknown;
 };
 
-export type LaunchContextType = {
+export type SmartAppLaunchContextType = {
   fhirClient: Client | null;
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
   setFhirClient: (client: Client) => unknown;
   setPatient: (patient: Patient) => unknown;
   setUser: (user: Practitioner) => unknown;
+  setEncounter: (user: Encounter) => unknown;
 };
 
 export type CachedQueriedValueSetContextType = {
@@ -63,7 +65,7 @@ export type CalculatedExpressionContextType = {
   calculatedExpressions: Record<string, CalculatedExpression>;
   updateCalculatedExpressions: (
     questionnaireResponse: QuestionnaireResponse,
-    variables: Expression[]
+    variablesFhirPath: Record<string, Expression[]>
   ) => unknown;
 };
 

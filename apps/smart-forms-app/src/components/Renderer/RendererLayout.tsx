@@ -21,9 +21,9 @@ import RendererNav from './RendererNav/RendererNav';
 import { StyledRoot } from '../StyledComponents/Layout.styles';
 import { Main } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import { LaunchContext } from '../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
 import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
-import { populateQuestionnaire } from '../../functions/populate-functions/PrepopulateFunctions';
+import { populateQuestionnaire } from '../../functions/populateFunctions/populateQuestionnaire';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
@@ -69,7 +69,7 @@ function RendererLayout() {
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient, patient, user } = useContext(LaunchContext);
+  const { fhirClient, patient, user, encounter } = useContext(SmartAppLaunchContext);
 
   // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
   let initialResponse: QuestionnaireResponse;
@@ -131,13 +131,25 @@ function RendererLayout() {
    */
   useEffect(
     () => {
-      if (!questionnaireResponseProvider.response.item) return;
+      const responseFromProvider = questionnaireResponseProvider.response;
+      if (!responseFromProvider.item || responseFromProvider.item.length === 0) return;
 
-      const qrFormCleaned = removeNoAnswerQrItem(questionnaireResponseProvider.response.item[0]);
-      if (qrFormCleaned) {
+      let shouldUpdateResponse = false;
+      const updatedTopLevelQRItems = responseFromProvider.item.map((topLevelQRItem) => {
+        const topLevelQRItemCleaned = removeNoAnswerQrItem(topLevelQRItem);
+
+        if (topLevelQRItemCleaned) {
+          shouldUpdateResponse = true;
+          return topLevelQRItemCleaned;
+        } else {
+          return topLevelQRItem;
+        }
+      });
+
+      if (shouldUpdateResponse) {
         setRenderer({
           ...renderer,
-          response: { ...questionnaireResponseProvider.response, item: [qrFormCleaned] }
+          response: { ...questionnaireResponseProvider.response, item: updatedTopLevelQRItems }
         });
       }
     },
@@ -149,11 +161,13 @@ function RendererLayout() {
   /*
    * Perform pre-population if all the following requirements are fulfilled:
    * 1. App is connected to a CMS
-   * 2. Pre-pop queries exist in the form of contained resources or extensions
+   * 2. Pre-pop queries exist in the form of questionnaire-level extensions or contained resources
    * 3. QuestionnaireResponse does not have answer items
    * 4. QuestionnaireResponse is not from a saved draft response
    */
-  const qrFormItem = initialResponse.item?.[0].item;
+  const responseHasNoAnswers: boolean =
+    !initialResponse.item?.[0].item || initialResponse.item?.[0].item.length === 0;
+
   if (
     fhirClient &&
     patient &&
@@ -161,21 +175,23 @@ function RendererLayout() {
     spinner.isLoading &&
     (questionnaireProvider.questionnaire.contained ||
       questionnaireProvider.questionnaire.extension) &&
-    (!qrFormItem || qrFormItem.length === 0) &&
+    responseHasNoAnswers &&
     !questionnaireResponseProvider.response.id
   ) {
     // obtain questionnaireResponse for pre-population
     populateQuestionnaire(
-      fhirClient,
       questionnaireProvider.questionnaire,
+      fhirClient,
       patient,
-      (populated, hasError) => {
+      user,
+      encounter,
+      (populated: QuestionnaireResponse, hasWarnings: boolean) => {
         questionnaireResponseProvider.setQuestionnaireResponse(populated);
         setRenderer({ ...renderer, response: populated });
         setSpinner({ ...spinner, isLoading: false });
-        if (hasError) {
+        if (hasWarnings) {
           enqueueSnackbar(
-            'An error occurred while populating the form. View console for details.',
+            'Questionnaire form partially populated, there might be issues while populating the form. View console for details.',
             { variant: 'warning' }
           );
         } else {
@@ -184,7 +200,6 @@ function RendererLayout() {
       },
       () => {
         setSpinner({ ...spinner, isLoading: false });
-        console.warn('Population failed');
         enqueueSnackbar('Form population failed', { variant: 'warning' });
       }
     );

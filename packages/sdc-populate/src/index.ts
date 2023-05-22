@@ -15,153 +15,16 @@
  * limitations under the License.
  */
 
-import type {
-  InitialExpression,
-  PopulateInputParameters,
-  PopulateOutputParameters,
-  PopulateOutputParametersWithIssues,
-  PrePopQueryContextParameter,
-  VariablesContextParameter
-} from './Interfaces';
-import { addVariablesToContext } from './VariableProcessing';
-import { constructResponse } from './ConstructQuestionnaireResponse';
-import { createOutputParameters } from './CreateOutputParameters';
-import type { OperationOutcome, Parameters, ParametersParameter } from 'fhir/r4';
-import {
-  isLaunchPatientContent,
-  isLaunchPatientName,
-  isPrePopQueryName,
-  isPrePopQueryOrVariablesContent,
-  isQuestionnaireParameter,
-  isSubjectParameter,
-  isVariablesName
-} from './TypePredicates';
-import { evaluateInitialExpressions } from './EvaluateInitialExpressions';
-import { readPopulationExpressions } from './ReadPopulationExpressions';
-import { evaluateItemPopulationContexts } from './EvaluateItemPopulationContexts';
-import { sortResourceArrays } from './SortBundles';
+// Interfaces
+export { FetchResourceCallback } from './interfaces/callback.interface';
+export {
+  IdentifierParameter,
+  QuestionnaireRefParameter
+} from './interfaces/inputParameters.interface';
+export { IssuesParameter, ResponseParameter } from './interfaces/outputParameters.interface';
 
-/**
- * Main function of this populate module.
- * Input and output specific parameters conformant to the SDC populate specification.
- *
- * @author Sean Fong
- */
-export default async function populate(
-  parameters: PopulateInputParameters
-): Promise<PopulateOutputParameters | PopulateOutputParametersWithIssues> {
-  const params = parameters.parameter;
+// Type Predicates
+export { isInputParameters } from './typePredicates';
 
-  const questionnaire = params[0].resource;
-  const subject = params[1].valueReference;
-  const launchPatient = params[2].part[1].resource;
-
-  const populationExpressions = readPopulationExpressions(questionnaire);
-  let context: Record<string, any> = {
-    patient: launchPatient
-  };
-
-  // Add PrePopQuery and variables to context
-  if (params.length === 5) {
-    for (const param of [params[3], params[4]]) {
-      context = getContextContent(param, context, populationExpressions.initialExpressions);
-    }
-  } else {
-    context = getContextContent(params[3], context, populationExpressions.initialExpressions);
-  }
-
-  // Add evaluate itemPopulationContexts and add them to context
-  const evaluatedContext = evaluateItemPopulationContexts(
-    populationExpressions.itemPopulationContexts,
-    context
-  );
-  const evaluatedContextError = evaluatedContext.errorOutcome;
-
-  // Sort resource bundles within context
-  context = sortResourceArrays(evaluatedContext.context);
-
-  // Perform evaluation of initialExpressions based on context
-  const evaluatedExpressions = evaluateInitialExpressions(
-    populationExpressions.initialExpressions,
-    context
-  );
-  const evaluatedExpressionsError = evaluatedExpressions.errorOutcome;
-
-  const questionnaireResponse = await constructResponse(
-    questionnaire,
-    subject,
-    evaluatedExpressions.initialExpressions
-  );
-
-  // collect issues if there are any
-  const issues: OperationOutcome[] = [];
-  if (evaluatedContextError) {
-    issues.push(evaluatedContextError);
-  }
-
-  if (evaluatedExpressionsError) {
-    issues.push(evaluatedExpressionsError);
-  }
-
-  return createOutputParameters(questionnaireResponse, issues);
-}
-
-function getContextContent(
-  param: PrePopQueryContextParameter | VariablesContextParameter,
-  context: Record<string, any>,
-  initialExpressions: Record<string, InitialExpression>
-) {
-  const contextName = param.part[0].valueString;
-  const contextContent = param.part[1].resource;
-
-  switch (contextName) {
-    case 'PrePopQuery':
-      context['PrePopQuery'] = contextContent;
-      break;
-    case 'Variables':
-      context = addVariablesToContext(initialExpressions, context, contextContent);
-      break;
-  }
-  return context;
-}
-
-/**
- * Checks if the parameters passed satisfies the conditions of populateInputParameters.
- *
- * @author Sean Fong
- */
-export function isPopulateInputParameters(
-  parameters: Parameters
-): parameters is PopulateInputParameters {
-  const questionnairePresent = !!parameters.parameter?.find(isQuestionnaireParameter);
-
-  const subjectPresent = !!parameters.parameter?.find(isSubjectParameter);
-
-  const launchPatientPresent = !!parameters.parameter?.find(
-    (parameter: ParametersParameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find(isLaunchPatientName) &&
-      parameter.part?.find(isLaunchPatientContent)
-  );
-
-  const prePopQueryPresent = !!parameters.parameter?.find(
-    (parameter: ParametersParameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find(isPrePopQueryName) &&
-      parameter.part?.find(isPrePopQueryOrVariablesContent)
-  );
-
-  const variablesPresent = !!parameters.parameter?.find(
-    (parameter: ParametersParameter) =>
-      parameter.name === 'context' &&
-      parameter.part?.find(isVariablesName) &&
-      parameter.part?.find(isPrePopQueryOrVariablesContent)
-  );
-
-  return (
-    questionnairePresent &&
-    subjectPresent &&
-    launchPatientPresent &&
-    (prePopQueryPresent || variablesPresent)
-  );
-}
+// Functions
+export { populate } from './populate';

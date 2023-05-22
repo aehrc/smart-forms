@@ -54,7 +54,7 @@ import {
 } from '../../../functions/LoadServerResourceFunctions';
 import ViewExistingResponsesButton from './QuestionnairePageComponents/ViewExistingResponsesButton';
 import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
-import { LaunchContext } from '../../../custom-contexts/LaunchContext';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import SourceToggle from '../../Misc/SourceToggle';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
@@ -71,7 +71,7 @@ const tableHeaders: TableAttributes[] = [
 function QuestionnairesPage() {
   const { source } = useContext(SourceContext);
   const { debugMode } = useContext(DebugModeContext);
-  const { fhirClient } = useContext(LaunchContext);
+  const { fhirClient } = useContext(SmartAppLaunchContext);
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
