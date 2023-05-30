@@ -43,6 +43,7 @@ import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog';
 import { useSnackbar } from 'notistack';
 import NavExpandButton from './NavCollapseButton';
 import PopulationProgressSpinner from '../Misc/PopulationProgressSpinner';
+import CloseSnackbar from '../SnackbarActions/CloseSnackbar.tsx';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
@@ -192,15 +193,17 @@ function RendererLayout() {
         if (hasWarnings) {
           enqueueSnackbar(
             'Questionnaire form partially populated, there might be issues while populating the form. View console for details.',
-            { variant: 'warning' }
+            { action: <CloseSnackbar />, variant: 'warning' }
           );
         } else {
-          enqueueSnackbar('Questionnaire form populated');
+          enqueueSnackbar('Questionnaire form populated', {
+            action: <CloseSnackbar />
+          });
         }
       },
       () => {
         setSpinner({ ...spinner, isLoading: false });
-        enqueueSnackbar('Form population failed', { variant: 'warning' });
+        enqueueSnackbar('Form not populated', { action: <CloseSnackbar />, variant: 'warning' });
       }
     );
   } else {
