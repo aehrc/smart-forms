@@ -32,6 +32,11 @@ export const Main = styled(Box)(({ theme }) => ({
   minHeight: '100%',
   paddingTop: APP_BAR_MOBILE + 12,
   paddingBottom: theme.spacing(4),
+  [theme.breakpoints.up('md')]: {
+    paddingTop: APP_BAR_DESKTOP + 16,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1)
+  },
   [theme.breakpoints.up('lg')]: {
     paddingTop: APP_BAR_DESKTOP + 16,
     paddingLeft: theme.spacing(2),
