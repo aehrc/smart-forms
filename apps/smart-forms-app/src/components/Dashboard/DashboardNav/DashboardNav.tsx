@@ -57,9 +57,9 @@ export default function DashboardNav(props: Props) {
       <Box sx={{ flexGrow: 1 }} />
 
       {!fhirClient ? (
-        <NavErrorAlert
-          message={'Viewing responses are disabled when app is not launched from a CMS'}
-        />
+        <Box sx={{ px: 2.5, py: 10 }}>
+          <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
+        </Box>
       ) : null}
 
       <Box sx={{ px: 2.5, pb: 2 }}>

@@ -39,6 +39,6 @@ export const StyledAlert = styled(Box, {
     0.12
   ),
   [theme.breakpoints.up('md')]: {
-    padding: theme.spacing(2.5)
+    padding: theme.spacing(2)
   }
 }));

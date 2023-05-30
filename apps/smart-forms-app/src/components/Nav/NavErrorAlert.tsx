@@ -15,21 +15,20 @@
  * limitations under the License.
  */
 
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { StyledAlert } from '../StyledComponents/Nav.styles';
 
 interface Props {
   message: string;
 }
+
 function NavErrorAlert(props: Props) {
   const { message } = props;
 
   return (
-    <Box sx={{ px: 2.5, py: 10 }}>
-      <StyledAlert color="error">
-        <Typography variant="subtitle2">{message}</Typography>
-      </StyledAlert>
-    </Box>
+    <StyledAlert color="error">
+      <Typography variant="subtitle2">{message}</Typography>
+    </StyledAlert>
   );
 }
 
