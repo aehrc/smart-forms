@@ -15,31 +15,25 @@
  * limitations under the License.
  */
 
-import { Box, styled } from '@mui/material';
+import { Button } from '@mui/material';
+import Iconify from '../../../Misc/Iconify.tsx';
+import { useNavigate } from 'react-router-dom';
 
-const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 72;
+function GoToPlaygroundButton() {
+  const navigate = useNavigate();
 
-export const StyledRoot = styled(Box)({
-  display: 'flex',
-  minHeight: '100%',
-  overflow: 'hidden'
-});
+  return (
+    <Button
+      variant="contained"
+      color="info"
+      endIcon={<Iconify icon="mdi:playground-slide" />}
+      sx={{ borderRadius: 15 }}
+      onClick={() => {
+        navigate('/playground');
+      }}>
+      Go to Playground
+    </Button>
+  );
+}
 
-export const Main = styled(Box)(({ theme }) => ({
-  flexGrow: 1,
-  overflow: 'auto',
-  minHeight: '100%',
-  paddingTop: APP_BAR_MOBILE + 12,
-  paddingBottom: theme.spacing(4),
-  [theme.breakpoints.up('md')]: {
-    paddingTop: APP_BAR_DESKTOP + 16,
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1)
-  },
-  [theme.breakpoints.up('lg')]: {
-    paddingTop: APP_BAR_DESKTOP + 16,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
-  }
-}));
+export default GoToPlaygroundButton;

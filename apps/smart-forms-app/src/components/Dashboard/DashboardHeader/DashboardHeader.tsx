@@ -27,6 +27,7 @@ import UserPopoverMenu from '../../Header/UserPopoverMenu';
 import UserHeader from '../../Header/UserHeader';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
+import NavErrorAlert from '../../Nav/NavErrorAlert.tsx';
 
 interface Props {
   onOpenNav: () => void;
@@ -71,6 +72,9 @@ function DashboardHeader(props: Props) {
             <UserHeader />
           ) : (
             <>
+              <Box sx={{ my: 0.5 }}>
+                <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
+              </Box>
               <AccountPopover
                 bgColor={theme.palette.secondary.main}
                 displayIcon={<FaceIcon sx={{ color: theme.palette.common.white }} />}

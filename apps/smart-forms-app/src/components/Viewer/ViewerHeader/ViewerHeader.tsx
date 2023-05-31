@@ -30,6 +30,7 @@ import Logo from '../../Misc/Logo';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import QuestionnairePopoverMenu from '../../Header/QuestionnairePopoverMenu';
 import { Box, IconButton, Stack } from '@mui/material';
+import NavErrorAlert from '../../Nav/NavErrorAlert.tsx';
 
 interface Props {
   onOpenNav: () => void;
@@ -75,6 +76,9 @@ function ViewerHeader(props: Props) {
             <UserHeader />
           ) : (
             <>
+              <Box sx={{ m: 0.5 }}>
+                <NavErrorAlert message={'Save operations disabled, app not launched via SMART'} />
+              </Box>
               <AccountPopover
                 bgColor={theme.palette.primary.main}
                 displayIcon={<AssignmentIcon sx={{ color: theme.palette.common.white }} />}

@@ -15,31 +15,25 @@
  * limitations under the License.
  */
 
-import { Box, styled } from '@mui/material';
+import { StyledRoot } from '../StyledComponents/Layout.styles';
+import PlaygroundHeader from './PlaygroundHeader.tsx';
+import { PlaygroundMain } from './PlaygroundLayout.styles.tsx';
+import { Outlet } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
-const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 72;
+function PlaygroundLayout() {
+  return (
+    <StyledRoot>
+      <Helmet>
+        <title>Playground</title>
+      </Helmet>
+      <PlaygroundHeader />
 
-export const StyledRoot = styled(Box)({
-  display: 'flex',
-  minHeight: '100%',
-  overflow: 'hidden'
-});
+      <PlaygroundMain>
+        <Outlet />
+      </PlaygroundMain>
+    </StyledRoot>
+  );
+}
 
-export const Main = styled(Box)(({ theme }) => ({
-  flexGrow: 1,
-  overflow: 'auto',
-  minHeight: '100%',
-  paddingTop: APP_BAR_MOBILE + 12,
-  paddingBottom: theme.spacing(4),
-  [theme.breakpoints.up('md')]: {
-    paddingTop: APP_BAR_DESKTOP + 16,
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1)
-  },
-  [theme.breakpoints.up('lg')]: {
-    paddingTop: APP_BAR_DESKTOP + 16,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
-  }
-}));
+export default PlaygroundLayout;

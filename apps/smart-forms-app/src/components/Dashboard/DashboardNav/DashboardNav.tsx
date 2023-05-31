@@ -16,7 +16,7 @@
  */
 
 import { useContext } from 'react';
-import { Box, Drawer } from '@mui/material';
+import { Box, Drawer, Stack } from '@mui/material';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import Scrollbar from '../../Scrollbar/Scrollbar';
@@ -25,6 +25,8 @@ import NavAccounts from '../../Nav/NavAccounts';
 import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import CsiroLogo from '../../Misc/CsiroLogo';
+import GoToPlaygroundButton from '../QuestionnairePage/QuestionnairePageComponents/GoToPlaygroundButton.tsx';
+import { DebugModeContext } from '../../../custom-contexts/DebugModeContext.tsx';
 
 const NAV_WIDTH = 240;
 
@@ -37,6 +39,7 @@ export default function DashboardNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
   const { fhirClient } = useContext(SmartAppLaunchContext);
+  const { debugMode } = useContext(DebugModeContext);
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -56,11 +59,12 @@ export default function DashboardNav(props: Props) {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      {!fhirClient ? (
-        <NavErrorAlert
-          message={'Viewing responses are disabled when app is not launched from a CMS'}
-        />
-      ) : null}
+      <Stack sx={{ px: 2.5, py: 10 }} gap={2}>
+        {!fhirClient ? (
+          <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
+        ) : null}
+        {!fhirClient || debugMode ? <GoToPlaygroundButton /> : null}
+      </Stack>
 
       <Box sx={{ px: 2.5, pb: 2 }}>
         <CsiroLogo />
