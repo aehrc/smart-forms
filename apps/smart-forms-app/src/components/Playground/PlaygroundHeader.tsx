@@ -17,11 +17,13 @@
 
 import Iconify from '../Misc/Iconify';
 
-import { StyledRoot, StyledToolbar } from '..//StyledComponents/Header.styles';
+import { StyledRoot } from '..//StyledComponents/Header.styles';
 import { useTheme } from '@mui/material/styles';
 import Logo from '../Misc/Logo';
-import { Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
+const HEADER_PLAYGROUND = 64;
 
 function PlaygroundHeader() {
   const theme = useTheme();
@@ -30,7 +32,10 @@ function PlaygroundHeader() {
 
   return (
     <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={true}>
-      <StyledToolbar>
+      <Toolbar
+        sx={{
+          height: HEADER_PLAYGROUND
+        }}>
         <Tooltip title="Exit playground">
           <IconButton
             onClick={() => {
@@ -40,7 +45,7 @@ function PlaygroundHeader() {
               mr: 1,
               color: 'text.primary'
             }}>
-            <Iconify icon="dashicons:exit" />
+            <Iconify icon="uil:exit" />
           </IconButton>
         </Tooltip>
 
@@ -52,7 +57,7 @@ function PlaygroundHeader() {
         <Typography variant="h6" sx={{ color: 'common.black' }}>
           Playground
         </Typography>
-      </StyledToolbar>
+      </Toolbar>
     </StyledRoot>
   );
 }

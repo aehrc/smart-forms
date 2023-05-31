@@ -15,29 +15,113 @@
  * limitations under the License.
  */
 
-import { Box, Stack } from '@mui/material';
 import JsonEditor from './JsonEditor.tsx';
-import FileCollector from './FileCollector.tsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 // @ts-ignore
 import { Allotment } from 'allotment';
 import 'allotment/dist/style.css';
+import { useContext, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import PlaygroundRenderer from './PlaygroundRenderer.tsx';
+import { QuestionnaireProviderContext } from '../../App.tsx';
+import { Box, Stack } from '@mui/material';
+import FileCollector from './FileCollector.tsx';
+import PopulationProgressSpinner from '../Misc/PopulationProgressSpinner.tsx';
 
 function Playground() {
-  function handleBuildQuestionnaire(jsonString: string) {
-    console.log('build questionnaire');
+  const [jsonString, setJsonString] = useState('');
+  const [buildingState, setBuildingState] = useState<'idle' | 'building' | 'built'>('idle');
+
+  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  function handleDestroyForm() {
+    setBuildingState('idle');
+    questionnaireProvider.destroyQuestionnaire();
+  }
+
+  async function handleBuildQuestionnaireFromString(jsonString: string) {
+    setBuildingState('building');
+    setJsonString(jsonString);
+
+    try {
+      const parsedQuestionnaire = JSON.parse(jsonString);
+
+      await questionnaireProvider.setQuestionnaire(parsedQuestionnaire);
+      setBuildingState('built');
+    } catch (error) {
+      enqueueSnackbar('JSON string invalid', {
+        variant: 'error',
+        preventDuplicate: true
+      });
+      setBuildingState('idle');
+    }
+  }
+
+  function handleBuildQuestionnaireFromFile(jsonFile: File) {
+    setBuildingState('building');
+    if (!jsonFile.name.endsWith('.json')) {
+      enqueueSnackbar('Attached file must be a JSON file', {
+        variant: 'error',
+        preventDuplicate: true
+      });
+      setBuildingState('idle');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsText(jsonFile, 'UTF-8');
+    reader.onload = async (event) => {
+      try {
+        const jsonString = event.target?.result;
+        if (typeof jsonString === 'string') {
+          setJsonString(jsonString);
+          const parsedQuestionnaire = JSON.parse(jsonString);
+
+          await questionnaireProvider.setQuestionnaire(parsedQuestionnaire);
+          setBuildingState('built');
+        } else {
+          enqueueSnackbar('There was an issue with the attached JSON file.', {
+            variant: 'error',
+            preventDuplicate: true
+          });
+          setBuildingState('idle');
+        }
+      } catch (error) {
+        enqueueSnackbar('Attached file has invalid JSON format', {
+          variant: 'error',
+          preventDuplicate: true
+        });
+        setBuildingState('idle');
+      }
+    };
   }
 
   return (
     <DndProvider backend={HTML5Backend}>
       <Allotment defaultSizes={[40, 60]}>
-        <Box display="flex" justifyContent="center">
-          <Stack gap={3} sx={{ my: 5 }}>
-            <FileCollector onBuild={() => {}} />
-          </Stack>
+        <Box sx={{ height: '100%', overflow: 'auto' }}>
+          {buildingState === 'built' ? (
+            <PlaygroundRenderer />
+          ) : buildingState === 'building' ? (
+            <PopulationProgressSpinner message={'Building form'} />
+          ) : (
+            <Box display="flex" justifyContent="center">
+              <Stack gap={3} sx={{ my: 5 }}>
+                <FileCollector onBuild={handleBuildQuestionnaireFromFile} />
+              </Stack>
+            </Box>
+          )}
         </Box>
-        <JsonEditor onBuildQuestionnaire={handleBuildQuestionnaire} />
+        <JsonEditor
+          jsonString={jsonString}
+          onJsonStringChange={(jsonString: string) => setJsonString(jsonString)}
+          buildingState={buildingState}
+          onBuildForm={handleBuildQuestionnaireFromString}
+          onDestroyForm={handleDestroyForm}
+        />
       </Allotment>
     </DndProvider>
   );

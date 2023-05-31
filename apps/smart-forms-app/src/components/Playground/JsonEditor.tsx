@@ -18,20 +18,24 @@
 import Editor from '@monaco-editor/react';
 import { useState } from 'react';
 import type { editor } from 'monaco-editor';
-import { Box, Button, Divider } from '@mui/material';
+import { Box, Button, Divider, Stack } from '@mui/material';
+import Iconify from '../Misc/Iconify.tsx';
 
 interface Props {
-  onBuildQuestionnaire: (jsonString: string) => unknown;
+  jsonString: string;
+  onJsonStringChange: (jsonString: string) => void;
+  buildingState: 'idle' | 'building' | 'built';
+  onBuildForm: (jsonString: string) => unknown;
+  onDestroyForm: () => unknown;
 }
 
 function JsonEditor(props: Props) {
-  const { onBuildQuestionnaire } = props;
+  const { jsonString, onJsonStringChange, buildingState, onBuildForm, onDestroyForm } = props;
 
-  const [jsonString, setJsonString] = useState('');
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   function handleEditorChange(value: string | undefined) {
-    setJsonString(value ?? '');
+    onJsonStringChange(value ?? '');
   }
 
   function handleEditorValidation(markers: editor.IMarkerData[] | undefined) {
@@ -44,19 +48,26 @@ function JsonEditor(props: Props) {
 
   return (
     <Box height="100%">
-      <Box sx={{ p: 1 }}>
+      <Stack direction="row" gap={2} sx={{ py: 0.75, px: 1.5 }}>
         <Button
+          startIcon={<Iconify icon="ph:hammer" />}
           disabled={errorMessages.length > 0 || jsonString === ''}
-          onClick={() => onBuildQuestionnaire(jsonString)}>
-          Build questionnaire
+          onClick={() => onBuildForm(jsonString)}>
+          {buildingState === 'built' ? 'Rebuild form' : 'Build form'}
         </Button>
-      </Box>
+
+        {buildingState !== 'idle' ? (
+          <Button color="error" startIcon={<Iconify icon="mdi:nuke" />} onClick={onDestroyForm}>
+            Destroy Form
+          </Button>
+        ) : null}
+      </Stack>
       <Divider />
 
       <Editor
         height="100%"
         defaultLanguage="json"
-        defaultValue="// alternatively, paste questionnaire JSON here (only JSON is supported at the moment!)"
+        defaultValue="// alternatively, paste questionnaire JSON string here (only JSON is supported at the moment!)"
         onChange={handleEditorChange}
         value={jsonString}
         onValidate={handleEditorValidation}

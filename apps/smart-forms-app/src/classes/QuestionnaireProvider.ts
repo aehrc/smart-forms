@@ -53,7 +53,20 @@ export class QuestionnaireProvider {
   constructor() {
     this.questionnaire = {
       resourceType: 'Questionnaire',
-      status: 'active'
+      status: 'draft'
+    };
+    this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
+    this.launchContexts = {};
+    this.calculatedExpressions = {};
+    this.answerExpressions = {};
+    this.enableWhenItems = {};
+    this.preprocessedValueSetCodings = {};
+  }
+
+  destroyQuestionnaire(): void {
+    this.questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'draft'
     };
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};

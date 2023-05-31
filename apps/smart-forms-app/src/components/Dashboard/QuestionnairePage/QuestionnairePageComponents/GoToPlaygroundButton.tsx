@@ -15,25 +15,25 @@
  * limitations under the License.
  */
 
-import { StyledRoot } from '../StyledComponents/Layout.styles';
-import PlaygroundHeader from './PlaygroundHeader.tsx';
-import { PlaygroundMain } from './PlaygroundLayout.styles.tsx';
-import { Outlet } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Button } from '@mui/material';
+import Iconify from '../../../Misc/Iconify.tsx';
+import { useNavigate } from 'react-router-dom';
 
-function PlaygroundLayout() {
+function GoToPlaygroundButton() {
+  const navigate = useNavigate();
+
   return (
-    <StyledRoot>
-      <Helmet>
-        <title>Playground</title>
-      </Helmet>
-      <PlaygroundHeader />
-
-      <PlaygroundMain>
-        <Outlet />
-      </PlaygroundMain>
-    </StyledRoot>
+    <Button
+      variant="contained"
+      color="info"
+      endIcon={<Iconify icon="mdi:playground-slide" />}
+      sx={{ borderRadius: 15 }}
+      onClick={() => {
+        navigate('/playground');
+      }}>
+      Go to Playground
+    </Button>
   );
 }
 
-export default PlaygroundLayout;
+export default GoToPlaygroundButton;

@@ -30,9 +30,7 @@ function FormInvalid(props: Props) {
 
   const navigate = useNavigate();
 
-  function handleClick() {
-    navigate('/dashboard/questionnaires');
-  }
+  const pathName = window.location.pathname;
 
   useEffect(() => {
     // Questionnaire only has the minimum required implementation, which logically means that it was triggered by a refresh
@@ -51,17 +49,21 @@ function FormInvalid(props: Props) {
           </Typography>
           <Typography>
             {
-              "This questionnaire either lacks a top-level group item, or the group item doesn't have any items."
+              'This questionnaire either lacks an item, or we have done something terribly wrong - raise an issue with us!'
             }
           </Typography>
         </Stack>
         <Box sx={{ py: 5 }}>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="material-symbols:arrow-back" />}
-            onClick={handleClick}>
-            Take me back
-          </Button>
+          {pathName !== '/playground' ? (
+            <Button
+              variant="contained"
+              startIcon={<Iconify icon="material-symbols:arrow-back" />}
+              onClick={() => {
+                navigate('/dashboard/questionnaires');
+              }}>
+              Take me back
+            </Button>
+          ) : null}
         </Box>
       </Container>
     </Fade>

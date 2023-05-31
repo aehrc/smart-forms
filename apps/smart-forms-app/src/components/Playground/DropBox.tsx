@@ -37,8 +37,7 @@ function DropBox(props: Props) {
           onDrop(item);
         }
       },
-      canDrop(item: any) {
-        console.log('canDrop', item.files, item.items);
+      canDrop() {
         return true;
       },
       collect: (monitor: DropTargetMonitor) => {
@@ -53,7 +52,7 @@ function DropBox(props: Props) {
 
   const isActive = canDrop && isOver;
 
-  let boxMessage = 'Drop JSON file here';
+  let boxMessage = 'Drop Questionnaire JSON file here';
   if (isActive) {
     boxMessage = 'Release to drop file';
   } else if (errorMessage) {

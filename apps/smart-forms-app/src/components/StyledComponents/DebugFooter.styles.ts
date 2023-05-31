@@ -23,9 +23,7 @@ const FOOTER_MOBILE = 20;
 const FOOTER_DESKTOP = 20;
 
 export const StyledRoot = styled(Paper)(({ theme }) => ({
-  backdropFilter: `blur(2.25px)`,
-  WebkitBackdropFilter: `blur(2.25px)`,
-  backgroundColor: alpha(theme.palette.background.default, 0.8),
+  backgroundColor: alpha(theme.palette.background.default, 0.1),
   minHeight: FOOTER_MOBILE,
   width: '100%',
   [theme.breakpoints.up('lg')]: {
