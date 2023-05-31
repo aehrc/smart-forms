@@ -26,6 +26,8 @@ import FormPreview from './components/Renderer/FormPreviewPage/FormPreview';
 import ViewerLayout from './components/Viewer/ViewerLayout';
 import ResponsePreview from './components/Viewer/ResponsePreview';
 import Authorisation from './components/Authorisation/Authorisation';
+import PlaygroundLayout from './components/Playground/PlaygroundLayout.tsx';
+import Playground from './components/Playground/Playground.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -53,6 +55,11 @@ export default function Router() {
       path: '/viewer',
       element: <ViewerLayout />,
       children: [{ path: '', element: <ResponsePreview /> }]
+    },
+    {
+      path: '/playground',
+      element: <PlaygroundLayout />,
+      children: [{ path: '', element: <Playground /> }]
     },
     {
       path: '/launch',
