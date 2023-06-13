@@ -29,8 +29,9 @@ import {
   getEncounter,
   getPatient,
   getQuestionnaireContext,
-  getQuestionnaireReference,
-  getUser
+  getQuestionnaireReferences,
+  getUser,
+  responseToQuestionnaireResource
 } from '../../functions/LaunchFunctions';
 import { assembleIfRequired } from '../../functions/LoadServerResourceFunctions';
 import { postQuestionnaireToSMARTHealthIT } from '../../functions/SaveQrFunctions';
@@ -146,12 +147,12 @@ function Authorisation() {
               console.error(error);
             });
 
-          const questionnaireReference = getQuestionnaireReference(client);
+          const questionnaireReferences = getQuestionnaireReferences(client);
 
-          if (questionnaireReference) {
-            getQuestionnaireContext(questionnaireReference)
-              .then((resource) => {
-                const questionnaire = resource.resourceType === 'Questionnaire' ? resource : null;
+          if (questionnaireReferences.length > 0) {
+            getQuestionnaireContext(client, questionnaireReferences)
+              .then((response) => {
+                const questionnaire = responseToQuestionnaireResource(response);
 
                 // return early if no matching questionnaire
                 if (!questionnaire) {

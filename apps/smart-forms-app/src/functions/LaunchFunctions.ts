@@ -16,7 +16,15 @@
  */
 
 import type Client from 'fhirclient/lib/Client';
-import type { Encounter, OperationOutcome, Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type {
+  Bundle,
+  Encounter,
+  Identifier,
+  OperationOutcome,
+  Patient,
+  Practitioner,
+  Questionnaire
+} from 'fhir/r4';
 import type { fhirclient } from 'fhirclient/lib/types';
 import { headers } from './LoadServerResourceFunctions';
 import * as FHIR from 'fhirclient';
@@ -35,34 +43,75 @@ export async function getEncounter(client: Client): Promise<Encounter> {
   return (await client.encounter.read()) as Encounter;
 }
 
-interface ResourceReference {
-  reference: string;
-}
-interface tokenResponseWithFhirContext extends fhirclient.TokenResponse {
-  fhirContext: ResourceReference[] | undefined;
+interface FhirContext {
+  reference?: string;
+  role?: string;
+  canonical?: string;
+  type?: string;
+  identifier?: Identifier;
 }
 
-export function getQuestionnaireReference(client: Client): string | null {
+interface tokenResponseWithFhirContext extends fhirclient.TokenResponse {
+  fhirContext: FhirContext[] | undefined;
+}
+
+export function getQuestionnaireReferences(client: Client): FhirContext[] {
   const tokenResponse = client.state.tokenResponse as tokenResponseWithFhirContext;
   const fhirContext = tokenResponse.fhirContext;
 
-  if (!fhirContext) return null;
+  if (!fhirContext) return [];
 
-  const questionnaireReferences = fhirContext.filter((resourceReference) =>
-    resourceReference.reference.includes('Questionnaire')
+  // Temporarily recognise relative and canonical references only
+  return fhirContext.filter(
+    (context) => context.reference?.includes('Questionnaire') || context.canonical
   );
-
-  if (questionnaireReferences.length === 0) return null;
-
-  return questionnaireReferences[0].reference;
 }
 
 export function getQuestionnaireContext(
-  questionnaireReference: string
-): Promise<Questionnaire | OperationOutcome> {
-  return FHIR.client(endpointUrl).request({
-    url: questionnaireReference,
-    method: 'GET',
-    headers: headers
-  });
+  client: Client,
+  questionnaireReferences: FhirContext[]
+): Promise<Questionnaire | Bundle | OperationOutcome> {
+  if (questionnaireReferences.length === 0) {
+    return Promise.reject(new Error('No Questionnaire references found'));
+  }
+
+  const questionnaireReference = questionnaireReferences[0];
+
+  if (questionnaireReference.reference) {
+    const questionnaireId = questionnaireReference.reference.split('/')[1];
+    return client.request({
+      url: 'Questionnaire/' + questionnaireId,
+      method: 'GET',
+      headers: headers
+    });
+  } else if (questionnaireReference.canonical) {
+    let canonical = questionnaireReference.canonical;
+
+    canonical = canonical.replace('|', '&version=');
+
+    return FHIR.client(endpointUrl).request({
+      url: 'Questionnaire?url=' + canonical,
+      method: 'GET',
+      headers: headers
+    });
+  } else {
+    return Promise.reject(new Error('No Questionnaire references found'));
+  }
+}
+
+export function responseToQuestionnaireResource(
+  response: Questionnaire | OperationOutcome | Bundle
+): Questionnaire | undefined {
+  if (response.resourceType === 'Questionnaire') {
+    return response as Questionnaire;
+  }
+
+  if (response.resourceType === 'Bundle') {
+    return response.entry?.find((entry) => entry.resource?.resourceType === 'Questionnaire')
+      ?.resource as Questionnaire;
+  }
+
+  if (response.resourceType === 'OperationOutcome') {
+    console.error(response);
+  }
 }
