@@ -31,6 +31,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import QuestionnairePopoverMenu from '../../Header/QuestionnairePopoverMenu';
 import { Box, IconButton, Stack } from '@mui/material';
 import NavErrorAlert from '../../Nav/NavErrorAlert.tsx';
+import { useContext } from 'react';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 
 interface Props {
   onOpenNav: () => void;
@@ -40,6 +42,7 @@ function ViewerHeader(props: Props) {
   const { onOpenNav } = props;
 
   const theme = useTheme();
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -76,9 +79,11 @@ function ViewerHeader(props: Props) {
             <UserHeader />
           ) : (
             <>
-              <Box sx={{ m: 0.5 }}>
-                <NavErrorAlert message={'Save operations disabled, app not launched via SMART'} />
-              </Box>
+              {!fhirClient ? (
+                <Box sx={{ m: 0.5 }}>
+                  <NavErrorAlert message={'Save operations disabled, app not launched via SMART'} />
+                </Box>
+              ) : null}
               <AccountPopover
                 bgColor={theme.palette.primary.main}
                 displayIcon={<AssignmentIcon sx={{ color: theme.palette.common.white }} />}
