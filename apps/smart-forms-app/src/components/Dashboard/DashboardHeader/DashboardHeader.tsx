@@ -28,6 +28,8 @@ import UserHeader from '../../Header/UserHeader';
 import useResponsive from '../../../custom-hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import NavErrorAlert from '../../Nav/NavErrorAlert.tsx';
+import { useContext } from 'react';
+import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
 
 interface Props {
   onOpenNav: () => void;
@@ -35,6 +37,8 @@ interface Props {
 
 function DashboardHeader(props: Props) {
   const { onOpenNav } = props;
+
+  const { fhirClient } = useContext(SmartAppLaunchContext);
 
   const theme = useTheme();
 
@@ -72,9 +76,13 @@ function DashboardHeader(props: Props) {
             <UserHeader />
           ) : (
             <>
-              <Box sx={{ my: 0.5 }}>
-                <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
-              </Box>
+              {!fhirClient ? (
+                <Box sx={{ my: 0.5 }}>
+                  <NavErrorAlert
+                    message={'Viewing responses disabled, app not launched via SMART'}
+                  />
+                </Box>
+              ) : null}
               <AccountPopover
                 bgColor={theme.palette.secondary.main}
                 displayIcon={<FaceIcon sx={{ color: theme.palette.common.white }} />}
