@@ -45,7 +45,7 @@
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-markdown": "^8.0.7",
-    "react-router-dom": "6.9.0",
+    "react-router-dom": "6.13.0",
     "react-spinners": "^0.13.8",
     "react-to-print": "^2.14.12",
     "sdc-assemble": "^1.0.1",
