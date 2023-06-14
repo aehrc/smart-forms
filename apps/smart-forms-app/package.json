@@ -47,7 +47,7 @@
     "react-markdown": "^8.0.7",
     "react-router-dom": "6.9.0",
     "react-spinners": "^0.13.8",
-    "react-to-print": "^2.14.12",
+    "react-to-print": "^2.14.13",
     "sdc-assemble": "^1.0.1",
     "sdc-populate": "^1.0.2",
     "simplebar-react": "^3.2.4",
