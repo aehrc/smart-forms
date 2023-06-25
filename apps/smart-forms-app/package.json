@@ -31,7 +31,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "lodash.filter": "^4.6.0",
-    "material-ui-popup-state": "^5.0.8",
+    "material-ui-popup-state": "^5.0.9",
     "moment": "^2.29.4",
     "monaco-editor": "^0.38.0",
     "nanoid": "^4.0.2",
