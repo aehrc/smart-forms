@@ -26,12 +26,13 @@ import FormInvalid from './FormInvalid';
 import QTitle from './QFormComponents/QItemParts/QTitle';
 import QItemGroup from './QFormComponents/QItemGroup';
 import { CalculatedExpressionContext } from '../../../features/calculatedExpression/contexts/CalculatedExpressionContext.tsx';
-import { CurrentTabIndexContext, RendererContext } from '../RendererLayout';
 import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter';
 import { DebugModeContext } from '../../../features/debug/contexts/DebugModeContext.tsx';
 import { Helmet } from 'react-helmet';
 import QItemSwitcher from './QFormComponents/QItemSwitcher.tsx';
 import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import { RendererContext } from '../../../features/renderer/contexts/RendererContext.ts';
+import { CurrentTabIndexContext } from '../../../features/renderer/contexts/CurrentTabIndexContext.ts';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 

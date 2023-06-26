@@ -23,12 +23,12 @@ import {
 } from '../../../features/save/api/saveQr.ts';
 import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
-import { RendererContext } from '../RendererLayout';
 import { EnableWhenContext } from '../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import { OperationItem } from './RendererOperationSection';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
 import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import { RendererContext } from '../../../features/renderer/contexts/RendererContext.ts';
 
 function RendererSaveAsDraft() {
   const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);

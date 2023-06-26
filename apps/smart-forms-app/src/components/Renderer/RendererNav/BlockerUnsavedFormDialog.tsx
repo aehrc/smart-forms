@@ -18,7 +18,6 @@
 import { useContext, useState } from 'react';
 import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
-import { RendererContext } from '../RendererLayout';
 import { EnableWhenContext } from '../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +36,7 @@ import {
 } from '../../../features/save/api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import { RendererContext } from '../../../features/renderer/contexts/RendererContext.ts';
 
 export interface Props {
   blocker: Blocker;

@@ -17,7 +17,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import { Fade, Typography } from '@mui/material';
-import { RendererContext } from '../RendererLayout';
+import { RendererContext } from '../../../features/renderer/contexts/RendererContext.ts';
 
 function UpdatingIndicator() {
   const { renderer } = useContext(RendererContext);

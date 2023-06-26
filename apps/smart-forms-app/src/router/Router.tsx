@@ -17,7 +17,7 @@
 
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import DashboardLayout from '../components/Dashboard/DashboardLayout.tsx';
-import Launch from '../components/Launch/Launch.tsx';
+import Launch from '../features/smartAppLaunch/components/Launch.tsx';
 import QuestionnairesPage from '../components/Dashboard/QuestionnairePage/QuestionnairesPage.tsx';
 import ResponsesPage from '../components/Dashboard/ResponsesPage/ResponsesPage.tsx';
 import RendererLayout from '../components/Renderer/RendererLayout.tsx';

@@ -21,7 +21,7 @@ import DebugResponse from './DebugResponse';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import RendererDebugBar from './RendererDebugBar';
 import { QuestionnaireProviderContext } from '../../../App';
-import { RendererContext } from '../RendererLayout';
+import { RendererContext } from '../../../features/renderer/contexts/RendererContext.ts';
 
 const clearTopLevelQRItem: QuestionnaireResponseItem = {
   linkId: 'clearedItem',

@@ -18,7 +18,6 @@
 import { useContext } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
 import { QuestionnaireProviderContext } from '../../../App';
-import { RendererContext } from '../RendererLayout';
 import FormInvalid from '../FormPage/FormInvalid';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../../features/preview/utils/preview.ts';
@@ -26,6 +25,7 @@ import { removeHiddenAnswers } from '../../../features/save/api/saveQr.ts';
 import { EnableWhenContext } from '../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import { Helmet } from 'react-helmet';
 import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import { RendererContext } from '../../../features/renderer/contexts/RendererContext.ts';
 
 function FormPreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);

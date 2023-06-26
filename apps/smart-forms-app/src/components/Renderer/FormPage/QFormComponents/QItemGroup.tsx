@@ -36,13 +36,13 @@ import {
   getNextVisibleTabIndex
 } from '../../../../features/renderer/utils/tabs.ts';
 import Iconify from '../../../Misc/Iconify';
-import { CurrentTabIndexContext } from '../../RendererLayout';
 import { EnableWhenExpressionContext } from '../../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../features/renderer/types/renderProps.interface.ts';
 import type { QrRepeatGroup } from '../../../../features/renderer/types/repeatGroup.interface.ts';
+import { CurrentTabIndexContext } from '../../../../features/renderer/contexts/CurrentTabIndexContext.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

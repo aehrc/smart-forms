@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import RendererHeader from './RendererHeader/RendererHeader';
 import RendererNav from './RendererNav/RendererNav';
 import { StyledRoot } from '../StyledComponents/Layout.styles';
@@ -37,37 +37,15 @@ import BackToTopButton from '../Misc/BackToTopButton';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ScrollToTop from '../Nav/ScrollToTop';
-import { unstable_useBlocker as useBlocker } from 'react-router';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog';
 import { useSnackbar } from 'notistack';
 import NavExpandButton from './NavCollapseButton';
 import PopulationProgressSpinner from '../Misc/PopulationProgressSpinner';
 import CloseSnackbar from '../SnackbarActions/CloseSnackbar.tsx';
-import type { CurrentTabIndexContextType } from '../../features/renderer/types/currentTabIndexContext.type.ts';
 import type { Renderer } from '../../features/renderer/types/renderer.interface.ts';
-
-const emptyResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress'
-};
-
-type RendererContextType = {
-  renderer: Renderer;
-  setRenderer: (updatedRenderer: Renderer) => unknown;
-};
-
-export const RendererContext = createContext<RendererContextType>({
-  renderer: {
-    response: emptyResponse,
-    hasChanges: false
-  },
-  setRenderer: () => void 0
-});
-
-export const CurrentTabIndexContext = createContext<CurrentTabIndexContextType>({
-  currentTabIndex: 0,
-  setCurrentTabIndex: () => void 0
-});
+import useLeavePageBlocker from '../../features/renderer/hooks/useBlocker.ts';
+import { RendererContext } from '../../features/renderer/contexts/RendererContext.ts';
+import { CurrentTabIndexContext } from '../../features/renderer/contexts/CurrentTabIndexContext.ts';
 
 function RendererLayout() {
   // Hooks
@@ -110,23 +88,10 @@ function RendererLayout() {
 
   const [spinner, setSpinner] = useState(initialSpinner);
 
-  const isBlocked = renderer.hasChanges;
-  const blocker = useBlocker(isBlocked);
+  const leavePageBlocked = renderer.hasChanges;
+  const leavePageBlocker = useLeavePageBlocker(leavePageBlocked);
 
-  useEffect(() => {
-    if (
-      blocker.location?.pathname === '/renderer/preview' ||
-      blocker.location?.pathname === '/renderer'
-    ) {
-      blocker.proceed?.();
-    }
-
-    if (blocker.state === 'blocked' && !isBlocked) {
-      blocker.reset();
-    }
-  }, [blocker, isBlocked]);
-
-  if (blocker.state === 'blocked' && !dialogOpen) {
+  if (leavePageBlocker.state === 'blocked' && !dialogOpen) {
     setDialogOpen(true);
   }
 
@@ -218,7 +183,6 @@ function RendererLayout() {
     }
   }
 
-  // @ts-ignore
   return (
     <RendererContext.Provider value={{ renderer, setRenderer }}>
       <ScrollToTop />
@@ -250,9 +214,9 @@ function RendererLayout() {
         </Main>
 
         {/* Dialogs and FABs */}
-        {blocker.state === 'blocked' ? (
+        {leavePageBlocker.state === 'blocked' ? (
           <BlockerUnsavedFormDialog
-            blocker={blocker}
+            blocker={leavePageBlocker}
             open={dialogOpen}
             closeDialog={() => setDialogOpen(false)}
           />

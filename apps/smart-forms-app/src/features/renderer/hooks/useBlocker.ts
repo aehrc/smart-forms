@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-import { Box, Chip, styled } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { useEffect } from 'react';
+import type { unstable_Blocker as Blocker } from 'react-router';
+import { unstable_useBlocker as useBlocker } from 'react-router';
 
-export const ChipBarBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  '& .MuiButtonBase-root': {
-    backgroundColor: grey.A200,
-    '&:hover': {
-      transition: '0.2s',
-      color: theme.palette.secondary.dark,
-      backgroundColor: theme.palette.accent2.light,
-      '& .MuiSvgIcon-root': {
-        color: theme.palette.secondary.dark
-      }
+function useLeavePageBlocker(isBlocked: boolean): Blocker {
+  const blocker = useBlocker(isBlocked);
+
+  useEffect(() => {
+    if (
+      blocker.location?.pathname === '/renderer/preview' ||
+      blocker.location?.pathname === '/renderer'
+    ) {
+      blocker.proceed?.();
     }
-  }
-}));
 
-export const OperationChip = styled(Chip)(() => ({
-  paddingLeft: 4,
-  paddingRight: 4
-}));
+    if (blocker.state === 'blocked' && !isBlocked) {
+      blocker.reset();
+    }
+  }, [blocker, isBlocked]);
+
+  return blocker;
+}
+
+export default useLeavePageBlocker;

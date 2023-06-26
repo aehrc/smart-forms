@@ -15,18 +15,24 @@
  * limitations under the License.
  */
 
-import type { ReactNode } from 'react';
-import { Box } from '@mui/material';
-import { ChipBarBox } from './ChipBar.styles';
+import type { Renderer } from '../types/renderer.interface.ts';
+import { createContext } from 'react';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
-function ChipBar(props: { children: ReactNode }) {
-  const { children } = props;
+type RendererContextType = {
+  renderer: Renderer;
+  setRenderer: (updatedRenderer: Renderer) => unknown;
+};
 
-  return (
-    <Box sx={{ display: { xs: 'block', lg: 'none' } }} data-test="chip-bar-box">
-      <ChipBarBox gap={1}>{children}</ChipBarBox>
-    </Box>
-  );
-}
+const emptyResponse: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress'
+};
 
-export default ChipBar;
+export const RendererContext = createContext<RendererContextType>({
+  renderer: {
+    response: emptyResponse,
+    hasChanges: false
+  },
+  setRenderer: () => void 0
+});

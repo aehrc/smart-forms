@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Iconify from '../../../Misc/Iconify';
-import { CurrentTabIndexContext } from '../../RendererLayout';
+import { CurrentTabIndexContext } from '../../../../features/renderer/contexts/CurrentTabIndexContext.ts';
 
 interface Props {
   selected: boolean;
