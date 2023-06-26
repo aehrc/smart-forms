@@ -136,7 +136,7 @@ function QItemGroup(props: Props) {
                   </>
                 ) : null}
               </Box>
-              <Divider sx={{ mt: 1, mb: 1.5 }} light />
+              {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5 }} light /> : null}
             </>
           )}
           {qItems.map((qItem: QuestionnaireItem, i) => {

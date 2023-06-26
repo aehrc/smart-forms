@@ -107,8 +107,8 @@ function QItemChoiceAutocomplete(props: Props) {
         loadingText={'Fetching results...'}
         clearOnEscape
         autoHighlight
-        fullWidth
         onChange={handleValueChange}
+        sx={{ maxWidth: !isTabled ? 280 : 3000, flexGrow: 1 }}
         filterOptions={(x) => x}
         renderInput={(params) => (
           <StandardTextField

@@ -106,7 +106,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       onChange={handleChange}
       freeSolo
       autoHighlight
-      fullWidth
+      sx={{ maxWidth: !isTabled ? 280 : 3000, flexGrow: 1 }}
       disabled={readOnly}
       placeholder={entryFormat}
       renderInput={(params) => (

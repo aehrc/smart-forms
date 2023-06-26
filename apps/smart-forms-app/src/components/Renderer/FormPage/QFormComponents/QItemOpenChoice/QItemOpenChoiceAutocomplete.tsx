@@ -122,7 +122,7 @@ function QItemOpenChoiceAutocomplete(props: Props) {
           clearOnEscape
           freeSolo
           autoHighlight
-          fullWidth
+          sx={{ maxWidth: !isTabled ? 280 : 3000, flexGrow: 1 }}
           placeholder={entryFormat}
           onChange={handleValueChange}
           filterOptions={(x) => x}
