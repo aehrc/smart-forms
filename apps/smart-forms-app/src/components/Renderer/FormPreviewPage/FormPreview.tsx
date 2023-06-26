@@ -25,10 +25,13 @@ import { qrToHTML } from '../../../functions/PreviewFunctions';
 import { removeHiddenAnswers } from '../../../functions/SaveQrFunctions';
 import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { Helmet } from 'react-helmet';
+import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 function FormPreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+
   const { renderer } = useContext(RendererContext);
   const { response } = renderer;
 
@@ -39,7 +42,12 @@ function FormPreview() {
   const topLevelQRItems = response.item;
 
   if (topLevelQItems[0] && topLevelQRItems[0]) {
-    const responseCleaned = removeHiddenAnswers(questionnaire, response, enableWhenContext);
+    const responseCleaned = removeHiddenAnswers(
+      questionnaire,
+      response,
+      enableWhenContext,
+      enableWhenExpressionContext
+    );
     const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 
     return (

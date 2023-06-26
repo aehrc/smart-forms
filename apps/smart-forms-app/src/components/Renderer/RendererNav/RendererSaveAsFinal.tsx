@@ -35,6 +35,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
+import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 function RendererSaveAsFinal() {
   const { fhirClient } = useContext(SmartAppLaunchContext);
@@ -81,6 +82,7 @@ function ConfirmSaveAsFinalDialog(props: Props) {
   const responseProvider = useContext(QuestionnaireResponseProviderContext);
   const { renderer, setRenderer } = useContext(RendererContext);
   const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -102,7 +104,8 @@ function ConfirmSaveAsFinalDialog(props: Props) {
     responseToSave = removeHiddenAnswers(
       questionnaireProvider.questionnaire,
       responseToSave,
-      enableWhenContext
+      enableWhenContext,
+      enableWhenExpressionContext
     );
 
     responseToSave.status = 'completed';

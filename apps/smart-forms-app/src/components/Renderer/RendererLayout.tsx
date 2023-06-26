@@ -26,6 +26,7 @@ import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functio
 import { populateQuestionnaire } from '../../functions/populateFunctions/populateQuestionnaire';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
+import EnableWhenExpressionContextProvider from '../../custom-contexts/EnableWhenExpressionContext';
 import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
 import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
 import { Outlet } from 'react-router-dom';
@@ -212,6 +213,7 @@ function RendererLayout() {
     }
   }
 
+  // @ts-ignore
   return (
     <RendererContext.Provider value={{ renderer, setRenderer }}>
       <ScrollToTop />
@@ -227,15 +229,17 @@ function RendererLayout() {
         <Main>
           <EnableWhenContextProvider>
             <CalculatedExpressionContextProvider>
-              <CachedQueriedValueSetContextProvider>
-                <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
-                  {spinner.isLoading ? (
-                    <PopulationProgressSpinner message={spinner.message} />
-                  ) : (
-                    <Outlet />
-                  )}
-                </CurrentTabIndexContext.Provider>
-              </CachedQueriedValueSetContextProvider>
+              <EnableWhenExpressionContextProvider>
+                <CachedQueriedValueSetContextProvider>
+                  <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
+                    {spinner.isLoading ? (
+                      <PopulationProgressSpinner message={spinner.message} />
+                    ) : (
+                      <Outlet />
+                    )}
+                  </CurrentTabIndexContext.Provider>
+                </CachedQueriedValueSetContextProvider>
+              </EnableWhenExpressionContextProvider>
             </CalculatedExpressionContextProvider>
           </EnableWhenContextProvider>
         </Main>

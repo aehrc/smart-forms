@@ -19,6 +19,7 @@ import type { Coding, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type {
   AnswerExpression,
   CalculatedExpression,
+  EnableWhenExpression,
   EnableWhenItemProperties,
   ValueSetPromise,
   Variables
@@ -27,6 +28,7 @@ import { getEnableWhenItemProperties } from '../functions/EnableWhenFunctions';
 import {
   getAnswerExpression,
   getCalculatedExpression,
+  getEnableWhenExpression,
   getFhirPathVariables,
   getXFhirQueryVariables
 } from '../functions/ItemControlFunctions';
@@ -46,6 +48,7 @@ export class QuestionnaireProvider {
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
   calculatedExpressions: Record<string, CalculatedExpression>;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   enableWhenItems: Record<string, EnableWhenItemProperties>;
   preprocessedValueSetCodings: Record<string, Coding[]>;
@@ -58,6 +61,7 @@ export class QuestionnaireProvider {
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
+    this.enableWhenExpressions = {};
     this.answerExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
@@ -71,6 +75,7 @@ export class QuestionnaireProvider {
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
+    this.enableWhenExpressions = {};
     this.answerExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
@@ -80,6 +85,7 @@ export class QuestionnaireProvider {
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
+    this.enableWhenExpressions = {};
     this.answerExpressions = {};
     this.enableWhenItems = {};
     this.preprocessedValueSetCodings = {};
@@ -144,7 +150,7 @@ export class QuestionnaireProvider {
       }
     }
 
-    // Recursively read enableWhen items, calculated expressions and valueSets to be expanded
+    // Recursively read enableWhen items, calculated expressions, enableWhen expressions and valueSets to be expanded
     this.questionnaire.item.forEach((item) => {
       this.readQuestionnaireItem(item, valueSetPromiseMap);
     });
@@ -201,11 +207,18 @@ export class QuestionnaireProvider {
       });
     }
 
-    // Read calculated/answer expressions, enable when items, valueSets and variables from qItem
+    // Read calculated/answer expressions, enable when expressions, enable when items, valueSets and variables from qItem
     const calculatedExpression = getCalculatedExpression(item);
     if (calculatedExpression) {
       this.calculatedExpressions[item.linkId] = {
         expression: `${calculatedExpression.expression}`
+      };
+    }
+
+    const enableWhenExpression = getEnableWhenExpression(item);
+    if (enableWhenExpression) {
+      this.enableWhenExpressions[item.linkId] = {
+        expression: `${enableWhenExpression.expression}`
       };
     }
 

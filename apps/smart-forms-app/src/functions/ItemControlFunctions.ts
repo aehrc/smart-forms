@@ -126,6 +126,26 @@ export function getCalculatedExpression(qItem: QuestionnaireItem): Expression | 
 }
 
 /**
+ * Check if an enableWhenExpression extension is present
+ *
+ * @author Sean Fong
+ */
+export function getEnableWhenExpression(qItem: QuestionnaireItem): Expression | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression' &&
+      extension.valueExpression?.language === 'text/fhirpath'
+  );
+  if (itemControl) {
+    if (itemControl.valueExpression) {
+      return itemControl.valueExpression;
+    }
+  }
+  return null;
+}
+
+/**
  * Check if an answerExpression extension is present
  *
  * @author Sean Fong

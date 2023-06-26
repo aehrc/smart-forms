@@ -27,6 +27,7 @@ import type {
 import type Client from 'fhirclient/lib/Client';
 import type {
   CalculatedExpression,
+  EnableWhenExpression,
   EnableWhenItemProperties,
   EnableWhenItems,
   Renderer
@@ -67,6 +68,15 @@ export type CalculatedExpressionContextType = {
     questionnaireResponse: QuestionnaireResponse,
     variablesFhirPath: Record<string, Expression[]>
   ) => unknown;
+};
+
+export type EnableWhenExpressionContextType = {
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  initEnableWhenExpressions: (
+    enableWhenExpressions: Record<string, EnableWhenExpression>,
+    questionnaireResponse: QuestionnaireResponse
+  ) => unknown;
+  updateEnableWhenExpressions: (questionnaireResponse: QuestionnaireResponse) => unknown;
 };
 
 export type SourceContextType = {

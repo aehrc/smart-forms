@@ -39,6 +39,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../../functions/TabFunctions';
 import Iconify from '../../../Misc/Iconify';
 import { CurrentTabIndexContext } from '../../RendererLayout';
+import { EnableWhenExpressionContext } from '../../../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -67,6 +68,8 @@ function QItemGroup(props: Props) {
   } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+
   const { setCurrentTabIndex } = useContext(CurrentTabIndexContext);
 
   const qItems = qItem.item;
@@ -88,7 +91,7 @@ function QItemGroup(props: Props) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  if (isHidden(qItem, enableWhenContext)) return null;
+  if (isHidden(qItem, enableWhenContext, enableWhenExpressionContext)) return null;
 
   // Event Handlers
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
@@ -142,7 +145,7 @@ function QItemGroup(props: Props) {
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItemOrItems = qrItemsByIndex[i];
 
-            if (isHidden(qItem, enableWhenContext)) return null;
+            if (isHidden(qItem, enableWhenContext, enableWhenExpressionContext)) return null;
 
             // Process qrItemOrItems as an qrItem array
             if (Array.isArray(qrItemOrItems)) {

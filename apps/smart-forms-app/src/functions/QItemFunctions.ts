@@ -20,7 +20,10 @@ import { hasHiddenExtension } from './ItemControlFunctions';
 import { getChoiceControlType } from './ChoiceFunctions';
 import { QItemChoiceControl, QItemOpenChoiceControl } from '../interfaces/Enums';
 import { getOpenChoiceControlType } from './OpenChoiceFunctions';
-import type { EnableWhenContextType } from '../interfaces/ContextTypes';
+import type {
+  EnableWhenContextType,
+  EnableWhenExpressionContextType
+} from '../interfaces/ContextTypes';
 
 /**
  * Test the given QItem on a series of checks to verify if the item should be displayed
@@ -31,12 +34,19 @@ import type { EnableWhenContextType } from '../interfaces/ContextTypes';
  */
 export function isHidden(
   qItem: QuestionnaireItem,
-  enableWhenContext: EnableWhenContextType
+  enableWhenContext: EnableWhenContextType,
+  enableWhenExpressionContext: EnableWhenExpressionContextType
 ): boolean {
   if (hasHiddenExtension(qItem)) return true;
 
-  if (enableWhenContext.isActivated && enableWhenContext.items[qItem.linkId]) {
-    return !enableWhenContext.items[qItem.linkId].isEnabled;
+  if (enableWhenContext.isActivated) {
+    if (enableWhenContext.items[qItem.linkId]) {
+      return !enableWhenContext.items[qItem.linkId].isEnabled;
+    }
+
+    if (enableWhenExpressionContext.enableWhenExpressions[qItem.linkId]) {
+      return !enableWhenExpressionContext.enableWhenExpressions[qItem.linkId].isEnabled;
+    }
   }
 
   return false;

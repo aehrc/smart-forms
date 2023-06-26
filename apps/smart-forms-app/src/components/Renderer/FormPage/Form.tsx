@@ -31,6 +31,7 @@ import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter';
 import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
 import { Helmet } from 'react-helmet';
 import QItemSwitcher from './QFormComponents/QItemSwitcher.tsx';
+import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
@@ -42,6 +43,9 @@ function Form() {
 
   const enableWhenContext = useContext(EnableWhenContext);
   const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
+  const { initEnableWhenExpressions, updateEnableWhenExpressions } = useContext(
+    EnableWhenExpressionContext
+  );
   const { debugMode } = useContext(DebugModeContext);
 
   const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
@@ -54,6 +58,7 @@ function Form() {
   useEffect(
     () => {
       enableWhenContext.setItems(questionnaireProvider.enableWhenItems, response);
+      initEnableWhenExpressions(questionnaireProvider.enableWhenExpressions, response);
     },
     // init enableWhen items on first entry into renderer, leave dependency array empty
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,6 +86,7 @@ function Form() {
       item: updatedItems
     };
 
+    updateEnableWhenExpressions(updatedResponse);
     updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables.fhirPathVariables);
     setRenderer({ response: updatedResponse, hasChanges: true });
   }

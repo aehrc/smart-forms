@@ -33,6 +33,7 @@ import {
 } from '@mui/material';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
 import cloneDeep from 'lodash.clonedeep';
+import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 export interface Props {
   blocker: Blocker;
@@ -48,6 +49,7 @@ function BlockerUnsavedFormDialog(props: Props) {
   const responseProvider = useContext(QuestionnaireResponseProviderContext);
   const { renderer, setRenderer } = useContext(RendererContext);
   const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -81,7 +83,8 @@ function BlockerUnsavedFormDialog(props: Props) {
     responseToSave = removeHiddenAnswers(
       questionnaireProvider.questionnaire,
       responseToSave,
-      enableWhenContext
+      enableWhenContext,
+      enableWhenExpressionContext
     );
 
     setIsSaving(true);

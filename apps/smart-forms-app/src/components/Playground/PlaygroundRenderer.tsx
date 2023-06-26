@@ -25,6 +25,7 @@ import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } fr
 import type { QuestionnaireResponse } from 'fhir/r4';
 import { createQuestionnaireResponse } from '../../functions/QrItemFunctions.ts';
 import type { Renderer } from '../../interfaces/Interfaces.ts';
+import EnableWhenExpressionContextProvider from '../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 function PlaygroundRenderer() {
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
@@ -52,11 +53,13 @@ function PlaygroundRenderer() {
     <RendererContext.Provider value={{ renderer, setRenderer }}>
       <EnableWhenContextProvider>
         <CalculatedExpressionContextProvider>
-          <CachedQueriedValueSetContextProvider>
-            <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
-              <Form />
-            </CurrentTabIndexContext.Provider>
-          </CachedQueriedValueSetContextProvider>
+          <EnableWhenExpressionContextProvider>
+            <CachedQueriedValueSetContextProvider>
+              <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
+                <Form />
+              </CurrentTabIndexContext.Provider>
+            </CachedQueriedValueSetContextProvider>
+          </EnableWhenExpressionContextProvider>
         </CalculatedExpressionContextProvider>
       </EnableWhenContextProvider>
     </RendererContext.Provider>

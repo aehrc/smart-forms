@@ -25,11 +25,13 @@ import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../functions/PreviewFunctions';
 import { Helmet } from 'react-helmet';
+import { EnableWhenExpressionContext } from '../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 function ResponsePreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
   const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
 
   const { setComponentRef } = useContext(PrintComponentRefContext);
   const componentRef = useRef(null);
@@ -48,7 +50,12 @@ function ResponsePreview() {
 
   if (!questionnaire.item || !response.item) return <ViewerInvalid questionnaire={questionnaire} />;
 
-  const responseCleaned = removeHiddenAnswers(questionnaire, response, enableWhenContext);
+  const responseCleaned = removeHiddenAnswers(
+    questionnaire,
+    response,
+    enableWhenContext,
+    enableWhenExpressionContext
+  );
   const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 
   return (
