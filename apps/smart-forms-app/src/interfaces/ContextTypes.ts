@@ -74,9 +74,13 @@ export type EnableWhenExpressionContextType = {
   enableWhenExpressions: Record<string, EnableWhenExpression>;
   initEnableWhenExpressions: (
     enableWhenExpressions: Record<string, EnableWhenExpression>,
-    questionnaireResponse: QuestionnaireResponse
+    questionnaireResponse: QuestionnaireResponse,
+    variablesFhirPath: Record<string, Expression[]>
   ) => unknown;
-  updateEnableWhenExpressions: (questionnaireResponse: QuestionnaireResponse) => unknown;
+  updateEnableWhenExpressions: (
+    questionnaireResponse: QuestionnaireResponse,
+    variablesFhirPath: Record<string, Expression[]>
+  ) => unknown;
 };
 
 export type SourceContextType = {

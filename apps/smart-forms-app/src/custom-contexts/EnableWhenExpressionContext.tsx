@@ -18,7 +18,7 @@
 import type { ReactNode } from 'react';
 import { createContext, useState } from 'react';
 import type { EnableWhenExpressionContextType } from '../interfaces/ContextTypes';
-import type { QuestionnaireResponse } from 'fhir/r4';
+import type { Expression, QuestionnaireResponse } from 'fhir/r4';
 import type { EnableWhenExpression } from '../interfaces/Interfaces';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
@@ -38,11 +38,29 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
     enableWhenExpressions: items,
     initEnableWhenExpressions: (
       enableWhenExpressions: Record<string, EnableWhenExpression>,
-      questionnaireResponse: QuestionnaireResponse
+      questionnaireResponse: QuestionnaireResponse,
+      variablesFhirPath: Record<string, Expression[]>
     ) => {
       const initialItems: Record<string, EnableWhenExpression> = { ...enableWhenExpressions };
       if (Object.keys(initialItems).length > 0 && questionnaireResponse.item) {
         const context: Record<string, any> = { resource: questionnaireResponse };
+
+        for (const topLevelItem of questionnaireResponse.item) {
+          const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
+          if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
+            variablesTopLevelItem.forEach((variable) => {
+              context[`${variable.name}`] = fhirpath.evaluate(
+                topLevelItem,
+                {
+                  base: 'QuestionnaireResponse.item',
+                  expression: `${variable.expression}`
+                },
+                context,
+                fhirpath_r4_model
+              );
+            });
+          }
+        }
 
         for (const [linkId, enableWhenExpression] of Object.entries(initialItems)) {
           const fhirPathExpression = enableWhenExpression.expression;
@@ -67,12 +85,32 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
      *
      * @author Sean Fong
      */
-    updateEnableWhenExpressions: (questionnaireResponse: QuestionnaireResponse) => {
+    updateEnableWhenExpressions: (
+      questionnaireResponse: QuestionnaireResponse,
+      variablesFhirPath: Record<string, Expression[]>
+    ) => {
       // Evaluate top-level items' variables
       let isUpdated = false;
       const updatedItems = { ...items };
       if (Object.keys(items).length > 0 && questionnaireResponse.item) {
         const context: Record<string, any> = { resource: questionnaireResponse };
+
+        for (const topLevelItem of questionnaireResponse.item) {
+          const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
+          if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
+            variablesTopLevelItem.forEach((variable) => {
+              context[`${variable.name}`] = fhirpath.evaluate(
+                topLevelItem,
+                {
+                  base: 'QuestionnaireResponse.item',
+                  expression: `${variable.expression}`
+                },
+                context,
+                fhirpath_r4_model
+              );
+            });
+          }
+        }
 
         for (const [linkId, enableWhenExpression] of Object.entries(updatedItems)) {
           const fhirPathExpression = enableWhenExpression.expression;

@@ -58,7 +58,11 @@ function Form() {
   useEffect(
     () => {
       enableWhenContext.setItems(questionnaireProvider.enableWhenItems, response);
-      initEnableWhenExpressions(questionnaireProvider.enableWhenExpressions, response);
+      initEnableWhenExpressions(
+        questionnaireProvider.enableWhenExpressions,
+        response,
+        questionnaireProvider.variables.fhirPathVariables
+      );
     },
     // init enableWhen items on first entry into renderer, leave dependency array empty
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,7 +90,7 @@ function Form() {
       item: updatedItems
     };
 
-    updateEnableWhenExpressions(updatedResponse);
+    updateEnableWhenExpressions(updatedResponse, questionnaireProvider.variables.fhirPathVariables);
     updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables.fhirPathVariables);
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
