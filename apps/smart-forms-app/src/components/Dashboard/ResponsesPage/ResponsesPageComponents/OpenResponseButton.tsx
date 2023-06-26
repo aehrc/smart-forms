@@ -18,7 +18,6 @@
 import { Button, CircularProgress } from '@mui/material';
 import { useContext, useMemo, useState } from 'react';
 import Iconify from '../../../Misc/Iconify';
-import type { SelectedResponse } from '../../../../interfaces/Interfaces';
 import {
   QuestionnaireProviderContext,
   QuestionnaireResponseProviderContext
@@ -28,12 +27,13 @@ import type { Bundle, Questionnaire } from 'fhir/r4';
 import {
   getFormsServerBundleOrQuestionnairePromise,
   getReferencedQuestionnaire
-} from '../../../../functions/DashboardFunctions';
+} from '../../../../features/dashboard/utils/dashboard.ts';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { assembleIfRequired } from '../../../../functions/LoadServerResourceFunctions';
-import { postQuestionnaireToSMARTHealthIT } from '../../../../functions/SaveQrFunctions';
-import { SmartAppLaunchContext } from '../../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { assembleIfRequired } from '../../../../api/loadServerResources.ts';
+import { postQuestionnaireToSMARTHealthIT } from '../../../../features/save/api/saveQr.ts';
+import { SmartAppLaunchContext } from '../../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import type { SelectedResponse } from '../../../../features/dashboard/types/list.interface.ts';
 
 interface Props {
   selectedResponse: SelectedResponse | null;

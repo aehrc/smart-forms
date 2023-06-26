@@ -18,16 +18,16 @@
 import { Button, CircularProgress } from '@mui/material';
 import { useContext, useMemo } from 'react';
 import Iconify from '../../../Misc/Iconify';
-import { SmartAppLaunchContext } from '../../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import {
   getClientBundlePromise,
   getResponsesFromBundle
-} from '../../../../functions/DashboardFunctions';
+} from '../../../../features/dashboard/utils/dashboard.ts';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
-import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
+import { SelectedQuestionnaireContext } from '../../../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
 import { useNavigate } from 'react-router-dom';
-import { SourceContext } from '../../../../custom-contexts/SourceContext';
+import { SourceContext } from '../../../../features/debug/contexts/SourceContext.tsx';
 import { useSnackbar } from 'notistack';
 
 function ViewExistingResponsesButton() {

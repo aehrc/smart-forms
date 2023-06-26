@@ -24,7 +24,8 @@ import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ViewerHeader from './ViewerHeader/ViewerHeader';
 import ViewerNav from './ViewerNav/ViewerNav';
-import type { PrintComponentRefContextType } from '../../interfaces/ContextTypes';
+
+import type { PrintComponentRefContextType } from '../../features/print/types/printComponentRefContext.type.ts';
 
 export const PrintComponentRefContext = createContext<PrintComponentRefContextType>({
   componentRef: null,

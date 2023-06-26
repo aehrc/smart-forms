@@ -21,7 +21,8 @@ import { useTheme } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { QuestionnaireStyledLabel } from './QuestionnaireLabel.styles';
-import type { QuestionnaireListItem } from '../../../interfaces/Interfaces';
+
+import type { QuestionnaireListItem } from '../../../features/dashboard/types/list.interface.ts';
 
 interface Props {
   color: QuestionnaireListItem['status'];

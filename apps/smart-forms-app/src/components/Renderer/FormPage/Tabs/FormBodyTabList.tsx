@@ -19,13 +19,13 @@ import { memo, useContext } from 'react';
 import { Box, Card, Collapse } from '@mui/material';
 import { PrimarySelectableList } from '../../../StyledComponents/Lists.styles';
 import { TransitionGroup } from 'react-transition-group';
-import { isTab } from '../../../../functions/TabFunctions';
-import { isHidden } from '../../../../functions/QItemFunctions';
-import { getShortText } from '../../../../functions/ItemControlFunctions';
-import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
+import { isTab } from '../../../../features/renderer/utils/tabs.ts';
+import { isHidden } from '../../../../features/renderer/utils/qItem.ts';
+import { getShortText } from '../../../../features/renderer/utils/itemControl.ts';
+import { EnableWhenContext } from '../../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
-import { EnableWhenExpressionContext } from '../../../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { EnableWhenExpressionContext } from '../../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 
 interface Props {
   qFormItems: QuestionnaireItem[];

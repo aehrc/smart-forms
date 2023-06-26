@@ -19,18 +19,21 @@ import { memo } from 'react';
 import type { SelectChangeEvent } from '@mui/material';
 import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
 
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import {
+  findInAnswerOptions,
+  getQrChoiceValue
+} from '../../../../../features/renderer/utils/choice.ts';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
+import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../../../functions/ChoiceFunctions';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
-import QItemLabel from '../QItemParts/QItemLabel';
-import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

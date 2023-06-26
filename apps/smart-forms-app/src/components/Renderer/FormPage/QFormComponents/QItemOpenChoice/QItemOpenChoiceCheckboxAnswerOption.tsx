@@ -17,15 +17,14 @@
 
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
-import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../../interfaces/Enums';
+import {
+  CheckBoxOptionType,
+  QItemChoiceOrientation
+} from '../../../../../features/renderer/types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
-import { getOpenLabelText } from '../../../../../functions/ItemControlFunctions';
+import { getOpenLabelText } from '../../../../../features/renderer/utils/itemControl.ts';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel';
 import { QFormGroup } from '../../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
@@ -33,10 +32,14 @@ import QItemLabel from '../QItemParts/QItemLabel';
 import {
   getOldOpenLabelAnswer,
   updateQrOpenChoiceCheckboxAnswers
-} from '../../../../../functions/OpenChoiceFunctions';
+} from '../../../../../features/renderer/utils/openChoice.ts';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import debounce from 'lodash.debounce';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

@@ -16,10 +16,10 @@
  */
 
 import { useContext, useState } from 'react';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import { RendererContext } from '../RendererLayout';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenContext } from '../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -31,9 +31,12 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
+import {
+  removeHiddenAnswers,
+  saveQuestionnaireResponse
+} from '../../../features/save/api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
-import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 
 export interface Props {
   blocker: Blocker;

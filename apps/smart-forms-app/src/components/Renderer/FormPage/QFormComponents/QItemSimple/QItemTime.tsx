@@ -22,17 +22,17 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, TimeField } from '@mui/x-date-pickers';
 import { Grid } from '@mui/material';
 
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
+import QItemDisplayInstructions from './QItemDisplayInstructions';
+import QItemLabel from '../QItemParts/QItemLabel';
+import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import QItemDisplayInstructions from './QItemDisplayInstructions';
-import QItemLabel from '../QItemParts/QItemLabel';
-import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

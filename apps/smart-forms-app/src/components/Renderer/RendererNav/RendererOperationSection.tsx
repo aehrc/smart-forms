@@ -23,7 +23,7 @@ import RendererSaveAsFinal from './RendererSaveAsFinal';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext } from '../../../App';
 
 export interface NavButton {

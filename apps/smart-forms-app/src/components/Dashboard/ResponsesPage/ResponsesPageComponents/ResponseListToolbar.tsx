@@ -21,13 +21,13 @@ import {
   StyledRoot,
   StyledSearch
 } from '../../QuestionnairePage/QuestionnairePageComponents/QuestionnaireListToolbar.styles';
-import type { ResponseListItem } from '../../../../interfaces/Interfaces';
 import dayjs from 'dayjs';
 import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
-import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
-import { SmartAppLaunchContext } from '../../../../custom-contexts/SmartAppLaunchContext.tsx';
-import { constructName } from '../../../../functions/LaunchContextFunctions';
+import { SelectedQuestionnaireContext } from '../../../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
+import { SmartAppLaunchContext } from '../../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import { constructName } from '../../../../features/smartAppLaunch/utils/launchContext.ts';
+import type { ResponseListItem } from '../../../../features/dashboard/types/list.interface.ts';
 
 interface Props {
   selected: ResponseListItem | undefined;

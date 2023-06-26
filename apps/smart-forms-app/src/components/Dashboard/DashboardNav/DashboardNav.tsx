@@ -17,16 +17,16 @@
 
 import { useContext } from 'react';
 import { Box, Drawer, Stack } from '@mui/material';
-import useResponsive from '../../../custom-hooks/useResponsive';
+import useResponsive from '../../../hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import NavSection from './DashboardNavSection';
 import NavAccounts from '../../Nav/NavAccounts';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import CsiroLogo from '../../Misc/CsiroLogo';
 import GoToPlaygroundButton from '../QuestionnairePage/QuestionnairePageComponents/GoToPlaygroundButton.tsx';
-import { DebugModeContext } from '../../../custom-contexts/DebugModeContext.tsx';
+import { DebugModeContext } from '../../../features/debug/contexts/DebugModeContext.tsx';
 
 const NAV_WIDTH = 240;
 

@@ -19,22 +19,22 @@ import type { ChangeEvent } from 'react';
 import { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { Fade, Grid, InputAdornment } from '@mui/material';
 
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItemWithUnit } from '../../../../../functions/QrItemFunctions';
+import { createEmptyQrItemWithUnit } from '../../../../../features/renderer/utils/qrItem.ts';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import debounce from 'lodash.debounce';
 import CheckIcon from '@mui/icons-material/Check';
-import { CalculatedExpressionContext } from '../../../../../custom-contexts/CalculatedExpressionContext';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
-import useValidationError from '../../../../../custom-hooks/useValidationError';
+import { CalculatedExpressionContext } from '../../../../../features/calculatedExpression/contexts/CalculatedExpressionContext.tsx';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
+import useValidationError from '../../../../../features/renderer/hooks/useValidationError.ts';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

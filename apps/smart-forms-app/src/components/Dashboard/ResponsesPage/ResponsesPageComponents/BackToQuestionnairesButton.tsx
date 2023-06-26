@@ -18,7 +18,7 @@
 import { Button } from '@mui/material';
 import { useContext } from 'react';
 import Iconify from '../../../Misc/Iconify';
-import { SelectedQuestionnaireContext } from '../../../../custom-contexts/SelectedQuestionnaireContext';
+import { SelectedQuestionnaireContext } from '../../../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
 import { useNavigate } from 'react-router-dom';
 
 function BackToQuestionnairesButton() {

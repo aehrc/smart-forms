@@ -17,7 +17,6 @@
 
 import { useEffect, useState } from 'react';
 import { Box, Button, Collapse, Grid, IconButton, Stack } from '@mui/material';
-import type { PropsWithQrItemChangeHandler } from '../../../../interfaces/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
 import QItemSwitcher from './QItemSwitcher';
 import type {
@@ -25,7 +24,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../features/renderer/utils/qrItem.ts';
 import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions';
 import { RepeatDeleteTooltip, RepeatItemContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
@@ -33,7 +32,8 @@ import { TransitionGroup } from 'react-transition-group';
 import { FullWidthFormComponentBox } from '../../../StyledComponents/Boxes.styles';
 import { nanoid } from 'nanoid';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import useRenderingExtensions from '../../../../custom-hooks/useRenderingExtensions';
+import useRenderingExtensions from '../../../../features/renderer/hooks/useRenderingExtensions.ts';
+import type { PropsWithQrItemChangeHandler } from '../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;

@@ -18,26 +18,26 @@
 import { memo } from 'react';
 import { Grid, Typography } from '@mui/material';
 
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import useValueSetCodings from '../../../../../custom-hooks/useValueSetCodings';
-import { QItemChoiceOrientation } from '../../../../../interfaces/Enums';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
+import useValueSetCodings from '../../../../../features/renderer/hooks/useValueSetCodings.ts';
+import { QItemChoiceOrientation } from '../../../../../features/renderer/types/choice.enum.ts';
 import {
   mapCodingsToOptions,
   updateQrCheckboxAnswers
-} from '../../../../../functions/ChoiceFunctions';
+} from '../../../../../features/renderer/utils/choice.ts';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle';
 import { QFormGroup } from '../../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../../../StyledComponents/Nav.styles.tsx';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

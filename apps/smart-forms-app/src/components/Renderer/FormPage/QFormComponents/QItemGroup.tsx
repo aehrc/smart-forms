@@ -18,28 +18,31 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Card, Divider, IconButton, Tooltip } from '@mui/material';
 import QItemSwitcher from './QItemSwitcher';
-import { getQrItemsIndex, mapQItemsIndex } from '../../../../functions/IndexFunctions';
+import { getQrItemsIndex, mapQItemsIndex } from '../../../../features/renderer/utils';
 import QItemRepeatGroup from './QItemRepeatGroup';
 import QItemRepeat from './QItemRepeat';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createQrGroup, updateLinkedItem } from '../../../../functions/QrItemFunctions';
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithQrItemChangeHandler,
-  QrRepeatGroup
-} from '../../../../interfaces/Interfaces';
-import { isHidden, isRepeatItemAndNotCheckbox } from '../../../../functions/QItemFunctions';
+import { createQrGroup, updateLinkedItem } from '../../../../features/renderer/utils/qrItem.ts';
+import { isHidden, isRepeatItemAndNotCheckbox } from '../../../../features/renderer/utils/qItem.ts';
 import { QGroupHeadingTypography } from '../../../StyledComponents/Typographys.styles';
-import { isSpecificItemControl } from '../../../../functions/ItemControlFunctions';
+import { isSpecificItemControl } from '../../../../features/renderer/utils/itemControl.ts';
 import QItemGroupTable from './QItemGroupTable';
 import QItemLabel from './QItemParts/QItemLabel';
-import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
+import { EnableWhenContext } from '../../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import { QGroupContainerBox } from '../../../StyledComponents/Boxes.styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../../functions/TabFunctions';
+import {
+  findNumOfVisibleTabs,
+  getNextVisibleTabIndex
+} from '../../../../features/renderer/utils/tabs.ts';
 import Iconify from '../../../Misc/Iconify';
 import { CurrentTabIndexContext } from '../../RendererLayout';
-import { EnableWhenExpressionContext } from '../../../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { EnableWhenExpressionContext } from '../../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../features/renderer/types/renderProps.interface.ts';
+import type { QrRepeatGroup } from '../../../../features/renderer/types/repeatGroup.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

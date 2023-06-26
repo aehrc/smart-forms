@@ -17,7 +17,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import type { PropsWithQrRepeatGroupChangeHandler } from '../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import {
   Box,
@@ -35,14 +34,15 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../features/renderer/utils/qrItem.ts';
 import AddIcon from '@mui/icons-material/Add';
 import QItemGroupTableRow from './QItemGroupTableRow';
 import { DeleteButtonTableCell, HeaderTableCell } from '../../../StyledComponents/Table.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupContainerBox } from '../../../StyledComponents/Boxes.styles';
-import { mapQItemsIndex } from '../../../../functions/IndexFunctions';
+import { mapQItemsIndex } from '../../../../features/renderer/utils';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import type { PropsWithQrRepeatGroupChangeHandler } from '../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;

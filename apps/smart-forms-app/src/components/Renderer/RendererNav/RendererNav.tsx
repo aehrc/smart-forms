@@ -17,13 +17,13 @@
 
 import { useContext } from 'react';
 import { Box, Drawer, Grid, IconButton, Tooltip } from '@mui/material';
-import useResponsive from '../../../custom-hooks/useResponsive';
+import useResponsive from '../../../hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import NavAccounts from '../../Nav/NavAccounts';
 import RendererNavSection from './RendererNavSection';
 import RendererOperationSection from './RendererOperationSection';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../Nav/NavErrorAlert';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import CsiroLogo from '../../Misc/CsiroLogo';

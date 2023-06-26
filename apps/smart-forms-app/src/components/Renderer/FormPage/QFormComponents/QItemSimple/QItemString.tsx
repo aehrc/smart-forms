@@ -19,20 +19,20 @@ import type { ChangeEvent } from 'react';
 import { memo, useCallback, useState } from 'react';
 import { Grid, InputAdornment } from '@mui/material';
 
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
 import QItemDisplayInstructions from './QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import debounce from 'lodash.debounce';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
-import useValidationError from '../../../../../custom-hooks/useValidationError';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
+import useValidationError from '../../../../../features/renderer/hooks/useValidationError.ts';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

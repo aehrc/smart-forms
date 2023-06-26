@@ -25,7 +25,7 @@ import { useTheme } from '@mui/material/styles';
 import PatientPopoverMenu from '../../Header/PatientPopoverMenu';
 import UserPopoverMenu from '../../Header/UserPopoverMenu';
 import UserHeader from '../../Header/UserHeader';
-import useResponsive from '../../../custom-hooks/useResponsive';
+import useResponsive from '../../../hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import { QuestionnaireProviderContext } from '../../../App';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -33,7 +33,7 @@ import QuestionnairePopoverMenu from '../../Header/QuestionnairePopoverMenu';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import UpdatingIndicator from './UpdatingIndicator';
 import NavErrorAlert from '../../Nav/NavErrorAlert.tsx';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 
 interface Props {
   navCollapsed: boolean;

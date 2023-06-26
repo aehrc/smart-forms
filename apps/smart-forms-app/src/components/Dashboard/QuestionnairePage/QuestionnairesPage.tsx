@@ -34,32 +34,30 @@ import {
 import Scrollbar from '../../Scrollbar/Scrollbar';
 import QuestionnaireListHead from './QuestionnairePageComponents/QuestionnaireListHead';
 import QuestionnaireListToolbar from './QuestionnairePageComponents/QuestionnaireListToolbar';
-import type { QuestionnaireListItem, TableAttributes } from '../../../interfaces/Interfaces';
 import {
   applySortFilter,
   getComparator,
   getFormsServerBundlePromise,
   getQuestionnaireListItems
-} from '../../../functions/DashboardFunctions';
+} from '../../../features/dashboard/utils/dashboard.ts';
 import QuestionnaireLabel from './QuestionnaireLabel';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
-import useDebounce from '../../../custom-hooks/useDebounce';
+import useDebounce from '../../../features/renderer/hooks/useDebounce.ts';
 import QuestionnaireListFeedback from './QuestionnairePageComponents/QuestionnaireListFeedback';
 import CreateNewResponseButton from './QuestionnairePageComponents/CreateNewResponseButton';
-import {
-  constructBundle,
-  loadQuestionnairesFromLocal
-} from '../../../functions/LoadServerResourceFunctions';
+import { constructBundle, loadQuestionnairesFromLocal } from '../../../api/loadServerResources.ts';
 import ViewExistingResponsesButton from './QuestionnairePageComponents/ViewExistingResponsesButton';
-import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SelectedQuestionnaireContext } from '../../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import SourceToggle from '../../Misc/SourceToggle';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
-import { SourceContext } from '../../../custom-contexts/SourceContext';
-import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
+import { SourceContext } from '../../../features/debug/contexts/SourceContext.tsx';
+import { DebugModeContext } from '../../../features/debug/contexts/DebugModeContext.tsx';
+import type { TableAttributes } from '../../../features/renderer/types/table.interface.ts';
+import type { QuestionnaireListItem } from '../../../features/dashboard/types/list.interface.ts';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },

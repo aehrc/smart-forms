@@ -17,7 +17,7 @@
 
 import { IconButton } from '@mui/material';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import useResponsive from '../../custom-hooks/useResponsive';
+import useResponsive from '../../hooks/useResponsive';
 
 interface Props {
   navCollapsed: boolean;

@@ -18,15 +18,11 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Card, Collapse, Divider, IconButton, Stack } from '@mui/material';
 
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithQrRepeatGroupChangeHandler
-} from '../../../../interfaces/Interfaces';
 import AddIcon from '@mui/icons-material/Add';
 import QItemGroup from './QItemGroup';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../features/renderer/utils/qrItem.ts';
 import { RepeatDeleteTooltip, RepeatGroupContainerStack } from './QItemRepeat.styles';
 import QItemLabel from './QItemParts/QItemLabel';
 import { QGroupHeadingTypography } from '../../../StyledComponents/Typographys.styles';
@@ -34,6 +30,10 @@ import { QGroupContainerBox } from '../../../StyledComponents/Boxes.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { nanoid } from 'nanoid';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrRepeatGroupChangeHandler
+} from '../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;

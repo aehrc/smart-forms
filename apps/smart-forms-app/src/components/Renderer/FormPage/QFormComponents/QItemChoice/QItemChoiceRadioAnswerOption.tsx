@@ -18,20 +18,23 @@
 import type { ChangeEvent } from 'react';
 import { memo } from 'react';
 import { Grid } from '@mui/material';
-import { QItemChoiceOrientation } from '../../../../../interfaces/Enums';
+import { QItemChoiceOrientation } from '../../../../../features/renderer/types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../../../functions/ChoiceFunctions';
+import {
+  findInAnswerOptions,
+  getQrChoiceValue
+} from '../../../../../features/renderer/utils/choice.ts';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
 import { QRadioGroup } from '../../../../StyledComponents/Item.styles';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

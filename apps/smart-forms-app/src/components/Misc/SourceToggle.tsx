@@ -17,8 +17,8 @@
 
 import { FormControlLabel, Switch, Typography } from '@mui/material';
 import { useContext } from 'react';
-import { SourceContext } from '../../custom-contexts/SourceContext';
-import { SelectedQuestionnaireContext } from '../../custom-contexts/SelectedQuestionnaireContext';
+import { SourceContext } from '../../features/debug/contexts/SourceContext.tsx';
+import { SelectedQuestionnaireContext } from '../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
 
 interface Props {
   setPage: (page: number) => void;

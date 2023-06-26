@@ -20,12 +20,12 @@ import { Box, Card, Container, Fade, Typography } from '@mui/material';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
 import ViewerInvalid from '../Renderer/FormPage/ViewerInvalid';
 import { PrintComponentRefContext } from './ViewerLayout';
-import { EnableWhenContext } from '../../custom-contexts/EnableWhenContext';
-import { removeHiddenAnswers } from '../../functions/SaveQrFunctions';
+import { EnableWhenContext } from '../../features/enableWhen/contexts/EnableWhenContext.tsx';
+import { removeHiddenAnswers } from '../../features/save/api/saveQr.ts';
 import parse from 'html-react-parser';
-import { qrToHTML } from '../../functions/PreviewFunctions';
+import { qrToHTML } from '../../features/preview/utils/preview.ts';
 import { Helmet } from 'react-helmet';
-import { EnableWhenExpressionContext } from '../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { EnableWhenExpressionContext } from '../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 
 function ResponsePreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);

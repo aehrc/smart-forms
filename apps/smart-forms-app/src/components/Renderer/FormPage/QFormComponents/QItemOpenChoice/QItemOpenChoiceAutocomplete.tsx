@@ -20,25 +20,25 @@ import { memo, useState } from 'react';
 import { Autocomplete, Box, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
 import SearchIcon from '@mui/icons-material/Search';
-import useDebounce from '../../../../../custom-hooks/useDebounce';
-import useTerminologyServerQuery from '../../../../../custom-hooks/useTerminologyServerQuery.ts';
+import useDebounce from '../../../../../features/renderer/hooks/useDebounce.ts';
+import useTerminologyServerQuery from '../../../../../features/renderer/hooks/useTerminologyServerQuery.ts';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import InfoIcon from '@mui/icons-material/Info';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
-import { getTerminologyServerUrl } from '../../../../../functions/ValueSetFunctions.ts';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
+import { getTerminologyServerUrl } from '../../../../../features/valueSet/utils/valueSet.ts';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

@@ -17,11 +17,14 @@
 
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useContext, useEffect, useState } from 'react';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import {
+  removeHiddenAnswers,
+  saveQuestionnaireResponse
+} from '../../../features/save/api/saveQr.ts';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import { RendererContext } from '../RendererLayout';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenContext } from '../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import { OperationItem } from './RendererOperationSection';
 import {
   Button,
@@ -35,7 +38,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
-import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 
 function RendererSaveAsFinal() {
   const { fhirClient } = useContext(SmartAppLaunchContext);

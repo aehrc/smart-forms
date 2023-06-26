@@ -18,13 +18,13 @@
 import { createContext } from 'react';
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/Theme';
-import { QuestionnaireProvider } from './classes/QuestionnaireProvider';
-import SmartAppLaunchContextProvider from './custom-contexts/SmartAppLaunchContext.tsx';
-import { QuestionnaireResponseProvider } from './classes/QuestionnaireResponseProvider';
-import Router from './Router';
+import { QuestionnaireProvider } from './providers/questionnaireProvider.ts';
+import SmartAppLaunchContextProvider from './features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import { QuestionnaireResponseProvider } from './providers/questionnaireResponseProvider.ts';
+import Router from './router/Router.tsx';
 import { SnackbarProvider } from 'notistack';
-import DebugModeContextProvider from './custom-contexts/DebugModeContext';
-import SourceContextProvider from './custom-contexts/SourceContext';
+import DebugModeContextProvider from './features/debug/contexts/DebugModeContext.tsx';
+import SourceContextProvider from './features/debug/contexts/SourceContext.tsx';
 import { CookiesProvider } from 'react-cookie';
 
 const questionnaireProvider = new QuestionnaireProvider();

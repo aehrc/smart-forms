@@ -19,19 +19,19 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Box, Container, Divider, Fade, Typography } from '@mui/material';
 import type { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
-import { containsTabs, isTabContainer } from '../../../functions/TabFunctions';
+import { containsTabs, isTabContainer } from '../../../features/renderer/utils/tabs.ts';
 import { QuestionnaireProviderContext } from '../../../App';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { EnableWhenContext } from '../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import FormInvalid from './FormInvalid';
 import QTitle from './QFormComponents/QItemParts/QTitle';
 import QItemGroup from './QFormComponents/QItemGroup';
-import { CalculatedExpressionContext } from '../../../custom-contexts/CalculatedExpressionContext';
+import { CalculatedExpressionContext } from '../../../features/calculatedExpression/contexts/CalculatedExpressionContext.tsx';
 import { CurrentTabIndexContext, RendererContext } from '../RendererLayout';
 import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter';
-import { DebugModeContext } from '../../../custom-contexts/DebugModeContext';
+import { DebugModeContext } from '../../../features/debug/contexts/DebugModeContext.tsx';
 import { Helmet } from 'react-helmet';
 import QItemSwitcher from './QFormComponents/QItemSwitcher.tsx';
-import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 

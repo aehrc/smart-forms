@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { QItemChoiceControl } from '../../../../../interfaces/Enums';
+import { QItemChoiceControl } from '../../../../../features/renderer/types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemChoiceRadioAnswerOption from './QItemChoiceRadioAnswerOption';
 import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
@@ -25,14 +25,14 @@ import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
 import {
   getChoiceControlType,
   getChoiceOrientation
-} from '../../../../../functions/ChoiceFunctions';
+} from '../../../../../features/renderer/utils/choice.ts';
 import QItemChoiceRadioAnswerValueSet from './QItemChoiceRadioAnswerValueSet';
+import QItemChoiceCheckboxAnswerValueSet from './QItemChoiceCheckboxAnswerValueSet';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
-import QItemChoiceCheckboxAnswerValueSet from './QItemChoiceCheckboxAnswerValueSet';
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

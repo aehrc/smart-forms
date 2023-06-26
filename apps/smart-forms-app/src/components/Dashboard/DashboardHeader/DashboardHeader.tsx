@@ -25,11 +25,11 @@ import { useTheme } from '@mui/material/styles';
 import PatientPopoverMenu from '../../Header/PatientPopoverMenu';
 import UserPopoverMenu from '../../Header/UserPopoverMenu';
 import UserHeader from '../../Header/UserHeader';
-import useResponsive from '../../../custom-hooks/useResponsive';
+import useResponsive from '../../../hooks/useResponsive';
 import Logo from '../../Misc/Logo';
 import NavErrorAlert from '../../Nav/NavErrorAlert.tsx';
 import { useContext } from 'react';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 
 interface Props {
   onOpenNav: () => void;

@@ -17,10 +17,10 @@
 
 import { Avatar, Box, Tooltip, Typography, useTheme } from '@mui/material';
 import { useContext } from 'react';
-import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { AccountDetailsTypography, AccountNameTypography } from '../Misc/Typography';
 import FaceIcon from '@mui/icons-material/Face';
-import { constructName } from '../../functions/LaunchContextFunctions';
+import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 
 function PatientHeader() {

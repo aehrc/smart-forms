@@ -17,16 +17,16 @@
 
 import { Button, CircularProgress } from '@mui/material';
 import { useContext, useState } from 'react';
-import type { SelectedQuestionnaire } from '../../../../interfaces/Interfaces';
 import Iconify from '../../../Misc/Iconify';
 import {
   QuestionnaireProviderContext,
   QuestionnaireResponseProviderContext
 } from '../../../../App';
-import { createQuestionnaireResponse } from '../../../../functions/QrItemFunctions';
+import { createQuestionnaireResponse } from '../../../../features/renderer/utils/qrItem.ts';
 import { useNavigate } from 'react-router-dom';
-import { postQuestionnaireToSMARTHealthIT } from '../../../../functions/SaveQrFunctions';
-import { SmartAppLaunchContext } from '../../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { postQuestionnaireToSMARTHealthIT } from '../../../../features/save/api/saveQr.ts';
+import { SmartAppLaunchContext } from '../../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import type { SelectedQuestionnaire } from '../../../../features/dashboard/types/list.interface.ts';
 
 interface Props {
   selectedQuestionnaire: SelectedQuestionnaire | null;

@@ -17,7 +17,10 @@
 
 import { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getMarkdownString, getXHtmlString } from '../../../../../functions/ItemControlFunctions';
+import {
+  getMarkdownString,
+  getXHtmlString
+} from '../../../../../features/renderer/utils/itemControl.ts';
 import { QItemTypography } from '../../../../StyledComponents/Item.styles';
 import parse from 'html-react-parser';
 import { Box } from '@mui/material';

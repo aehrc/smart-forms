@@ -31,34 +31,34 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import type {
-  ResponseListItem,
-  SelectedResponse,
-  TableAttributes
-} from '../../../interfaces/Interfaces';
 import {
   applySortFilter,
   getClientBundlePromise,
   getComparator,
   getResponseListItems
-} from '../../../functions/DashboardFunctions';
+} from '../../../features/dashboard/utils/dashboard.ts';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
-import { SourceContext } from '../../../custom-contexts/SourceContext';
-import { SelectedQuestionnaireContext } from '../../../custom-contexts/SelectedQuestionnaireContext';
+import { SourceContext } from '../../../features/debug/contexts/SourceContext.tsx';
+import { SelectedQuestionnaireContext } from '../../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ResponseListToolbar from './ResponsesPageComponents/ResponseListToolbar';
 import ResponseListHead from './ResponsesPageComponents/ResponseListHead';
 import ResponseLabel from './ResponseLabel';
 import ResponseListFeedback from './ResponsesPageComponents/ResponseListFeedback';
 import Scrollbar from '../../Scrollbar/Scrollbar';
-import { constructBundle } from '../../../functions/LoadServerResourceFunctions';
+import { constructBundle } from '../../../api/loadServerResources.ts';
 import BackToQuestionnairesButton from './ResponsesPageComponents/BackToQuestionnairesButton';
 import OpenResponseButton from './ResponsesPageComponents/OpenResponseButton';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
-import useDebounce from '../../../custom-hooks/useDebounce';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import useDebounce from '../../../features/renderer/hooks/useDebounce.ts';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
+import type { TableAttributes } from '../../../features/renderer/types/table.interface.ts';
+import type {
+  ResponseListItem,
+  SelectedResponse
+} from '../../../features/dashboard/types/list.interface.ts';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Questionnaire Title', alignRight: false },

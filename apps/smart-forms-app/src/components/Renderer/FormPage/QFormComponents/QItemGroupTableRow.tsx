@@ -17,12 +17,12 @@
 
 import { memo, useEffect, useState } from 'react';
 
-import type { PropsWithQrItemChangeHandler } from '../../../../interfaces/Interfaces';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createQrGroup, updateLinkedItem } from '../../../../functions/QrItemFunctions';
+import { createQrGroup, updateLinkedItem } from '../../../../features/renderer/utils/qrItem.ts';
 import QItemSwitcher from './QItemSwitcher';
-import { getQrItemsIndex } from '../../../../functions/IndexFunctions';
+import { getQrItemsIndex } from '../../../../features/renderer/utils';
 import { FirstTableCell, StandardTableCell } from '../../../StyledComponents/Table.styles';
+import type { PropsWithQrItemChangeHandler } from '../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;

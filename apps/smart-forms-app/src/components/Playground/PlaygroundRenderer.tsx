@@ -16,16 +16,16 @@
  */
 
 import { useContext, useState } from 'react';
-import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext.tsx';
-import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext.tsx';
-import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext.tsx';
+import EnableWhenContextProvider from '../../features/enableWhen/contexts/EnableWhenContext.tsx';
+import CalculatedExpressionContextProvider from '../../features/calculatedExpression/contexts/CalculatedExpressionContext.tsx';
+import CachedQueriedValueSetContextProvider from '../../features/valueSet/contexts/CachedQueriedValueSetContext.tsx';
 import { CurrentTabIndexContext, RendererContext } from '../Renderer/RendererLayout.tsx';
 import Form from '../Renderer/FormPage/Form.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
-import { createQuestionnaireResponse } from '../../functions/QrItemFunctions.ts';
-import type { Renderer } from '../../interfaces/Interfaces.ts';
-import EnableWhenExpressionContextProvider from '../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { createQuestionnaireResponse } from '../../features/renderer/utils/qrItem.ts';
+import EnableWhenExpressionContextProvider from '../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import type { Renderer } from '../../features/renderer/types/renderer.interface.ts';
 
 function PlaygroundRenderer() {
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);

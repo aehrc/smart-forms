@@ -21,7 +21,7 @@ import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from '../../StyledComponents/NavSection.styles';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 
 interface NavButton {
   title: string;

@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-import { QItemOpenChoiceControl } from '../../../../../interfaces/Enums';
+import { QItemOpenChoiceControl } from '../../../../../features/renderer/types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemOpenChoiceSelectAnswerOption from './QItemOpenChoiceSelectAnswerOption';
 import QItemOpenChoiceSelectAnswerValueSet from './QItemOpenChoiceSelectAnswerValueSet';
 import QItemOpenChoiceAutocomplete from './QItemOpenChoiceAutocomplete';
-import { getOpenChoiceControlType } from '../../../../../functions/OpenChoiceFunctions';
+import { getOpenChoiceControlType } from '../../../../../features/renderer/utils/openChoice.ts';
+import { getChoiceOrientation } from '../../../../../features/renderer/utils/choice.ts';
+import QItemOpenChoiceCheckboxAnswerOption from './QItemOpenChoiceCheckboxAnswerOption';
+import QItemOpenChoiceRadioAnswerOption from './QItemOpenChoiceRadioAnswerOption';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
-import { getChoiceOrientation } from '../../../../../functions/ChoiceFunctions';
-import QItemOpenChoiceCheckboxAnswerOption from './QItemOpenChoiceCheckboxAnswerOption';
-import QItemOpenChoiceRadioAnswerOption from './QItemOpenChoiceRadioAnswerOption';
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

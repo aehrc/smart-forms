@@ -17,13 +17,13 @@
 
 import { Box } from '@mui/material';
 import { useContext } from 'react';
-import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import {
   AccountDetailsTypography,
   AccountDetailsTypographyNoCaps,
   AccountNameTypographyNoWrap
 } from '../Misc/Typography';
-import { constructName } from '../../functions/LaunchContextFunctions';
+import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 
 function PatientPopoverMenu() {

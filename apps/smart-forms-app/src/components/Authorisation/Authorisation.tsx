@@ -32,14 +32,14 @@ import {
   getQuestionnaireReferences,
   getUser,
   responseToQuestionnaireResource
-} from '../../functions/LaunchFunctions';
-import { assembleIfRequired } from '../../functions/LoadServerResourceFunctions';
-import { postQuestionnaireToSMARTHealthIT } from '../../functions/SaveQrFunctions';
+} from '../../features/smartAppLaunch/utils/launch.ts';
+import { assembleIfRequired } from '../../api/loadServerResources.ts';
+import { postQuestionnaireToSMARTHealthIT } from '../../features/save/api/saveQr.ts';
 import GoToTestLauncher from '../SnackbarActions/GoToTestLauncher';
-import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext } from '../../App';
 import { useSnackbar } from 'notistack';
-import { SourceContext } from '../../custom-contexts/SourceContext';
+import { SourceContext } from '../../features/debug/contexts/SourceContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import ProgressSpinner from '../Misc/ProgressSpinner';
 import { StyledRoot } from './Authorisation.styles';

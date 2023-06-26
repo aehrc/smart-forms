@@ -18,13 +18,13 @@
 import { useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import type { PropsWithQrItemChangeHandler } from '../../../interfaces/Interfaces';
 import { TabContext, TabPanel } from '@mui/lab';
-import { getQrItemsIndex, mapQItemsIndex } from '../../../functions/IndexFunctions';
+import { getQrItemsIndex, mapQItemsIndex } from '../../../features/renderer/utils';
 import QItemGroup from './QFormComponents/QItemGroup';
-import { constructTabsWithProperties, isTab } from '../../../functions/TabFunctions';
-import { updateLinkedItem } from '../../../functions/QrItemFunctions';
+import { constructTabsWithProperties, isTab } from '../../../features/renderer/utils/tabs.ts';
+import { updateLinkedItem } from '../../../features/renderer/utils/qrItem.ts';
 import FormBodyTabList from './Tabs/FormBodyTabList';
+import type { PropsWithQrItemChangeHandler } from '../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   topLevelQItem: QuestionnaireItem;

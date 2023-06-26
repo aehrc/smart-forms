@@ -25,7 +25,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { SourceContext } from '../../../../custom-contexts/SourceContext';
+import { SourceContext } from '../../../../features/debug/contexts/SourceContext.tsx';
 import { useSnackbar } from 'notistack';
 
 interface Props {

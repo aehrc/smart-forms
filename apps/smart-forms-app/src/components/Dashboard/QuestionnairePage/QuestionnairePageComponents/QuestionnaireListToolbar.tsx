@@ -20,8 +20,8 @@ import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 import Iconify from '../../../Misc/Iconify';
 import { StyledRoot, StyledSearch } from './QuestionnaireListToolbar.styles';
-import type { QuestionnaireListItem } from '../../../../interfaces/Interfaces';
 import { StyledAlert } from '../../../StyledComponents/Nav.styles';
+import type { QuestionnaireListItem } from '../../../../features/dashboard/types/list.interface.ts';
 
 interface Props {
   selected: QuestionnaireListItem | undefined;

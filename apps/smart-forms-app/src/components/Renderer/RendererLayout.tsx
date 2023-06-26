@@ -21,20 +21,18 @@ import RendererNav from './RendererNav/RendererNav';
 import { StyledRoot } from '../StyledComponents/Layout.styles';
 import { Main } from './RendererLayout.styles';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App';
-import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
-import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../../functions/QrItemFunctions';
-import { populateQuestionnaire } from '../../functions/populateFunctions/populateQuestionnaire';
+import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import {
+  createQuestionnaireResponse,
+  removeNoAnswerQrItem
+} from '../../features/renderer/utils/qrItem.ts';
+import { populateQuestionnaire } from '../../features/prepopulate/utils/populate.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
-import EnableWhenContextProvider from '../../custom-contexts/EnableWhenContext';
-import EnableWhenExpressionContextProvider from '../../custom-contexts/EnableWhenExpressionContext';
-import CalculatedExpressionContextProvider from '../../custom-contexts/CalculatedExpressionContext';
-import CachedQueriedValueSetContextProvider from '../../custom-contexts/CachedValueSetContext';
+import EnableWhenContextProvider from '../../features/enableWhen/contexts/EnableWhenContext.tsx';
+import EnableWhenExpressionContextProvider from '../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import CalculatedExpressionContextProvider from '../../features/calculatedExpression/contexts/CalculatedExpressionContext.tsx';
+import CachedQueriedValueSetContextProvider from '../../features/valueSet/contexts/CachedQueriedValueSetContext.tsx';
 import { Outlet } from 'react-router-dom';
-import type {
-  CurrentTabIndexContextType,
-  RendererContextType
-} from '../../interfaces/ContextTypes';
-import type { Renderer } from '../../interfaces/Interfaces';
 import BackToTopButton from '../Misc/BackToTopButton';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -45,10 +43,17 @@ import { useSnackbar } from 'notistack';
 import NavExpandButton from './NavCollapseButton';
 import PopulationProgressSpinner from '../Misc/PopulationProgressSpinner';
 import CloseSnackbar from '../SnackbarActions/CloseSnackbar.tsx';
+import type { CurrentTabIndexContextType } from '../../features/renderer/types/currentTabIndexContext.type.ts';
+import type { Renderer } from '../../features/renderer/types/renderer.interface.ts';
 
 const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
   status: 'in-progress'
+};
+
+type RendererContextType = {
+  renderer: Renderer;
+  setRenderer: (updatedRenderer: Renderer) => unknown;
 };
 
 export const RendererContext = createContext<RendererContextType>({

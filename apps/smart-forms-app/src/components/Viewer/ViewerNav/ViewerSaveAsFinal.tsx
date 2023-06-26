@@ -17,8 +17,8 @@
 
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useContext, useState } from 'react';
-import { saveQuestionnaireResponse } from '../../../functions/SaveQrFunctions';
-import { SmartAppLaunchContext } from '../../../custom-contexts/SmartAppLaunchContext.tsx';
+import { saveQuestionnaireResponse } from '../../../features/save/api/saveQr.ts';
+import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../../App';
 import {
   Button,

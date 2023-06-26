@@ -20,10 +20,10 @@ import DashboardHeader from './DashboardHeader/DashboardHeader';
 import DashboardNav from './DashboardNav/DashboardNav';
 import { Main, StyledRoot } from '../StyledComponents/Layout.styles';
 import { Outlet, useNavigate } from 'react-router-dom';
-import SelectedQuestionnaireContextProvider from '../../custom-contexts/SelectedQuestionnaireContext';
-import { DebugModeContext } from '../../custom-contexts/DebugModeContext';
+import SelectedQuestionnaireContextProvider from '../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
+import { DebugModeContext } from '../../features/debug/contexts/DebugModeContext.tsx';
 import DashboardDebugFooter from './DashboardDebugFooter/DashboardDebugFooter';
-import { SmartAppLaunchContext } from '../../custom-contexts/SmartAppLaunchContext.tsx';
+import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 
 function DashboardLayout() {
   const { fhirClient } = useContext(SmartAppLaunchContext);

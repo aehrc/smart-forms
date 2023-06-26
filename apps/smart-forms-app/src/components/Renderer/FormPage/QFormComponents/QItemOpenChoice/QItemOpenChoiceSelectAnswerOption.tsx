@@ -20,22 +20,22 @@ import { memo } from 'react';
 import { Autocomplete, Grid } from '@mui/material';
 
 import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../../interfaces/Interfaces';
-import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { getAnswerOptionLabel } from '../../../../../functions/OpenChoiceFunctions';
-import { createEmptyQrItem } from '../../../../../functions/QrItemFunctions';
+import { getAnswerOptionLabel } from '../../../../../features/renderer/utils/openChoice.ts';
+import { createEmptyQrItem } from '../../../../../features/renderer/utils/qrItem.ts';
 import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions';
 import QItemLabel from '../QItemParts/QItemLabel';
 import { StandardTextField } from '../../../../StyledComponents/Textfield.styles';
 import { FullWidthFormComponentBox } from '../../../../StyledComponents/Boxes.styles';
-import useRenderingExtensions from '../../../../../custom-hooks/useRenderingExtensions';
+import useRenderingExtensions from '../../../../../features/renderer/hooks/useRenderingExtensions.ts';
+import type {
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

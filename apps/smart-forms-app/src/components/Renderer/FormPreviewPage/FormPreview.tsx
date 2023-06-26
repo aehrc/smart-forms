@@ -21,11 +21,11 @@ import { QuestionnaireProviderContext } from '../../../App';
 import { RendererContext } from '../RendererLayout';
 import FormInvalid from '../FormPage/FormInvalid';
 import parse from 'html-react-parser';
-import { qrToHTML } from '../../../functions/PreviewFunctions';
-import { removeHiddenAnswers } from '../../../functions/SaveQrFunctions';
-import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
+import { qrToHTML } from '../../../features/preview/utils/preview.ts';
+import { removeHiddenAnswers } from '../../../features/save/api/saveQr.ts';
+import { EnableWhenContext } from '../../../features/enableWhen/contexts/EnableWhenContext.tsx';
 import { Helmet } from 'react-helmet';
-import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
+import { EnableWhenExpressionContext } from '../../../features/enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 
 function FormPreview() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);

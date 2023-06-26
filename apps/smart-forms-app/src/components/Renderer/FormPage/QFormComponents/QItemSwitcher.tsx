@@ -28,13 +28,13 @@ import QItemChoice from './QItemChoice/QItemChoice';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemTime from './QItemSimple/QItemTime';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice';
-import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
+import { EnableWhenContext } from '../../../../features/enableWhen/contexts/EnableWhenContext.tsx';
+import { Typography } from '@mui/material';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
-} from '../../../../interfaces/Interfaces';
-import { Typography } from '@mui/material';
+} from '../../../../features/renderer/types/renderProps.interface.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
