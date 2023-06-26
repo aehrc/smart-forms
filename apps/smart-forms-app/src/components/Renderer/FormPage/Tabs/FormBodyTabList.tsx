@@ -25,6 +25,7 @@ import { getShortText } from '../../../../functions/ItemControlFunctions';
 import { EnableWhenContext } from '../../../../custom-contexts/EnableWhenContext';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
+import { EnableWhenExpressionContext } from '../../../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 interface Props {
   qFormItems: QuestionnaireItem[];
@@ -37,6 +38,7 @@ function FormBodyTabList(props: Props) {
   const { qFormItems, currentTabIndex, hasTabContainer, tabs } = props;
 
   const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
 
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
@@ -44,7 +46,10 @@ function FormBodyTabList(props: Props) {
         <PrimarySelectableList dense disablePadding sx={{ my: 1 }} data-test="renderer-tab-list">
           <TransitionGroup>
             {qFormItems.map((qItem, i) => {
-              if ((!isTab(qItem) && !hasTabContainer) || isHidden(qItem, enableWhenContext)) {
+              if (
+                (!isTab(qItem) && !hasTabContainer) ||
+                isHidden(qItem, enableWhenContext, enableWhenExpressionContext)
+              ) {
                 return null;
               }
 

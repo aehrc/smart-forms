@@ -28,7 +28,10 @@ import { constructName } from './LaunchContextFunctions';
 import dayjs from 'dayjs';
 import { qrToHTML } from './PreviewFunctions';
 import { isHidden } from './QItemFunctions';
-import type { EnableWhenContextType } from '../interfaces/ContextTypes';
+import type {
+  EnableWhenContextType,
+  EnableWhenExpressionContextType
+} from '../interfaces/ContextTypes';
 import { fetchQuestionnaireById, headers } from './LoadServerResourceFunctions';
 import cloneDeep from 'lodash.clonedeep';
 
@@ -165,7 +168,8 @@ function getQuestionnaireName(questionnaire: Questionnaire): string {
 export function removeHiddenAnswers(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
-  enableWhenContext: EnableWhenContextType
+  enableWhenContext: EnableWhenContextType,
+  enableWhenExpressionContext: EnableWhenExpressionContextType
 ): QuestionnaireResponse {
   const topLevelQItems = questionnaire.item;
   const topLevelQRItems = questionnaireResponse.item;
@@ -180,7 +184,12 @@ export function removeHiddenAnswers(
 
   topLevelQRItems.forEach((qrItem, i) => {
     const qItem = topLevelQItems[i];
-    const newTopLevelQRItem = readQuestionnaireResponseItem(qItem, qrItem, enableWhenContext);
+    const newTopLevelQRItem = readQuestionnaireResponseItem(
+      qItem,
+      qrItem,
+      enableWhenContext,
+      enableWhenExpressionContext
+    );
     if (newTopLevelQRItem && questionnaireResponse.item) {
       questionnaireResponse.item[i] = { ...newTopLevelQRItem };
     }
@@ -192,7 +201,8 @@ export function removeHiddenAnswers(
 function readQuestionnaireResponseItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
-  enableWhenContext: EnableWhenContextType
+  enableWhenContext: EnableWhenContextType,
+  enableWhenExpressionContext: EnableWhenExpressionContextType
 ): QuestionnaireResponseItem | null {
   const qItems = qItem.item;
   const qrItems = qrItem.item;
@@ -200,7 +210,7 @@ function readQuestionnaireResponseItem(
   // Process group items
   if (qItems && qItems.length > 0) {
     // Return nothing if corresponding qItem is hidden
-    if (isHidden(qItem, enableWhenContext)) return null;
+    if (isHidden(qItem, enableWhenContext, enableWhenExpressionContext)) return null;
 
     if (qrItems && qrItems.length > 0) {
       const newQrItems: QuestionnaireResponseItem[] = [];
@@ -217,7 +227,8 @@ function readQuestionnaireResponseItem(
           const newQrItem = readQuestionnaireResponseItem(
             qItems[qItemIndex],
             qrItems[qrItemIndex],
-            enableWhenContext
+            enableWhenContext,
+            enableWhenExpressionContext
           );
 
           if (newQrItem) {
@@ -245,5 +256,5 @@ function readQuestionnaireResponseItem(
   }
 
   // Process non-group items
-  return isHidden(qItem, enableWhenContext) ? null : { ...qrItem };
+  return isHidden(qItem, enableWhenContext, enableWhenExpressionContext) ? null : { ...qrItem };
 }

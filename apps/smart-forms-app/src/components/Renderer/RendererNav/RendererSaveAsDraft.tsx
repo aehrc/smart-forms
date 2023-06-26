@@ -25,6 +25,7 @@ import { EnableWhenContext } from '../../../custom-contexts/EnableWhenContext';
 import { OperationItem } from './RendererOperationSection';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
+import { EnableWhenExpressionContext } from '../../../custom-contexts/EnableWhenExpressionContext.tsx';
 
 function RendererSaveAsDraft() {
   const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);
@@ -32,6 +33,7 @@ function RendererSaveAsDraft() {
   const responseProvider = useContext(QuestionnaireResponseProviderContext);
   const { renderer, setRenderer } = useContext(RendererContext);
   const enableWhenContext = useContext(EnableWhenContext);
+  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
 
   const { response, hasChanges } = renderer;
 
@@ -58,7 +60,8 @@ function RendererSaveAsDraft() {
         responseToSave = removeHiddenAnswers(
           questionnaireProvider.questionnaire,
           responseToSave,
-          enableWhenContext
+          enableWhenContext,
+          enableWhenExpressionContext
         );
 
         responseToSave.status = 'in-progress';

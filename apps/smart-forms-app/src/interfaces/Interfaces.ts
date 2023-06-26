@@ -49,6 +49,11 @@ export interface CalculatedExpression {
   value?: number | string;
 }
 
+export interface EnableWhenExpression {
+  expression: string;
+  isEnabled?: boolean;
+}
+
 export interface AnswerExpression {
   expression: string;
   value?: QuestionnaireItemAnswerOption;

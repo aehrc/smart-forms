@@ -38,9 +38,9 @@ export const EnableWhenContext = createContext<EnableWhenContextType>({
 function EnableWhenContextProvider(props: { children: ReactNode }) {
   const { children } = props;
 
-  const [isActivated, toggleActivation] = useState<boolean>(true);
   const [enableWhenItems, setEnableWhenItems] = useState<EnableWhenItems>({});
   const [linkedQuestionsMap, setLinkedQuestionsMap] = useState<Record<string, string[]>>({});
+  const [isActivated, toggleActivation] = useState<boolean>(true);
 
   const enableWhenContext: EnableWhenContextType = {
     items: enableWhenItems,

@@ -53,11 +53,11 @@ function CalculatedExpressionContextProvider(props: { children: ReactNode }) {
       let isUpdated = false;
       const updatedCalculatedExpressions = { ...calculatedExpressions };
       if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
-        const context: Record<string, any> = {};
+        const context: Record<string, any> = { resource: questionnaireResponse };
 
         for (const topLevelItem of questionnaireResponse.item) {
           const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
-          if (variablesTopLevelItem.length > 0) {
+          if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
             variablesTopLevelItem.forEach((variable) => {
               context[`${variable.name}`] = fhirpath.evaluate(
                 topLevelItem,
