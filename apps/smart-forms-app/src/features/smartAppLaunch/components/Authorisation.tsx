@@ -15,15 +15,7 @@
  * limitations under the License.
  */
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  Typography
-} from '@mui/material';
-import { useContext, useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
 import {
   getEncounter,
@@ -32,35 +24,18 @@ import {
   getQuestionnaireReferences,
   getUser,
   responseToQuestionnaireResource
-} from '../../features/smartAppLaunch/utils/launch.ts';
-import { assembleIfRequired } from '../../api/loadServerResources.ts';
-import { postQuestionnaireToSMARTHealthIT } from '../../features/save/api/saveQr.ts';
-import GoToTestLauncher from '../SnackbarActions/GoToTestLauncher';
-import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import { QuestionnaireProviderContext } from '../../App';
+} from '../utils/launch.ts';
+import { assembleIfRequired } from '../../../api/loadServerResources.ts';
+import { postQuestionnaireToSMARTHealthIT } from '../../save/api/saveQr.ts';
+import GoToTestLauncher from '../../../components/SnackbarActions/GoToTestLauncher.tsx';
+import { SmartAppLaunchContext } from '../contexts/SmartAppLaunchContext.tsx';
+import { QuestionnaireProviderContext } from '../../../App.tsx';
 import { useSnackbar } from 'notistack';
-import { SourceContext } from '../../features/debug/contexts/SourceContext.tsx';
+import { SourceContext } from '../../debug/contexts/SourceContext.tsx';
 import { useNavigate } from 'react-router-dom';
-import ProgressSpinner from '../Misc/ProgressSpinner';
-import { StyledRoot } from './Authorisation.styles';
-import ErrorIcon from '@mui/icons-material/Error';
-import Iconify from '../Misc/Iconify';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-interface AuthState {
-  hasClient: boolean | null;
-  hasUser: boolean | null;
-  hasPatient: boolean | null;
-  hasQuestionnaire: boolean | null;
-  errorMessage: string | null;
-}
-
-type AuthActions =
-  | { type: 'UPDATE_HAS_CLIENT'; payload: boolean }
-  | { type: 'UPDATE_HAS_USER'; payload: boolean }
-  | { type: 'UPDATE_HAS_PATIENT'; payload: boolean }
-  | { type: 'UPDATE_HAS_QUESTIONNAIRE'; payload: boolean }
-  | { type: 'FAIL_AUTH'; payload: string };
+import { StyledRoot } from './Authorisation.styles.tsx';
+import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
+import RenderAuthStatus from './RenderAuthStatus.tsx';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {
@@ -113,6 +88,7 @@ function Authorisation() {
           sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
+          // Set patient launch context
           getPatient(client)
             .then((patient) => {
               setPatient(patient);
@@ -126,6 +102,7 @@ function Authorisation() {
               });
             });
 
+          // Set user launch context
           getUser(client)
             .then((user) => {
               setUser(user);
@@ -139,6 +116,7 @@ function Authorisation() {
               });
             });
 
+          // Set encounter launch context
           getEncounter(client)
             .then((encounter) => {
               setEncounter(encounter);
@@ -147,6 +125,7 @@ function Authorisation() {
               console.error(error);
             });
 
+          // Set questionnaire launch context if available
           const questionnaireReferences = getQuestionnaireReferences(client);
 
           if (questionnaireReferences.length > 0) {
@@ -239,49 +218,9 @@ function Authorisation() {
     }
   }, [navigate, state]);
 
-  function RenderAuthStatus() {
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    if (state.hasClient === false || state.hasUser === false || state.hasPatient === false) {
-      return (
-        <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-          <ErrorIcon color="error" sx={{ fontSize: 80 }} />
-          <Box textAlign="center">
-            <Typography variant="subtitle1">Launch failed.</Typography>
-          </Box>
-
-          {state.errorMessage ? (
-            <Accordion expanded={isExpanded} onChange={(_, expanded) => setIsExpanded(expanded)}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography fontWeight={600}>Error details:</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>{state.errorMessage}</Typography>
-              </AccordionDetails>
-            </Accordion>
-          ) : null}
-
-          <Box display="flex" flexDirection="row-reverse" width="100%">
-            <Button
-              variant="contained"
-              endIcon={<Iconify icon="material-symbols:arrow-forward" />}
-              data-test="button-create-response"
-              onClick={() => {
-                navigate('/dashboard/questionnaires');
-              }}>
-              Proceed to app anyway
-            </Button>
-          </Box>
-        </Box>
-      );
-    }
-
-    return <ProgressSpinner message={'Getting ready'} />;
-  }
-
   return (
     <StyledRoot>
-      <RenderAuthStatus />
+      <RenderAuthStatus authState={state} />
     </StyledRoot>
   );
 }

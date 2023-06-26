@@ -25,7 +25,7 @@ import Form from '../components/Renderer/FormPage/Form.tsx';
 import FormPreview from '../components/Renderer/FormPreviewPage/FormPreview.tsx';
 import ViewerLayout from '../components/Viewer/ViewerLayout.tsx';
 import ResponsePreview from '../components/Viewer/ResponsePreview.tsx';
-import Authorisation from '../components/Authorisation/Authorisation.tsx';
+import Authorisation from '../features/smartAppLaunch/components/Authorisation.tsx';
 import PlaygroundLayout from '../components/Playground/PlaygroundLayout.tsx';
 import Playground from '../components/Playground/Playground.tsx';
 
