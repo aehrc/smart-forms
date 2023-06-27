@@ -28,10 +28,11 @@ import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 import { qrToHTML } from '../../preview/utils/preview.ts';
 import { isHidden } from '../../renderer/utils/qItem.ts';
-import { fetchQuestionnaireById, HEADERS } from '../../../api/loadServerResources.ts';
+import { fetchQuestionnaireById } from '../../../api/client.ts';
 import cloneDeep from 'lodash.clonedeep';
 import type { EnableWhenContextType } from '../../enableWhen/types/enableWhenContext.type.ts';
 import type { EnableWhenExpressionContextType } from '../../enableWhenExpression/types/enableWhenExpressionContext.type.ts';
+import { HEADERS } from '../../../api/headers.ts';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed

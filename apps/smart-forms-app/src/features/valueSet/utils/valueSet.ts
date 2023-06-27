@@ -30,9 +30,7 @@ import * as FHIR from 'fhirclient';
 import type { FhirResourceString } from '../../prepopulate/types/populate.interface.ts';
 import type { ValueSetPromise } from '../types/valueSet.interface.ts';
 import type { VariableXFhirQuery } from '../../../providers/questionnaireProvider.interfaces.ts';
-
-const ONTOSERVER_ENDPOINT =
-  import.meta.env.VITE_ONTOSERVER_URL ?? 'https://r4.ontoserver.csiro.au/fhir/';
+import { ONTOSERVER_ENDPOINT } from '../../../utils/env.ts';
 
 const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;

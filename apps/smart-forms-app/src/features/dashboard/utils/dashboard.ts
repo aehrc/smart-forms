@@ -17,18 +17,24 @@
 
 import filter from 'lodash.filter';
 import * as FHIR from 'fhirclient';
-import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type {
+  Bundle,
+  BundleEntry,
+  FhirResource,
+  Questionnaire,
+  QuestionnaireResponse
+} from 'fhir/r4';
 import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
 import { getQuestionnaireNameFromResponse } from '../../renderer/utils/itemControl.ts';
 import type Client from 'fhirclient/lib/Client';
-import { HEADERS } from '../../../api/loadServerResources.ts';
 import type {
   ListItem,
   ListItemWithIndex,
   QuestionnaireListItem,
   ResponseListItem
 } from '../types/list.interface.ts';
+import { HEADERS } from '../../../api/headers.ts';
 
 const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
@@ -116,8 +122,8 @@ export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<
   });
 }
 
-export function getClientBundlePromise(fhirClient: Client, queryUrl: string): Promise<Bundle> {
-  return fhirClient.request({
+export function getClientBundlePromise(client: Client, queryUrl: string): Promise<Bundle> {
+  return client.request({
     url: queryUrl,
     headers: HEADERS
   });
@@ -216,4 +222,18 @@ export function getReferencedQuestionnaire(
     // resource is Questionnaire
     return resource;
   }
+}
+
+export function constructBundle(resources: FhirResource[]): Bundle {
+  const bundleEntries: BundleEntry[] = resources.map((resource) => {
+    return {
+      resource: resource
+    };
+  });
+
+  return {
+    entry: bundleEntries,
+    resourceType: 'Bundle',
+    type: 'collection'
+  };
 }

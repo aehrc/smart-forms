@@ -16,18 +16,18 @@
  */
 
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import DashboardLayout from '../components/Dashboard/DashboardLayout.tsx';
+import DashboardLayout from '../features/dashboard/layout/DashboardLayout.tsx';
 import Launch from '../features/smartAppLaunch/components/Launch.tsx';
-import QuestionnairesPage from '../components/Dashboard/QuestionnairePage/QuestionnairesPage.tsx';
-import ResponsesPage from '../components/Dashboard/ResponsesPage/ResponsesPage.tsx';
-import RendererLayout from '../components/Renderer/RendererLayout.tsx';
-import Form from '../components/Renderer/FormPage/Form.tsx';
-import FormPreview from '../components/Renderer/FormPreviewPage/FormPreview.tsx';
-import ViewerLayout from '../components/Viewer/ViewerLayout.tsx';
-import ResponsePreview from '../components/Viewer/ResponsePreview.tsx';
+import QuestionnairesPage from '../features/dashboard/components/QuestionnairePage/QuestionnairesPage.tsx';
+import ResponsesPage from '../features/dashboard/components/ResponsesPage/ResponsesPage.tsx';
+import RendererLayout from '../features/renderer/components/RendererLayout.tsx';
+import Form from '../features/renderer/components/FormPage/Form.tsx';
+import FormPreview from '../features/renderer/components/FormPreviewPage/FormPreview.tsx';
+import ViewerLayout from '../features/viewer/ViewerLayout.tsx';
+import ResponsePreview from '../features/viewer/ResponsePreview.tsx';
 import Authorisation from '../features/smartAppLaunch/components/Authorisation.tsx';
-import PlaygroundLayout from '../components/Playground/PlaygroundLayout.tsx';
-import Playground from '../components/Playground/Playground.tsx';
+import PlaygroundLayout from '../features/playground/components/PlaygroundLayout.tsx';
+import Playground from '../features/playground/components/Playground.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([

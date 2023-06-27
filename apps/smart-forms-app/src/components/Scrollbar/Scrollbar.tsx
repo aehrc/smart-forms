@@ -21,12 +21,12 @@ import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { StyledRootScrollbar, StyledScrollbar } from './Scrollbar.styles';
 
-interface Props {
+interface ScrollbarProps {
   children: ReactNode;
   sx?: SxProps<Theme>;
 }
 
-function Scrollbar(props: Props) {
+const Scrollbar = memo(function Scrollbar(props: ScrollbarProps) {
   const { children, sx, ...other } = props;
 
   const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent;
@@ -48,6 +48,6 @@ function Scrollbar(props: Props) {
       </StyledScrollbar>
     </StyledRootScrollbar>
   );
-}
+});
 
-export default memo(Scrollbar);
+export default Scrollbar;

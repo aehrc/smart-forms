@@ -25,9 +25,8 @@ import {
   getUser,
   responseToQuestionnaireResource
 } from '../utils/launch.ts';
-import { assembleIfRequired } from '../../../api/loadServerResources.ts';
 import { postQuestionnaireToSMARTHealthIT } from '../../save/api/saveQr.ts';
-import GoToTestLauncher from '../../../components/SnackbarActions/GoToTestLauncher.tsx';
+import GoToTestLauncher from '../../../components/Snackbar/GoToTestLauncher.tsx';
 import { SmartAppLaunchContext } from '../contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext } from '../../../App.tsx';
 import { useSnackbar } from 'notistack';
@@ -36,6 +35,7 @@ import { useNavigate } from 'react-router-dom';
 import { StyledRoot } from './Authorisation.styles.tsx';
 import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
 import RenderAuthStatus from './RenderAuthStatus.tsx';
+import { assembleIfRequired } from '../../assemble/utils/assemble.ts';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {

@@ -17,7 +17,7 @@
 
 import { useSearchParams } from 'react-router-dom';
 import { oauth2 } from 'fhirclient';
-import ProgressSpinner from '../../../components/Misc/ProgressSpinner.tsx';
+import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
 
 function Launch() {
   const [searchParams] = useSearchParams();

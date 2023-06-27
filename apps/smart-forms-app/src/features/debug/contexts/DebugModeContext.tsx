@@ -17,23 +17,28 @@
 
 import type { ReactNode } from 'react';
 import { createContext, useState } from 'react';
-import type { DebugModeContextType } from '../types/debugModeContext.type.ts';
+import { SHOW_DEBUG_MODE } from '../../../utils/env.ts';
+
+export type DebugModeContextType = {
+  isDebugMode: boolean;
+  activateDebugMode: () => unknown;
+};
 
 export const DebugModeContext = createContext<DebugModeContextType>({
-  debugMode: false,
+  isDebugMode: false,
   activateDebugMode: () => void 0
 });
 
-const debugModeEnv: string = import.meta.env.VITE_SHOW_DEBUG_MODE ?? 'false';
+const debugModeEnv: string = SHOW_DEBUG_MODE;
 
 function DebugModeContextProvider(props: { children: ReactNode }) {
   const { children } = props;
 
-  const [debugMode, setDebugMode] = useState(debugModeEnv === 'true');
+  const [isDebugMode, setIsDebugMode] = useState(debugModeEnv === 'true');
 
   const debugModeContext: DebugModeContextType = {
-    debugMode,
-    activateDebugMode: () => setDebugMode(true)
+    isDebugMode: isDebugMode,
+    activateDebugMode: () => setIsDebugMode(true)
   };
 
   return <DebugModeContext.Provider value={debugModeContext}>{children}</DebugModeContext.Provider>;

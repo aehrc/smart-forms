@@ -17,8 +17,9 @@
 
 import type { Extension, OperationOutcome, Parameters, Questionnaire } from 'fhir/r4';
 import { isInputParameters } from 'sdc-assemble';
-import { HEADERS } from '../../../api/loadServerResources.ts';
 import * as FHIR from 'fhirclient';
+import { HEADERS } from '../../../api/headers.ts';
+import { getFormsServerAssembledBundlePromise } from '../../dashboard/utils/dashboard.ts';
 
 const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
@@ -72,4 +73,36 @@ export function updateAssembledQuestionnaire(questionnaire: Questionnaire) {
     body: JSON.stringify(questionnaire),
     headers: HEADERS
   });
+}
+
+export async function assembleIfRequired(
+  questionnaire: Questionnaire
+): Promise<Questionnaire | null> {
+  // get assembled version of questionnaire if assembled-expectation extension exists
+  const assembleRequired = assemblyIsRequired(questionnaire);
+  if (assembleRequired) {
+    // check for existing assembled questionnaires
+    const queryUrl = `/Questionnaire?_sort=-date&url=${questionnaire.url}&version=${questionnaire.version}-assembled`;
+    const bundle = await getFormsServerAssembledBundlePromise(queryUrl);
+
+    // if there is an assembled questionnaire, return it
+    if (bundle.entry && bundle.entry.length > 0) {
+      const firstQuestionnaire = bundle.entry[0].resource;
+      if (firstQuestionnaire) {
+        return firstQuestionnaire as Questionnaire;
+      }
+    }
+
+    // If not, perform assemble on-the-fly and save it to forms server
+    const resource = await assembleQuestionnaire(questionnaire);
+    if (resource.resourceType === 'OperationOutcome') return null;
+
+    // at this point, assembly is successful
+    // save assembled questionnaire to forms server and return it
+    await updateAssembledQuestionnaire(questionnaire);
+    return resource;
+  }
+
+  // questionnaire does not require assembly, return as usual
+  return questionnaire;
 }

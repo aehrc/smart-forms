@@ -23,7 +23,7 @@ import {
   getValueSetCodings,
   getValueSetPromise
 } from '../../valueSet/utils/valueSet.ts';
-import { PreprocessedValueSetContext } from '../../../components/Renderer/FormPage/Form.tsx';
+import { PreprocessedValueSetContext } from '../components/FormPage/Form.tsx';
 import { CachedQueriedValueSetContext } from '../../valueSet/contexts/CachedQueriedValueSetContext.tsx';
 import { getAnswerExpression } from '../utils/itemControl.ts';
 import { QuestionnaireProviderContext } from '../../../App.tsx';
