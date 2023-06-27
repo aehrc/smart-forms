@@ -23,6 +23,7 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { QuestionnaireProviderContext } from '../../../App.tsx';
 import type { CalculatedExpressionContextType } from '../types/calculatedExpressionContext.type.ts';
 import type { CalculatedExpression } from '../types/calculatedExpression.interface.ts';
+import { createFhirPathContext } from '../../../utils/fhirpath.ts';
 
 export const CalculatedExpressionContext = createContext<CalculatedExpressionContextType>({
   calculatedExpressions: {},
@@ -53,24 +54,10 @@ function CalculatedExpressionContextProvider(props: { children: ReactNode }) {
       let isUpdated = false;
       const updatedCalculatedExpressions = { ...calculatedExpressions };
       if (Object.keys(calculatedExpressions).length > 0 && questionnaireResponse.item) {
-        const context: Record<string, any> = { resource: questionnaireResponse };
-
-        for (const topLevelItem of questionnaireResponse.item) {
-          const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
-          if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
-            variablesTopLevelItem.forEach((variable) => {
-              context[`${variable.name}`] = fhirpath.evaluate(
-                topLevelItem,
-                {
-                  base: 'QuestionnaireResponse.item',
-                  expression: `${variable.expression}`
-                },
-                context,
-                fhirpath_r4_model
-              );
-            });
-          }
-        }
+        const fhirPathContext: Record<string, any> = createFhirPathContext(
+          questionnaireResponse,
+          variablesFhirPath
+        );
 
         // Update calculatedExpressions
         if (Object.keys(context).length > 0) {
@@ -78,7 +65,7 @@ function CalculatedExpressionContextProvider(props: { children: ReactNode }) {
             const result = fhirpath.evaluate(
               questionnaireResponse,
               calculatedExpressions[linkId].expression,
-              context,
+              fhirPathContext,
               fhirpath_r4_model
             );
 

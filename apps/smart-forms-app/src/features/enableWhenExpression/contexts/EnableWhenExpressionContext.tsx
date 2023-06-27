@@ -22,6 +22,7 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { EnableWhenExpressionContextType } from '../types/enableWhenExpressionContext.type.ts';
 import type { EnableWhenExpression } from '../../enableWhen/types/enableWhen.interface.ts';
+import { createFhirPathContext } from '../../../utils/fhirpath.ts';
 
 export const EnableWhenExpressionContext = createContext<EnableWhenExpressionContextType>({
   enableWhenExpressions: {},
@@ -42,25 +43,11 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
       variablesFhirPath: Record<string, Expression[]>
     ) => {
       const initialItems: Record<string, EnableWhenExpression> = { ...enableWhenExpressions };
-      if (Object.keys(initialItems).length > 0 && questionnaireResponse.item) {
-        const context: Record<string, any> = { resource: questionnaireResponse };
-
-        for (const topLevelItem of questionnaireResponse.item) {
-          const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
-          if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
-            variablesTopLevelItem.forEach((variable) => {
-              context[`${variable.name}`] = fhirpath.evaluate(
-                topLevelItem,
-                {
-                  base: 'QuestionnaireResponse.item',
-                  expression: `${variable.expression}`
-                },
-                context,
-                fhirpath_r4_model
-              );
-            });
-          }
-        }
+      if (Object.keys(initialItems).length > 0) {
+        const fhirPathContext: Record<string, any> = createFhirPathContext(
+          questionnaireResponse,
+          variablesFhirPath
+        );
 
         for (const [linkId, enableWhenExpression] of Object.entries(initialItems)) {
           const fhirPathExpression = enableWhenExpression.expression;
@@ -68,7 +55,7 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
           const result = fhirpath.evaluate(
             questionnaireResponse,
             fhirPathExpression,
-            context,
+            fhirPathContext,
             fhirpath_r4_model
           );
 
@@ -93,24 +80,10 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
       let isUpdated = false;
       const updatedItems = { ...items };
       if (Object.keys(items).length > 0 && questionnaireResponse.item) {
-        const context: Record<string, any> = { resource: questionnaireResponse };
-
-        for (const topLevelItem of questionnaireResponse.item) {
-          const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
-          if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
-            variablesTopLevelItem.forEach((variable) => {
-              context[`${variable.name}`] = fhirpath.evaluate(
-                topLevelItem,
-                {
-                  base: 'QuestionnaireResponse.item',
-                  expression: `${variable.expression}`
-                },
-                context,
-                fhirpath_r4_model
-              );
-            });
-          }
-        }
+        const fhirPathContext: Record<string, any> = createFhirPathContext(
+          questionnaireResponse,
+          variablesFhirPath
+        );
 
         for (const [linkId, enableWhenExpression] of Object.entries(updatedItems)) {
           const fhirPathExpression = enableWhenExpression.expression;
@@ -118,7 +91,7 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
           const result = fhirpath.evaluate(
             questionnaireResponse,
             fhirPathExpression,
-            context,
+            fhirPathContext,
             fhirpath_r4_model
           );
 
