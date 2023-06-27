@@ -109,7 +109,7 @@ View the page here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [ ] initial
 - [x] enableWhen
 - [x] enableBehavior
-- [ ] enableWhenExpression
+- [x] enableWhenExpression
 - [ ] usageMode
 - [ ] constraint
 - [ ] endpoint
