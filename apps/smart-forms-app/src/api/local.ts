@@ -18,7 +18,7 @@
 import QCvdRisk2023 from '../data/resources/CVD-Risk-2023.json';
 import QTestAssembled715 from '../data/resources/TestAssembled715.json';
 import QAboriginalTorresStraitIslanderHealthCheckAssembled from '../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
 /**
  * FOR TESTING ONLY

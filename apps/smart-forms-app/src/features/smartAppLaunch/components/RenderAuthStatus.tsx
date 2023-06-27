@@ -29,7 +29,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
 import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
 import { useNavigate } from 'react-router-dom';
-import { AuthState } from '../types/authorisation.interface.ts';
+import type { AuthState } from '../types/authorisation.interface.ts';
 
 interface RenderAuthStatusProps {
   authState: AuthState;

@@ -24,7 +24,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { QuestionnaireProviderContext } from '../../../../App.tsx';
-import { OperationItem } from '../../../../types/Nav.interface.ts';
+import type { OperationItem } from '../../../../types/Nav.interface.ts';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
 
 function RendererOperationSection() {

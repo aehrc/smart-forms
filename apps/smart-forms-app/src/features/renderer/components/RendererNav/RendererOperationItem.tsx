@@ -16,7 +16,7 @@
  */
 
 import { ListItemButton, ListItemText, useTheme } from '@mui/material';
-import { OperationItem } from '../../../../types/Nav.interface.ts';
+import type { OperationItem } from '../../../../types/Nav.interface.ts';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
 
 function RendererOperationItem(props: OperationItem) {
