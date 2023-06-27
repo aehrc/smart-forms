@@ -60,7 +60,7 @@ function CalculatedExpressionContextProvider(props: { children: ReactNode }) {
         );
 
         // Update calculatedExpressions
-        if (Object.keys(context).length > 0) {
+        if (Object.keys(fhirPathContext).length > 0) {
           for (const linkId in calculatedExpressions) {
             const result = fhirpath.evaluate(
               questionnaireResponse,

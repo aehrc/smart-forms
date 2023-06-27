@@ -39,7 +39,7 @@ export function createFhirPathContext(
             base: 'QuestionnaireResponse.item',
             expression: `${variable.expression}`
           },
-          context,
+          fhirPathContext,
           fhirpath_r4_model
         );
       });
