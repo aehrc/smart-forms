@@ -16,7 +16,8 @@
  */
 
 import { Typography } from '@mui/material';
-import { StyledAlert } from '../StyledComponents/Nav.styles';
+
+import { StyledAlert } from './Nav.styles.ts';
 
 interface Props {
   message: string;
