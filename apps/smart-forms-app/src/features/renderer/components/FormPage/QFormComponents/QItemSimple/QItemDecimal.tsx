@@ -37,7 +37,10 @@ import type {
 import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
 import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 import useDecimalCalculatedExpression from '../../../../../calculatedExpression/hooks/useDecimalCalculatedExpression.ts';
-import { parseValidNumericString } from '../../../../utils/validate.ts';
+import {
+  parseDecimalStringToFloat,
+  parseDecimalStringWithPrecision
+} from '../../../../utils/parseInputs.ts';
 
 interface QItemDecimalProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -86,25 +89,7 @@ const QItemDecimal = memo(function QItemDecimal(props: QItemDecimalProps) {
   });
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    let input = event.target.value;
-    input = parseValidNumericString(input);
-
-    let parsedInput = parseFloat(input).toString();
-
-    // restore decimal digits if parseFloat() removes them
-    const decimalPoint = input.indexOf('.');
-    if (decimalPoint !== -1) {
-      const decimalDigits = input.slice(decimalPoint);
-      if (parsedInput.indexOf('.') === -1) {
-        parsedInput += decimalDigits;
-      }
-    }
-
-    // truncate decimal digits based on precision
-    const parsedDecimalPoint = input.indexOf('.');
-    if (precision && parsedDecimalPoint !== -1) {
-      parsedInput = parsedInput.substring(0, parsedDecimalPoint + precision + 1);
-    }
+    const parsedInput: string = parseDecimalStringWithPrecision(event.target.value, precision);
 
     setInput(parsedInput);
     updateQrItemWithDebounce(parsedInput);
@@ -116,7 +101,7 @@ const QItemDecimal = memo(function QItemDecimal(props: QItemDecimalProps) {
       onQrItemChange({
         ...createEmptyQrItemWithUnit(qItem, displayUnit),
         answer: precision
-          ? [{ valueDecimal: parseFloat(parseFloat(input).toFixed(precision)) }]
+          ? [{ valueDecimal: parseDecimalStringToFloat(input, precision) }]
           : [{ valueDecimal: parseFloat(input) }]
       });
     }, DEBOUNCE_DURATION),

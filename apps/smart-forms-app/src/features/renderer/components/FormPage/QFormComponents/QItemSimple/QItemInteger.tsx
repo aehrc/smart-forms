@@ -34,7 +34,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import useIntegerCalculatedExpression from '../../../../../calculatedExpression/hooks/useIntegerCalculatedExpression.ts';
-import { parseValidInteger } from '../../../../utils/validate.ts';
+import { parseValidInteger } from '../../../../utils/parseInputs.ts';
 import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
 import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 
@@ -105,7 +105,7 @@ const QItemInteger = memo(function QItemInteger(props: QItemIntegerProps) {
   const integerInput = (
     <StandardTextField
       id={qItem.linkId}
-      value={input}
+      value={input.toString()}
       error={!!feedback}
       onFocus={() => onFieldFocus(true)}
       onBlur={() => onFieldFocus(false)}

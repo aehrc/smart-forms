@@ -29,3 +29,30 @@ export function parseValidNumericString(input: string): string {
 
   return input;
 }
+
+export function parseDecimalStringWithPrecision(input: string, precision: number | null): string {
+  input = parseValidNumericString(input);
+
+  let parsedInput = parseFloat(input).toString();
+
+  // restore decimal digits if parseFloat() removes them
+  const decimalPoint = input.indexOf('.');
+  if (decimalPoint !== -1) {
+    const decimalDigits = input.slice(decimalPoint);
+    if (parsedInput.indexOf('.') === -1) {
+      parsedInput += decimalDigits;
+    }
+  }
+
+  // truncate decimal digits based on precision
+  const parsedDecimalPoint = input.indexOf('.');
+  if (precision && parsedDecimalPoint !== -1) {
+    parsedInput = parsedInput.substring(0, parsedDecimalPoint + precision + 1);
+  }
+
+  return parsedInput;
+}
+
+export function parseDecimalStringToFloat(input: string, precision: number): number {
+  return parseFloat(parseFloat(input).toFixed(precision));
+}
