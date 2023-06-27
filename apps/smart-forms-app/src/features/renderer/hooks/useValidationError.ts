@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
+import { useState } from 'react';
+
 function useValidationError(
   input: string,
-  focused: boolean,
   regexValidation: RegExp | null,
   maxLength: number | null
-): { feedback: string } {
+): { feedback: string; onFieldFocus: (focused: boolean) => void } {
+  const [focused, setFocused] = useState(false);
+
   let feedback = '';
 
   if (input && !focused) {
@@ -39,7 +42,7 @@ function useValidationError(
     }
   }
 
-  return { feedback };
+  return { feedback, onFieldFocus: setFocused };
 }
 
 export default useValidationError;

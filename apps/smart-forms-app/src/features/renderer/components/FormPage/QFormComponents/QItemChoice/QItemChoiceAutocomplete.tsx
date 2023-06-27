@@ -39,8 +39,9 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 
-interface Props
+interface QItemChoiceAutocompleteProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -48,7 +49,9 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemChoiceAutocomplete(props: Props) {
+const QItemChoiceAutocomplete = memo(function QItemChoiceAutocomplete(
+  props: QItemChoiceAutocompleteProps
+) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem);
 
@@ -66,7 +69,7 @@ function QItemChoiceAutocomplete(props: Props) {
   const maxList = 10;
 
   const [input, setInput] = useState('');
-  const debouncedInput = useDebounce(input, 200);
+  const debouncedInput = useDebounce(input, AUTOCOMPLETE_DEBOUNCE_DURATION);
 
   const answerValueSetUrl = qItem.answerValueSet;
   const terminologyServerUrl = getTerminologyServerUrl(qItem);
@@ -171,6 +174,6 @@ function QItemChoiceAutocomplete(props: Props) {
     </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceAutocomplete}</>;
-}
+});
 
-export default memo(QItemChoiceAutocomplete);
+export default QItemChoiceAutocomplete;

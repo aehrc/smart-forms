@@ -16,8 +16,8 @@
  */
 
 import type { ChangeEvent } from 'react';
-import { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { Fade, Grid, InputAdornment } from '@mui/material';
+import { memo, useCallback, useState } from 'react';
+import { Grid, InputAdornment } from '@mui/material';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItemWithUnit } from '../../../../utils/qrItem.ts';
@@ -26,8 +26,6 @@ import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import debounce from 'lodash.debounce';
-import CheckIcon from '@mui/icons-material/Check';
-import { CalculatedExpressionContext } from '../../../../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import useValidationError from '../../../../hooks/useValidationError.ts';
 import { getDecimalPrecision } from '../../../../utils/itemControl.ts';
@@ -36,8 +34,12 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
+import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
+import useDecimalCalculatedExpression from '../../../../../calculatedExpression/hooks/useDecimalCalculatedExpression.ts';
+import { parseValidNumericString } from '../../../../utils/validate.ts';
 
-interface Props
+interface QItemDecimalProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -45,7 +47,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemDecimal(props: Props) {
+const QItemDecimal = memo(function QItemDecimal(props: QItemDecimalProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
@@ -70,52 +72,22 @@ function QItemDecimal(props: Props) {
   const [input, setInput] = useState(initialInput);
 
   // Perform validation checks
-  const [focused, setFocused] = useState(false);
-  const { feedback } = useValidationError(input, focused, regexValidation, maxLength);
+  const { feedback, onFieldFocus } = useValidationError(input, regexValidation, maxLength);
 
-  // Update input value if calculated expression changes
-  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
-  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
-
-  useEffect(
-    () => {
-      const calcExpression = calculatedExpressions[qItem.linkId];
-
-      if (calcExpression?.value && typeof calcExpression?.value === 'number') {
-        const value = precision
-          ? parseFloat(calcExpression.value.toFixed(precision))
-          : calcExpression.value;
-
-        // only update if calculated value is different from current value
-        if (value !== parseFloat(input)) {
-          // update ui to show calculated value changes
-          setCalExpIsCalculating(true);
-          setTimeout(() => {
-            setCalExpIsCalculating(false);
-          }, 500);
-
-          // update questionnaireResponse
-          setInput(precision ? value.toFixed(precision) : value.toString());
-          onQrItemChange({
-            ...createEmptyQrItemWithUnit(qItem, displayUnit),
-            answer: [{ valueDecimal: value }]
-          });
-        }
-      }
+  const { calExpIsCalculating } = useDecimalCalculatedExpression({
+    qItem: qItem,
+    inputValue: input,
+    displayUnit: displayUnit,
+    precision: precision,
+    setInputValue: (value) => {
+      setInput(value);
     },
-    // Only trigger this effect if calculatedExpression changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [calculatedExpressions]
-  );
+    onQrItemChange: onQrItemChange
+  });
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     let input = event.target.value;
-
-    // set input as 0 if no number in input
-    const hasNumber = /\d/;
-    if (!hasNumber.test(input)) {
-      input = '0';
-    }
+    input = parseValidNumericString(input);
 
     let parsedInput = parseFloat(input).toString();
 
@@ -147,7 +119,7 @@ function QItemDecimal(props: Props) {
           ? [{ valueDecimal: parseFloat(parseFloat(input).toFixed(precision)) }]
           : [{ valueDecimal: parseFloat(input) }]
       });
-    }, 200),
+    }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem, displayUnit, precision]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
@@ -156,8 +128,8 @@ function QItemDecimal(props: Props) {
       id={qItem.linkId}
       value={input}
       error={!!feedback}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
+      onFocus={() => onFieldFocus(true)}
+      onBlur={() => onFieldFocus(false)}
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
@@ -171,9 +143,7 @@ function QItemDecimal(props: Props) {
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>
-            <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
-              <CheckIcon color="success" fontSize="small" />
-            </Fade>
+            <FadingCheckIcon fadeIn={calExpIsCalculating} />
             {displayUnit}
           </InputAdornment>
         )
@@ -198,6 +168,6 @@ function QItemDecimal(props: Props) {
     </FullWidthFormComponentBox>
   );
   return <>{renderQItemDecimal}</>;
-}
+});
 
-export default memo(QItemDecimal);
+export default QItemDecimal;

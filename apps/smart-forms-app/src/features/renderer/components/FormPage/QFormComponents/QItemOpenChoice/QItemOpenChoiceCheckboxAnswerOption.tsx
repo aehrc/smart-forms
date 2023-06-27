@@ -37,6 +37,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,7 +47,9 @@ interface QItemOpenChoiceCheckboxProps
   orientation: QItemChoiceOrientation;
 }
 
-function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
+const QItemOpenChoiceCheckboxAnswerOption = memo(function QItemOpenChoiceCheckboxAnswerOption(
+  props: QItemOpenChoiceCheckboxProps
+) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init answers
@@ -106,12 +109,13 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
     [answerOptions, answers, isRepeated, onQrItemChange, qrOpenChoiceCheckbox]
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateOpenLabelValueWithDebounce = useCallback(
     debounce((input: string) => {
       handleValueChange(null, input);
-    }, 200),
+    }, DEBOUNCE_DURATION),
     [handleValueChange]
-  );
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const openChoiceCheckbox = (
     <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
@@ -187,6 +191,6 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
       </Grid>
     </FullWidthFormComponentBox>
   );
-}
+});
 
-export default memo(QItemOpenChoiceCheckboxAnswerOption);
+export default QItemOpenChoiceCheckboxAnswerOption;

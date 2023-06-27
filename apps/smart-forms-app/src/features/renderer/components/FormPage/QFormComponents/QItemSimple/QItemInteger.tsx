@@ -16,8 +16,8 @@
  */
 
 import type { ChangeEvent } from 'react';
-import { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { Fade, Grid, InputAdornment } from '@mui/material';
+import { memo, useCallback, useState } from 'react';
+import { Grid, InputAdornment } from '@mui/material';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItemWithUnit } from '../../../../utils/qrItem.ts';
@@ -26,8 +26,6 @@ import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import debounce from 'lodash.debounce';
-import CheckIcon from '@mui/icons-material/Check';
-import { CalculatedExpressionContext } from '../../../../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import useValidationError from '../../../../hooks/useValidationError.ts';
 import type {
@@ -35,8 +33,12 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import useIntegerCalculatedExpression from '../../../../../calculatedExpression/hooks/useIntegerCalculatedExpression.ts';
+import { parseValidInteger } from '../../../../utils/validate.ts';
+import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
+import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 
-interface Props
+interface QItemIntegerProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -44,7 +46,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemInteger(props: Props) {
+const QItemInteger = memo(function QItemInteger(props: QItemIntegerProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
@@ -66,47 +68,25 @@ function QItemInteger(props: Props) {
   const [input, setInput] = useState(valueInteger);
 
   // Perform validation checks
-  const [focused, setFocused] = useState(false);
-  const { feedback } = useValidationError(input.toString(), focused, regexValidation, maxLength);
-
-  // Update input value if calculated expression changes
-  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
-  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
-
-  useEffect(
-    () => {
-      const calcExpression = calculatedExpressions[qItem.linkId];
-
-      // only update if calculated value is different from current value
-      if (calcExpression?.value !== input && typeof calcExpression?.value === 'number') {
-        // update ui to show calculated value changes
-        setCalExpIsCalculating(true);
-        setTimeout(() => {
-          setCalExpIsCalculating(false);
-        }, 500);
-
-        // update questionnaireResponse
-        setInput(calcExpression.value);
-        onQrItemChange({
-          ...createEmptyQrItemWithUnit(qItem, displayUnit),
-          answer: [{ valueInteger: calcExpression.value }]
-        });
-      }
-    },
-    // Only trigger this effect if calculatedExpression of item changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [calculatedExpressions]
+  const { feedback, onFieldFocus } = useValidationError(
+    input.toString(),
+    regexValidation,
+    maxLength
   );
 
+  const { calExpIsCalculating } = useIntegerCalculatedExpression({
+    qItem: qItem,
+    inputValue: input,
+    displayUnit: displayUnit,
+    setInputValue: (value) => {
+      setInput(value);
+    },
+    onQrItemChange: onQrItemChange
+  });
+
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    let newInput = event.target.value;
+    const inputNumber = parseValidInteger(event.target.value);
 
-    const hasNumber = /\d/;
-    if (!hasNumber.test(newInput)) {
-      newInput = '0';
-    }
-
-    const inputNumber = parseInt(newInput);
     setInput(inputNumber);
     updateQrItemWithDebounce(inputNumber);
   }
@@ -118,7 +98,7 @@ function QItemInteger(props: Props) {
         ...createEmptyQrItemWithUnit(qItem, displayUnit),
         answer: [{ valueInteger: inputNumber }]
       });
-    }, 200),
+    }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem, displayUnit]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
@@ -127,8 +107,8 @@ function QItemInteger(props: Props) {
       id={qItem.linkId}
       value={input}
       error={!!feedback}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
+      onFocus={() => onFieldFocus(true)}
+      onBlur={() => onFieldFocus(false)}
       onChange={handleChange}
       disabled={readOnly}
       label={displayPrompt}
@@ -139,9 +119,7 @@ function QItemInteger(props: Props) {
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>
-            <Fade in={calExpIsCalculating} timeout={{ enter: 100, exit: 300 }}>
-              <CheckIcon color="success" fontSize="small" />
-            </Fade>
+            <FadingCheckIcon fadeIn={calExpIsCalculating} />
             {displayUnit}
           </InputAdornment>
         )
@@ -167,6 +145,6 @@ function QItemInteger(props: Props) {
   );
 
   return <>{renderQItemInteger}</>;
-}
+});
 
-export default memo(QItemInteger);
+export default QItemInteger;

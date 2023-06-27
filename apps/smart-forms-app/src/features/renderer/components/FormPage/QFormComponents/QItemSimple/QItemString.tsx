@@ -33,6 +33,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -42,7 +43,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemString(props: Props) {
+const QItemString = memo(function QItemString(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
@@ -64,8 +65,7 @@ function QItemString(props: Props) {
   const [input, setInput] = useState(valueString);
 
   // Perform validation checks
-  const [focused, setFocused] = useState(false);
-  const { feedback } = useValidationError(input, focused, regexValidation, maxLength);
+  const { feedback, onFieldFocus } = useValidationError(input, regexValidation, maxLength);
 
   // Event handlers
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
@@ -82,7 +82,7 @@ function QItemString(props: Props) {
       } else {
         onQrItemChange(createEmptyQrItem(qItem));
       }
-    }, 200),
+    }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
@@ -93,8 +93,8 @@ function QItemString(props: Props) {
       id={qItem.linkId}
       value={input}
       error={!!feedback}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
+      onFocus={() => onFieldFocus(true)}
+      onBlur={() => onFieldFocus(false)}
       onChange={handleChange}
       label={displayPrompt}
       placeholder={entryFormat}
@@ -122,6 +122,6 @@ function QItemString(props: Props) {
   );
 
   return <>{renderQItemString}</>;
-}
+});
 
-export default memo(QItemString);
+export default QItemString;
