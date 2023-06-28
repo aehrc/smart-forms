@@ -106,46 +106,6 @@ export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
 }
 
 /**
- * Check if an calculatedExpression extension is present
- *
- * @author Sean Fong
- */
-export function getCalculatedExpression(qItem: QuestionnaireItem): Expression | null {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url ===
-        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' &&
-      extension.valueExpression?.language === 'text/fhirpath'
-  );
-  if (itemControl) {
-    if (itemControl.valueExpression) {
-      return itemControl.valueExpression;
-    }
-  }
-  return null;
-}
-
-/**
- * Check if an enableWhenExpression extension is present
- *
- * @author Sean Fong
- */
-export function getEnableWhenExpression(qItem: QuestionnaireItem): Expression | null {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url ===
-        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression' &&
-      extension.valueExpression?.language === 'text/fhirpath'
-  );
-  if (itemControl) {
-    if (itemControl.valueExpression) {
-      return itemControl.valueExpression;
-    }
-  }
-  return null;
-}
-
-/**
  * Check if an answerExpression extension is present
  *
  * @author Sean Fong
@@ -376,40 +336,4 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegExp | null {
  */
 export function getMaxLength(qItem: QuestionnaireItem): number | null {
   return qItem.maxLength ?? null;
-}
-
-/**
- * Get x-fhir-query variables from an array of extensions
- *
- * @author Sean Fong
- */
-export function getXFhirQueryVariables(extensions: Extension[]): Expression[] {
-  return (
-    extensions
-      .filter(
-        (extension) =>
-          extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
-          extension.valueExpression?.language === 'application/x-fhir-query'
-      )
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .map((extension) => extension.valueExpression!)
-  );
-}
-
-/**
- * Get fhirpath variables from an array of extensions
- *
- * @author Sean Fong
- */
-export function getFhirPathVariables(extensions: Extension[]): Expression[] {
-  return (
-    extensions
-      .filter(
-        (extension) =>
-          extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
-          extension.valueExpression?.language === 'text/fhirpath'
-      )
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .map((extension) => extension.valueExpression!)
-  );
 }

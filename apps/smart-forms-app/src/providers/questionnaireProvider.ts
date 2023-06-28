@@ -16,20 +16,12 @@
  */
 
 import type { Coding, Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { getEnableWhenItemProperties } from '../features/enableWhen/utils/enableWhen.ts';
-import {
-  getAnswerExpression,
-  getCalculatedExpression,
-  getEnableWhenExpression,
-  getFhirPathVariables,
-  getXFhirQueryVariables
-} from '../features/renderer/utils/itemControl.ts';
+import { getAnswerExpression } from '../features/renderer/utils/itemControl.ts';
 import {
   createValueSetToXFhirQueryVariableNameMap,
   getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise,
-  getValueSetUrlFromContained,
   resolvePromises
 } from '../features/valueSet/utils/valueSet.ts';
 import type { LaunchContext } from '../features/prepopulate/types/populate.interface.ts';
@@ -44,6 +36,16 @@ import type { ValueSetPromise } from '../features/valueSet/types/valueSet.interf
 import type { Variables } from './questionnaireProvider.interfaces.ts';
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 import { constructTabsWithProperties, isTabContainer } from '../features/renderer/utils/tabs.ts';
+import {
+  getFhirPathVariables,
+  getXFhirQueryVariables
+} from '../features/preprocess/utils/preprocessQuestionnaire/extractVariables.ts';
+import { getValueSetUrlFromContained } from '../features/preprocess/utils/preprocessQuestionnaire/extractContainedValueSets.ts';
+import {
+  getCalculatedExpression,
+  getEnableWhenExpression,
+  getEnableWhenItemProperties
+} from '../features/preprocess/utils/preprocessQuestionnaire/extractOtherExtensions.ts';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;

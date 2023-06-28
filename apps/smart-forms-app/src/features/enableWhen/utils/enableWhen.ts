@@ -17,18 +17,13 @@
 
 import type {
   Quantity,
-  QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import cloneDeep from 'lodash.clonedeep';
-import type {
-  EnableWhenItemProperties,
-  EnableWhenItems,
-  EnableWhenLinkedItem
-} from '../types/enableWhen.interface.ts';
+import type { EnableWhenItemProperties, EnableWhenItems } from '../types/enableWhen.interface.ts';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items
@@ -261,28 +256,4 @@ export function checkItemIsEnabled(enableWhenItemProperties: EnableWhenItemPrope
   return enableWhenItemProperties.enableBehavior === 'any'
     ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
     : checkedIsEnabledItems.every((isEnabled) => isEnabled);
-}
-
-/**
- * Get enableWhen items' linked items and enableBehaviour attribute and save them in an EnableWhenItemProperties object
- *
- * @author Sean Fong
- */
-export function getEnableWhenItemProperties(
-  qItem: QuestionnaireItem
-): EnableWhenItemProperties | null {
-  const enableWhen = qItem.enableWhen;
-  if (enableWhen) {
-    const enableWhenItemProperties: EnableWhenItemProperties = { linked: [], isEnabled: false };
-    enableWhenItemProperties.linked = enableWhen.map((linkedItem): EnableWhenLinkedItem => {
-      return { enableWhen: linkedItem };
-    });
-
-    if (qItem.enableBehavior) {
-      enableWhenItemProperties.enableBehavior = qItem.enableBehavior;
-    }
-
-    return enableWhenItemProperties;
-  }
-  return null;
 }
