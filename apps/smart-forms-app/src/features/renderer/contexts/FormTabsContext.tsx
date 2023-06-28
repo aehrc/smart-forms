@@ -14,18 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Expression, QuestionnaireResponse } from 'fhir/r4';
-import type { EnableWhenExpression } from '../../enableWhen/types/enableWhen.interface.ts';
+import { createContext } from 'react';
+import type { Tabs } from '../types/tab.interface.ts';
 
-export type EnableWhenExpressionContextType = {
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
-  initEnableWhenExpressions: (
-    enableWhenExpressions: Record<string, EnableWhenExpression>,
-    questionnaireResponse: QuestionnaireResponse,
-    variablesFhirPath: Record<string, Expression[]>
-  ) => Record<string, EnableWhenExpression>;
-  updateEnableWhenExpressions: (
-    questionnaireResponse: QuestionnaireResponse,
-    variablesFhirPath: Record<string, Expression[]>
-  ) => unknown;
+export type FormTabContextType = {
+  tabs: Tabs;
+  currentTab: number;
+  formHasTabs: () => boolean;
+  switchTab: (updatedIndex: number) => unknown;
+  markTabAsComplete: (linkId: string) => unknown;
 };
+
+export const FormTabsContext = createContext<FormTabContextType>({
+  tabs: {},
+  currentTab: 0,
+  formHasTabs: () => false,
+  switchTab: () => void 0,
+  markTabAsComplete: () => void 0
+});

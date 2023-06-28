@@ -42,9 +42,12 @@ import type {
 } from '../features/enableWhen/types/enableWhen.interface.ts';
 import type { ValueSetPromise } from '../features/valueSet/types/valueSet.interface.ts';
 import type { Variables } from './questionnaireProvider.interfaces.ts';
+import type { Tabs } from '../features/renderer/types/tab.interface.ts';
+import { constructTabsWithProperties, isTabContainer } from '../features/renderer/utils/tabs.ts';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
+  tabs: Tabs;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
   calculatedExpressions: Record<string, CalculatedExpression>;
@@ -58,6 +61,7 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'draft'
     };
+    this.tabs = {};
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
@@ -72,6 +76,7 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'draft'
     };
+    this.tabs = {};
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
@@ -82,6 +87,7 @@ export class QuestionnaireProvider {
   }
 
   async setQuestionnaire(questionnaire: Questionnaire): Promise<void> {
+    this.tabs = {};
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
@@ -149,6 +155,16 @@ export class QuestionnaireProvider {
         }
       }
     }
+
+    // Check if the questionnaire's top-level items are tab containers or have any tabs
+    this.questionnaire.item.forEach((topLevelItem) => {
+      const items = topLevelItem.item;
+      const topLevelItemIsTabContainer = isTabContainer(topLevelItem);
+
+      const tabs = constructTabsWithProperties(items, topLevelItemIsTabContainer);
+
+      this.tabs = { ...this.tabs, ...tabs };
+    });
 
     // Recursively read enableWhen items, calculated expressions, enableWhen expressions and valueSets to be expanded
     this.questionnaire.item.forEach((item) => {

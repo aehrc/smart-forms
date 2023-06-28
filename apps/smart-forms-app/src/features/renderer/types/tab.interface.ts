@@ -14,18 +14,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Expression, QuestionnaireResponse } from 'fhir/r4';
-import type { EnableWhenExpression } from '../../enableWhen/types/enableWhen.interface.ts';
-
-export type EnableWhenExpressionContextType = {
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
-  initEnableWhenExpressions: (
-    enableWhenExpressions: Record<string, EnableWhenExpression>,
-    questionnaireResponse: QuestionnaireResponse,
-    variablesFhirPath: Record<string, Expression[]>
-  ) => Record<string, EnableWhenExpression>;
-  updateEnableWhenExpressions: (
-    questionnaireResponse: QuestionnaireResponse,
-    variablesFhirPath: Record<string, Expression[]>
-  ) => unknown;
-};
+export type Tab = { tabIndex: number; isComplete: boolean; isHidden: boolean };
+export type Tabs = Record<string, Tab>;

@@ -30,7 +30,7 @@ export const EnableWhenContext = createContext<EnableWhenContextType>({
   items: {},
   linkMap: {},
   isActivated: true,
-  setItems: () => void 0,
+  initItems: () => ({}),
   updateItem: () => void 0,
   toggleActivation: () => void 0
 });
@@ -46,7 +46,7 @@ function EnableWhenContextProvider(props: { children: ReactNode }) {
     items: enableWhenItems,
     linkMap: linkedQuestionsMap,
     isActivated: isActivated,
-    setItems: (items: EnableWhenItems, response: QuestionnaireResponse) => {
+    initItems: (items: EnableWhenItems, response: QuestionnaireResponse) => {
       const linkedQuestionsMap = createLinkedQuestionsMap(items);
       const initialAnswers = readInitialAnswers(response, linkedQuestionsMap);
 
@@ -57,6 +57,8 @@ function EnableWhenContextProvider(props: { children: ReactNode }) {
 
       setLinkedQuestionsMap(linkedQuestionsMap);
       setEnableWhenItems(updatedItems);
+
+      return updatedItems;
     },
     updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => {
       if (!linkedQuestionsMap[linkId]) return;

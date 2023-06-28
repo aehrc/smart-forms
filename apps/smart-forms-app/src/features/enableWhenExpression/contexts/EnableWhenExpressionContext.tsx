@@ -26,7 +26,7 @@ import { createFhirPathContext } from '../../../utils/fhirpath.ts';
 
 export const EnableWhenExpressionContext = createContext<EnableWhenExpressionContextType>({
   enableWhenExpressions: {},
-  initEnableWhenExpressions: () => void 0,
+  initEnableWhenExpressions: () => ({}),
   updateEnableWhenExpressions: () => void 0
 });
 
@@ -63,8 +63,11 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
             initialItems[linkId].isEnabled = result[0];
           }
           setItems(initialItems);
+          return initialItems;
         }
       }
+
+      return initialItems;
     },
     /**
      * Evaluate all enable when expressions after a change has been made in a questionnaireResponse

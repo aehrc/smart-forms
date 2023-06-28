@@ -26,25 +26,25 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { CurrentTabIndexContext } from '../../../contexts/CurrentTabIndexContext.ts';
+import { FormTabsContext } from '../../../contexts/FormTabsContext.tsx';
 
 interface Props {
   selected: boolean;
-  tabText: string;
+  tabLabel: string;
   listIndex: number;
   markedAsComplete: boolean;
 }
 
-function FormBodySingleTab(props: Props) {
-  const { selected, tabText, listIndex, markedAsComplete } = props;
+const FormBodySingleTab = memo(function FormBodySingleTab(props: Props) {
+  const { selected, tabLabel, listIndex, markedAsComplete } = props;
 
-  const { setCurrentTabIndex } = useContext(CurrentTabIndexContext);
+  const { switchTab } = useContext(FormTabsContext);
 
   return (
     <ListItemButton
       selected={selected}
       sx={{ my: 0.5, py: 0.6 }}
-      onClick={() => setCurrentTabIndex(listIndex)}>
+      onClick={() => switchTab(listIndex)}>
       <ListItemIcon sx={{ minWidth: 36 }}>
         {markedAsComplete ? (
           <Tooltip title="Completed">
@@ -58,9 +58,9 @@ function FormBodySingleTab(props: Props) {
           </Tooltip>
         )}
       </ListItemIcon>
-      <ListItemText primary={<Typography variant="subtitle2">{tabText}</Typography>} />
+      <ListItemText primary={<Typography variant="subtitle2">{tabLabel}</Typography>} />
     </ListItemButton>
   );
-}
+});
 
-export default memo(FormBodySingleTab);
+export default FormBodySingleTab;

@@ -22,10 +22,10 @@ export type EnableWhenContextType = {
   items: Record<string, EnableWhenItemProperties>;
   linkMap: Record<string, string[]>;
   isActivated: boolean;
-  setItems: (
+  initItems: (
     enableWhenItems: EnableWhenItems,
     questionnaireResponse: QuestionnaireResponse
-  ) => unknown;
+  ) => EnableWhenItems;
   updateItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => unknown;
   toggleActivation: (toggled: boolean) => unknown;
 };

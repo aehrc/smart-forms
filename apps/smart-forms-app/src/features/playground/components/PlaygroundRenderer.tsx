@@ -29,10 +29,11 @@ import { createQuestionnaireResponse } from '../../renderer/utils/qrItem.ts';
 import EnableWhenExpressionContextProvider from '../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 import type { Renderer } from '../../renderer/types/renderer.interface.ts';
 import { RendererContext } from '../../renderer/contexts/RendererContext.ts';
-import { CurrentTabIndexContext } from '../../renderer/contexts/CurrentTabIndexContext.ts';
+import useFormTabs from '../../renderer/hooks/useFormTabs.ts';
+
+import { FormTabsContext } from '../../renderer/contexts/FormTabsContext.tsx';
 
 function PlaygroundRenderer() {
-  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
 
@@ -53,15 +54,17 @@ function PlaygroundRenderer() {
     hasChanges: false
   });
 
+  const formTabContext = useFormTabs(questionnaireProvider.tabs);
+
   return (
     <RendererContext.Provider value={{ renderer, setRenderer }}>
       <EnableWhenContextProvider>
         <CalculatedExpressionContextProvider>
           <EnableWhenExpressionContextProvider>
             <CachedQueriedValueSetContextProvider>
-              <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
+              <FormTabsContext.Provider value={formTabContext}>
                 <Form />
-              </CurrentTabIndexContext.Provider>
+              </FormTabsContext.Provider>
             </CachedQueriedValueSetContextProvider>
           </EnableWhenExpressionContextProvider>
         </CalculatedExpressionContextProvider>

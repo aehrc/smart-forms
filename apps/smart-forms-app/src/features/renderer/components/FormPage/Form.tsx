@@ -15,24 +15,21 @@
  * limitations under the License.
  */
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { Box, Container, Divider, Fade, Typography } from '@mui/material';
 import type { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import FormBodyTabbed from './FormBodyTabbed.tsx';
-import { containsTabs, isTabContainer } from '../../utils/tabs.ts';
 import { QuestionnaireProviderContext } from '../../../../App.tsx';
-import { EnableWhenContext } from '../../../enableWhen/contexts/EnableWhenContext.tsx';
 import FormInvalid from './FormInvalid.tsx';
 import QTitle from './QFormComponents/QItemParts/QTitle.tsx';
-import QItemGroup from './QFormComponents/QItemGroup.tsx';
 import { CalculatedExpressionContext } from '../../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
 import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter.tsx';
 import { DebugModeContext } from '../../../debug/contexts/DebugModeContext.tsx';
 import { Helmet } from 'react-helmet';
-import QItemSwitcher from './QFormComponents/QItemSwitcher.tsx';
 import { EnableWhenExpressionContext } from '../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 import { RendererContext } from '../../contexts/RendererContext.ts';
-import { CurrentTabIndexContext } from '../../contexts/CurrentTabIndexContext.ts';
+import FormTopLevelItem from './FormTopLevelItem.tsx';
+import useInitialiseForm from '../../hooks/useInitialiseForm.ts';
+import { FormTabsContext } from '../../contexts/FormTabsContext.tsx';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
@@ -40,13 +37,10 @@ function Form() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const { renderer, setRenderer } = useContext(RendererContext);
-  const { currentTabIndex } = useContext(CurrentTabIndexContext);
+  const { currentTab } = useContext(FormTabsContext);
 
-  const enableWhenContext = useContext(EnableWhenContext);
   const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
-  const { initEnableWhenExpressions, updateEnableWhenExpressions } = useContext(
-    EnableWhenExpressionContext
-  );
+  const { updateEnableWhenExpressions } = useContext(EnableWhenExpressionContext);
   const { isDebugMode } = useContext(DebugModeContext);
 
   const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
@@ -56,26 +50,10 @@ function Form() {
   const { response } = renderer;
   const questionnaire = questionnaireProvider.questionnaire;
 
-  useEffect(
-    () => {
-      enableWhenContext.setItems(questionnaireProvider.enableWhenItems, response);
-      initEnableWhenExpressions(
-        questionnaireProvider.enableWhenExpressions,
-        response,
-        questionnaireProvider.variables.fhirPathVariables
-      );
-    },
-    // init enableWhen items on first entry into renderer, leave dependency array empty
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useInitialiseForm();
 
   const topLevelQItems = questionnaire.item;
   const topLevelQRItems = response.item;
-
-  if (!topLevelQItems || !topLevelQRItems) {
-    return <FormInvalid questionnaire={questionnaire} />;
-  }
 
   // event handlers
   function onTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
@@ -96,68 +74,52 @@ function Form() {
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
 
-  if (topLevelQItems[0] && topLevelQRItems[0]) {
-    return (
-      <>
-        <Helmet>
-          <title>{questionnaire.title ? questionnaire.title : 'Form Renderer'}</title>
-        </Helmet>
-        <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
-          <Fade in={true} timeout={500}>
-            <Container disableGutters maxWidth="xl" sx={{ px: 2 }}>
-              <Box sx={{ mt: 1.5 }}>
-                <Typography variant="h3" data-test="form-heading">
-                  <QTitle questionnaire={questionnaire} />
-                </Typography>
-              </Box>
-              <Divider light sx={{ my: 1.5 }} />
-              {topLevelQItems.map((qItem, index) => {
-                const qrItem = topLevelQRItems[index];
-                return containsTabs(qItem) || isTabContainer(qItem) ? (
-                  <FormBodyTabbed
-                    key={qItem.linkId}
-                    topLevelQItem={qItem}
-                    topLevelQRItem={qrItem}
-                    currentTabIndex={currentTabIndex}
-                    hasTabContainer={isTabContainer(qItem)}
-                    onQrItemChange={(newTopLevelQRItem) =>
-                      onTopLevelQRItemChange(newTopLevelQRItem, index)
-                    }
-                  />
-                ) : // If form is untabbed, it is rendered as a regular group
-                qItem.type === 'group' ? (
-                  <QItemGroup
-                    key={qItem.linkId}
-                    qItem={qItem}
-                    qrItem={qrItem}
-                    groupCardElevation={1}
-                    onQrItemChange={(newTopLevelQRItem) =>
-                      onTopLevelQRItemChange(newTopLevelQRItem, index)
-                    }
-                    isRepeated={false}
-                  />
-                ) : (
-                  <QItemSwitcher
-                    key={qItem.linkId}
-                    qItem={qItem}
-                    qrItem={qrItem}
-                    isTabled={false}
-                    onQrItemChange={(newTopLevelQRItem) =>
-                      onTopLevelQRItemChange(newTopLevelQRItem, index)
-                    }
-                    isRepeated={false}
-                  />
-                );
-              })}
-            </Container>
-          </Fade>
-          {isDebugMode ? <RendererDebugFooter /> : null}
-        </PreprocessedValueSetContext.Provider>
-      </>
-    );
-  } else {
+  if (!topLevelQItems || !topLevelQRItems) {
     return <FormInvalid questionnaire={questionnaire} />;
   }
+
+  if (topLevelQItems.length === 0 || topLevelQRItems.length === 0) {
+    return <FormInvalid questionnaire={questionnaire} />;
+  }
+
+  return (
+    <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
+      <Helmet>
+        <title>{questionnaire.title ? questionnaire.title : 'Form Renderer'}</title>
+      </Helmet>
+
+      <Fade in={true} timeout={500}>
+        <Container disableGutters maxWidth="xl" sx={{ px: 2 }}>
+          <Box sx={{ mt: 1.5 }}>
+            <Typography variant="h3" data-test="form-heading">
+              <QTitle questionnaire={questionnaire} />
+            </Typography>
+          </Box>
+
+          <Divider light sx={{ my: 1.5 }} />
+
+          {topLevelQItems.map((qItem, index) => {
+            const qrItem = topLevelQRItems[index];
+
+            return (
+              <FormTopLevelItem
+                key={qItem.linkId}
+                topLevelQItem={qItem}
+                topLevelQRItem={qrItem}
+                currentTabIndex={currentTab}
+                onQrItemChange={(newTopLevelQRItem) =>
+                  onTopLevelQRItemChange(newTopLevelQRItem, index)
+                }
+              />
+            );
+          })}
+        </Container>
+      </Fade>
+
+      {/* Debug footer */}
+      {isDebugMode ? <RendererDebugFooter /> : null}
+    </PreprocessedValueSetContext.Provider>
+  );
 }
 
 export default Form;

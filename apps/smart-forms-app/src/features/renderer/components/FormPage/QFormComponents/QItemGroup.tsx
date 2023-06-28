@@ -38,8 +38,10 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../types/renderProps.interface.ts';
 import type { QrRepeatGroup } from '../../../types/repeatGroup.interface.ts';
-import { CurrentTabIndexContext } from '../../../contexts/CurrentTabIndexContext.ts';
 import { QGroupHeadingTypography } from './Typography.styles.ts';
+import useHidden from '../../../hooks/useHidden.ts';
+import type { Tabs } from '../../../types/tab.interface.ts';
+import { FormTabsContext } from '../../../contexts/FormTabsContext.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,7 +50,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
-  tabs?: Record<string, { tabIndex: number; isComplete: boolean }>;
+  tabs?: Tabs;
   currentTabIndex?: number;
   markTabAsComplete?: () => unknown;
   goToNextTab?: (nextTabIndex: number) => unknown;
@@ -70,7 +72,7 @@ function QItemGroup(props: Props) {
   const enableWhenContext = useContext(EnableWhenContext);
   const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
 
-  const { setCurrentTabIndex } = useContext(CurrentTabIndexContext);
+  const { switchTab } = useContext(FormTabsContext);
 
   const qItems = qItem.item;
   const groupFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -91,7 +93,10 @@ function QItemGroup(props: Props) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  if (isHidden(qItem, enableWhenContext, enableWhenExpressionContext)) return null;
+  const itemIsHidden = useHidden(qItem);
+  if (itemIsHidden) {
+    return null;
+  }
 
   // Event Handlers
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
@@ -272,7 +277,7 @@ function QItemGroup(props: Props) {
                       // Scroll to top of page
                       window.scrollTo(0, 0);
 
-                      setCurrentTabIndex(nextVisibleTabIndex);
+                      switchTab(nextVisibleTabIndex);
                     }
                   }}>
                   Next tab

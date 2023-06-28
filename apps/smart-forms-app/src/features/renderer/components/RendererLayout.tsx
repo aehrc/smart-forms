@@ -44,8 +44,9 @@ import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import type { Renderer } from '../types/renderer.interface.ts';
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
 import { RendererContext } from '../contexts/RendererContext.ts';
-import { CurrentTabIndexContext } from '../contexts/CurrentTabIndexContext.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
+import { FormTabsContext } from '../contexts/FormTabsContext.tsx';
+import useFormTabs from '../hooks/useFormTabs.ts';
 
 function RendererLayout() {
   const [open, setOpen] = useState(false);
@@ -71,8 +72,10 @@ function RendererLayout() {
     response: initialResponse,
     hasChanges: false
   });
-  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
+
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const formTabContext = useFormTabs(questionnaireProvider.tabs);
 
   const { enqueueSnackbar } = useSnackbar();
   useBackToTop();
@@ -199,13 +202,13 @@ function RendererLayout() {
             <CalculatedExpressionContextProvider>
               <EnableWhenExpressionContextProvider>
                 <CachedQueriedValueSetContextProvider>
-                  <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
+                  <FormTabsContext.Provider value={formTabContext}>
                     {spinner.isLoading ? (
                       <PopulationProgressSpinner message={spinner.message} />
                     ) : (
                       <Outlet />
                     )}
-                  </CurrentTabIndexContext.Provider>
+                  </FormTabsContext.Provider>
                 </CachedQueriedValueSetContextProvider>
               </EnableWhenExpressionContextProvider>
             </CalculatedExpressionContextProvider>

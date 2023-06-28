@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-import { useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
 import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils';
 import QItemGroup from './QFormComponents/QItemGroup.tsx';
-import { constructTabsWithProperties, isTab } from '../../utils/tabs.ts';
 import { updateLinkedItem } from '../../utils/qrItem.ts';
 import FormBodyTabList from './Tabs/FormBodyTabList.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
+import { FormTabsContext } from '../../contexts/FormTabsContext.tsx';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem;
   currentTabIndex: number;
-  hasTabContainer: boolean;
 }
 
-function FormBodyTabbed(props: Props) {
-  const { topLevelQItem, topLevelQRItem, currentTabIndex, hasTabContainer, onQrItemChange } = props;
+function FormBodyTabbed(props: FormBodyTabbedProps) {
+  const { topLevelQItem, topLevelQRItem, currentTabIndex, onQrItemChange } = props;
+
+  const { tabs, markTabAsComplete } = useContext(FormTabsContext);
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -44,76 +45,63 @@ function FormBodyTabbed(props: Props) {
   const qItems = topLevelQItem.item;
   const qrItems = topLevelQRItem.item;
 
-  const initialTabs = useMemo(
-    () => constructTabsWithProperties(qItems, hasTabContainer),
-    [hasTabContainer, qItems]
-  );
-  const [tabs, setTabs] =
-    useState<Record<string, { tabIndex: number; isComplete: boolean }>>(initialTabs);
-
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
     updateLinkedItem(qrItem, null, topLevelQRItem, indexMap);
     onQrItemChange(topLevelQRItem);
   }
 
-  if (qItems && qrItems) {
-    const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
-
-    return (
-      <Grid container spacing={2}>
-        <TabContext value={currentTabIndex.toString()}>
-          <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
-            <FormBodyTabList
-              qFormItems={qItems}
-              currentTabIndex={currentTabIndex}
-              hasTabContainer={hasTabContainer}
-              tabs={tabs}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={8.5} lg={9} xl={9.25}>
-            {qItems.map((qItem, i) => {
-              const qrItem = qrItemsByIndex[i];
-
-              if ((isTab(qItem) || hasTabContainer) && !Array.isArray(qrItem)) {
-                return (
-                  <TabPanel
-                    key={qItem.linkId}
-                    sx={{ p: 0 }}
-                    value={i.toString()}
-                    data-test="renderer-tab-panel">
-                    <QItemGroup
-                      qItem={qItem}
-                      qrItem={qrItem}
-                      isRepeated={qItem.repeats ?? false}
-                      groupCardElevation={1}
-                      tabIsMarkedAsComplete={tabs[qItem.linkId].isComplete ?? false}
-                      tabs={tabs}
-                      currentTabIndex={currentTabIndex}
-                      markTabAsComplete={() => {
-                        setTabs({
-                          ...tabs,
-                          [qItem.linkId]: {
-                            tabIndex: tabs[qItem.linkId].tabIndex,
-                            isComplete: !tabs[qItem.linkId].isComplete
-                          }
-                        });
-                      }}
-                      onQrItemChange={handleQrGroupChange}
-                    />
-                  </TabPanel>
-                );
-              } else {
-                return null;
-              }
-            })}
-          </Grid>
-        </TabContext>
-      </Grid>
-    );
-  } else {
+  if (!qItems || !qrItems) {
     return <>Unable to load form</>;
   }
+
+  const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
+
+  return (
+    <Grid container spacing={2}>
+      <TabContext value={currentTabIndex.toString()}>
+        <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
+          <FormBodyTabList qFormItems={qItems} currentTabIndex={currentTabIndex} tabs={tabs} />
+        </Grid>
+
+        <Grid item xs={12} md={8.5} lg={9} xl={9.25}>
+          {qItems.map((qItem, i) => {
+            const qrItem = qrItemsByIndex[i];
+
+            const isNotRepeatGroup = !Array.isArray(qrItem);
+            const isTab = !!tabs[qItem.linkId];
+
+            if (!isTab || !isNotRepeatGroup) {
+              // Something has gone horribly wrong
+              return null;
+            }
+
+            const isRepeated = qItem.repeats ?? false;
+            const tabIsMarkedAsComplete = tabs[qItem.linkId].isComplete ?? false;
+
+            return (
+              <TabPanel
+                key={qItem.linkId}
+                sx={{ p: 0 }}
+                value={i.toString()}
+                data-test="renderer-tab-panel">
+                <QItemGroup
+                  qItem={qItem}
+                  qrItem={qrItem}
+                  isRepeated={isRepeated}
+                  groupCardElevation={1}
+                  tabIsMarkedAsComplete={tabIsMarkedAsComplete}
+                  tabs={tabs}
+                  currentTabIndex={currentTabIndex}
+                  markTabAsComplete={() => markTabAsComplete(qItem.linkId)}
+                  onQrItemChange={handleQrGroupChange}
+                />
+              </TabPanel>
+            );
+          })}
+        </Grid>
+      </TabContext>
+    </Grid>
+  );
 }
 
 export default FormBodyTabbed;

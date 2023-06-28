@@ -53,10 +53,10 @@ export function getQrItemsIndex(
       const qItemIndex = qItemsIndexMap[linkId];
 
       // Assign either a qrItem array or a single qrItem based on whether it is a repeatGroup or not
-      qrItemsCollected[linkId] =
-        isRepeatItemAndNotCheckbox(qItems[qItemIndex]) && qItems[qItemIndex].type === 'group'
-          ? [qrItem]
-          : qrItem;
+      const isRepeatGroup =
+        isRepeatItemAndNotCheckbox(qItems[qItemIndex]) && qItems[qItemIndex].type === 'group';
+
+      qrItemsCollected[linkId] = isRepeatGroup ? [qrItem] : qrItem;
     }
   }
 
