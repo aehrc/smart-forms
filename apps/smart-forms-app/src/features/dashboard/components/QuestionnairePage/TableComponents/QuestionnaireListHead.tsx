@@ -40,14 +40,11 @@ interface Props {
 
 function QuestionnaireListHead(props: Props) {
   const { order, orderBy, headLabel, onRequestSort } = props;
-  const createSortHandler = (property: TableAttributes['id']) => (event: MouseEvent) => {
-    onRequestSort(event, property as keyof QuestionnaireListItem);
-  };
 
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox"></TableCell>
+        <TableCell padding="checkbox" />
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -57,7 +54,12 @@ function QuestionnaireListHead(props: Props) {
               hideSortIcon
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={() => createSortHandler(headCell.id)}>
+              onClick={(event) => {
+                onRequestSort(
+                  event as unknown as MouseEvent,
+                  headCell.id as keyof QuestionnaireListItem
+                );
+              }}>
               {headCell.label}
               {orderBy === headCell.id ? (
                 <Box sx={{ ...visuallyHidden }}>

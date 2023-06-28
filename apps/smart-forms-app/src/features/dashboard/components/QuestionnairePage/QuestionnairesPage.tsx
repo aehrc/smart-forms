@@ -86,8 +86,8 @@ function QuestionnairesPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('title');
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+  const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('date');
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
