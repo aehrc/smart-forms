@@ -52,11 +52,13 @@ function RepeatItem(props: RepeatItemProps) {
     setRepeatAnswers(updatedRepeatAnswers);
     onQrItemChange({
       ...createEmptyQrItem(qItem),
-      answer: updatedRepeatAnswers.flatMap((answer) => (answer ? [answer] : []))
+      answer: updatedRepeatAnswers.flatMap((repeatAnswer) =>
+        repeatAnswer.answer ? [repeatAnswer.answer] : []
+      )
     });
   }
 
-  function handleDeleteAnswer(index: number) {
+  function handleDeleteItem(index: number) {
     const updatedRepeatAnswers = [...repeatAnswers];
 
     updatedRepeatAnswers.splice(index, 1);
@@ -64,7 +66,9 @@ function RepeatItem(props: RepeatItemProps) {
     setRepeatAnswers(updatedRepeatAnswers);
     onQrItemChange({
       ...createEmptyQrItem(qItem),
-      answer: updatedRepeatAnswers.flatMap((answer) => (answer ? [answer] : []))
+      answer: updatedRepeatAnswers.flatMap((repeatAnswer) =>
+        repeatAnswer.answer ? [repeatAnswer.answer] : []
+      )
     });
   }
 
@@ -72,7 +76,7 @@ function RepeatItem(props: RepeatItemProps) {
     setRepeatAnswers([
       ...repeatAnswers,
       {
-        id: nanoid(),
+        nanoId: nanoid(),
         answer: null
       }
     ]);
@@ -82,20 +86,20 @@ function RepeatItem(props: RepeatItemProps) {
     <FullWidthFormComponentBox data-test="q-item-repeat-box">
       <FieldGrid qItem={qItem} displayInstructions={displayInstructions}>
         <TransitionGroup>
-          {repeatAnswers.map(({ id, answer }, index) => {
+          {repeatAnswers.map(({ nanoId, answer }, index) => {
             const repeatAnswerQrItem = createEmptyQrItem(qItem);
             if (answer) {
               repeatAnswerQrItem.answer = [answer];
             }
 
             return (
-              <Collapse key={id} timeout={200}>
+              <Collapse key={nanoId} timeout={200}>
                 <RepeatField
                   qItem={qItem}
                   qrItem={repeatAnswerQrItem}
                   answer={answer}
                   numOfRepeatAnswers={repeatAnswers.length}
-                  onDeleteAnswer={() => handleDeleteAnswer(index)}
+                  onDeleteAnswer={() => handleDeleteItem(index)}
                   onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
                 />
               </Collapse>

@@ -17,17 +17,17 @@
 
 import { Box, Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import type { RepeatAnswer } from '../../../../types/repeatItem.interface.ts';
+import type { RepeatGroupSingle } from '../../../../types/repeatGroup.interface.ts';
 
 interface AddItemButtonProps {
-  repeatAnswers: RepeatAnswer[];
+  repeatGroups: RepeatGroupSingle[];
   onAddItem: () => void;
 }
 
 function AddItemButton(props: AddItemButtonProps) {
-  const { repeatAnswers, onAddItem } = props;
+  const { repeatGroups, onAddItem } = props;
 
-  const isDisabled = repeatAnswers[repeatAnswers.length - 1].answer === null;
+  const isDisabled = repeatGroups[repeatGroups.length - 1].qrItem === null;
 
   return (
     <Box display="flex" flexDirection="row-reverse" marginTop={1}>

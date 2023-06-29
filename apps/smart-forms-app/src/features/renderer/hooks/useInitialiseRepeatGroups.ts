@@ -16,27 +16,27 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import type { RepeatAnswer } from '../types/repeatItem.interface.ts';
 import { nanoid } from 'nanoid';
+import type { RepeatGroupSingle } from '../types/repeatGroup.interface.ts';
 
-const emptyRepeatAnswer: RepeatAnswer = {
+const emptyRepeatGroupAnswer: RepeatGroupSingle = {
   nanoId: nanoid(),
-  answer: null
+  qrItem: null
 };
 
-function useInitialiseRepeatAnswers(qrItem: QuestionnaireResponseItem): RepeatAnswer[] {
-  let initialRepeatAnswers: RepeatAnswer[] = [emptyRepeatAnswer];
+function useInitialiseRepeatGroups(qrItems: QuestionnaireResponseItem[]): RepeatGroupSingle[] {
+  let initialRepeatGroupAnswers: RepeatGroupSingle[] = [emptyRepeatGroupAnswer];
 
-  if (qrItem?.answer) {
-    initialRepeatAnswers = qrItem.answer.map((answer) => {
+  if (qrItems.length > 0) {
+    initialRepeatGroupAnswers = qrItems.map((qrItem) => {
       return {
         nanoId: nanoid(),
-        answer
+        qrItem
       };
     });
   }
 
-  return initialRepeatAnswers;
+  return initialRepeatGroupAnswers;
 }
 
-export default useInitialiseRepeatAnswers;
+export default useInitialiseRepeatGroups;

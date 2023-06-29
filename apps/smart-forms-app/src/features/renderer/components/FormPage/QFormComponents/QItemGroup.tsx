@@ -19,7 +19,6 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Card, Divider, IconButton, Tooltip } from '@mui/material';
 import QItemSwitcher from './QItemSwitcher.tsx';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils';
-import QItemRepeatGroup from './QItemRepeatGroup.tsx';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createQrGroup, updateLinkedItem } from '../../../utils/qrItem.ts';
 import { isHidden, isRepeatItemAndNotCheckbox } from '../../../utils/qItem.ts';
@@ -42,6 +41,7 @@ import useHidden from '../../../hooks/useHidden.ts';
 import type { Tabs } from '../../../types/tab.interface.ts';
 import { FormTabsContext } from '../../../contexts/FormTabsContext.tsx';
 import RepeatItem from './RepeatItem/RepeatItem.tsx';
+import RepeatGroup from './RepeatGroup/RepeatGroup.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -170,11 +170,10 @@ function QItemGroup(props: Props) {
                   );
                 } else {
                   return (
-                    <QItemRepeatGroup
+                    <RepeatGroup
                       key={qItem.linkId}
                       qItem={qItem}
                       qrItems={qrItems}
-                      isRepeated={true}
                       groupCardElevation={groupCardElevation + 1}
                       onQrRepeatGroupChange={handleQrRepeatGroupChange}
                     />
@@ -206,11 +205,10 @@ function QItemGroup(props: Props) {
                     );
                   } else {
                     return (
-                      <QItemRepeatGroup
+                      <RepeatGroup
                         key={qItem.linkId}
                         qItem={qItem}
                         qrItems={[]}
-                        isRepeated={true}
                         groupCardElevation={groupCardElevation + 1}
                         onQrRepeatGroupChange={handleQrRepeatGroupChange}
                       />

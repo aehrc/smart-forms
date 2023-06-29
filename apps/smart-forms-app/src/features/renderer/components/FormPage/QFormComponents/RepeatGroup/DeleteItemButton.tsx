@@ -18,25 +18,25 @@
 import { RepeatDeleteTooltip } from '../QItemRepeat.styles.tsx';
 import { IconButton } from '@mui/material';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { memo } from 'react';
 
 interface DeleteItemButtonProps {
-  answer: QuestionnaireResponseItemAnswer | null;
-  numOfRepeatAnswers: number;
-  onDeleteAnswer: () => void;
+  unprocessedQrItem: QuestionnaireResponseItem | null;
+  numOfRepeatGroups: number;
+  onDeleteItem: () => void;
 }
 
 const DeleteItemButton = memo(function DeleteItemButton(props: DeleteItemButtonProps) {
-  const { answer, numOfRepeatAnswers, onDeleteAnswer } = props;
+  const { unprocessedQrItem, numOfRepeatGroups, onDeleteItem } = props;
 
-  const isDisabled = answer === null || numOfRepeatAnswers === 1;
+  const isDisabled = unprocessedQrItem === null || numOfRepeatGroups === 1;
 
   return (
-    <RepeatDeleteTooltip className="repeat-item-delete" title="Delete item">
+    <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
       <span>
-        <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteAnswer}>
-          <RemoveCircleOutlineIcon fontSize="small" />
+        <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteItem}>
+          <RemoveCircleOutlineIcon />
         </IconButton>
       </span>
     </RepeatDeleteTooltip>
