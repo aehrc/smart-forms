@@ -27,7 +27,7 @@ interface Props {
   qItem: QuestionnaireItem;
 }
 
-function QItemLabel(props: Props) {
+const QItemLabel = memo(function QItemLabel(props: Props) {
   const { qItem } = props;
 
   // parse xHTML if found
@@ -52,6 +52,6 @@ function QItemLabel(props: Props) {
   } else {
     return <QItemTypography>{qItem.text}</QItemTypography>;
   }
-}
+});
 
-export default memo(QItemLabel);
+export default QItemLabel;

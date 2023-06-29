@@ -16,7 +16,6 @@
  */
 
 import { memo, useCallback, useContext } from 'react';
-import QItemDisplay from './QItemSimple/QItemDisplay.tsx';
 import QItemInteger from './QItemSimple/QItemInteger.tsx';
 import QItemDecimal from './QItemSimple/QItemDecimal.tsx';
 import QItemChoice from './QItemChoice/QItemChoice.tsx';
@@ -35,6 +34,7 @@ import TimeItem from './TimeItem/TimeItem.tsx';
 import DateTimeItem from './DateTimeItem/DateTimeItem.tsx';
 import DateItem from './DateItem/DateItem.tsx';
 import TextItem from './TextItem/TextItem.tsx';
+import DisplayItem from './DisplayItem/DisplayItem.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -138,7 +138,7 @@ function RenderQItem(props: Props) {
         />
       );
     case 'display':
-      return <QItemDisplay qItem={qItem} />;
+      return <DisplayItem qItem={qItem} />;
     case 'integer':
       return (
         <QItemInteger
