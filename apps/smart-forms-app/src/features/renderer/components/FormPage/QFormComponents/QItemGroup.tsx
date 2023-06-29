@@ -20,7 +20,6 @@ import { Box, Button, Card, Divider, IconButton, Tooltip } from '@mui/material';
 import QItemSwitcher from './QItemSwitcher.tsx';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils';
 import QItemRepeatGroup from './QItemRepeatGroup.tsx';
-import QItemRepeat from './QItemRepeat.tsx';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createQrGroup, updateLinkedItem } from '../../../utils/qrItem.ts';
 import { isHidden, isRepeatItemAndNotCheckbox } from '../../../utils/qItem.ts';
@@ -42,6 +41,7 @@ import { QGroupHeadingTypography } from './Typography.styles.ts';
 import useHidden from '../../../hooks/useHidden.ts';
 import type { Tabs } from '../../../types/tab.interface.ts';
 import { FormTabsContext } from '../../../contexts/FormTabsContext.tsx';
+import RepeatItem from './RepeatItem/RepeatItem.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -218,7 +218,7 @@ function QItemGroup(props: Props) {
                   }
                 } else {
                   return (
-                    <QItemRepeat
+                    <RepeatItem
                       key={i}
                       qItem={qItem}
                       qrItem={qrItem}
@@ -235,7 +235,8 @@ function QItemGroup(props: Props) {
                     qrItem={qrItem}
                     isRepeated={false}
                     groupCardElevation={groupCardElevation + 1}
-                    onQrItemChange={handleQrItemChange}></QItemGroup>
+                    onQrItemChange={handleQrItemChange}
+                  />
                 );
               } else {
                 return (

@@ -42,8 +42,9 @@ interface Props
 function QItemChoice(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
+  const choiceControlType = getChoiceControlType(qItem);
 
-  switch (getChoiceControlType(qItem)) {
+  switch (choiceControlType) {
     case QItemChoiceControl.Radio:
       if (qItem.answerOption) {
         return (

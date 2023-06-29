@@ -19,7 +19,7 @@ import { InputAdornment } from '@mui/material';
 import { memo } from 'react';
 import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
-import { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
+import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
 
 interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;

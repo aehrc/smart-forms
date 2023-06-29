@@ -16,12 +16,12 @@
  */
 
 import { useCallback, useState } from 'react';
-import {
+import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import useValidationError from '../../../../hooks/useValidationError.ts';
 import debounce from 'lodash.debounce';

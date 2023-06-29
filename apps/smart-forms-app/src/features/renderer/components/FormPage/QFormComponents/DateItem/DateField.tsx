@@ -16,8 +16,8 @@
  */
 
 import { memo } from 'react';
-import { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
-import { Dayjs } from 'dayjs';
+import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
+import type { Dayjs } from 'dayjs';
 import { DateField as MuiDateField, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
