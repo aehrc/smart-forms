@@ -77,7 +77,7 @@ const QItemDecimal = memo(function QItemDecimal(props: QItemDecimalProps) {
   // Perform validation checks
   const { feedback, onFieldFocus } = useValidationError(input, regexValidation, maxLength);
 
-  const { calExpIsCalculating } = useDecimalCalculatedExpression({
+  const { calcExpUpdated } = useDecimalCalculatedExpression({
     qItem: qItem,
     inputValue: input,
     displayUnit: displayUnit,
@@ -128,7 +128,7 @@ const QItemDecimal = memo(function QItemDecimal(props: QItemDecimalProps) {
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calExpIsCalculating} />
+            <FadingCheckIcon fadeIn={calcExpUpdated} />
             {displayUnit}
           </InputAdornment>
         )

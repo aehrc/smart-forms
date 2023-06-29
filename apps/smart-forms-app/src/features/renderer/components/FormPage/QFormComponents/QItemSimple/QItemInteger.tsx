@@ -74,7 +74,7 @@ const QItemInteger = memo(function QItemInteger(props: QItemIntegerProps) {
     maxLength
   );
 
-  const { calExpIsCalculating } = useIntegerCalculatedExpression({
+  const { calcExpUpdated } = useIntegerCalculatedExpression({
     qItem: qItem,
     inputValue: input,
     displayUnit: displayUnit,
@@ -119,7 +119,7 @@ const QItemInteger = memo(function QItemInteger(props: QItemIntegerProps) {
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calExpIsCalculating} />
+            <FadingCheckIcon fadeIn={calcExpUpdated} />
             {displayUnit}
           </InputAdornment>
         )

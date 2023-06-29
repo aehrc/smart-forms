@@ -21,7 +21,7 @@ import { createEmptyQrItemWithUnit } from '../../renderer/utils/qrItem.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 interface UseDecimalCalculatedExpression {
-  calExpIsCalculating: boolean;
+  calcExpUpdated: boolean;
 }
 
 interface useDecimalCalculatedExpressionProps {
@@ -40,7 +40,7 @@ function useDecimalCalculatedExpression(
 
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
-  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
+  const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 
   useEffect(
     () => {
@@ -55,9 +55,9 @@ function useDecimalCalculatedExpression(
         // only update if calculated value is different from current value
         if (value !== parseFloat(inputValue)) {
           // update ui to show calculated value changes
-          setCalExpIsCalculating(true);
+          setCalcExpUpdated(true);
           setTimeout(() => {
-            setCalExpIsCalculating(false);
+            setCalcExpUpdated(false);
           }, 500);
 
           // update questionnaireResponse
@@ -74,7 +74,7 @@ function useDecimalCalculatedExpression(
     [calculatedExpressions]
   );
 
-  return { calExpIsCalculating };
+  return { calcExpUpdated: calcExpUpdated };
 }
 
 export default useDecimalCalculatedExpression;
