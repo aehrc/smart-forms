@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import { Box, IconButton } from '@mui/material';
-import { RepeatDeleteTooltip, RepeatItemContainerStack } from '../QItemRepeat.styles.tsx';
+import { Box } from '@mui/material';
+import { RepeatItemContainerStack } from '../QItemRepeat.styles.tsx';
 import QItemSwitcher from '../QItemSwitcher.tsx';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type {
   QuestionnaireItem,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import type { PropsWithQrItemChangeHandler } from '../../../../types/renderProps.interface.ts';
+import DeleteItemButton from './DeleteItemButton.tsx';
 
 interface RepeatFieldProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -48,17 +48,11 @@ function RepeatField(props: RepeatFieldProps) {
           onQrItemChange={onQrItemChange}
         />
       </Box>
-      <RepeatDeleteTooltip className="repeat-item-delete" title="Delete item">
-        <span>
-          <IconButton
-            size="small"
-            color="error"
-            disabled={!answer || numOfRepeatAnswers === 1}
-            onClick={onDeleteAnswer}>
-            <RemoveCircleOutlineIcon fontSize="small" />
-          </IconButton>
-        </span>
-      </RepeatDeleteTooltip>
+      <DeleteItemButton
+        answer={answer}
+        numOfRepeatAnswers={numOfRepeatAnswers}
+        onDeleteAnswer={onDeleteAnswer}
+      />
     </RepeatItemContainerStack>
   );
 }

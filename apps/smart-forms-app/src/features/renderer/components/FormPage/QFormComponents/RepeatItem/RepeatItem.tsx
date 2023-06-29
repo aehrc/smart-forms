@@ -15,13 +15,9 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { PropsWithQrItemChangeHandler } from '../../../../types/renderProps.interface.ts';
-import type {
-  QuestionnaireItem,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
-} from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
@@ -31,6 +27,7 @@ import AddItemButton from './AddItemButton.tsx';
 import { TransitionGroup } from 'react-transition-group';
 import RepeatField from './RepeatField.tsx';
 import { Collapse } from '@mui/material';
+import useInitialiseRepeatAnswers from '../../../../hooks/useInitialiseRepeatAnswers.ts';
 
 interface RepeatItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -43,87 +40,63 @@ function RepeatItem(props: RepeatItemProps) {
   // Get additional rendering extensions
   const { displayInstructions } = useRenderingExtensions(qItem);
 
-  // Init repeat answers and answer ids
-  let initialRepeatAnswers: (QuestionnaireResponseItemAnswer | null)[] = [null];
-  if (qrItem?.answer) {
-    initialRepeatAnswers = qrItem.answer;
-  }
+  const initialRepeatAnswers = useInitialiseRepeatAnswers(qrItem);
 
-  if (initialRepeatAnswers[initialRepeatAnswers.length - 1] !== null) {
-    initialRepeatAnswers.push(null);
-  }
   const [repeatAnswers, setRepeatAnswers] = useState(initialRepeatAnswers);
 
-  const initialAnswerIds = initialRepeatAnswers.map(() => nanoid());
-  const [answerIds, setAnswerIds] = useState(initialAnswerIds);
-
-  useEffect(
-    () => {
-      if (repeatAnswers.length === 0) {
-        setRepeatAnswers([null]);
-        setAnswerIds([nanoid()]);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qrItem]
-  );
-
   // Event Handlers
-  function handleAnswersChange(newQrItem: QuestionnaireResponseItem, index: number) {
-    const answersTemp = [...repeatAnswers];
-    answersTemp[index] = newQrItem.answer ? newQrItem.answer[0] : null;
-    updateAnswers(answersTemp, [...answerIds]);
+  function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
+    const updatedRepeatAnswers = [...repeatAnswers];
+    updatedRepeatAnswers[index].answer = newQrItem.answer ? newQrItem.answer[0] : null;
+
+    setRepeatAnswers(updatedRepeatAnswers);
+    onQrItemChange({
+      ...createEmptyQrItem(qItem),
+      answer: updatedRepeatAnswers.flatMap((answer) => (answer ? [answer] : []))
+    });
   }
 
   function handleDeleteAnswer(index: number) {
-    const answersTemp = [...repeatAnswers];
-    const idsTemp = [...answerIds];
+    const updatedRepeatAnswers = [...repeatAnswers];
 
-    if (answersTemp.length === 1) {
-      answersTemp[0] = null;
-      idsTemp[0] = nanoid();
-    } else {
-      answersTemp.splice(index, 1);
-      idsTemp.splice(index, 1);
-    }
-    updateAnswers(answersTemp, idsTemp);
-  }
+    updatedRepeatAnswers.splice(index, 1);
 
-  function updateAnswers(
-    updatedAnswers: (QuestionnaireResponseItemAnswer | null)[],
-    updatedIds: string[]
-  ) {
-    setRepeatAnswers(updatedAnswers);
-    setAnswerIds(updatedIds);
-
-    const answersWithValues = updatedAnswers.flatMap((answer) => (answer ? [answer] : []));
-    onQrItemChange({ ...createEmptyQrItem(qItem), answer: answersWithValues });
+    setRepeatAnswers(updatedRepeatAnswers);
+    onQrItemChange({
+      ...createEmptyQrItem(qItem),
+      answer: updatedRepeatAnswers.flatMap((answer) => (answer ? [answer] : []))
+    });
   }
 
   function handleAddItem() {
-    setRepeatAnswers([...repeatAnswers, null]);
-    setAnswerIds([...answerIds, nanoid()]);
+    setRepeatAnswers([
+      ...repeatAnswers,
+      {
+        id: nanoid(),
+        answer: null
+      }
+    ]);
   }
 
   return (
     <FullWidthFormComponentBox data-test="q-item-repeat-box">
       <FieldGrid qItem={qItem} displayInstructions={displayInstructions}>
         <TransitionGroup>
-          {repeatAnswers.map((answer, index) => {
+          {repeatAnswers.map(({ id, answer }, index) => {
             const repeatAnswerQrItem = createEmptyQrItem(qItem);
             if (answer) {
               repeatAnswerQrItem.answer = [answer];
             }
 
             return (
-              <Collapse key={answerIds[index]} timeout={200}>
+              <Collapse key={id} timeout={200}>
                 <RepeatField
                   qItem={qItem}
                   qrItem={repeatAnswerQrItem}
                   answer={answer}
                   numOfRepeatAnswers={repeatAnswers.length}
                   onDeleteAnswer={() => handleDeleteAnswer(index)}
-                  onQrItemChange={(newQrItem) => handleAnswersChange(newQrItem, index)}
+                  onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
                 />
               </Collapse>
             );
