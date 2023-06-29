@@ -16,7 +16,6 @@
  */
 
 import { memo, useCallback, useContext } from 'react';
-import QItemDate from './QItemSimple/QItemDate.tsx';
 import QItemText from './QItemSimple/QItemText.tsx';
 import QItemDisplay from './QItemSimple/QItemDisplay.tsx';
 import QItemInteger from './QItemSimple/QItemInteger.tsx';
@@ -24,7 +23,6 @@ import QItemDateTime from './QItemSimple/QItemDateTime.tsx';
 import QItemDecimal from './QItemSimple/QItemDecimal.tsx';
 import QItemChoice from './QItemChoice/QItemChoice.tsx';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import QItemTime from './QItemSimple/QItemTime.tsx';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice.tsx';
 import { EnableWhenContext } from '../../../../enableWhen/contexts/EnableWhenContext.tsx';
 import { Typography } from '@mui/material';
@@ -35,6 +33,8 @@ import type {
 } from '../../../types/renderProps.interface.ts';
 import StringItem from './StringItem/StringItem.tsx';
 import BooleanItem from './BooleanItem/BooleanItem.tsx';
+import TimeItem from './TimeItem/TimeItem.tsx';
+import DateItem from './DateItem/DateItem.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -100,7 +100,7 @@ function RenderQItem(props: Props) {
       );
     case 'time':
       return (
-        <QItemTime
+        <TimeItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -110,7 +110,7 @@ function RenderQItem(props: Props) {
       );
     case 'date':
       return (
-        <QItemDate
+        <DateItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}

@@ -17,6 +17,7 @@
 
 import {
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -24,64 +25,69 @@ import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts'
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import FieldGrid from '../FieldGrid.tsx';
-import BooleanField from './BooleanField.tsx';
-import { useContext, useEffect } from 'react';
-import { EnableWhenContext } from '../../../../../enableWhen/contexts/EnableWhenContext.tsx';
+import TimeField from './TimeField.tsx';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
-interface BooleanItemProps
+interface TimeItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
-function BooleanItem(props: BooleanItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+function TimeItem(props: TimeItemProps) {
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const { displayPrompt, displayInstructions, readOnly, entryFormat } =
+    useRenderingExtensions(qItem);
 
   // Init input value
-  let checked = false;
-  if (qrItem?.answer && qrItem?.answer[0].valueBoolean) {
-    checked = qrItem.answer[0].valueBoolean;
+  let timeString: string | null = null;
+  if (qrItem?.answer && qrItem?.answer[0].valueTime) {
+    timeString = qrItem.answer[0].valueTime;
   }
-
-  // Trigger enableWhen on init - special case
-  const { linkMap } = useContext(EnableWhenContext);
-  useEffect(
-    () => {
-      // if boolean item is an enableWhen linked question and it does not have an answer yet
-      // set default answer to false - to trigger enableWhen == false
-      if (qItem.linkId in linkMap && !checked) {
-        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueBoolean: false }] });
-      }
-    },
-    // Only run effect on init
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  const timeDayJs = timeString ? dayjs(timeString) : null;
 
   // Event handlers
-  function handleCheckedChange(newChecked: boolean) {
-    onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: [{ valueBoolean: newChecked }]
-    });
+  function handleTimeChange(newValue: Dayjs | null) {
+    const emptyQrItem = createEmptyQrItem(qItem);
+    if (newValue) {
+      onQrItemChange({ ...emptyQrItem, answer: [{ valueTime: newValue.format() }] });
+    } else {
+      onQrItemChange(emptyQrItem);
+    }
   }
 
   if (isRepeated) {
     return (
-      <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
+      <TimeField
+        value={timeDayJs}
+        displayPrompt={displayPrompt}
+        entryFormat={entryFormat}
+        readOnly={readOnly}
+        onTimeChange={handleTimeChange}
+        isTabled={isTabled}
+      />
     );
   }
+
   return (
     <FullWidthFormComponentBox>
       <FieldGrid qItem={qItem} displayInstructions={displayInstructions}>
-        <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
+        <TimeField
+          value={timeDayJs}
+          displayPrompt={displayPrompt}
+          entryFormat={entryFormat}
+          readOnly={readOnly}
+          onTimeChange={handleTimeChange}
+          isTabled={isTabled}
+        />
       </FieldGrid>
     </FullWidthFormComponentBox>
   );
 }
 
-export default BooleanItem;
+export default TimeItem;

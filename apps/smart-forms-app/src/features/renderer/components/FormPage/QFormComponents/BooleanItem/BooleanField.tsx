@@ -16,13 +16,14 @@
  */
 
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { memo } from 'react';
 
-interface StringFieldProps {
+interface BooleanFieldProps {
   checked: boolean;
   readOnly: boolean;
   onCheckedChange: (newChecked: boolean) => void;
 }
-function BooleanField(props: StringFieldProps) {
+const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { checked, readOnly, onCheckedChange } = props;
 
   return (
@@ -34,6 +35,6 @@ function BooleanField(props: StringFieldProps) {
       label=""
     />
   );
-}
+});
 
 export default BooleanField;
