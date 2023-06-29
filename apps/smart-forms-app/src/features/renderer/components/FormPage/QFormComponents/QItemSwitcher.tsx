@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import QItemString from './QItemSimple/QItemString.tsx';
 import { memo, useCallback, useContext } from 'react';
 import QItemBoolean from './QItemSimple/QItemBoolean.tsx';
 import QItemDate from './QItemSimple/QItemDate.tsx';
@@ -35,6 +34,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../types/renderProps.interface.ts';
+import StringItem from './StringItem/StringItem.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,7 +49,7 @@ interface Props
  *
  * @author Sean Fong
  */
-function QItemSwitcher(props: Props) {
+const QItemSwitcher = memo(function QItemSwitcher(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const enableWhenContext = useContext(EnableWhenContext);
 
@@ -73,7 +73,7 @@ function QItemSwitcher(props: Props) {
       onQrItemChange={handleQrItemChange}
     />
   );
-}
+});
 
 function RenderQItem(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
@@ -81,7 +81,7 @@ function RenderQItem(props: Props) {
   switch (qItem.type) {
     case 'string':
       return (
-        <QItemString
+        <StringItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -188,4 +188,4 @@ function RenderQItem(props: Props) {
   }
 }
 
-export default memo(QItemSwitcher);
+export default QItemSwitcher;

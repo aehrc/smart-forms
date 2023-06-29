@@ -69,7 +69,7 @@ function QItemGroupTable(props: Props) {
 
   // Generate item labels as table headers
   const itemLabels: string[] = useMemo(
-    () => qItem.item?.map((item) => (item.text ? item.text : '')) ?? [],
+    () => qItem.item?.map((item) => item.text ?? '') ?? [],
     [qItem.item]
   );
 
