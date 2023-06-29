@@ -66,7 +66,7 @@ const QItemText = memo(function QItemText(props: Props) {
   // Perform validation checks
   const { feedback, onFieldFocus } = useValidationError(input, regexValidation, maxLength);
 
-  const { calExpIsCalculating } = useStringCalculatedExpression({
+  const { calcExpUpdated } = useStringCalculatedExpression({
     qItem: qItem,
     inputValue: input,
     setInputValue: (value) => {
@@ -110,7 +110,7 @@ const QItemText = memo(function QItemText(props: Props) {
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calExpIsCalculating} />
+            <FadingCheckIcon fadeIn={calcExpUpdated} />
             {displayUnit}
           </InputAdornment>
         )

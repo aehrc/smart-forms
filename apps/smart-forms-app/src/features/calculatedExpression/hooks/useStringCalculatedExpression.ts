@@ -21,7 +21,7 @@ import { createEmptyQrItem } from '../../renderer/utils/qrItem.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 interface UseStringCalculatedExpression {
-  calExpIsCalculating: boolean;
+  calcExpUpdated: boolean;
 }
 
 interface useStringCalculatedExpressionProps {
@@ -38,7 +38,7 @@ function useStringCalculatedExpression(
 
   const { calculatedExpressions } = useContext(CalculatedExpressionContext);
 
-  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
+  const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 
   useEffect(
     () => {
@@ -47,9 +47,9 @@ function useStringCalculatedExpression(
       // only update if calculated value is different from current value
       if (calcExpression?.value !== inputValue && typeof calcExpression?.value === 'string') {
         // update ui to show calculated value changes
-        setCalExpIsCalculating(true);
+        setCalcExpUpdated(true);
         setTimeout(() => {
-          setCalExpIsCalculating(false);
+          setCalcExpUpdated(false);
         }, 500);
 
         // update questionnaireResponse
@@ -65,7 +65,7 @@ function useStringCalculatedExpression(
     [calculatedExpressions]
   );
 
-  return { calExpIsCalculating };
+  return { calcExpUpdated: calcExpUpdated };
 }
 
 export default useStringCalculatedExpression;

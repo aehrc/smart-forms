@@ -16,7 +16,6 @@
  */
 
 import { memo, useCallback, useContext } from 'react';
-import QItemText from './QItemSimple/QItemText.tsx';
 import QItemDisplay from './QItemSimple/QItemDisplay.tsx';
 import QItemInteger from './QItemSimple/QItemInteger.tsx';
 import QItemDecimal from './QItemSimple/QItemDecimal.tsx';
@@ -35,6 +34,7 @@ import BooleanItem from './BooleanItem/BooleanItem.tsx';
 import TimeItem from './TimeItem/TimeItem.tsx';
 import DateTimeItem from './DateTimeItem/DateTimeItem.tsx';
 import DateItem from './DateItem/DateItem.tsx';
+import TextItem from './TextItem/TextItem.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -130,7 +130,7 @@ function RenderQItem(props: Props) {
       );
     case 'text':
       return (
-        <QItemText
+        <TextItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
