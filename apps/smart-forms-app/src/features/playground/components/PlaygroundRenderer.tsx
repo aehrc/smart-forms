@@ -19,7 +19,7 @@ import { useContext, useState } from 'react';
 import EnableWhenContextProvider from '../../enableWhen/contexts/EnableWhenContext.tsx';
 import CalculatedExpressionContextProvider from '../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
 import CachedQueriedValueSetContextProvider from '../../valueSet/contexts/CachedQueriedValueSetContext.tsx';
-import Form from '../../renderer/components/FormPage/Form.tsx';
+import FormRenderer from '../../renderer/components/FormPage/FormRenderer/FormRenderer.tsx';
 import {
   QuestionnaireProviderContext,
   QuestionnaireResponseProviderContext
@@ -63,7 +63,7 @@ function PlaygroundRenderer() {
           <EnableWhenExpressionContextProvider>
             <CachedQueriedValueSetContextProvider>
               <FormTabsContext.Provider value={formTabContext}>
-                <Form />
+                <FormRenderer />
               </FormTabsContext.Provider>
             </CachedQueriedValueSetContextProvider>
           </EnableWhenExpressionContextProvider>

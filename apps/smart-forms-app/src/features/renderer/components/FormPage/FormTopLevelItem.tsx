@@ -25,11 +25,10 @@ import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.inter
 interface FormTopLevelItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem;
-  currentTabIndex: number;
 }
 
 function FormTopLevelItem(props: FormTopLevelItemProps) {
-  const { topLevelQItem, topLevelQRItem, currentTabIndex, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
 
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
@@ -43,7 +42,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
-        currentTabIndex={currentTabIndex}
         onQrItemChange={onQrItemChange}
       />
     );

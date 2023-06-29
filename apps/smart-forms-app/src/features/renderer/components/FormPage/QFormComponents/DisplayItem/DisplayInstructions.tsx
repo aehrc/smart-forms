@@ -15,19 +15,24 @@
  * limitations under the License.
  */
 
-import { Box, styled } from '@mui/material';
+import { Typography } from '@mui/material';
+import { memo } from 'react';
+import { DisplayInstructionsWrapper } from './DisplayInstructions.styles.ts';
 
-export const QGroupContainerBox = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'cardElevation' && prop !== 'isRepeated'
-})<{ cardElevation: number; isRepeated: boolean }>(({ cardElevation, isRepeated }) => ({
-  marginTop: cardElevation === 1 || isRepeated ? 0 : 18,
-  marginBottom: cardElevation === 1 || isRepeated ? 0 : 18
-}));
+interface Props {
+  displayInstructions: string;
+}
 
-export const FullWidthFormComponentBox = styled(Box)(() => ({
-  marginBottom: 14
-}));
+const DisplayInstructions = memo(function DisplayInstructions(props: Props) {
+  const { displayInstructions } = props;
 
-export const FormTitleWrapper = styled(Box)(() => ({
-  marginTop: 12
-}));
+  return displayInstructions ? (
+    <DisplayInstructionsWrapper>
+      <Typography variant="caption" fontSize={10.5}>
+        {displayInstructions}
+      </Typography>
+    </DisplayInstructionsWrapper>
+  ) : null;
+});
+
+export default DisplayInstructions;

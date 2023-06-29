@@ -16,31 +16,27 @@
  */
 
 import { createContext, useContext, useState } from 'react';
-import { Box, Container, Divider, Fade, Typography } from '@mui/material';
 import type { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { QuestionnaireProviderContext } from '../../../../App.tsx';
-import FormInvalid from './FormInvalid.tsx';
-import QTitle from './QFormComponents/QItemParts/QTitle.tsx';
-import { CalculatedExpressionContext } from '../../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
-import RendererDebugFooter from '../RendererDebugFooter/RendererDebugFooter.tsx';
-import { DebugModeContext } from '../../../debug/contexts/DebugModeContext.tsx';
+import { QuestionnaireProviderContext } from '../../../../../App.tsx';
+import { CalculatedExpressionContext } from '../../../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
+import RendererDebugFooter from '../../RendererDebugFooter/RendererDebugFooter.tsx';
+import { DebugModeContext } from '../../../../debug/contexts/DebugModeContext.tsx';
 import { Helmet } from 'react-helmet';
-import { EnableWhenExpressionContext } from '../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
-import { RendererContext } from '../../contexts/RendererContext.ts';
-import FormTopLevelItem from './FormTopLevelItem.tsx';
-import useInitialiseForm from '../../hooks/useInitialiseForm.ts';
-import { FormTabsContext } from '../../contexts/FormTabsContext.tsx';
+import { EnableWhenExpressionContext } from '../../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import { RendererContext } from '../../../contexts/RendererContext.ts';
+import useInitialiseForm from '../../../hooks/useInitialiseForm.ts';
+import Form from './Form.tsx';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
-function Form() {
+function FormRenderer() {
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
 
   const { renderer, setRenderer } = useContext(RendererContext);
-  const { currentTab } = useContext(FormTabsContext);
 
   const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
   const { updateEnableWhenExpressions } = useContext(EnableWhenExpressionContext);
+
   const { isDebugMode } = useContext(DebugModeContext);
 
   const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
@@ -56,7 +52,7 @@ function Form() {
   const topLevelQRItems = response.item;
 
   // event handlers
-  function onTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
+  function handleTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
     if (!response.item || response.item.length === 0) {
       return;
     }
@@ -74,47 +70,18 @@ function Form() {
     setRenderer({ response: updatedResponse, hasChanges: true });
   }
 
-  if (!topLevelQItems || !topLevelQRItems) {
-    return <FormInvalid questionnaire={questionnaire} />;
-  }
-
-  if (topLevelQItems.length === 0 || topLevelQRItems.length === 0) {
-    return <FormInvalid questionnaire={questionnaire} />;
-  }
-
   return (
     <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
       <Helmet>
         <title>{questionnaire.title ? questionnaire.title : 'Form Renderer'}</title>
       </Helmet>
 
-      <Fade in={true} timeout={500}>
-        <Container disableGutters maxWidth="xl" sx={{ px: 2 }}>
-          <Box sx={{ mt: 1.5 }}>
-            <Typography variant="h3" data-test="form-heading">
-              <QTitle questionnaire={questionnaire} />
-            </Typography>
-          </Box>
-
-          <Divider light sx={{ my: 1.5 }} />
-
-          {topLevelQItems.map((qItem, index) => {
-            const qrItem = topLevelQRItems[index];
-
-            return (
-              <FormTopLevelItem
-                key={qItem.linkId}
-                topLevelQItem={qItem}
-                topLevelQRItem={qrItem}
-                currentTabIndex={currentTab}
-                onQrItemChange={(newTopLevelQRItem) =>
-                  onTopLevelQRItemChange(newTopLevelQRItem, index)
-                }
-              />
-            );
-          })}
-        </Container>
-      </Fade>
+      <Form
+        questionnaire={questionnaire}
+        topLevelQItems={topLevelQItems}
+        topLevelQRItems={topLevelQRItems}
+        onTopLevelQRItemChange={handleTopLevelQRItemChange}
+      />
 
       {/* Debug footer */}
       {isDebugMode ? <RendererDebugFooter /> : null}
@@ -122,4 +89,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default FormRenderer;

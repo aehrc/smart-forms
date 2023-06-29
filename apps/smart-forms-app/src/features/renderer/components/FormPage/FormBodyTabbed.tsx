@@ -29,13 +29,13 @@ import { FormTabsContext } from '../../contexts/FormTabsContext.tsx';
 interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem;
-  currentTabIndex: number;
 }
 
 function FormBodyTabbed(props: FormBodyTabbedProps) {
-  const { topLevelQItem, topLevelQRItem, currentTabIndex, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
 
   const { tabs, markTabAsComplete } = useContext(FormTabsContext);
+  const { currentTab } = useContext(FormTabsContext);
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -58,9 +58,9 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   return (
     <Grid container spacing={2}>
-      <TabContext value={currentTabIndex.toString()}>
+      <TabContext value={currentTab.toString()}>
         <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
-          <FormBodyTabList qFormItems={qItems} currentTabIndex={currentTabIndex} tabs={tabs} />
+          <FormBodyTabList qFormItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
         </Grid>
 
         <Grid item xs={12} md={8.5} lg={9} xl={9.25}>
@@ -91,7 +91,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                   groupCardElevation={1}
                   tabIsMarkedAsComplete={tabIsMarkedAsComplete}
                   tabs={tabs}
-                  currentTabIndex={currentTabIndex}
+                  currentTabIndex={currentTab}
                   markTabAsComplete={() => markTabAsComplete(qItem.linkId)}
                   onQrItemChange={handleQrGroupChange}
                 />

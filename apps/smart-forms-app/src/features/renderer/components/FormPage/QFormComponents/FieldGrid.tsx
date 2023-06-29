@@ -18,8 +18,8 @@
 import type { ReactNode } from 'react';
 import { Grid } from '@mui/material';
 import QItemLabel from './QItemParts/QItemLabel.tsx';
-import QItemDisplayInstructions from './QItemSimple/QItemDisplayInstructions.tsx';
 import type { QuestionnaireItem } from 'fhir/r4';
+import DisplayInstructions from './DisplayItem/DisplayInstructions.tsx';
 
 interface FieldGridProps {
   children: ReactNode;
@@ -37,7 +37,7 @@ function FieldGrid(props: FieldGridProps) {
       </Grid>
       <Grid item xs={7}>
         {children}
-        <QItemDisplayInstructions displayInstructions={displayInstructions} />
+        <DisplayInstructions displayInstructions={displayInstructions} />
       </Grid>
     </Grid>
   );
