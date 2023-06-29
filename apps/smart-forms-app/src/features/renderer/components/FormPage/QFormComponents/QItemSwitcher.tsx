@@ -16,7 +16,6 @@
  */
 
 import { memo, useCallback, useContext } from 'react';
-import QItemBoolean from './QItemSimple/QItemBoolean.tsx';
 import QItemDate from './QItemSimple/QItemDate.tsx';
 import QItemText from './QItemSimple/QItemText.tsx';
 import QItemDisplay from './QItemSimple/QItemDisplay.tsx';
@@ -35,6 +34,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../types/renderProps.interface.ts';
 import StringItem from './StringItem/StringItem.tsx';
+import BooleanItem from './BooleanItem/BooleanItem.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -91,7 +91,7 @@ function RenderQItem(props: Props) {
       );
     case 'boolean':
       return (
-        <QItemBoolean
+        <BooleanItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
