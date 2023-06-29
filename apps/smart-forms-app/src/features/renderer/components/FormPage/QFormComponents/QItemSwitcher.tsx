@@ -19,7 +19,6 @@ import { memo, useCallback, useContext } from 'react';
 import QItemText from './QItemSimple/QItemText.tsx';
 import QItemDisplay from './QItemSimple/QItemDisplay.tsx';
 import QItemInteger from './QItemSimple/QItemInteger.tsx';
-import QItemDateTime from './QItemSimple/QItemDateTime.tsx';
 import QItemDecimal from './QItemSimple/QItemDecimal.tsx';
 import QItemChoice from './QItemChoice/QItemChoice.tsx';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -34,6 +33,7 @@ import type {
 import StringItem from './StringItem/StringItem.tsx';
 import BooleanItem from './BooleanItem/BooleanItem.tsx';
 import TimeItem from './TimeItem/TimeItem.tsx';
+import DateTimeItem from './DateTimeItem/DateTimeItem.tsx';
 import DateItem from './DateItem/DateItem.tsx';
 
 interface Props
@@ -120,7 +120,7 @@ function RenderQItem(props: Props) {
       );
     case 'dateTime':
       return (
-        <QItemDateTime
+        <DateTimeItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
