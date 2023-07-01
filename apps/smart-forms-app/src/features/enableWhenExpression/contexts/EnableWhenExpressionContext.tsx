@@ -62,9 +62,8 @@ function EnableWhenExpressionContextProvider(props: { children: ReactNode }) {
           if (result.length > 0) {
             initialItems[linkId].isEnabled = result[0];
           }
-          setItems(initialItems);
-          return initialItems;
         }
+        setItems(initialItems);
       }
 
       return initialItems;

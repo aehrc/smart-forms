@@ -18,7 +18,7 @@ import type { ReactNode } from 'react';
 import { createContext, useState } from 'react';
 import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import {
-  createLinkedQuestionsMap,
+  createEnableWhenLinkedQuestions,
   readInitialAnswers,
   setInitialAnswers,
   updateItemAnswer
@@ -47,7 +47,7 @@ function EnableWhenContextProvider(props: { children: ReactNode }) {
     linkMap: linkedQuestionsMap,
     isActivated: isActivated,
     initItems: (items: EnableWhenItems, response: QuestionnaireResponse) => {
-      const linkedQuestionsMap = createLinkedQuestionsMap(items);
+      const linkedQuestionsMap = createEnableWhenLinkedQuestions(items);
       const initialAnswers = readInitialAnswers(response, linkedQuestionsMap);
 
       const updatedItems =

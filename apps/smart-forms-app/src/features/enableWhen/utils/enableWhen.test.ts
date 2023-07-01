@@ -19,7 +19,11 @@ import enableWhenItemsSample from '../../../data/test-data/enable-when-items-sam
 import linkedQuestionsMapSample from '../../../data/test-data/linked-questions-map.json';
 import questionnaireResponseSample from '../../../data/test-data/questionnaire-response-sample.json';
 import initialAnswersSample from '../../../data/test-data/initial-answers-sample.json';
-import { createLinkedQuestionsMap, readInitialAnswers, setInitialAnswers } from './enableWhen.ts';
+import {
+  createEnableWhenLinkedQuestions,
+  readInitialAnswers,
+  setInitialAnswers
+} from './enableWhen.ts';
 import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import type { EnableWhenItems } from '../types/enableWhen.interface.ts';
 import { describe, expect, test } from '@jest/globals';
@@ -27,7 +31,7 @@ import { describe, expect, test } from '@jest/globals';
 describe('verify correctness of linked questions map created from enable when items', () => {
   const enableWhenItems = enableWhenItemsSample as EnableWhenItems;
 
-  const linkedQuestionsMap = createLinkedQuestionsMap(enableWhenItems);
+  const linkedQuestionsMap = createEnableWhenLinkedQuestions(enableWhenItems);
   const linkedQuestionsOfAge = linkedQuestionsMap['e2a16e4d-2765-4b61-b286-82cfc6356b30'];
 
   test('linked questions of Age question should return 147 linkIds', () => {

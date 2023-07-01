@@ -50,7 +50,7 @@ import useFormTabs from '../hooks/useFormTabs.ts';
 
 function RendererLayout() {
   const [open, setOpen] = useState(false);
-  const [navIsCollapsed, setNavIsCollapsed] = useState(false);
+  const [navIsCollapsed, collapseNav] = useState(false);
 
   const questionnaireProvider = useContext(QuestionnaireProviderContext);
   const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
@@ -194,7 +194,7 @@ function RendererLayout() {
           openNav={open}
           onCloseNav={() => setOpen(false)}
           navCollapsed={navIsCollapsed}
-          setNavCollapsed={() => setNavIsCollapsed(true)}
+          setNavCollapsed={() => collapseNav(true)}
         />
 
         <Main>
@@ -224,7 +224,7 @@ function RendererLayout() {
           />
         ) : null}
 
-        <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => setNavIsCollapsed(false)} />
+        <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => collapseNav(false)} />
 
         <BackToTopButton>
           <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>

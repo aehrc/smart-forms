@@ -32,7 +32,7 @@ import type { EnableWhenItemProperties, EnableWhenItems } from '../types/enableW
  *
  * @author Sean Fong
  */
-export function createLinkedQuestionsMap(enableWhenItems: EnableWhenItems) {
+export function createEnableWhenLinkedQuestions(enableWhenItems: EnableWhenItems) {
   const linkedQuestionsMap: Record<string, string[]> = {};
 
   for (const linkId in enableWhenItems) {
