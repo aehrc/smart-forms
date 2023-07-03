@@ -124,7 +124,7 @@ function DecimalItem(props: DecimalItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-decimal-box">
       <FieldGrid qItem={qItem} displayInstructions={displayInstructions}>
         <DecimalField
           linkId={qItem.linkId}

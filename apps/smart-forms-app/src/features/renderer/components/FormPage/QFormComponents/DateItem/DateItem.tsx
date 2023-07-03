@@ -75,7 +75,7 @@ function DateItem(props: DateItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-date-box">
       <FieldGrid qItem={qItem} displayInstructions={displayInstructions}>
         <DateField
           value={dateDayJs}
