@@ -25,8 +25,7 @@ import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import FieldGrid from '../FieldGrid.tsx';
 import BooleanField from './BooleanField.tsx';
-import { useEffect } from 'react';
-import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
+import useInitialiseBooleanFalse from '../../../../hooks/useInitialiseBooleanFalse.ts';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -43,26 +42,11 @@ function BooleanItem(props: BooleanItemProps) {
 
   // Init input value
   let checked = false;
-  if (qrItem?.answer && qrItem?.answer[0].valueBoolean) {
+  if (qrItem?.answer && qrItem.answer[0].valueBoolean) {
     checked = qrItem.answer[0].valueBoolean;
   }
 
-  // Trigger enableWhen on init - special case
-  const enableWhenLinkedQuestions = useQuestionnaireStore(
-    (state) => state.enableWhenLinkedQuestions
-  );
-  useEffect(
-    () => {
-      // if boolean item is an enableWhen linked question and it does not have an answer yet
-      // set default answer to false - to trigger enableWhen == false
-      if (qItem.linkId in enableWhenLinkedQuestions && !checked) {
-        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueBoolean: false }] });
-      }
-    },
-    // Only run effect on init
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useInitialiseBooleanFalse(qItem, qrItem, onQrItemChange);
 
   // Event handlers
   function handleCheckedChange(newChecked: boolean) {
