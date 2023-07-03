@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { TabContext, TabPanel } from '@mui/lab';
@@ -24,7 +24,7 @@ import QItemGroup from './QFormComponents/QItemGroup.tsx';
 import { updateLinkedItem } from '../../utils/qrItem.ts';
 import FormBodyTabList from './Tabs/FormBodyTabList.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
-import { FormTabsContext } from '../../contexts/FormTabsContext.tsx';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 
 interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   topLevelQItem: QuestionnaireItem;
@@ -34,8 +34,9 @@ interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler<Questionnaire
 function FormBodyTabbed(props: FormBodyTabbedProps) {
   const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
 
-  const { tabs, markTabAsComplete } = useContext(FormTabsContext);
-  const { currentTab } = useContext(FormTabsContext);
+  const tabs = useQuestionnaireStore((state) => state.tabs);
+  const currentTab = useQuestionnaireStore((state) => state.currentTabIndex);
+  const markTabAsComplete = useQuestionnaireStore((state) => state.markTabAsComplete);
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),

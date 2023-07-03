@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { Box, Drawer, Grid, IconButton, Tooltip } from '@mui/material';
 import useResponsive from '../../../../hooks/useResponsive.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
@@ -23,12 +22,12 @@ import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
 import RendererNavSection from './RendererNavSection.tsx';
 import RendererOperationSection from './RendererOperationSection.tsx';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import { NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { NavErrorAlertWrapper } from '../../../../components/Nav/Nav.styles.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
 const NAV_WIDTH = 240;
 
@@ -42,11 +41,11 @@ interface Props {
 function RendererNav(props: Props) {
   const { openNav, onCloseNav, navCollapsed, setNavCollapsed } = props;
 
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const isNotLaunched = !fhirClient;
+  const isNotLaunched = !smartClient;
 
   const renderContent = (
     <Scrollbar

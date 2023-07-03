@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Card, Divider, IconButton, Tooltip } from '@mui/material';
 import QItemSwitcher from './QItemSwitcher.tsx';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils';
@@ -25,12 +25,10 @@ import { isHidden, isRepeatItemAndNotCheckbox } from '../../../utils/qItem.ts';
 import { isSpecificItemControl } from '../../../utils/itemControl.ts';
 import QItemGroupTable from './Tables/QItemGroupTable.tsx';
 import QItemLabel from './QItemParts/QItemLabel.tsx';
-import { EnableWhenContext } from '../../../../enableWhen/contexts/EnableWhenContext.tsx';
 import { QGroupContainerBox } from '../../../../../components/Box/Box.styles.tsx';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../utils/tabs.ts';
 import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { EnableWhenExpressionContext } from '../../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
@@ -39,9 +37,9 @@ import type { QrRepeatGroup } from '../../../types/repeatGroup.interface.ts';
 import { QGroupHeadingTypography } from './Typography.styles.ts';
 import useHidden from '../../../hooks/useHidden.ts';
 import type { Tabs } from '../../../types/tab.interface.ts';
-import { FormTabsContext } from '../../../contexts/FormTabsContext.tsx';
 import RepeatItem from './RepeatItem/RepeatItem.tsx';
 import RepeatGroup from './RepeatGroup/RepeatGroup.tsx';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -69,10 +67,10 @@ function QItemGroup(props: Props) {
     onQrItemChange
   } = props;
 
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
-
-  const { switchTab } = useContext(FormTabsContext);
+  const switchTab = useQuestionnaireStore((state) => state.switchTab);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
 
   const qItems = qItem.item;
   const groupFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -150,7 +148,15 @@ function QItemGroup(props: Props) {
           {qItems.map((qItem: QuestionnaireItem, i) => {
             const qrItemOrItems = qrItemsByIndex[i];
 
-            if (isHidden(qItem, enableWhenContext, enableWhenExpressionContext)) return null;
+            if (
+              isHidden({
+                questionnaireItem: qItem,
+                enableWhenIsActivated,
+                enableWhenItems,
+                enableWhenExpressions
+              })
+            )
+              return null;
 
             // Process qrItemOrItems as an qrItem array
             if (Array.isArray(qrItemOrItems)) {
@@ -258,7 +264,7 @@ function QItemGroup(props: Props) {
                   variant="contained"
                   size="small"
                   endIcon={<Iconify icon="material-symbols:arrow-forward" />}
-                  disabled={findNumOfVisibleTabs(tabs, enableWhenContext.items) < 2}
+                  disabled={findNumOfVisibleTabs(tabs, enableWhenItems) < 2}
                   sx={{
                     backgroundColor: 'secondary.main',
                     '&:hover': {
@@ -270,7 +276,7 @@ function QItemGroup(props: Props) {
                       const nextVisibleTabIndex = getNextVisibleTabIndex(
                         tabs,
                         currentTabIndex,
-                        enableWhenContext.items
+                        enableWhenItems
                       );
 
                       // Scroll to top of page

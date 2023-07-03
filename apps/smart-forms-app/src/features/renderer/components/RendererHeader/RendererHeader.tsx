@@ -16,17 +16,16 @@
  */
 
 import Iconify from '../../../../components/Iconify/Iconify.tsx';
-import { useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
 import DesktopHeader from '../../../../components/Header/DesktopHeader.tsx';
 import useResponsive from '../../../../hooks/useResponsive.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
-import { QuestionnaireProviderContext } from '../../../../App.tsx';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import UpdatingIndicator from './UpdatingIndicator.tsx';
 import MobileHeaderWithQuestionnaire from '../../../../components/Header/MobileHeaderWithQuestionnaire.tsx';
 import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 
 interface Props {
   navIsCollapsed: boolean;
@@ -36,10 +35,10 @@ interface Props {
 function RendererHeader(props: Props) {
   const { navIsCollapsed, onOpenNav } = props;
 
-  const theme = useTheme();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
+  const theme = useTheme();
   const isDesktop = useResponsive('up', 'lg');
-  const { questionnaire } = useContext(QuestionnaireProviderContext);
 
   const navIsExpanded = !navIsCollapsed;
 
@@ -66,7 +65,7 @@ function RendererHeader(props: Props) {
         {isDesktop && navIsExpanded ? (
           <Box sx={{ px: 1 }}>
             <Typography variant="subtitle1" color="text.primary">
-              {questionnaire.title}
+              {sourceQuestionnaire.title}
             </Typography>
           </Box>
         ) : null}

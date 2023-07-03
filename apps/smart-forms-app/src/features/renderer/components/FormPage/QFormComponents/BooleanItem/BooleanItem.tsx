@@ -25,8 +25,8 @@ import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import FieldGrid from '../FieldGrid.tsx';
 import BooleanField from './BooleanField.tsx';
-import { useContext, useEffect } from 'react';
-import { EnableWhenContext } from '../../../../../enableWhen/contexts/EnableWhenContext.tsx';
+import { useEffect } from 'react';
+import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,12 +48,14 @@ function BooleanItem(props: BooleanItemProps) {
   }
 
   // Trigger enableWhen on init - special case
-  const { linkMap } = useContext(EnableWhenContext);
+  const enableWhenLinkedQuestions = useQuestionnaireStore(
+    (state) => state.enableWhenLinkedQuestions
+  );
   useEffect(
     () => {
       // if boolean item is an enableWhen linked question and it does not have an answer yet
       // set default answer to false - to trigger enableWhen == false
-      if (qItem.linkId in linkMap && !checked) {
+      if (qItem.linkId in enableWhenLinkedQuestions && !checked) {
         onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueBoolean: false }] });
       }
     },

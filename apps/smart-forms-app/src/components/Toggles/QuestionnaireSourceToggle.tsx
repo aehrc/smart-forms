@@ -17,24 +17,27 @@
 
 import { FormControlLabel, Switch, Typography } from '@mui/material';
 import { useContext } from 'react';
-import { SourceContext } from '../../features/debug/contexts/SourceContext.tsx';
 import { SelectedQuestionnaireContext } from '../../features/dashboard/contexts/SelectedQuestionnaireContext.tsx';
+import useConfigStore from '../../stores/useConfigStore.ts';
 
 interface Props {
   setPage: (page: number) => void;
 }
-function SourceToggle(props: Props) {
+function QuestionnaireSourceToggle(props: Props) {
   const { setPage } = props;
-  const { source, setSource } = useContext(SourceContext);
+
+  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
+  const updateQuestionnaireSource = useConfigStore((state) => state.updateQuestionnaireSource);
+
   const { clearSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
 
   return (
     <FormControlLabel
       control={
         <Switch
-          checked={source === 'remote'}
+          checked={questionnaireSource === 'remote'}
           onChange={() => {
-            setSource(source === 'local' ? 'remote' : 'local');
+            updateQuestionnaireSource(questionnaireSource === 'local' ? 'remote' : 'local');
             clearSelectedQuestionnaire();
             setPage(0);
           }}
@@ -42,11 +45,11 @@ function SourceToggle(props: Props) {
       }
       label={
         <Typography variant="subtitle2" textTransform="capitalize">
-          {source}
+          {questionnaireSource}
         </Typography>
       }
     />
   );
 }
 
-export default SourceToggle;
+export default QuestionnaireSourceToggle;

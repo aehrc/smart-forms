@@ -16,16 +16,17 @@
  */
 
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useContext, useEffect, useState } from 'react';
-import { SmartAppLaunchContext } from '../../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import { useEffect, useState } from 'react';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
-import { RendererContext } from '../../../contexts/RendererContext.ts';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
 
 function RendererSaveAsFinal() {
-  const { fhirClient } = useContext(SmartAppLaunchContext);
-  const { renderer } = useContext(RendererContext);
-  const { response, hasChanges } = renderer;
+  const smartClient = useConfigStore((state) => state.smartClient);
+
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const hasChanges = useQuestionnaireResponseStore((state) => state.saveResponse);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -34,10 +35,10 @@ function RendererSaveAsFinal() {
     setIsUpdating(true);
     setTimeout(() => {
       setIsUpdating(false);
-    }, 500);
-  }, [response]);
+    }, 800);
+  }, [updatableResponse]);
 
-  const responseWasSaved: boolean = !!response.authored && !!response.author;
+  const responseWasSaved: boolean = !!updatableResponse.authored && !!updatableResponse.author;
   const buttonIsDisabled = (!hasChanges && !responseWasSaved) || isUpdating;
 
   return (
@@ -47,7 +48,7 @@ function RendererSaveAsFinal() {
         icon={<TaskAltIcon />}
         disabled={buttonIsDisabled}
         onClick={() => {
-          if (fhirClient) {
+          if (smartClient) {
             setDialogOpen(true);
           }
         }}

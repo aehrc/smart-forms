@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import type { QuestionnaireResponse } from 'fhir/r4';
 
 const emptyResponse: QuestionnaireResponse = {
@@ -10,27 +10,52 @@ export interface QuestionnaireResponseState {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
   hasChanges: boolean;
-  updateResponse: (responseToUpdate: QuestionnaireResponse) => void;
-  saveResponse: (responseToSave: QuestionnaireResponse) => void;
+  buildSourceResponse: (response: QuestionnaireResponse) => void;
+  populateResponse: (response: QuestionnaireResponse) => void;
+  updateResponse: (updatedResponse: QuestionnaireResponse) => void;
+  saveResponse: (savedResponse: QuestionnaireResponse) => void;
+  clearResponse: (clearedResponse: QuestionnaireResponse) => void;
+  destroySourceResponse: () => void;
 }
 
 const useQuestionnaireResponseStore = create<QuestionnaireResponseState>()((set) => ({
   sourceResponse: emptyResponse,
   updatableResponse: emptyResponse,
   hasChanges: false,
-  updateResponse: (responseToUpdate: QuestionnaireResponse) => {
+
+  buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
     set(() => ({
-      updatableResponse: responseToUpdate,
-      hasChanges: true
+      sourceResponse: questionnaireResponse,
+      updatableResponse: questionnaireResponse
     }));
   },
-  saveResponse: (responseToSave: QuestionnaireResponse) => {
+  populateResponse: (populatedResponse: QuestionnaireResponse) => {
     set(() => ({
-      sourceResponse: responseToSave,
-      updatableResponse: responseToSave,
-      hasChanges: false
+      updatableResponse: populatedResponse
     }));
-  }
+  },
+  updateResponse: (updatedResponse: QuestionnaireResponse) =>
+    set(() => ({
+      updatableResponse: updatedResponse,
+      hasChanges: true
+    })),
+  saveResponse: (savedResponse: QuestionnaireResponse) =>
+    set(() => ({
+      sourceResponse: savedResponse,
+      updatableResponse: savedResponse,
+      hasChanges: false
+    })),
+  clearResponse: (clearedResponse: QuestionnaireResponse) =>
+    set(() => ({
+      updatableResponse: clearedResponse,
+      hasChanges: false
+    })),
+  destroySourceResponse: () =>
+    set(() => ({
+      sourceResponse: emptyResponse,
+      updatableResponse: emptyResponse,
+      hasChanges: false
+    }))
 }));
 
 export default useQuestionnaireResponseStore;

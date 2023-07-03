@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Fade, Typography } from '@mui/material';
-import { RendererContext } from '../../contexts/RendererContext.ts';
+import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 
 function UpdatingIndicator() {
-  const { renderer } = useContext(RendererContext);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -29,7 +29,7 @@ function UpdatingIndicator() {
     setTimeout(() => {
       setIsUpdating(false);
     }, 500);
-  }, [renderer]);
+  }, [updatableResponse]);
 
   return (
     <Fade in={isUpdating} timeout={100}>

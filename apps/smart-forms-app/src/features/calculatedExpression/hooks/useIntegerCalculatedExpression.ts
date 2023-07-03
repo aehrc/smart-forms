@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from 'react';
-import { CalculatedExpressionContext } from '../contexts/CalculatedExpressionContext.tsx';
+import { useEffect, useState } from 'react';
 import { createEmptyQrItemWithUnit } from '../../renderer/utils/qrItem.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 
 interface UseIntegerCalculatedExpression {
   calcExpUpdated: boolean;
@@ -37,7 +37,7 @@ function useIntegerCalculatedExpression(
 ): UseIntegerCalculatedExpression {
   const { qItem, inputValue, displayUnit, setInputValue, onQrItemChange } = props;
 
-  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
+  const calculatedExpressions = useQuestionnaireStore((state) => state.calculatedExpressions);
 
   const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 

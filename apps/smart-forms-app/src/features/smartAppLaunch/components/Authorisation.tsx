@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
 import {
   getEncounter,
@@ -27,15 +27,15 @@ import {
 } from '../utils/launch.ts';
 import { postQuestionnaireToSMARTHealthIT } from '../../save/api/saveQr.ts';
 import GoToTestLauncher from '../../../components/Snackbar/GoToTestLauncher.tsx';
-import { SmartAppLaunchContext } from '../contexts/SmartAppLaunchContext.tsx';
-import { QuestionnaireProviderContext } from '../../../App.tsx';
 import { useSnackbar } from 'notistack';
-import { SourceContext } from '../../debug/contexts/SourceContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import { StyledRoot } from './Authorisation.styles.tsx';
 import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
 import RenderAuthStatus from './RenderAuthStatus.tsx';
 import { assembleIfRequired } from '../../assemble/utils/assemble.ts';
+import useConfigStore from '../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {
@@ -69,11 +69,15 @@ const initialAuthState: AuthState = {
 };
 
 function Authorisation() {
-  const { setFhirClient, setPatient, setUser, setEncounter } = useContext(SmartAppLaunchContext);
-  const { setSource } = useContext(SourceContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  const [state, dispatch] = useReducer(authReducer, initialAuthState);
+  const setSmartClient = useConfigStore((state) => state.setSmartClient);
+  const setPatient = useConfigStore((state) => state.setPatient);
+  const setUser = useConfigStore((state) => state.setUser);
+  const setEncounter = useConfigStore((state) => state.setEncounter);
+  const updateQuestionnaireSource = useConfigStore((state) => state.updateQuestionnaireSource);
+
+  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -83,8 +87,9 @@ function Authorisation() {
       oauth2
         .ready()
         .then((client) => {
-          setFhirClient(client);
-          setSource('remote');
+          // Set SMART client
+          setSmartClient(client);
+          updateQuestionnaireSource('remote');
           sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
@@ -127,7 +132,6 @@ function Authorisation() {
 
           // Set questionnaire launch context if available
           const questionnaireReferences = getQuestionnaireReferences(client);
-
           if (questionnaireReferences.length > 0) {
             getQuestionnaireContext(client, questionnaireReferences)
               .then((response) => {
@@ -149,7 +153,7 @@ function Authorisation() {
                       postQuestionnaireToSMARTHealthIT(client, questionnaire);
                     }
 
-                    await questionnaireProvider.setQuestionnaire(questionnaire);
+                    await buildSourceQuestionnaire(questionnaire);
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                   } else {
                     enqueueSnackbar(
@@ -203,24 +207,11 @@ function Authorisation() {
   );
 
   // Perform redirect if launch authorisation is successful
-  useEffect(() => {
-    if (
-      state.hasClient &&
-      state.hasUser &&
-      state.hasPatient &&
-      typeof state.hasQuestionnaire === 'boolean'
-    ) {
-      if (state.hasQuestionnaire) {
-        navigate('/renderer');
-      } else {
-        navigate('/dashboard/questionnaires');
-      }
-    }
-  }, [navigate, state]);
+  useAuthRedirectHook(authState);
 
   return (
     <StyledRoot>
-      <RenderAuthStatus authState={state} />
+      <RenderAuthStatus authState={authState} />
     </StyledRoot>
   );
 }

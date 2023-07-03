@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import { memo, useCallback, useContext } from 'react';
+import { memo, useCallback } from 'react';
 import QItemChoice from './QItemChoice/QItemChoice.tsx';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice.tsx';
-import { EnableWhenContext } from '../../../../enableWhen/contexts/EnableWhenContext.tsx';
 import { Typography } from '@mui/material';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -35,6 +34,7 @@ import TextItem from './TextItem/TextItem.tsx';
 import DisplayItem from './DisplayItem/DisplayItem.tsx';
 import IntegerItem from './IntegerItem/IntegerItem.tsx';
 import DecimalItem from './DecimalItem/DecimalItem.tsx';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -51,16 +51,17 @@ interface Props
  */
 const QItemSwitcher = memo(function QItemSwitcher(props: Props) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-  const enableWhenContext = useContext(EnableWhenContext);
+
+  const updateEnableWhenItem = useQuestionnaireStore((state) => state.updateEnableWhenItem);
 
   const handleQrItemChange = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
       if (newQrItem.answer) {
-        enableWhenContext.updateItem(qItem.linkId, newQrItem.answer);
+        updateEnableWhenItem(qItem.linkId, newQrItem.answer);
       }
       onQrItemChange(newQrItem);
     },
-    [enableWhenContext, onQrItemChange, qItem.linkId]
+    [updateEnableWhenItem, onQrItemChange, qItem.linkId]
   );
 
   // Is qItem is a repeat item, disable collapse transition as the base repeat item already has one

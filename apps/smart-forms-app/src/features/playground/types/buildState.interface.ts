@@ -15,20 +15,4 @@
  * limitations under the License.
  */
 
-import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme/Theme';
-import Router from './router/Router.tsx';
-import { SnackbarProvider } from 'notistack';
-
-function App() {
-  return (
-    <ThemeProvider>
-      <SnackbarProvider>
-        <CssBaseline />
-        <Router />
-      </SnackbarProvider>
-    </ThemeProvider>
-  );
-}
-
-export default App;
+export type BuildState = 'idle' | 'building' | 'built';

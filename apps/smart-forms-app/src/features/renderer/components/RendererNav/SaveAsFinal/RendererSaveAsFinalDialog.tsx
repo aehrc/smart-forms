@@ -15,15 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useState } from 'react';
-import { SmartAppLaunchContext } from '../../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../../../App.tsx';
-import { RendererContext } from '../../../contexts/RendererContext.ts';
-import { EnableWhenContext } from '../../../../enableWhen/contexts/EnableWhenContext.tsx';
-import { EnableWhenExpressionContext } from '../../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
@@ -37,6 +29,9 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
@@ -46,16 +41,19 @@ export interface RendererSaveAsFinalDialogProps {
 function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   const { open, closeDialog } = props;
 
-  const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const responseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { renderer, setRenderer } = useContext(RendererContext);
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const user = useConfigStore((state) => state.user);
+
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
+
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
 
   const [isSaving, setIsSaving] = useState(false);
-
-  const { response } = renderer;
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -66,28 +64,22 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   }
 
   function handleSave() {
-    if (!(fhirClient && patient && user)) return;
+    if (!(smartClient && patient && user)) return;
 
     setIsSaving(true);
-    let responseToSave = cloneDeep(response);
-    responseToSave = removeHiddenAnswers(
-      questionnaireProvider.questionnaire,
-      responseToSave,
-      enableWhenContext,
-      enableWhenExpressionContext
-    );
+    let responseToSave = cloneDeep(updatableResponse);
+    responseToSave = removeHiddenAnswers({
+      questionnaire: sourceQuestionnaire,
+      questionnaireResponse: responseToSave,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    });
 
     responseToSave.status = 'completed';
-    saveQuestionnaireResponse(
-      fhirClient,
-      patient,
-      user,
-      questionnaireProvider.questionnaire,
-      responseToSave
-    )
+    saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        responseProvider.setQuestionnaireResponse(savedResponse);
-        setRenderer({ response: savedResponse, hasChanges: false });
+        saveResponse(savedResponse);
         enqueueSnackbar('Response saved as final', { variant: 'success' });
 
         // Wait until renderer.hasChanges is set to false before navigating away

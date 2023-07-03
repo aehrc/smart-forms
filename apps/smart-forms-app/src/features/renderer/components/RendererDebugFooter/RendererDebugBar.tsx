@@ -15,32 +15,34 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
-import { EnableWhenContext } from '../../../enableWhen/contexts/EnableWhenContext.tsx';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 
-interface Props {
+interface RendererDebugBarProps {
   isHidden: boolean;
   toggleIsHidden: (checked: boolean) => unknown;
 }
 
-function RendererDebugBar(props: Props) {
+function RendererDebugBar(props: RendererDebugBarProps) {
   const { isHidden, toggleIsHidden } = props;
 
-  const { toggleActivation, isActivated } = useContext(EnableWhenContext);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const toggleEnableWhenActivation = useQuestionnaireStore(
+    (state) => state.toggleEnableWhenActivation
+  );
 
   return (
     <Box display="flex" flexDirection="row-reverse">
       <FormControlLabel
         control={
           <Switch
-            onChange={(event) => toggleActivation(event.target.checked)}
-            checked={isActivated}
+            onChange={(event) => toggleEnableWhenActivation(event.target.checked)}
+            checked={enableWhenIsActivated}
           />
         }
         label={
           <Typography variant="overline">
-            {isActivated ? 'EnableWhen on' : 'EnableWhen off'}
+            {enableWhenIsActivated ? 'EnableWhen on' : 'EnableWhen off'}
           </Typography>
         }
       />

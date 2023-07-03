@@ -20,8 +20,17 @@ import { hasHiddenExtension } from './itemControl.ts';
 import { getChoiceControlType } from './choice.ts';
 import { QItemChoiceControl, QItemOpenChoiceControl } from '../types/choice.enum.ts';
 import { getOpenChoiceControlType } from './openChoice.ts';
-import type { EnableWhenContextType } from '../../enableWhen/types/enableWhenContext.type.ts';
-import type { EnableWhenExpressionContextType } from '../../enableWhenExpression/types/enableWhenExpressionContext.type.ts';
+import {
+  EnableWhenExpression,
+  EnableWhenItems
+} from '../../enableWhen/types/enableWhen.interface.ts';
+
+interface isHiddenParams {
+  questionnaireItem: QuestionnaireItem;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
 
 /**
  * Test the given QItem on a series of checks to verify if the item should be displayed
@@ -30,20 +39,18 @@ import type { EnableWhenExpressionContextType } from '../../enableWhenExpression
  *
  * @author Sean Fong
  */
-export function isHidden(
-  qItem: QuestionnaireItem,
-  enableWhenContext: EnableWhenContextType,
-  enableWhenExpressionContext: EnableWhenExpressionContextType
-): boolean {
-  if (hasHiddenExtension(qItem)) return true;
+export function isHidden(params: isHiddenParams): boolean {
+  const { questionnaireItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } =
+    params;
+  if (hasHiddenExtension(questionnaireItem)) return true;
 
-  if (enableWhenContext.isActivated) {
-    if (enableWhenContext.items[qItem.linkId]) {
-      return !enableWhenContext.items[qItem.linkId].isEnabled;
+  if (enableWhenIsActivated) {
+    if (enableWhenItems[questionnaireItem.linkId]) {
+      return !enableWhenItems[questionnaireItem.linkId].isEnabled;
     }
 
-    if (enableWhenExpressionContext.enableWhenExpressions[qItem.linkId]) {
-      return !enableWhenExpressionContext.enableWhenExpressions[qItem.linkId].isEnabled;
+    if (enableWhenExpressions[questionnaireItem.linkId]) {
+      return !enableWhenExpressions[questionnaireItem.linkId].isEnabled;
     }
   }
 

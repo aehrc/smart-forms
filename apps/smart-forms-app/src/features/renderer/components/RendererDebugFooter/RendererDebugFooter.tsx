@@ -16,12 +16,12 @@
  */
 
 import { StyledRoot } from '../../../../components/DebugFooter/DebugFooter.styles.ts';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import DebugResponse from './DebugResponse.tsx';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import RendererDebugBar from './RendererDebugBar.tsx';
-import { QuestionnaireProviderContext } from '../../../../App.tsx';
-import { RendererContext } from '../../contexts/RendererContext.ts';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 
 const clearTopLevelQRItem: QuestionnaireResponseItem = {
   linkId: 'clearedItem',
@@ -31,24 +31,23 @@ const clearTopLevelQRItem: QuestionnaireResponseItem = {
 
 function RendererDebugFooter() {
   const [isHidden, setIsHidden] = useState(true);
-  const { questionnaire } = useContext(QuestionnaireProviderContext);
-  const { renderer, setRenderer } = useContext(RendererContext);
-  const { response } = renderer;
 
-  function clearQuestionnaireResponse() {
-    if (!response.item || response.item.length === 0) {
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const clearResponse = useQuestionnaireResponseStore((state) => state.clearResponse);
+
+  function handleClearExistingResponse() {
+    if (!updatableResponse.item || updatableResponse.item.length === 0) {
       return;
     }
 
-    const clearTopLevelQRItems: QuestionnaireResponseItem[] = Array(response.item.length).fill(
-      clearTopLevelQRItem
-    );
-    setRenderer({
-      response: {
-        ...response,
-        item: clearTopLevelQRItems
-      },
-      hasChanges: false
+    const clearTopLevelQRItems: QuestionnaireResponseItem[] = Array(
+      updatableResponse.item.length
+    ).fill(clearTopLevelQRItem);
+
+    clearResponse({
+      ...updatableResponse,
+      item: clearTopLevelQRItems
     });
   }
 
@@ -56,9 +55,9 @@ function RendererDebugFooter() {
     <>
       {isHidden ? null : (
         <DebugResponse
-          questionnaire={questionnaire}
-          questionnaireResponse={response}
-          clearQResponse={() => clearQuestionnaireResponse()}
+          questionnaire={sourceQuestionnaire}
+          questionnaireResponse={updatableResponse}
+          clearQResponse={() => handleClearExistingResponse()}
         />
       )}
       <StyledRoot>

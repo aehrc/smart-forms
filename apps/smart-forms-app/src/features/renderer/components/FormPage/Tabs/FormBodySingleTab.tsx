@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import {
   Box,
   ListItemButton,
@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { FormTabsContext } from '../../../contexts/FormTabsContext.tsx';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 
 interface Props {
   selected: boolean;
@@ -38,7 +38,7 @@ interface Props {
 const FormBodySingleTab = memo(function FormBodySingleTab(props: Props) {
   const { selected, tabLabel, listIndex, markedAsComplete } = props;
 
-  const { switchTab } = useContext(FormTabsContext);
+  const switchTab = useQuestionnaireStore((state) => state.switchTab);
 
   return (
     <ListItemButton

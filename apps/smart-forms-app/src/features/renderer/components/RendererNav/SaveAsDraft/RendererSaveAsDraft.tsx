@@ -16,29 +16,28 @@
  */
 
 import SaveIcon from '@mui/icons-material/Save';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
-import { SmartAppLaunchContext } from '../../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../../../App.tsx';
-import { EnableWhenContext } from '../../../../enableWhen/contexts/EnableWhenContext.tsx';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
-import { EnableWhenExpressionContext } from '../../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
-import { RendererContext } from '../../../contexts/RendererContext.ts';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
 
 function RendererSaveAsDraft() {
-  const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const responseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { renderer, setRenderer } = useContext(RendererContext);
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const user = useConfigStore((state) => state.user);
 
-  const { response, hasChanges } = renderer;
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
+
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
+  const hasChanges = useQuestionnaireResponseStore((state) => state.saveResponse);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -48,35 +47,29 @@ function RendererSaveAsDraft() {
     setIsUpdating(true);
     setTimeout(() => {
       setIsUpdating(false);
-    }, 500);
-  }, [response]);
+    }, 800);
+  }, [updatableResponse]);
 
-  const buttonIsDisabled = !hasChanges || !fhirClient || isUpdating;
+  const buttonIsDisabled = !smartClient || !hasChanges || isUpdating;
 
   function handleClick() {
-    if (!(fhirClient && patient && user)) {
+    if (!(smartClient && patient && user)) {
       return;
     }
 
-    let responseToSave = cloneDeep(response);
-    responseToSave = removeHiddenAnswers(
-      questionnaireProvider.questionnaire,
-      responseToSave,
-      enableWhenContext,
-      enableWhenExpressionContext
-    );
+    let responseToSave = cloneDeep(updatableResponse);
+    responseToSave = removeHiddenAnswers({
+      questionnaire: sourceQuestionnaire,
+      questionnaireResponse: responseToSave,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    });
 
     responseToSave.status = 'in-progress';
-    saveQuestionnaireResponse(
-      fhirClient,
-      patient,
-      user,
-      questionnaireProvider.questionnaire,
-      responseToSave
-    )
+    saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        responseProvider.setQuestionnaireResponse(savedResponse);
-        setRenderer({ response: savedResponse, hasChanges: false });
+        saveResponse(savedResponse);
         enqueueSnackbar('Response saved as draft', { variant: 'success' });
       })
       .catch((error) => {

@@ -16,10 +16,16 @@
  */
 
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
-import type { EnableWhenItems } from '../features/enableWhen/types/enableWhen.interface.ts';
+import type {
+  EnableWhenExpression,
+  EnableWhenItems
+} from '../features/enableWhen/types/enableWhen.interface.ts';
 
-// TODO
-export function getFirstVisibleTab(tabs: Tabs, enableWhenItems: EnableWhenItems) {
+export function getFirstVisibleTab(
+  tabs: Tabs,
+  enableWhenItems: EnableWhenItems,
+  enableWhenExpressions: Record<string, EnableWhenExpression>
+) {
   return Object.entries(tabs)
     .sort(([, tabA], [, tabB]) => tabA.tabIndex - tabB.tabIndex)
     .findIndex(([tabLinkId, tab]) => {
@@ -31,8 +37,8 @@ export function getFirstVisibleTab(tabs: Tabs, enableWhenItems: EnableWhenItems)
         return enableWhenItems[tabLinkId].isEnabled;
       }
 
-      if (enableWhenItems[tabLinkId]) {
-        return enableWhenItems[tabLinkId].isEnabled;
+      if (enableWhenExpressions[tabLinkId]) {
+        return enableWhenExpressions[tabLinkId].isEnabled;
       }
 
       return true;

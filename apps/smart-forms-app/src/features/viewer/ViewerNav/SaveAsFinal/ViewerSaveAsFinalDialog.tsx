@@ -15,12 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useState } from 'react';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../../App.tsx';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
@@ -34,6 +29,9 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -43,9 +41,14 @@ export interface ViewerSaveAsFinalDialogProps {
 function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
   const { open, closeDialog } = props;
 
-  const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const responseProvider = useContext(QuestionnaireResponseProviderContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const user = useConfigStore((state) => state.user);
+
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -58,22 +61,17 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
   }
 
   function handleSave() {
-    if (!(fhirClient && patient && user)) return;
+    if (!(smartClient && patient && user)) return;
 
     setIsSaving(true);
-    const responseToSave = cloneDeep(responseProvider.response);
 
+    const responseToSave = cloneDeep(updatableResponse);
     responseToSave.status = 'completed';
-    saveQuestionnaireResponse(
-      fhirClient,
-      patient,
-      user,
-      questionnaireProvider.questionnaire,
-      responseToSave
-    )
+
+    saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        responseProvider.setQuestionnaireResponse(savedResponse);
         setIsSaving(false);
+        saveResponse(savedResponse);
         handleClose();
         enqueueSnackbar('Response saved as final', { variant: 'success' });
         navigate('/dashboard/responses');

@@ -15,25 +15,24 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension } from '../utils/itemControl.ts';
-import { EnableWhenContext } from '../../enableWhen/contexts/EnableWhenContext.tsx';
-import { EnableWhenExpressionContext } from '../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 
 function useHidden(qItem: QuestionnaireItem): boolean {
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
 
   if (hasHiddenExtension(qItem)) return true;
 
-  if (enableWhenContext.isActivated) {
-    if (enableWhenContext.items[qItem.linkId]) {
-      return !enableWhenContext.items[qItem.linkId].isEnabled;
+  if (enableWhenIsActivated) {
+    if (enableWhenItems[qItem.linkId]) {
+      return !enableWhenItems[qItem.linkId].isEnabled;
     }
 
-    if (enableWhenExpressionContext.enableWhenExpressions[qItem.linkId]) {
-      return !enableWhenExpressionContext.enableWhenExpressions[qItem.linkId].isEnabled;
+    if (enableWhenExpressions[qItem.linkId]) {
+      return !enableWhenExpressions[qItem.linkId].isEnabled;
     }
   }
 

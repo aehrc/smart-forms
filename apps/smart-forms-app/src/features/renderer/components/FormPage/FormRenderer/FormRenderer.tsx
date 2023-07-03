@@ -15,77 +15,68 @@
  * limitations under the License.
  */
 
-import { createContext, useContext, useState } from 'react';
+import { createContext } from 'react';
 import type { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { QuestionnaireProviderContext } from '../../../../../App.tsx';
-import { CalculatedExpressionContext } from '../../../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
 import RendererDebugFooter from '../../RendererDebugFooter/RendererDebugFooter.tsx';
-import { DebugModeContext } from '../../../../debug/contexts/DebugModeContext.tsx';
 import { Helmet } from 'react-helmet';
-import { EnableWhenExpressionContext } from '../../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
-import { RendererContext } from '../../../contexts/RendererContext.ts';
-import useInitialiseForm from '../../../hooks/useInitialiseForm.ts';
 import Form from './Form.tsx';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
 function FormRenderer() {
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-
-  const { renderer, setRenderer } = useContext(RendererContext);
-
-  const { updateCalculatedExpressions } = useContext(CalculatedExpressionContext);
-  const { updateEnableWhenExpressions } = useContext(EnableWhenExpressionContext);
-
-  const { isDebugMode } = useContext(DebugModeContext);
-
-  const [preprocessedValueSetCodings] = useState<Record<string, Coding[]>>(
-    questionnaireProvider.preprocessedValueSetCodings
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updateEnableWhenExpressions = useQuestionnaireStore(
+    (state) => state.updateEnableWhenExpressions
   );
+  const updateCalculatedExpressions = useQuestionnaireStore(
+    (state) => state.updateCalculatedExpressions
+  );
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const updateResponse = useQuestionnaireResponseStore((state) => state.updateResponse);
 
-  const { response } = renderer;
-  const questionnaire = questionnaireProvider.questionnaire;
+  const debugMode = useConfigStore((state) => state.debugMode);
 
-  useInitialiseForm();
-
-  const topLevelQItems = questionnaire.item;
-  const topLevelQRItems = response.item;
+  const topLevelQItems = sourceQuestionnaire.item;
+  const topLevelQRItems = updatableResponse.item;
 
   // event handlers
   function handleTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
-    if (!response.item || response.item.length === 0) {
+    if (!updatableResponse.item || updatableResponse.item.length === 0) {
       return;
     }
 
-    const updatedItems = [...response.item]; // Copy the original array of items
+    const updatedItems = [...updatableResponse.item]; // Copy the original array of items
     updatedItems[index] = newTopLevelQItem; // Modify the item at the specified index
 
     const updatedResponse: QuestionnaireResponse = {
-      ...response,
+      ...updatableResponse,
       item: updatedItems
     };
 
-    updateEnableWhenExpressions(updatedResponse, questionnaireProvider.variables.fhirPathVariables);
-    updateCalculatedExpressions(updatedResponse, questionnaireProvider.variables.fhirPathVariables);
-    setRenderer({ response: updatedResponse, hasChanges: true });
+    updateEnableWhenExpressions(updatedResponse);
+    updateCalculatedExpressions(updatedResponse);
+    updateResponse(updatedResponse);
   }
 
   return (
-    <PreprocessedValueSetContext.Provider value={preprocessedValueSetCodings}>
+    <>
       <Helmet>
-        <title>{questionnaire.title ? questionnaire.title : 'Form Renderer'}</title>
+        <title>{sourceQuestionnaire.title ?? 'Form Renderer'}</title>
       </Helmet>
 
       <Form
-        questionnaire={questionnaire}
+        questionnaire={sourceQuestionnaire}
         topLevelQItems={topLevelQItems}
         topLevelQRItems={topLevelQRItems}
         onTopLevelQRItemChange={handleTopLevelQRItemChange}
       />
 
       {/* Debug footer */}
-      {isDebugMode ? <RendererDebugFooter /> : null}
-    </PreprocessedValueSetContext.Provider>
+      {debugMode ? <RendererDebugFooter /> : null}
+    </>
   );
 }
 

@@ -30,9 +30,11 @@ import { qrToHTML } from '../../preview/utils/preview.ts';
 import { isHidden } from '../../renderer/utils/qItem.ts';
 import { fetchQuestionnaireById } from '../../../api/client.ts';
 import cloneDeep from 'lodash.clonedeep';
-import type { EnableWhenContextType } from '../../enableWhen/types/enableWhenContext.type.ts';
-import type { EnableWhenExpressionContextType } from '../../enableWhenExpression/types/enableWhenExpressionContext.type.ts';
 import { HEADERS } from '../../../api/headers.ts';
+import {
+  EnableWhenExpression,
+  EnableWhenItems
+} from '../../enableWhen/types/enableWhen.interface.ts';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
@@ -159,17 +161,28 @@ function getQuestionnaireName(questionnaire: Questionnaire): string {
   return questionnaire.id ? `Unnamed Questionnaire-${questionnaire.id}` : 'Unnamed Questionnaire';
 }
 
+interface removeHiddenAnswersParams {
+  questionnaire: Questionnaire;
+  questionnaireResponse: QuestionnaireResponse;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
+
 /**
  * Recursively go through the questionnaireResponse and remove qrItems whose qItems are hidden in the form
  *
  * @author Sean Fong
  */
-export function removeHiddenAnswers(
-  questionnaire: Questionnaire,
-  questionnaireResponse: QuestionnaireResponse,
-  enableWhenContext: EnableWhenContextType,
-  enableWhenExpressionContext: EnableWhenExpressionContextType
-): QuestionnaireResponse {
+export function removeHiddenAnswers(params: removeHiddenAnswersParams): QuestionnaireResponse {
+  const {
+    questionnaire,
+    questionnaireResponse,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  } = params;
+
   const topLevelQItems = questionnaire.item;
   const topLevelQRItems = questionnaireResponse.item;
   if (
@@ -183,12 +196,13 @@ export function removeHiddenAnswers(
 
   topLevelQRItems.forEach((qrItem, i) => {
     const qItem = topLevelQItems[i];
-    const newTopLevelQRItem = readQuestionnaireResponseItem(
+    const newTopLevelQRItem = readQuestionnaireResponseItem({
       qItem,
       qrItem,
-      enableWhenContext,
-      enableWhenExpressionContext
-    );
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    });
     if (newTopLevelQRItem && questionnaireResponse.item) {
       questionnaireResponse.item[i] = { ...newTopLevelQRItem };
     }
@@ -197,19 +211,34 @@ export function removeHiddenAnswers(
   return questionnaireResponse;
 }
 
+interface readQuestionnaireResponseItemParams {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
+
 function readQuestionnaireResponseItem(
-  qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem,
-  enableWhenContext: EnableWhenContextType,
-  enableWhenExpressionContext: EnableWhenExpressionContextType
+  params: readQuestionnaireResponseItemParams
 ): QuestionnaireResponseItem | null {
+  const { qItem, qrItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
+
   const qItems = qItem.item;
   const qrItems = qrItem.item;
 
   // Process group items
   if (qItems && qItems.length > 0) {
     // Return nothing if corresponding qItem is hidden
-    if (isHidden(qItem, enableWhenContext, enableWhenExpressionContext)) return null;
+    if (
+      isHidden({
+        questionnaireItem: qItem,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions
+      })
+    )
+      return null;
 
     if (qrItems && qrItems.length > 0) {
       const newQrItems: QuestionnaireResponseItem[] = [];
@@ -223,12 +252,13 @@ function readQuestionnaireResponseItem(
       ) {
         // Save qrItem if linkIds of current qItem and qrItem are the same
         if (qrItems[qrItemIndex] && qItems[qItemIndex].linkId === qrItems[qrItemIndex].linkId) {
-          const newQrItem = readQuestionnaireResponseItem(
-            qItems[qItemIndex],
-            qrItems[qrItemIndex],
-            enableWhenContext,
-            enableWhenExpressionContext
-          );
+          const newQrItem = readQuestionnaireResponseItem({
+            qItem: qItems[qItemIndex],
+            qrItem: qrItems[qrItemIndex],
+            enableWhenIsActivated,
+            enableWhenItems,
+            enableWhenExpressions
+          });
 
           if (newQrItem) {
             newQrItems.push(newQrItem);
@@ -255,5 +285,12 @@ function readQuestionnaireResponseItem(
   }
 
   // Process non-group items
-  return isHidden(qItem, enableWhenContext, enableWhenExpressionContext) ? null : { ...qrItem };
+  return isHidden({
+    questionnaireItem: qItem,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  })
+    ? null
+    : { ...qrItem };
 }

@@ -16,13 +16,13 @@
  */
 
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useContext, useState } from 'react';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import { useState } from 'react';
 import ViewerOperationItem from '../ViewerOperationItem.tsx';
 import ViewerSaveAsFinalDialog from './ViewerSaveAsFinalDialog.tsx';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
 function ViewerSaveAsFinal() {
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -32,7 +32,7 @@ function ViewerSaveAsFinal() {
         title="Save as Final"
         icon={<TaskAltIcon />}
         onClick={() => {
-          if (fhirClient) {
+          if (smartClient) {
             setDialogOpen(true);
           }
         }}

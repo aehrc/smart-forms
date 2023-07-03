@@ -15,20 +15,8 @@
  * limitations under the License.
  */
 
-import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme/Theme';
-import Router from './router/Router.tsx';
-import { SnackbarProvider } from 'notistack';
+import { Questionnaire } from 'fhir/r4';
 
-function App() {
-  return (
-    <ThemeProvider>
-      <SnackbarProvider>
-        <CssBaseline />
-        <Router />
-      </SnackbarProvider>
-    </ThemeProvider>
-  );
+export function isQuestionnaire(jsonObject: any): jsonObject is Questionnaire {
+  return jsonObject.resourceType === 'Questionnaire';
 }
-
-export default App;

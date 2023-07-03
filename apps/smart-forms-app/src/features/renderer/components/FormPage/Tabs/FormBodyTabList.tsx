@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import { Box, Card, Collapse } from '@mui/material';
 import { PrimarySelectableList } from '../../../../../components/List/Lists.styles.tsx';
 import { TransitionGroup } from 'react-transition-group';
 import { isHidden } from '../../../utils/qItem.ts';
 import { getShortText } from '../../../utils/itemControl.ts';
-import { EnableWhenContext } from '../../../../enableWhen/contexts/EnableWhenContext.tsx';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab.tsx';
-import { EnableWhenExpressionContext } from '../../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
 import type { Tabs } from '../../../types/tab.interface.ts';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 
 interface FormBodyTabListProps {
   qFormItems: QuestionnaireItem[];
@@ -36,8 +35,9 @@ interface FormBodyTabListProps {
 const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProps) {
   const { qFormItems, currentTabIndex, tabs } = props;
 
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
 
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
@@ -47,7 +47,15 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
             {qFormItems.map((qItem, i) => {
               const isTab = !!tabs[qItem.linkId];
 
-              if (!isTab || isHidden(qItem, enableWhenContext, enableWhenExpressionContext)) {
+              if (
+                !isTab ||
+                isHidden({
+                  questionnaireItem: qItem,
+                  enableWhenIsActivated,
+                  enableWhenItems,
+                  enableWhenExpressions
+                })
+              ) {
                 return null;
               }
 

@@ -1,6 +1,5 @@
-import create from 'zustand';
-import type { Encounter, Patient } from 'fhir/r4';
-import type { Practitioner } from 'fhir/r4';
+import { create } from 'zustand';
+import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import type { Source } from '../types/source.interface.ts';
 
@@ -11,10 +10,12 @@ export interface ConfigState {
   encounter: Encounter | null;
   debugMode: boolean;
   questionnaireSource: Source;
+  setSmartClient: (client: Client) => void;
   setPatient: (patient: Patient) => void;
   setUser: (user: Practitioner) => void;
   setEncounter: (encounter: Encounter) => void;
-  updateSource: (newSource: Source) => void;
+  updateQuestionnaireSource: (newSource: Source) => void;
+  activateDebugMode: () => void;
 }
 
 const useConfigStore = create<ConfigState>()((set) => ({
@@ -24,10 +25,12 @@ const useConfigStore = create<ConfigState>()((set) => ({
   encounter: null,
   debugMode: false,
   questionnaireSource: 'remote',
+  setSmartClient: (client: Client) => set(() => ({ smartClient: client })),
   setPatient: (patient: Patient) => set(() => ({ patient: patient })),
   setUser: (user: Practitioner) => set(() => ({ user: user })),
   setEncounter: (encounter: Encounter) => set(() => ({ encounter: encounter })),
-  updateSource: (newSource: Source) => set(() => ({ questionnaireSource: newSource }))
+  updateQuestionnaireSource: (newSource: Source) => set(() => ({ questionnaireSource: newSource })),
+  activateDebugMode: () => set(() => ({ debugMode: true }))
 }));
 
 export default useConfigStore;

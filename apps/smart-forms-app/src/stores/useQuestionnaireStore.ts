@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import type {
   Coding,
   Questionnaire,
@@ -17,14 +17,24 @@ import { createQuestionnaireModel } from '../features/preprocess/utils/preproces
 import { evaluateUpdatedCalculatedExpressions } from '../utils/calculatedExpressions.ts';
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 import { updateItemAnswer } from '../features/enableWhen/utils/enableWhen.ts';
-import { assignPopulatedAnswersToEnableWhen } from '../utils/enableWhen.ts';
 import {
   evaluateInitialEnableWhenExpressions,
   evaluateUpdatedEnableWhenExpressions
 } from '../utils/enableWhenExpression.ts';
+import { initialiseFormFromResponse } from '../utils/initaliseForm.ts';
+
+const emptyQuestionnaire: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft'
+};
+
+const emptyResponse: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress'
+};
 
 export interface QuestionnaireState {
-  questionnaire: Questionnaire;
+  sourceQuestionnaire: Questionnaire;
   tabs: Tabs;
   currentTabIndex: number;
   variables: Variables;
@@ -37,23 +47,24 @@ export interface QuestionnaireState {
   answerExpressions: Record<string, AnswerExpression>;
   processedValueSetCodings: Record<string, Coding[]>;
   cachedValueSetCodings: Record<string, Coding[]>;
-  buildQuestionnaire: (questionnaire: Questionnaire) => void;
+  buildSourceQuestionnaire: (
+    questionnaire: Questionnaire,
+    questionnaireResponse?: QuestionnaireResponse
+  ) => Promise<void>;
+  destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
   markTabAsComplete: (tabLinkId: string) => void;
-  initialiseEnableWhenAnswers: (populatedResponse: QuestionnaireResponse) => void;
   updateEnableWhenItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
   initialiseEnableWhenExpressions: (populatedResponse: QuestionnaireResponse) => void;
   updateEnableWhenExpressions: (updatedResponse: QuestionnaireResponse) => void;
   updateCalculatedExpressions: (updatedResponse: QuestionnaireResponse) => void;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
+  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => void;
 }
 
 const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
-  questionnaire: {
-    resourceType: 'Questionnaire',
-    status: 'draft'
-  },
+  sourceQuestionnaire: emptyQuestionnaire,
   tabs: {},
   currentTabIndex: 0,
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
@@ -66,22 +77,50 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
   enableWhenIsActivated: true,
   processedValueSetCodings: {},
   cachedValueSetCodings: {},
-  buildQuestionnaire: async (questionnaire) => {
+  buildSourceQuestionnaire: async (questionnaire, questionnaireResponse = emptyResponse) => {
     const questionnaireModel = await createQuestionnaireModel(questionnaire);
 
-    set({
-      questionnaire: questionnaire,
-      tabs: questionnaireModel.tabs,
-      currentTabIndex: 0,
-      variables: questionnaireModel.variables,
-      launchContexts: questionnaireModel.launchContexts,
+    const {
+      initialEnableWhenItems,
+      initialEnableWhenLinkedQuestions,
+      initialEnableWhenExpressions,
+      firstVisibleTab
+    } = initialiseFormFromResponse({
+      questionnaireResponse,
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
+      variablesFhirPath: questionnaireModel.variables.fhirPathVariables,
+      tabs: questionnaireModel.tabs
+    });
+
+    set({
+      sourceQuestionnaire: questionnaire,
+      tabs: questionnaireModel.tabs,
+      currentTabIndex: firstVisibleTab,
+      variables: questionnaireModel.variables,
+      launchContexts: questionnaireModel.launchContexts,
+      enableWhenItems: initialEnableWhenItems,
+      enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
+      enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings
     });
   },
+  destroySourceQuestionnaire: () =>
+    set({
+      sourceQuestionnaire: emptyQuestionnaire,
+      tabs: {},
+      currentTabIndex: 0,
+      variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
+      launchContexts: {},
+      enableWhenItems: {},
+      enableWhenLinkedQuestions: {},
+      enableWhenExpressions: {},
+      calculatedExpressions: {},
+      answerExpressions: {},
+      processedValueSetCodings: {}
+    }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
   markTabAsComplete: (tabLinkId: string) =>
     set((state) => ({
@@ -90,17 +129,6 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
         [tabLinkId]: { ...state.tabs[tabLinkId], isComplete: !state.tabs[tabLinkId].isComplete }
       }
     })),
-  initialiseEnableWhenAnswers: (populatedResponse: QuestionnaireResponse) => {
-    const { initialisedItems, linkedQuestions } = assignPopulatedAnswersToEnableWhen(
-      get().enableWhenItems,
-      populatedResponse
-    );
-
-    set(() => ({
-      enableWhenItems: initialisedItems,
-      enableWhenLinkedQuestions: linkedQuestions
-    }));
-  },
   updateEnableWhenItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => {
     const enableWhenLinkedQuestions = get().enableWhenLinkedQuestions;
     const enableWhenItems = get().enableWhenItems;
@@ -153,12 +181,32 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       set(() => ({ calculatedExpressions: updatedCalculatedExpressions }));
     }
   },
-  addCodingToCache: (valueSetUrl: string, codings: Coding[]) => {
+  addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set((state) => ({
       cachedValueSetCodings: {
         ...state.cachedValueSetCodings,
         [valueSetUrl]: codings
       }
+    })),
+  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => {
+    const {
+      initialEnableWhenItems,
+      initialEnableWhenLinkedQuestions,
+      initialEnableWhenExpressions,
+      firstVisibleTab
+    } = initialiseFormFromResponse({
+      questionnaireResponse: populatedResponse,
+      enableWhenItems: get().enableWhenItems,
+      enableWhenExpressions: get().enableWhenExpressions,
+      variablesFhirPath: get().variables.fhirPathVariables,
+      tabs: get().tabs
+    });
+
+    set(() => ({
+      enableWhenItems: initialEnableWhenItems,
+      enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
+      enableWhenExpressions: initialEnableWhenExpressions,
+      currentTabIndex: firstVisibleTab
     }));
   }
 }));

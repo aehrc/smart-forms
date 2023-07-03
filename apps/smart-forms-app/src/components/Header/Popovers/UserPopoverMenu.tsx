@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
-import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import {
   AccountDetailsTypography,
   AccountNameTypographyNoWrap
 } from '../../Typography/Typography.tsx';
 import { constructName } from '../../../features/smartAppLaunch/utils/launchContext.ts';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
+import useConfigStore from '../../../stores/useConfigStore.ts';
 
 function UserPopoverMenu() {
-  const { user } = useContext(SmartAppLaunchContext);
+  const user = useConfigStore((state) => state.user);
 
   return (
     <PopoverMenuWrapper>

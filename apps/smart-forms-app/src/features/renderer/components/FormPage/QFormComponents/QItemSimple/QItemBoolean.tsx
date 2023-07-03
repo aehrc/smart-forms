@@ -16,11 +16,10 @@
  */
 
 import type { ChangeEvent } from 'react';
-import { memo, useContext, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { EnableWhenContext } from '../../../../../enableWhen/contexts/EnableWhenContext.tsx';
 import QItemDisplayInstructions from './QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
@@ -30,6 +29,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -50,12 +50,14 @@ function QItemBoolean(props: Props) {
   const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
 
   // Trigger enableWhen on init - special case
-  const { linkMap } = useContext(EnableWhenContext);
+  const enableWhenLinkedQuestions = useQuestionnaireStore(
+    (state) => state.enableWhenLinkedQuestions
+  );
   useEffect(
     () => {
       // if boolean item is an enableWhen linked question and it does not have an answer yet
       // set default answer to false - to trigger enableWhen == false
-      if (qItem.linkId in linkMap && !qrBoolean.answer) {
+      if (qItem.linkId in enableWhenLinkedQuestions && !qrBoolean.answer) {
         setIsChecked(false);
         onQrItemChange({ ...createEmptyQrItem(qItem), answer: [{ valueBoolean: false }] });
       }

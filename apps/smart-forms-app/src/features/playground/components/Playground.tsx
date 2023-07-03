@@ -21,25 +21,32 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 // @ts-ignore
 import { Allotment } from 'allotment';
 import 'allotment/dist/style.css';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useSnackbar } from 'notistack';
 import PlaygroundRenderer from './PlaygroundRenderer.tsx';
-import { QuestionnaireProviderContext } from '../../../App.tsx';
 import { Box, Stack } from '@mui/material';
 import FileCollector from './FileCollector.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
+import { BuildState } from '../types/buildState.interface.ts';
 
 function Playground() {
   const [jsonString, setJsonString] = useState('');
-  const [buildingState, setBuildingState] = useState<'idle' | 'building' | 'built'>('idle');
+  const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
+  const destroySourceQuestionnaire = useQuestionnaireStore(
+    (state) => state.destroySourceQuestionnaire
+  );
+
+  // TODO save changes to browser storage
 
   const { enqueueSnackbar } = useSnackbar();
 
   function handleDestroyForm() {
     setBuildingState('idle');
-    questionnaireProvider.destroyQuestionnaire();
+    destroySourceQuestionnaire();
   }
 
   async function handleBuildQuestionnaireFromString(jsonString: string) {
@@ -48,9 +55,16 @@ function Playground() {
 
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
-
-      await questionnaireProvider.setQuestionnaire(parsedQuestionnaire);
-      setBuildingState('built');
+      if (isQuestionnaire(parsedQuestionnaire)) {
+        await buildSourceQuestionnaire(parsedQuestionnaire);
+        setBuildingState('built');
+      } else {
+        enqueueSnackbar('JSON string does not represent a questionnaire', {
+          variant: 'error',
+          preventDuplicate: true
+        });
+        setBuildingState('idle');
+      }
     } catch (error) {
       enqueueSnackbar('JSON string invalid', {
         variant: 'error',
@@ -80,7 +94,7 @@ function Playground() {
           setJsonString(jsonString);
           const parsedQuestionnaire = JSON.parse(jsonString);
 
-          await questionnaireProvider.setQuestionnaire(parsedQuestionnaire);
+          await buildSourceQuestionnaire(parsedQuestionnaire);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {

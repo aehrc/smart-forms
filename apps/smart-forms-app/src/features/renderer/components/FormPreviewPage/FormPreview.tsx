@@ -15,59 +15,55 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
-import { QuestionnaireProviderContext } from '../../../../App.tsx';
 import FormInvalid from '../FormPage/FormInvalid.tsx';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../../preview/utils/preview.ts';
 import { removeHiddenAnswers } from '../../../save/api/saveQr.ts';
-import { EnableWhenContext } from '../../../enableWhen/contexts/EnableWhenContext.tsx';
 import { Helmet } from 'react-helmet';
-import { EnableWhenExpressionContext } from '../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
-import { RendererContext } from '../../contexts/RendererContext.ts';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 
 function FormPreview() {
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
 
-  const { renderer } = useContext(RendererContext);
-  const { response } = renderer;
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
-  const questionnaire = questionnaireProvider.questionnaire;
-  if (!questionnaire.item || !response.item) return <FormInvalid />;
-
-  const topLevelQItems = questionnaire.item;
-  const topLevelQRItems = response.item;
-
-  if (topLevelQItems[0] && topLevelQRItems[0]) {
-    const responseCleaned = removeHiddenAnswers(
-      questionnaire,
-      response,
-      enableWhenContext,
-      enableWhenExpressionContext
-    );
-    const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
-
-    return (
-      <>
-        <Helmet>
-          <title>{questionnaire.title ? questionnaire.title : 'Form Preview'}</title>
-        </Helmet>
-        <Fade in={true} timeout={500}>
-          <Container sx={{ mt: 3 }}>
-            <Box mb={3}>
-              <Typography variant="h3">Preview</Typography>
-            </Box>
-            <Card sx={{ p: 4, mb: 2 }}>{parsedHTML}</Card>
-          </Container>
-        </Fade>
-      </>
-    );
-  } else {
+  if (!sourceQuestionnaire.item || !updatableResponse.item) {
     return <FormInvalid />;
   }
+
+  if (sourceQuestionnaire.item.length === 0 && updatableResponse.item.length === 0) {
+    return <FormInvalid />;
+  }
+
+  const cleanResponse = removeHiddenAnswers({
+    questionnaire: sourceQuestionnaire,
+    questionnaireResponse: updatableResponse,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
+  const parsedHTML = parse(qrToHTML(sourceQuestionnaire, cleanResponse));
+
+  return (
+    <>
+      <Helmet>
+        <title>{sourceQuestionnaire.title ?? 'Form Preview'}</title>
+      </Helmet>
+      <Fade in={true} timeout={500}>
+        <Container sx={{ mt: 3 }}>
+          <Box mb={3}>
+            <Typography variant="h3">Preview</Typography>
+          </Box>
+          <Card sx={{ p: 4, mb: 2 }}>{parsedHTML}</Card>
+        </Container>
+      </Fade>
+    </>
+  );
 }
 
 export default FormPreview;

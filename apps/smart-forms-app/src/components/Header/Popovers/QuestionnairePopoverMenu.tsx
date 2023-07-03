@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
-import { QuestionnaireProviderContext } from '../../../App.tsx';
 import { AccountNameTypography } from '../../Typography/Typography.tsx';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 
 function QuestionnairePopoverMenu() {
-  const { questionnaire } = useContext(QuestionnaireProviderContext);
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
   return (
     <PopoverMenuWrapper>
-      <AccountNameTypography name={questionnaire.title ?? ''} />
+      <AccountNameTypography name={sourceQuestionnaire.title ?? ''} />
     </PopoverMenuWrapper>
   );
 }

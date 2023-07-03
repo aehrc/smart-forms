@@ -23,16 +23,17 @@ import { useNavigate } from 'react-router-dom';
 import PrintIcon from '@mui/icons-material/Print';
 import { PrintComponentRefContext } from '../ViewerLayout.tsx';
 import { useReactToPrint } from 'react-to-print';
-import { QuestionnaireResponseProviderContext } from '../../../App.tsx';
 import ViewerOperationItem from './ViewerOperationItem.tsx';
 import {
   NavSectionHeading,
   NavSectionHeadingWrapper,
   NavSectionWrapper
 } from '../../../components/Nav/Nav.styles.ts';
+import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 
 function ViewerOperationSection() {
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+
   const { componentRef } = useContext(PrintComponentRefContext);
 
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ function ViewerOperationSection() {
         <NavSectionHeading>Operations</NavSectionHeading>
       </NavSectionHeadingWrapper>
       <List disablePadding sx={{ px: 1 }}>
-        {questionnaireResponseProvider.response.status !== 'completed' ? (
+        {sourceResponse.status !== 'completed' ? (
           <>
             <ViewerOperationItem
               title={'Edit Response'}
