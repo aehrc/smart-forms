@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import enableWhenItemsSample from '../../../data/test-data/enable-when-items-sample.json';
-import linkedQuestionsMapSample from '../../../data/test-data/linked-questions-map.json';
-import questionnaireResponseSample from '../../../data/test-data/questionnaire-response-sample.json';
-import initialAnswersSample from '../../../data/test-data/initial-answers-sample.json';
+import enableWhenItemsSample from '../data/test-data/enable-when-items-sample.json';
+import linkedQuestionsMapSample from '../data/test-data/linked-questions-map.json';
+import questionnaireResponseSample from '../data/test-data/questionnaire-response-sample.json';
+import initialAnswersSample from '../data/test-data/initial-answers-sample.json';
 import {
   createEnableWhenLinkedQuestions,
   readInitialAnswers,

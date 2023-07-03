@@ -17,7 +17,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { Coding, ValueSet } from 'fhir/r4';
-import { getValueSetCodings, getValueSetPromise } from '../../valueSet/utils/valueSet.ts';
+import { getValueSetCodings, getValueSetPromise } from '../../../utils/valueSet.ts';
 
 import type { AlertColor } from '@mui/material';
 

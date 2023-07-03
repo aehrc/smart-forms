@@ -31,10 +31,7 @@ import { isHidden } from '../../renderer/utils/qItem.ts';
 import { fetchQuestionnaireById } from '../../../api/client.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { HEADERS } from '../../../api/headers.ts';
-import type {
-  EnableWhenExpression,
-  EnableWhenItems
-} from '../../enableWhen/types/enableWhen.interface.ts';
+import type { EnableWhenExpression, EnableWhenItems } from '../../../types/enableWhen.interface.ts';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed

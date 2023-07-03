@@ -8,15 +8,12 @@ import type {
 import type { Variables } from '../providers/questionnaireProvider.interfaces.ts';
 import type { LaunchContext } from '../features/prepopulate/types/populate.interface.ts';
 import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
-import type {
-  EnableWhenExpression,
-  EnableWhenItems
-} from '../features/enableWhen/types/enableWhen.interface.ts';
-import type { AnswerExpression } from '../features/answerExpression/types/answerExpression.interface.ts';
+import type { EnableWhenExpression, EnableWhenItems } from '../types/enableWhen.interface.ts';
+import type { AnswerExpression } from '../types/answerExpression.interface.ts';
 import { createQuestionnaireModel } from '../features/preprocess/utils/preprocessQuestionnaire/preprocessQuestionnaire.ts';
 import { evaluateUpdatedCalculatedExpressions } from '../utils/calculatedExpressions.ts';
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
-import { updateItemAnswer } from '../features/enableWhen/utils/enableWhen.ts';
+import { updateItemAnswer } from '../utils/enableWhen.ts';
 import {
   evaluateInitialEnableWhenExpressions,
   evaluateUpdatedEnableWhenExpressions

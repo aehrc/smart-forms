@@ -16,10 +16,7 @@
  */
 
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
-import type {
-  EnableWhenExpression,
-  EnableWhenItems
-} from '../features/enableWhen/types/enableWhen.interface.ts';
+import type { EnableWhenExpression, EnableWhenItems } from '../types/enableWhen.interface.ts';
 
 export function getFirstVisibleTab(
   tabs: Tabs,

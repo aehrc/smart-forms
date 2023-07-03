@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import type { ValueSetPromise } from '../../../valueSet/types/valueSet.interface.ts';
-import { getValueSetCodings, getValueSetPromise } from '../../../valueSet/utils/valueSet.ts';
+import type { ValueSetPromise } from '../../../../types/valueSet.interface.ts';
+import { getValueSetCodings, getValueSetPromise } from '../../../../utils/valueSet.ts';
 import type { Coding, Questionnaire, ValueSet } from 'fhir/r4';
 
 export function extractContainedValueSets(questionnaire: Questionnaire): {

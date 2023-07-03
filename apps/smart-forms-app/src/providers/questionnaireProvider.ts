@@ -23,16 +23,16 @@ import {
   getValueSetCodings,
   getValueSetPromise,
   resolvePromises
-} from '../features/valueSet/utils/valueSet.ts';
+} from '../utils/valueSet.ts';
 import type { LaunchContext } from '../features/prepopulate/types/populate.interface.ts';
 import { isLaunchContext } from './typePredicates/isLaunchContext.ts';
 import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
-import type { AnswerExpression } from '../features/answerExpression/types/answerExpression.interface.ts';
+import type { AnswerExpression } from '../types/answerExpression.interface.ts';
 import type {
   EnableWhenExpression,
   EnableWhenItemProperties
-} from '../features/enableWhen/types/enableWhen.interface.ts';
-import type { ValueSetPromise } from '../features/valueSet/types/valueSet.interface.ts';
+} from '../types/enableWhen.interface.ts';
+import type { ValueSetPromise } from '../types/valueSet.interface.ts';
 import type { Variables } from './questionnaireProvider.interfaces.ts';
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 import { constructTabsWithProperties, isTabContainer } from '../features/renderer/utils/tabs.ts';

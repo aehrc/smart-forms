@@ -33,7 +33,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
-import { getTerminologyServerUrl } from '../../../../../valueSet/utils/valueSet.ts';
+import { getTerminologyServerUrl } from '../../../../../../utils/valueSet.ts';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,

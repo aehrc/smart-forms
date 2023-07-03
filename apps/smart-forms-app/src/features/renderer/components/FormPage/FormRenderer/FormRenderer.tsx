@@ -15,16 +15,13 @@
  * limitations under the License.
  */
 
-import { createContext } from 'react';
-import type { Coding, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import RendererDebugFooter from '../../RendererDebugFooter/RendererDebugFooter.tsx';
 import { Helmet } from 'react-helmet';
 import Form from './Form.tsx';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
-
-export const PreprocessedValueSetContext = createContext<Record<string, Coding[]>>({});
 
 function FormRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);

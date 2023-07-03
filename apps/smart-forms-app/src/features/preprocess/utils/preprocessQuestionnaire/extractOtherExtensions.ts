@@ -21,11 +21,11 @@ import type {
   EnableWhenExpression,
   EnableWhenItemProperties,
   EnableWhenLinkedItem
-} from '../../../enableWhen/types/enableWhen.interface.ts';
-import type { AnswerExpression } from '../../../answerExpression/types/answerExpression.interface.ts';
-import type { ValueSetPromise } from '../../../valueSet/types/valueSet.interface.ts';
+} from '../../../../types/enableWhen.interface.ts';
+import type { AnswerExpression } from '../../../../types/answerExpression.interface.ts';
+import type { ValueSetPromise } from '../../../../types/valueSet.interface.ts';
 import { getAnswerExpression } from '../../../renderer/utils/itemControl.ts';
-import { getTerminologyServerUrl, getValueSetPromise } from '../../../valueSet/utils/valueSet.ts';
+import { getTerminologyServerUrl, getValueSetPromise } from '../../../../utils/valueSet.ts';
 import type { Variables } from '../../../../providers/questionnaireProvider.interfaces.ts';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables.ts';
 

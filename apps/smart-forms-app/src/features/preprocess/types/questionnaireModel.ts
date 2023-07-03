@@ -6,8 +6,8 @@ import type { CalculatedExpression } from '../../calculatedExpression/types/calc
 import type {
   EnableWhenExpression,
   EnableWhenItemProperties
-} from '../../enableWhen/types/enableWhen.interface.ts';
-import type { AnswerExpression } from '../../answerExpression/types/answerExpression.interface.ts';
+} from '../../../types/enableWhen.interface.ts';
+import type { AnswerExpression } from '../../../types/answerExpression.interface.ts';
 
 export interface QuestionnaireModel {
   tabs: Tabs;

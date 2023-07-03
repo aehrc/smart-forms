@@ -22,7 +22,7 @@ import {
   getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise
-} from '../../valueSet/utils/valueSet.ts';
+} from '../../../utils/valueSet.ts';
 import { getAnswerExpression } from '../utils/itemControl.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';

@@ -17,7 +17,7 @@
 
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension, isSpecificItemControl } from './itemControl.ts';
-import type { EnableWhenItems } from '../../enableWhen/types/enableWhen.interface.ts';
+import type { EnableWhenItems } from '../../../types/enableWhen.interface.ts';
 import type { Tabs } from '../types/tab.interface.ts';
 
 /**

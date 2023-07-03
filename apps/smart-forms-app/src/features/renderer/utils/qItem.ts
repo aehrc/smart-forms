@@ -20,10 +20,7 @@ import { hasHiddenExtension } from './itemControl.ts';
 import { getChoiceControlType } from './choice.ts';
 import { QItemChoiceControl, QItemOpenChoiceControl } from '../types/choice.enum.ts';
 import { getOpenChoiceControlType } from './openChoice.ts';
-import type {
-  EnableWhenExpression,
-  EnableWhenItems
-} from '../../enableWhen/types/enableWhen.interface.ts';
+import type { EnableWhenExpression, EnableWhenItems } from '../../../types/enableWhen.interface.ts';
 
 interface isHiddenParams {
   questionnaireItem: QuestionnaireItem;

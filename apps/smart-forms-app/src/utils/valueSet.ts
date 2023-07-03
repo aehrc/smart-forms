@@ -27,10 +27,10 @@ import type {
   ValueSet
 } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
-import type { FhirResourceString } from '../../prepopulate/types/populate.interface.ts';
+import type { FhirResourceString } from '../features/prepopulate/types/populate.interface.ts';
 import type { ValueSetPromise } from '../types/valueSet.interface.ts';
-import type { VariableXFhirQuery } from '../../../providers/questionnaireProvider.interfaces.ts';
-import { ONTOSERVER_ENDPOINT } from '../../../utils/env.ts';
+import type { VariableXFhirQuery } from '../providers/questionnaireProvider.interfaces.ts';
+import { ONTOSERVER_ENDPOINT } from './env.ts';
 
 const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;
