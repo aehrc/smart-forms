@@ -19,11 +19,11 @@ import { Typography } from '@mui/material';
 import { memo } from 'react';
 import { DisplayInstructionsWrapper } from './DisplayInstructions.styles.ts';
 
-interface Props {
+interface DisplayInstructionsProps {
   displayInstructions: string;
 }
 
-const DisplayInstructions = memo(function DisplayInstructions(props: Props) {
+const DisplayInstructions = memo(function DisplayInstructions(props: DisplayInstructionsProps) {
   const { displayInstructions } = props;
 
   return displayInstructions ? (

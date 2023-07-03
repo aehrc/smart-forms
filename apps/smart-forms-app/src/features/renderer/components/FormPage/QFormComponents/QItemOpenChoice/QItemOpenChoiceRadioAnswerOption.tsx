@@ -23,7 +23,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { getOpenLabelText } from '../../../../utils/itemControl.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { getOldOpenLabelAnswer } from '../../../../utils/openChoice.ts';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
@@ -35,6 +34,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface QItemOpenChoiceRadioProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -180,7 +180,7 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
         </Grid>
         <Grid item xs={7}>
           {openChoiceRadio}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

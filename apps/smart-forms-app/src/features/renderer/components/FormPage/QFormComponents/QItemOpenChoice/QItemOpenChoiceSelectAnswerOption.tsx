@@ -26,7 +26,6 @@ import type {
 } from 'fhir/r4';
 import { getAnswerOptionLabel } from '../../../../utils/openChoice.ts';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
@@ -36,6 +35,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -137,7 +137,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {openOpenChoiceSelectAnswerOption}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

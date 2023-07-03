@@ -23,7 +23,6 @@ import QItemChoiceCheckboxSingle from '../QItemParts/QItemCheckboxSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QFormGroup } from '../Item.styles.tsx';
 import { updateQrCheckboxAnswers } from '../../../../utils/choice.ts';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
@@ -31,6 +30,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface QItemChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -121,7 +121,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

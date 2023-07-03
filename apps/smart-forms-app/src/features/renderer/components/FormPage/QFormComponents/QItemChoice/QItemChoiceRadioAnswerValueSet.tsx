@@ -24,7 +24,6 @@ import { findInAnswerValueSetCodings } from '../../../../utils/choice.ts';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useValueSetCodings from '../../../../hooks/useValueSetCodings.ts';
@@ -35,6 +34,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -44,7 +44,7 @@ interface Props
   orientation: QItemChoiceOrientation;
 }
 
-function QItemChoiceRadioAnswerValueSet(props: Props) {
+const QItemChoiceRadioAnswerValueSet = memo(function QItemChoiceRadioAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
@@ -118,12 +118,12 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceRadio}</>;
-}
+});
 
-export default memo(QItemChoiceRadioAnswerValueSet);
+export default QItemChoiceRadioAnswerValueSet;

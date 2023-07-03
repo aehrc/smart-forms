@@ -24,7 +24,6 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../../utils/choice.
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
@@ -32,6 +31,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -41,7 +41,7 @@ interface Props
   orientation: QItemChoiceOrientation;
 }
 
-function QItemChoiceRadioAnswerOption(props: Props) {
+const QItemChoiceRadioAnswerOption = memo(function QItemChoiceRadioAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
@@ -114,12 +114,12 @@ function QItemChoiceRadioAnswerOption(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceRadio}</>;
-}
+});
 
-export default memo(QItemChoiceRadioAnswerOption);
+export default QItemChoiceRadioAnswerOption;

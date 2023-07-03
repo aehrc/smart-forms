@@ -25,7 +25,6 @@ import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../../utils/choice.ts';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle.tsx';
 import { QFormGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
@@ -35,6 +34,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -44,7 +44,9 @@ interface Props
   orientation: QItemChoiceOrientation;
 }
 
-function QItemChoiceCheckboxAnswerValueSet(props: Props) {
+const QItemChoiceCheckboxAnswerValueSet = memo(function QItemChoiceCheckboxAnswerValueSet(
+  props: Props
+) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
@@ -116,11 +118,11 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
   );
-}
+});
 
-export default memo(QItemChoiceCheckboxAnswerValueSet);
+export default QItemChoiceCheckboxAnswerValueSet;

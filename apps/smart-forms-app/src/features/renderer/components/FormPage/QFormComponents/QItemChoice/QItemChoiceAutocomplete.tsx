@@ -21,7 +21,6 @@ import { Autocomplete, CircularProgress, Fade, Grid, Tooltip } from '@mui/materi
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
@@ -40,6 +39,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface QItemChoiceAutocompleteProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -158,6 +158,8 @@ const QItemChoiceAutocomplete = memo(function QItemChoiceAutocomplete(
     </>
   );
 
+  // todo updtae display components
+
   const renderQItemChoiceAutocomplete = isRepeated ? (
     <>{choiceAutocomplete}</>
   ) : (
@@ -168,7 +170,7 @@ const QItemChoiceAutocomplete = memo(function QItemChoiceAutocomplete(
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
