@@ -31,7 +31,7 @@ import { isHidden } from '../../renderer/utils/qItem.ts';
 import { fetchQuestionnaireById } from '../../../api/client.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { HEADERS } from '../../../api/headers.ts';
-import {
+import type {
   EnableWhenExpression,
   EnableWhenItems
 } from '../../enableWhen/types/enableWhen.interface.ts';

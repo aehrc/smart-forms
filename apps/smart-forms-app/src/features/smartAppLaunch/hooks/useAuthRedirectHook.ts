@@ -17,7 +17,7 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthState } from '../types/authorisation.interface.ts';
+import type { AuthState } from '../types/authorisation.interface.ts';
 
 function useAuthRedirectHook(authState: AuthState) {
   const navigate = useNavigate();

@@ -29,7 +29,7 @@ import FileCollector from './FileCollector.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
-import { BuildState } from '../types/buildState.interface.ts';
+import type { BuildState } from '../types/buildState.interface.ts';
 
 function Playground() {
   const [jsonString, setJsonString] = useState('');

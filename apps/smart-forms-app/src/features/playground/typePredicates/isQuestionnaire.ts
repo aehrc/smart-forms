@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
 export function isQuestionnaire(jsonObject: any): jsonObject is Questionnaire {
   return jsonObject.resourceType === 'Questionnaire';

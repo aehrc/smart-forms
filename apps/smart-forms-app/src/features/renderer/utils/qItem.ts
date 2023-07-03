@@ -20,7 +20,7 @@ import { hasHiddenExtension } from './itemControl.ts';
 import { getChoiceControlType } from './choice.ts';
 import { QItemChoiceControl, QItemOpenChoiceControl } from '../types/choice.enum.ts';
 import { getOpenChoiceControlType } from './openChoice.ts';
-import {
+import type {
   EnableWhenExpression,
   EnableWhenItems
 } from '../../enableWhen/types/enableWhen.interface.ts';

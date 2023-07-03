@@ -1,12 +1,12 @@
 import { assignPopulatedAnswersToEnableWhen } from './enableWhen.ts';
 import { evaluateInitialEnableWhenExpressions } from './enableWhenExpression.ts';
 import { getFirstVisibleTab } from './tabs.ts';
-import { Expression, QuestionnaireResponse } from 'fhir/r4';
-import {
+import type { Expression, QuestionnaireResponse } from 'fhir/r4';
+import type {
   EnableWhenExpression,
   EnableWhenItems
 } from '../features/enableWhen/types/enableWhen.interface.ts';
-import { Tabs } from '../features/renderer/types/tab.interface.ts';
+import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 
 interface initialFormFromResponseParams {
   questionnaireResponse: QuestionnaireResponse;
