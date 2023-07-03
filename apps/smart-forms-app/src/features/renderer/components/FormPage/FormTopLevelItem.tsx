@@ -18,8 +18,8 @@
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed.tsx';
 import { containsTabs, isTabContainer } from '../../utils/tabs.ts';
-import QItemGroup from './QFormComponents/QItemGroup.tsx';
-import QItemSwitcher from './QFormComponents/QItemSwitcher.tsx';
+import GroupItem from './QFormComponents/GroupItem/GroupItem.tsx';
+import SingleItem from './QFormComponents/SingleItem/SingleItem.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
 
 interface FormTopLevelItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
@@ -50,7 +50,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   // If form is untabbed, it is rendered as a regular group
   if (itemIsGroup) {
     return (
-      <QItemGroup
+      <GroupItem
         key={topLevelQItem.linkId}
         qItem={topLevelQItem}
         qrItem={topLevelQRItem}
@@ -63,7 +63,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // Otherwise, it is rendered as a non-group item
   return (
-    <QItemSwitcher
+    <SingleItem
       key={topLevelQItem.linkId}
       qItem={topLevelQItem}
       qrItem={topLevelQRItem}

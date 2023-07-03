@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { RepeatGroupContainerStack } from '../QItemRepeat.styles.tsx';
+import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles.tsx';
 import { Box } from '@mui/material';
-import QItemGroup from '../QItemGroup.tsx';
+import GroupItem from '../GroupItem/GroupItem.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../../../types/renderProps.interface.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import DeleteItemButton from './DeleteItemButton.tsx';
@@ -45,7 +45,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
   return (
     <RepeatGroupContainerStack direction="row" justifyContent="end">
       <Box sx={{ flexGrow: 1 }}>
-        <QItemGroup
+        <GroupItem
           qItem={qItem}
           qrItem={processedQrItem}
           isRepeated={true}

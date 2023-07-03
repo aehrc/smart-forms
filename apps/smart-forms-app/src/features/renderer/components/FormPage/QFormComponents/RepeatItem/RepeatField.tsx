@@ -16,8 +16,8 @@
  */
 
 import { Box } from '@mui/material';
-import { RepeatItemContainerStack } from '../QItemRepeat.styles.tsx';
-import QItemSwitcher from '../QItemSwitcher.tsx';
+import { RepeatItemContainerStack } from './RepeatItem.styles.tsx';
+import SingleItem from '../SingleItem/SingleItem.tsx';
 import type {
   QuestionnaireItem,
   QuestionnaireResponseItem,
@@ -40,7 +40,7 @@ function RepeatField(props: RepeatFieldProps) {
   return (
     <RepeatItemContainerStack direction="row">
       <Box sx={{ flexGrow: 1 }}>
-        <QItemSwitcher
+        <SingleItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={qItem.repeats ?? false}

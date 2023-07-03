@@ -28,23 +28,25 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Iconify from '../../../../../components/Iconify/Iconify.tsx';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 
-interface Props {
+interface FormBodySingleTabProps {
   selected: boolean;
   tabLabel: string;
   listIndex: number;
   markedAsComplete: boolean;
 }
 
-const FormBodySingleTab = memo(function FormBodySingleTab(props: Props) {
+const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleTabProps) {
   const { selected, tabLabel, listIndex, markedAsComplete } = props;
 
   const switchTab = useQuestionnaireStore((state) => state.switchTab);
 
+  function handleTabClick() {
+    switchTab(listIndex);
+    window.scrollTo(0, 0);
+  }
+
   return (
-    <ListItemButton
-      selected={selected}
-      sx={{ my: 0.5, py: 0.6 }}
-      onClick={() => switchTab(listIndex)}>
+    <ListItemButton selected={selected} sx={{ my: 0.5, py: 0.6 }} onClick={handleTabClick}>
       <ListItemIcon sx={{ minWidth: 36 }}>
         {markedAsComplete ? (
           <Tooltip title="Completed">

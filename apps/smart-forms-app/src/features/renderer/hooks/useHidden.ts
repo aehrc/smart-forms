@@ -18,26 +18,23 @@
 import type { QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension } from '../utils/itemControl.ts';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import { isHiddenByEnableWhens } from '../utils/qItem.ts';
 
 function useHidden(qItem: QuestionnaireItem): boolean {
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
   const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
   const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
 
-  if (hasHiddenExtension(qItem)) return true;
-
-  if (enableWhenIsActivated) {
-    if (enableWhenItems[qItem.linkId]) {
-      return !enableWhenItems[qItem.linkId].isEnabled;
-    }
-
-    if (enableWhenExpressions[qItem.linkId]) {
-      return !enableWhenExpressions[qItem.linkId].isEnabled;
-    }
+  if (hasHiddenExtension(qItem)) {
+    return true;
   }
 
-  // Questionnaire item not hidden by default
-  return false;
+  return isHiddenByEnableWhens({
+    linkId: qItem.linkId,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
 }
 
 export default useHidden;

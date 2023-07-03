@@ -20,7 +20,7 @@ import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils';
-import QItemGroup from './QFormComponents/QItemGroup.tsx';
+import GroupItem from './QFormComponents/GroupItem/GroupItem.tsx';
 import { updateLinkedItem } from '../../utils/qrItem.ts';
 import FormBodyTabList from './Tabs/FormBodyTabList.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
@@ -36,7 +36,6 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   const tabs = useQuestionnaireStore((state) => state.tabs);
   const currentTab = useQuestionnaireStore((state) => state.currentTabIndex);
-  const markTabAsComplete = useQuestionnaireStore((state) => state.markTabAsComplete);
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -85,7 +84,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                 sx={{ p: 0 }}
                 value={i.toString()}
                 data-test="renderer-tab-panel">
-                <QItemGroup
+                <GroupItem
                   qItem={qItem}
                   qrItem={qrItem}
                   isRepeated={isRepeated}
@@ -93,7 +92,6 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                   tabIsMarkedAsComplete={tabIsMarkedAsComplete}
                   tabs={tabs}
                   currentTabIndex={currentTab}
-                  markTabAsComplete={() => markTabAsComplete(qItem.linkId)}
                   onQrItemChange={handleQrGroupChange}
                 />
               </TabPanel>

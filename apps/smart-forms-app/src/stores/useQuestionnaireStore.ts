@@ -119,13 +119,15 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       processedValueSetCodings: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
-  markTabAsComplete: (tabLinkId: string) =>
-    set((state) => ({
+  markTabAsComplete: (tabLinkId: string) => {
+    const tabs = get().tabs;
+    set(() => ({
       tabs: {
-        ...state.tabs,
-        [tabLinkId]: { ...state.tabs[tabLinkId], isComplete: !state.tabs[tabLinkId].isComplete }
+        ...tabs,
+        [tabLinkId]: { ...tabs[tabLinkId], isComplete: !tabs[tabLinkId].isComplete }
       }
-    })),
+    }));
+  },
   updateEnableWhenItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => {
     const enableWhenLinkedQuestions = get().enableWhenLinkedQuestions;
     const enableWhenItems = get().enableWhenItems;
@@ -179,9 +181,9 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
     }
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
-    set((state) => ({
+    set(() => ({
       cachedValueSetCodings: {
-        ...state.cachedValueSetCodings,
+        ...get().cachedValueSetCodings,
         [valueSetUrl]: codings
       }
     })),

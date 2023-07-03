@@ -15,27 +15,14 @@
  * limitations under the License.
  */
 
-import Card from './Card';
-import Paper from './Paper';
-import Input from './Input';
-import Table from './Table';
-import Button from './Button';
-import Backdrop from './Backdrop';
-import Typography from './Typography';
-import Autocomplete from './Autocomplete';
-import type { Theme } from '@mui/material';
+import { Card, styled } from '@mui/material';
 
-function ComponentsOverrides(theme: Theme) {
-  return Object.assign(
-    Card(theme),
-    Table(theme),
-    Input(theme),
-    Paper(),
-    Button(theme),
-    Backdrop(theme),
-    Typography(theme),
-    Autocomplete(theme)
-  );
-}
-
-export default ComponentsOverrides;
+export const GroupCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'elevation' && prop !== 'isRepeated'
+})<{ elevation: number; isRepeated: boolean }>(({ elevation, isRepeated }) => ({
+  paddingTop: '20px',
+  paddingBottom: '20px',
+  paddingLeft: elevation === 1 ? '26px' : '24px',
+  paddingRight: elevation === 1 ? '26px' : '24px',
+  marginBottom: isRepeated ? 0 : '28px'
+}));

@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import {
-  Box,
   Button,
   Divider,
-  IconButton,
   Paper,
   Stack,
   Table,
@@ -31,18 +29,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
   Typography
 } from '@mui/material';
-import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import AddIcon from '@mui/icons-material/Add';
 import QItemGroupTableRow from './QItemGroupTableRow.tsx';
-import { DeleteButtonTableCell, HeaderTableCell } from './Table.styles.tsx';
+import { HeaderTableCell } from './Table.styles.tsx';
 import QItemLabel from '../QItemParts/QItemLabel.tsx';
 import { QGroupContainerBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { mapQItemsIndex } from '../../../../utils';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { PropsWithQrRepeatGroupChangeHandler } from '../../../../types/renderProps.interface.ts';
+import useInitialiseGroupTable from '../../../../hooks/useInitialiseGroupTable.ts';
+import { nanoid } from 'nanoid';
+import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
+import DeleteRowButton from './DeleteRowButton.tsx';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -53,124 +52,122 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler {
 function QItemGroupTable(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const emptyQrItem = createEmptyQrItem(qItem);
-  const qrGroupTableRows: (QuestionnaireResponseItem | undefined)[] =
-    qrItems.length > 0 ? qrItems : [undefined];
+  const initialiseGroupTables = useInitialiseGroupTable(qrItems);
 
-  const [tableRows, setTableRows] = useState(qrGroupTableRows);
-
-  useEffect(
-    () => {
-      setTableRows(qrGroupTableRows);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qrItems]
-  );
+  const [tableRows, setTableRows] = useState(initialiseGroupTables);
 
   // Generate item labels as table headers
+  const qItems = qItem.item;
   const itemLabels: string[] = useMemo(
-    () => qItem.item?.map((item) => item.text ?? '') ?? [],
-    [qItem.item]
+    () => qItems?.map((item) => item.text ?? '') ?? [],
+    [qItems]
   );
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
   // Check if there are columns within the group table
-  if (!qItem.item || qItem.item.length === 0) return null;
+  if (!qItems || qItems.length === 0) {
+    return null;
+  }
 
   // Event Handlers
-  function handleRowsChange(newQrRow: QuestionnaireResponseItem, index: number) {
-    const newQrRowItems = newQrRow.item;
-    const rowsTemp = [...tableRows];
+  function handleRowChange(newQrRow: QuestionnaireResponseItem, index: number) {
+    const updatedTableRows = [...tableRows];
 
     if (newQrRow.item) {
-      rowsTemp[index] = {
+      updatedTableRows[index].qrItem = {
         linkId: newQrRow.linkId,
         text: newQrRow.text,
-        item: newQrRowItems
+        item: newQrRow.item
       };
     }
-    updateRows(rowsTemp);
+
+    setTableRows(updatedTableRows);
+    onQrRepeatGroupChange({
+      linkId: qItem.linkId,
+      qrItems: updatedTableRows.flatMap((singleRow) => (singleRow.qrItem ? [singleRow.qrItem] : []))
+    });
   }
 
-  function deleteRow(index: number) {
-    const rowsTemp = [...tableRows];
-    if (rowsTemp.length === 1) {
-      rowsTemp[0] = undefined;
-    } else {
-      rowsTemp.splice(index, 1);
-    }
-    updateRows(rowsTemp);
+  function handleDeleteRow(index: number) {
+    const updatedTableRows = [...tableRows];
+
+    updatedTableRows.splice(index, 1);
+
+    setTableRows(updatedTableRows);
+    onQrRepeatGroupChange({
+      linkId: qItem.linkId,
+      qrItems: updatedTableRows.flatMap((singleRow) => (singleRow.qrItem ? [singleRow.qrItem] : []))
+    });
   }
 
-  function updateRows(updatedRows: (QuestionnaireResponseItem | undefined)[]) {
-    setTableRows([...updatedRows]);
-
-    const rowsWithValues = updatedRows.flatMap((singleRow) => (singleRow ? [singleRow] : []));
-    onQrRepeatGroupChange({ linkId: qItem.linkId, qrItems: rowsWithValues });
+  function handleAddRow() {
+    setTableRows([
+      ...tableRows,
+      {
+        nanoId: nanoid(),
+        qrItem: null
+      }
+    ]);
   }
 
   return (
-    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={false}>
-      <Box sx={{ my: 3.5 }}>
-        <Typography fontSize={13} variant="h6">
-          <QItemLabel qItem={qItem} />
-        </Typography>
-        <Divider sx={{ my: 1 }} light />
-        <TableContainer component={Paper} elevation={groupCardElevation}>
-          <Table>
-            <caption>
-              <Stack direction="row" justifyContent="end">
-                <Button
-                  variant="contained"
-                  size="small"
-                  startIcon={<AddIcon />}
-                  onClick={() => setTableRows([...tableRows, undefined])}>
-                  Add Row
-                </Button>
-              </Stack>
-            </caption>
-            <TableHead>
-              <TableRow>
-                {itemLabels.map((itemLabel) => (
-                  <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
-                ))}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tableRows.map((row, index) => {
-                const singleQrRow: QuestionnaireResponseItem = row
-                  ? { ...emptyQrItem, item: row.item }
-                  : { ...emptyQrItem };
-                return (
-                  <TableRow key={index}>
-                    <QItemGroupTableRow
-                      qItem={qItem}
-                      qrItem={singleQrRow}
-                      qItemsIndexMap={qItemsIndexMap}
-                      onQrItemChange={(newQrGroup) => handleRowsChange(newQrGroup, index)}
-                    />
-                    <DeleteButtonTableCell>
-                      <Tooltip title="Delete item">
-                        <span>
-                          <IconButton
-                            size="small"
-                            color="error"
-                            disabled={tableRows.length === 1}
-                            onClick={() => deleteRow(index)}>
-                            <RemoveCircleOutlineIcon fontSize="small" />
-                          </IconButton>
-                        </span>
-                      </Tooltip>
-                    </DeleteButtonTableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+    <QGroupContainerBox
+      key={qItem.linkId}
+      cardElevation={groupCardElevation}
+      isRepeated={false}
+      py={3.5}>
+      <Typography fontSize={13} variant="h6">
+        <QItemLabel qItem={qItem} />
+      </Typography>
+      <Divider sx={{ my: 1 }} light />
+      <TableContainer component={Paper} elevation={groupCardElevation}>
+        <Table>
+          <caption>
+            <Stack direction="row" justifyContent="end">
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<AddIcon />}
+                onClick={handleAddRow}>
+                Add Row
+              </Button>
+            </Stack>
+          </caption>
+          <TableHead>
+            <TableRow>
+              {itemLabels.map((itemLabel) => (
+                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+              ))}
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableRows.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+              const answeredQrItem = createEmptyQrItem(qItem);
+              if (nullableQrItem) {
+                answeredQrItem.item = nullableQrItem.item;
+              }
+
+              return (
+                <TableRow key={nanoId}>
+                  <QItemGroupTableRow
+                    qItem={qItem}
+                    qrItem={answeredQrItem}
+                    qItemsIndexMap={qItemsIndexMap}
+                    onQrItemChange={(newQrGroup) => handleRowChange(newQrGroup, index)}
+                  />
+                  <DeleteRowButton
+                    nullableQrItem={nullableQrItem}
+                    numOfRows={tableRows.length}
+                    onDeleteItem={() => handleDeleteRow(index)}
+                  />
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </QGroupContainerBox>
   );
 }

@@ -15,27 +15,28 @@
  * limitations under the License.
  */
 
-import Card from './Card';
-import Paper from './Paper';
-import Input from './Input';
-import Table from './Table';
-import Button from './Button';
-import Backdrop from './Backdrop';
-import Typography from './Typography';
-import Autocomplete from './Autocomplete';
-import type { Theme } from '@mui/material';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
+import { nanoid } from 'nanoid';
+import type { GroupTableRow } from '../types/groupTable.interface.ts';
 
-function ComponentsOverrides(theme: Theme) {
-  return Object.assign(
-    Card(theme),
-    Table(theme),
-    Input(theme),
-    Paper(),
-    Button(theme),
-    Backdrop(theme),
-    Typography(theme),
-    Autocomplete(theme)
-  );
+const emptyGroupTableRow: GroupTableRow = {
+  nanoId: nanoid(),
+  qrItem: null
+};
+
+function useInitialiseGroupTable(qrItems: QuestionnaireResponseItem[]): GroupTableRow[] {
+  let initialGroupTableRows: GroupTableRow[] = [emptyGroupTableRow];
+
+  if (qrItems.length > 0) {
+    initialGroupTableRows = qrItems.map((qrItem) => {
+      return {
+        nanoId: nanoid(),
+        qrItem
+      };
+    });
+  }
+
+  return initialGroupTableRows;
 }
 
-export default ComponentsOverrides;
+export default useInitialiseGroupTable;

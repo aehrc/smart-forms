@@ -15,28 +15,26 @@
  * limitations under the License.
  */
 
-import { memo, useCallback } from 'react';
-import QItemChoice from './QItemChoice/QItemChoice.tsx';
+import QItemChoice from '../QItemChoice/QItemChoice.tsx';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import QItemOpenChoice from './QItemOpenChoice/QItemOpenChoice.tsx';
+import QItemOpenChoice from '../QItemOpenChoice/QItemOpenChoice.tsx';
 import { Typography } from '@mui/material';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
-} from '../../../types/renderProps.interface.ts';
-import StringItem from './StringItem/StringItem.tsx';
-import BooleanItem from './BooleanItem/BooleanItem.tsx';
-import TimeItem from './TimeItem/TimeItem.tsx';
-import DateTimeItem from './DateTimeItem/DateTimeItem.tsx';
-import DateItem from './DateItem/DateItem.tsx';
-import TextItem from './TextItem/TextItem.tsx';
-import DisplayItem from './DisplayItem/DisplayItem.tsx';
-import IntegerItem from './IntegerItem/IntegerItem.tsx';
-import DecimalItem from './DecimalItem/DecimalItem.tsx';
-import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
+} from '../../../../types/renderProps.interface.ts';
+import StringItem from '../StringItem/StringItem.tsx';
+import BooleanItem from '../BooleanItem/BooleanItem.tsx';
+import TimeItem from '../TimeItem/TimeItem.tsx';
+import DateTimeItem from '../DateTimeItem/DateTimeItem.tsx';
+import DateItem from '../DateItem/DateItem.tsx';
+import TextItem from '../TextItem/TextItem.tsx';
+import DisplayItem from '../DisplayItem/DisplayItem.tsx';
+import IntegerItem from '../IntegerItem/IntegerItem.tsx';
+import DecimalItem from '../DecimalItem/DecimalItem.tsx';
 
-interface Props
+interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -44,39 +42,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-/**
- * Performs switching for non-group item components based on their item types.
- *
- * @author Sean Fong
- */
-const QItemSwitcher = memo(function QItemSwitcher(props: Props) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
-
-  const updateEnableWhenItem = useQuestionnaireStore((state) => state.updateEnableWhenItem);
-
-  const handleQrItemChange = useCallback(
-    (newQrItem: QuestionnaireResponseItem) => {
-      if (newQrItem.answer) {
-        updateEnableWhenItem(qItem.linkId, newQrItem.answer);
-      }
-      onQrItemChange(newQrItem);
-    },
-    [updateEnableWhenItem, onQrItemChange, qItem.linkId]
-  );
-
-  // Is qItem is a repeat item, disable collapse transition as the base repeat item already has one
-  return (
-    <RenderQItem
-      qItem={qItem}
-      qrItem={qrItem}
-      isRepeated={isRepeated}
-      isTabled={isTabled}
-      onQrItemChange={handleQrItemChange}
-    />
-  );
-});
-
-function RenderQItem(props: Props) {
+function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   switch (qItem.type) {
@@ -189,4 +155,4 @@ function RenderQItem(props: Props) {
   }
 }
 
-export default QItemSwitcher;
+export default SingleItemSwitcher;

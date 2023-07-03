@@ -15,19 +15,28 @@
  * limitations under the License.
  */
 
-import type { Theme } from '@mui/material';
+import { Button } from '@mui/material';
+import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 
-export default function Tooltip(theme: Theme) {
-  return {
-    MuiTooltip: {
-      styleOverrides: {
-        tooltip: {
-          backgroundColor: theme.palette.grey[800]
-        },
-        arrow: {
-          color: theme.palette.grey[800]
-        }
-      }
-    }
-  };
+interface NextTabButtonProps {
+  isDisabled: boolean;
+  onNextTabClick: () => void;
 }
+
+function NextTabButton(props: NextTabButtonProps) {
+  const { isDisabled, onNextTabClick } = props;
+
+  return (
+    <Button
+      variant="contained"
+      size="small"
+      endIcon={<Iconify icon="material-symbols:arrow-forward" />}
+      disabled={isDisabled}
+      color="secondary"
+      onClick={onNextTabClick}>
+      Next tab
+    </Button>
+  );
+}
+
+export default NextTabButton;

@@ -39,15 +39,35 @@ interface isHiddenParams {
 export function isHidden(params: isHiddenParams): boolean {
   const { questionnaireItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } =
     params;
-  if (hasHiddenExtension(questionnaireItem)) return true;
+  if (hasHiddenExtension(questionnaireItem)) {
+    return true;
+  }
+
+  return isHiddenByEnableWhens({
+    linkId: questionnaireItem.linkId,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
+}
+
+interface isHiddenByEnableWhensParams {
+  linkId: string;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
+
+export function isHiddenByEnableWhens(params: isHiddenByEnableWhensParams): boolean {
+  const { linkId, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
 
   if (enableWhenIsActivated) {
-    if (enableWhenItems[questionnaireItem.linkId]) {
-      return !enableWhenItems[questionnaireItem.linkId].isEnabled;
+    if (enableWhenItems[linkId]) {
+      return !enableWhenItems[linkId].isEnabled;
     }
 
-    if (enableWhenExpressions[questionnaireItem.linkId]) {
-      return !enableWhenExpressions[questionnaireItem.linkId].isEnabled;
+    if (enableWhenExpressions[linkId]) {
+      return !enableWhenExpressions[linkId].isEnabled;
     }
   }
 

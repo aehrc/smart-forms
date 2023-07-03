@@ -15,32 +15,34 @@
  * limitations under the License.
  */
 
-import { RepeatDeleteTooltip } from '../RepeatItem/RepeatItem.styles.tsx';
-import { IconButton } from '@mui/material';
+import { DeleteButtonTableCell } from './Table.styles.tsx';
+import { IconButton, Tooltip } from '@mui/material';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { memo } from 'react';
 
-interface DeleteItemButtonProps {
-  unprocessedQrItem: QuestionnaireResponseItem | null;
-  numOfRepeatGroups: number;
+interface DeleteRowButtonProps {
+  nullableQrItem: QuestionnaireResponseItem | null;
+  numOfRows: number;
   onDeleteItem: () => void;
 }
 
-const DeleteItemButton = memo(function DeleteItemButton(props: DeleteItemButtonProps) {
-  const { unprocessedQrItem, numOfRepeatGroups, onDeleteItem } = props;
+function DeleteRowButton(props: DeleteRowButtonProps) {
+  const { nullableQrItem, numOfRows, onDeleteItem } = props;
 
-  const isDisabled = unprocessedQrItem === null || numOfRepeatGroups === 1;
+  console.log('hey');
 
+  const isDisabled = nullableQrItem === null || numOfRows === 1;
   return (
-    <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
-      <span>
-        <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteItem}>
-          <RemoveCircleOutlineIcon />
-        </IconButton>
-      </span>
-    </RepeatDeleteTooltip>
+    <DeleteButtonTableCell>
+      <Tooltip title="Delete item">
+        <span>
+          <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteItem}>
+            <RemoveCircleOutlineIcon fontSize="small" />
+          </IconButton>
+        </span>
+      </Tooltip>
+    </DeleteButtonTableCell>
   );
-});
+}
 
-export default DeleteItemButton;
+export default DeleteRowButton;

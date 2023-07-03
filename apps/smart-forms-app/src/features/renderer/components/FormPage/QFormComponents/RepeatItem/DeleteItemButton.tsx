@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { RepeatDeleteTooltip } from '../QItemRepeat.styles.tsx';
+import { RepeatDeleteTooltip } from './RepeatItem.styles.tsx';
 import { IconButton } from '@mui/material';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';

@@ -17,8 +17,9 @@
 
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension, isSpecificItemControl } from './itemControl.ts';
-import type { EnableWhenItems } from '../../../types/enableWhen.interface.ts';
+import type { EnableWhenExpression, EnableWhenItems } from '../../../types/enableWhen.interface.ts';
 import type { Tabs } from '../types/tab.interface.ts';
+import { isHiddenByEnableWhens } from './qItem.ts';
 
 /**
  * Checks if any of the items in a qItem array is a tabbed item
@@ -99,29 +100,55 @@ export function constructTabsWithProperties(
   return tabs;
 }
 
+interface constructTabsWithVisibilityParams {
+  tabs: Tabs;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
+
 export function constructTabsWithVisibility(
-  tabs: Tabs,
-  enableWhenItems: EnableWhenItems
+  params: constructTabsWithVisibilityParams
 ): { linkId: string; isVisible: boolean }[] {
+  const { tabs, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
+
   return Object.entries(tabs).map(([linkId]) => {
+    const isVisible = !isHiddenByEnableWhens({
+      linkId,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    });
+
     return {
       linkId,
-      isVisible: enableWhenItems[linkId] ? enableWhenItems[linkId]?.isEnabled : true
+      isVisible
     };
   });
 }
 
+interface getNextVisibleTabIndexParams {
+  tabs: Tabs;
+  currentTabIndex: number;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
 /**
  * Get index of next visible tab
  *
  * @author Sean Fong
  */
-export function getNextVisibleTabIndex(
-  tabs: Tabs,
-  currentTabIndex: number,
-  enableWhenItems: EnableWhenItems
-): number {
-  const tabsWithVisibility = constructTabsWithVisibility(tabs, enableWhenItems);
+export function getNextVisibleTabIndex(params: getNextVisibleTabIndexParams): number {
+  const { tabs, currentTabIndex, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } =
+    params;
+
+  const tabsWithVisibility = constructTabsWithVisibility({
+    tabs,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
 
   let nextTabIndex = currentTabIndex + 1;
   const nextTabIndexIsVisible = false;
@@ -142,9 +169,16 @@ export function getNextVisibleTabIndex(
  */
 export function getFirstVisibleTabIndex(
   tabs: Tabs,
-  enableWhenItems: EnableWhenItems
+  enableWhenIsActivated: boolean,
+  enableWhenItems: EnableWhenItems,
+  enableWhenExpressions: Record<string, EnableWhenExpression>
 ): number | undefined {
-  const tabsWithVisibility = constructTabsWithVisibility(tabs, enableWhenItems);
+  const tabsWithVisibility = constructTabsWithVisibility({
+    tabs,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
   return tabsWithVisibility.findIndex((tab) => tab.isVisible);
 }
 
@@ -154,7 +188,17 @@ export function getFirstVisibleTabIndex(
  *
  * @author Sean Fong
  */
-export function findNumOfVisibleTabs(tabs: Tabs, enableWhenItems: EnableWhenItems): number {
-  const tabsWithVisibility = constructTabsWithVisibility(tabs, enableWhenItems);
+export function findNumOfVisibleTabs(
+  tabs: Tabs,
+  enableWhenIsActivated: boolean,
+  enableWhenItems: EnableWhenItems,
+  enableWhenExpressions: Record<string, EnableWhenExpression>
+): number {
+  const tabsWithVisibility = constructTabsWithVisibility({
+    tabs,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
   return tabsWithVisibility.filter((tab) => tab.isVisible).length;
 }

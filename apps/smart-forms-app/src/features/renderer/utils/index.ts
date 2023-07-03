@@ -85,13 +85,13 @@ export function getQrItemsIndex(
  * @author Sean Fong
  */
 export function mapQItemsIndex(qGroup: QuestionnaireItem): Record<string, number> {
-  if (qGroup.item) {
-    // generate a <linkId, QItemIndex> dictionary
-    return qGroup.item.reduce((mapping: Record<string, number>, item, i) => {
-      mapping[item.linkId] = i;
-      return mapping;
-    }, {});
-  } else {
+  if (!qGroup.item) {
     return {};
   }
+
+  // generate a <linkId, QItemIndex> dictionary
+  return qGroup.item.reduce((mapping: Record<string, number>, item, i) => {
+    mapping[item.linkId] = i;
+    return mapping;
+  }, {});
 }
