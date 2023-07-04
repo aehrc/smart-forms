@@ -73,7 +73,7 @@ function UrlItem(props: UrlItemProps) {
     debounce((input: string) => {
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ valueUri: input.trim() }] });
+        onQrItemChange({ ...emptyQrItem, answer: [{ valueUri: input }] });
       } else {
         onQrItemChange(emptyQrItem);
       }
