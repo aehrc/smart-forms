@@ -29,7 +29,6 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   entryFormat: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  onFieldFocus: (focused: boolean) => void;
   onInputChange: (value: string) => void;
 }
 
@@ -44,7 +43,6 @@ function DecimalField(props: DecimalFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onFieldFocus,
     onInputChange
   } = props;
 
@@ -53,8 +51,6 @@ function DecimalField(props: DecimalFieldProps) {
       id={linkId}
       value={input}
       error={!!feedback}
-      onFocus={() => onFieldFocus(true)}
-      onBlur={() => onFieldFocus(false)}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly}
       label={displayPrompt}

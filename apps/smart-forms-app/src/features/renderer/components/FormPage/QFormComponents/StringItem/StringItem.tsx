@@ -60,7 +60,7 @@ function StringItem(props: StringItemProps) {
   const [input, setInput] = useState(valueString);
 
   // Perform validation checks
-  const { feedback, onFieldFocus } = useValidationError(input, regexValidation, maxLength);
+  const feedback = useValidationError(input, regexValidation, maxLength);
 
   // Event handlers
   function handleChange(newInput: string) {
@@ -91,7 +91,6 @@ function StringItem(props: StringItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        onFieldFocus={onFieldFocus}
         onInputChange={handleChange}
         isTabled={isTabled}
       />
@@ -108,7 +107,6 @@ function StringItem(props: StringItemProps) {
           displayUnit={displayUnit}
           entryFormat={entryFormat}
           readOnly={readOnly}
-          onFieldFocus={onFieldFocus}
           onInputChange={handleChange}
           isTabled={isTabled}
         />

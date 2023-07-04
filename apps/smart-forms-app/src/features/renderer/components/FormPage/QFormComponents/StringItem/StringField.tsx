@@ -27,7 +27,6 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
-  onFieldFocus: (focused: boolean) => void;
   onInputChange: (value: string) => void;
 }
 
@@ -41,7 +40,6 @@ function StringField(props: StringFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
-    onFieldFocus,
     onInputChange
   } = props;
 
@@ -52,8 +50,6 @@ function StringField(props: StringFieldProps) {
       id={linkId}
       value={input}
       error={!!feedback}
-      onFocus={() => onFieldFocus(true)}
-      onBlur={() => onFieldFocus(false)}
       onChange={(event) => onInputChange(event.target.value)}
       label={displayPrompt}
       placeholder={entryFormat}

@@ -27,7 +27,6 @@ interface TextFieldProps {
   entryFormat: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  onFieldFocus: (focused: boolean) => void;
   onInputChange: (value: string) => void;
 }
 
@@ -41,7 +40,6 @@ function TextField(props: TextFieldProps) {
     entryFormat,
     readOnly,
     calcExpUpdated,
-    onFieldFocus,
     onInputChange
   } = props;
 
@@ -50,8 +48,6 @@ function TextField(props: TextFieldProps) {
       id={linkId}
       value={input}
       error={!!feedback}
-      onFocus={() => onFieldFocus(true)}
-      onBlur={() => onFieldFocus(false)}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly}
       label={displayPrompt}

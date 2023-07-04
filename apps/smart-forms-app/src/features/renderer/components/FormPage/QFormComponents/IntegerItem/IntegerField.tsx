@@ -29,7 +29,6 @@ interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   entryFormat: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  onFieldFocus: (focused: boolean) => void;
   onInputChange: (value: string) => void;
 }
 
@@ -44,7 +43,6 @@ function IntegerField(props: IntegerFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onFieldFocus,
     onInputChange
   } = props;
 
@@ -53,8 +51,6 @@ function IntegerField(props: IntegerFieldProps) {
       id={linkId}
       value={value.toString()}
       error={!!feedback}
-      onFocus={() => onFieldFocus(true)}
-      onBlur={() => onFieldFocus(false)}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly}
       label={displayPrompt}

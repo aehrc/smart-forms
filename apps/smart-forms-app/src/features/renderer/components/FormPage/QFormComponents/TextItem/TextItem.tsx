@@ -60,7 +60,7 @@ function TextItem(props: TextItemProps) {
   const [input, setInput] = useState(valueText);
 
   // Perform validation checks
-  const { feedback, onFieldFocus } = useValidationError(input, regexValidation, maxLength);
+  const feedback = useValidationError(input, regexValidation, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -102,7 +102,6 @@ function TextItem(props: TextItemProps) {
         entryFormat={entryFormat}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
-        onFieldFocus={onFieldFocus}
         onInputChange={handleInputChange}
       />
     );
@@ -119,7 +118,6 @@ function TextItem(props: TextItemProps) {
           entryFormat={entryFormat}
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
-          onFieldFocus={onFieldFocus}
           onInputChange={handleInputChange}
         />
       </FieldGrid>
