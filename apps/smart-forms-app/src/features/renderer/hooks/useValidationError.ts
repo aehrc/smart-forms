@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import type { RegexValidation } from '../types/regex.ts';
 
 function useValidationError(
   input: string,
-  regexValidation: RegExp | null,
+  regexValidation: RegexValidation | null,
   maxLength: number | null
-): { feedback: string; onFieldFocus: (focused: boolean) => void } {
-  const [focused, setFocused] = useState(false);
-
+): string {
   let feedback = '';
 
-  if (input && !focused) {
+  if (input) {
     // Test regex
     if (regexValidation) {
-      if (!regexValidation.test(input)) {
-        feedback = 'Input format invalid.';
+      if (!regexValidation.expression.test(input)) {
+        feedback =
+          regexValidation.feedback ??
+          `Input should match the specified regex ${regexValidation.expression}`;
       }
     }
 
@@ -42,7 +42,7 @@ function useValidationError(
     }
   }
 
-  return { feedback, onFieldFocus: setFocused };
+  return feedback;
 }
 
 export default useValidationError;
