@@ -70,7 +70,7 @@ function DecimalItem(props: DecimalItemProps) {
   const [input, setInput] = useState(initialInput);
 
   // Perform validation checks
-  const { feedback, onFieldFocus } = useValidationError(input, regexValidation, maxLength);
+  const feedback = useValidationError(input, regexValidation, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
@@ -117,7 +117,6 @@ function DecimalItem(props: DecimalItemProps) {
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
-        onFieldFocus={onFieldFocus}
         onInputChange={handleInputChange}
       />
     );
@@ -136,7 +135,6 @@ function DecimalItem(props: DecimalItemProps) {
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
-          onFieldFocus={onFieldFocus}
           onInputChange={handleInputChange}
         />
       </FieldGrid>

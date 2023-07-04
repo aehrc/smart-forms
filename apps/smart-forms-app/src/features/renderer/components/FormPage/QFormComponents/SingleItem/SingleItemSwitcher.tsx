@@ -33,6 +33,7 @@ import TextItem from '../TextItem/TextItem.tsx';
 import DisplayItem from '../DisplayItem/DisplayItem.tsx';
 import IntegerItem from '../IntegerItem/IntegerItem.tsx';
 import DecimalItem from '../DecimalItem/DecimalItem.tsx';
+import UrlItem from '../UrlItem/UrlItem.tsx';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -139,6 +140,16 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'open-choice':
       return (
         <QItemOpenChoice
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    case 'url':
+      return (
+        <UrlItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}

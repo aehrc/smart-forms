@@ -22,6 +22,7 @@ import type {
   QuestionnaireItem,
   QuestionnaireResponse
 } from 'fhir/r4';
+import type { RegexValidation } from '../types/regex.ts';
 
 /**
  * Check if the extension has an itemControl code equal to the given itemControlCode
@@ -305,11 +306,12 @@ export function getEntryFormat(qItem: QuestionnaireItem): string {
  *
  * @author Sean Fong
  */
-export function getRegexValidation(qItem: QuestionnaireItem): RegExp | null {
+export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | null {
   const itemControl = qItem.extension?.find(
     (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/regex'
   );
 
+  // Get regex expression from extension
   if (itemControl) {
     const extensionString = itemControl.valueString;
     if (extensionString) {
@@ -323,9 +325,15 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegExp | null {
         regexString = extensionString;
       }
 
-      return new RegExp(regexString);
+      return { expression: new RegExp(regexString), feedback: null };
     }
   }
+
+  // Get regex expression from item types if regex extensions not present
+  if (qItem.type === 'url') {
+    return { expression: new RegExp(/^\S*$/), feedback: 'URLs should not contain any whitespaces' };
+  }
+
   return null;
 }
 

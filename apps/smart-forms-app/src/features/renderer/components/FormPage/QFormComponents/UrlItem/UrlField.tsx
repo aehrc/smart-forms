@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import { InputAdornment } from '@mui/material';
-import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
-import { StandardTextField } from '../Textfield.styles.tsx';
 import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
+import { InputAdornment } from '@mui/material';
+import { StandardTextField } from '../Textfield.styles.tsx';
 
-interface DecimalFieldProps extends PropsWithIsTabledAttribute {
+interface UrlFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   input: string;
   feedback: string;
@@ -28,11 +27,10 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
 }
 
-function DecimalField(props: DecimalFieldProps) {
+function UrlField(props: UrlFieldProps) {
   const {
     linkId,
     input,
@@ -41,34 +39,26 @@ function DecimalField(props: DecimalFieldProps) {
     displayUnit,
     entryFormat,
     readOnly,
-    calcExpUpdated,
     isTabled,
     onInputChange
   } = props;
 
   return (
     <StandardTextField
+      fullWidth
+      isTabled={isTabled}
       id={linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      disabled={readOnly}
       label={displayPrompt}
       placeholder={entryFormat}
-      fullWidth
-      isTabled={isTabled}
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} />
-            {displayUnit}
-          </InputAdornment>
-        )
-      }}
-      data-test="q-item-decimal-field"
+      disabled={readOnly}
+      InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
+      helperText={feedback}
+      data-test="q-item-url-field"
     />
   );
 }
 
-export default DecimalField;
+export default UrlField;

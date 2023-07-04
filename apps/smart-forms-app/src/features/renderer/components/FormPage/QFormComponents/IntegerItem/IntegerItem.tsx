@@ -63,11 +63,7 @@ function IntegerItem(props: IntegerItemProps) {
   const [value, setValue] = useState(valueInteger);
 
   // Perform validation checks
-  const { feedback, onFieldFocus } = useValidationError(
-    value.toString(),
-    regexValidation,
-    maxLength
-  );
+  const feedback = useValidationError(value.toString(), regexValidation, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useIntegerCalculatedExpression({
@@ -111,7 +107,6 @@ function IntegerItem(props: IntegerItemProps) {
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
-        onFieldFocus={onFieldFocus}
         onInputChange={handleInputChange}
       />
     );
@@ -130,7 +125,6 @@ function IntegerItem(props: IntegerItemProps) {
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
-          onFieldFocus={onFieldFocus}
           onInputChange={handleInputChange}
         />
       </FieldGrid>

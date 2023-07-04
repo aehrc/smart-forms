@@ -42,15 +42,20 @@ export function evaluateInitialEnableWhenExpressions(
     );
 
     for (const linkId in initialExpressions) {
-      const result = fhirpath.evaluate(
-        initialResponse,
-        enableWhenExpressions[linkId].expression,
-        fhirPathContext,
-        fhirpath_r4_model
-      );
+      try {
+        const result = fhirpath.evaluate(
+          initialResponse,
+          enableWhenExpressions[linkId].expression,
+          fhirPathContext,
+          fhirpath_r4_model
+        );
 
-      if (result.length > 0) {
-        initialExpressions[linkId].isEnabled = result[0];
+        if (result.length > 0) {
+          initialExpressions[linkId].isEnabled = result[0];
+        }
+      } catch (e) {
+        // Continue even if there is an error evaluating the expression
+        // So that the user can still see the form
       }
     }
   }

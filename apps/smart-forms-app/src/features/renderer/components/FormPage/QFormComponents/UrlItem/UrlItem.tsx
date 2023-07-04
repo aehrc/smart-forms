@@ -18,6 +18,7 @@
 import { useCallback, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -28,18 +29,17 @@ import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import FieldGrid from '../FieldGrid.tsx';
-import TextField from './TextField.tsx';
-import useStringCalculatedExpression from '../../../../../calculatedExpression/hooks/useStringCalculatedExpression.ts';
+import UrlField from './UrlField.tsx';
 
-interface TextItemProps
+interface UrlItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
-
-function TextItem(props: TextItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+function UrlItem(props: UrlItemProps) {
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
   const {
@@ -53,27 +53,17 @@ function TextItem(props: TextItemProps) {
   } = useRenderingExtensions(qItem);
 
   // Init input value
-  let valueText = '';
-  if (qrItem?.answer && qrItem?.answer[0].valueString) {
-    valueText = qrItem.answer[0].valueString;
+  let valueUri = '';
+  if (qrItem?.answer && qrItem?.answer[0].valueUri) {
+    valueUri = qrItem.answer[0].valueUri;
   }
-  const [input, setInput] = useState(valueText);
+  const [input, setInput] = useState(valueUri);
 
   // Perform validation checks
   const feedback = useValidationError(input, regexValidation, maxLength);
 
-  // Process calculated expressions
-  const { calcExpUpdated } = useStringCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    setInputValue: (value) => {
-      setInput(value);
-    },
-    onQrItemChange: onQrItemChange
-  });
-
   // Event handlers
-  function handleInputChange(newInput: string) {
+  function handleChange(newInput: string) {
     setInput(newInput);
     updateQrItemWithDebounce(newInput);
   }
@@ -83,7 +73,7 @@ function TextItem(props: TextItemProps) {
     debounce((input: string) => {
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input.trim() }] });
+        onQrItemChange({ ...emptyQrItem, answer: [{ valueUri: input }] });
       } else {
         onQrItemChange(emptyQrItem);
       }
@@ -93,7 +83,7 @@ function TextItem(props: TextItemProps) {
 
   if (isRepeated) {
     return (
-      <TextField
+      <UrlField
         linkId={qItem.linkId}
         input={input}
         feedback={feedback}
@@ -101,15 +91,15 @@ function TextItem(props: TextItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
-        onInputChange={handleInputChange}
+        onInputChange={handleChange}
+        isTabled={isTabled}
       />
     );
   }
   return (
-    <FullWidthFormComponentBox data-test="q-item-text-box">
+    <FullWidthFormComponentBox data-test="q-item-string-box">
       <FieldGrid qItem={qItem} displayInstructions={displayInstructions}>
-        <TextField
+        <UrlField
           linkId={qItem.linkId}
           input={input}
           feedback={feedback}
@@ -117,12 +107,12 @@ function TextItem(props: TextItemProps) {
           displayUnit={displayUnit}
           entryFormat={entryFormat}
           readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          onInputChange={handleInputChange}
+          onInputChange={handleChange}
+          isTabled={isTabled}
         />
       </FieldGrid>
     </FullWidthFormComponentBox>
   );
 }
 
-export default TextItem;
+export default UrlItem;

@@ -25,6 +25,7 @@ import {
   getTextDisplayUnit
 } from '../utils/itemControl.ts';
 import type { QuestionnaireItem } from 'fhir/r4';
+import type { RegexValidation } from '../types/regex.ts';
 
 interface RenderingExtensions {
   displayUnit: string;
@@ -32,7 +33,7 @@ interface RenderingExtensions {
   displayInstructions: string;
   readOnly: boolean;
   entryFormat: string;
-  regexValidation: RegExp | null;
+  regexValidation: RegexValidation | null;
   maxLength: number | null;
 }
 
