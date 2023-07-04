@@ -25,7 +25,7 @@ const emptyQuestionnaire: Questionnaire = {
   status: 'draft'
 };
 
-const emptyResponse: QuestionnaireResponse = {
+export const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
   status: 'in-progress'
 };

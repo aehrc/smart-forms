@@ -41,6 +41,9 @@ function OpenResponseButton(props: Props) {
 
   const smartClient = useConfigStore((state) => state.smartClient);
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
+  const updatePopulatedProperties = useQuestionnaireStore(
+    (state) => state.updatePopulatedProperties
+  );
 
   const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
 
@@ -116,6 +119,7 @@ function OpenResponseButton(props: Props) {
 
     // Assign questionnaireResponse to questionnaireResponse provider
     buildSourceResponse(selectedResponse.resource);
+    updatePopulatedProperties(selectedResponse.resource);
 
     navigate('/viewer');
     setIsLoading(false);
