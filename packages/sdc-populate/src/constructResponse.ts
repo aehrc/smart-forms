@@ -266,7 +266,7 @@ function constructRepeatGroupInstances(
     }
 
     const initialValues = initialExpression.value;
-    if (initialValues && initialValues.length > 0) {
+    if (initialValues && initialValues.length > 0 && initialValues[0] !== '') {
       const { newValues } = getAnswerValues(initialValues, childItem);
       childItemAnswers[i] = newValues;
     } else {
