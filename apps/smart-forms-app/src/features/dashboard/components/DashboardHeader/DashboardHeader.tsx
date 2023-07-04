@@ -28,12 +28,13 @@ import {
   StyledToolbar
 } from '../../../../components/Header/Header.styles.ts';
 import MobileHeaderWithQuestionnaire from '../../../../components/Header/MobileHeaderWithoutQuestionnaire.tsx';
+import { memo } from 'react';
 
-interface Props {
+interface DashboardHeaderProps {
   onOpenNav: () => void;
 }
 
-function DashboardHeader(props: Props) {
+const DashboardHeader = memo(function DashboardHeader(props: DashboardHeaderProps) {
   const { onOpenNav } = props;
 
   const theme = useTheme();
@@ -67,6 +68,6 @@ function DashboardHeader(props: Props) {
       </StyledToolbar>
     </StyledRoot>
   );
-}
+});
 
 export default DashboardHeader;

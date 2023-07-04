@@ -40,7 +40,6 @@ import {
 } from '../../utils/dashboard.ts';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
-import { SourceContext } from '../../../debug/contexts/SourceContext.tsx';
 import { SelectedQuestionnaireContext } from '../../contexts/SelectedQuestionnaireContext.tsx';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
@@ -50,12 +49,12 @@ import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
 import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import BackToQuestionnairesButton from './Buttons/BackToQuestionnairesButton.tsx';
 import OpenResponseButton from './Buttons/OpenResponseButton.tsx';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import useDebounce from '../../../renderer/hooks/useDebounce.ts';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
 import type { TableAttributes } from '../../../renderer/types/table.interface.ts';
 import type { ResponseListItem, SelectedResponse } from '../../types/list.interface.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Questionnaire Title', alignRight: false },
@@ -65,8 +64,10 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function ResponsesPage() {
-  const { fhirClient, patient } = useContext(SmartAppLaunchContext);
-  const { source } = useContext(SourceContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
+
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
 
   // Scroll to buttons row when response is selected - for screens with small height
@@ -97,9 +98,9 @@ function ResponsesPage() {
   const { data, status, error, isFetching } = useQuery<Bundle>(
     ['response', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => getClientBundlePromise(fhirClient!, queryUrl),
+    () => getClientBundlePromise(smartClient!, queryUrl),
     {
-      enabled: source === 'remote' && !!fhirClient && debouncedInput === searchInput
+      enabled: questionnaireSource === 'remote' && !!smartClient && debouncedInput === searchInput
     }
   );
 
@@ -126,9 +127,9 @@ function ResponsesPage() {
       applySortFilter(
         responseListItems,
         getComparator(order, orderBy, 'response'),
-        source
+        questionnaireSource
       ) as ResponseListItem[],
-    [order, orderBy, responseListItems, source]
+    [order, orderBy, responseListItems, questionnaireSource]
   );
 
   const isEmpty = filteredListItems.length === 0 && status !== 'loading';

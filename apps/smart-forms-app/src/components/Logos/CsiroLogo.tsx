@@ -17,14 +17,14 @@
 
 import { Box, Typography } from '@mui/material';
 import csiroLogo from '../../data/images/csiro-logo.png';
-import { useContext } from 'react';
-import { DebugModeContext } from '../../features/debug/contexts/DebugModeContext.tsx';
 import { useSnackbar } from 'notistack';
 import ConfettiExplosion from 'react-confetti-explosion';
 import useClickCounter from '../../features/easterEgg/hooks/useClickCounter.ts';
+import useConfigStore from '../../stores/useConfigStore.ts';
 
 function CsiroLogo() {
-  const { isDebugMode, activateDebugMode } = useContext(DebugModeContext);
+  const debugMode = useConfigStore((state) => state.debugMode);
+  const activateDebugMode = useConfigStore((state) => state.activateDebugMode);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -42,7 +42,7 @@ function CsiroLogo() {
           }}
           src={csiroLogo}
           onClick={() => {
-            if (!isDebugMode && counter < 8) {
+            if (!debugMode && counter < 8) {
               if (counter === 7) {
                 activateDebugMode();
                 enqueueSnackbar('Debug mode enabled!', {

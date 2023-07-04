@@ -16,20 +16,19 @@
  */
 
 import { StyledRoot } from '../../../../components/DebugFooter/DebugFooter.styles.ts';
-import { useContext } from 'react';
 import { Box, Typography } from '@mui/material';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { FORMS_SERVER_ENDPOINT } from '../../../../utils/env.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
 function DashboardDebugFooter() {
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
 
   return (
     <>
       <StyledRoot>
         <Box display="flex" flexDirection="row-reverse" gap={2.5} sx={{ mx: 1.5 }}>
           <Typography variant="overline">
-            {`Response server: ${fhirClient?.state.serverUrl}`}
+            {`Response server: ${smartClient?.state.serverUrl}`}
           </Typography>
           <Typography variant="overline">
             {`Forms server: ${

@@ -17,21 +17,22 @@
 
 import { useContext, useEffect, useRef } from 'react';
 import { Box, Card, Container, Fade, Typography } from '@mui/material';
-import { QuestionnaireProviderContext, QuestionnaireResponseProviderContext } from '../../App.tsx';
 import ViewerInvalid from '../renderer/components/FormPage/ViewerInvalid.tsx';
 import { PrintComponentRefContext } from './ViewerLayout.tsx';
-import { EnableWhenContext } from '../enableWhen/contexts/EnableWhenContext.tsx';
 import { removeHiddenAnswers } from '../save/api/saveQr.ts';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../preview/utils/preview.ts';
 import { Helmet } from 'react-helmet';
-import { EnableWhenExpressionContext } from '../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import useQuestionnaireStore from '../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore.ts';
 
 function ResponsePreview() {
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
+
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
 
   const { setComponentRef } = useContext(PrintComponentRefContext);
   const componentRef = useRef(null);
@@ -45,17 +46,20 @@ function ResponsePreview() {
     []
   );
 
-  const questionnaire = questionnaireProvider.questionnaire;
-  const response = questionnaireResponseProvider.response;
+  const questionnaire = sourceQuestionnaire;
 
-  if (!questionnaire.item || !response.item) return <ViewerInvalid questionnaire={questionnaire} />;
+  if (!questionnaire.item || !sourceResponse.item)
+    return <ViewerInvalid questionnaire={questionnaire} />;
 
-  const responseCleaned = removeHiddenAnswers(
+  const responseCleaned = removeHiddenAnswers({
     questionnaire,
-    response,
-    enableWhenContext,
-    enableWhenExpressionContext
-  );
+    questionnaireResponse: sourceResponse,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
+
+  // TODO fix the additional group title "Emergency contact"
   const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 
   return (

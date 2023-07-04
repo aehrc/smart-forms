@@ -29,12 +29,13 @@ import {
 } from '../../../components/Header/Header.styles.ts';
 import { LogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import MobileHeaderWithQuestionnaire from '../../../components/Header/MobileHeaderWithQuestionnaire.tsx';
+import { memo } from 'react';
 
-interface Props {
+interface ViewerHeaderProps {
   onOpenNav: () => void;
 }
 
-function ViewerHeader(props: Props) {
+const ViewerHeader = memo(function ViewerHeader(props: ViewerHeaderProps) {
   const { onOpenNav } = props;
 
   const theme = useTheme();
@@ -69,6 +70,6 @@ function ViewerHeader(props: Props) {
       </StyledToolbar>
     </StyledRoot>
   );
-}
+});
 
 export default ViewerHeader;

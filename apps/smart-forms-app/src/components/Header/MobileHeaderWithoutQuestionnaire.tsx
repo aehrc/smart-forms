@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { Box } from '@mui/material';
 import NavErrorAlert from '../Nav/NavErrorAlert.tsx';
 import PersonPopover from './Popovers/PersonPopover.tsx';
@@ -24,14 +23,14 @@ import PatientPopoverMenu from './Popovers/PatientPopoverMenu.tsx';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import UserPopoverMenu from './Popovers/UserPopoverMenu.tsx';
 import { useTheme } from '@mui/material/styles';
-import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import useConfigStore from '../../stores/useConfigStore.ts';
 
 function MobileHeaderWithQuestionnaire() {
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
 
   const theme = useTheme();
 
-  const isNotLaunched = !fhirClient;
+  const isNotLaunched = !smartClient;
 
   return (
     <>

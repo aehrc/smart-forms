@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import {
   Box,
   CircularProgress,
@@ -25,8 +24,8 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { SourceContext } from '../../../../debug/contexts/SourceContext.tsx';
 import { useSnackbar } from 'notistack';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 interface Props {
   isEmpty: boolean;
@@ -36,12 +35,13 @@ interface Props {
 }
 function ResponseListFeedback(props: Props) {
   const { isEmpty, status, searchInput, error } = props;
-  const { source } = useContext(SourceContext);
+
+  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
 
   let feedbackType: FeedbackProps['feedbackType'] | null = null;
   if (status === 'error') {
     feedbackType = 'error';
-  } else if (status === 'loading' && source === 'remote') {
+  } else if (status === 'loading' && questionnaireSource === 'remote') {
     feedbackType = 'loading';
   } else if (isEmpty) {
     feedbackType = 'empty';

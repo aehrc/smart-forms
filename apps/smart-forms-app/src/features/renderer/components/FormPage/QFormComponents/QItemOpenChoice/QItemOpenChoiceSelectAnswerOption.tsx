@@ -16,7 +16,6 @@
  */
 
 import type { SyntheticEvent } from 'react';
-import { memo } from 'react';
 import { Autocomplete, Grid } from '@mui/material';
 
 import type {
@@ -26,8 +25,7 @@ import type {
 } from 'fhir/r4';
 import { getAnswerOptionLabel } from '../../../../utils/openChoice.ts';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
@@ -36,6 +34,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -133,11 +132,11 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-open-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openOpenChoiceSelectAnswerOption}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
@@ -145,4 +144,4 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
   return <>{renderQItemOpenChoiceAutocomplete}</>;
 }
 
-export default memo(QItemOpenChoiceSelectAnswerOption);
+export default QItemOpenChoiceSelectAnswerOption;

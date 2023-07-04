@@ -53,10 +53,10 @@ export function getQrItemsIndex(
       const qItemIndex = qItemsIndexMap[linkId];
 
       // Assign either a qrItem array or a single qrItem based on whether it is a repeatGroup or not
-      qrItemsCollected[linkId] =
-        isRepeatItemAndNotCheckbox(qItems[qItemIndex]) && qItems[qItemIndex].type === 'group'
-          ? [qrItem]
-          : qrItem;
+      const isRepeatGroup =
+        isRepeatItemAndNotCheckbox(qItems[qItemIndex]) && qItems[qItemIndex].type === 'group';
+
+      qrItemsCollected[linkId] = isRepeatGroup ? [qrItem] : qrItem;
     }
   }
 
@@ -85,13 +85,13 @@ export function getQrItemsIndex(
  * @author Sean Fong
  */
 export function mapQItemsIndex(qGroup: QuestionnaireItem): Record<string, number> {
-  if (qGroup.item) {
-    // generate a <linkId, QItemIndex> dictionary
-    return qGroup.item.reduce((mapping: Record<string, number>, item, i) => {
-      mapping[item.linkId] = i;
-      return mapping;
-    }, {});
-  } else {
+  if (!qGroup.item) {
     return {};
   }
+
+  // generate a <linkId, QItemIndex> dictionary
+  return qGroup.item.reduce((mapping: Record<string, number>, item, i) => {
+    mapping[item.linkId] = i;
+    return mapping;
+  }, {});
 }

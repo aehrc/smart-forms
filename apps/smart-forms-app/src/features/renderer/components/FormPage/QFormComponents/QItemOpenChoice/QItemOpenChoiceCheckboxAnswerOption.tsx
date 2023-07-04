@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { memo, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -24,8 +24,7 @@ import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle.tsx';
 import { getOpenLabelText } from '../../../../utils/itemControl.ts';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel.tsx';
 import { QFormGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import {
   getOldOpenLabelAnswer,
   updateQrOpenChoiceCheckboxAnswers
@@ -38,6 +37,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -47,9 +47,7 @@ interface QItemOpenChoiceCheckboxProps
   orientation: QItemChoiceOrientation;
 }
 
-const QItemOpenChoiceCheckboxAnswerOption = memo(function QItemOpenChoiceCheckboxAnswerOption(
-  props: QItemOpenChoiceCheckboxProps
-) {
+function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init answers
@@ -182,15 +180,15 @@ const QItemOpenChoiceCheckboxAnswerOption = memo(function QItemOpenChoiceCheckbo
     <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openChoiceCheckbox}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
   );
-});
+}
 
 export default QItemOpenChoiceCheckboxAnswerOption;

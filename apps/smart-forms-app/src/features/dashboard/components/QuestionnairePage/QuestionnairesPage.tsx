@@ -50,15 +50,13 @@ import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedba
 import CreateNewResponseButton from './Buttons/CreateNewResponseButton.tsx';
 import ViewExistingResponsesButton from './Buttons/ViewExistingResponsesButton.tsx';
 import { SelectedQuestionnaireContext } from '../../contexts/SelectedQuestionnaireContext.tsx';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import SourceToggle from '../../../../components/Toggles/SourceToggle.tsx';
+import QuestionnaireSourceToggle from '../../../../components/Toggles/QuestionnaireSourceToggle.tsx';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
-import { SourceContext } from '../../../debug/contexts/SourceContext.tsx';
-import { DebugModeContext } from '../../../debug/contexts/DebugModeContext.tsx';
 import type { TableAttributes } from '../../../renderer/types/table.interface.ts';
 import type { QuestionnaireListItem } from '../../types/list.interface.ts';
 import { loadQuestionnairesFromLocal } from '../../../../api/local.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -68,9 +66,10 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function QuestionnairesPage() {
-  const { source } = useContext(SourceContext);
-  const { isDebugMode } = useContext(DebugModeContext);
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const debugMode = useConfigStore((state) => state.debugMode);
+  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
+
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
@@ -86,8 +85,8 @@ function QuestionnairesPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('title');
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+  const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('date');
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
@@ -115,8 +114,9 @@ function QuestionnairesPage() {
 
   // construct questionnaire list items for data display
   const questionnaireListItems: QuestionnaireListItem[] = useMemo(
-    () => getQuestionnaireListItems(source === 'remote' ? data : localQuestionnaireBundle),
-    [data, localQuestionnaireBundle, source]
+    () =>
+      getQuestionnaireListItems(questionnaireSource === 'remote' ? data : localQuestionnaireBundle),
+    [data, localQuestionnaireBundle, questionnaireSource]
   );
 
   const emptyRows: number = useMemo(
@@ -130,10 +130,10 @@ function QuestionnairesPage() {
       applySortFilter(
         questionnaireListItems,
         getComparator(order, orderBy, 'questionnaire'),
-        source,
+        questionnaireSource,
         debouncedInput
       ) as QuestionnaireListItem[],
-    [debouncedInput, order, orderBy, questionnaireListItems, source]
+    [debouncedInput, order, orderBy, questionnaireListItems, questionnaireSource]
   );
 
   const isEmpty = filteredListItems.length === 0 && !!debouncedInput && status !== 'loading';
@@ -153,7 +153,7 @@ function QuestionnairesPage() {
       if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
         setSelectedQuestionnaire(null);
       } else {
-        const bundle = source === 'remote' ? data : localQuestionnaireBundle;
+        const bundle = questionnaireSource === 'remote' ? data : localQuestionnaireBundle;
         const resource = bundle?.entry?.find((entry) => entry.resource?.id === id)?.resource;
 
         if (resource) {
@@ -180,7 +180,7 @@ function QuestionnairesPage() {
               Questionnaires
             </Typography>
             <Box flexGrow={1} />
-            {isDebugMode ? <SourceToggle setPage={setPage} /> : null}
+            {debugMode ? <QuestionnaireSourceToggle setPage={setPage} /> : null}
           </Stack>
 
           <Card>
@@ -286,7 +286,7 @@ function QuestionnairesPage() {
           </Card>
 
           <Stack direction="row-reverse" alignItems="center" gap={2} my={5} ref={buttonsRef}>
-            {fhirClient ? <ViewExistingResponsesButton /> : null}
+            {smartClient ? <ViewExistingResponsesButton /> : null}
             <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} />
           </Stack>
         </Container>

@@ -17,7 +17,7 @@
 
 import { Box, Typography } from '@mui/material';
 import { DropBoxWrapper } from './Dropbox.styles.ts';
-import useFileDrop from '../utils/useFileDrop.ts';
+import useFileDrop from '../hooks/useFileDrop.ts';
 
 export interface Props {
   file: File | null;

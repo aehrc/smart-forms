@@ -15,20 +15,18 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { Box, Drawer } from '@mui/material';
 import useResponsive from '../../../../hooks/useResponsive.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
 import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import DashboardNavSection from './DashboardNavSection.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import GoToPlaygroundButton from '../QuestionnairePage/Buttons/GoToPlaygroundButton.tsx';
-import { DebugModeContext } from '../../../debug/contexts/DebugModeContext.tsx';
 import { CsiroLogoWrapper, NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { NavMiddleWrapper } from '../../../../components/Nav/Nav.styles.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
 const NAV_WIDTH = 240;
 
@@ -40,12 +38,12 @@ interface Props {
 export default function DashboardNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
-  const { fhirClient } = useContext(SmartAppLaunchContext);
-  const { isDebugMode } = useContext(DebugModeContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const debugMode = useConfigStore((state) => state.debugMode);
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const isNotLaunched = !fhirClient;
+  const isNotLaunched = !smartClient;
 
   const renderContent = (
     <Scrollbar
@@ -67,7 +65,7 @@ export default function DashboardNav(props: Props) {
         {isNotLaunched ? (
           <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
         ) : null}
-        {isNotLaunched || isDebugMode ? <GoToPlaygroundButton /> : null}
+        {isNotLaunched || debugMode ? <GoToPlaygroundButton /> : null}
       </NavMiddleWrapper>
 
       <CsiroLogoWrapper>

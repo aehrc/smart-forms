@@ -16,19 +16,19 @@
  */
 
 import { List } from '@mui/material';
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import DashboardNavItem from './DashboardNavItem.tsx';
 import {
   NavSectionHeading,
   NavSectionHeadingWrapper,
   NavSectionWrapper
 } from '../../../../components/Nav/Nav.styles.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
 const DashboardNavSection = memo(function DashboardNavSection() {
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
 
   return (
     <NavSectionWrapper>
@@ -45,7 +45,7 @@ const DashboardNavSection = memo(function DashboardNavSection() {
           title={'Responses'}
           path={'/dashboard/responses'}
           icon={<AssignmentTurnedInIcon />}
-          disabled={!fhirClient}
+          disabled={!smartClient}
         />
       </List>
     </NavSectionWrapper>

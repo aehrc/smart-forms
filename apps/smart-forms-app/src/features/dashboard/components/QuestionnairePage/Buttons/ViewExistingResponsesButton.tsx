@@ -18,19 +18,20 @@
 import { Button, CircularProgress } from '@mui/material';
 import { useContext, useMemo } from 'react';
 import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { SmartAppLaunchContext } from '../../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { getClientBundlePromise, getResponsesFromBundle } from '../../../utils/dashboard.ts';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
 import { useNavigate } from 'react-router-dom';
-import { SourceContext } from '../../../../debug/contexts/SourceContext.tsx';
 import { useSnackbar } from 'notistack';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
-  const { fhirClient, patient } = useContext(SmartAppLaunchContext);
-  const { source } = useContext(SourceContext);
+
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -39,8 +40,8 @@ function ViewExistingResponsesButton() {
   let questionnaireRefParam = '';
 
   // Have different questionnaireRef config due to SMART Health IT limitation
-  if (fhirClient) {
-    const questionnaireRef = fhirClient?.state.serverUrl.includes('/v/r4/fhir')
+  if (smartClient) {
+    const questionnaireRef = smartClient.state.serverUrl.includes('/v/r4/fhir')
       ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
       : selectedQuestionnaire?.resource?.url;
 
@@ -55,14 +56,14 @@ function ViewExistingResponsesButton() {
   const { data, isInitialLoading, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => getClientBundlePromise(fhirClient!, queryUrl),
+    () => getClientBundlePromise(smartClient!, queryUrl),
     {
       enabled:
         !!selectedQuestionnaire &&
         questionnaireRefParam !== '' &&
         patientIdParam !== '' &&
-        source === 'remote' &&
-        !!fhirClient
+        questionnaireSource === 'remote' &&
+        !!smartClient
     }
   );
 
@@ -87,7 +88,9 @@ function ViewExistingResponsesButton() {
   return (
     <Button
       variant="contained"
-      disabled={!selectedQuestionnaire || existingResponses.length === 0 || source === 'local'}
+      disabled={
+        !selectedQuestionnaire || existingResponses.length === 0 || questionnaireSource === 'local'
+      }
       endIcon={
         isInitialLoading ? (
           <CircularProgress size={20} color="inherit" />

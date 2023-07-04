@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { Box, Drawer } from '@mui/material';
 import useResponsive from '../../../hooks/useResponsive.ts';
 import Logo from '../../../components/Logos/Logo.tsx';
@@ -23,15 +22,13 @@ import Scrollbar from '../../../components/Scrollbar/Scrollbar.tsx';
 import NavPatientDetails from '../../../components/Nav/NavPatientDetails.tsx';
 import ViewerNavSection from './ViewerNavSection.tsx';
 import ViewerOperationSection from './ViewerOperationSection.tsx';
-import { SmartAppLaunchContext } from '../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import NavErrorAlert from '../../../components/Nav/NavErrorAlert.tsx';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../App.tsx';
 import CsiroLogo from '../../../components/Logos/CsiroLogo.tsx';
 import { CsiroLogoWrapper, NavLogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import { NavErrorAlertWrapper } from '../../../components/Nav/Nav.styles.ts';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import useConfigStore from '../../../stores/useConfigStore.ts';
+import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 
 const NAV_WIDTH = 240;
 
@@ -43,13 +40,14 @@ interface Props {
 function ViewerNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const isNotLaunched = !fhirClient;
+  const isNotLaunched = !smartClient;
 
   const renderContent = (
     <Scrollbar
@@ -65,9 +63,7 @@ function ViewerNav(props: Props) {
 
       <ViewerNavSection />
 
-      {fhirClient &&
-      questionnaireProvider.questionnaire.item &&
-      questionnaireResponseProvider.response.item ? (
+      {smartClient && sourceQuestionnaire.item && sourceResponse.item ? (
         <ViewerOperationSection />
       ) : null}
 

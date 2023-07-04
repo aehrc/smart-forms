@@ -15,13 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useState } from 'react';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../../App.tsx';
-import { EnableWhenContext } from '../../../enableWhen/contexts/EnableWhenContext.tsx';
+import { useState } from 'react';
 import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -35,8 +29,9 @@ import {
 } from '@mui/material';
 import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
-import { EnableWhenExpressionContext } from '../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
-import { RendererContext } from '../../contexts/RendererContext.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 
 export interface Props {
   blocker: Blocker;
@@ -47,19 +42,23 @@ export interface Props {
 function BlockerUnsavedFormDialog(props: Props) {
   const { blocker, open, closeDialog } = props;
 
-  const { fhirClient, patient, user } = useContext(SmartAppLaunchContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const responseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { renderer, setRenderer } = useContext(RendererContext);
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const user = useConfigStore((state) => state.user);
+
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
+
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
 
   const [isSaving, setIsSaving] = useState(false);
 
   const navigate = useNavigate();
 
-  const { response } = renderer;
-  const isLaunched = !!(fhirClient && patient && user);
+  const isLaunched = !!(smartClient && patient && user);
 
   // Event handlers
   function handleCancel() {
@@ -73,35 +72,28 @@ function BlockerUnsavedFormDialog(props: Props) {
   }
 
   function handleSave() {
-    if (!(fhirClient && patient && user)) {
+    if (!(smartClient && patient && user)) {
       closeDialog();
       blocker.proceed?.();
       return;
     }
 
     setIsSaving(true);
-    setIsSaving(true);
 
-    let responseToSave = cloneDeep(response);
-    responseToSave = removeHiddenAnswers(
-      questionnaireProvider.questionnaire,
-      responseToSave,
-      enableWhenContext,
-      enableWhenExpressionContext
-    );
+    let responseToSave = cloneDeep(updatableResponse);
+    responseToSave = removeHiddenAnswers({
+      questionnaire: sourceQuestionnaire,
+      questionnaireResponse: responseToSave,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    });
 
     setIsSaving(true);
     responseToSave.status = 'in-progress';
-    saveQuestionnaireResponse(
-      fhirClient,
-      patient,
-      user,
-      questionnaireProvider.questionnaire,
-      responseToSave
-    )
+    saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        responseProvider.setQuestionnaireResponse(savedResponse);
-        setRenderer({ response: savedResponse, hasChanges: false });
+        saveResponse(savedResponse);
         setIsSaving(false);
         closeDialog();
         blocker.proceed?.();
@@ -109,7 +101,6 @@ function BlockerUnsavedFormDialog(props: Props) {
       })
       .catch((error) => {
         console.error(error);
-        console.error('An error occurred while saving. Changes not saved.');
         blocker.reset?.();
         closeDialog();
       });

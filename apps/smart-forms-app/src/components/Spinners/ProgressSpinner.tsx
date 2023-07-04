@@ -24,7 +24,7 @@ interface ProgressSpinnerProps {
   message?: string;
 }
 
-function ProgressSpinner(props: ProgressSpinnerProps) {
+const ProgressSpinner = memo(function ProgressSpinner(props: ProgressSpinnerProps) {
   const { message } = props;
 
   const theme = useTheme();
@@ -45,6 +45,6 @@ function ProgressSpinner(props: ProgressSpinnerProps) {
       ) : null}
     </Stack>
   );
-}
+});
 
-export default memo(ProgressSpinner);
+export default ProgressSpinner;

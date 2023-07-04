@@ -15,59 +15,23 @@
  * limitations under the License.
  */
 
-import { useContext, useState } from 'react';
-import EnableWhenContextProvider from '../../enableWhen/contexts/EnableWhenContext.tsx';
-import CalculatedExpressionContextProvider from '../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
-import CachedQueriedValueSetContextProvider from '../../valueSet/contexts/CachedQueriedValueSetContext.tsx';
-import Form from '../../renderer/components/FormPage/Form.tsx';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../App.tsx';
-import type { QuestionnaireResponse } from 'fhir/r4';
+import FormRenderer from '../../renderer/components/FormPage/FormRenderer/FormRenderer.tsx';
 import { createQuestionnaireResponse } from '../../renderer/utils/qrItem.ts';
-import EnableWhenExpressionContextProvider from '../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
-import type { Renderer } from '../../renderer/types/renderer.interface.ts';
-import { RendererContext } from '../../renderer/contexts/RendererContext.ts';
-import { CurrentTabIndexContext } from '../../renderer/contexts/CurrentTabIndexContext.ts';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
+
+// TODO this cant be used yet
 
 function PlaygroundRenderer() {
-  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+
+  const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
 
   // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
-  let initialResponse: QuestionnaireResponse;
-  if (questionnaireProvider.questionnaire.item && !questionnaireResponseProvider.response.item) {
-    initialResponse = createQuestionnaireResponse(
-      questionnaireProvider.questionnaire.id,
-      questionnaireProvider.questionnaire.item[0]
-    );
-    questionnaireResponseProvider.setQuestionnaireResponse(initialResponse);
-  } else {
-    initialResponse = questionnaireResponseProvider.response;
-  }
+  const questionnaireResponse = createQuestionnaireResponse(sourceQuestionnaire);
+  buildSourceResponse(questionnaireResponse);
 
-  const [renderer, setRenderer] = useState<Renderer>({
-    response: initialResponse,
-    hasChanges: false
-  });
-
-  return (
-    <RendererContext.Provider value={{ renderer, setRenderer }}>
-      <EnableWhenContextProvider>
-        <CalculatedExpressionContextProvider>
-          <EnableWhenExpressionContextProvider>
-            <CachedQueriedValueSetContextProvider>
-              <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
-                <Form />
-              </CurrentTabIndexContext.Provider>
-            </CachedQueriedValueSetContextProvider>
-          </EnableWhenExpressionContextProvider>
-        </CalculatedExpressionContextProvider>
-      </EnableWhenContextProvider>
-    </RendererContext.Provider>
-  );
+  return <FormRenderer />;
 }
 
 export default PlaygroundRenderer;

@@ -15,30 +15,29 @@
  * limitations under the License.
  */
 
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import { Box, Card, Collapse } from '@mui/material';
 import { PrimarySelectableList } from '../../../../../components/List/Lists.styles.tsx';
 import { TransitionGroup } from 'react-transition-group';
-import { isTab } from '../../../utils/tabs.ts';
 import { isHidden } from '../../../utils/qItem.ts';
 import { getShortText } from '../../../utils/itemControl.ts';
-import { EnableWhenContext } from '../../../../enableWhen/contexts/EnableWhenContext.tsx';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab.tsx';
-import { EnableWhenExpressionContext } from '../../../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
+import type { Tabs } from '../../../types/tab.interface.ts';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 
-interface Props {
+interface FormBodyTabListProps {
   qFormItems: QuestionnaireItem[];
   currentTabIndex: number;
-  hasTabContainer: boolean;
-  tabs: Record<string, { tabIndex: number; isComplete: boolean }>;
+  tabs: Tabs;
 }
 
-function FormBodyTabList(props: Props) {
-  const { qFormItems, currentTabIndex, hasTabContainer, tabs } = props;
+const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProps) {
+  const { qFormItems, currentTabIndex, tabs } = props;
 
-  const enableWhenContext = useContext(EnableWhenContext);
-  const enableWhenExpressionContext = useContext(EnableWhenExpressionContext);
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
+  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
 
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
@@ -46,20 +45,31 @@ function FormBodyTabList(props: Props) {
         <PrimarySelectableList dense disablePadding sx={{ my: 1 }} data-test="renderer-tab-list">
           <TransitionGroup>
             {qFormItems.map((qItem, i) => {
+              const isTab = !!tabs[qItem.linkId];
+
               if (
-                (!isTab(qItem) && !hasTabContainer) ||
-                isHidden(qItem, enableWhenContext, enableWhenExpressionContext)
+                !isTab ||
+                isHidden({
+                  questionnaireItem: qItem,
+                  enableWhenIsActivated,
+                  enableWhenItems,
+                  enableWhenExpressions
+                })
               ) {
                 return null;
               }
 
+              const tabIsSelected = currentTabIndex.toString() === i.toString();
+              const tabLabel = getShortText(qItem) ?? qItem.text ?? '';
+              const tabIsMarkedAsComplete = tabs[qItem.linkId].isComplete ?? false;
+
               return (
                 <Collapse key={qItem.linkId} timeout={100}>
                   <FormBodySingleTab
-                    selected={currentTabIndex.toString() === i.toString()}
-                    tabText={getShortText(qItem) ?? qItem.text + ''}
+                    selected={tabIsSelected}
+                    tabLabel={tabLabel}
                     listIndex={i}
-                    markedAsComplete={tabs[qItem.linkId].isComplete ?? false}
+                    markedAsComplete={tabIsMarkedAsComplete}
                   />
                 </Collapse>
               );
@@ -69,6 +79,6 @@ function FormBodyTabList(props: Props) {
       </Box>
     </Card>
   );
-}
+});
 
-export default memo(FormBodyTabList);
+export default FormBodyTabList;

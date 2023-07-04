@@ -16,15 +16,14 @@
  */
 
 import type { ChangeEvent } from 'react';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { getOpenLabelText } from '../../../../utils/itemControl.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { getOldOpenLabelAnswer } from '../../../../utils/openChoice.ts';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import QItemChoiceRadioSingle from '../QItemChoice/QItemChoiceRadioSingle.tsx';
@@ -35,6 +34,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface QItemOpenChoiceRadioProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -176,15 +176,15 @@ function QItemOpenChoiceRadioAnswerOption(props: QItemOpenChoiceRadioProps) {
     <FullWidthFormComponentBox data-test="q-item-open-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openChoiceRadio}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
   );
 }
 
-export default memo(QItemOpenChoiceRadioAnswerOption);
+export default QItemOpenChoiceRadioAnswerOption;

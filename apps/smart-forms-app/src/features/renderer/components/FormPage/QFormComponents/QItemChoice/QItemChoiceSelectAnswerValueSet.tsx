@@ -16,13 +16,12 @@
  */
 
 import type { SyntheticEvent } from 'react';
-import { memo, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useValueSetCodings from '../../../../hooks/useValueSetCodings.ts';
@@ -34,6 +33,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -146,11 +146,11 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-choice-dropdown-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerValueSet}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
@@ -158,4 +158,4 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
   return <>{renderQItemChoiceSelectAnswerValueSet}</>;
 }
 
-export default memo(QItemChoiceSelectAnswerValueSet);
+export default QItemChoiceSelectAnswerValueSet;

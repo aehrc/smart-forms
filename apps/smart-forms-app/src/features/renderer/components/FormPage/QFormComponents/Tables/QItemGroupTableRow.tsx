@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-import { memo, useEffect, useState } from 'react';
-
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createQrGroup, updateLinkedItem } from '../../../../utils/qrItem.ts';
-import QItemSwitcher from '../QItemSwitcher.tsx';
+import SingleItem from '../SingleItem/SingleItem.tsx';
 import { getQrItemsIndex } from '../../../../utils';
 import { FirstTableCell, StandardTableCell } from './Table.styles.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../../../types/renderProps.interface.ts';
@@ -34,25 +32,16 @@ function QItemGroupTableRow(props: Props) {
   const { qItem, qrItem, qItemsIndexMap, onQrItemChange } = props;
 
   const rowItems = qItem.item;
-  const qrRowFromProps = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
-  const rowQrItems = qrRowFromProps.item;
+  const row = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
+  const rowQrItems = row.item;
 
-  const [row, setRow] = useState(qrRowFromProps);
-
-  useEffect(
-    () => {
-      setRow(qrRowFromProps);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qrItem]
-  );
-
-  if (!rowItems || !rowQrItems) return null;
+  if (!rowItems || !rowQrItems) {
+    return null;
+  }
 
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateLinkedItem(newQrRowItem, null, qrRow, qItemsIndexMap);
-    setRow(qrRow);
     onQrItemChange(qrRow);
   }
 
@@ -67,25 +56,25 @@ function QItemGroupTableRow(props: Props) {
           if (index === 0) {
             return (
               <FirstTableCell key={index}>
-                <QItemSwitcher
+                <SingleItem
                   key={qItem.linkId}
                   qItem={rowItem}
                   qrItem={qrItem}
                   isRepeated={true}
                   isTabled={true}
-                  onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
+                  onQrItemChange={handleQrRowItemChange}></SingleItem>
               </FirstTableCell>
             );
           } else {
             return (
               <StandardTableCell key={index} numOfColumns={rowItems.length}>
-                <QItemSwitcher
+                <SingleItem
                   key={qItem.linkId}
                   qItem={rowItem}
                   qrItem={qrItem}
                   isRepeated={true}
                   isTabled={true}
-                  onQrItemChange={handleQrRowItemChange}></QItemSwitcher>
+                  onQrItemChange={handleQrRowItemChange}></SingleItem>
               </StandardTableCell>
             );
           }
@@ -97,4 +86,4 @@ function QItemGroupTableRow(props: Props) {
   );
 }
 
-export default memo(QItemGroupTableRow);
+export default QItemGroupTableRow;

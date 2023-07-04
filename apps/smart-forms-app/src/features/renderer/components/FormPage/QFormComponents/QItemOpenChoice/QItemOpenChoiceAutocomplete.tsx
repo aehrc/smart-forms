@@ -16,13 +16,12 @@
  */
 
 import type { ChangeEvent, SyntheticEvent } from 'react';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { Autocomplete, Box, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import SearchIcon from '@mui/icons-material/Search';
@@ -33,13 +32,14 @@ import InfoIcon from '@mui/icons-material/Info';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
-import { getTerminologyServerUrl } from '../../../../../valueSet/utils/valueSet.ts';
+import { getTerminologyServerUrl } from '../../../../../../utils/valueSet.ts';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface QItemOpenChoiceAutocompleteProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,9 +49,7 @@ interface QItemOpenChoiceAutocompleteProps
   qrItem: QuestionnaireResponseItem;
 }
 
-const QItemOpenChoiceAutocomplete = memo(function QItemOpenChoiceAutocomplete(
-  props: QItemOpenChoiceAutocompleteProps
-) {
+function QItemOpenChoiceAutocomplete(props: QItemOpenChoiceAutocompleteProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
 
@@ -193,16 +191,16 @@ const QItemOpenChoiceAutocomplete = memo(function QItemOpenChoiceAutocomplete(
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openChoiceAutocomplete}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
   );
   return <>{renderQItemOpenChoiceAutocomplete}</>;
-});
+}
 
 export default QItemOpenChoiceAutocomplete;

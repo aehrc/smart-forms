@@ -21,3 +21,8 @@ export interface QrRepeatGroup {
   linkId: string;
   qrItems: QuestionnaireResponseItem[];
 }
+
+export interface RepeatGroupSingle {
+  nanoId: string;
+  qrItem: QuestionnaireResponseItem | null;
+}

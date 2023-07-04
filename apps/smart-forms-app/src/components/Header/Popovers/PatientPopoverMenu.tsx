@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
-import { SmartAppLaunchContext } from '../../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import {
   AccountDetailsTypography,
   AccountDetailsTypographyNoCaps,
@@ -25,9 +23,10 @@ import {
 import { constructName } from '../../../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
+import useConfigStore from '../../../stores/useConfigStore.ts';
 
 function PatientPopoverMenu() {
-  const { patient } = useContext(SmartAppLaunchContext);
+  const patient = useConfigStore((state) => state.patient);
 
   return (
     <PopoverMenuWrapper>

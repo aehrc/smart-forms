@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Iconify from '../../../../components/Iconify/Iconify.tsx';
 import type { Questionnaire } from 'fhir/r4';
 
-interface Props {
+interface FormInvalidProps {
   questionnaire?: Questionnaire;
 }
 
-function FormInvalid(props: Props) {
+const FormInvalid = memo(function FormInvalid(props: FormInvalidProps) {
   const { questionnaire } = props;
 
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ function FormInvalid(props: Props) {
             }
           </Typography>
         </Stack>
-        <Box sx={{ py: 5 }}>
+        <Box py={5}>
           {pathName !== '/playground' ? (
             <Button
               variant="contained"
@@ -68,6 +68,6 @@ function FormInvalid(props: Props) {
       </Container>
     </Fade>
   );
-}
+});
 
 export default FormInvalid;

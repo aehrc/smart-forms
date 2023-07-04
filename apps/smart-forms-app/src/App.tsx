@@ -15,46 +15,17 @@
  * limitations under the License.
  */
 
-import { createContext } from 'react';
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/Theme';
-import { QuestionnaireProvider } from './providers/questionnaireProvider.ts';
-import SmartAppLaunchContextProvider from './features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import { QuestionnaireResponseProvider } from './providers/questionnaireResponseProvider.ts';
 import Router from './router/Router.tsx';
 import { SnackbarProvider } from 'notistack';
-import DebugModeContextProvider from './features/debug/contexts/DebugModeContext.tsx';
-import SourceContextProvider from './features/debug/contexts/SourceContext.tsx';
-import { CookiesProvider } from 'react-cookie';
-
-const questionnaireProvider = new QuestionnaireProvider();
-const questionnaireResponseProvider = new QuestionnaireResponseProvider();
-
-export const QuestionnaireProviderContext =
-  createContext<QuestionnaireProvider>(questionnaireProvider);
-export const QuestionnaireResponseProviderContext = createContext<QuestionnaireResponseProvider>(
-  questionnaireResponseProvider
-);
 
 function App() {
   return (
     <ThemeProvider>
       <SnackbarProvider>
-        <CookiesProvider>
-          <SmartAppLaunchContextProvider>
-            <DebugModeContextProvider>
-              <SourceContextProvider>
-                <QuestionnaireProviderContext.Provider value={questionnaireProvider}>
-                  <QuestionnaireResponseProviderContext.Provider
-                    value={questionnaireResponseProvider}>
-                    <CssBaseline />
-                    <Router />
-                  </QuestionnaireResponseProviderContext.Provider>
-                </QuestionnaireProviderContext.Provider>
-              </SourceContextProvider>
-            </DebugModeContextProvider>
-          </SmartAppLaunchContextProvider>
-        </CookiesProvider>
+        <CssBaseline />
+        <Router />
       </SnackbarProvider>
     </ThemeProvider>
   );

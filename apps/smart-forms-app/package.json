@@ -31,6 +31,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "lodash.filter": "^4.6.0",
+    "lodash.isequal": "^4.5.0",
     "material-ui-popup-state": "^5.0.9",
     "moment": "^2.29.4",
     "monaco-editor": "^0.38.0",
@@ -51,7 +52,7 @@
     "sdc-assemble": "^1.0.1",
     "sdc-populate": "^1.0.2",
     "simplebar-react": "^3.2.4",
-    "uuidjs": "^5.0.1"
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
@@ -62,6 +63,7 @@
     "@types/lodash.clonedeep": "^4.5.7",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.filter": "^4.6.7",
+    "@types/lodash.isequal": "^4.5.0",
     "@types/node": "^18.16.5",
     "@types/randomcolor": "^0.5.7",
     "@types/react": "^18.0.28",

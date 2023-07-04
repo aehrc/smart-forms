@@ -16,15 +16,15 @@
  */
 
 import { Avatar, Box, useTheme } from '@mui/material';
-import { useContext } from 'react';
-import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography.tsx';
 import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import useConfigStore from '../../stores/useConfigStore.ts';
 
 function DesktopHeader() {
+  const user = useConfigStore((state) => state.user);
+
   const theme = useTheme();
-  const { user } = useContext(SmartAppLaunchContext);
 
   return (
     <Box display="flex" alignItems="center" gap={1.5}>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import {
   Box,
   ListItemButton,
@@ -26,25 +26,27 @@ import {
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { CurrentTabIndexContext } from '../../../contexts/CurrentTabIndexContext.ts';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 
-interface Props {
+interface FormBodySingleTabProps {
   selected: boolean;
-  tabText: string;
+  tabLabel: string;
   listIndex: number;
   markedAsComplete: boolean;
 }
 
-function FormBodySingleTab(props: Props) {
-  const { selected, tabText, listIndex, markedAsComplete } = props;
+const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleTabProps) {
+  const { selected, tabLabel, listIndex, markedAsComplete } = props;
 
-  const { setCurrentTabIndex } = useContext(CurrentTabIndexContext);
+  const switchTab = useQuestionnaireStore((state) => state.switchTab);
+
+  function handleTabClick() {
+    switchTab(listIndex);
+    window.scrollTo(0, 0);
+  }
 
   return (
-    <ListItemButton
-      selected={selected}
-      sx={{ my: 0.5, py: 0.6 }}
-      onClick={() => setCurrentTabIndex(listIndex)}>
+    <ListItemButton selected={selected} sx={{ my: 0.5, py: 0.6 }} onClick={handleTabClick}>
       <ListItemIcon sx={{ minWidth: 36 }}>
         {markedAsComplete ? (
           <Tooltip title="Completed">
@@ -58,9 +60,9 @@ function FormBodySingleTab(props: Props) {
           </Tooltip>
         )}
       </ListItemIcon>
-      <ListItemText primary={<Typography variant="subtitle2">{tabText}</Typography>} />
+      <ListItemText primary={<Typography variant="subtitle2">{tabLabel}</Typography>} />
     </ListItemButton>
   );
-}
+});
 
-export default memo(FormBodySingleTab);
+export default FormBodySingleTab;

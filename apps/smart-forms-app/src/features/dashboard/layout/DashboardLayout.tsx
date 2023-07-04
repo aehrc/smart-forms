@@ -15,25 +15,38 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader/DashboardHeader.tsx';
 import DashboardNav from '../components/DashboardNav/DashboardNav.tsx';
 import { Main, StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../contexts/SelectedQuestionnaireContext.tsx';
-import { DebugModeContext } from '../../debug/contexts/DebugModeContext.tsx';
 import DashboardDebugFooter from '../components/DashboardDebugFooter/DashboardDebugFooter.tsx';
-import { SmartAppLaunchContext } from '../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
+import useConfigStore from '../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 
 function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
-  const { fhirClient } = useContext(SmartAppLaunchContext);
-  const { isDebugMode } = useContext(DebugModeContext);
+  const destroySourceQuestionnaire = useQuestionnaireStore(
+    (state) => state.destroySourceQuestionnaire
+  );
+  const destroySourceResponse = useQuestionnaireResponseStore(
+    (state) => state.destroySourceResponse
+  );
+
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const debugMode = useConfigStore((state) => state.debugMode);
 
   const navigate = useNavigate();
 
-  const isNotLaunched = !fhirClient;
+  const isNotLaunched = !smartClient;
+
+  useEffect(() => {
+    destroySourceQuestionnaire();
+    destroySourceResponse();
+  }, [destroySourceQuestionnaire, destroySourceResponse]);
 
   useEffect(() => {
     // check if fhirClient is not present but app was previously authorised - happens when user refreshes the page
@@ -53,7 +66,7 @@ function DashboardLayout() {
           <Outlet />
         </SelectedQuestionnaireContextProvider>
       </Main>
-      {isDebugMode ? <DashboardDebugFooter /> : null}
+      {debugMode ? <DashboardDebugFooter /> : null}
     </StyledRoot>
   );
 }

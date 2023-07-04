@@ -15,37 +15,44 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 
 import type { QrRepeatGroup } from '../types/repeatGroup.interface.ts';
 
+// @ts-ignore
 /**
- * Create a questionnaireResponse from a given questionnaire fprm item
+ * Create a questionnaireResponse from a given questionnaire form item
  * A questionnaire form item is the first item of a questionnaire
  *
  * @author Sean Fong
  */
-export function createQuestionnaireResponse(
-  questionnaireId: string | undefined,
-  questionnaireFormItem: QuestionnaireItem
-): QuestionnaireResponse {
-  const qResponse: QuestionnaireResponse = {
+export function createQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse {
+  const questionnaireResponse: QuestionnaireResponse = {
     resourceType: 'QuestionnaireResponse',
-    status: 'in-progress',
-    item: [
+    status: 'in-progress'
+  };
+  const firstTopLevelItem = questionnaire?.item?.[0];
+
+  if (firstTopLevelItem) {
+    questionnaireResponse.item = [
       {
-        linkId: questionnaireFormItem.linkId,
-        text: questionnaireFormItem.text,
+        linkId: firstTopLevelItem.linkId,
+        text: firstTopLevelItem.text,
         item: []
       }
-    ]
-  };
-
-  if (questionnaireId) {
-    qResponse.questionnaire = `Questionnaire/${questionnaireId}`;
+    ];
   }
 
-  return qResponse;
+  if (questionnaire.id) {
+    questionnaireResponse.questionnaire = `Questionnaire/${questionnaire.id}`;
+  }
+
+  return questionnaireResponse;
 }
 
 /**

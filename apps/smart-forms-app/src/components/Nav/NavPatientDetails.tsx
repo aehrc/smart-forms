@@ -17,19 +17,18 @@
 
 import { Box } from '@mui/material';
 import FaceIcon from '@mui/icons-material/Face';
-import { useContext } from 'react';
-import { SmartAppLaunchContext } from '../../features/smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography.tsx';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { useTheme } from '@mui/material/styles';
 import { NavPatientDetailsWrapper } from './Nav.styles.ts';
+import useConfigStore from '../../stores/useConfigStore.ts';
 
 dayjs.extend(localizedFormat);
 
 function NavPatientDetails() {
-  const { patient } = useContext(SmartAppLaunchContext);
+  const patient = useConfigStore((state) => state.patient);
 
   const theme = useTheme();
 

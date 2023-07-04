@@ -15,29 +15,30 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Coding, FhirResource, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import {
   getResourceFromLaunchContext,
   getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise
-} from '../../valueSet/utils/valueSet.ts';
-import { PreprocessedValueSetContext } from '../components/FormPage/Form.tsx';
-import { CachedQueriedValueSetContext } from '../../valueSet/contexts/CachedQueriedValueSetContext.tsx';
+} from '../../../utils/valueSet.ts';
 import { getAnswerExpression } from '../utils/itemControl.ts';
-import { QuestionnaireProviderContext } from '../../../App.tsx';
-import { SmartAppLaunchContext } from '../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import useConfigStore from '../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
-  const preprocessedCodings = useContext(PreprocessedValueSetContext);
-  const { cachedValueSetCodings, addCodingToCache } = useContext(CachedQueriedValueSetContext);
-  const { patient, user, encounter } = useContext(SmartAppLaunchContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const launchContexts = questionnaireProvider.launchContexts;
-  const variablesXFhirQuery = questionnaireProvider.variables.xFhirQueryVariables;
+  const patient = useConfigStore((state) => state.patient);
+  const user = useConfigStore((state) => state.user);
+  const encounter = useConfigStore((state) => state.encounter);
+
+  const launchContexts = useQuestionnaireStore((state) => state.launchContexts);
+  const processedValueSetCodings = useQuestionnaireStore((state) => state.processedValueSetCodings);
+  const cachedValueSetCodings = useQuestionnaireStore((state) => state.cachedValueSetCodings);
+  const addCodingToCache = useQuestionnaireStore((state) => state.addCodingToCache);
+  const { xFhirQueryVariables } = useQuestionnaireStore((state) => state.variables);
 
   const valueSetUrl = qItem.answerValueSet;
   let initialCodings = useMemo(() => {
@@ -49,8 +50,8 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
       }
 
       // attempt to get codings from value sets preprocessed when loading questionnaire
-      if (preprocessedCodings[cleanValueSetUrl]) {
-        return preprocessedCodings[cleanValueSetUrl];
+      if (processedValueSetCodings[cleanValueSetUrl]) {
+        return processedValueSetCodings[cleanValueSetUrl];
       }
 
       // attempt to get codings from cached queried value sets
@@ -60,7 +61,7 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
     }
 
     return [];
-  }, [cachedValueSetCodings, preprocessedCodings, valueSetUrl]);
+  }, [cachedValueSetCodings, processedValueSetCodings, valueSetUrl]);
 
   const answerExpression = getAnswerExpression(qItem)?.expression;
   initialCodings = useMemo(() => {
@@ -78,8 +79,8 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
         if (resource) {
           contextMap[variable] = resource;
         }
-      } else if (variablesXFhirQuery[variable]) {
-        const resource = variablesXFhirQuery[variable].result;
+      } else if (xFhirQueryVariables[variable]) {
+        const resource = xFhirQueryVariables[variable].result;
         if (resource) {
           contextMap[variable] = resource;
         }
@@ -111,7 +112,7 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
     launchContexts,
     patient,
     user,
-    variablesXFhirQuery
+    xFhirQueryVariables
   ]);
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);

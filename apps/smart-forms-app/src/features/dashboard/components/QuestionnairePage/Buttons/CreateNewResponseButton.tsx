@@ -16,17 +16,15 @@
  */
 
 import { Button, CircularProgress } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../../../App.tsx';
 import { createQuestionnaireResponse } from '../../../../renderer/utils/qrItem.ts';
 import { useNavigate } from 'react-router-dom';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../save/api/saveQr.ts';
-import { SmartAppLaunchContext } from '../../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import type { SelectedQuestionnaire } from '../../../types/list.interface.ts';
+import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 interface Props {
   selectedQuestionnaire: SelectedQuestionnaire | null;
@@ -35,9 +33,9 @@ interface Props {
 function CreateNewResponseButton(props: Props) {
   const { selectedQuestionnaire } = props;
 
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient } = useContext(SmartAppLaunchContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
+  const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
 
   const navigate = useNavigate();
 
@@ -48,25 +46,22 @@ function CreateNewResponseButton(props: Props) {
 
     setIsLoading(true);
 
-    const questionnaireResource = selectedQuestionnaire.resource;
+    const questionnaire = selectedQuestionnaire.resource;
 
     // Post questionnaire to client if it is SMART Health IT and its variants
-    if (fhirClient?.state.serverUrl.includes('/v/r4/fhir')) {
-      questionnaireResource.id = questionnaireResource.id + '-SMARTcopy';
-      postQuestionnaireToSMARTHealthIT(fhirClient, questionnaireResource);
+    if (smartClient?.state.serverUrl.includes('/v/r4/fhir')) {
+      questionnaire.id = questionnaire.id + '-SMARTcopy';
+      postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
 
     // Assign questionnaire to questionnaire provider
-    await questionnaireProvider.setQuestionnaire(questionnaireResource);
+    await buildSourceQuestionnaire(questionnaire);
 
     // Assign questionnaireResponse to questionnaireResponse provider
-    if (questionnaireResource.item && questionnaireResource.item.length > 0) {
-      questionnaireResponseProvider.setQuestionnaireResponse(
-        createQuestionnaireResponse(questionnaireResource.id, questionnaireResource.item[0])
-      );
-    }
-    navigate('/renderer');
+    const questionnaireResponse = createQuestionnaireResponse(questionnaire);
+    buildSourceResponse(questionnaireResponse);
 
+    navigate('/renderer');
     setIsLoading(false);
   }
 

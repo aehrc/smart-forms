@@ -25,9 +25,9 @@ import dayjs from 'dayjs';
 import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
-import { SmartAppLaunchContext } from '../../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
 import { constructName } from '../../../../smartAppLaunch/utils/launchContext.ts';
 import type { ResponseListItem } from '../../../types/list.interface.ts';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 interface Props {
   selected: ResponseListItem | undefined;
@@ -42,7 +42,7 @@ function ResponseListToolbar(props: Props) {
   const { selectedQuestionnaire, existingResponses, clearSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
-  const { patient } = useContext(SmartAppLaunchContext);
+  const patient = useConfigStore((state) => state.patient);
   const theme = useTheme();
 
   const selectedQuestionnaireTitle =

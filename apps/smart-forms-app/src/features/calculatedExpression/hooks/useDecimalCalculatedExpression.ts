@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from 'react';
-import { CalculatedExpressionContext } from '../contexts/CalculatedExpressionContext.tsx';
+import { useEffect, useState } from 'react';
 import { createEmptyQrItemWithUnit } from '../../renderer/utils/qrItem.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 
 interface UseDecimalCalculatedExpression {
-  calExpIsCalculating: boolean;
+  calcExpUpdated: boolean;
 }
 
 interface useDecimalCalculatedExpressionProps {
@@ -38,9 +38,9 @@ function useDecimalCalculatedExpression(
 ): UseDecimalCalculatedExpression {
   const { qItem, inputValue, displayUnit, precision, setInputValue, onQrItemChange } = props;
 
-  const { calculatedExpressions } = useContext(CalculatedExpressionContext);
+  const calculatedExpressions = useQuestionnaireStore((state) => state.calculatedExpressions);
 
-  const [calExpIsCalculating, setCalExpIsCalculating] = useState(false);
+  const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 
   useEffect(
     () => {
@@ -55,9 +55,9 @@ function useDecimalCalculatedExpression(
         // only update if calculated value is different from current value
         if (value !== parseFloat(inputValue)) {
           // update ui to show calculated value changes
-          setCalExpIsCalculating(true);
+          setCalcExpUpdated(true);
           setTimeout(() => {
-            setCalExpIsCalculating(false);
+            setCalcExpUpdated(false);
           }, 500);
 
           // update questionnaireResponse
@@ -74,7 +74,7 @@ function useDecimalCalculatedExpression(
     [calculatedExpressions]
   );
 
-  return { calExpIsCalculating };
+  return { calcExpUpdated: calcExpUpdated };
 }
 
 export default useDecimalCalculatedExpression;

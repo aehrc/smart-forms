@@ -16,35 +16,40 @@
  */
 
 import type { Coding, Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { getEnableWhenItemProperties } from '../features/enableWhen/utils/enableWhen.ts';
-import {
-  getAnswerExpression,
-  getCalculatedExpression,
-  getEnableWhenExpression,
-  getFhirPathVariables,
-  getXFhirQueryVariables
-} from '../features/renderer/utils/itemControl.ts';
+import { getAnswerExpression } from '../features/renderer/utils/itemControl.ts';
 import {
   createValueSetToXFhirQueryVariableNameMap,
   getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise,
-  getValueSetUrlFromContained,
   resolvePromises
-} from '../features/valueSet/utils/valueSet.ts';
+} from '../utils/valueSet.ts';
 import type { LaunchContext } from '../features/prepopulate/types/populate.interface.ts';
 import { isLaunchContext } from './typePredicates/isLaunchContext.ts';
 import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
-import type { AnswerExpression } from '../features/answerExpression/types/answerExpression.interface.ts';
+import type { AnswerExpression } from '../types/answerExpression.interface.ts';
 import type {
   EnableWhenExpression,
   EnableWhenItemProperties
-} from '../features/enableWhen/types/enableWhen.interface.ts';
-import type { ValueSetPromise } from '../features/valueSet/types/valueSet.interface.ts';
+} from '../types/enableWhen.interface.ts';
+import type { ValueSetPromise } from '../types/valueSet.interface.ts';
 import type { Variables } from './questionnaireProvider.interfaces.ts';
+import type { Tabs } from '../features/renderer/types/tab.interface.ts';
+import { constructTabsWithProperties, isTabContainer } from '../features/renderer/utils/tabs.ts';
+import {
+  getFhirPathVariables,
+  getXFhirQueryVariables
+} from '../features/preprocess/utils/preprocessQuestionnaire/extractVariables.ts';
+import { getValueSetUrlFromContained } from '../features/preprocess/utils/preprocessQuestionnaire/extractContainedValueSets.ts';
+import {
+  getCalculatedExpression,
+  getEnableWhenExpression,
+  getEnableWhenItemProperties
+} from '../features/preprocess/utils/preprocessQuestionnaire/extractOtherExtensions.ts';
 
 export class QuestionnaireProvider {
   questionnaire: Questionnaire;
+  tabs: Tabs;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
   calculatedExpressions: Record<string, CalculatedExpression>;
@@ -58,6 +63,7 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'draft'
     };
+    this.tabs = {};
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
@@ -72,6 +78,7 @@ export class QuestionnaireProvider {
       resourceType: 'Questionnaire',
       status: 'draft'
     };
+    this.tabs = {};
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
@@ -82,6 +89,7 @@ export class QuestionnaireProvider {
   }
 
   async setQuestionnaire(questionnaire: Questionnaire): Promise<void> {
+    this.tabs = {};
     this.variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
     this.launchContexts = {};
     this.calculatedExpressions = {};
@@ -149,6 +157,16 @@ export class QuestionnaireProvider {
         }
       }
     }
+
+    // Check if the questionnaire's top-level items are tab containers or have any tabs
+    this.questionnaire.item.forEach((topLevelItem) => {
+      const items = topLevelItem.item;
+      const topLevelItemIsTabContainer = isTabContainer(topLevelItem);
+
+      const tabs = constructTabsWithProperties(items, topLevelItemIsTabContainer);
+
+      this.tabs = { ...this.tabs, ...tabs };
+    });
 
     // Recursively read enableWhen items, calculated expressions, enableWhen expressions and valueSets to be expanded
     this.questionnaire.item.forEach((item) => {

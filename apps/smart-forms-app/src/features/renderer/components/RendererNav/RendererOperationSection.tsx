@@ -16,20 +16,20 @@
  */
 
 import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
-import { useContext } from 'react';
 import RendererSaveAsDraft from './SaveAsDraft/RendererSaveAsDraft.tsx';
 import RendererSaveAsFinal from './SaveAsFinal/RendererSaveAsFinal.tsx';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { SmartAppLaunchContext } from '../../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import { QuestionnaireProviderContext } from '../../../../App.tsx';
 import type { OperationItem } from '../../../../types/Nav.interface.ts';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
+import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 
 function RendererOperationSection() {
-  const { fhirClient } = useContext(SmartAppLaunchContext);
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
+  const smartClient = useConfigStore((state) => state.smartClient);
+
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,7 +57,7 @@ function RendererOperationSection() {
             }}
           />
         )}
-        {fhirClient && questionnaireProvider.questionnaire.item ? (
+        {smartClient && sourceQuestionnaire.item ? (
           <>
             <RendererSaveAsDraft />
             <RendererSaveAsFinal />

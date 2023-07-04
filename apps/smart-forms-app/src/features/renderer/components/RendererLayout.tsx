@@ -15,23 +15,13 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import RendererHeader from './RendererHeader/RendererHeader.tsx';
 import RendererNav from './RendererNav/RendererNav.tsx';
 import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Main } from './RendererLayout.styles.ts';
-import {
-  QuestionnaireProviderContext,
-  QuestionnaireResponseProviderContext
-} from '../../../App.tsx';
-import { SmartAppLaunchContext } from '../../smartAppLaunch/contexts/SmartAppLaunchContext.tsx';
-import { createQuestionnaireResponse, removeNoAnswerQrItem } from '../utils/qrItem.ts';
 import { populateQuestionnaire } from '../../prepopulate/utils/populate.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
-import EnableWhenContextProvider from '../../enableWhen/contexts/EnableWhenContext.tsx';
-import EnableWhenExpressionContextProvider from '../../enableWhenExpression/contexts/EnableWhenExpressionContext.tsx';
-import CalculatedExpressionContextProvider from '../../calculatedExpression/contexts/CalculatedExpressionContext.tsx';
-import CachedQueriedValueSetContextProvider from '../../valueSet/contexts/CachedQueriedValueSetContext.tsx';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../../backToTop/components/BackToTopButton.tsx';
 import { Fab } from '@mui/material';
@@ -41,94 +31,51 @@ import { useSnackbar } from 'notistack';
 import NavExpandButton from './NavCollapseButton.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
-import type { Renderer } from '../types/renderer.interface.ts';
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
-import { RendererContext } from '../contexts/RendererContext.ts';
-import { CurrentTabIndexContext } from '../contexts/CurrentTabIndexContext.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
+import useConfigStore from '../../../stores/useConfigStore.ts';
+import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import _isEqual from 'lodash/isEqual';
 
 function RendererLayout() {
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatePopulatedProperties = useQuestionnaireStore(
+    (state) => state.updatePopulatedProperties
+  );
+
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
+  const populateResponse = useQuestionnaireResponseStore((state) => state.populateResponse);
+
+  const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const user = useConfigStore((state) => state.user);
+  const encounter = useConfigStore((state) => state.encounter);
+
   const [open, setOpen] = useState(false);
-  const [navIsCollapsed, setNavIsCollapsed] = useState(false);
-
-  const questionnaireProvider = useContext(QuestionnaireProviderContext);
-  const questionnaireResponseProvider = useContext(QuestionnaireResponseProviderContext);
-  const { fhirClient, patient, user, encounter } = useContext(SmartAppLaunchContext);
-
-  // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
-  let initialResponse: QuestionnaireResponse;
-  if (questionnaireProvider.questionnaire.item && !questionnaireResponseProvider.response.item) {
-    initialResponse = createQuestionnaireResponse(
-      questionnaireProvider.questionnaire.id,
-      questionnaireProvider.questionnaire.item[0]
-    );
-    questionnaireResponseProvider.setQuestionnaireResponse(initialResponse);
-  } else {
-    initialResponse = questionnaireResponseProvider.response;
-  }
-
-  const [renderer, setRenderer] = useState<Renderer>({
-    response: initialResponse,
-    hasChanges: false
-  });
-  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  const { enqueueSnackbar } = useSnackbar();
-  useBackToTop();
+  const [navIsCollapsed, collapseNav] = useState(false);
 
   // Init population spinner
-  const initialSpinner =
-    fhirClient && patient && user && !renderer.response.id
-      ? {
-          isLoading: true,
-          message: 'Populating form'
-        }
-      : { isLoading: false, message: '' };
-
+  let initialSpinner = { isLoading: false, message: '' };
+  if (smartClient && patient && user && !sourceResponse.id) {
+    initialSpinner = {
+      isLoading: true,
+      message: 'Populating form'
+    };
+  }
   const [spinner, setSpinner] = useState(initialSpinner);
 
-  const leavePageBlocked = renderer.hasChanges;
-  const leavePageBlocker = useLeavePageBlocker(leavePageBlocked);
-
+  // Page blocker
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const leavePageBlocker = useLeavePageBlocker(hasChanges);
   if (leavePageBlocker.state === 'blocked' && !dialogOpen) {
     setDialogOpen(true);
   }
 
-  /*
-   * Update response state if response is updated from the server
-   * introduces two-way binding
-   * TODO prompt user that there are changes from the server
-   *  overwrite prompt - to implement in next phase
-   */
-  useEffect(
-    () => {
-      const responseFromProvider = questionnaireResponseProvider.response;
-      if (!responseFromProvider.item || responseFromProvider.item.length === 0) return;
-
-      let shouldUpdateResponse = false;
-      const updatedTopLevelQRItems = responseFromProvider.item.map((topLevelQRItem) => {
-        const topLevelQRItemCleaned = removeNoAnswerQrItem(topLevelQRItem);
-
-        if (topLevelQRItemCleaned) {
-          shouldUpdateResponse = true;
-          return topLevelQRItemCleaned;
-        } else {
-          return topLevelQRItem;
-        }
-      });
-
-      if (shouldUpdateResponse) {
-        setRenderer({
-          ...renderer,
-          response: { ...questionnaireResponseProvider.response, item: updatedTopLevelQRItems }
-        });
-      }
-    },
-    // init update renderer response only when server-side changes occur, leave dependency array empty
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [questionnaireResponseProvider.response]
-  );
+  const { enqueueSnackbar } = useSnackbar();
+  useBackToTop();
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
@@ -137,29 +84,27 @@ function RendererLayout() {
    * 3. QuestionnaireResponse does not have answer items
    * 4. QuestionnaireResponse is not from a saved draft response
    */
-  const responseHasNoAnswers: boolean =
-    !initialResponse.item?.[0].item || initialResponse.item?.[0].item.length === 0;
+  const hasNotBeenPopulated = _isEqual(sourceResponse, updatableResponse);
 
   if (
-    fhirClient &&
+    smartClient &&
     patient &&
     user &&
     spinner.isLoading &&
-    (questionnaireProvider.questionnaire.contained ||
-      questionnaireProvider.questionnaire.extension) &&
-    responseHasNoAnswers &&
-    !questionnaireResponseProvider.response.id
+    (sourceQuestionnaire.contained || sourceResponse.extension) &&
+    hasNotBeenPopulated &&
+    !sourceResponse.id
   ) {
     // obtain questionnaireResponse for pre-population
     populateQuestionnaire(
-      questionnaireProvider.questionnaire,
-      fhirClient,
+      sourceQuestionnaire,
+      smartClient,
       patient,
       user,
       encounter,
       (populated: QuestionnaireResponse, hasWarnings: boolean) => {
-        questionnaireResponseProvider.setQuestionnaireResponse(populated);
-        setRenderer({ ...renderer, response: populated });
+        populateResponse(populated);
+        updatePopulatedProperties(populated);
         setSpinner({ ...spinner, isLoading: false });
         if (hasWarnings) {
           enqueueSnackbar(
@@ -184,52 +129,36 @@ function RendererLayout() {
   }
 
   return (
-    <RendererContext.Provider value={{ renderer, setRenderer }}>
-      <StyledRoot>
-        <RendererHeader onOpenNav={() => setOpen(true)} navIsCollapsed={navIsCollapsed} />
-        <RendererNav
-          openNav={open}
-          onCloseNav={() => setOpen(false)}
-          navCollapsed={navIsCollapsed}
-          setNavCollapsed={() => setNavIsCollapsed(true)}
+    <StyledRoot>
+      <RendererHeader onOpenNav={() => setOpen(true)} navIsCollapsed={navIsCollapsed} />
+      <RendererNav
+        openNav={open}
+        onCloseNav={() => setOpen(false)}
+        navCollapsed={navIsCollapsed}
+        setNavCollapsed={() => collapseNav(true)}
+      />
+
+      <Main>
+        {spinner.isLoading ? <PopulationProgressSpinner message={spinner.message} /> : <Outlet />}
+      </Main>
+
+      {/* Dialogs and FABs */}
+      {leavePageBlocker.state === 'blocked' ? (
+        <BlockerUnsavedFormDialog
+          blocker={leavePageBlocker}
+          open={dialogOpen}
+          closeDialog={() => setDialogOpen(false)}
         />
+      ) : null}
 
-        <Main>
-          <EnableWhenContextProvider>
-            <CalculatedExpressionContextProvider>
-              <EnableWhenExpressionContextProvider>
-                <CachedQueriedValueSetContextProvider>
-                  <CurrentTabIndexContext.Provider value={{ currentTabIndex, setCurrentTabIndex }}>
-                    {spinner.isLoading ? (
-                      <PopulationProgressSpinner message={spinner.message} />
-                    ) : (
-                      <Outlet />
-                    )}
-                  </CurrentTabIndexContext.Provider>
-                </CachedQueriedValueSetContextProvider>
-              </EnableWhenExpressionContextProvider>
-            </CalculatedExpressionContextProvider>
-          </EnableWhenContextProvider>
-        </Main>
+      <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => collapseNav(false)} />
 
-        {/* Dialogs and FABs */}
-        {leavePageBlocker.state === 'blocked' ? (
-          <BlockerUnsavedFormDialog
-            blocker={leavePageBlocker}
-            open={dialogOpen}
-            closeDialog={() => setDialogOpen(false)}
-          />
-        ) : null}
-
-        <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => setNavIsCollapsed(false)} />
-
-        <BackToTopButton>
-          <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
-            <KeyboardArrowUpIcon />
-          </Fab>
-        </BackToTopButton>
-      </StyledRoot>
-    </RendererContext.Provider>
+      <BackToTopButton>
+        <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
+          <KeyboardArrowUpIcon />
+        </Fab>
+      </BackToTopButton>
+    </StyledRoot>
   );
 }
 

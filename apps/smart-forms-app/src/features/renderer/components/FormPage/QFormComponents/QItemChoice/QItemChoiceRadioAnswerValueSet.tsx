@@ -16,7 +16,6 @@
  */
 
 import type { ChangeEvent } from 'react';
-import { memo } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -24,8 +23,7 @@ import { findInAnswerValueSetCodings } from '../../../../utils/choice.ts';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useValueSetCodings from '../../../../hooks/useValueSetCodings.ts';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
@@ -35,6 +33,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -114,11 +113,11 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
@@ -126,4 +125,4 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
   return <>{renderQItemChoiceRadio}</>;
 }
 
-export default memo(QItemChoiceRadioAnswerValueSet);
+export default QItemChoiceRadioAnswerValueSet;

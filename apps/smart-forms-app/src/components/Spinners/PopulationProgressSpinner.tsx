@@ -24,7 +24,9 @@ interface PopulationProgressSpinnerProps {
   message: string;
 }
 
-function PopulationProgressSpinner(props: PopulationProgressSpinnerProps) {
+const PopulationProgressSpinner = memo(function PopulationProgressSpinner(
+  props: PopulationProgressSpinnerProps
+) {
   const { message } = props;
 
   const theme = useTheme();
@@ -39,6 +41,6 @@ function PopulationProgressSpinner(props: PopulationProgressSpinnerProps) {
       </Box>
     </Stack>
   );
-}
+});
 
-export default memo(PopulationProgressSpinner);
+export default PopulationProgressSpinner;

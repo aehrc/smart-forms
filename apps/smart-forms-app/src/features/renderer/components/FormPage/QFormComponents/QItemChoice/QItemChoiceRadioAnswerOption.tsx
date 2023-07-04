@@ -16,7 +16,6 @@
  */
 
 import type { ChangeEvent } from 'react';
-import { memo } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -24,14 +23,14 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../../utils/choice.
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import QItemDisplayInstructions from '../QItemSimple/QItemDisplayInstructions.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -110,11 +109,11 @@ function QItemChoiceRadioAnswerOption(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
-          <QItemDisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
@@ -122,4 +121,4 @@ function QItemChoiceRadioAnswerOption(props: Props) {
   return <>{renderQItemChoiceRadio}</>;
 }
 
-export default memo(QItemChoiceRadioAnswerOption);
+export default QItemChoiceRadioAnswerOption;

@@ -27,3 +27,7 @@ export const QGroupContainerBox = styled(Box, {
 export const FullWidthFormComponentBox = styled(Box)(() => ({
   marginBottom: 14
 }));
+
+export const FormTitleWrapper = styled(Box)(() => ({
+  marginTop: 12
+}));
