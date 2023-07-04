@@ -21,6 +21,8 @@ import { createFhirPathContext } from './fhirpath.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
+import _isEqual from 'lodash/isEqual';
+import { emptyResponse } from '../stores/useQuestionnaireStore.ts';
 
 interface EvaluateInitialEnableWhenExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -32,6 +34,11 @@ export function evaluateInitialEnableWhenExpressions(
   params: EvaluateInitialEnableWhenExpressionsParams
 ): Record<string, EnableWhenExpression> {
   const { initialResponse, enableWhenExpressions, variablesFhirPath } = params;
+
+  // Return early if initialResponse is empty
+  if (_isEqual(initialResponse, emptyResponse)) {
+    return enableWhenExpressions;
+  }
 
   const initialExpressions: Record<string, EnableWhenExpression> = { ...enableWhenExpressions };
 
@@ -56,6 +63,7 @@ export function evaluateInitialEnableWhenExpressions(
       } catch (e) {
         // Continue even if there is an error evaluating the expression
         // So that the user can still see the form
+        console.warn(e);
       }
     }
   }

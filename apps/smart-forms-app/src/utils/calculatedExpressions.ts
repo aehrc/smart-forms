@@ -46,18 +46,23 @@ export function evaluateUpdatedCalculatedExpressions(
 
     // Update calculatedExpressions
     for (const linkId in calculatedExpressions) {
-      const result = fhirpath.evaluate(
-        updatedResponse,
-        calculatedExpressions[linkId].expression,
-        fhirPathContext,
-        fhirpath_r4_model
-      );
+      try {
+        const result = fhirpath.evaluate(
+          updatedResponse,
+          calculatedExpressions[linkId].expression,
+          fhirPathContext,
+          fhirpath_r4_model
+        );
 
-      if (result.length > 0) {
-        if (calculatedExpressions[linkId].value !== result[0]) {
-          isUpdated = true;
-          updatedExpressions[linkId].value = result[0];
+        if (result.length > 0) {
+          if (calculatedExpressions[linkId].value !== result[0]) {
+            isUpdated = true;
+            updatedExpressions[linkId].value = result[0];
+          }
         }
+      } catch (e) {
+        // Continue even if there is an error evaluating the expression
+        console.warn(e);
       }
     }
   }
