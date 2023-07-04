@@ -42,14 +42,13 @@ function CsiroLogo() {
           }}
           src={csiroLogo}
           onClick={() => {
-            if (!debugMode && counter < 8) {
-              if (counter === 7) {
+            if (!debugMode && counter < 7) {
+              addOneToCounter();
+              if (counter === 6) {
                 activateDebugMode();
                 enqueueSnackbar('Debug mode enabled!', {
                   preventDuplicate: true
                 });
-              } else if (counter < 7) {
-                addOneToCounter();
               }
             }
           }}
