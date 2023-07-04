@@ -16,12 +16,12 @@
  */
 
 import type { ChangeEvent, SyntheticEvent } from 'react';
-import { memo, useState } from 'react';
+import { useState } from 'react';
 import { Autocomplete, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import SearchIcon from '@mui/icons-material/Search';
@@ -49,9 +49,7 @@ interface QItemChoiceAutocompleteProps
   qrItem: QuestionnaireResponseItem;
 }
 
-const QItemChoiceAutocomplete = memo(function QItemChoiceAutocomplete(
-  props: QItemChoiceAutocompleteProps
-) {
+function QItemChoiceAutocomplete(props: QItemChoiceAutocompleteProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem);
 
@@ -166,7 +164,7 @@ const QItemChoiceAutocomplete = memo(function QItemChoiceAutocomplete(
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}
@@ -176,6 +174,6 @@ const QItemChoiceAutocomplete = memo(function QItemChoiceAutocomplete(
     </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceAutocomplete}</>;
-});
+}
 
 export default QItemChoiceAutocomplete;

@@ -18,10 +18,10 @@
 import { memo } from 'react';
 import { Box, Divider } from '@mui/material';
 import { QGroupHeadingTypography } from '../Typography.styles.ts';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import CompleteTabButton from '../../Tabs/CompleteTabButton.tsx';
-import { PropsWithIsRepeatedAttribute } from '../../../../types/renderProps.interface.ts';
-import { QuestionnaireItem } from 'fhir/r4';
+import type { PropsWithIsRepeatedAttribute } from '../../../../types/renderProps.interface.ts';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -39,7 +39,7 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
     <>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <QGroupHeadingTypography variant="h6" isTabHeading={tabIsMarkedAsComplete !== undefined}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </QGroupHeadingTypography>
 
         {tabIsMarkedAsComplete !== undefined ? (

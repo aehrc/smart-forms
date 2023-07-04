@@ -23,10 +23,11 @@ import { Box, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import { StyledRoot } from '../../../components/Header/Header.styles.ts';
+import { memo } from 'react';
 
 const HEADER_PLAYGROUND = 64;
 
-function PlaygroundHeader() {
+const PlaygroundHeader = memo(function PlaygroundHeader() {
   const theme = useTheme();
 
   const navigate = useNavigate();
@@ -61,6 +62,6 @@ function PlaygroundHeader() {
       </Toolbar>
     </StyledRoot>
   );
-}
+});
 
 export default PlaygroundHeader;

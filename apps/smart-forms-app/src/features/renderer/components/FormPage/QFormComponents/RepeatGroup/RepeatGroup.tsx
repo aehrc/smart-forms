@@ -22,7 +22,7 @@ import useInitialiseRepeatGroups from '../../../../hooks/useInitialiseRepeatGrou
 import { QGroupContainerBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { Card, Collapse, Divider } from '@mui/material';
 import { QGroupHeadingTypography } from '../Typography.styles.ts';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { TransitionGroup } from 'react-transition-group';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { nanoid } from 'nanoid';
@@ -90,22 +90,22 @@ function RepeatGroup(props: RepeatGroupProps) {
     <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
       <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
         <QGroupHeadingTypography variant="h6">
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </QGroupHeadingTypography>
         <Divider sx={{ mt: 1, mb: 1.5 }} light />
         <TransitionGroup>
-          {repeatGroups.map(({ nanoId, qrItem }, index) => {
-            const processedQrItem = createEmptyQrItem(qItem);
-            if (qrItem) {
-              processedQrItem.item = qrItem.item;
+          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+            const answeredQrItem = createEmptyQrItem(qItem);
+            if (nullableQrItem) {
+              answeredQrItem.item = nullableQrItem.item;
             }
 
             return (
               <Collapse key={nanoId} timeout={200}>
                 <RepeatGroupItem
                   qItem={qItem}
-                  processedQrItem={processedQrItem}
-                  unprocessedQrItem={qrItem}
+                  answeredQrItem={answeredQrItem}
+                  nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
                   groupCardElevation={groupCardElevation + 1}
                   onDeleteItem={() => handleDeleteItem(index)}

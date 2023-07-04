@@ -18,7 +18,7 @@
 import { memo } from 'react';
 import { Box } from '@mui/material';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../../utils/tabs.ts';
-import { Tabs } from '../../../../types/tab.interface.ts';
+import type { Tabs } from '../../../../types/tab.interface.ts';
 import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
 import NextTabButton from './NextTabButton.tsx';
 

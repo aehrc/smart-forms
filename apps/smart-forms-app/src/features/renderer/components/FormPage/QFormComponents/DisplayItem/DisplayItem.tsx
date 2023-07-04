@@ -18,7 +18,7 @@
 import { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 
 interface DisplayItemProps {
   qItem: QuestionnaireItem;
@@ -29,7 +29,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <QItemLabel qItem={qItem} />
+      <LabelText qItem={qItem} />
     </FullWidthFormComponentBox>
   );
 });

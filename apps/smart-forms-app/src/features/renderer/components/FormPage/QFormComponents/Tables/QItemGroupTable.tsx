@@ -34,7 +34,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import QItemGroupTableRow from './QItemGroupTableRow.tsx';
 import { HeaderTableCell } from './Table.styles.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { QGroupContainerBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { mapQItemsIndex } from '../../../../utils';
 import type { PropsWithQrRepeatGroupChangeHandler } from '../../../../types/renderProps.interface.ts';
@@ -118,7 +118,7 @@ function QItemGroupTable(props: Props) {
       isRepeated={false}
       py={3.5}>
       <Typography fontSize={13} variant="h6">
-        <QItemLabel qItem={qItem} />
+        <LabelText qItem={qItem} />
       </Typography>
       <Divider sx={{ my: 1 }} light />
       <TableContainer component={Paper} elevation={groupCardElevation}>

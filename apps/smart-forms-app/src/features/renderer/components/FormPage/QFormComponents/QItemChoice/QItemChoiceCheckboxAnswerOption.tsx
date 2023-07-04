@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -23,7 +22,7 @@ import QItemChoiceCheckboxSingle from '../QItemParts/QItemCheckboxSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QFormGroup } from '../Item.styles.tsx';
 import { updateQrCheckboxAnswers } from '../../../../utils/choice.ts';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import type {
@@ -117,7 +116,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
     <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}
@@ -128,4 +127,4 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
   );
 }
 
-export default memo(QItemChoiceCheckboxAnswerOption);
+export default QItemChoiceCheckboxAnswerOption;

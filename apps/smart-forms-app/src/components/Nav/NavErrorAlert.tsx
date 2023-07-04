@@ -19,11 +19,11 @@ import { Typography } from '@mui/material';
 
 import { StyledAlert } from './Nav.styles.ts';
 
-interface Props {
+interface NavErrorAlertProps {
   message: string;
 }
 
-function NavErrorAlert(props: Props) {
+function NavErrorAlert(props: NavErrorAlertProps) {
   const { message } = props;
 
   return (

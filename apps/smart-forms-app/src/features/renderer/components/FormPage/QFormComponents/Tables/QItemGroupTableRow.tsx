@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
-
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createQrGroup, updateLinkedItem } from '../../../../utils/qrItem.ts';
 import SingleItem from '../SingleItem/SingleItem.tsx';
@@ -30,10 +28,9 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   qItemsIndexMap: Record<string, number>;
 }
 
-const QItemGroupTableRow = memo(function QItemGroupTableRow(props: Props) {
+function QItemGroupTableRow(props: Props) {
   const { qItem, qrItem, qItemsIndexMap, onQrItemChange } = props;
 
-  // TODO see if we can refactor this
   const rowItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
   const rowQrItems = row.item;
@@ -87,6 +84,6 @@ const QItemGroupTableRow = memo(function QItemGroupTableRow(props: Props) {
       })}
     </>
   );
-});
+}
 
 export default QItemGroupTableRow;

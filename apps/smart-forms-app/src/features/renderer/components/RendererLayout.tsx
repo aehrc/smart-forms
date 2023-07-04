@@ -103,7 +103,6 @@ function RendererLayout() {
       user,
       encounter,
       (populated: QuestionnaireResponse, hasWarnings: boolean) => {
-        // console.log('hey');
         populateResponse(populated);
         updatePopulatedProperties(populated);
         setSpinner({ ...spinner, isLoading: false });

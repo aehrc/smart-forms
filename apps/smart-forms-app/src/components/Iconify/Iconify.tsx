@@ -15,23 +15,24 @@
  * limitations under the License.
  */
 
-import { forwardRef } from 'react';
+import { forwardRef, memo } from 'react';
 import { Icon } from '@iconify/react';
 import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 
-interface Props {
+interface IconifyProps {
   icon: string;
   width?: number;
   height?: number;
   sx?: SxProps<Theme>;
 }
 
-const Iconify = forwardRef((props: Props, ref) => {
-  const { icon, width = 20, height = 20, sx } = props;
-  return <Box ref={ref} component={Icon} icon={icon} sx={{ width, height, ...sx }} />;
-});
-
-Iconify.displayName = 'Iconify';
+const Iconify = memo(
+  forwardRef(function Iconify(props: IconifyProps, ref) {
+    // eslint-disable-next-line react/prop-types
+    const { icon, width = 20, height = 20, sx } = props;
+    return <Box ref={ref} component={Icon} icon={icon} sx={{ width, height, ...sx }} />;
+  })
+);
 
 export default Iconify;

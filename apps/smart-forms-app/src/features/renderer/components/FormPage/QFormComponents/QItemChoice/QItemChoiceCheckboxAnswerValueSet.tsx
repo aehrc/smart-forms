@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
 import { Grid, Typography } from '@mui/material';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -25,7 +24,7 @@ import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../../utils/choice.ts';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle.tsx';
 import { QFormGroup } from '../Item.styles.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -44,9 +43,7 @@ interface Props
   orientation: QItemChoiceOrientation;
 }
 
-const QItemChoiceCheckboxAnswerValueSet = memo(function QItemChoiceCheckboxAnswerValueSet(
-  props: Props
-) {
+function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
@@ -114,7 +111,7 @@ const QItemChoiceCheckboxAnswerValueSet = memo(function QItemChoiceCheckboxAnswe
     <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}
@@ -123,6 +120,6 @@ const QItemChoiceCheckboxAnswerValueSet = memo(function QItemChoiceCheckboxAnswe
       </Grid>
     </FullWidthFormComponentBox>
   );
-});
+}
 
 export default QItemChoiceCheckboxAnswerValueSet;

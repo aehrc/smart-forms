@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
 import type { Dayjs } from 'dayjs';
 import { DateTimeField as MuiDateTimeField, LocalizationProvider } from '@mui/x-date-pickers';
@@ -29,7 +28,7 @@ interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   onDateTimeChange: (newValue: Dayjs | null) => unknown;
 }
 
-const DateTimeField = memo(function DateTimeField(props: DateTimeFieldProps) {
+function DateTimeField(props: DateTimeFieldProps) {
   const { value, displayPrompt, entryFormat, readOnly, isTabled, onDateTimeChange } = props;
 
   return (
@@ -46,6 +45,6 @@ const DateTimeField = memo(function DateTimeField(props: DateTimeFieldProps) {
       />
     </LocalizationProvider>
   );
-});
+}
 
 export default DateTimeField;

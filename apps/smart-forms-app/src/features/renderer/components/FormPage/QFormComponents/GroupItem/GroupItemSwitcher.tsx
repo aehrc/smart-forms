@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import {
+import type {
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../../types/renderProps.interface.ts';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { isSpecificItemControl } from '../../../../utils/itemControl.ts';
 import QItemGroupTable from '../Tables/QItemGroupTable.tsx';
 import RepeatGroup from '../RepeatGroup/RepeatGroup.tsx';

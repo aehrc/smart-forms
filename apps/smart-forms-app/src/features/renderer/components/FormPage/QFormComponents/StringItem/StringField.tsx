@@ -18,7 +18,6 @@
 import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
 import { InputAdornment } from '@mui/material';
 import { StandardTextField } from '../Textfield.styles.tsx';
-import { memo } from 'react';
 
 interface StringFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -32,7 +31,7 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   onInputChange: (value: string) => void;
 }
 
-const StringField = memo(function StringField(props: StringFieldProps) {
+function StringField(props: StringFieldProps) {
   const {
     linkId,
     input,
@@ -64,6 +63,6 @@ const StringField = memo(function StringField(props: StringFieldProps) {
       data-test="q-item-string-field"
     />
   );
-});
+}
 
 export default StringField;

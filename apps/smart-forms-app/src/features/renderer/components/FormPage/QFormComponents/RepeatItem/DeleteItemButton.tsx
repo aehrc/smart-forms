@@ -19,7 +19,6 @@ import { RepeatDeleteTooltip } from './RepeatItem.styles.tsx';
 import { IconButton } from '@mui/material';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { memo } from 'react';
 
 interface DeleteItemButtonProps {
   answer: QuestionnaireResponseItemAnswer | null;
@@ -27,7 +26,7 @@ interface DeleteItemButtonProps {
   onDeleteAnswer: () => void;
 }
 
-const DeleteItemButton = memo(function DeleteItemButton(props: DeleteItemButtonProps) {
+function DeleteItemButton(props: DeleteItemButtonProps) {
   const { answer, numOfRepeatAnswers, onDeleteAnswer } = props;
 
   const isDisabled = answer === null || numOfRepeatAnswers === 1;
@@ -41,6 +40,6 @@ const DeleteItemButton = memo(function DeleteItemButton(props: DeleteItemButtonP
       </span>
     </RepeatDeleteTooltip>
   );
-});
+}
 
 export default DeleteItemButton;

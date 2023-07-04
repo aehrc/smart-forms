@@ -26,13 +26,14 @@ import MobileHeaderWithQuestionnaire from '../../../../components/Header/MobileH
 import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
+import { memo } from 'react';
 
-interface Props {
+interface RendererHeaderProps {
   navIsCollapsed: boolean;
   onOpenNav: () => void;
 }
 
-function RendererHeader(props: Props) {
+const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) {
   const { navIsCollapsed, onOpenNav } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -85,6 +86,6 @@ function RendererHeader(props: Props) {
       </StyledToolbar>
     </StyledRoot>
   );
-}
+});
 
 export default RendererHeader;

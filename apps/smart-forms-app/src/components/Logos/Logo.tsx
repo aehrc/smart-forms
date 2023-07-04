@@ -15,42 +15,43 @@
  * limitations under the License.
  */
 
-import { forwardRef } from 'react';
+import { forwardRef, memo } from 'react';
 import type { SxProps, Theme } from '@mui/material';
 import { Box, Typography } from '@mui/material';
 import AppLogo from '../../data/images/logo.svg';
 
-interface Props {
+interface LogoProps {
   sx?: SxProps<Theme>;
 }
 
-const Logo = forwardRef((props: Props, ref) => {
-  const { sx } = props;
+const Logo = memo(
+  forwardRef(function Logo(props: LogoProps, ref) {
+    // eslint-disable-next-line react/prop-types
+    const { sx } = props;
 
-  const logo = (
-    <Box
-      ref={ref}
-      component="img"
-      src={AppLogo}
-      sx={{
-        width: 40,
-        height: 40,
-        display: 'inline-flex',
-        ...sx
-      }}
-    />
-  );
+    const logo = (
+      <Box
+        ref={ref}
+        component="img"
+        src={AppLogo}
+        sx={{
+          width: 40,
+          height: 40,
+          display: 'inline-flex',
+          ...sx
+        }}
+      />
+    );
 
-  return (
-    <Box display="flex" alignItems="center">
-      {logo}
-      <Typography variant="h6" sx={{ ml: 1.5, color: 'common.black' }}>
-        Smart Forms
-      </Typography>
-    </Box>
-  );
-});
-
-Logo.displayName = 'Logo';
+    return (
+      <Box display="flex" alignItems="center">
+        {logo}
+        <Typography variant="h6" sx={{ ml: 1.5, color: 'common.black' }}>
+          Smart Forms
+        </Typography>
+      </Box>
+    );
+  })
+);
 
 export default Logo;

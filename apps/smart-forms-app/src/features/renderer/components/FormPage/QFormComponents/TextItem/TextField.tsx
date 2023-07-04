@@ -16,7 +16,6 @@
  */
 
 import { InputAdornment, TextField as MuiTextField } from '@mui/material';
-import { memo } from 'react';
 import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
 
 interface TextFieldProps {
@@ -32,7 +31,7 @@ interface TextFieldProps {
   onInputChange: (value: string) => void;
 }
 
-const TextField = memo(function TextField(props: TextFieldProps) {
+function TextField(props: TextFieldProps) {
   const {
     linkId,
     input,
@@ -72,6 +71,6 @@ const TextField = memo(function TextField(props: TextFieldProps) {
       data-test="q-item-text-field"
     />
   );
-});
+}
 
 export default TextField;

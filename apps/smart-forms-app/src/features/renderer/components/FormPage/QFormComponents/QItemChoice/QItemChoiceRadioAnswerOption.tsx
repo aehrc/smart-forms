@@ -16,7 +16,6 @@
  */
 
 import type { ChangeEvent } from 'react';
-import { memo } from 'react';
 import { Grid } from '@mui/material';
 import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -24,7 +23,7 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../../utils/choice.
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import type {
@@ -41,7 +40,7 @@ interface Props
   orientation: QItemChoiceOrientation;
 }
 
-const QItemChoiceRadioAnswerOption = memo(function QItemChoiceRadioAnswerOption(props: Props) {
+function QItemChoiceRadioAnswerOption(props: Props) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
@@ -110,7 +109,7 @@ const QItemChoiceRadioAnswerOption = memo(function QItemChoiceRadioAnswerOption(
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}
@@ -120,6 +119,6 @@ const QItemChoiceRadioAnswerOption = memo(function QItemChoiceRadioAnswerOption(
     </FullWidthFormComponentBox>
   );
   return <>{renderQItemChoiceRadio}</>;
-});
+}
 
 export default QItemChoiceRadioAnswerOption;

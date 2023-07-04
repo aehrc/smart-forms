@@ -16,12 +16,11 @@
  */
 
 import type { SyntheticEvent } from 'react';
-import { memo } from 'react';
 import { Autocomplete, Grid, Typography } from '@mui/material';
 
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useValueSetCodings from '../../../../hooks/useValueSetCodings.ts';
@@ -122,7 +121,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openChoiceSelectAnswerValueSet}
@@ -134,4 +133,4 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
   return <>{renderQItemOpenChoiceSelectAnswerValueSet}</>;
 }
 
-export default memo(QItemOpenChoiceSelectAnswerValueSet);
+export default QItemOpenChoiceSelectAnswerValueSet;

@@ -24,8 +24,8 @@ import DeleteItemButton from './DeleteItemButton.tsx';
 
 interface RepeatGroupItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
-  processedQrItem: QuestionnaireResponseItem;
-  unprocessedQrItem: QuestionnaireResponseItem | null;
+  answeredQrItem: QuestionnaireResponseItem;
+  nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
   groupCardElevation: number;
   onDeleteItem: () => void;
@@ -34,8 +34,8 @@ interface RepeatGroupItemProps extends PropsWithQrItemChangeHandler<Questionnair
 function RepeatGroupItem(props: RepeatGroupItemProps) {
   const {
     qItem,
-    processedQrItem,
-    unprocessedQrItem,
+    answeredQrItem,
+    nullableQrItem,
     numOfRepeatGroups,
     groupCardElevation,
     onDeleteItem,
@@ -47,14 +47,14 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
       <Box sx={{ flexGrow: 1 }}>
         <GroupItem
           qItem={qItem}
-          qrItem={processedQrItem}
+          qrItem={answeredQrItem}
           isRepeated={true}
           groupCardElevation={groupCardElevation + 1}
           onQrItemChange={onQrItemChange}
         />
       </Box>
       <DeleteItemButton
-        unprocessedQrItem={unprocessedQrItem}
+        nullableQrItem={nullableQrItem}
         numOfRepeatGroups={numOfRepeatGroups}
         onDeleteItem={onDeleteItem}
       />

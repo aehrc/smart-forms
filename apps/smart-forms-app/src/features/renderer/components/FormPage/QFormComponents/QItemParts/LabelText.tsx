@@ -23,11 +23,11 @@ import parse from 'html-react-parser';
 import { Box } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 
-interface Props {
+interface LabelTextProps {
   qItem: QuestionnaireItem;
 }
 
-const QItemLabel = memo(function QItemLabel(props: Props) {
+const LabelText = memo(function LabelText(props: LabelTextProps) {
   const { qItem } = props;
 
   // parse xHTML if found
@@ -54,4 +54,4 @@ const QItemLabel = memo(function QItemLabel(props: Props) {
   }
 });
 
-export default QItemLabel;
+export default LabelText;

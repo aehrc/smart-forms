@@ -19,18 +19,17 @@ import { RepeatDeleteTooltip } from '../RepeatItem/RepeatItem.styles.tsx';
 import { IconButton } from '@mui/material';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { memo } from 'react';
 
 interface DeleteItemButtonProps {
-  unprocessedQrItem: QuestionnaireResponseItem | null;
+  nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
   onDeleteItem: () => void;
 }
 
-const DeleteItemButton = memo(function DeleteItemButton(props: DeleteItemButtonProps) {
-  const { unprocessedQrItem, numOfRepeatGroups, onDeleteItem } = props;
+function DeleteItemButton(props: DeleteItemButtonProps) {
+  const { nullableQrItem, numOfRepeatGroups, onDeleteItem } = props;
 
-  const isDisabled = unprocessedQrItem === null || numOfRepeatGroups === 1;
+  const isDisabled = nullableQrItem === null || numOfRepeatGroups === 1;
 
   return (
     <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">
@@ -41,6 +40,6 @@ const DeleteItemButton = memo(function DeleteItemButton(props: DeleteItemButtonP
       </span>
     </RepeatDeleteTooltip>
   );
-});
+}
 
 export default DeleteItemButton;

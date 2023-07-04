@@ -16,7 +16,6 @@
  */
 
 import { InputAdornment } from '@mui/material';
-import { memo } from 'react';
 import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
@@ -34,7 +33,7 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   onInputChange: (value: string) => void;
 }
 
-const DecimalField = memo(function DecimalField(props: DecimalFieldProps) {
+function DecimalField(props: DecimalFieldProps) {
   const {
     linkId,
     input,
@@ -74,6 +73,6 @@ const DecimalField = memo(function DecimalField(props: DecimalFieldProps) {
       data-test="q-item-decimal-field"
     />
   );
-});
+}
 
 export default DecimalField;

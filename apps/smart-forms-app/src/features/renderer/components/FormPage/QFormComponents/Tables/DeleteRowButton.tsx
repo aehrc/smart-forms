@@ -29,8 +29,6 @@ interface DeleteRowButtonProps {
 function DeleteRowButton(props: DeleteRowButtonProps) {
   const { nullableQrItem, numOfRows, onDeleteItem } = props;
 
-  console.log('hey');
-
   const isDisabled = nullableQrItem === null || numOfRows === 1;
   return (
     <DeleteButtonTableCell>

@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
 import type { SelectChangeEvent } from '@mui/material';
 import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../utils/choice.ts';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import QItemLabel from '../QItemParts/QItemLabel.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import type {
@@ -110,7 +109,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <QItemLabel qItem={qItem} />
+          <LabelText qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerOption}
@@ -122,4 +121,4 @@ function QItemChoiceSelectAnswerOption(props: Props) {
   return <>{renderQItemChoiceSelectAnswerOption}</>;
 }
 
-export default memo(QItemChoiceSelectAnswerOption);
+export default QItemChoiceSelectAnswerOption;

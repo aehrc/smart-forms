@@ -16,7 +16,6 @@
  */
 
 import { InputAdornment } from '@mui/material';
-import { memo } from 'react';
 import FadingCheckIcon from '../../../../../calculatedExpression/components/FadingCheckIcon.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
@@ -34,7 +33,7 @@ interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   onInputChange: (value: string) => void;
 }
 
-const IntegerField = memo(function IntegerField(props: IntegerFieldProps) {
+function IntegerField(props: IntegerFieldProps) {
   const {
     linkId,
     value,
@@ -74,6 +73,6 @@ const IntegerField = memo(function IntegerField(props: IntegerFieldProps) {
       data-test="q-item-integer-field"
     />
   );
-});
+}
 
 export default IntegerField;
