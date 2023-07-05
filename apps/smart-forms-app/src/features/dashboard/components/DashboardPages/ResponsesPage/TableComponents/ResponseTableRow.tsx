@@ -18,7 +18,7 @@
 import { TableCell, TableRow, Typography } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import dayjs from 'dayjs';
-import { ResponseListItem } from '../../../../types/list.interface.ts';
+import type { ResponseListItem } from '../../../../types/list.interface.ts';
 import ResponseLabel from './ResponseLabel.tsx';
 import { StyledAvatar } from '../../QuestionnairePage/TableComponents/QuestionnaireTable.styles.ts';
 

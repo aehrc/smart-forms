@@ -19,7 +19,7 @@ import { TableCell, TableRow, Typography } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import dayjs from 'dayjs';
 import QuestionnaireLabel from './QuestionnaireLabel.tsx';
-import { QuestionnaireListItem } from '../../../../types/list.interface.ts';
+import type { QuestionnaireListItem } from '../../../../types/list.interface.ts';
 import { StyledAvatar } from './QuestionnaireTable.styles.ts';
 
 interface QuestionnaireTableRowProps {

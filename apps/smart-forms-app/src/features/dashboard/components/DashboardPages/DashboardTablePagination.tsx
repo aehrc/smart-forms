@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Box, Fade, TablePagination as MuiTablePagination, Typography } from '@mui/material';
+import { Box, Fade, TablePagination, Typography } from '@mui/material';
 
 interface TablePaginationProps {
   isFetching: boolean;
@@ -26,7 +26,7 @@ interface TablePaginationProps {
   setRowsPerPage: (rowsPerPage: number) => void;
 }
 
-function TablePagination(props: TablePaginationProps) {
+function DashboardTablePagination(props: TablePaginationProps) {
   const { isFetching, numOfItems, page, rowsPerPage, setPage, setRowsPerPage } = props;
 
   return (
@@ -36,7 +36,7 @@ function TablePagination(props: TablePaginationProps) {
           Updating...
         </Typography>
       </Fade>
-      <MuiTablePagination
+      <TablePagination
         rowsPerPageOptions={[10, 25, 50]}
         component="div"
         count={numOfItems}
@@ -52,4 +52,4 @@ function TablePagination(props: TablePaginationProps) {
   );
 }
 
-export default TablePagination;
+export default DashboardTablePagination;

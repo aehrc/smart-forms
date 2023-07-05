@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Box,
   Card,
@@ -28,18 +28,9 @@ import {
   TableContainer,
   TableRow
 } from '@mui/material';
-import {
-  applySortFilter,
-  constructBundle,
-  getClientBundlePromise,
-  getComparator,
-  getResponseListItems
-} from '../../../utils/dashboard.ts';
-import { useQuery } from '@tanstack/react-query';
-import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
-import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
+import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
-import ResponseListHead from './TableComponents/ResponseListHead.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
 import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import BackToQuestionnairesButton from './Buttons/BackToQuestionnairesButton.tsx';
@@ -51,7 +42,9 @@ import type { ResponseListItem, SelectedResponse } from '../../../types/list.int
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import DashboardHeading from '../DashboardHeading.tsx';
 import ResponseTableRow from './TableComponents/ResponseTableRow.tsx';
-import TablePagination from '../TablePagination.tsx';
+import DashboardTablePagination from '../DashboardTablePagination.tsx';
+import useFetchResponses from '../../../hooks/useFetchResponses.ts';
+import DashboardTableHead from '../DashboardTableHead.tsx';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Questionnaire Title', alignRight: false },
@@ -61,11 +54,7 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function ResponsesPage() {
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
   const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
-
-  const { existingResponses } = useContext(SelectedQuestionnaireContext);
 
   // Scroll to buttons row when response is selected - for screens with small height
   const buttonsRef = useRef<HTMLDivElement | null>(null);
@@ -83,34 +72,12 @@ function ResponsesPage() {
   const [orderBy, setOrderBy] = useState<keyof ResponseListItem>('authored');
   const [searchInput, setSearchInput] = useState('');
 
-  // search responses
   const debouncedInput = useDebounce(searchInput, 300);
-  const numOfSearchEntries = 50;
 
-  let queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}&_sort=-authored&patient=${patient?.id}&`;
-  if (debouncedInput) {
-    queryUrl += 'questionnaire.title:contains=' + debouncedInput;
-  }
-
-  const { data, status, error, isFetching } = useQuery<Bundle>(
-    ['response', queryUrl],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => getClientBundlePromise(smartClient!, queryUrl),
-    {
-      enabled: questionnaireSource === 'remote' && !!smartClient && debouncedInput === searchInput
-    }
-  );
-
-  // create existing responses from a selectedResponse questionnaire if exists
-  const existingResponseBundle: Bundle = useMemo(
-    () => constructBundle(existingResponses),
-    [existingResponses]
-  );
-
-  // construct response list items for data display
-  const responseListItems: ResponseListItem[] = useMemo(
-    () => getResponseListItems(existingResponses.length === 0 ? data : existingResponseBundle),
-    [data, existingResponseBundle, existingResponses.length]
+  const { responses, responseListItems, fetchStatus, fetchError, isFetching } = useFetchResponses(
+    searchInput,
+    debouncedInput,
+    questionnaireSource
   );
 
   const emptyRows: number = useMemo(
@@ -129,10 +96,10 @@ function ResponsesPage() {
     [order, orderBy, responseListItems, questionnaireSource]
   );
 
-  const isEmpty = filteredListItems.length === 0 && status !== 'loading';
+  const isEmpty = filteredListItems.length === 0 && fetchStatus !== 'loading';
 
   // Event handlers
-  const handleRequestSort = (_: MouseEvent, property: keyof ResponseListItem) => {
+  const handleSort = (_: MouseEvent, property: keyof ResponseListItem) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -146,7 +113,7 @@ function ResponsesPage() {
       if (selectedItem.id === selectedResponse?.listItem.id) {
         setSelectedResponse(null);
       } else {
-        const resource = data?.entry?.find((entry) => entry.resource?.id === id)?.resource;
+        const resource = responses?.entry?.find((entry) => entry.resource?.id === id)?.resource;
 
         if (resource) {
           setSelectedResponse({
@@ -183,11 +150,11 @@ function ResponsesPage() {
             <Scrollbar>
               <TableContainer sx={{ minWidth: 600 }}>
                 <Table>
-                  <ResponseListHead
+                  <DashboardTableHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={tableHeaders}
-                    onRequestSort={handleRequestSort}
+                    onSort={handleSort}
                   />
                   <TableBody>
                     {filteredListItems
@@ -212,20 +179,20 @@ function ResponsesPage() {
                     )}
                   </TableBody>
 
-                  {(isEmpty || status === 'error' || status === 'loading') &&
+                  {(isEmpty || fetchStatus === 'error' || fetchStatus === 'loading') &&
                   filteredListItems.length === 0 ? (
                     <ResponseListFeedback
                       isEmpty={isEmpty}
-                      status={status}
+                      status={fetchStatus}
                       searchInput={searchInput}
-                      error={error}
+                      error={fetchError}
                     />
                   ) : null}
                 </Table>
               </TableContainer>
             </Scrollbar>
 
-            <TablePagination
+            <DashboardTablePagination
               isFetching={isFetching}
               numOfItems={filteredListItems.length}
               page={page}

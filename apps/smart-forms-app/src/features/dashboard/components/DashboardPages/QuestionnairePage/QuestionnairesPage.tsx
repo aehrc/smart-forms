@@ -16,29 +16,11 @@
  */
 
 import { useContext, useMemo, useRef, useState } from 'react';
-import {
-  Card,
-  Container,
-  Fade,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow
-} from '@mui/material';
+import { Card, Container, Fade, Stack, Table, TableBody, TableContainer } from '@mui/material';
 import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
-import QuestionnaireListHead from './TableComponents/QuestionnaireListHead.tsx';
 import QuestionnaireListToolbar from './TableComponents/QuestionnaireListToolbar.tsx';
-import {
-  applySortFilter,
-  constructBundle,
-  getComparator,
-  getFormsServerBundlePromise,
-  getQuestionnaireListItems
-} from '../../../utils/dashboard.ts';
-import { useQuery } from '@tanstack/react-query';
-import type { Bundle, Questionnaire } from 'fhir/r4';
+import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
+import type { Questionnaire } from 'fhir/r4';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedback.tsx';
 import CreateNewResponseButton from './Buttons/CreateNewResponseButton.tsx';
@@ -47,11 +29,12 @@ import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestion
 import { Helmet } from 'react-helmet';
 import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
 import type { QuestionnaireListItem } from '../../../types/list.interface.ts';
-import { loadQuestionnairesFromLocal } from '../../../../../api/local.ts';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import DashboardHeading from '../DashboardHeading.tsx';
 import QuestionnaireTableRow from './TableComponents/QuestionnaireTableRow.tsx';
-import TablePagination from '../TablePagination.tsx';
+import DashboardTablePagination from '../DashboardTablePagination.tsx';
+import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
+import DashboardTableHead from '../DashboardTableHead.tsx';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -85,38 +68,15 @@ function QuestionnairesPage() {
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
   const debouncedInput = useDebounce(searchInput, 300);
-  const numOfSearchEntries = 100;
 
-  let queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&_sort=-date&`;
-  if (debouncedInput) {
-    queryUrl += 'title:contains=' + debouncedInput;
-  }
-
-  const { data, status, error, isFetching } = useQuery<Bundle>(
-    ['questionnaires', queryUrl],
-    () => getFormsServerBundlePromise(queryUrl),
-    {
-      enabled: debouncedInput === searchInput
-    }
-  );
-
-  // load local questionnaires to be used if source is local
-  const localQuestionnaireBundle: Bundle = useMemo(
-    () => constructBundle(loadQuestionnairesFromLocal()),
-    []
-  );
-
-  // construct questionnaire list items for data display
-  const questionnaireListItems: QuestionnaireListItem[] = useMemo(
-    () =>
-      getQuestionnaireListItems(questionnaireSource === 'remote' ? data : localQuestionnaireBundle),
-    [data, localQuestionnaireBundle, questionnaireSource]
-  );
-
-  const emptyRows: number = useMemo(
-    () => (page > 0 ? Math.max(0, (1 + page) * rowsPerPage - questionnaireListItems.length) : 0),
-    [page, questionnaireListItems.length, rowsPerPage]
-  );
+  const {
+    remoteQuestionnaires,
+    localQuestionnaires,
+    questionnaireListItems,
+    fetchStatus,
+    fetchError,
+    isFetching
+  } = useFetchQuestionnaires(searchInput, debouncedInput, questionnaireSource);
 
   // sort or perform client-side filtering or items
   const filteredListItems: QuestionnaireListItem[] = useMemo(
@@ -130,10 +90,10 @@ function QuestionnairesPage() {
     [debouncedInput, order, orderBy, questionnaireListItems, questionnaireSource]
   );
 
-  const isEmpty = filteredListItems.length === 0 && !!debouncedInput && status !== 'loading';
+  const isEmpty = filteredListItems.length === 0 && !!debouncedInput && fetchStatus !== 'loading';
 
   // Event handlers
-  const handleRequestSort = (_: MouseEvent, property: keyof QuestionnaireListItem) => {
+  const handleSort = (_: MouseEvent, property: keyof QuestionnaireListItem) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -147,7 +107,8 @@ function QuestionnairesPage() {
       if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
         setSelectedQuestionnaire(null);
       } else {
-        const bundle = questionnaireSource === 'remote' ? data : localQuestionnaireBundle;
+        const bundle =
+          questionnaireSource === 'remote' ? remoteQuestionnaires : localQuestionnaires;
         const resource = bundle?.entry?.find((entry) => entry.resource?.id === id)?.resource;
 
         if (resource) {
@@ -185,12 +146,18 @@ function QuestionnairesPage() {
             <Scrollbar>
               <TableContainer sx={{ minWidth: 600 }}>
                 <Table>
-                  <QuestionnaireListHead
+                  <DashboardTableHead
                     order={order}
                     orderBy={orderBy}
                     headLabel={tableHeaders}
-                    onRequestSort={handleRequestSort}
+                    onSort={handleSort}
                   />
+                  {/*<QuestionnaireListHead*/}
+                  {/*  order={order}*/}
+                  {/*  orderBy={orderBy}*/}
+                  {/*  headLabel={tableHeaders}*/}
+                  {/*  onSort={handleSort}*/}
+                  {/*/>*/}
                   <TableBody>
                     {filteredListItems
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -207,26 +174,21 @@ function QuestionnairesPage() {
                           />
                         );
                       })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 72.5 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
                   </TableBody>
 
-                  {isEmpty || status === 'error' || status === 'loading' ? (
+                  {isEmpty || fetchStatus === 'error' || fetchStatus === 'loading' ? (
                     <QuestionnaireListFeedback
                       isEmpty={isEmpty}
-                      status={status}
+                      status={fetchStatus}
                       searchInput={searchInput}
-                      error={error}
+                      error={fetchError}
                     />
                   ) : null}
                 </Table>
               </TableContainer>
             </Scrollbar>
 
-            <TablePagination
+            <DashboardTablePagination
               isFetching={isFetching}
               numOfItems={filteredListItems.length}
               page={page}
