@@ -112,11 +112,7 @@ function QItemGroupTable(props: Props) {
   }
 
   return (
-    <QGroupContainerBox
-      key={qItem.linkId}
-      cardElevation={groupCardElevation}
-      isRepeated={false}
-      py={3.5}>
+    <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
       <Typography fontSize={13} variant="h6">
         <LabelText qItem={qItem} />
       </Typography>

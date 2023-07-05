@@ -28,6 +28,7 @@ import RepeatItem from '../RepeatItem/RepeatItem.tsx';
 import SingleItem from '../SingleItem/SingleItem.tsx';
 import useHidden from '../../../../hooks/useHidden.ts';
 import GroupItem from './GroupItem.tsx';
+import GridGroup from '../GridGroup/GridGroup.tsx';
 
 interface GroupItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -79,18 +80,28 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
 
   // If there is only one answer
   const qrItem = qrItemOrItems;
+  const itemIsGrid = isSpecificItemControl(qItem, 'grid');
+  if (itemIsGrid) {
+    return (
+      <GridGroup
+        qItem={qItem}
+        qrItem={qrItem}
+        groupCardElevation={groupCardElevation}
+        onQrItemChange={onQrItemChange}
+      />
+    );
+  }
 
   const itemRepeatsAndIsNotCheckbox = isRepeatItemAndNotCheckbox(qItem);
   if (itemRepeatsAndIsNotCheckbox) {
     if (qItem.type === 'group') {
       // If qItem is RepeatGroup or a groupTable item in this decision branch,
       // their qrItem array should always be empty
-      const qrItems: QuestionnaireResponseItem[] = [];
       if (isSpecificItemControl(qItem, 'gtable')) {
         return (
           <QItemGroupTable
             qItem={qItem}
-            qrItems={qrItems}
+            qrItems={[]}
             groupCardElevation={groupCardElevation + 1}
             onQrRepeatGroupChange={onQrRepeatGroupChange}
           />
@@ -100,7 +111,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       return (
         <RepeatGroup
           qItem={qItem}
-          qrItems={qrItems}
+          qrItems={[]}
           groupCardElevation={groupCardElevation + 1}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
         />
