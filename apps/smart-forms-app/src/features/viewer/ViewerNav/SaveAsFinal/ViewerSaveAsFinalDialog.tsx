@@ -22,7 +22,6 @@ import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
 import {
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -32,6 +31,7 @@ import {
 import useConfigStore from '../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
+import { LoadingButton } from '@mui/lab';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -93,12 +93,9 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button
-          disabled={isSaving}
-          endIcon={isSaving ? <CircularProgress size={20} /> : null}
-          onClick={handleSave}>
+        <LoadingButton loading={isSaving} onClick={handleSave}>
           Save as final
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

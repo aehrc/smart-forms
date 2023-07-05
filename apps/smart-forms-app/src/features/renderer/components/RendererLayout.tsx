@@ -113,6 +113,7 @@ function RendererLayout() {
           );
         } else {
           enqueueSnackbar('Questionnaire form populated', {
+            preventDuplicate: true,
             action: <CloseSnackbar />
           });
         }

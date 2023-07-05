@@ -16,22 +16,11 @@
  */
 
 import { useMemo, useRef, useState } from 'react';
-import {
-  Box,
-  Card,
-  Container,
-  Fade,
-  LinearProgress,
-  Stack,
-  Table,
-  TableBody,
-  TableContainer
-} from '@mui/material';
+import { Box, Card, Container, Fade, Stack, Table, TableBody, TableContainer } from '@mui/material';
 import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
-import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import BackToQuestionnairesButton from './Buttons/BackToQuestionnairesButton.tsx';
 import OpenResponseButton from './Buttons/OpenResponseButton.tsx';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
@@ -134,53 +123,51 @@ function ResponsesPage() {
             <ResponseListToolbar
               selected={selectedResponse?.listItem}
               searchInput={searchInput}
+              isFetching={isFetching}
               clearSelection={() => setSelectedResponse(null)}
               onSearch={(input) => {
                 setPage(0);
                 setSearchInput(input);
               }}
             />
-            {isFetching ? <LinearProgress /> : <Box mt={0.5} />}
 
-            <Scrollbar>
-              <TableContainer sx={{ minWidth: 600 }}>
-                <Table>
-                  <DashboardTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={tableHeaders}
-                    onSort={handleSort}
+            <TableContainer sx={{ minWidth: 600 }}>
+              <Table>
+                <DashboardTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  headLabel={tableHeaders}
+                  onSort={handleSort}
+                />
+                <TableBody>
+                  {filteredListItems
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { id } = row;
+                      const isSelected = selectedResponse?.listItem.id === id;
+
+                      return (
+                        <ResponseTableRow
+                          key={id}
+                          row={row}
+                          isSelected={isSelected}
+                          onRowClick={() => handleRowClick(id)}
+                        />
+                      );
+                    })}
+                </TableBody>
+
+                {(isEmpty || fetchStatus === 'error' || fetchStatus === 'loading') &&
+                filteredListItems.length === 0 ? (
+                  <ResponseListFeedback
+                    isEmpty={isEmpty}
+                    status={fetchStatus}
+                    searchInput={searchInput}
+                    error={fetchError}
                   />
-                  <TableBody>
-                    {filteredListItems
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => {
-                        const { id } = row;
-                        const isSelected = selectedResponse?.listItem.id === id;
-
-                        return (
-                          <ResponseTableRow
-                            key={id}
-                            row={row}
-                            isSelected={isSelected}
-                            onRowClick={() => handleRowClick(id)}
-                          />
-                        );
-                      })}
-                  </TableBody>
-
-                  {(isEmpty || fetchStatus === 'error' || fetchStatus === 'loading') &&
-                  filteredListItems.length === 0 ? (
-                    <ResponseListFeedback
-                      isEmpty={isEmpty}
-                      status={fetchStatus}
-                      searchInput={searchInput}
-                      error={fetchError}
-                    />
-                  ) : null}
-                </Table>
-              </TableContainer>
-            </Scrollbar>
+                ) : null}
+              </Table>
+            </TableContainer>
 
             <DashboardTablePagination
               isFetching={isFetching}

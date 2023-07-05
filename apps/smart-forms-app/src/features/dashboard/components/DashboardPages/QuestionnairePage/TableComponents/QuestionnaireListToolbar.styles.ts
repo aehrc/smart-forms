@@ -17,12 +17,14 @@
 
 import { alpha, styled } from '@mui/material/styles';
 import { OutlinedInput, Toolbar } from '@mui/material';
+import { QuestionnaireResponse } from 'fhir/r4';
+import { ResponseListItem, SelectedQuestionnaire } from '../../../../types/list.interface.ts';
 
 export const StyledRoot = styled(Toolbar)(({ theme }) => ({
   height: 80,
   display: 'flex',
   justifyContent: 'space-between',
-  padding: theme.spacing(0, 1, 0, 3),
+  padding: theme.spacing(0.5, 1, 0, 3),
   gap: theme.spacing(2)
 }));
 
@@ -41,3 +43,23 @@ export const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
     borderColor: `${alpha(theme.palette.grey[500], 0.32)} !important`
   }
 }));
+
+export function getToolBarColors(
+  selected: ResponseListItem | undefined,
+  selectedQuestionnaire: SelectedQuestionnaire | null,
+  existingResponses: QuestionnaireResponse[]
+) {
+  return {
+    ...(selected
+      ? {
+          color: 'primary.main',
+          bgcolor: 'pale.primary'
+        }
+      : selectedQuestionnaire && existingResponses.length > 0
+      ? {
+          color: 'secondary.main',
+          bgcolor: 'pale.secondary'
+        }
+      : null)
+  };
+}

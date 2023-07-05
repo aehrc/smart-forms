@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { createQuestionnaireResponse } from '../../../../../renderer/utils/qrItem.ts';
@@ -25,6 +24,7 @@ import type { SelectedQuestionnaire } from '../../../../types/list.interface.ts'
 import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../../stores/useQuestionnaireResponseStore.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
+import { LoadingButton } from '@mui/lab';
 
 interface Props {
   selectedQuestionnaire: SelectedQuestionnaire | null;
@@ -66,16 +66,12 @@ function CreateNewResponseButton(props: Props) {
   }
 
   return (
-    <Button
+    <LoadingButton
       variant="contained"
       disabled={!selectedQuestionnaire?.listItem}
-      endIcon={
-        isLoading ? (
-          <CircularProgress size={20} sx={{ color: 'common.white' }} />
-        ) : (
-          <Iconify icon="ant-design:form-outlined" />
-        )
-      }
+      loading={isLoading}
+      loadingPosition="end"
+      endIcon={<Iconify icon="ant-design:form-outlined" />}
       sx={{
         px: 2.5,
         backgroundColor: 'secondary.main',
@@ -86,7 +82,7 @@ function CreateNewResponseButton(props: Props) {
       data-test="button-create-response"
       onClick={handleClick}>
       Create response
-    </Button>
+    </LoadingButton>
   );
 }
 

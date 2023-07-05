@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { Button, CircularProgress } from '@mui/material';
 import { useMemo, useState } from 'react';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { useQuery } from '@tanstack/react-query';
@@ -32,6 +31,7 @@ import { assembleIfRequired } from '../../../../../assemble/utils/assemble.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../../stores/useQuestionnaireResponseStore.ts';
+import { LoadingButton } from '@mui/lab';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
@@ -126,18 +126,14 @@ function OpenResponseButton(props: Props) {
   }
 
   return (
-    <Button
+    <LoadingButton
       variant="contained"
       disabled={!selectedResponse || !referencedQuestionnaire}
-      endIcon={
-        isLoading ? (
-          <CircularProgress size={20} sx={{ color: 'common.white' }} />
-        ) : (
-          <Iconify icon="material-symbols:open-in-new" />
-        )
-      }
+      loading={isLoading}
+      loadingPosition="end"
+      endIcon={<Iconify icon="material-symbols:open-in-new" />}
       sx={{
-        px: 2.5,
+        px: 2.25,
         backgroundColor: 'secondary.main',
         '&:hover': {
           backgroundColor: 'secondary.dark'
@@ -146,7 +142,7 @@ function OpenResponseButton(props: Props) {
       data-test="button-open-response"
       onClick={handleClick}>
       Open Response
-    </Button>
+    </LoadingButton>
   );
 }
 
