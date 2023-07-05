@@ -61,8 +61,6 @@ export function evaluateInitialEnableWhenExpressions(
           initialExpressions[linkId].isEnabled = result[0];
         }
       } catch (e) {
-        // Continue even if there is an error evaluating the expression
-        // So that the user can still see the form
         console.warn(e);
       }
     }
@@ -109,8 +107,6 @@ export function evaluateUpdatedEnableWhenExpressions(
           }
         }
       } catch (e) {
-        // Continue even if there is an error evaluating the expression
-        // So that the user can still see the form
         console.warn(e);
       }
     }

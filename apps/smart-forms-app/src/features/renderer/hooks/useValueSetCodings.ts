@@ -87,19 +87,23 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
       }
 
       if (contextMap[variable]) {
-        const evaluated: any[] = fhirpath.evaluate(
-          {},
-          answerExpression,
-          contextMap,
-          fhirpath_r4_model
-        );
+        try {
+          const evaluated: any[] = fhirpath.evaluate(
+            {},
+            answerExpression,
+            contextMap,
+            fhirpath_r4_model
+          );
 
-        if (evaluated[0].system || evaluated[0].code) {
-          // determine if the evaluated array is a coding array
-          return evaluated;
-        } else if (evaluated[0].coding) {
-          // determine and return if the evaluated array is a codeable concept
-          return evaluated[0].coding;
+          if (evaluated[0].system || evaluated[0].code) {
+            // determine if the evaluated array is a coding array
+            return evaluated;
+          } else if (evaluated[0].coding) {
+            // determine and return if the evaluated array is a codeable concept
+            return evaluated[0].coding;
+          }
+        } catch (e) {
+          console.warn(e);
         }
       }
     }

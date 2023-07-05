@@ -33,15 +33,19 @@ export function createFhirPathContext(
     const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
     if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
       variablesTopLevelItem.forEach((variable) => {
-        fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
-          topLevelItem,
-          {
-            base: 'QuestionnaireResponse.item',
-            expression: `${variable.expression}`
-          },
-          fhirPathContext,
-          fhirpath_r4_model
-        );
+        try {
+          fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
+            topLevelItem,
+            {
+              base: 'QuestionnaireResponse.item',
+              expression: `${variable.expression}`
+            },
+            fhirPathContext,
+            fhirpath_r4_model
+          );
+        } catch (e) {
+          console.warn(e);
+        }
       });
     }
   }

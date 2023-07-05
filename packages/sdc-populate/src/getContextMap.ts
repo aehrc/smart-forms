@@ -59,7 +59,7 @@ export async function getContextMap(
 
   // Resolve promises
   try {
-    const promises: Promise<any>[] = referenceContextsTuple.map(([_, promise]) => promise);
+    const promises: Promise<any>[] = referenceContextsTuple.map(([, promise]) => promise);
     const responses = await axios.all(promises);
 
     const resources = responses.map((response) => response.data as FhirResource);
@@ -75,7 +75,7 @@ export async function getContextMap(
 
   // Add bundles from reference contexts to contextMap
   for (const tuple of referenceContextsTuple) {
-    const [referenceContext, promise, resource] = tuple;
+    const [referenceContext, , resource] = tuple;
     if (!resource) {
       issues.push(
         createWarningIssue(
@@ -243,10 +243,14 @@ function evaluateFhirPathEmbeddings(
     const fhirPathQuery = embedding.split('.').slice(1).join('.');
 
     if (contextName) {
-      fhirPathEmbeddingsMap[embedding] = fhirpath.evaluate(
-        launchContextMap[contextName],
-        fhirPathQuery
-      )[0];
+      try {
+        fhirPathEmbeddingsMap[embedding] = fhirpath.evaluate(
+          launchContextMap[contextName],
+          fhirPathQuery
+        )[0];
+      } catch (e) {
+        console.warn(e);
+      }
     }
   });
 
