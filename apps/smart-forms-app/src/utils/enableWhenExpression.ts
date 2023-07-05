@@ -94,18 +94,24 @@ export function evaluateUpdatedEnableWhenExpressions(
     );
 
     for (const linkId in updatedExpressions) {
-      const result = fhirpath.evaluate(
-        updatedResponse,
-        enableWhenExpressions[linkId].expression,
-        fhirPathContext,
-        fhirpath_r4_model
-      );
+      try {
+        const result = fhirpath.evaluate(
+          updatedResponse,
+          enableWhenExpressions[linkId].expression,
+          fhirPathContext,
+          fhirpath_r4_model
+        );
 
-      if (result.length > 0) {
-        if (enableWhenExpressions[linkId].isEnabled !== result[0]) {
-          isUpdated = true;
-          updatedExpressions[linkId].isEnabled = result[0];
+        if (result.length > 0) {
+          if (enableWhenExpressions[linkId].isEnabled !== result[0]) {
+            isUpdated = true;
+            updatedExpressions[linkId].isEnabled = result[0];
+          }
         }
+      } catch (e) {
+        // Continue even if there is an error evaluating the expression
+        // So that the user can still see the form
+        console.warn(e);
       }
     }
   }
