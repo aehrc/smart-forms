@@ -17,7 +17,6 @@
 
 import { useContext, useMemo, useRef, useState } from 'react';
 import {
-  Avatar,
   Box,
   Card,
   Container,
@@ -27,9 +26,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TablePagination,
-  TableRow,
-  Typography
+  TableRow
 } from '@mui/material';
 import {
   applySortFilter,
@@ -41,20 +38,20 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
 import ResponseListHead from './TableComponents/ResponseListHead.tsx';
-import ResponseLabel from './TableComponents/ResponseLabel.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
 import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import BackToQuestionnairesButton from './Buttons/BackToQuestionnairesButton.tsx';
 import OpenResponseButton from './Buttons/OpenResponseButton.tsx';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
-import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
 import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
 import type { ResponseListItem, SelectedResponse } from '../../../types/list.interface.ts';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import DashboardHeading from '../DashboardHeading.tsx';
+import ResponseTableRow from './TableComponents/ResponseTableRow.tsx';
+import TablePagination from '../TablePagination.tsx';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Questionnaire Title', alignRight: false },
@@ -79,7 +76,7 @@ function ResponsesPage() {
   }
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedResponse, setSelectedResponse] = useState<SelectedResponse | null>(null);
@@ -170,11 +167,7 @@ function ResponsesPage() {
       </Helmet>
       <Fade in={true}>
         <Container data-test="dashboard-responses-container">
-          <Stack direction="row" alignItems="center" mb={3}>
-            <Typography variant="h3" gutterBottom>
-              Responses
-            </Typography>
-          </Stack>
+          <DashboardHeading headingText="Responses" setPage={setPage} />
 
           <Card>
             <ResponseListToolbar
@@ -200,51 +193,16 @@ function ResponsesPage() {
                     {filteredListItems
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => {
-                        const { id, title, avatarColor, author, authored, status } = row;
+                        const { id } = row;
                         const isSelected = selectedResponse?.listItem.id === id;
 
                         return (
-                          <TableRow
-                            hover
+                          <ResponseTableRow
                             key={id}
-                            tabIndex={-1}
-                            selected={isSelected}
-                            sx={{ cursor: 'pointer' }}
-                            data-test="response-list-row"
-                            onClick={() => handleRowClick(row.id)}>
-                            <TableCell padding="checkbox">
-                              <Avatar
-                                sx={{
-                                  bgcolor: avatarColor,
-                                  ml: 1,
-                                  my: 2.25,
-                                  width: 36,
-                                  height: 36
-                                }}>
-                                <AssignmentIcon />
-                              </Avatar>
-                            </TableCell>
-
-                            <TableCell scope="row" sx={{ maxWidth: 240 }}>
-                              <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
-                                {title}
-                              </Typography>
-                            </TableCell>
-
-                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                              {author}
-                            </TableCell>
-
-                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                              {dayjs(authored).format('LLL')}
-                            </TableCell>
-
-                            <TableCell align="left">
-                              <ResponseLabel color={status} data-test="response-label">
-                                {status}
-                              </ResponseLabel>
-                            </TableCell>
-                          </TableRow>
+                            row={row}
+                            isSelected={isSelected}
+                            onRowClick={() => handleRowClick(id)}
+                          />
                         );
                       })}
                     {emptyRows > 0 && (
@@ -267,25 +225,14 @@ function ResponsesPage() {
               </TableContainer>
             </Scrollbar>
 
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Fade in={isFetching}>
-                <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
-                  Updating...
-                </Typography>
-              </Fade>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={filteredListItems.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={(_, newPage) => setPage(newPage)}
-                onRowsPerPageChange={(event) => {
-                  setRowsPerPage(parseInt(event.target.value));
-                  setPage(0);
-                }}
-              />
-            </Box>
+            <TablePagination
+              isFetching={isFetching}
+              numOfItems={filteredListItems.length}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              setPage={setPage}
+              setRowsPerPage={setRowsPerPage}
+            />
           </Card>
 
           <Stack direction="row" alignItems="center" my={5} ref={buttonsRef}>

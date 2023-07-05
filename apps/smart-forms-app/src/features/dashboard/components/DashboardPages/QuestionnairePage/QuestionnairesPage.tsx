@@ -17,8 +17,6 @@
 
 import { useContext, useMemo, useRef, useState } from 'react';
 import {
-  Avatar,
-  Box,
   Card,
   Container,
   Fade,
@@ -27,9 +25,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TablePagination,
-  TableRow,
-  Typography
+  TableRow
 } from '@mui/material';
 import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import QuestionnaireListHead from './TableComponents/QuestionnaireListHead.tsx';
@@ -41,8 +37,6 @@ import {
   getFormsServerBundlePromise,
   getQuestionnaireListItems
 } from '../../../utils/dashboard.ts';
-import QuestionnaireLabel from './TableComponents/QuestionnaireLabel.tsx';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
@@ -50,13 +44,14 @@ import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedba
 import CreateNewResponseButton from './Buttons/CreateNewResponseButton.tsx';
 import ViewExistingResponsesButton from './Buttons/ViewExistingResponsesButton.tsx';
 import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
-import QuestionnaireSourceToggle from '../../../../../components/Toggles/QuestionnaireSourceToggle.tsx';
-import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
 import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
 import type { QuestionnaireListItem } from '../../../types/list.interface.ts';
 import { loadQuestionnairesFromLocal } from '../../../../../api/local.ts';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import DashboardHeading from '../DashboardHeading.tsx';
+import QuestionnaireTableRow from './TableComponents/QuestionnaireTableRow.tsx';
+import TablePagination from '../TablePagination.tsx';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -67,7 +62,6 @@ const tableHeaders: TableAttributes[] = [
 
 function QuestionnairesPage() {
   const smartClient = useConfigStore((state) => state.smartClient);
-  const debugMode = useConfigStore((state) => state.debugMode);
   const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
 
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
@@ -83,7 +77,7 @@ function QuestionnairesPage() {
   }
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('date');
@@ -98,7 +92,7 @@ function QuestionnairesPage() {
     queryUrl += 'title:contains=' + debouncedInput;
   }
 
-  const { data, status, error } = useQuery<Bundle>(
+  const { data, status, error, isFetching } = useQuery<Bundle>(
     ['questionnaires', queryUrl],
     () => getFormsServerBundlePromise(queryUrl),
     {
@@ -175,11 +169,7 @@ function QuestionnairesPage() {
       </Helmet>
       <Fade in={true}>
         <Container data-test="dashboard-questionnaires-container">
-          <Stack direction="row" alignItems="center" mb={3}>
-            <Typography variant="h3">Questionnaires</Typography>
-            <Box flexGrow={1} />
-            {debugMode ? <QuestionnaireSourceToggle setPage={setPage} /> : null}
-          </Stack>
+          <DashboardHeading headingText="Questionnaires" setPage={setPage} />
 
           <Card>
             <QuestionnaireListToolbar
@@ -205,49 +195,16 @@ function QuestionnairesPage() {
                     {filteredListItems
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((row) => {
-                        const { id, title, avatarColor, publisher, date, status } = row;
+                        const { id } = row;
                         const isSelected = selectedQuestionnaire?.listItem.id === id;
 
                         return (
-                          <TableRow
-                            hover
+                          <QuestionnaireTableRow
                             key={id}
-                            tabIndex={-1}
-                            selected={isSelected}
-                            sx={{ cursor: 'pointer' }}
-                            data-test="questionnaire-list-row"
-                            onClick={() => handleRowClick(row.id)}>
-                            <TableCell padding="checkbox">
-                              <Avatar
-                                sx={{
-                                  bgcolor: avatarColor,
-                                  ml: 1,
-                                  my: 2.25,
-                                  width: 36,
-                                  height: 36
-                                }}>
-                                <AssignmentIcon />
-                              </Avatar>
-                            </TableCell>
-
-                            <TableCell scope="row" sx={{ maxWidth: 240 }}>
-                              <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
-                                {title}
-                              </Typography>
-                            </TableCell>
-
-                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                              {publisher}
-                            </TableCell>
-
-                            <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-                              {dayjs(date).format('LL')}
-                            </TableCell>
-
-                            <TableCell align="left">
-                              <QuestionnaireLabel color={status}>{status}</QuestionnaireLabel>
-                            </TableCell>
-                          </TableRow>
+                            row={row}
+                            isSelected={isSelected}
+                            onRowClick={() => handleRowClick(id)}
+                          />
                         );
                       })}
                     {emptyRows > 0 && (
@@ -270,16 +227,12 @@ function QuestionnairesPage() {
             </Scrollbar>
 
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={filteredListItems.length}
-              rowsPerPage={rowsPerPage}
+              isFetching={isFetching}
+              numOfItems={filteredListItems.length}
               page={page}
-              onPageChange={(_, newPage) => setPage(newPage)}
-              onRowsPerPageChange={(event) => {
-                setRowsPerPage(parseInt(event.target.value));
-                setPage(0);
-              }}
+              rowsPerPage={rowsPerPage}
+              setPage={setPage}
+              setRowsPerPage={setRowsPerPage}
             />
           </Card>
 
