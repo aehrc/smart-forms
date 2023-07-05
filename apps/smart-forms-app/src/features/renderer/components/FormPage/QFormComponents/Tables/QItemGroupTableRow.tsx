@@ -62,7 +62,8 @@ function QItemGroupTableRow(props: Props) {
                   qrItem={qrItem}
                   isRepeated={true}
                   isTabled={true}
-                  onQrItemChange={handleQrRowItemChange}></SingleItem>
+                  onQrItemChange={handleQrRowItemChange}
+                />
               </FirstTableCell>
             );
           } else {
@@ -74,7 +75,8 @@ function QItemGroupTableRow(props: Props) {
                   qrItem={qrItem}
                   isRepeated={true}
                   isTabled={true}
-                  onQrItemChange={handleQrRowItemChange}></SingleItem>
+                  onQrItemChange={handleQrRowItemChange}
+                />
               </StandardTableCell>
             );
           }

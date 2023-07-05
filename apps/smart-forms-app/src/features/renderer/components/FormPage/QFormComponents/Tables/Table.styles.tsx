@@ -40,3 +40,18 @@ export const DeleteButtonTableCell = styled(TableCell)(() => ({
   paddingLeft: 0,
   paddingRight: 5
 }));
+
+export const GridTextTableCell = styled(TableCell)(({ theme }) => ({
+  width: '20%',
+  paddingLeft: '18px',
+  paddingRight: '18px',
+  color: theme.palette.text.secondary
+}));
+
+export const GridAnswerTableCell = styled(TableCell, {
+  shouldForwardProp: (prop) => prop !== 'numOfColumns'
+})<{ numOfColumns: number }>(({ numOfColumns }) => ({
+  width: `${80 / numOfColumns}%`,
+  paddingLeft: 5,
+  paddingRight: 5
+}));
