@@ -37,24 +37,24 @@ import {
   getClientBundlePromise,
   getComparator,
   getResponseListItems
-} from '../../utils/dashboard.ts';
+} from '../../../utils/dashboard.ts';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
-import { SelectedQuestionnaireContext } from '../../contexts/SelectedQuestionnaireContext.tsx';
+import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
 import ResponseListHead from './TableComponents/ResponseListHead.tsx';
 import ResponseLabel from './TableComponents/ResponseLabel.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
-import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
+import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import BackToQuestionnairesButton from './Buttons/BackToQuestionnairesButton.tsx';
 import OpenResponseButton from './Buttons/OpenResponseButton.tsx';
-import useDebounce from '../../../renderer/hooks/useDebounce.ts';
+import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
-import type { TableAttributes } from '../../../renderer/types/table.interface.ts';
-import type { ResponseListItem, SelectedResponse } from '../../types/list.interface.ts';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
+import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
+import type { ResponseListItem, SelectedResponse } from '../../../types/list.interface.ts';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Questionnaire Title', alignRight: false },

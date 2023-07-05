@@ -17,14 +17,14 @@
 
 import { Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { createQuestionnaireResponse } from '../../../../renderer/utils/qrItem.ts';
+import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
+import { createQuestionnaireResponse } from '../../../../../renderer/utils/qrItem.ts';
 import { useNavigate } from 'react-router-dom';
-import { postQuestionnaireToSMARTHealthIT } from '../../../../save/api/saveQr.ts';
-import type { SelectedQuestionnaire } from '../../../types/list.interface.ts';
-import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
+import type { SelectedQuestionnaire } from '../../../../types/list.interface.ts';
+import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
+import useQuestionnaireResponseStore from '../../../../../../stores/useQuestionnaireResponseStore.ts';
+import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 
 interface Props {
   selectedQuestionnaire: SelectedQuestionnaire | null;

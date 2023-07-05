@@ -16,8 +16,8 @@
  */
 
 import { Box, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
-import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
-import type { ResponseListItem } from '../../../types/list.interface.ts';
+import type { TableAttributes } from '../../../../../renderer/types/table.interface.ts';
+import type { ResponseListItem } from '../../../../types/list.interface.ts';
 
 const visuallyHidden = {
   border: 0,

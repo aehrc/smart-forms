@@ -31,7 +31,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
+import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import QuestionnaireListHead from './TableComponents/QuestionnaireListHead.tsx';
 import QuestionnaireListToolbar from './TableComponents/QuestionnaireListToolbar.tsx';
 import {
@@ -40,23 +40,23 @@ import {
   getComparator,
   getFormsServerBundlePromise,
   getQuestionnaireListItems
-} from '../../utils/dashboard.ts';
+} from '../../../utils/dashboard.ts';
 import QuestionnaireLabel from './TableComponents/QuestionnaireLabel.tsx';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
-import useDebounce from '../../../renderer/hooks/useDebounce.ts';
+import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedback.tsx';
 import CreateNewResponseButton from './Buttons/CreateNewResponseButton.tsx';
 import ViewExistingResponsesButton from './Buttons/ViewExistingResponsesButton.tsx';
-import { SelectedQuestionnaireContext } from '../../contexts/SelectedQuestionnaireContext.tsx';
-import QuestionnaireSourceToggle from '../../../../components/Toggles/QuestionnaireSourceToggle.tsx';
+import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
+import QuestionnaireSourceToggle from '../../../../../components/Toggles/QuestionnaireSourceToggle.tsx';
 import dayjs from 'dayjs';
 import { Helmet } from 'react-helmet';
-import type { TableAttributes } from '../../../renderer/types/table.interface.ts';
-import type { QuestionnaireListItem } from '../../types/list.interface.ts';
-import { loadQuestionnairesFromLocal } from '../../../../api/local.ts';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
+import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
+import type { QuestionnaireListItem } from '../../../types/list.interface.ts';
+import { loadQuestionnairesFromLocal } from '../../../../../api/local.ts';
+import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -176,9 +176,7 @@ function QuestionnairesPage() {
       <Fade in={true}>
         <Container data-test="dashboard-questionnaires-container">
           <Stack direction="row" alignItems="center" mb={3}>
-            <Typography variant="h3" gutterBottom>
-              Questionnaires
-            </Typography>
+            <Typography variant="h3">Questionnaires</Typography>
             <Box flexGrow={1} />
             {debugMode ? <QuestionnaireSourceToggle setPage={setPage} /> : null}
           </Stack>

@@ -25,7 +25,7 @@ import {
   Typography
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 
 interface Props {
   isEmpty: boolean;
