@@ -61,7 +61,6 @@ export function evaluateUpdatedCalculatedExpressions(
           }
         }
       } catch (e) {
-        // Continue even if there is an error evaluating the expression
         console.warn(e);
       }
     }
