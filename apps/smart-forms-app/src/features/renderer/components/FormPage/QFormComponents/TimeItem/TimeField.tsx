@@ -17,7 +17,7 @@
 
 import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
 import type { Dayjs } from 'dayjs';
-import { LocalizationProvider, TimeField as MuiTimeField } from '@mui/x-date-pickers';
+import { LocalizationProvider, TimePicker as MuiTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 interface TimeFieldProps extends PropsWithIsTabledAttribute {
@@ -33,13 +33,17 @@ function TimeField(props: TimeFieldProps) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <MuiTimeField
+      <MuiTimePicker
         format={entryFormat !== '' ? entryFormat : 'hh:mm a'}
         value={value}
-        fullWidth
         disabled={readOnly}
         label={displayPrompt}
         sx={{ maxWidth: !isTabled ? 280 : 3000 }}
+        slotProps={{
+          textField: {
+            fullWidth: true
+          }
+        }}
         onChange={onTimeChange}
       />
     </LocalizationProvider>
