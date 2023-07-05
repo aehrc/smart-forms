@@ -17,8 +17,8 @@
 
 import { alpha, styled } from '@mui/material/styles';
 import { OutlinedInput, Toolbar } from '@mui/material';
-import { QuestionnaireResponse } from 'fhir/r4';
-import { ResponseListItem, SelectedQuestionnaire } from '../../../../types/list.interface.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
+import type { ResponseListItem, SelectedQuestionnaire } from '../../../../types/list.interface.ts';
 
 export const StyledRoot = styled(Toolbar)(({ theme }) => ({
   height: 80,
