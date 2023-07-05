@@ -46,7 +46,7 @@ function useFetchResponses(
 
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
 
-  const numOfSearchEntries = 100;
+  const numOfSearchEntries = 50;
 
   let queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}&_sort=-authored&patient=${patient?.id}&`;
   if (debouncedInput) {

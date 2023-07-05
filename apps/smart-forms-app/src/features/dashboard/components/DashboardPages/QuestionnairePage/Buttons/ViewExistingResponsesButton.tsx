@@ -53,7 +53,7 @@ function ViewExistingResponsesButton() {
   const patientIdParam = patient?.id ? `patient=${patient?.id}&` : '';
   const queryUrl = '/QuestionnaireResponse?' + questionnaireRefParam + patientIdParam;
 
-  const { data, isInitialLoading, error } = useQuery<Bundle>(
+  const { data, isLoading, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => getClientBundlePromise(smartClient!, queryUrl),
@@ -92,7 +92,7 @@ function ViewExistingResponsesButton() {
         !selectedQuestionnaire || existingResponses.length === 0 || questionnaireSource === 'local'
       }
       endIcon={
-        isInitialLoading ? (
+        isLoading && selectedQuestionnaire ? (
           <CircularProgress size={20} color="inherit" />
         ) : data && existingResponses.length === 0 ? null : (
           <Iconify icon="material-symbols:arrow-forward" />

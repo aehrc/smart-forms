@@ -18,6 +18,7 @@
 import type { PaletteOptions } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
 import type { PaletteColor, PaletteColorOptions } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 declare module '@mui/material/styles' {
   // noinspection JSUnusedGlobalSymbols
@@ -47,20 +48,6 @@ declare module '@mui/material/styles' {
   }
 }
 
-// SETUP COLORS
-const GREY = {
-  0: '#FFFFFF',
-  100: '#F9FAFB',
-  200: '#F4F6F8',
-  300: '#DFE3E8',
-  400: '#C4CDD5',
-  500: '#919EAB',
-  600: '#637381',
-  700: '#454F5B',
-  800: '#212B36',
-  900: '#161C24'
-};
-
 const SECONDARY = {
   light: '#7ac298',
   main: '#229954',
@@ -85,27 +72,26 @@ const palette: PaletteOptions = {
     primary: '#D1E9FC',
     secondary: '#D3EBDD'
   },
-  grey: GREY,
-  divider: alpha(GREY[500], 0.24),
+  divider: alpha(grey['500'], 0.24),
   text: {
-    primary: GREY[800],
-    secondary: GREY[600],
-    disabled: GREY[500]
+    primary: grey['800'],
+    secondary: grey['600'],
+    disabled: grey['500']
   },
   background: {
     paper: '#fff',
-    default: GREY[100]
+    default: grey['50']
   },
   customBackground: {
-    neutral: GREY[200]
+    neutral: '#F4F6F8'
   },
   action: {
-    active: GREY[600],
-    hover: alpha(GREY[500], 0.08),
-    selected: alpha(GREY[500], 0.16),
-    disabled: alpha(GREY[500], 0.8),
-    disabledBackground: alpha(GREY[500], 0.24),
-    focus: alpha(GREY[500], 0.24),
+    active: grey['600'],
+    hover: alpha(grey['500'], 0.08),
+    selected: alpha(grey['500'], 0.16),
+    disabled: alpha(grey['500'], 0.8),
+    disabledBackground: alpha(grey['500'], 0.24),
+    focus: alpha(grey['500'], 0.24),
     hoverOpacity: 0.08,
     disabledOpacity: 0.48
   }

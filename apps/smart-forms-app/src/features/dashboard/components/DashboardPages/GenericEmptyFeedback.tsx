@@ -15,17 +15,26 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
-import { Box, Typography } from '@mui/material';
-import AppLogo from '../../data/images/logo.svg';
+import { Typography } from '@mui/material';
+import EmptyListImage from '../../../../components/Logos/EmptyListImage.tsx';
 
-const Logo = memo(function Logo() {
+interface GenericErrorFeedbackProps {
+  searchInput: string;
+}
+
+function GenericEmptyFeedback(props: GenericErrorFeedbackProps) {
+  const { searchInput } = props;
+
   return (
-    <Box display="flex" alignItems="center" columnGap={1.5}>
-      <Box component="img" src={AppLogo} display="inline-flex" width={40} height={40} />
-      <Typography variant="h6">Smart Forms</Typography>
-    </Box>
+    <>
+      <EmptyListImage />
+      <Typography>
+        No results found for &nbsp;
+        <strong>&quot;{searchInput}&quot;</strong>.
+        <br /> Try searching for something else.
+      </Typography>
+    </>
   );
-});
+}
 
-export default Logo;
+export default GenericEmptyFeedback;

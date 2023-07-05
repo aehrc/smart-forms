@@ -33,6 +33,7 @@ interface useFetchQuestionnairesReturnParams {
   questionnaireListItems: QuestionnaireListItem[];
   fetchStatus: 'error' | 'success' | 'loading';
   fetchError: unknown;
+  isInitialLoading: boolean;
   isFetching: boolean;
 }
 
@@ -51,6 +52,7 @@ function useFetchQuestionnaires(
   const {
     data: remoteQuestionnaires,
     status,
+    isInitialLoading,
     error,
     isFetching
   } = useQuery<Bundle>(['questionnaires', queryUrl], () => getFormsServerBundlePromise(queryUrl), {
@@ -78,6 +80,7 @@ function useFetchQuestionnaires(
     questionnaireListItems,
     fetchStatus: status,
     fetchError: error,
+    isInitialLoading,
     isFetching
   };
 }

@@ -56,9 +56,7 @@ const PlaygroundHeader = memo(function PlaygroundHeader() {
         </LogoWrapper>
 
         <Box flexGrow={1} />
-        <Typography variant="h6" sx={{ color: 'common.black' }}>
-          Playground
-        </Typography>
+        <Typography variant="h6">Playground</Typography>
       </Toolbar>
     </StyledRoot>
   );

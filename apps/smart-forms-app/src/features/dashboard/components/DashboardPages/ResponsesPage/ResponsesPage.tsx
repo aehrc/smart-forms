@@ -21,12 +21,11 @@ import {
   Card,
   Container,
   Fade,
+  LinearProgress,
   Stack,
   Table,
   TableBody,
-  TableCell,
-  TableContainer,
-  TableRow
+  TableContainer
 } from '@mui/material';
 import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
@@ -78,11 +77,6 @@ function ResponsesPage() {
     searchInput,
     debouncedInput,
     questionnaireSource
-  );
-
-  const emptyRows: number = useMemo(
-    () => (page > 0 ? Math.max(0, (1 + page) * rowsPerPage - responseListItems.length) : 0),
-    [page, responseListItems.length, rowsPerPage]
   );
 
   // sort or perform client-side filtering or items
@@ -146,6 +140,7 @@ function ResponsesPage() {
                 setSearchInput(input);
               }}
             />
+            {isFetching ? <LinearProgress /> : <Box mt={0.5} />}
 
             <Scrollbar>
               <TableContainer sx={{ minWidth: 600 }}>
@@ -172,11 +167,6 @@ function ResponsesPage() {
                           />
                         );
                       })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
                   </TableBody>
 
                   {(isEmpty || fetchStatus === 'error' || fetchStatus === 'loading') &&

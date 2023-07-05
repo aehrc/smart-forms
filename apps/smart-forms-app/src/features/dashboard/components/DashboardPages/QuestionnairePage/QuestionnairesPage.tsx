@@ -75,6 +75,7 @@ function QuestionnairesPage() {
     questionnaireListItems,
     fetchStatus,
     fetchError,
+    isInitialLoading,
     isFetching
   } = useFetchQuestionnaires(searchInput, debouncedInput, questionnaireSource);
 
@@ -152,12 +153,6 @@ function QuestionnairesPage() {
                     headLabel={tableHeaders}
                     onSort={handleSort}
                   />
-                  {/*<QuestionnaireListHead*/}
-                  {/*  order={order}*/}
-                  {/*  orderBy={orderBy}*/}
-                  {/*  headLabel={tableHeaders}*/}
-                  {/*  onSort={handleSort}*/}
-                  {/*/>*/}
                   <TableBody>
                     {filteredListItems
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -176,9 +171,10 @@ function QuestionnairesPage() {
                       })}
                   </TableBody>
 
-                  {isEmpty || fetchStatus === 'error' || fetchStatus === 'loading' ? (
+                  {isEmpty || fetchStatus === 'error' || isInitialLoading ? (
                     <QuestionnaireListFeedback
                       isEmpty={isEmpty}
+                      isInitialLoading={isInitialLoading}
                       status={fetchStatus}
                       searchInput={searchInput}
                       error={fetchError}
