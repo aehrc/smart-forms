@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
-import { Button, CircularProgress } from '@mui/material';
 import { useContext, useMemo } from 'react';
-import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { getClientBundlePromise, getResponsesFromBundle } from '../../../utils/dashboard.ts';
+import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
+import { getClientBundlePromise, getResponsesFromBundle } from '../../../../utils/dashboard.ts';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
-import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
+import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import useConfigStore from '../../../../../../stores/useConfigStore.ts';
+import { CircularProgress } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
@@ -41,7 +42,7 @@ function ViewExistingResponsesButton() {
 
   // Have different questionnaireRef config due to SMART Health IT limitation
   if (smartClient) {
-    const questionnaireRef = smartClient.state.serverUrl.includes('/v/r4/fhir')
+    const questionnaireRef = smartClient.state.serverUrl.includes('/v4/r4/fhir')
       ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
       : selectedQuestionnaire?.resource?.url;
 
@@ -52,8 +53,9 @@ function ViewExistingResponsesButton() {
 
   const patientIdParam = patient?.id ? `patient=${patient?.id}&` : '';
   const queryUrl = '/QuestionnaireResponse?' + questionnaireRefParam + patientIdParam;
+  console.log(queryUrl);
 
-  const { data, isInitialLoading, error } = useQuery<Bundle>(
+  const { data, isFetching, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => getClientBundlePromise(smartClient!, queryUrl),
@@ -86,14 +88,17 @@ function ViewExistingResponsesButton() {
   }
 
   return (
-    <Button
+    <LoadingButton
       variant="contained"
       disabled={
-        !selectedQuestionnaire || existingResponses.length === 0 || questionnaireSource === 'local'
+        !selectedQuestionnaire ||
+        existingResponses.length === 0 ||
+        questionnaireSource === 'local' ||
+        isFetching
       }
       endIcon={
-        isInitialLoading ? (
-          <CircularProgress size={20} color="inherit" />
+        isFetching && selectedQuestionnaire ? (
+          <CircularProgress size={16} color="inherit" sx={{ ml: 0.5 }} />
         ) : data && existingResponses.length === 0 ? null : (
           <Iconify icon="material-symbols:arrow-forward" />
         )
@@ -101,8 +106,10 @@ function ViewExistingResponsesButton() {
       data-test="button-view-responses"
       sx={{ width: 175 }}
       onClick={handleClick}>
-      {data && existingResponses.length === 0 ? 'No Responses Found' : 'View Responses'}
-    </Button>
+      {data && existingResponses.length === 0 && !isFetching
+        ? 'No Responses Found'
+        : 'View Responses'}
+    </LoadingButton>
   );
 }
 

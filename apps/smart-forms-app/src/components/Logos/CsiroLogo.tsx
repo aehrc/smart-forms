@@ -36,10 +36,8 @@ function CsiroLogo() {
         <Typography sx={{ color: 'text.secondary' }}>By</Typography>
         <Box
           component="img"
-          sx={{
-            maxHeight: { xs: 35 },
-            maxWidth: { xs: 35 }
-          }}
+          maxHeight={35}
+          maxWidth={35}
           src={csiroLogo}
           onClick={() => {
             if (!debugMode && counter < 7) {

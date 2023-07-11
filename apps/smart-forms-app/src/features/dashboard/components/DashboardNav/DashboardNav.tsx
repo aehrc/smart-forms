@@ -23,7 +23,7 @@ import DashboardNavSection from './DashboardNavSection.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
 import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
-import GoToPlaygroundButton from '../QuestionnairePage/Buttons/GoToPlaygroundButton.tsx';
+import GoToPlaygroundButton from '../DashboardPages/QuestionnairePage/Buttons/GoToPlaygroundButton.tsx';
 import { CsiroLogoWrapper, NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { NavMiddleWrapper } from '../../../../components/Nav/Nav.styles.ts';
 import useConfigStore from '../../../../stores/useConfigStore.ts';

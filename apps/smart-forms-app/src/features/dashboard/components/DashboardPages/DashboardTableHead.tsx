@@ -15,59 +15,33 @@
  * limitations under the License.
  */
 
-import { Box, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
-import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
-import type { ResponseListItem } from '../../../types/list.interface.ts';
+import type { TableAttributes } from '../../../renderer/types/table.interface.ts';
+import { TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 
-const visuallyHidden = {
-  border: 0,
-  margin: -1,
-  padding: 0,
-  width: '1px',
-  height: '1px',
-  overflow: 'hidden',
-  position: 'absolute',
-  whiteSpace: 'nowrap',
-  clip: 'rect(0 0 0 0)'
-};
-
-interface Props {
+interface DashboardTableHeadProps<T> {
   order: 'asc' | 'desc';
   orderBy: string;
   headLabel: TableAttributes[];
-  onRequestSort: (event: MouseEvent, property: keyof ResponseListItem) => void;
+  onSort: (event: MouseEvent, property: keyof T) => void;
 }
 
-function ResponseListHead(props: Props) {
-  const { order, orderBy, headLabel, onRequestSort } = props;
-
-  function createSortHandler(property: TableAttributes['id']) {
-    return (event: MouseEvent) => {
-      onRequestSort(event, property as keyof ResponseListItem);
-    };
-  }
+function DashboardTableHead<T>(props: DashboardTableHeadProps<T>) {
+  const { order, orderBy, headLabel, onSort } = props;
 
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox"></TableCell>
+        <TableCell padding="checkbox" />
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.alignRight ? 'right' : 'left'}
             sortDirection={orderBy === headCell.id ? order : false}>
             <TableSortLabel
-              hideSortIcon
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              data-test="response-list-sort-label"
-              onClick={() => createSortHandler(headCell.id)}>
+              onClick={(event) => onSort(event as unknown as MouseEvent, headCell.id as keyof T)}>
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box sx={{ ...visuallyHidden }}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -76,4 +50,4 @@ function ResponseListHead(props: Props) {
   );
 }
 
-export default ResponseListHead;
+export default DashboardTableHead;

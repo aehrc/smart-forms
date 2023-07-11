@@ -22,7 +22,7 @@ import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { QuestionnaireStyledLabel } from './QuestionnaireLabel.styles.ts';
 
-import type { QuestionnaireListItem } from '../../../types/list.interface.ts';
+import type { QuestionnaireListItem } from '../../../../types/list.interface.ts';
 
 interface QuestionnaireLabelProps {
   color: QuestionnaireListItem['status'];

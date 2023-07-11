@@ -130,7 +130,7 @@ function QItemChoiceAutocomplete(props: QItemChoiceAutocompleteProps) {
               endAdornment: (
                 <>
                   {loading ? (
-                    <CircularProgress color="inherit" size={20} />
+                    <CircularProgress color="inherit" size={16} />
                   ) : feedback ? (
                     <Fade in={!!feedback} timeout={300}>
                       <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>

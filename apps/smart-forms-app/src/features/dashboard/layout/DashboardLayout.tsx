@@ -57,17 +57,17 @@ function DashboardLayout() {
   });
 
   return (
-    <StyledRoot>
-      <DashboardHeader onOpenNav={() => setOpen(true)} />
-      <DashboardNav openNav={open} onCloseNav={() => setOpen(false)} />
+    <SelectedQuestionnaireContextProvider>
+      <StyledRoot>
+        <DashboardHeader onOpenNav={() => setOpen(true)} />
+        <DashboardNav openNav={open} onCloseNav={() => setOpen(false)} />
 
-      <Main>
-        <SelectedQuestionnaireContextProvider>
+        <Main>
           <Outlet />
-        </SelectedQuestionnaireContextProvider>
-      </Main>
-      {debugMode ? <DashboardDebugFooter /> : null}
-    </StyledRoot>
+        </Main>
+        {debugMode ? <DashboardDebugFooter /> : null}
+      </StyledRoot>
+    </SelectedQuestionnaireContextProvider>
   );
 }
 

@@ -17,6 +17,7 @@
 
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import type { DefaultOptions } from '@tanstack/react-query';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
@@ -31,7 +32,17 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const queryClient = new QueryClient();
+const DEFAULT_QUERY_OPTIONS: DefaultOptions = {
+  queries: {
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  }
+};
+
+const queryClient = new QueryClient({
+  defaultOptions: DEFAULT_QUERY_OPTIONS
+});
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <QueryClientProvider client={queryClient}>
     <App />

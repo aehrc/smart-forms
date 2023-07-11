@@ -20,7 +20,6 @@ import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -32,6 +31,7 @@ import cloneDeep from 'lodash.clonedeep';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
+import { LoadingButton } from '@mui/lab';
 
 export interface Props {
   blocker: Blocker;
@@ -118,12 +118,9 @@ function BlockerUnsavedFormDialog(props: Props) {
         <Button onClick={handleCancel}>Cancel</Button>
         <Button onClick={handleProceed}>Proceed anyway</Button>
         {isLaunched ? (
-          <Button
-            disabled={isSaving}
-            endIcon={isSaving ? <CircularProgress size={20} /> : null}
-            onClick={handleSave}>
+          <LoadingButton loading={isSaving} onClick={handleSave}>
             Save and proceed
-          </Button>
+          </LoadingButton>
         ) : null}
       </DialogActions>
     </Dialog>

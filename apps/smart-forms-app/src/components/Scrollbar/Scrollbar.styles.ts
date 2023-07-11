@@ -17,6 +17,7 @@
 
 import SimpleBar from 'simplebar-react';
 import { alpha, styled } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 export const StyledRootScrollbar = styled('div')(() => ({
   flexGrow: 1,
@@ -24,11 +25,11 @@ export const StyledRootScrollbar = styled('div')(() => ({
   overflow: 'hidden'
 }));
 
-export const StyledScrollbar = styled(SimpleBar)(({ theme }) => ({
+export const StyledScrollbar = styled(SimpleBar)({
   maxHeight: '100%',
   '& .simplebar-scrollbar': {
     '&:before': {
-      backgroundColor: alpha(theme.palette.grey[600], 0.48)
+      backgroundColor: alpha(grey[600], 0.48)
     },
     '&.simplebar-visible:before': {
       opacity: 1
@@ -43,4 +44,4 @@ export const StyledScrollbar = styled(SimpleBar)(({ theme }) => ({
   '& .simplebar-mask': {
     zIndex: 'inherit'
   }
-}));
+});

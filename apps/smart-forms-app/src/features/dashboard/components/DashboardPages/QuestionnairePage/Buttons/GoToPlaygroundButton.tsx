@@ -16,33 +16,24 @@
  */
 
 import { Button } from '@mui/material';
-import { useContext } from 'react';
-import Iconify from '../../../../../components/Iconify/Iconify.tsx';
-import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
+import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { useNavigate } from 'react-router-dom';
 
-function BackToQuestionnairesButton() {
-  const { existingResponses } = useContext(SelectedQuestionnaireContext);
+function GoToPlaygroundButton() {
   const navigate = useNavigate();
 
-  return existingResponses.length > 0 ? (
+  return (
     <Button
       variant="contained"
-      endIcon={<Iconify icon="material-symbols:arrow-back" />}
-      data-test="button-responses-go-back"
-      sx={{
-        px: 2.5,
-        backgroundColor: 'primary.main',
-        '&:hover': {
-          backgroundColor: 'primary.dark'
-        }
-      }}
+      color="info"
+      endIcon={<Iconify icon="mdi:playground-slide" />}
+      sx={{ borderRadius: 15 }}
       onClick={() => {
-        navigate('/dashboard/questionnaires');
+        navigate('/playground');
       }}>
-      Go back
+      Go to Playground
     </Button>
-  ) : null;
+  );
 }
 
-export default BackToQuestionnairesButton;
+export default GoToPlaygroundButton;
