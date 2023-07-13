@@ -25,7 +25,7 @@ import dayjs from 'dayjs';
  */
 export function sortResourceArrays(context: Record<string, any>): Record<string, any> {
   for (const key in context) {
-    if (context[key] instanceof Array) {
+    if (context[key] instanceof Array && context[key].length > 0) {
       // check if resource type is a valid FhirResource
       if (!context[key][0].resourceType) continue;
 
