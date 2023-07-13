@@ -20,7 +20,7 @@
     "@mui/lab": "^5.0.0-alpha.129",
     "@mui/material": "^5.13.6",
     "@mui/x-date-pickers": "^6.9.2",
-    "@sentry/react": "^7.51.2",
+    "@sentry/react": "^7.58.1",
     "@sentry/tracing": "^7.57.0",
     "@tanstack/react-query": "^4.29.5",
     "allotment": "^1.19.0",
