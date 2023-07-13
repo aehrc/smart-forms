@@ -17,7 +17,7 @@
 
 import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.interface.ts';
 import type { Dayjs } from 'dayjs';
-import { DateTimePicker as MuiDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker as MuiDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 interface DateFieldProps extends PropsWithIsTabledAttribute {
@@ -33,7 +33,7 @@ function DateField(props: DateFieldProps) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <MuiDateTimePicker
+      <MuiDatePicker
         format={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
         value={value}
         disabled={readOnly}
