@@ -28,11 +28,10 @@ import {
   getSourceQueries
 } from './getExtensions.ts';
 import type { IssuesParameter, ResponseParameter } from 'sdc-populate';
-import { isInputParameters, populate } from 'sdc-populate';
-import type { RequestConfig } from './callback.ts';
-import { fetchResourceCallback } from './callback.ts';
+import { isInputParameters } from 'sdc-populate';
 import type Client from 'fhirclient/lib/Client';
 import { createPopulateInputParameters } from './createInputParameters.ts';
+import { requestPopulate } from '../api/requestPopulate.ts';
 
 /**
  * Pre-populate questionnaire from CMS patient data to form a populated questionnaireResponse
@@ -82,12 +81,8 @@ export async function populateQuestionnaire(
 
   // Perform population if parameters satisfies input parameters
   if (isInputParameters(inputParameters)) {
-    const requestConfig: RequestConfig = {
-      clientEndpoint: fhirClient.state.serverUrl,
-      authToken: fhirClient.state.tokenResponse!.access_token!
-    };
+    const outputParameters = await requestPopulate(fhirClient, inputParameters);
 
-    const outputParameters = await populate(inputParameters, fetchResourceCallback, requestConfig);
     if (outputParameters.resourceType === 'OperationOutcome') {
       exitSpinner();
     } else {

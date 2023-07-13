@@ -23,6 +23,7 @@ import type {
   QuestionnaireDataParameter,
   SubjectParameter
 } from './interfaces/inputParameters.interface';
+import type { OutputParameters, ResponseParameter } from './interfaces/outputParameters.interface';
 
 /**
  * Checks if the parameters passed satisfies the conditions of populateInputParameters.
@@ -64,5 +65,17 @@ export function isContextParameter(parameter: ParametersParameter): parameter is
     !!parameter.part?.[0]?.valueString &&
     parameter.part?.[1]?.name === 'content' &&
     !!(parameter.part?.[1]?.resource || parameter.part?.[1]?.valueReference)
+  );
+}
+
+export function isOutputParameters(parameters: Parameters): parameters is OutputParameters {
+  return !!parameters.parameter?.find(isResponseParameter);
+}
+
+export function isResponseParameter(
+  parameter: ParametersParameter
+): parameter is ResponseParameter {
+  return (
+    parameter.name === 'response' && parameter.resource?.resourceType === 'QuestionnaireResponse'
   );
 }

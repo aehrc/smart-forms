@@ -21,10 +21,15 @@ export {
   IdentifierParameter,
   QuestionnaireRefParameter
 } from './interfaces/inputParameters.interface';
-export { IssuesParameter, ResponseParameter } from './interfaces/outputParameters.interface';
+export {
+  IssuesParameter,
+  ResponseParameter,
+  OutputParameters
+} from './interfaces/outputParameters.interface';
+export { InputParameters } from './interfaces/inputParameters.interface';
 
 // Type Predicates
-export { isInputParameters } from './typePredicates';
+export { isInputParameters, isOutputParameters } from './typePredicates';
 
 // Functions
 export { populate } from './populate';
