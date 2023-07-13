@@ -20,3 +20,5 @@ export const ONTOSERVER_ENDPOINT =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://tx.ontoserver.csiro.au/fhir/';
 
 export const SHOW_DEBUG_MODE = import.meta.env.VITE_SHOW_DEBUG_MODE ?? 'false';
+
+export const IS_IN_APP_POPULATE = import.meta.env.VITE_IN_APP_POPULATE ?? true;
