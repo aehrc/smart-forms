@@ -42,7 +42,7 @@ function ViewExistingResponsesButton() {
 
   // Have different questionnaireRef config due to SMART Health IT limitation
   if (smartClient) {
-    const questionnaireRef = smartClient.state.serverUrl.includes('/v4/r4/fhir')
+    const questionnaireRef = smartClient.state.serverUrl.includes('/v/r4/fhir')
       ? `Questionnaire/${selectedQuestionnaire?.resource?.id}-SMARTcopy`
       : selectedQuestionnaire?.resource?.url;
 
@@ -53,7 +53,6 @@ function ViewExistingResponsesButton() {
 
   const patientIdParam = patient?.id ? `patient=${patient?.id}&` : '';
   const queryUrl = '/QuestionnaireResponse?' + questionnaireRefParam + patientIdParam;
-  console.log(queryUrl);
 
   const { data, isFetching, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
