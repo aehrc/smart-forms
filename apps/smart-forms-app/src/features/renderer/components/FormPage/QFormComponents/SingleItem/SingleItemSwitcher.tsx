@@ -63,6 +63,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          isTabled={isTabled}
           onQrItemChange={onQrItemChange}
         />
       );
