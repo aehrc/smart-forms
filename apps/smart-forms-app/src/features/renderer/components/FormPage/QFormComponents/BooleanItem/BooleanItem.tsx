@@ -17,6 +17,7 @@
 
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -26,16 +27,18 @@ import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.
 import FieldGrid from '../FieldGrid.tsx';
 import BooleanField from './BooleanField.tsx';
 import useInitialiseBooleanFalse from '../../../../hooks/useInitialiseBooleanFalse.ts';
+import { Box } from '@mui/material';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function BooleanItem(props: BooleanItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
   const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
@@ -54,6 +57,14 @@ function BooleanItem(props: BooleanItemProps) {
       ...createEmptyQrItem(qItem),
       answer: [{ valueBoolean: newChecked }]
     });
+  }
+
+  if (isTabled) {
+    return (
+      <Box display="flex" justifyContent="center">
+        <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
+      </Box>
+    );
   }
 
   if (isRepeated) {

@@ -25,12 +25,7 @@ import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 function FormRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updateEnableWhenExpressions = useQuestionnaireStore(
-    (state) => state.updateEnableWhenExpressions
-  );
-  const updateCalculatedExpressions = useQuestionnaireStore(
-    (state) => state.updateCalculatedExpressions
-  );
+  const updateExpressions = useQuestionnaireStore((state) => state.updateExpressions);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
   const updateResponse = useQuestionnaireResponseStore((state) => state.updateResponse);
 
@@ -53,8 +48,7 @@ function FormRenderer() {
       item: updatedItems
     };
 
-    updateEnableWhenExpressions(updatedResponse);
-    updateCalculatedExpressions(updatedResponse);
+    updateExpressions(updatedResponse);
     updateResponse(updatedResponse);
   }
 
