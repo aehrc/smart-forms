@@ -30,17 +30,16 @@ import PopulationProgressSpinner from '../../../components/Spinners/PopulationPr
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
+import { useLocalStorage } from 'usehooks-ts';
 
 function Playground() {
-  const [jsonString, setJsonString] = useState('');
+  const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
   const destroySourceQuestionnaire = useQuestionnaireStore(
     (state) => state.destroySourceQuestionnaire
   );
-
-  // TODO save changes to browser storage
 
   const { enqueueSnackbar } = useSnackbar();
 
