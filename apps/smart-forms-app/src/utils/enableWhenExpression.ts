@@ -20,7 +20,6 @@ import type { Expression, QuestionnaireResponse } from 'fhir/r4';
 import { createFhirPathContext } from './fhirpath.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
 import _isEqual from 'lodash/isEqual';
 import { emptyResponse } from '../stores/useQuestionnaireStore.ts';
 
@@ -68,49 +67,40 @@ export function evaluateInitialEnableWhenExpressions(
   return initialExpressions;
 }
 
-interface EvaluateUpdatedEnableWhenExpressionsParams {
-  updatedResponse: QuestionnaireResponse;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
-  variablesFhirPath: Record<string, Expression[]>;
-}
-
-export function evaluateUpdatedEnableWhenExpressions(
-  params: EvaluateUpdatedEnableWhenExpressionsParams
+export function evaluateEnableWhenExpressions(
+  fhirPathContext: Record<string, any>,
+  enableWhenExpressions: Record<string, EnableWhenExpression>
 ): {
-  isUpdated: boolean;
-  updatedEnableWhenExpressions: Record<string, CalculatedExpression>;
+  enableWhenExpsIsUpdated: boolean;
+  updatedEnableWhenExpressions: Record<string, EnableWhenExpression>;
 } {
-  const { updatedResponse, enableWhenExpressions, variablesFhirPath } = params;
+  const updatedEnableWhenExpressions: Record<string, EnableWhenExpression> = {
+    ...enableWhenExpressions
+  };
 
   let isUpdated = false;
-  const updatedExpressions: Record<string, EnableWhenExpression> = { ...enableWhenExpressions };
+  for (const linkId in updatedEnableWhenExpressions) {
+    try {
+      const result = fhirpath.evaluate(
+        '',
+        enableWhenExpressions[linkId].expression,
+        fhirPathContext,
+        fhirpath_r4_model
+      );
 
-  if (Object.keys(enableWhenExpressions).length > 0 && updatedResponse.item) {
-    const fhirPathContext: Record<string, any> = createFhirPathContext(
-      updatedResponse,
-      variablesFhirPath
-    );
-
-    for (const linkId in updatedExpressions) {
-      try {
-        const result = fhirpath.evaluate(
-          updatedResponse,
-          enableWhenExpressions[linkId].expression,
-          fhirPathContext,
-          fhirpath_r4_model
-        );
-
-        if (result.length > 0) {
-          if (enableWhenExpressions[linkId].isEnabled !== result[0]) {
-            isUpdated = true;
-            updatedExpressions[linkId].isEnabled = result[0];
-          }
+      if (result.length > 0) {
+        if (enableWhenExpressions[linkId].isEnabled !== result[0]) {
+          isUpdated = true;
+          updatedEnableWhenExpressions[linkId].isEnabled = result[0];
         }
-      } catch (e) {
-        console.warn(e);
       }
+    } catch (e) {
+      console.warn(e);
     }
   }
 
-  return { isUpdated, updatedEnableWhenExpressions: updatedExpressions };
+  return {
+    enableWhenExpsIsUpdated: isUpdated,
+    updatedEnableWhenExpressions: updatedEnableWhenExpressions
+  };
 }

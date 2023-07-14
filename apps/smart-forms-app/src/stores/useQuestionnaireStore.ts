@@ -11,14 +11,11 @@ import type { CalculatedExpression } from '../features/calculatedExpression/type
 import type { EnableWhenExpression, EnableWhenItems } from '../types/enableWhen.interface.ts';
 import type { AnswerExpression } from '../types/answerExpression.interface.ts';
 import { createQuestionnaireModel } from '../features/preprocess/utils/preprocessQuestionnaire/preprocessQuestionnaire.ts';
-import { evaluateUpdatedCalculatedExpressions } from '../utils/calculatedExpressions.ts';
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 import { updateItemAnswer } from '../utils/enableWhen.ts';
-import {
-  evaluateInitialEnableWhenExpressions,
-  evaluateUpdatedEnableWhenExpressions
-} from '../utils/enableWhenExpression.ts';
+import { evaluateInitialEnableWhenExpressions } from '../utils/enableWhenExpression.ts';
 import { initialiseFormFromResponse } from '../utils/initaliseForm.ts';
+import { evaluateUpdatedExpressions } from '../utils/fhirpath.ts';
 
 const emptyQuestionnaire: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -54,8 +51,7 @@ export interface QuestionnaireState {
   updateEnableWhenItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
   initialiseEnableWhenExpressions: (populatedResponse: QuestionnaireResponse) => void;
-  updateEnableWhenExpressions: (updatedResponse: QuestionnaireResponse) => void;
-  updateCalculatedExpressions: (updatedResponse: QuestionnaireResponse) => void;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => void;
 }
@@ -158,26 +154,20 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
 
     set(() => ({ enableWhenExpressions: initialEnableWhenExpressions }));
   },
-  updateEnableWhenExpressions: (updatedResponse: QuestionnaireResponse) => {
-    const { isUpdated, updatedEnableWhenExpressions } = evaluateUpdatedEnableWhenExpressions({
-      updatedResponse: updatedResponse,
-      enableWhenExpressions: get().enableWhenExpressions,
-      variablesFhirPath: get().variables.fhirPathVariables
-    });
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => {
+    const { isUpdated, updatedCalculatedExpressions, updatedEnableWhenExpressions } =
+      evaluateUpdatedExpressions({
+        updatedResponse: updatedResponse,
+        enableWhenExpressions: get().enableWhenExpressions,
+        calculatedExpressions: get().calculatedExpressions,
+        variablesFhirPath: get().variables.fhirPathVariables
+      });
 
     if (isUpdated) {
-      set(() => ({ enableWhenExpressions: updatedEnableWhenExpressions }));
-    }
-  },
-  updateCalculatedExpressions: (updatedResponse: QuestionnaireResponse) => {
-    const { isUpdated, updatedCalculatedExpressions } = evaluateUpdatedCalculatedExpressions({
-      updatedResponse: updatedResponse,
-      calculatedExpressions: get().calculatedExpressions,
-      variablesFhirPath: get().variables.fhirPathVariables
-    });
-
-    if (isUpdated) {
-      set(() => ({ calculatedExpressions: updatedCalculatedExpressions }));
+      set(() => ({
+        enableWhenExpressions: updatedEnableWhenExpressions,
+        calculatedExpressions: updatedCalculatedExpressions
+      }));
     }
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>

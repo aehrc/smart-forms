@@ -17,7 +17,58 @@
 
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import type { Expression, QuestionnaireResponse } from 'fhir/r4';
+import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
+import type { EnableWhenExpression } from '../types/enableWhen.interface.ts';
+import { evaluateEnableWhenExpressions } from './enableWhenExpression.ts';
+import { evaluateCalculatedExpressions } from './calculatedExpressions.ts';
+
+interface EvaluateUpdatedExpressionsParams {
+  updatedResponse: QuestionnaireResponse;
+  calculatedExpressions: Record<string, CalculatedExpression>;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  variablesFhirPath: Record<string, Expression[]>;
+}
+
+export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsParams): {
+  isUpdated: boolean;
+  updatedEnableWhenExpressions: Record<string, EnableWhenExpression>;
+  updatedCalculatedExpressions: Record<string, CalculatedExpression>;
+} {
+  const { updatedResponse, enableWhenExpressions, calculatedExpressions, variablesFhirPath } =
+    params;
+
+  const hasExpressionToBeUpdated =
+    Object.keys(enableWhenExpressions).length > 0 || Object.keys(calculatedExpressions).length > 0;
+  if (hasExpressionToBeUpdated && updatedResponse.item) {
+    const fhirPathContext: Record<string, any> = createFhirPathContext(
+      updatedResponse,
+      variablesFhirPath
+    );
+
+    // Update enableWhenExpressions
+    const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } = evaluateEnableWhenExpressions(
+      fhirPathContext,
+      enableWhenExpressions
+    );
+
+    // Update calculatedExpressions
+    const { calculatedExpsIsUpdated, updatedCalculatedExpressions } = evaluateCalculatedExpressions(
+      fhirPathContext,
+      calculatedExpressions
+    );
+
+    const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated;
+
+    return { isUpdated, updatedEnableWhenExpressions, updatedCalculatedExpressions };
+  }
+
+  return {
+    isUpdated: false,
+    updatedEnableWhenExpressions: enableWhenExpressions,
+    updatedCalculatedExpressions: calculatedExpressions
+  };
+}
 
 export function createFhirPathContext(
   questionnaireResponse: QuestionnaireResponse,
@@ -25,30 +76,58 @@ export function createFhirPathContext(
 ): Record<string, any> {
   const fhirPathContext: Record<string, any> = { resource: questionnaireResponse };
 
-  if (!questionnaireResponse.item) {
+  if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) {
     return fhirPathContext;
   }
 
   for (const topLevelItem of questionnaireResponse.item) {
-    const variablesTopLevelItem = variablesFhirPath[topLevelItem.linkId];
-    if (variablesTopLevelItem && variablesTopLevelItem.length > 0) {
-      variablesTopLevelItem.forEach((variable) => {
-        try {
-          fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
-            topLevelItem,
-            {
-              base: 'QuestionnaireResponse.item',
-              expression: `${variable.expression}`
-            },
-            fhirPathContext,
-            fhirpath_r4_model
-          );
-        } catch (e) {
-          console.warn(e);
-        }
-      });
-    }
+    evaluateFhirPathRecursive(topLevelItem, variablesFhirPath, fhirPathContext);
   }
 
   return fhirPathContext;
+}
+
+export function evaluateFhirPathRecursive(
+  item: QuestionnaireResponseItem,
+  variablesFhirPath: Record<string, Expression[]>,
+  fhirPathContext: Record<string, any>
+) {
+  const items = item.item;
+  if (items && items.length > 0) {
+    // iterate through items of item recursively
+    for (const childItem of items) {
+      evaluateFhirPathRecursive(childItem, variablesFhirPath, fhirPathContext);
+    }
+  }
+
+  evaluateItemFhirPath(item, variablesFhirPath, fhirPathContext);
+}
+
+export function evaluateItemFhirPath(
+  item: QuestionnaireResponseItem,
+  variablesFhirPath: Record<string, Expression[]>,
+  fhirPathContext: Record<string, any>
+) {
+  const variablesOfItem = variablesFhirPath[item.linkId];
+  if (!variablesOfItem || variablesOfItem.length === 0) {
+    return;
+  }
+
+  variablesOfItem.forEach((variable) => {
+    if (variable.expression) {
+      try {
+        fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
+          item,
+          {
+            base: 'QuestionnaireResponse.item',
+            expression: variable.expression
+          },
+          fhirPathContext,
+          fhirpath_r4_model
+        );
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  });
 }

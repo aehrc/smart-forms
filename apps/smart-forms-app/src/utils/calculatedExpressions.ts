@@ -15,56 +15,44 @@
  * limitations under the License.
  */
 
-import type { Expression, QuestionnaireResponse } from 'fhir/r4';
-import { createFhirPathContext } from './fhirpath.ts';
+import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
 
-interface EvaluateUpdatedCalculatedExpressionsParams {
-  updatedResponse: QuestionnaireResponse;
-  calculatedExpressions: Record<string, CalculatedExpression>;
-  variablesFhirPath: Record<string, Expression[]>;
-}
-
-export function evaluateUpdatedCalculatedExpressions(
-  params: EvaluateUpdatedCalculatedExpressionsParams
-): { isUpdated: boolean; updatedCalculatedExpressions: Record<string, CalculatedExpression> } {
-  const { updatedResponse, calculatedExpressions, variablesFhirPath } = params;
-
-  let isUpdated = false;
-  const updatedExpressions: Record<string, CalculatedExpression> = {
+export function evaluateCalculatedExpressions(
+  fhirPathContext: Record<string, any>,
+  calculatedExpressions: Record<string, CalculatedExpression>
+): {
+  calculatedExpsIsUpdated: boolean;
+  updatedCalculatedExpressions: Record<string, CalculatedExpression>;
+} {
+  const updatedCalculatedExpressions: Record<string, CalculatedExpression> = {
     ...calculatedExpressions
   };
 
-  // Evaluate top-level items' variables
-  if (Object.keys(calculatedExpressions).length > 0 && updatedResponse.item) {
-    const fhirPathContext: Record<string, any> = createFhirPathContext(
-      updatedResponse,
-      variablesFhirPath
-    );
+  let isUpdated = false;
+  for (const linkId in calculatedExpressions) {
+    try {
+      const result = fhirpath.evaluate(
+        '',
+        calculatedExpressions[linkId].expression,
+        fhirPathContext,
+        fhirpath_r4_model
+      );
 
-    // Update calculatedExpressions
-    for (const linkId in calculatedExpressions) {
-      try {
-        const result = fhirpath.evaluate(
-          updatedResponse,
-          calculatedExpressions[linkId].expression,
-          fhirPathContext,
-          fhirpath_r4_model
-        );
-
-        if (result.length > 0) {
-          if (calculatedExpressions[linkId].value !== result[0]) {
-            isUpdated = true;
-            updatedExpressions[linkId].value = result[0];
-          }
+      if (result.length > 0) {
+        if (calculatedExpressions[linkId].value !== result[0]) {
+          isUpdated = true;
+          updatedCalculatedExpressions[linkId].value = result[0];
         }
-      } catch (e) {
-        console.warn(e);
       }
+    } catch (e) {
+      console.warn(e);
     }
   }
 
-  return { isUpdated, updatedCalculatedExpressions: updatedExpressions };
+  return {
+    calculatedExpsIsUpdated: isUpdated,
+    updatedCalculatedExpressions: updatedCalculatedExpressions
+  };
 }
