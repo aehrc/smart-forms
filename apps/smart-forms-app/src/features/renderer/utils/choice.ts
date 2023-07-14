@@ -35,18 +35,26 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
   const dropdownOptionsCount = 5;
   if (isSpecificItemControl(qItem, 'autocomplete')) {
     return QItemChoiceControl.Autocomplete;
-  } else if (isSpecificItemControl(qItem, 'check-box')) {
+  }
+
+  if (isSpecificItemControl(qItem, 'check-box')) {
     return QItemChoiceControl.Checkbox;
-  } else if (isSpecificItemControl(qItem, 'radio-button')) {
+  }
+
+  if (isSpecificItemControl(qItem, 'radio-button')) {
     return QItemChoiceControl.Radio;
+  }
+
+  if (isSpecificItemControl(qItem, 'drop-down')) {
+    return QItemChoiceControl.Select;
+  }
+
+  if (qItem.answerOption) {
+    return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
+      ? QItemChoiceControl.Radio
+      : QItemChoiceControl.Select;
   } else {
-    if (qItem.answerOption) {
-      return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
-        ? QItemChoiceControl.Radio
-        : QItemChoiceControl.Select;
-    } else {
-      return QItemChoiceControl.Select;
-    }
+    return QItemChoiceControl.Select;
   }
 }
 

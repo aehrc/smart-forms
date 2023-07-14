@@ -52,9 +52,9 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler {
 function QItemGroupTable(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const initialiseGroupTables = useInitialiseGroupTable(qrItems);
+  const initialisedGroupTables = useInitialiseGroupTable(qrItems);
 
-  const [tableRows, setTableRows] = useState(initialiseGroupTables);
+  const [tableRows, setTableRows] = useState(initialisedGroupTables);
 
   // Generate item labels as table headers
   const qItems = qItem.item;
@@ -144,6 +144,11 @@ function QItemGroupTable(props: Props) {
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
               }
+
+              console.log('----');
+              console.log(qItem);
+              console.log(answeredQrItem);
+              console.log('----');
 
               return (
                 <TableRow key={nanoId}>
