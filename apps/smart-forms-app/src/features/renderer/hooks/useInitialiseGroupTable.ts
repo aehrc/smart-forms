@@ -19,13 +19,13 @@ import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import type { GroupTableRow } from '../types/groupTable.interface.ts';
 
-const emptyGroupTableRow: GroupTableRow = {
-  nanoId: nanoid(),
-  qrItem: null
-};
-
 function useInitialiseGroupTable(qrItems: QuestionnaireResponseItem[]): GroupTableRow[] {
-  let initialGroupTableRows: GroupTableRow[] = [emptyGroupTableRow];
+  let initialGroupTableRows: GroupTableRow[] = [
+    {
+      nanoId: nanoid(),
+      qrItem: null
+    }
+  ];
 
   if (qrItems.length > 0) {
     initialGroupTableRows = qrItems.map((qrItem) => {
