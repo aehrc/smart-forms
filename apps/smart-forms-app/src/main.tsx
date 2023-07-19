@@ -20,7 +20,7 @@ import App from './App';
 import type { DefaultOptions } from '@tanstack/react-query';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
-import { BrowserTracing } from '@sentry/tracing';
+import { BrowserTracing } from '@sentry/browser';
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
