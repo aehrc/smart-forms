@@ -33,7 +33,6 @@ export const fetchResourceCallback: FetchResourceCallback = (
   const { authToken } = requestConfig;
 
   const headers = {
-    'Cache-Control': 'no-cache',
     Accept: 'application/json+fhir; charset=utf-8',
     Authorization: `Bearer ${authToken}`
   };
