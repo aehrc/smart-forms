@@ -17,34 +17,42 @@
 
 import { useSearchParams } from 'react-router-dom';
 import { oauth2 } from 'fhirclient';
-import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
+import { useState } from 'react';
+import LaunchView from './LaunchView.tsx';
+
+export type LaunchState = 'loading' | 'error' | 'success';
 
 function Launch() {
-  const [searchParams] = useSearchParams();
+  const [launchState, setLaunchState] = useState<LaunchState>('loading');
 
+  const [searchParams] = useSearchParams();
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
 
   const clientId = import.meta.env.VITE_LAUNCH_CLIENT_ID ?? 'smart-forms';
-  const scope =
-    import.meta.env.VITE_LAUNCH_SCOPE ??
-    'launch/patient patient/*.read offline_access openid fhirUser';
+  const scope = import.meta.env.VITE_LAUNCH_SCOPE;
 
   if (iss && launch) {
-    oauth2.authorize({
-      iss: iss,
-      clientId: clientId,
-      scope: scope
-    });
-  } else {
-    window.location.replace('/');
+    // oauth2.authorize triggers a redirect to EHR
+    oauth2
+      .authorize({
+        iss: iss,
+        clientId: clientId,
+        scope: scope
+      })
+      .catch((err) => {
+        console.error(err);
+        setLaunchState('error');
+      });
   }
 
-  return (
-    <>
-      <ProgressSpinner message="Launching Smart Forms" />
-    </>
-  );
+  const launchParamsNotExist = !iss || !launch;
+
+  if (launchParamsNotExist && launchState !== 'error') {
+    setLaunchState('error');
+  }
+
+  return <LaunchView launchState={launchState} />;
 }
 
 export default Launch;

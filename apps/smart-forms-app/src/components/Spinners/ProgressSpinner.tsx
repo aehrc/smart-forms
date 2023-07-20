@@ -16,9 +16,10 @@
  */
 
 import { memo } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { HashLoader } from 'react-spinners';
 import { useTheme } from '@mui/material/styles';
+import CenteredWrapper from '../Wrapper/CenteredWrapper.tsx';
 
 interface ProgressSpinnerProps {
   message?: string;
@@ -30,20 +31,12 @@ const ProgressSpinner = memo(function ProgressSpinner(props: ProgressSpinnerProp
   const theme = useTheme();
 
   return (
-    <Stack
-      justifyContent="center"
-      spacing={2.5}
-      data-test="progress-spinner"
-      sx={{ height: '100%' }}>
-      <Box display="flex" flexDirection="row" justifyContent="center">
-        <HashLoader size={60} color={theme.palette.primary.main} />
-      </Box>
-      {message ? (
-        <Box textAlign="center" sx={{ mt: 2 }}>
-          <Typography variant="subtitle1">{message}</Typography>
-        </Box>
-      ) : null}
-    </Stack>
+    <CenteredWrapper>
+      <Stack alignItems="center" rowGap={3}>
+        <HashLoader size={60} color={theme.palette.primary.main} data-test="progress-spinner" />
+        {message ? <Typography variant="subtitle1">{message}</Typography> : null}
+      </Stack>
+    </CenteredWrapper>
   );
 });
 

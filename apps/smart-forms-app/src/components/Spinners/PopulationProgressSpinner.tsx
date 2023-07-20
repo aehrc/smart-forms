@@ -16,9 +16,10 @@
  */
 
 import { memo } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { GridLoader } from 'react-spinners';
+import CenteredWrapper from '../Wrapper/CenteredWrapper.tsx';
 
 interface PopulationProgressSpinnerProps {
   message: string;
@@ -32,14 +33,12 @@ const PopulationProgressSpinner = memo(function PopulationProgressSpinner(
   const theme = useTheme();
 
   return (
-    <Stack justifyContent="center" spacing={3} data-test="progress-spinner" sx={{ height: '100%' }}>
-      <Box display="flex" flexDirection="row" justifyContent="center">
-        <GridLoader color={theme.palette.primary.main} />
-      </Box>
-      <Box textAlign="center" sx={{ mt: 2 }}>
+    <CenteredWrapper>
+      <Stack alignItems="center" rowGap={3}>
+        <GridLoader color={theme.palette.primary.main} data-test="progress-spinner" />
         <Typography variant="subtitle1">{message}</Typography>
-      </Box>
-    </Stack>
+      </Stack>
+    </CenteredWrapper>
   );
 });
 
