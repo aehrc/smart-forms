@@ -61,7 +61,7 @@ export async function constructResponse(
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
   const topLevelQRItems: QuestionnaireResponseItem[] = [];
   for (const qItem of topLevelQItems) {
-    const newTopLevelQRItem = constructResponseItem(
+    const newTopLevelQRItem = constructResponseItemRecursive(
       qItem,
       {
         linkId: qItem.linkId,
@@ -102,7 +102,7 @@ export async function constructResponse(
  *
  * @author Sean Fong
  */
-function constructResponseItem(
+function constructResponseItemRecursive(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
   initialExpressions: Record<string, InitialExpression>,
@@ -117,48 +117,70 @@ function constructResponseItem(
     // If qItem is a repeat group, populate instances of repeat groups containing child items
     if (qItem.type === 'group' && qItem.repeats) {
       // Create number of repeat group instances based on the number of answers that the first child item has
-      return constructRepeatGroupInstances(qItem, initialExpressions);
-    } else {
-      // Otherwise loop through qItem as usual
-      items.forEach((item) => {
-        const newQrItem = constructResponseItem(item, qrItem, initialExpressions, valueSetPromises);
-
-        if (Array.isArray(newQrItem)) {
-          qrItems.push(...newQrItem);
-        } else if (newQrItem) {
-          qrItems.push(newQrItem);
-        }
-      });
+      return constructRepeatGroupInstances(qItem, initialExpressions, valueSetPromises);
     }
 
-    // Populate answers from initialExpressions if present
-    const initialExpression = initialExpressions[qItem.linkId];
-    let populatedAnswers: QuestionnaireResponseItemAnswer[] | undefined;
-    if (initialExpression) {
-      const initialValues = initialExpression.value;
+    // Otherwise loop through qItem as usual
+    items.forEach((item) => {
+      const newQrItem = constructResponseItemRecursive(
+        item,
+        qrItem,
+        initialExpressions,
+        valueSetPromises
+      );
 
-      if (initialValues && initialValues.length) {
-        const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
-        populatedAnswers = newValues;
-
-        if (expandRequired && qItem.answerValueSet) {
-          const valueSetUrl = qItem.answerValueSet;
-          getValueSetPromise(qItem, valueSetUrl, valueSetPromises);
-        }
+      if (Array.isArray(newQrItem)) {
+        qrItems.push(...newQrItem);
+      } else if (newQrItem) {
+        qrItems.push(newQrItem);
       }
-    }
+    });
 
-    return qrItems.length > 0 || populatedAnswers
-      ? {
-          linkId: qItem.linkId,
-          text: qItem.text,
-          item: qrItems,
-          ...(qrItems.length > 0 ? { item: qrItems } : {}),
-          ...(populatedAnswers ? { answer: populatedAnswers } : {})
-        }
-      : null;
+    return constructGroupItem(qItem, qrItems, initialExpressions, valueSetPromises);
   }
 
+  return constructSingleItem(qItem, initialExpressions, valueSetPromises);
+}
+
+function constructGroupItem(
+  qItem: QuestionnaireItem,
+  qrItems: QuestionnaireResponseItem[],
+  initialExpressions: Record<string, InitialExpression>,
+  valueSetPromises: Record<string, ValueSetPromise>
+): QuestionnaireResponseItem | null {
+  // Populate answers from initialExpressions if present
+  const initialExpression = initialExpressions[qItem.linkId];
+  let populatedAnswers: QuestionnaireResponseItemAnswer[] | undefined;
+  if (initialExpression) {
+    const initialValues = initialExpression.value;
+
+    if (initialValues && initialValues.length) {
+      const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
+      populatedAnswers = newValues;
+
+      if (expandRequired && qItem.answerValueSet) {
+        const valueSetUrl = qItem.answerValueSet;
+        getValueSetPromise(qItem, valueSetUrl, valueSetPromises);
+      }
+    }
+  }
+
+  return qrItems.length > 0 || populatedAnswers
+    ? {
+        linkId: qItem.linkId,
+        text: qItem.text,
+        item: qrItems,
+        ...(qrItems.length > 0 ? { item: qrItems } : {}),
+        ...(populatedAnswers ? { answer: populatedAnswers } : {})
+      }
+    : null;
+}
+
+function constructSingleItem(
+  qItem: QuestionnaireItem,
+  initialExpressions: Record<string, InitialExpression>,
+  valueSetPromises: Record<string, ValueSetPromise>
+): QuestionnaireResponseItem | null {
   // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
   if (initialExpression) {
@@ -253,7 +275,8 @@ export function checkIsDateTime(value: string): boolean {
  */
 function constructRepeatGroupInstances(
   qRepeatGroupParent: QuestionnaireItem,
-  initialExpressions: Record<string, InitialExpression>
+  initialExpressions: Record<string, InitialExpression>,
+  valueSetPromises: Record<string, ValueSetPromise>
 ): QuestionnaireResponseItem[] {
   if (!qRepeatGroupParent.item) return [];
 
@@ -267,7 +290,13 @@ function constructRepeatGroupInstances(
 
     const initialValues = initialExpression.value;
     if (initialValues && initialValues.length > 0 && initialValues[0] !== '') {
-      const { newValues } = getAnswerValues(initialValues, childItem);
+      const { newValues, expandRequired } = getAnswerValues(initialValues, childItem);
+
+      if (expandRequired && childItem.answerValueSet) {
+        const valueSetUrl = childItem.answerValueSet;
+        getValueSetPromise(childItem, valueSetUrl, valueSetPromises);
+      }
+
       childItemAnswers[i] = newValues;
     } else {
       childItemAnswers[i] = [];
