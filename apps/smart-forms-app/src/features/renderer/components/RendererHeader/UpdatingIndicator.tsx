@@ -18,11 +18,14 @@
 import { useEffect, useState } from 'react';
 import { Fade, Typography } from '@mui/material';
 import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
+import useResponsive from '../../../../hooks/useResponsive.ts';
 
 function UpdatingIndicator() {
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
     setIsUpdating(true);
@@ -33,7 +36,11 @@ function UpdatingIndicator() {
 
   return (
     <Fade in={isUpdating} timeout={100}>
-      <Typography variant="subtitle2" color="text.secondary" sx={{ px: 2 }}>
+      <Typography
+        variant="subtitle2"
+        color="text.secondary"
+        fontSize={isDesktop ? 12 : 9}
+        sx={{ mx: isDesktop ? 2 : 0.5 }}>
         Updating...
       </Typography>
     </Fade>

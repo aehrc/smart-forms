@@ -15,29 +15,21 @@
  * limitations under the License.
  */
 
-import { Box, Stack } from '@mui/material';
-import Iconify from '../../../../components/Iconify/Iconify.tsx';
-import { useTheme } from '@mui/material/styles';
-import DesktopHeader from '../../../../components/Header/DesktopHeader.tsx';
-import useResponsive from '../../../../hooks/useResponsive.ts';
-import Logo from '../../../../components/Logos/Logo.tsx';
-import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
-import {
-  MenuIconButton,
-  StyledRoot,
-  StyledToolbar
-} from '../../../../components/Header/Header.styles.ts';
-import MobileHeaderWithQuestionnaire from '../../../../components/Header/MobileHeaderWithoutQuestionnaire.tsx';
+import { Box } from '@mui/material';
+import Iconify from '../Iconify/Iconify.tsx';
+import useResponsive from '../../hooks/useResponsive.ts';
+import Logo from '../Logos/Logo.tsx';
+import { LogoWrapper } from '../Logos/Logo.styles.ts';
+import { MenuIconButton, StyledRoot, StyledToolbar } from './Header.styles.ts';
 import { memo } from 'react';
+import HeaderIcons from './HeaderIcons.tsx';
 
 interface DashboardHeaderProps {
   onOpenNav: () => void;
 }
 
-const DashboardHeader = memo(function DashboardHeader(props: DashboardHeaderProps) {
+const GenericHeader = memo(function DashboardHeader(props: DashboardHeaderProps) {
   const { onOpenNav } = props;
-
-  const theme = useTheme();
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -53,21 +45,13 @@ const DashboardHeader = memo(function DashboardHeader(props: DashboardHeaderProp
             <Logo />
           </LogoWrapper>
         ) : null}
+
         <Box flexGrow={1} />
 
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={{
-            xs: 0.5,
-            sm: 1
-          }}
-          sx={{ color: theme.palette.grey['700'] }}>
-          {isDesktop ? <DesktopHeader /> : <MobileHeaderWithQuestionnaire />}
-        </Stack>
+        <HeaderIcons />
       </StyledToolbar>
     </StyledRoot>
   );
 });
 
-export default DashboardHeader;
+export default GenericHeader;

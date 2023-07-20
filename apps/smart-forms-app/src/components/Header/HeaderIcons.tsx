@@ -15,20 +15,21 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
-import { Box, Typography } from '@mui/material';
-import AppLogo from '../../data/images/logo.svg';
+import DesktopHeaderIcons from './DesktopHeaderIcons.tsx';
+import MobileHeaderIcons from './MobileHeaderIcons.tsx';
+import { Stack } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import useResponsive from '../../hooks/useResponsive.ts';
 
-const Logo = memo(function Logo() {
+function HeaderIcons() {
+  const theme = useTheme();
   const isDesktop = useResponsive('up', 'lg');
 
   return (
-    <Box display="flex" alignItems="center" columnGap={1.5}>
-      <Box component="img" src={AppLogo} display="inline-flex" width={40} height={40} />
-      {isDesktop ? <Typography variant="h6">Smart Forms</Typography> : null}
-    </Box>
+    <Stack direction="row" alignItems="center" sx={{ color: theme.palette.grey['700'] }}>
+      {isDesktop ? <DesktopHeaderIcons /> : <MobileHeaderIcons />}
+    </Stack>
   );
-});
+}
 
-export default Logo;
+export default HeaderIcons;

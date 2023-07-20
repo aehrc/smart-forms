@@ -17,16 +17,15 @@
 
 import Iconify from '../../../../components/Iconify/Iconify.tsx';
 import { useTheme } from '@mui/material/styles';
-import DesktopHeader from '../../../../components/Header/DesktopHeader.tsx';
 import useResponsive from '../../../../hooks/useResponsive.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import UpdatingIndicator from './UpdatingIndicator.tsx';
-import MobileHeaderWithQuestionnaire from '../../../../components/Header/MobileHeaderWithQuestionnaire.tsx';
 import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 import { memo } from 'react';
+import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
 
 interface RendererHeaderProps {
   navIsCollapsed: boolean;
@@ -49,7 +48,6 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
         <IconButton
           onClick={onOpenNav}
           sx={{
-            mr: 1,
             color: 'text.primary',
             ...(navIsExpanded && { display: { lg: 'none' } })
           }}
@@ -63,26 +61,16 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
           </LogoWrapper>
         )}
 
-        {isDesktop && navIsExpanded ? (
-          <Box sx={{ px: 1 }}>
-            <Typography variant="subtitle1" color="text.primary">
-              {sourceQuestionnaire.title}
-            </Typography>
-          </Box>
-        ) : null}
+        <Box mx={2} my={0.5}>
+          <Typography variant="subtitle1" color="text.primary" fontSize={isDesktop ? 13 : 11}>
+            {sourceQuestionnaire.title}
+          </Typography>
+        </Box>
         <Box flexGrow={1} />
+
         <UpdatingIndicator />
 
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={{
-            xs: 0.5,
-            sm: 1
-          }}
-          sx={{ color: theme.palette.grey['700'] }}>
-          {isDesktop && navIsExpanded ? <DesktopHeader /> : <MobileHeaderWithQuestionnaire />}
-        </Stack>
+        <HeaderIcons />
       </StyledToolbar>
     </StyledRoot>
   );

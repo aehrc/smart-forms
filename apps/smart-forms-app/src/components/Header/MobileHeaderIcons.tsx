@@ -15,42 +15,45 @@
  * limitations under the License.
  */
 
-import { Box } from '@mui/material';
-import NavErrorAlert from '../Nav/NavErrorAlert.tsx';
-import PersonPopover from './Popovers/PersonPopover.tsx';
+import HeaderPopover from './Popovers/HeaderPopover.tsx';
 import FaceIcon from '@mui/icons-material/Face';
 import PatientPopoverMenu from './Popovers/PatientPopoverMenu.tsx';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import UserPopoverMenu from './Popovers/UserPopoverMenu.tsx';
 import { useTheme } from '@mui/material/styles';
+import { Box } from '@mui/material';
+import NotLaunchedPopover from './Popovers/NotLaunchedPopover.tsx';
 import useConfigStore from '../../stores/useConfigStore.ts';
 
-function MobileHeaderWithQuestionnaire() {
-  const smartClient = useConfigStore((state) => state.smartClient);
-
+function MobileHeaderIcons() {
   const theme = useTheme();
+  const smartClient = useConfigStore((state) => state.smartClient);
 
   const isNotLaunched = !smartClient;
 
   return (
     <>
       {isNotLaunched ? (
-        <Box sx={{ my: 0.5 }}>
-          <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
+        <Box sx={{ mx: 1 }}>
+          <NotLaunchedPopover />
         </Box>
       ) : null}
-      <PersonPopover
-        bgColor={theme.palette.secondary.main}
-        displayIcon={<FaceIcon sx={{ color: theme.palette.common.white }} />}
+      <HeaderPopover
+        entity={'Patient'}
+        bgColor={theme.palette.primary.main}
+        displayIcon={<FaceIcon fontSize="small" sx={{ color: theme.palette.common.white }} />}
         menuContent={<PatientPopoverMenu />}
       />
-      <PersonPopover
+      <HeaderPopover
+        entity={'User'}
         bgColor={theme.palette.error.main}
-        displayIcon={<MedicalServicesIcon sx={{ color: theme.palette.common.white }} />}
+        displayIcon={
+          <MedicalServicesIcon fontSize="small" sx={{ color: theme.palette.common.white }} />
+        }
         menuContent={<UserPopoverMenu />}
       />
     </>
   );
 }
 
-export default MobileHeaderWithQuestionnaire;
+export default MobileHeaderIcons;

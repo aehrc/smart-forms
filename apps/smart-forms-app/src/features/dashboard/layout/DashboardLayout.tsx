@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import DashboardHeader from '../components/DashboardHeader/DashboardHeader.tsx';
+import GenericHeader from '../../../components/Header/GenericHeader.tsx';
 import DashboardNav from '../components/DashboardNav/DashboardNav.tsx';
 import { Main, StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -59,7 +59,7 @@ function DashboardLayout() {
   return (
     <SelectedQuestionnaireContextProvider>
       <StyledRoot>
-        <DashboardHeader onOpenNav={() => setOpen(true)} />
+        <GenericHeader onOpenNav={() => setOpen(true)} />
         <DashboardNav openNav={open} onCloseNav={() => setOpen(false)} />
 
         <Main>

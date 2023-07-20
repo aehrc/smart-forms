@@ -22,10 +22,10 @@ import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../backToTop/components/BackToTopButton.tsx';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import ViewerHeader from './ViewerHeader/ViewerHeader.tsx';
 import ViewerNav from './ViewerNav/ViewerNav.tsx';
 
 import type { PrintComponentRefContextType } from '../print/types/printComponentRefContext.type.ts';
+import GenericHeader from '../../components/Header/GenericHeader.tsx';
 
 export const PrintComponentRefContext = createContext<PrintComponentRefContextType>({
   componentRef: null,
@@ -40,7 +40,7 @@ function ViewerLayout() {
   return (
     <PrintComponentRefContext.Provider value={{ componentRef, setComponentRef }}>
       <StyledRoot>
-        <ViewerHeader onOpenNav={() => setOpen(true)} />
+        <GenericHeader onOpenNav={() => setOpen(true)} />
         <ViewerNav openNav={open} onCloseNav={() => setOpen(false)} />
 
         <Main>
