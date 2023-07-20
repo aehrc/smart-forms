@@ -13,7 +13,6 @@ import type { AnswerExpression } from '../types/answerExpression.interface.ts';
 import { createQuestionnaireModel } from '../features/preprocess/utils/preprocessQuestionnaire/preprocessQuestionnaire.ts';
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 import { updateItemAnswer } from '../utils/enableWhen.ts';
-import { evaluateInitialEnableWhenExpressions } from '../utils/enableWhenExpression.ts';
 import { initialiseFormFromResponse } from '../utils/initaliseForm.ts';
 import { evaluateUpdatedExpressions } from '../utils/fhirpath.ts';
 
@@ -50,7 +49,6 @@ export interface QuestionnaireState {
   markTabAsComplete: (tabLinkId: string) => void;
   updateEnableWhenItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  initialiseEnableWhenExpressions: (populatedResponse: QuestionnaireResponse) => void;
   updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => void;
@@ -145,15 +143,6 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
   },
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
-  initialiseEnableWhenExpressions: (populatedResponse: QuestionnaireResponse) => {
-    const initialEnableWhenExpressions = evaluateInitialEnableWhenExpressions({
-      initialResponse: populatedResponse,
-      enableWhenExpressions: get().enableWhenExpressions,
-      variablesFhirPath: get().variables.fhirPathVariables
-    });
-
-    set(() => ({ enableWhenExpressions: initialEnableWhenExpressions }));
-  },
   updateExpressions: (updatedResponse: QuestionnaireResponse) => {
     const { isUpdated, updatedCalculatedExpressions, updatedEnableWhenExpressions } =
       evaluateUpdatedExpressions({
