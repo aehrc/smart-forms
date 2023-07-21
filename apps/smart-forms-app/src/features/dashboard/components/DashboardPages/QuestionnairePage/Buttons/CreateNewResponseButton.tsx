@@ -15,27 +15,23 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
+import { useContext, useState } from 'react';
 import { createQuestionnaireResponse } from '../../../../../renderer/utils/qrItem.ts';
 import { useNavigate } from 'react-router-dom';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
-import type { SelectedQuestionnaire } from '../../../../types/list.interface.ts';
 import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../../stores/useQuestionnaireResponseStore.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
-import { LoadingButton } from '@mui/lab';
+import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
+import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
-interface Props {
-  selectedQuestionnaire: SelectedQuestionnaire | null;
-}
-
-function CreateNewResponseButton(props: Props) {
-  const { selectedQuestionnaire } = props;
-
+function CreateNewResponseButton() {
   const smartClient = useConfigStore((state) => state.smartClient);
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
   const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
+
+  const { selectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
 
   const navigate = useNavigate();
 
@@ -65,24 +61,30 @@ function CreateNewResponseButton(props: Props) {
     setIsLoading(false);
   }
 
+  const buttonIsDisabled = !selectedQuestionnaire?.listItem || isLoading;
+
   return (
-    <LoadingButton
-      variant="contained"
-      disabled={!selectedQuestionnaire?.listItem}
-      loading={isLoading}
-      loadingPosition="end"
-      endIcon={<Iconify icon="ant-design:form-outlined" />}
-      sx={{
-        px: 2.5,
-        backgroundColor: 'secondary.main',
-        '&:hover': {
-          backgroundColor: 'secondary.dark'
-        }
-      }}
-      data-test="button-create-response"
-      onClick={handleClick}>
-      Create response
-    </LoadingButton>
+    <Stack alignItems="center">
+      <IconButton
+        disabled={buttonIsDisabled}
+        color="secondary"
+        onClick={handleClick}
+        data-test="button-create-response">
+        {isLoading ? (
+          <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
+        ) : (
+          <EditNoteIcon />
+        )}
+      </IconButton>
+
+      <Typography
+        fontSize={9}
+        variant="subtitle2"
+        color={buttonIsDisabled ? 'text.disabled' : 'secondary'}
+        sx={{ mt: -0.5, mb: 0.5 }}>
+        Create response
+      </Typography>
+    </Stack>
   );
 }
 

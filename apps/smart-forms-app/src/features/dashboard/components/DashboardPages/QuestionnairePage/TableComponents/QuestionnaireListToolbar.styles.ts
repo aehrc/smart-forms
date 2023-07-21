@@ -18,7 +18,11 @@
 import { alpha, styled } from '@mui/material/styles';
 import { OutlinedInput, Toolbar } from '@mui/material';
 import type { QuestionnaireResponse } from 'fhir/r4';
-import type { ResponseListItem, SelectedQuestionnaire } from '../../../../types/list.interface.ts';
+import type {
+  QuestionnaireListItem,
+  ResponseListItem,
+  SelectedQuestionnaire
+} from '../../../../types/list.interface.ts';
 
 export const StyledRoot = styled(Toolbar)(({ theme }) => ({
   height: 80,
@@ -44,7 +48,7 @@ export const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
   }
 }));
 
-export function getToolBarColors(
+export function getResponseToolBarColors(
   selected: ResponseListItem | undefined,
   selectedQuestionnaire: SelectedQuestionnaire | null,
   existingResponses: QuestionnaireResponse[]
@@ -61,5 +65,14 @@ export function getToolBarColors(
           bgcolor: 'pale.secondary'
         }
       : null)
+  };
+}
+
+export function getQuestionnaireToolBarColors(selected: QuestionnaireListItem | undefined) {
+  return {
+    ...(selected && {
+      color: 'primary.main',
+      bgcolor: 'pale.primary'
+    })
   };
 }

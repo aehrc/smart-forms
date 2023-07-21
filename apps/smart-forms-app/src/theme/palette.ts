@@ -69,7 +69,7 @@ const palette: PaletteOptions = {
     dark: '#abebc6'
   },
   pale: {
-    primary: '#D1E9FC',
+    primary: '#D6EBFC',
     secondary: '#D3EBDD'
   },
   divider: alpha(grey['500'], 0.24),

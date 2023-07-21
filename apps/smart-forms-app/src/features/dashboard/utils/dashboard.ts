@@ -163,13 +163,19 @@ export function getQuestionnaireListItems(bundle: Bundle | undefined): Questionn
     })
     .map((entry, i) => {
       const questionnaire = entry.resource as Questionnaire; // non-questionnaire resources are filtered
-      const questionnaireTitle = questionnaire.title ?? 'Untitled';
+      const questionnaireTitle = questionnaire.title
+        ? questionnaire.title.charAt(0).toUpperCase() + questionnaire.title.slice(1)
+        : 'Untitled';
+
+      const questionnairePublisher = questionnaire.publisher
+        ? questionnaire.publisher.charAt(0).toUpperCase() + questionnaire.publisher.slice(1)
+        : '-';
 
       const questionnaireListItem: QuestionnaireListItem = {
         id: questionnaire.id ?? i.toString(),
         title: questionnaireTitle,
         avatarColor: randomColor({ luminosity: 'dark', seed: questionnaireTitle + i.toString() }),
-        publisher: questionnaire.publisher ?? '—',
+        publisher: questionnairePublisher,
         date: questionnaire.date ? dayjs(questionnaire.date).format() : '—',
         status: questionnaire.status
       };

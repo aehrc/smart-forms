@@ -15,38 +15,43 @@
  * limitations under the License.
  */
 
-import { Box, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+
 import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
-import { StyledRoot, StyledSearch } from './QuestionnaireListToolbar.styles.ts';
+import {
+  getQuestionnaireToolBarColors,
+  StyledRoot,
+  StyledSearch
+} from './QuestionnaireListToolbar.styles.ts';
 import type { QuestionnaireListItem } from '../../../../types/list.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
+import ClearIcon from '@mui/icons-material/Clear';
+import CreateNewResponseButton from '../Buttons/CreateNewResponseButton.tsx';
+import ViewExistingResponsesButton from '../Buttons/ViewExistingResponsesButton.tsx';
+import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 
 interface Props {
   selected: QuestionnaireListItem | undefined;
   searchInput: string;
-  clearSelection: () => void;
+  onClearSelection: () => void;
   onSearch: (searchInput: string) => void;
 }
 
 function QuestionnaireListToolbar(props: Props) {
-  const { selected, searchInput, clearSelection, onSearch } = props;
+  const { selected, searchInput, onClearSelection, onSearch } = props;
 
   const [alertVisible, setAlertVisible] = useState(true);
 
+  const smartClient = useConfigStore((state) => state.smartClient);
+
+  const toolBarColors = getQuestionnaireToolBarColors(selected);
+
   return (
-    <StyledRoot
-      sx={{
-        ...(selected && {
-          color: 'primary.main',
-          bgcolor: 'pale.primary'
-        })
-      }}>
+    <StyledRoot sx={{ ...toolBarColors }}>
       {selected ? (
-        <Typography component="div" variant="subtitle1">
-          {selected.title} selected
-        </Typography>
+        <Typography variant="subtitle1">{selected.title} selected</Typography>
       ) : (
         <StyledSearch
           value={searchInput}
@@ -75,11 +80,24 @@ function QuestionnaireListToolbar(props: Props) {
       ) : null}
 
       {selected ? (
-        <Tooltip title="Clear">
-          <IconButton onClick={clearSelection}>
-            <Iconify icon="ic:baseline-clear" />
-          </IconButton>
-        </Tooltip>
+        <Box display="flex" alignItems="center" columnGap={2}>
+          <CreateNewResponseButton />
+
+          {smartClient ? <ViewExistingResponsesButton /> : null}
+
+          <Stack alignItems="center">
+            <IconButton onClick={onClearSelection}>
+              <ClearIcon />
+            </IconButton>
+            <Typography
+              fontSize={9}
+              variant="subtitle2"
+              color={'text.secondary'}
+              sx={{ mt: -0.5, mb: 0.5 }}>
+              Unselect
+            </Typography>
+          </Stack>
+        </Box>
       ) : null}
     </StyledRoot>
   );

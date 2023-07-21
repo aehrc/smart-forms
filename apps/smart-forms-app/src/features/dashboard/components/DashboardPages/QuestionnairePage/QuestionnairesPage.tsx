@@ -15,16 +15,14 @@
  * limitations under the License.
  */
 
-import { useContext, useMemo, useRef, useState } from 'react';
-import { Card, Container, Fade, Stack, Table, TableBody, TableContainer } from '@mui/material';
+import { useContext, useMemo, useState } from 'react';
+import { Card, Container, Fade, Table, TableBody, TableContainer } from '@mui/material';
 import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import QuestionnaireListToolbar from './TableComponents/QuestionnaireListToolbar.tsx';
 import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
 import type { Questionnaire } from 'fhir/r4';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedback.tsx';
-import CreateNewResponseButton from './Buttons/CreateNewResponseButton.tsx';
-import ViewExistingResponsesButton from './Buttons/ViewExistingResponsesButton.tsx';
 import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
 import { Helmet } from 'react-helmet';
 import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
@@ -44,20 +42,11 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function QuestionnairesPage() {
-  const smartClient = useConfigStore((state) => state.smartClient);
   const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
 
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
-
-  // Scroll to buttons row when questionnaire is selected - for screens with small height
-  const buttonsRef = useRef<HTMLDivElement | null>(null);
-  function executeScroll() {
-    if (buttonsRef.current) {
-      buttonsRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -104,7 +93,6 @@ function QuestionnairesPage() {
     const selectedItem = filteredListItems.find((item) => item.id === id);
 
     if (selectedItem) {
-      executeScroll();
       if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
         setSelectedQuestionnaire(null);
       } else {
@@ -137,7 +125,7 @@ function QuestionnairesPage() {
             <QuestionnaireListToolbar
               selected={selectedQuestionnaire?.listItem}
               searchInput={searchInput}
-              clearSelection={() => setSelectedQuestionnaire(null)}
+              onClearSelection={() => setSelectedQuestionnaire(null)}
               onSearch={(input) => {
                 setPage(0);
                 setSearchInput(input);
@@ -193,11 +181,6 @@ function QuestionnairesPage() {
               setRowsPerPage={setRowsPerPage}
             />
           </Card>
-
-          <Stack direction="row-reverse" alignItems="center" gap={2} my={5} ref={buttonsRef}>
-            {smartClient ? <ViewExistingResponsesButton /> : null}
-            <CreateNewResponseButton selectedQuestionnaire={selectedQuestionnaire} />
-          </Stack>
         </Container>
       </Fade>
     </>

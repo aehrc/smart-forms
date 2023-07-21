@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import {
-  getToolBarColors,
+  getResponseToolBarColors,
   StyledRoot,
   StyledSearch
 } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
@@ -58,7 +58,11 @@ function ResponseListToolbar(props: Props) {
   const selectedQuestionnaireTitle =
     selectedQuestionnaire?.listItem.title ?? 'selected questionnaire';
 
-  const toolBarColors = getToolBarColors(selected, selectedQuestionnaire, existingResponses);
+  const toolBarColors = getResponseToolBarColors(
+    selected,
+    selectedQuestionnaire,
+    existingResponses
+  );
 
   return (
     <>
