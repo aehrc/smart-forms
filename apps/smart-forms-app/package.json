@@ -27,7 +27,7 @@
     "dayjs": "^1.11.7",
     "fhirclient": "^2.5.2",
     "fhirpath": "^3.6.0",
-    "html-react-parser": "^3.0.16",
+    "html-react-parser": "^4.1.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "lodash.filter": "^4.6.0",
