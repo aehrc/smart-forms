@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-import { useMemo, useRef, useState } from 'react';
-import { Box, Card, Container, Fade, Stack, Table, TableBody, TableContainer } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { Card, Container, Fade, Table, TableBody, TableContainer } from '@mui/material';
 import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
-import BackToQuestionnairesButton from './Buttons/BackToQuestionnairesButton.tsx';
-import OpenResponseButton from './Buttons/OpenResponseButton.tsx';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import { Helmet } from 'react-helmet';
 import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
@@ -43,14 +41,6 @@ const tableHeaders: TableAttributes[] = [
 
 function ResponsesPage() {
   const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
-
-  // Scroll to buttons row when response is selected - for screens with small height
-  const buttonsRef = useRef<HTMLDivElement | null>(null);
-  function executeScroll() {
-    if (buttonsRef.current) {
-      buttonsRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -92,7 +82,6 @@ function ResponsesPage() {
     const selectedItem = filteredListItems.find((item) => item.id === id);
 
     if (selectedItem) {
-      executeScroll();
       if (selectedItem.id === selectedResponse?.listItem.id) {
         setSelectedResponse(null);
       } else {
@@ -121,10 +110,10 @@ function ResponsesPage() {
 
           <Card>
             <ResponseListToolbar
-              selected={selectedResponse?.listItem}
+              selectedResponse={selectedResponse}
               searchInput={searchInput}
               isFetching={isFetching}
-              clearSelection={() => setSelectedResponse(null)}
+              onClearSelection={() => setSelectedResponse(null)}
               onSearch={(input) => {
                 setPage(0);
                 setSearchInput(input);
@@ -178,12 +167,6 @@ function ResponsesPage() {
               setRowsPerPage={setRowsPerPage}
             />
           </Card>
-
-          <Stack direction="row" alignItems="center" my={5} ref={buttonsRef}>
-            <BackToQuestionnairesButton />
-            <Box flexGrow={1} />
-            <OpenResponseButton selectedResponse={selectedResponse} />
-          </Stack>
         </Container>
       </Fade>
     </>

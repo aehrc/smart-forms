@@ -16,7 +16,6 @@
  */
 
 import { useMemo, useState } from 'react';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
 import {
@@ -31,7 +30,8 @@ import { assembleIfRequired } from '../../../../../assemble/utils/assemble.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../../stores/useQuestionnaireResponseStore.ts';
-import { LoadingButton } from '@mui/lab';
+import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 interface Props {
   selectedResponse: SelectedResponse | null;
@@ -125,24 +125,30 @@ function OpenResponseButton(props: Props) {
     setIsLoading(false);
   }
 
+  const buttonIsDisabled = !selectedResponse || !referencedQuestionnaire || isLoading;
+
   return (
-    <LoadingButton
-      variant="contained"
-      disabled={!selectedResponse || !referencedQuestionnaire}
-      loading={isLoading}
-      loadingPosition="end"
-      endIcon={<Iconify icon="material-symbols:open-in-new" />}
-      sx={{
-        px: 2.25,
-        backgroundColor: 'secondary.main',
-        '&:hover': {
-          backgroundColor: 'secondary.dark'
-        }
-      }}
-      data-test="button-open-response"
-      onClick={handleClick}>
-      Open Response
-    </LoadingButton>
+    <Stack alignItems="center">
+      <IconButton
+        disabled={buttonIsDisabled}
+        color="secondary"
+        onClick={handleClick}
+        data-test="button-open-response">
+        {isLoading ? (
+          <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
+        ) : (
+          <OpenInNewIcon />
+        )}
+      </IconButton>
+
+      <Typography
+        fontSize={9}
+        variant="subtitle2"
+        color={buttonIsDisabled ? 'text.disabled' : 'secondary'}
+        sx={{ mt: -0.5, mb: 0.5 }}>
+        Open Response
+      </Typography>
+    </Stack>
   );
 }
 

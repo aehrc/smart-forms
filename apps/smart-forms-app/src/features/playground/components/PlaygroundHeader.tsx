@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import Iconify from '../../../components/Iconify/Iconify.tsx';
-
 import { useTheme } from '@mui/material/styles';
 import Logo from '../../../components/Logos/Logo.tsx';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
@@ -24,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { LogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../components/Header/Header.styles.ts';
 import { memo } from 'react';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const PlaygroundHeader = memo(function PlaygroundHeader() {
   const theme = useTheme();
@@ -42,7 +41,7 @@ const PlaygroundHeader = memo(function PlaygroundHeader() {
               mr: 1,
               color: 'text.primary'
             }}>
-            <Iconify icon="uil:exit" />
+            <ArrowBackIcon fontSize="small" />
           </IconButton>
         </Tooltip>
 

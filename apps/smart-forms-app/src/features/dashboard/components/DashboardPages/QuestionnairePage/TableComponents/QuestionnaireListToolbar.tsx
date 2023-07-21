@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Box, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
+import { Box, InputAdornment, Typography } from '@mui/material';
 
 import type { ChangeEvent } from 'react';
 import { useState } from 'react';
@@ -27,24 +27,19 @@ import {
 } from './QuestionnaireListToolbar.styles.ts';
 import type { QuestionnaireListItem } from '../../../../types/list.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
-import ClearIcon from '@mui/icons-material/Clear';
-import CreateNewResponseButton from '../Buttons/CreateNewResponseButton.tsx';
-import ViewExistingResponsesButton from '../Buttons/ViewExistingResponsesButton.tsx';
-import useConfigStore from '../../../../../../stores/useConfigStore.ts';
+import QuestionnaireListToolbarButtons from './QuestionnaireListToolbarButtons.tsx';
 
-interface Props {
+interface QuestionnaireListToolbarProps {
   selected: QuestionnaireListItem | undefined;
   searchInput: string;
   onClearSelection: () => void;
   onSearch: (searchInput: string) => void;
 }
 
-function QuestionnaireListToolbar(props: Props) {
+function QuestionnaireListToolbar(props: QuestionnaireListToolbarProps) {
   const { selected, searchInput, onClearSelection, onSearch } = props;
 
   const [alertVisible, setAlertVisible] = useState(true);
-
-  const smartClient = useConfigStore((state) => state.smartClient);
 
   const toolBarColors = getQuestionnaireToolBarColors(selected);
 
@@ -79,26 +74,7 @@ function QuestionnaireListToolbar(props: Props) {
         </StyledAlert>
       ) : null}
 
-      {selected ? (
-        <Box display="flex" alignItems="center" columnGap={2}>
-          <CreateNewResponseButton />
-
-          {smartClient ? <ViewExistingResponsesButton /> : null}
-
-          <Stack alignItems="center">
-            <IconButton onClick={onClearSelection}>
-              <ClearIcon />
-            </IconButton>
-            <Typography
-              fontSize={9}
-              variant="subtitle2"
-              color={'text.secondary'}
-              sx={{ mt: -0.5, mb: 0.5 }}>
-              Unselect
-            </Typography>
-          </Stack>
-        </Box>
-      ) : null}
+      {selected ? <QuestionnaireListToolbarButtons onClearSelection={onClearSelection} /> : null}
     </StyledRoot>
   );
 }
