@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-import { useContext, useMemo, useState } from 'react';
-import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
+import { useMemo, useState } from 'react';
+import type { SelectedResponse } from '../../../types/list.interface.ts';
+import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
+import useFetchResponses from '../../../hooks/useFetchResponses.ts';
+import { createResponseTableColumns } from '../../../utils/tableColumns.ts';
 import type { SortingState } from '@tanstack/react-table';
 import {
   getCoreRowModel,
@@ -24,41 +27,31 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
-import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
-import { createQuestionnaireTableColumns } from '../../../utils/tableColumns.ts';
-import type { Questionnaire } from 'fhir/r4';
-import QuestionnaireTableView from './QuestionnaireTableView.tsx';
+import type { QuestionnaireResponse } from 'fhir/r4';
+import ResponsesTableView from './ResponsesTableView.tsx';
 
-function QuestionnaireTable() {
-  const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
-    SelectedQuestionnaireContext
-  );
-
-  // search questionnaires
+function ResponsesTable() {
+  const [selectedResponse, setSelectedResponse] = useState<SelectedResponse | null>(null);
   const [searchInput, setSearchInput] = useState('');
+
   const debouncedInput = useDebounce(searchInput, 300);
 
-  const {
-    remoteQuestionnaires,
-    questionnaireListItems,
-    fetchStatus,
-    fetchError,
-    isInitialLoading,
-    isFetching
-  } = useFetchQuestionnaires(searchInput, debouncedInput);
+  const { responses, responseListItems, fetchStatus, fetchError, isFetching } = useFetchResponses(
+    searchInput,
+    debouncedInput
+  );
 
-  const columns = useMemo(() => createQuestionnaireTableColumns(), []);
+  const columns = useMemo(() => createResponseTableColumns(), []);
 
   const [sorting, setSorting] = useState<SortingState>([
     {
-      id: 'date',
+      id: 'authored',
       desc: true
     }
   ]);
 
   const table = useReactTable({
-    data: questionnaireListItems,
+    data: responseListItems,
     columns: columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -70,46 +63,43 @@ function QuestionnaireTable() {
   });
 
   function handleRowClick(id: string) {
-    const selectedItem = questionnaireListItems.find((item) => item.id === id);
+    const selectedItem = responseListItems.find((item) => item.id === id);
 
     if (selectedItem) {
-      if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
-        setSelectedQuestionnaire(null);
+      if (selectedItem.id === selectedResponse?.listItem.id) {
+        setSelectedResponse(null);
       } else {
-        const resource = remoteQuestionnaires?.entry?.find(
-          (entry) => entry.resource?.id === id
-        )?.resource;
+        const resource = responses?.entry?.find((entry) => entry.resource?.id === id)?.resource;
 
         if (resource) {
-          setSelectedQuestionnaire({
+          setSelectedResponse({
             listItem: selectedItem,
-            resource: resource as Questionnaire
+            resource: resource as QuestionnaireResponse
           });
         } else {
-          setSelectedQuestionnaire(null);
+          setSelectedResponse(null);
         }
       }
     }
   }
 
   return (
-    <QuestionnaireTableView
+    <ResponsesTableView
       table={table}
       searchInput={searchInput}
       debouncedInput={debouncedInput}
       fetchStatus={fetchStatus}
-      isInitialLoading={isInitialLoading}
       isFetching={isFetching}
       fetchError={fetchError}
-      selectedQuestionnaire={selectedQuestionnaire}
+      selectedResponse={selectedResponse}
       onSearch={(input) => {
         table.setPageIndex(0);
         setSearchInput(input);
       }}
       onRowClick={handleRowClick}
-      onSelectQuestionnaire={setSelectedQuestionnaire}
+      onSelectResponse={setSelectedResponse}
     />
   );
 }
 
-export default QuestionnaireTable;
+export default ResponsesTable;
