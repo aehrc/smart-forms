@@ -15,22 +15,21 @@
  * limitations under the License.
  */
 
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 
-interface DashboardHeadingProps {
+interface PageHeadingProps {
   children: ReactNode;
 }
 
-function DashboardHeading(props: DashboardHeadingProps) {
+function PageHeading(props: PageHeadingProps) {
   const { children } = props;
 
   return (
-    <Stack direction="row" alignItems="center" mb={3}>
-      <Typography variant="h3">{children}</Typography>
-      <Box flexGrow={1} />
-    </Stack>
+    <Box mb={1.5}>
+      <Typography variant="h4">{children}</Typography>
+    </Box>
   );
 }
 
-export default DashboardHeading;
+export default PageHeading;

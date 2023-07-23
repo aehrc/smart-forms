@@ -27,15 +27,14 @@ import GoToPlaygroundButton from '../DashboardPages/QuestionnairePage/Buttons/Go
 import { CsiroLogoWrapper, NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { NavMiddleWrapper } from '../../../../components/Nav/Nav.styles.ts';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
+import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 
-const NAV_WIDTH = 240;
-
-interface Props {
+interface DashboardNavProps {
   openNav: boolean;
   onCloseNav: () => void;
 }
 
-export default function DashboardNav(props: Props) {
+export default function DashboardNav(props: DashboardNavProps) {
   const { openNav, onCloseNav } = props;
 
   const smartClient = useConfigStore((state) => state.smartClient);
@@ -52,12 +51,12 @@ export default function DashboardNav(props: Props) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
       }}>
       <NavLogoWrapper>
-        <Logo />
+        <Logo isNav />
       </NavLogoWrapper>
 
       <NavPatientDetails />
 
-      <DashboardNavSection />
+      <DashboardNavSection onCloseNav={onCloseNav} />
 
       <Box flexGrow={1} />
 

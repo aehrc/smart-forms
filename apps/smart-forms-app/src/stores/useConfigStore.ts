@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
-import type { Source } from '../types/source.interface.ts';
 
 export interface ConfigState {
   smartClient: Client | null;
@@ -26,7 +25,6 @@ const useConfigStore = create<ConfigState>()((set) => ({
   setPatient: (patient: Patient) => set(() => ({ patient: patient })),
   setUser: (user: Practitioner) => set(() => ({ user: user })),
   setEncounter: (encounter: Encounter) => set(() => ({ encounter: encounter })),
-  updateQuestionnaireSource: (newSource: Source) => set(() => ({ questionnaireSource: newSource })),
   activateDebugMode: () => set(() => ({ debugMode: true }))
 }));
 

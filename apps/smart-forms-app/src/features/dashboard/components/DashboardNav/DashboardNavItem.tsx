@@ -17,13 +17,20 @@
 
 import { ListItemButton, ListItemText, useTheme } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import type { NavItem } from '../../../../types/Nav.interface.ts';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
-import { useContext } from 'react';
+import { ReactNode, useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../contexts/SelectedQuestionnaireContext.tsx';
 
-function DashboardNavItem(props: NavItem) {
-  const { title, path, icon, disabled } = props;
+export interface DashboardNavItemProps {
+  title: string;
+  path: string;
+  icon: ReactNode;
+  disabled?: boolean;
+  onCloseNav: () => void;
+}
+
+function DashboardNavItem(props: DashboardNavItemProps) {
+  const { title, path, icon, disabled, onCloseNav } = props;
 
   const { setSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
   const theme = useTheme();
@@ -35,7 +42,10 @@ function DashboardNavItem(props: NavItem) {
       disableGutters
       disabled={disabled}
       data-test="list-button-dashboard-nav-page"
-      onClick={() => setSelectedQuestionnaire(null)}
+      onClick={() => {
+        setSelectedQuestionnaire(null);
+        onCloseNav();
+      }}
       sx={{
         ...theme.typography.subtitle2,
         height: 48,

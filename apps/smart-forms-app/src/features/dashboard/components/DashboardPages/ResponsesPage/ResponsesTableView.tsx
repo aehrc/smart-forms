@@ -66,7 +66,7 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
         onSearch={onSearch}
       />
 
-      <TableContainer sx={{ minWidth: 600 }}>
+      <TableContainer sx={{ minWidth: 575 }}>
         <MuiTable>
           <DashboardTableHead headers={headers} />
           <TableBody>

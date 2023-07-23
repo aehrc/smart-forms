@@ -24,6 +24,7 @@ import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuest
 import type { SelectedResponse } from '../../../../types/list.interface.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
+import useResponsive from '../../../../../../hooks/useResponsive.ts';
 
 interface ResponseListToolbarButtonsProps {
   selectedResponse: SelectedResponse | null;
@@ -36,7 +37,10 @@ function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
   const { selectedQuestionnaire, existingResponses, clearSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
+
   const patient = useConfigStore((state) => state.patient);
+
+  const isDesktop = useResponsive('up', 'lg');
 
   const selected = selectedResponse?.listItem;
 
@@ -80,7 +84,7 @@ function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
   }
 
   return (
-    <Typography variant="subtitle1">
+    <Typography variant="subtitle1" fontSize={isDesktop ? 12 : 11}>
       Showing responses for <b>{constructName(patient?.name)}</b>
     </Typography>
   );

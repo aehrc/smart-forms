@@ -27,7 +27,13 @@ import {
 } from '../../../../components/Nav/Nav.styles.ts';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
 
-const DashboardNavSection = memo(function DashboardNavSection() {
+interface DashboardNavSectionProps {
+  onCloseNav: () => void;
+}
+
+const DashboardNavSection = memo(function DashboardNavSection(props: DashboardNavSectionProps) {
+  const { onCloseNav } = props;
+
   const smartClient = useConfigStore((state) => state.smartClient);
 
   return (
@@ -40,12 +46,14 @@ const DashboardNavSection = memo(function DashboardNavSection() {
           title={'Questionnaires'}
           path={'/dashboard/questionnaires'}
           icon={<AssignmentIcon />}
+          onCloseNav={onCloseNav}
         />
         <DashboardNavItem
           title={'Responses'}
           path={'/dashboard/responses'}
           icon={<AssignmentTurnedInIcon />}
           disabled={!smartClient}
+          onCloseNav={onCloseNav}
         />
       </List>
     </NavSectionWrapper>

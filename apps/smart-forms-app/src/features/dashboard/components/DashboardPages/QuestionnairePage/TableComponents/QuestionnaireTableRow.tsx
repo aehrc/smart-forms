@@ -49,11 +49,11 @@ function QuestionnaireTableRow(props: QuestionnaireTableRowProps) {
         <Typography variant="subtitle2">{title}</Typography>
       </TableCell>
 
-      <TableCell align="left">{publisher}</TableCell>
+      <TableCell>{publisher}</TableCell>
 
-      <TableCell align="left">{date ? dayjs(date).format('LL') : '-'}</TableCell>
+      <TableCell>{date ? dayjs(date).format('LL') : '-'}</TableCell>
 
-      <TableCell align="left">
+      <TableCell>
         <QuestionnaireLabel color={status}>{status}</QuestionnaireLabel>
       </TableCell>
     </TableRow>

@@ -17,7 +17,7 @@
 
 import { Card, Container, Fade } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import DashboardHeading from '../DashboardHeading.tsx';
+import PageHeading from '../PageHeading.tsx';
 import ResponsesTable from './ResponsesTable.tsx';
 
 function ResponsesPage() {
@@ -28,7 +28,7 @@ function ResponsesPage() {
       </Helmet>
       <Fade in={true}>
         <Container data-test="dashboard-responses-container">
-          <DashboardHeading>Responses</DashboardHeading>
+          <PageHeading>Responses</PageHeading>
 
           <Card>
             <ResponsesTable />

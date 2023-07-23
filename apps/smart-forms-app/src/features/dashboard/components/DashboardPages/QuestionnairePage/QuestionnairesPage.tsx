@@ -17,7 +17,7 @@
 
 import { Card, Container, Fade } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import DashboardHeading from '../DashboardHeading.tsx';
+import PageHeading from '../PageHeading.tsx';
 import QuestionnaireTable from './QuestionnaireTable.tsx';
 
 function QuestionnairesPage() {
@@ -28,7 +28,7 @@ function QuestionnairesPage() {
       </Helmet>
       <Fade in={true}>
         <Container data-test="dashboard-questionnaires-container">
-          <DashboardHeading>Questionnaires</DashboardHeading>
+          <PageHeading>Questionnaires</PageHeading>
 
           <Card>
             <QuestionnaireTable />

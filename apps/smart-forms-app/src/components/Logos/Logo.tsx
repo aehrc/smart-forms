@@ -20,13 +20,19 @@ import { Box, Typography } from '@mui/material';
 import AppLogo from '../../data/images/logo.svg';
 import useResponsive from '../../hooks/useResponsive.ts';
 
-const Logo = memo(function Logo() {
+interface LogoProps {
+  isNav?: boolean;
+}
+
+const Logo = memo(function Logo(props: LogoProps) {
+  const { isNav } = props;
+
   const isDesktop = useResponsive('up', 'lg');
 
   return (
     <Box display="flex" alignItems="center" columnGap={1.5}>
-      <Box component="img" src={AppLogo} display="inline-flex" width={40} height={40} />
-      {isDesktop ? <Typography variant="h6">Smart Forms</Typography> : null}
+      <Box component="img" src={AppLogo} display="inline-flex" width={36} height={36} />
+      {isDesktop || isNav ? <Typography variant="h6">Smart Forms</Typography> : null}
     </Box>
   );
 });

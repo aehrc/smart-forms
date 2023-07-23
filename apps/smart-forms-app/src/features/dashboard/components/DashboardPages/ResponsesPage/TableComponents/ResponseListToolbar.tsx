@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Box, InputAdornment, LinearProgress, Typography, useTheme } from '@mui/material';
+import { Box, InputAdornment, LinearProgress, Typography } from '@mui/material';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import {
   getResponseToolBarColors,
@@ -29,6 +29,7 @@ import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuest
 import type { SelectedResponse } from '../../../../types/list.interface.ts';
 import BackToQuestionnairesButton from '../Buttons/BackToQuestionnairesButton.tsx';
 import ResponseListToolbarButtons from './ResponseListToolbarButtons.tsx';
+import useResponsive from '../../../../../../hooks/useResponsive.ts';
 
 interface ResponseListToolbarProps {
   selectedResponse: SelectedResponse | null;
@@ -42,7 +43,8 @@ function ResponseListToolbar(props: ResponseListToolbarProps) {
   const { selectedResponse, searchInput, isFetching, onClearSelection, onSearch } = props;
 
   const { selectedQuestionnaire, existingResponses } = useContext(SelectedQuestionnaireContext);
-  const theme = useTheme();
+
+  const isTabletAndUp = useResponsive('up', 'md');
 
   const selectedQuestionnaireTitle =
     selectedQuestionnaire?.listItem.title ?? 'selected questionnaire';
@@ -85,8 +87,7 @@ function ResponseListToolbar(props: ResponseListToolbarProps) {
             data-test="search-field-responses"
             sx={{
               '&.Mui-focused': {
-                width: '50%',
-                boxShadow: theme.customShadows.z4
+                width: isTabletAndUp ? `50%` : '320px'
               }
             }}
           />

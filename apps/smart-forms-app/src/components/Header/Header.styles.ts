@@ -18,9 +18,9 @@
 import { alpha, styled } from '@mui/material/styles';
 import { AppBar, IconButton, Toolbar } from '@mui/material';
 
-const NAV_WIDTH = 240;
-const HEADER_MOBILE = 52;
-const HEADER_DESKTOP = 60;
+export const NAV_WIDTH = 240;
+export const HEADER_MOBILE_HEIGHT = 52;
+export const HEADER_DESKTOP_HEIGHT = 60;
 
 export const MenuIconButton = styled(IconButton)(({ theme }) => ({
   paddingRight: '8px',
@@ -43,13 +43,13 @@ export const StyledRoot = styled(AppBar, {
 }));
 
 export const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  height: HEADER_MOBILE,
+  height: HEADER_MOBILE_HEIGHT,
   padding: theme.spacing(0, 1),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(0, 2)
   },
   [theme.breakpoints.up('lg')]: {
-    minHeight: HEADER_DESKTOP,
+    minHeight: HEADER_DESKTOP_HEIGHT,
     padding: theme.spacing(0, 4)
   }
 }));
