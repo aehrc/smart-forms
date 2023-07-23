@@ -15,21 +15,31 @@
  * limitations under the License.
  */
 
-import { Box, Stack, Typography } from '@mui/material';
+import type { ColumnDef } from '@tanstack/react-table';
+import type { QuestionnaireListItem } from '../types/list.interface.ts';
 
-interface DashboardHeadingProps {
-  headingText: string;
+export function createQuestionnaireTableColumns(): ColumnDef<QuestionnaireListItem>[] {
+  return [
+    {
+      accessorKey: 'title',
+      header: 'Title'
+    },
+    {
+      accessorKey: 'publisher',
+      header: 'Publisher'
+    },
+    {
+      accessorKey: 'date',
+      header: 'Date'
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status'
+    }
+  ];
 }
 
-function DashboardHeading(props: DashboardHeadingProps) {
-  const { headingText } = props;
-
-  return (
-    <Stack direction="row" alignItems="center" mb={3}>
-      <Typography variant="h3">{headingText}</Typography>
-      <Box flexGrow={1} />
-    </Stack>
-  );
-}
-
-export default DashboardHeading;
+// export function createResponseTableColumns(): ColumnDef<ResponseListItem>[] {
+//   return [
+//   ];
+// }

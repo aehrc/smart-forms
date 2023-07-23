@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import filter from 'lodash.filter';
 import * as FHIR from 'fhirclient';
 import type {
   Bundle,
@@ -28,81 +27,10 @@ import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
 import { getQuestionnaireNameFromResponse } from '../../renderer/utils/itemControl.ts';
 import type Client from 'fhirclient/lib/Client';
-import type {
-  ListItem,
-  ListItemWithIndex,
-  QuestionnaireListItem,
-  ResponseListItem
-} from '../types/list.interface.ts';
+import type { QuestionnaireListItem, ResponseListItem } from '../types/list.interface.ts';
 import { HEADERS } from '../../../api/headers.ts';
 
 const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
-
-export function descendingComparator(
-  a: ListItem,
-  b: ListItem,
-  orderBy: keyof QuestionnaireListItem | keyof ResponseListItem,
-  listType: 'questionnaire' | 'response'
-): number {
-  if (listType === 'questionnaire') {
-    orderBy = orderBy as keyof QuestionnaireListItem;
-    a = a as QuestionnaireListItem;
-    b = b as QuestionnaireListItem;
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-  } else {
-    orderBy = orderBy as keyof ResponseListItem;
-    a = a as ResponseListItem;
-    b = b as ResponseListItem;
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-  }
-
-  return 0;
-}
-
-export function getComparator(
-  order: 'asc' | 'desc',
-  orderBy: keyof QuestionnaireListItem | keyof ResponseListItem,
-  listType: 'questionnaire' | 'response'
-): (a: ListItem, b: ListItem) => number {
-  return order === 'desc'
-    ? (a: ListItem, b: ListItem) => descendingComparator(a, b, orderBy, listType)
-    : (a: ListItem, b: ListItem) => -descendingComparator(a, b, orderBy, listType);
-}
-
-export function applySortFilter(
-  array: ListItem[],
-  comparator: (a: ListItem, b: ListItem) => number,
-  source: 'local' | 'remote',
-  query?: string
-): ListItem[] {
-  const stabilizedThis: ListItemWithIndex[] = array.map((el, index) => [index, el]);
-
-  stabilizedThis.sort((a: ListItemWithIndex, b: ListItemWithIndex) => {
-    const order = comparator(a[1], b[1]);
-    if (order !== 0) {
-      return order;
-    }
-
-    return a[0] - b[0];
-  });
-
-  // Perform client-side filtering only when source is local
-  if (query && source === 'local') {
-    return filter(array, (_item) => _item.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-  }
-
-  return stabilizedThis.map((el) => el[1]);
-}
 
 export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
   queryUrl = queryUrl.replace('|', '&version=');
@@ -176,7 +104,7 @@ export function getQuestionnaireListItems(bundle: Bundle | undefined): Questionn
         title: questionnaireTitle,
         avatarColor: randomColor({ luminosity: 'dark', seed: questionnaireTitle + i.toString() }),
         publisher: questionnairePublisher,
-        date: questionnaire.date ? dayjs(questionnaire.date).format() : '—',
+        date: questionnaire.date ? dayjs(questionnaire.date).toDate() : null,
         status: questionnaire.status
       };
       return questionnaireListItem;
@@ -197,7 +125,7 @@ export function getResponseListItems(bundle: Bundle | undefined): ResponseListIt
         title: responseTitle,
         avatarColor: randomColor({ luminosity: 'dark', seed: responseTitle + i.toString() }),
         author: response.author?.display ?? '—',
-        authored: response.authored ?? dayjs(response.authored).format(),
+        authored: response.authored ? dayjs(response.authored).toDate() : null,
         status: response.status
       };
       return responseListItem;

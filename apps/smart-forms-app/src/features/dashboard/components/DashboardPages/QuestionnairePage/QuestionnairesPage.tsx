@@ -16,23 +16,23 @@
  */
 
 import { useContext, useMemo, useState } from 'react';
-import { Card, Container, Fade, Table, TableBody, TableContainer } from '@mui/material';
-import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
-import QuestionnaireListToolbar from './TableComponents/QuestionnaireListToolbar.tsx';
-import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
+import { Card, Container, Fade } from '@mui/material';
 import type { Questionnaire } from 'fhir/r4';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
-import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedback.tsx';
 import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
 import { Helmet } from 'react-helmet';
-import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
-import type { QuestionnaireListItem } from '../../../types/list.interface.ts';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import DashboardHeading from '../DashboardHeading.tsx';
-import QuestionnaireTableRow from './TableComponents/QuestionnaireTableRow.tsx';
-import DashboardTablePagination from '../DashboardTablePagination.tsx';
 import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
-import DashboardTableHead from '../DashboardTableHead.tsx';
+import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
+import { createQuestionnaireTableColumns } from '../../../utils/tableColumns.ts';
+import type { SortingState } from '@tanstack/react-table';
+import {
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable
+} from '@tanstack/react-table';
+import QuestionnaireTable from './QuestionnaireTable.tsx';
 
 const tableHeaders: TableAttributes[] = [
   { id: 'title', label: 'Title', alignRight: false },
@@ -42,17 +42,9 @@ const tableHeaders: TableAttributes[] = [
 ];
 
 function QuestionnairesPage() {
-  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
-
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
     SelectedQuestionnaireContext
   );
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
-  const [orderBy, setOrderBy] = useState<keyof QuestionnaireListItem>('date');
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
@@ -60,45 +52,44 @@ function QuestionnairesPage() {
 
   const {
     remoteQuestionnaires,
-    localQuestionnaires,
     questionnaireListItems,
     fetchStatus,
     fetchError,
     isInitialLoading,
     isFetching
-  } = useFetchQuestionnaires(searchInput, debouncedInput, questionnaireSource);
+  } = useFetchQuestionnaires(searchInput, debouncedInput);
 
-  // sort or perform client-side filtering or items
-  const filteredListItems: QuestionnaireListItem[] = useMemo(
-    () =>
-      applySortFilter(
-        questionnaireListItems,
-        getComparator(order, orderBy, 'questionnaire'),
-        questionnaireSource,
-        debouncedInput
-      ) as QuestionnaireListItem[],
-    [debouncedInput, order, orderBy, questionnaireListItems, questionnaireSource]
-  );
+  const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 
-  const isEmpty = filteredListItems.length === 0 && !!debouncedInput && fetchStatus !== 'loading';
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'date',
+      desc: true
+    }
+  ]);
 
-  // Event handlers
-  const handleSort = (_: MouseEvent, property: keyof QuestionnaireListItem) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+  const table = useReactTable({
+    data: questionnaireListItems,
+    columns: columns,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      sorting
+    }
+  });
 
   const handleRowClick = (id: string) => {
-    const selectedItem = filteredListItems.find((item) => item.id === id);
+    const selectedItem = questionnaireListItems.find((item) => item.id === id);
 
     if (selectedItem) {
       if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
         setSelectedQuestionnaire(null);
       } else {
-        const bundle =
-          questionnaireSource === 'remote' ? remoteQuestionnaires : localQuestionnaires;
-        const resource = bundle?.entry?.find((entry) => entry.resource?.id === id)?.resource;
+        const resource = remoteQuestionnaires?.entry?.find(
+          (entry) => entry.resource?.id === id
+        )?.resource;
 
         if (resource) {
           setSelectedQuestionnaire({
@@ -119,66 +110,23 @@ function QuestionnairesPage() {
       </Helmet>
       <Fade in={true}>
         <Container data-test="dashboard-questionnaires-container">
-          <DashboardHeading headingText="Questionnaires" setPage={setPage} />
+          <DashboardHeading headingText="Questionnaires" />
 
           <Card>
-            <QuestionnaireListToolbar
-              selected={selectedQuestionnaire?.listItem}
+            <QuestionnaireTable
+              table={table}
+              tableHeaders={tableHeaders}
               searchInput={searchInput}
-              onClearSelection={() => setSelectedQuestionnaire(null)}
+              debouncedInput={debouncedInput}
+              fetchStatus={fetchStatus}
+              isInitialLoading={isInitialLoading}
+              isFetching={isFetching}
+              fetchError={fetchError}
               onSearch={(input) => {
-                setPage(0);
+                table.setPageIndex(0);
                 setSearchInput(input);
               }}
-            />
-
-            <Scrollbar>
-              <TableContainer sx={{ minWidth: 600 }}>
-                <Table>
-                  <DashboardTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    headLabel={tableHeaders}
-                    onSort={handleSort}
-                  />
-                  <TableBody>
-                    {filteredListItems
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => {
-                        const { id } = row;
-                        const isSelected = selectedQuestionnaire?.listItem.id === id;
-
-                        return (
-                          <QuestionnaireTableRow
-                            key={id}
-                            row={row}
-                            isSelected={isSelected}
-                            onRowClick={() => handleRowClick(id)}
-                          />
-                        );
-                      })}
-                  </TableBody>
-
-                  {isEmpty || fetchStatus === 'error' || isInitialLoading ? (
-                    <QuestionnaireListFeedback
-                      isEmpty={isEmpty}
-                      isInitialLoading={isInitialLoading}
-                      status={fetchStatus}
-                      searchInput={searchInput}
-                      error={fetchError}
-                    />
-                  ) : null}
-                </Table>
-              </TableContainer>
-            </Scrollbar>
-
-            <DashboardTablePagination
-              isFetching={isFetching}
-              numOfItems={filteredListItems.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              setPage={setPage}
-              setRowsPerPage={setRowsPerPage}
+              onRowClick={handleRowClick}
             />
           </Card>
         </Container>

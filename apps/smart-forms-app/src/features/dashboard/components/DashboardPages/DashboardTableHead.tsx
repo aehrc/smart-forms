@@ -15,36 +15,36 @@
  * limitations under the License.
  */
 
-import type { TableAttributes } from '../../../renderer/types/table.interface.ts';
 import { TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
+import type { Header, SortDirection } from '@tanstack/react-table';
+import type { QuestionnaireListItem, ResponseListItem } from '../../types/list.interface.ts';
 
-interface DashboardTableHeadProps<T> {
-  order: 'asc' | 'desc';
-  orderBy: string;
-  headLabel: TableAttributes[];
-  onSort: (event: MouseEvent, property: keyof T) => void;
+interface DashboardTableHeadProps {
+  headers: Header<QuestionnaireListItem, unknown>[] | Header<ResponseListItem, unknown>[];
 }
 
-function DashboardTableHead<T>(props: DashboardTableHeadProps<T>) {
-  const { order, orderBy, headLabel, onSort } = props;
+function DashboardTableHead(props: DashboardTableHeadProps) {
+  const { headers } = props;
 
   return (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox" />
-        {headLabel.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.alignRight ? 'right' : 'left'}
-            sortDirection={orderBy === headCell.id ? order : false}>
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={(event) => onSort(event as unknown as MouseEvent, headCell.id as keyof T)}>
-              {headCell.label}
-            </TableSortLabel>
-          </TableCell>
-        ))}
+        {headers.map((header) => {
+          const label = (header.column.columnDef.header ?? '') as string;
+          const sortValue = header.column.getIsSorted() as SortDirection | false;
+
+          return (
+            <TableCell key={header.id} sortDirection={sortValue}>
+              <TableSortLabel
+                active={typeof sortValue === 'string'}
+                direction={typeof sortValue === 'string' ? sortValue : undefined}
+                onClick={header.column.getToggleSortingHandler()}>
+                {label}
+              </TableSortLabel>
+            </TableCell>
+          );
+        })}
       </TableRow>
     </TableHead>
   );

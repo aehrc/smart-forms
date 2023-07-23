@@ -51,7 +51,7 @@ function QuestionnaireTableRow(props: QuestionnaireTableRowProps) {
 
       <TableCell align="left">{publisher}</TableCell>
 
-      <TableCell align="left">{dayjs(date).format('LL')}</TableCell>
+      <TableCell align="left">{date ? dayjs(date).format('LL') : '-'}</TableCell>
 
       <TableCell align="left">
         <QuestionnaireLabel color={status}>{status}</QuestionnaireLabel>

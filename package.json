@@ -1,6 +1,7 @@
 {
   "scripts": {
     "lint": "eslint -c .eslintrc.json .",
+    "lint-fix": "eslint -c .eslintrc.json --fix .",
     "check-formatting": "prettier --check ."
   },
   "workspaces": [
