@@ -32,7 +32,6 @@ function ViewExistingResponsesButton() {
 
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
-  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -63,7 +62,6 @@ function ViewExistingResponsesButton() {
         !!selectedQuestionnaire &&
         questionnaireRefParam !== '' &&
         patientIdParam !== '' &&
-        questionnaireSource === 'remote' &&
         !!smartClient
     }
   );
@@ -86,11 +84,7 @@ function ViewExistingResponsesButton() {
     navigate('/dashboard/responses');
   }
 
-  const buttonIsDisabled =
-    !selectedQuestionnaire ||
-    existingResponses.length === 0 ||
-    questionnaireSource === 'local' ||
-    isFetching;
+  const buttonIsDisabled = !selectedQuestionnaire || existingResponses.length === 0 || isFetching;
 
   return (
     <Stack alignItems="center" width={85}>

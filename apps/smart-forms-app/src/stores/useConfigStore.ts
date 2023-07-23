@@ -9,12 +9,10 @@ export interface ConfigState {
   user: Practitioner | null;
   encounter: Encounter | null;
   debugMode: boolean;
-  questionnaireSource: Source;
   setSmartClient: (client: Client) => void;
   setPatient: (patient: Patient) => void;
   setUser: (user: Practitioner) => void;
   setEncounter: (encounter: Encounter) => void;
-  updateQuestionnaireSource: (newSource: Source) => void;
   activateDebugMode: () => void;
 }
 
@@ -24,7 +22,6 @@ const useConfigStore = create<ConfigState>()((set) => ({
   user: null,
   encounter: null,
   debugMode: false,
-  questionnaireSource: 'remote',
   setSmartClient: (client: Client) => set(() => ({ smartClient: client })),
   setPatient: (patient: Patient) => set(() => ({ patient: patient })),
   setUser: (user: Practitioner) => set(() => ({ user: user })),
