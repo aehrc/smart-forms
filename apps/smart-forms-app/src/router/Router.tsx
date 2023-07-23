@@ -19,7 +19,6 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import DashboardLayout from '../features/dashboard/layout/DashboardLayout.tsx';
 import Launch from '../features/smartAppLaunch/components/Launch.tsx';
 import QuestionnairesPage from '../features/dashboard/components/DashboardPages/QuestionnairePage/QuestionnairesPage.tsx';
-import ResponsesPage from '../features/dashboard/components/DashboardPages/ResponsesPage/ResponsesPage.tsx';
 import RendererLayout from '../features/renderer/components/RendererLayout.tsx';
 import FormRenderer from '../features/renderer/components/FormPage/FormRenderer/FormRenderer.tsx';
 import FormPreview from '../features/renderer/components/FormPreviewPage/FormPreview.tsx';
@@ -28,6 +27,7 @@ import ResponsePreview from '../features/viewer/ResponsePreview.tsx';
 import Authorisation from '../features/smartAppLaunch/components/Authorisation.tsx';
 import PlaygroundLayout from '../features/playground/components/PlaygroundLayout.tsx';
 import Playground from '../features/playground/components/Playground.tsx';
+import ResponsesPage from '../features/dashboard/components/DashboardPages/ResponsesPage/ResponsesPage.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([

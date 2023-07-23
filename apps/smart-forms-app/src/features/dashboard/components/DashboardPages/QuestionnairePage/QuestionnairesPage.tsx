@@ -23,7 +23,6 @@ import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestion
 import { Helmet } from 'react-helmet';
 import DashboardHeading from '../DashboardHeading.tsx';
 import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
-import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
 import { createQuestionnaireTableColumns } from '../../../utils/tableColumns.ts';
 import type { SortingState } from '@tanstack/react-table';
 import {
@@ -33,13 +32,6 @@ import {
   useReactTable
 } from '@tanstack/react-table';
 import QuestionnaireTable from './QuestionnaireTable.tsx';
-
-const tableHeaders: TableAttributes[] = [
-  { id: 'title', label: 'Title', alignRight: false },
-  { id: 'publisher', label: 'Publisher', alignRight: false },
-  { id: 'date', label: 'Date', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false }
-];
 
 function QuestionnairesPage() {
   const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
@@ -80,7 +72,7 @@ function QuestionnairesPage() {
     }
   });
 
-  const handleRowClick = (id: string) => {
+  function handleRowClick(id: string) {
     const selectedItem = questionnaireListItems.find((item) => item.id === id);
 
     if (selectedItem) {
@@ -101,7 +93,7 @@ function QuestionnairesPage() {
         }
       }
     }
-  };
+  }
 
   return (
     <>
@@ -110,12 +102,11 @@ function QuestionnairesPage() {
       </Helmet>
       <Fade in={true}>
         <Container data-test="dashboard-questionnaires-container">
-          <DashboardHeading headingText="Questionnaires" />
+          <DashboardHeading>Questionnaires</DashboardHeading>
 
           <Card>
             <QuestionnaireTable
               table={table}
-              tableHeaders={tableHeaders}
               searchInput={searchInput}
               debouncedInput={debouncedInput}
               fetchStatus={fetchStatus}

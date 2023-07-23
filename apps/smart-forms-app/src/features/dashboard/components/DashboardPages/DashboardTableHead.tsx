@@ -17,13 +17,12 @@
 
 import { TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import type { Header, SortDirection } from '@tanstack/react-table';
-import type { QuestionnaireListItem, ResponseListItem } from '../../types/list.interface.ts';
 
-interface DashboardTableHeadProps {
-  headers: Header<QuestionnaireListItem, unknown>[] | Header<ResponseListItem, unknown>[];
+interface DashboardTableHeadProps<T> {
+  headers: Header<T, unknown>[];
 }
 
-function DashboardTableHead(props: DashboardTableHeadProps) {
+function DashboardTableHead<T>(props: DashboardTableHeadProps<T>) {
   const { headers } = props;
 
   return (

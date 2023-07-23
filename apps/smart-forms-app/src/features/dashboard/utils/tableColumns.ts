@@ -16,7 +16,7 @@
  */
 
 import type { ColumnDef } from '@tanstack/react-table';
-import type { QuestionnaireListItem } from '../types/list.interface.ts';
+import type { QuestionnaireListItem, ResponseListItem } from '../types/list.interface.ts';
 
 export function createQuestionnaireTableColumns(): ColumnDef<QuestionnaireListItem>[] {
   return [
@@ -39,7 +39,23 @@ export function createQuestionnaireTableColumns(): ColumnDef<QuestionnaireListIt
   ];
 }
 
-// export function createResponseTableColumns(): ColumnDef<ResponseListItem>[] {
-//   return [
-//   ];
-// }
+export function createResponseTableColumns(): ColumnDef<ResponseListItem>[] {
+  return [
+    {
+      accessorKey: 'title',
+      header: 'Questionnaire Title'
+    },
+    {
+      accessorKey: 'author',
+      header: 'Author'
+    },
+    {
+      accessorKey: 'authored',
+      header: 'Authored On'
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status'
+    }
+  ];
+}

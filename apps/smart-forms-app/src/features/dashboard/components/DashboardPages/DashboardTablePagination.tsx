@@ -17,15 +17,14 @@
 
 import { Box, TablePagination } from '@mui/material';
 import type { Table } from '@tanstack/react-table';
-import type { QuestionnaireListItem } from '../../types/list.interface.ts';
 import type { ReactNode } from 'react';
 
-interface DashboardTablePaginationProps {
-  table: Table<QuestionnaireListItem>;
+interface DashboardTablePaginationProps<T> {
+  table: Table<T>;
   children: ReactNode;
 }
 
-function DashboardTablePagination(props: DashboardTablePaginationProps) {
+function DashboardTablePagination<T>(props: DashboardTablePaginationProps<T>) {
   const { table, children } = props;
 
   const { pageSize, pageIndex } = table.getState().pagination;

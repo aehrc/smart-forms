@@ -21,7 +21,6 @@ import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import QuestionnaireListToolbar from './TableComponents/QuestionnaireListToolbar.tsx';
 import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedback.tsx';
 import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
-import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
 import DashboardTablePagination from '../DashboardTablePagination.tsx';
 import DashboardTableHead from '../DashboardTableHead.tsx';
 import type { QuestionnaireListItem } from '../../../types/list.interface.ts';
@@ -30,7 +29,6 @@ import QuestionnaireTableRow from './TableComponents/QuestionnaireTableRow.tsx';
 
 interface QuestionnaireTableProps {
   table: Table<QuestionnaireListItem>;
-  tableHeaders: TableAttributes[];
   searchInput: string;
   debouncedInput: string;
   fetchStatus: 'error' | 'success' | 'loading';
@@ -78,15 +76,15 @@ function QuestionnaireTable(props: QuestionnaireTableProps) {
             <DashboardTableHead headers={headers} />
             <TableBody>
               {table.getRowModel().rows.map((row) => {
-                const { id } = row.original;
-                const isSelected = selectedQuestionnaire?.listItem.id === id;
+                const rowData = row.original;
+                const isSelected = selectedQuestionnaire?.listItem.id === rowData.id;
 
                 return (
                   <QuestionnaireTableRow
-                    key={id}
-                    row={row.original}
+                    key={rowData.id}
+                    row={rowData}
                     isSelected={isSelected}
-                    onRowClick={() => onRowClick(id)}
+                    onRowClick={() => onRowClick(rowData.id)}
                   />
                 );
               })}

@@ -16,70 +16,61 @@
  */
 
 import { useMemo, useState } from 'react';
-import { Card, Container, Fade, Table, TableBody, TableContainer } from '@mui/material';
-import { applySortFilter, getComparator } from '../../../utils/dashboard.ts';
+import { Card, Container, Fade, Table, TableBody, TableContainer, Typography } from '@mui/material';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import { Helmet } from 'react-helmet';
-import type { TableAttributes } from '../../../../renderer/types/table.interface.ts';
-import type { ResponseListItem, SelectedResponse } from '../../../types/list.interface.ts';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
+import type { SelectedResponse } from '../../../types/list.interface.ts';
 import DashboardHeading from '../DashboardHeading.tsx';
 import ResponseTableRow from './TableComponents/ResponseTableRow.tsx';
 import DashboardTablePagination from '../DashboardTablePagination.tsx';
 import useFetchResponses from '../../../hooks/useFetchResponses.ts';
 import DashboardTableHead from '../DashboardTableHead.tsx';
-
-const tableHeaders: TableAttributes[] = [
-  { id: 'title', label: 'Questionnaire Title', alignRight: false },
-  { id: 'author', label: 'Author', alignRight: false },
-  { id: 'authored', label: 'Authored On', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false }
-];
+import { createResponseTableColumns } from '../../../utils/tableColumns.ts';
+import type { SortingState } from '@tanstack/react-table';
+import {
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable
+} from '@tanstack/react-table';
 
 function ResponsesPage() {
-  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedResponse, setSelectedResponse] = useState<SelectedResponse | null>(null);
-  const [orderBy, setOrderBy] = useState<keyof ResponseListItem>('authored');
   const [searchInput, setSearchInput] = useState('');
 
   const debouncedInput = useDebounce(searchInput, 300);
 
   const { responses, responseListItems, fetchStatus, fetchError, isFetching } = useFetchResponses(
     searchInput,
-    debouncedInput,
-    questionnaireSource
+    debouncedInput
   );
 
-  // sort or perform client-side filtering or items
-  const filteredListItems: ResponseListItem[] = useMemo(
-    () =>
-      applySortFilter(
-        responseListItems,
-        getComparator(order, orderBy, 'response'),
-        questionnaireSource
-      ) as ResponseListItem[],
-    [order, orderBy, responseListItems, questionnaireSource]
-  );
+  const columns = useMemo(() => createResponseTableColumns(), []);
 
-  const isEmpty = filteredListItems.length === 0 && fetchStatus !== 'loading';
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'authored',
+      desc: true
+    }
+  ]);
 
-  // Event handlers
-  const handleSort = (_: MouseEvent, property: keyof ResponseListItem) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+  const table = useReactTable({
+    data: responseListItems,
+    columns: columns,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      sorting
+    }
+  });
 
-  const handleRowClick = (id: string) => {
-    const selectedItem = filteredListItems.find((item) => item.id === id);
+  function handleRowClick(id: string) {
+    const selectedItem = responseListItems.find((item) => item.id === id);
 
     if (selectedItem) {
       if (selectedItem.id === selectedResponse?.listItem.id) {
@@ -97,7 +88,11 @@ function ResponsesPage() {
         }
       }
     }
-  };
+  }
+
+  const headers = table.getHeaderGroups()[0].headers;
+
+  const isEmpty = table.getRowModel().rows.length === 0 && fetchStatus !== 'loading';
 
   return (
     <>
@@ -106,7 +101,7 @@ function ResponsesPage() {
       </Helmet>
       <Fade in={true}>
         <Container data-test="dashboard-responses-container">
-          <DashboardHeading headingText="Responses" setPage={setPage} />
+          <DashboardHeading>Responses</DashboardHeading>
 
           <Card>
             <ResponseListToolbar
@@ -115,39 +110,32 @@ function ResponsesPage() {
               isFetching={isFetching}
               onClearSelection={() => setSelectedResponse(null)}
               onSearch={(input) => {
-                setPage(0);
+                table.setPageIndex(0);
                 setSearchInput(input);
               }}
             />
 
             <TableContainer sx={{ minWidth: 600 }}>
               <Table>
-                <DashboardTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={tableHeaders}
-                  onSort={handleSort}
-                />
+                <DashboardTableHead headers={headers} />
                 <TableBody>
-                  {filteredListItems
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { id } = row;
-                      const isSelected = selectedResponse?.listItem.id === id;
+                  {table.getRowModel().rows.map((row) => {
+                    const rowData = row.original;
+                    const isSelected = selectedResponse?.listItem.id === rowData.id;
 
-                      return (
-                        <ResponseTableRow
-                          key={id}
-                          row={row}
-                          isSelected={isSelected}
-                          onRowClick={() => handleRowClick(id)}
-                        />
-                      );
-                    })}
+                    return (
+                      <ResponseTableRow
+                        key={rowData.id}
+                        row={rowData}
+                        isSelected={isSelected}
+                        onRowClick={() => handleRowClick(rowData.id)}
+                      />
+                    );
+                  })}
                 </TableBody>
 
                 {(isEmpty || fetchStatus === 'error' || fetchStatus === 'loading') &&
-                filteredListItems.length === 0 ? (
+                table.getRowModel().rows.length === 0 ? (
                   <ResponseListFeedback
                     isEmpty={isEmpty}
                     status={fetchStatus}
@@ -158,14 +146,13 @@ function ResponsesPage() {
               </Table>
             </TableContainer>
 
-            <DashboardTablePagination
-              isFetching={isFetching}
-              numOfItems={filteredListItems.length}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              setPage={setPage}
-              setRowsPerPage={setRowsPerPage}
-            />
+            <DashboardTablePagination table={table}>
+              <Fade in={isFetching}>
+                <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
+                  Updating...
+                </Typography>
+              </Fade>
+            </DashboardTablePagination>
           </Card>
         </Container>
       </Fade>

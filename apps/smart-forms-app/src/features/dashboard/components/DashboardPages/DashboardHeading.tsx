@@ -16,17 +16,18 @@
  */
 
 import { Box, Stack, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 
 interface DashboardHeadingProps {
-  headingText: string;
+  children: ReactNode;
 }
 
 function DashboardHeading(props: DashboardHeadingProps) {
-  const { headingText } = props;
+  const { children } = props;
 
   return (
     <Stack direction="row" alignItems="center" mb={3}>
-      <Typography variant="h3">{headingText}</Typography>
+      <Typography variant="h3">{children}</Typography>
       <Box flexGrow={1} />
     </Stack>
   );
