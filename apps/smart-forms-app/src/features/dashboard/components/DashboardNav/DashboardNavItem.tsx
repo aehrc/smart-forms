@@ -18,7 +18,8 @@
 import { ListItemButton, ListItemText, useTheme } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
-import { ReactNode, useContext } from 'react';
+import type { ReactNode } from 'react';
+import { useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../contexts/SelectedQuestionnaireContext.tsx';
 
 export interface DashboardNavItemProps {
