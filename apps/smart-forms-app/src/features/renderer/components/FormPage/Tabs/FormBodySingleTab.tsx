@@ -16,29 +16,25 @@
  */
 
 import { memo } from 'react';
-import {
-  Box,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-  Typography
-} from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import Iconify from '../../../../../components/Iconify/Iconify.tsx';
+import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
+import type { QuestionnaireItem } from 'fhir/r4';
+import { getContextDisplays } from '../../../utils/tabs.ts';
+import GroupHeadingIcon from '../QFormComponents/GroupItem/GroupHeadingIcon.tsx';
 
 interface FormBodySingleTabProps {
+  qItem: QuestionnaireItem;
   selected: boolean;
   tabLabel: string;
   listIndex: number;
-  markedAsComplete: boolean;
 }
 
 const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleTabProps) {
-  const { selected, tabLabel, listIndex, markedAsComplete } = props;
+  const { qItem, selected, tabLabel, listIndex } = props;
 
   const switchTab = useQuestionnaireStore((state) => state.switchTab);
+
+  const contextDisplayItems = getContextDisplays(qItem);
 
   function handleTabClick() {
     switchTab(listIndex);
@@ -46,22 +42,22 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
   }
 
   return (
-    <ListItemButton selected={selected} sx={{ my: 0.5, py: 0.6 }} onClick={handleTabClick}>
-      <ListItemIcon sx={{ minWidth: 36 }}>
-        {markedAsComplete ? (
-          <Tooltip title="Completed">
-            <CheckCircleIcon fontSize="small" color="secondary" />
-          </Tooltip>
-        ) : (
-          <Tooltip title="In progress">
-            <Box display="flex">
-              <Iconify icon={'carbon:in-progress'} />
+    <>
+      <ListItemButton selected={selected} sx={{ my: 0.25, py: 0.75 }} onClick={handleTabClick}>
+        <ListItemText
+          primary={
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Typography variant="subtitle2">{tabLabel}</Typography>
+              <Box display="flex">
+                {contextDisplayItems.map((item) => {
+                  return <GroupHeadingIcon key={item.linkId} displayItem={item} />;
+                })}
+              </Box>
             </Box>
-          </Tooltip>
-        )}
-      </ListItemIcon>
-      <ListItemText primary={<Typography variant="subtitle2">{tabLabel}</Typography>} />
-    </ListItemButton>
+          }
+        />
+      </ListItemButton>
+    </>
   );
 });
 

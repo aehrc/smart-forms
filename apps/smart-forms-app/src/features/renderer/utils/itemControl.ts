@@ -168,7 +168,26 @@ export function getDecimalPrecision(qItem: QuestionnaireItem): number | null {
  * @author Sean Fong
  */
 export function getXHtmlString(qItem: QuestionnaireItem): string | null {
-  const itemControl = qItem.extension?.find(
+  let xHtmlString = null;
+  if (qItem.extension) {
+    xHtmlString = getXHtmlStringFromExtension(qItem.extension);
+    if (xHtmlString) {
+      return xHtmlString;
+    }
+  }
+
+  if (qItem._text?.extension) {
+    xHtmlString = getXHtmlStringFromExtension(qItem._text?.extension);
+    if (xHtmlString) {
+      return xHtmlString;
+    }
+  }
+
+  return null;
+}
+
+export function getXHtmlStringFromExtension(extensions: Extension[]): string | null {
+  const itemControl = extensions?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
   );
@@ -178,6 +197,7 @@ export function getXHtmlString(qItem: QuestionnaireItem): string | null {
       return itemControl.valueString;
     }
   }
+
   return null;
 }
 

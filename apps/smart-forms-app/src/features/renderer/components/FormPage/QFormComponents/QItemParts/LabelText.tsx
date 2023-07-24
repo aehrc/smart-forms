@@ -32,15 +32,16 @@ const LabelText = memo(function LabelText(props: LabelTextProps) {
 
   // parse xHTML if found
   const xHtmlString = getXHtmlString(qItem);
+
   if (xHtmlString) {
-    return <Box sx={{ mt: 0.5 }}>{parse(xHtmlString)}</Box>;
+    return <Box>{parse(xHtmlString)}</Box>;
   }
 
   // parse xHTML if found
   const markdownString = getMarkdownString(qItem);
   if (markdownString) {
     return (
-      <Box sx={{ mt: 0.5 }}>
+      <Box>
         <ReactMarkdown>{markdownString}</ReactMarkdown>
       </Box>
     );
