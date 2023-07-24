@@ -34,9 +34,6 @@ const LabelText = memo(function LabelText(props: LabelTextProps) {
   const xHtmlString = getXHtmlString(qItem);
 
   if (xHtmlString) {
-    if (qItem.text === 'Alert') {
-      console.log(xHtmlString);
-    }
     return <Box>{parse(xHtmlString)}</Box>;
   }
 
