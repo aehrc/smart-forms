@@ -145,11 +145,6 @@ function QItemGroupTable(props: Props) {
                 answeredQrItem.item = nullableQrItem.item;
               }
 
-              console.log('----');
-              console.log(qItem);
-              console.log(answeredQrItem);
-              console.log('----');
-
               return (
                 <TableRow key={nanoId}>
                   <QItemGroupTableRow

@@ -26,7 +26,6 @@ import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import FieldGrid from '../FieldGrid.tsx';
 import BooleanField from './BooleanField.tsx';
-import useInitialiseBooleanFalse from '../../../../hooks/useInitialiseBooleanFalse.ts';
 import { Box } from '@mui/material';
 
 interface BooleanItemProps
@@ -48,8 +47,6 @@ function BooleanItem(props: BooleanItemProps) {
   if (qrItem?.answer && qrItem.answer[0].valueBoolean) {
     checked = qrItem.answer[0].valueBoolean;
   }
-
-  useInitialiseBooleanFalse(qItem, qrItem, onQrItemChange);
 
   // Event handlers
   function handleCheckedChange(newChecked: boolean) {

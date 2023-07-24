@@ -153,7 +153,7 @@ export function readInitialAnswers(
 
   const initialValuesMap: Record<string, QuestionnaireResponseItemAnswer[]> = {};
   questionnaireResponse.item.forEach((item) => {
-    readQuestionnaireResponseItem(item, initialValuesMap, linkedQuestionsMap);
+    readQuestionnaireResponseItemRecursive(item, initialValuesMap, linkedQuestionsMap);
   });
   return initialValuesMap;
 }
@@ -163,7 +163,7 @@ export function readInitialAnswers(
  *
  * @author Sean Fong
  */
-function readQuestionnaireResponseItem(
+function readQuestionnaireResponseItemRecursive(
   item: QuestionnaireResponseItem,
   initialValues: Record<string, QuestionnaireResponseItemAnswer[]>,
   linkedQuestionsMap: Record<string, string[]>
@@ -172,7 +172,7 @@ function readQuestionnaireResponseItem(
   if (items && items.length > 0) {
     // iterate through items of item recursively
     items.forEach((item) => {
-      readQuestionnaireResponseItem(item, initialValues, linkedQuestionsMap);
+      readQuestionnaireResponseItemRecursive(item, initialValues, linkedQuestionsMap);
     });
     return;
   }
@@ -264,6 +264,7 @@ export function assignPopulatedAnswersToEnableWhen(
 ): { initialisedItems: EnableWhenItems; linkedQuestions: Record<string, string[]> } {
   const linkedQuestions = createEnableWhenLinkedQuestions(items);
   const initialAnswers = readInitialAnswers(questionnaireResponse, linkedQuestions);
+  items = initialiseBooleanFalses(items);
 
   const initialisedItems =
     Object.keys(initialAnswers).length > 0
@@ -271,4 +272,32 @@ export function assignPopulatedAnswersToEnableWhen(
       : items;
 
   return { initialisedItems, linkedQuestions };
+}
+
+function initialiseBooleanFalses(items: EnableWhenItems): EnableWhenItems {
+  for (const linkId in items) {
+    const checkedIsEnabledItems: boolean[] = [];
+    const enableWhenItemProperties = items[linkId];
+
+    for (const linkedItem of enableWhenItemProperties.linked) {
+      if (linkedItem.enableWhen.answerBoolean === true && linkedItem.enableWhen.operator === '!=') {
+        checkedIsEnabledItems.push(true);
+        continue;
+      }
+
+      if (linkedItem.enableWhen.answerBoolean === false && linkedItem.enableWhen.operator === '=') {
+        checkedIsEnabledItems.push(true);
+        continue;
+      }
+
+      checkedIsEnabledItems.push(false);
+    }
+
+    enableWhenItemProperties.isEnabled =
+      enableWhenItemProperties.enableBehavior === 'any'
+        ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
+        : checkedIsEnabledItems.every((isEnabled) => isEnabled);
+  }
+
+  return items;
 }
