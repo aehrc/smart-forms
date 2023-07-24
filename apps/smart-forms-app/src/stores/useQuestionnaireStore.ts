@@ -39,6 +39,7 @@ export interface QuestionnaireState {
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   processedValueSetCodings: Record<string, Coding[]>;
+  processedValueSetUrls: Record<string, string>;
   cachedValueSetCodings: Record<string, Coding[]>;
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
@@ -67,6 +68,7 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
   enableWhenLinkedQuestions: {},
   enableWhenIsActivated: true,
   processedValueSetCodings: {},
+  processedValueSetUrls: {},
   cachedValueSetCodings: {},
   buildSourceQuestionnaire: async (questionnaire, questionnaireResponse = emptyResponse) => {
     const questionnaireModel = await createQuestionnaireModel(questionnaire);
@@ -95,7 +97,8 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
-      processedValueSetCodings: questionnaireModel.processedValueSetCodings
+      processedValueSetCodings: questionnaireModel.processedValueSetCodings,
+      processedValueSetUrls: questionnaireModel.processedValueSetUrls
     });
   },
   destroySourceQuestionnaire: () =>
@@ -110,7 +113,8 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       enableWhenExpressions: {},
       calculatedExpressions: {},
       answerExpressions: {},
-      processedValueSetCodings: {}
+      processedValueSetCodings: {},
+      processedValueSetUrls: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
   markTabAsComplete: (tabLinkId: string) => {

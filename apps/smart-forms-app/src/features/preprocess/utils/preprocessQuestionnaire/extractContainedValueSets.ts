@@ -21,14 +21,16 @@ import type { Coding, Questionnaire, ValueSet } from 'fhir/r4';
 
 export function extractContainedValueSets(questionnaire: Questionnaire): {
   processedValueSetCodings: Record<string, Coding[]>;
+  processedValueSetUrls: Record<string, string>;
   valueSetPromises: Record<string, ValueSetPromise>;
 } {
   if (!questionnaire.contained || questionnaire.contained.length === 0) {
-    return { processedValueSetCodings: {}, valueSetPromises: {} };
+    return { processedValueSetCodings: {}, processedValueSetUrls: {}, valueSetPromises: {} };
   }
 
   // Process contained ValueSets
   const processedValueSetCodings: Record<string, Coding[]> = {};
+  const processedValueSetUrls: Record<string, string> = {};
   const valueSetPromises: Record<string, ValueSetPromise> = {};
   for (const entry of questionnaire.contained) {
     if (entry.resourceType !== 'ValueSet' || !entry.id) {
@@ -38,18 +40,24 @@ export function extractContainedValueSets(questionnaire: Questionnaire): {
     if (entry.expansion) {
       // Store contained valueSet codings
       processedValueSetCodings[entry.id] = getValueSetCodings(entry);
-    } else {
-      // Add unexpanded contained ValueSets to valueSetPromiseMap
-      const valueSetUrl = getValueSetUrlFromContained(entry);
-      if (valueSetUrl) {
-        valueSetPromises[entry.id] = {
-          promise: getValueSetPromise(valueSetUrl)
-        };
-      }
+      continue;
+    }
+
+    // Add unexpanded contained ValueSets to valueSetPromiseMap
+    const valueSetUrl = getValueSetUrlFromContained(entry);
+    if (valueSetUrl) {
+      valueSetPromises[entry.id] = {
+        promise: getValueSetPromise(valueSetUrl)
+      };
+      continue;
+    }
+
+    if (entry.url) {
+      processedValueSetUrls[entry.id] = entry.url;
     }
   }
 
-  return { processedValueSetCodings, valueSetPromises };
+  return { processedValueSetCodings, processedValueSetUrls, valueSetPromises };
 }
 
 /**

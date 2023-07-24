@@ -20,6 +20,7 @@ import type { Coding, ValueSet } from 'fhir/r4';
 import { getValueSetCodings, getValueSetPromise } from '../../../utils/valueSet.ts';
 
 import type { AlertColor } from '@mui/material';
+import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 
 function useTerminologyServerQuery(
   answerValueSetUrl: string | undefined,
@@ -28,6 +29,8 @@ function useTerminologyServerQuery(
   searchTerm: string,
   terminologyServerUrl?: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
+  const processedValueSetUrls = useQuestionnaireStore((state) => state.processedValueSetUrls);
+
   let fullUrl = '';
 
   let options: Coding[] = [];
@@ -44,6 +47,15 @@ function useTerminologyServerQuery(
 
   // Restructure url to include filter and count parameters
   if (answerValueSetUrl) {
+    if (answerValueSetUrl.startsWith('#')) {
+      answerValueSetUrl = answerValueSetUrl.slice(1);
+    }
+
+    // attempt to get url from contained value sets when loading questionnaire
+    if (processedValueSetUrls[answerValueSetUrl]) {
+      answerValueSetUrl = processedValueSetUrls[answerValueSetUrl];
+    }
+
     const urlWithTrailingAmpersand =
       answerValueSetUrl + (answerValueSetUrl[answerValueSetUrl.length - 1] !== '&' ? '&' : '');
     fullUrl = urlWithTrailingAmpersand + 'filter=' + searchTerm + '&count=' + maxList;

@@ -43,6 +43,7 @@ export async function createQuestionnaireModel(
   const extractContainedValueSetsResult = extractContainedValueSets(questionnaire);
   let valueSetPromises = extractContainedValueSetsResult.valueSetPromises;
   let processedValueSetCodings = extractContainedValueSetsResult.processedValueSetCodings;
+  const processedValueSetUrls = extractContainedValueSetsResult.processedValueSetUrls;
 
   const extractOtherExtensionsResult = extractOtherExtensions(
     questionnaire,
@@ -72,7 +73,8 @@ export async function createQuestionnaireModel(
     enableWhenExpressions,
     calculatedExpressions,
     answerExpressions,
-    processedValueSetCodings
+    processedValueSetCodings,
+    processedValueSetUrls
   };
 }
 
@@ -85,6 +87,7 @@ function createEmptyModel(): QuestionnaireModel {
     enableWhenExpressions: {},
     answerExpressions: {},
     enableWhenItems: {},
-    processedValueSetCodings: {}
+    processedValueSetCodings: {},
+    processedValueSetUrls: {}
   };
 }
