@@ -5,7 +5,7 @@ export interface QuestionnaireListItem {
   title: string;
   avatarColor: string;
   publisher: string;
-  date: string;
+  date: Date | null;
   status: Questionnaire['status'];
 }
 
@@ -14,12 +14,9 @@ export interface ResponseListItem {
   title: string;
   avatarColor: string;
   author: string;
-  authored: string;
+  authored: Date | null;
   status: QuestionnaireResponse['status'];
 }
-
-export type ListItem = QuestionnaireListItem | ResponseListItem;
-export type ListItemWithIndex = [number, QuestionnaireListItem | ResponseListItem];
 
 export interface SelectedQuestionnaire {
   listItem: QuestionnaireListItem;

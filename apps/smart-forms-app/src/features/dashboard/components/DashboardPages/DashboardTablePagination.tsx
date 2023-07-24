@@ -15,37 +15,34 @@
  * limitations under the License.
  */
 
-import { Box, Fade, TablePagination, Typography } from '@mui/material';
+import { Box, TablePagination } from '@mui/material';
+import type { Table } from '@tanstack/react-table';
+import type { ReactNode } from 'react';
 
-interface TablePaginationProps {
-  isFetching: boolean;
-  numOfItems: number;
-  page: number;
-  rowsPerPage: number;
-  setPage: (page: number) => void;
-  setRowsPerPage: (rowsPerPage: number) => void;
+interface DashboardTablePaginationProps<T> {
+  table: Table<T>;
+  children: ReactNode;
 }
 
-function DashboardTablePagination(props: TablePaginationProps) {
-  const { isFetching, numOfItems, page, rowsPerPage, setPage, setRowsPerPage } = props;
+function DashboardTablePagination<T>(props: DashboardTablePaginationProps<T>) {
+  const { table, children } = props;
+
+  const { pageSize, pageIndex } = table.getState().pagination;
+  const totalNumberOfItems = table.getRowModel().rows.length;
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Fade in={isFetching}>
-        <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
-          Updating...
-        </Typography>
-      </Fade>
+      {children}
       <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
+        rowsPerPageOptions={[10, 25, 50, { label: 'All', value: totalNumberOfItems }]}
         component="div"
-        count={numOfItems}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(_, newPage) => setPage(newPage)}
+        count={table.getFilteredRowModel().rows.length}
+        rowsPerPage={pageSize}
+        page={pageIndex}
+        onPageChange={(_, page) => table.setPageIndex(page)}
         onRowsPerPageChange={(event) => {
-          setRowsPerPage(parseInt(event.target.value));
-          setPage(0);
+          const size = event.target.value ? Number(event.target.value) : 10;
+          table.setPageSize(size);
         }}
       />
     </Box>

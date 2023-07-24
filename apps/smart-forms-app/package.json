@@ -23,6 +23,7 @@
     "@sentry/react": "^7.58.1",
     "@sentry/tracing": "^7.57.0",
     "@tanstack/react-query": "^4.29.5",
+    "@tanstack/react-table": "^8.9.3",
     "allotment": "^1.19.0",
     "dayjs": "^1.11.7",
     "fhirclient": "^2.5.2",

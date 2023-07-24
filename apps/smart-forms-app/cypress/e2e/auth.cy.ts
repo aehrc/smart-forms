@@ -22,11 +22,8 @@ describe('launch app in SMART Launcher', () => {
     const launchPage = 'http://localhost:5173/launch';
 
     it('from launch page, redirect to picker', () => {
-      cy.intercept('/').as('homepage');
-
       cy.visit(launchPage);
-      cy.wait('@homepage').its('response.statusCode').should('eq', 200);
-      cy.location('pathname').should('eq', '/');
+      cy.getByData('button-unlaunched-state');
     });
   });
 

@@ -16,9 +16,7 @@
  */
 
 import { Box, styled } from '@mui/material';
-
-const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 72;
+import { HEADER_DESKTOP_HEIGHT, HEADER_MOBILE_HEIGHT } from '../Header/Header.styles.ts';
 
 export const StyledRoot = styled(Box)({
   display: 'flex',
@@ -30,15 +28,15 @@ export const Main = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   overflow: 'auto',
   minHeight: '100%',
-  paddingTop: APP_BAR_MOBILE + 12,
-  paddingBottom: theme.spacing(4),
+  paddingTop: HEADER_MOBILE_HEIGHT + 8,
+  paddingBottom: theme.spacing(3),
   [theme.breakpoints.up('md')]: {
-    paddingTop: APP_BAR_DESKTOP + 16,
+    paddingTop: HEADER_DESKTOP_HEIGHT + 12,
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1)
   },
   [theme.breakpoints.up('lg')]: {
-    paddingTop: APP_BAR_DESKTOP + 16,
+    paddingTop: HEADER_DESKTOP_HEIGHT + 16,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2)
   }

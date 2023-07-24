@@ -16,7 +16,6 @@
  */
 
 import { useContext, useMemo } from 'react';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { getClientBundlePromise, getResponsesFromBundle } from '../../../../utils/dashboard.ts';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
@@ -24,15 +23,15 @@ import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuest
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
-import { CircularProgress } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import GradingIcon from '@mui/icons-material/Grading';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
 
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
-  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -63,7 +62,6 @@ function ViewExistingResponsesButton() {
         !!selectedQuestionnaire &&
         questionnaireRefParam !== '' &&
         patientIdParam !== '' &&
-        questionnaireSource === 'remote' &&
         !!smartClient
     }
   );
@@ -86,29 +84,37 @@ function ViewExistingResponsesButton() {
     navigate('/dashboard/responses');
   }
 
+  const buttonIsDisabled = !selectedQuestionnaire || existingResponses.length === 0 || isFetching;
+
   return (
-    <LoadingButton
-      variant="contained"
-      disabled={
-        !selectedQuestionnaire ||
-        existingResponses.length === 0 ||
-        questionnaireSource === 'local' ||
-        isFetching
-      }
-      endIcon={
-        isFetching && selectedQuestionnaire ? (
-          <CircularProgress size={16} color="inherit" sx={{ ml: 0.5 }} />
-        ) : data && existingResponses.length === 0 ? null : (
-          <Iconify icon="material-symbols:arrow-forward" />
-        )
-      }
-      data-test="button-view-responses"
-      sx={{ width: 175 }}
-      onClick={handleClick}>
-      {data && existingResponses.length === 0 && !isFetching
-        ? 'No Responses Found'
-        : 'View Responses'}
-    </LoadingButton>
+    <Stack alignItems="center" width={85}>
+      <IconButton
+        disabled={buttonIsDisabled}
+        color="primary"
+        onClick={handleClick}
+        data-test="button-view-responses">
+        {isFetching && selectedQuestionnaire ? (
+          <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
+        ) : data && existingResponses.length === 0 ? (
+          <HighlightOffIcon />
+        ) : (
+          <GradingIcon />
+        )}
+      </IconButton>
+
+      <Typography
+        fontSize={8.25}
+        variant="subtitle2"
+        color={buttonIsDisabled ? 'text.disabled' : 'primary'}
+        textAlign="center"
+        sx={{ mt: -0.5, mb: 0.5 }}>
+        {isFetching && selectedQuestionnaire
+          ? 'Loading responses'
+          : data && existingResponses.length === 0
+          ? 'No responses found'
+          : 'View responses'}
+      </Typography>
+    </Stack>
   );
 }
 

@@ -30,6 +30,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../../types/renderProps.interface.ts';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
+import { Fragment } from 'react';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -77,28 +78,32 @@ function QItemChoiceSelectAnswerOption(props: Props) {
       endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
       sx={{ maxWidth: !isTabled ? 280 : 3000 }}
       onChange={handleChange}>
-      {qItem.answerOption?.map((option) => {
+      {qItem.answerOption?.map((option, index) => {
         if (option['valueCoding']) {
           return (
             <MenuItem key={option.valueCoding.code} value={option.valueCoding.code}>
               {option.valueCoding.display ?? option.valueCoding.code}
             </MenuItem>
           );
-        } else if (option['valueString']) {
+        }
+
+        if (option['valueString']) {
           return (
             <MenuItem key={option.valueString} value={option.valueString}>
               {option.valueString}
             </MenuItem>
           );
-        } else if (option['valueInteger']) {
+        }
+
+        if (option['valueInteger']) {
           return (
             <MenuItem key={option.valueInteger} value={option.valueInteger.toString()}>
               {option.valueInteger}
             </MenuItem>
           );
-        } else {
-          return null;
         }
+
+        return <Fragment key={index} />;
       })}
     </Select>
   );

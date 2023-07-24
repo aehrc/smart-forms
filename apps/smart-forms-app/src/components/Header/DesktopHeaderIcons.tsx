@@ -15,23 +15,26 @@
  * limitations under the License.
  */
 
-import { Avatar, Box, useTheme } from '@mui/material';
+import { Avatar, Box, Typography, useTheme } from '@mui/material';
 import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography.tsx';
 import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import useConfigStore from '../../stores/useConfigStore.ts';
 
-function DesktopHeader() {
+function DesktopHeaderIcons() {
   const user = useConfigStore((state) => state.user);
 
   const theme = useTheme();
 
   return (
-    <Box display="flex" alignItems="center" gap={1.5}>
-      <Avatar sx={{ bgcolor: theme.palette.error.main }}>
+    <Box display="flex" alignItems="center" columnGap={1.5}>
+      <Avatar sx={{ bgcolor: theme.palette.error.main, height: 38, width: 38 }}>
         <MedicalServicesIcon sx={{ color: theme.palette.common.white }} />
       </Avatar>
       <Box>
+        <Typography fontSize={10} variant="subtitle1" color={'text.secondary'}>
+          User
+        </Typography>
         <AccountNameTypography name={user ? constructName(user.name) : 'No User'} />
         {user && user.gender ? <AccountDetailsTypography details={`${user.gender}`} /> : null}
       </Box>
@@ -39,4 +42,4 @@ function DesktopHeader() {
   );
 }
 
-export default DesktopHeader;
+export default DesktopHeaderIcons;

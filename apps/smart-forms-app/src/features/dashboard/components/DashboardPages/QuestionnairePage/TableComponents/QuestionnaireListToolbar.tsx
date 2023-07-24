@@ -15,38 +15,38 @@
  * limitations under the License.
  */
 
-import { Box, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material';
+import { Box, InputAdornment, Typography } from '@mui/material';
+
 import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
-import { StyledRoot, StyledSearch } from './QuestionnaireListToolbar.styles.ts';
+import {
+  getQuestionnaireToolBarColors,
+  StyledRoot,
+  StyledSearch
+} from './QuestionnaireListToolbar.styles.ts';
 import type { QuestionnaireListItem } from '../../../../types/list.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
+import QuestionnaireListToolbarButtons from './QuestionnaireListToolbarButtons.tsx';
 
-interface Props {
+interface QuestionnaireListToolbarProps {
   selected: QuestionnaireListItem | undefined;
   searchInput: string;
-  clearSelection: () => void;
+  onClearSelection: () => void;
   onSearch: (searchInput: string) => void;
 }
 
-function QuestionnaireListToolbar(props: Props) {
-  const { selected, searchInput, clearSelection, onSearch } = props;
+function QuestionnaireListToolbar(props: QuestionnaireListToolbarProps) {
+  const { selected, searchInput, onClearSelection, onSearch } = props;
 
   const [alertVisible, setAlertVisible] = useState(true);
 
+  const toolBarColors = getQuestionnaireToolBarColors(selected);
+
   return (
-    <StyledRoot
-      sx={{
-        ...(selected && {
-          color: 'primary.main',
-          bgcolor: 'pale.primary'
-        })
-      }}>
+    <StyledRoot sx={{ ...toolBarColors }}>
       {selected ? (
-        <Typography component="div" variant="subtitle1">
-          {selected.title} selected
-        </Typography>
+        <Typography variant="subtitle1">{selected.title} selected</Typography>
       ) : (
         <StyledSearch
           value={searchInput}
@@ -74,13 +74,7 @@ function QuestionnaireListToolbar(props: Props) {
         </StyledAlert>
       ) : null}
 
-      {selected ? (
-        <Tooltip title="Clear">
-          <IconButton onClick={clearSelection}>
-            <Iconify icon="ic:baseline-clear" />
-          </IconButton>
-        </Tooltip>
-      ) : null}
+      {selected ? <QuestionnaireListToolbarButtons onClearSelection={onClearSelection} /> : null}
     </StyledRoot>
   );
 }

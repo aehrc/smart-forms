@@ -21,7 +21,7 @@ export const StyledAvatar = styled(Avatar, {
   shouldForwardProp: (prop) => prop !== 'avatarColor'
 })<{ avatarColor: string }>(({ avatarColor }) => ({
   backgroundColor: avatarColor,
-  margin: '12px 4px 12px 10px',
+  margin: '10px 4px 10px 10px',
   width: '36px',
   height: '36px'
 }));

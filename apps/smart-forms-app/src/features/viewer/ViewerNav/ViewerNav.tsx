@@ -29,8 +29,7 @@ import { NavErrorAlertWrapper } from '../../../components/Nav/Nav.styles.ts';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
 import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
-
-const NAV_WIDTH = 240;
+import { NAV_WIDTH } from '../../../components/Header/Header.styles.ts';
 
 interface Props {
   openNav: boolean;
@@ -56,7 +55,7 @@ function ViewerNav(props: Props) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
       }}>
       <NavLogoWrapper>
-        <Logo />
+        <Logo isNav />
       </NavLogoWrapper>
 
       <NavPatientDetails />

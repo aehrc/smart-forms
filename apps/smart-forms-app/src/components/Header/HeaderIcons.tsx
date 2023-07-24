@@ -15,28 +15,21 @@
  * limitations under the License.
  */
 
-import { Card, Container, Fade } from '@mui/material';
-import { Helmet } from 'react-helmet';
-import PageHeading from '../PageHeading.tsx';
-import QuestionnaireTable from './QuestionnaireTable.tsx';
+import DesktopHeaderIcons from './DesktopHeaderIcons.tsx';
+import MobileHeaderIcons from './MobileHeaderIcons.tsx';
+import { Stack } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import useResponsive from '../../hooks/useResponsive.ts';
 
-function QuestionnairesPage() {
+function HeaderIcons() {
+  const theme = useTheme();
+  const isDesktop = useResponsive('up', 'lg');
+
   return (
-    <>
-      <Helmet>
-        <title>Questionnaires</title>
-      </Helmet>
-      <Fade in={true}>
-        <Container data-test="dashboard-questionnaires-container">
-          <PageHeading>Questionnaires</PageHeading>
-
-          <Card>
-            <QuestionnaireTable />
-          </Card>
-        </Container>
-      </Fade>
-    </>
+    <Stack direction="row" alignItems="center" sx={{ color: theme.palette.grey['700'] }}>
+      {isDesktop ? <DesktopHeaderIcons /> : <MobileHeaderIcons />}
+    </Stack>
   );
 }
 
-export default QuestionnairesPage;
+export default HeaderIcons;

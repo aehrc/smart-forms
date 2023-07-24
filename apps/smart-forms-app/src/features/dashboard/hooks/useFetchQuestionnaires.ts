@@ -17,19 +17,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle } from 'fhir/r4';
-import {
-  constructBundle,
-  getFormsServerBundlePromise,
-  getQuestionnaireListItems
-} from '../utils/dashboard.ts';
+import { getFormsServerBundlePromise, getQuestionnaireListItems } from '../utils/dashboard.ts';
 import { useMemo } from 'react';
-import { loadQuestionnairesFromLocal } from '../../../api/local.ts';
 import type { QuestionnaireListItem } from '../types/list.interface.ts';
-import type { Source } from '../../../types/source.interface.ts';
 
 interface useFetchQuestionnairesReturnParams {
   remoteQuestionnaires: Bundle | undefined;
-  localQuestionnaires: Bundle;
   questionnaireListItems: QuestionnaireListItem[];
   fetchStatus: 'error' | 'success' | 'loading';
   fetchError: unknown;
@@ -39,8 +32,7 @@ interface useFetchQuestionnairesReturnParams {
 
 function useFetchQuestionnaires(
   searchInput: string,
-  debouncedInput: string,
-  questionnaireSource: Source
+  debouncedInput: string
 ): useFetchQuestionnairesReturnParams {
   const numOfSearchEntries = 100;
 
@@ -59,24 +51,14 @@ function useFetchQuestionnaires(
     enabled: debouncedInput === searchInput
   });
 
-  // load local questionnaires to be used if source is local
-  const localQuestionnaires: Bundle = useMemo(
-    () => constructBundle(loadQuestionnairesFromLocal()),
-    []
-  );
-
   // construct questionnaire list items for data display
   const questionnaireListItems: QuestionnaireListItem[] = useMemo(
-    () =>
-      getQuestionnaireListItems(
-        questionnaireSource === 'remote' ? remoteQuestionnaires : localQuestionnaires
-      ),
-    [remoteQuestionnaires, localQuestionnaires, questionnaireSource]
+    () => getQuestionnaireListItems(remoteQuestionnaires),
+    [remoteQuestionnaires]
   );
 
   return {
     remoteQuestionnaires,
-    localQuestionnaires,
     questionnaireListItems,
     fetchStatus: status,
     fetchError: error,

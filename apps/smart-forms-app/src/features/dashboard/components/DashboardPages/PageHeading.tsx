@@ -15,28 +15,21 @@
  * limitations under the License.
  */
 
-import { Card, Container, Fade } from '@mui/material';
-import { Helmet } from 'react-helmet';
-import PageHeading from '../PageHeading.tsx';
-import QuestionnaireTable from './QuestionnaireTable.tsx';
+import { Box, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 
-function QuestionnairesPage() {
+interface PageHeadingProps {
+  children: ReactNode;
+}
+
+function PageHeading(props: PageHeadingProps) {
+  const { children } = props;
+
   return (
-    <>
-      <Helmet>
-        <title>Questionnaires</title>
-      </Helmet>
-      <Fade in={true}>
-        <Container data-test="dashboard-questionnaires-container">
-          <PageHeading>Questionnaires</PageHeading>
-
-          <Card>
-            <QuestionnaireTable />
-          </Card>
-        </Container>
-      </Fade>
-    </>
+    <Box mb={1.5}>
+      <Typography variant="h4">{children}</Typography>
+    </Box>
   );
 }
 
-export default QuestionnairesPage;
+export default PageHeading;

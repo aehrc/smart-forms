@@ -16,7 +16,7 @@
  */
 
 import { useContext, useEffect, useRef } from 'react';
-import { Box, Card, Container, Fade, Typography } from '@mui/material';
+import { Box, Card, Container, Fade } from '@mui/material';
 import ViewerInvalid from '../renderer/components/FormPage/ViewerInvalid.tsx';
 import { PrintComponentRefContext } from './ViewerLayout.tsx';
 import { removeHiddenAnswers } from '../save/api/saveQr.ts';
@@ -25,6 +25,7 @@ import { qrToHTML } from '../preview/utils/preview.ts';
 import { Helmet } from 'react-helmet';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore.ts';
+import PageHeading from '../dashboard/components/DashboardPages/PageHeading.tsx';
 
 function ResponsePreview() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -59,7 +60,6 @@ function ResponsePreview() {
     enableWhenExpressions
   });
 
-  // TODO fix the additional group title "Emergency contact"
   const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
 
   return (
@@ -68,10 +68,8 @@ function ResponsePreview() {
         <title>{questionnaire.title ? questionnaire.title : 'Response Preview'}</title>
       </Helmet>
       <Fade in={true} timeout={500}>
-        <Container>
-          <Box mb={3}>
-            <Typography variant="h3">Response Preview</Typography>
-          </Box>
+        <Container sx={{ mt: 2 }}>
+          <PageHeading>Response Preview</PageHeading>
           <Card sx={{ mb: 2 }}>
             <Box ref={componentRef} sx={{ p: 4 }} data-test="response-preview-box">
               <>{parsedHTML}</>

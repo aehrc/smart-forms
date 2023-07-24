@@ -19,6 +19,7 @@ import type { PropsWithIsTabledAttribute } from '../../../../types/renderProps.i
 import type { Dayjs } from 'dayjs';
 import { DateTimePicker as MuiDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Box } from '@mui/material';
 
 interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
@@ -33,20 +34,21 @@ function DateTimeField(props: DateTimeFieldProps) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <MuiDateTimePicker
-        format={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY hh:mm A'}
-        value={value}
-        disabled={readOnly}
-        label={displayPrompt}
-        sx={{ maxWidth: !isTabled ? 280 : 3000 }}
-        onChange={onDateTimeChange}
-        slotProps={{
-          textField: {
-            fullWidth: true
-          }
-        }}
-        data-test="q-item-date-time-field"
-      />
+      <Box data-test="q-item-date-time-field">
+        <MuiDateTimePicker
+          format={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY hh:mm A'}
+          value={value}
+          disabled={readOnly}
+          label={displayPrompt}
+          sx={{ maxWidth: !isTabled ? 280 : 3000 }}
+          onChange={onDateTimeChange}
+          slotProps={{
+            textField: {
+              fullWidth: true
+            }
+          }}
+        />
+      </Box>
     </LocalizationProvider>
   );
 }

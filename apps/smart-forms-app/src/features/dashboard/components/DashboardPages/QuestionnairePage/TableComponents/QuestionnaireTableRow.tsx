@@ -46,20 +46,14 @@ function QuestionnaireTableRow(props: QuestionnaireTableRowProps) {
       </TableCell>
 
       <TableCell scope="row" sx={{ maxWidth: 240 }}>
-        <Typography variant="subtitle2" sx={{ textTransform: 'Capitalize' }}>
-          {title}
-        </Typography>
+        <Typography variant="subtitle2">{title}</Typography>
       </TableCell>
 
-      <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-        {publisher}
-      </TableCell>
+      <TableCell>{publisher}</TableCell>
 
-      <TableCell align="left" sx={{ textTransform: 'Capitalize' }}>
-        {dayjs(date).format('LL')}
-      </TableCell>
+      <TableCell>{date ? dayjs(date).format('LL') : '-'}</TableCell>
 
-      <TableCell align="left">
+      <TableCell>
         <QuestionnaireLabel color={status}>{status}</QuestionnaireLabel>
       </TableCell>
     </TableRow>

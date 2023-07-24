@@ -75,7 +75,6 @@ function Authorisation() {
   const setPatient = useConfigStore((state) => state.setPatient);
   const setUser = useConfigStore((state) => state.setUser);
   const setEncounter = useConfigStore((state) => state.setEncounter);
-  const updateQuestionnaireSource = useConfigStore((state) => state.updateQuestionnaireSource);
 
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
 
@@ -89,7 +88,6 @@ function Authorisation() {
         .then((client) => {
           // Set SMART client
           setSmartClient(client);
-          updateQuestionnaireSource('remote');
           sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 

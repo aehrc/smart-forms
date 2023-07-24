@@ -25,7 +25,6 @@ import {
 import { useContext, useMemo } from 'react';
 import type { ResponseListItem } from '../types/list.interface.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
-import type { Source } from '../../../types/source.interface.ts';
 import { SelectedQuestionnaireContext } from '../contexts/SelectedQuestionnaireContext.tsx';
 
 interface useFetchResponsesReturnParams {
@@ -38,8 +37,7 @@ interface useFetchResponsesReturnParams {
 
 function useFetchResponses(
   searchInput: string,
-  debouncedInput: string,
-  questionnaireSource: Source
+  debouncedInput: string
 ): useFetchResponsesReturnParams {
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
@@ -63,7 +61,7 @@ function useFetchResponses(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => getClientBundlePromise(smartClient!, queryUrl),
     {
-      enabled: questionnaireSource === 'remote' && !!smartClient && debouncedInput === searchInput
+      enabled: !!smartClient && debouncedInput === searchInput
     }
   );
 

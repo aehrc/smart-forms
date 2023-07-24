@@ -17,9 +17,9 @@
 
 import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
 import type { LaunchState } from './Launch.tsx';
-import { useNavigate } from 'react-router-dom';
-import { Button, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import CenteredWrapper from '../../../components/Wrapper/CenteredWrapper.tsx';
+import UnlaunchedButton from '../../../components/Button/UnlaunchedButton.tsx';
 
 interface LaunchViewProps {
   launchState: LaunchState;
@@ -27,8 +27,6 @@ interface LaunchViewProps {
 
 function LaunchView(props: LaunchViewProps) {
   const { launchState } = props;
-
-  const navigate = useNavigate();
 
   if (launchState === 'error') {
     return (
@@ -41,15 +39,8 @@ function LaunchView(props: LaunchViewProps) {
             {'Please contact your administrator for assistance.'}
           </Typography>
         </Stack>
-        <Button
-          variant="contained"
-          color="warning"
-          sx={{ mt: 6 }}
-          onClick={() => {
-            navigate('/dashboard/questionnaires');
-          }}>
-          Proceed in unlaunched state
-        </Button>
+
+        <UnlaunchedButton />
       </CenteredWrapper>
     );
   }

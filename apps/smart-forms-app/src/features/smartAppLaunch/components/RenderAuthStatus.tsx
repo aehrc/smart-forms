@@ -16,20 +16,12 @@
  */
 
 import { useState } from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  Typography
-} from '@mui/material';
-import ErrorIcon from '@mui/icons-material/Error';
+import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Iconify from '../../../components/Iconify/Iconify.tsx';
 import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
-import { useNavigate } from 'react-router-dom';
 import type { AuthState } from '../types/authorisation.interface.ts';
+import CenteredWrapper from '../../../components/Wrapper/CenteredWrapper.tsx';
+import UnlaunchedButton from '../../../components/Button/UnlaunchedButton.tsx';
 
 interface RenderAuthStatusProps {
   authState: AuthState;
@@ -40,19 +32,18 @@ function RenderAuthStatus(props: RenderAuthStatusProps) {
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const navigate = useNavigate();
+  const launchFailed =
+    authState.hasClient === false || authState.hasUser === false || authState.hasPatient === false;
 
-  if (
-    authState.hasClient === false ||
-    authState.hasUser === false ||
-    authState.hasPatient === false
-  ) {
+  if (launchFailed) {
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-        <ErrorIcon color="error" sx={{ fontSize: 80 }} />
-        <Box textAlign="center">
-          <Typography variant="subtitle1">Launch failed.</Typography>
-        </Box>
+      <CenteredWrapper>
+        <Stack rowGap={2}>
+          <Typography variant="h3">An error occurred while authorising the launch.</Typography>
+          <Typography fontSize={13}>
+            {'Try relaunching the app or contact your administrator for assistance.'}
+          </Typography>
+        </Stack>
 
         {authState.errorMessage ? (
           <Accordion expanded={isExpanded} onChange={(_, expanded) => setIsExpanded(expanded)}>
@@ -64,19 +55,8 @@ function RenderAuthStatus(props: RenderAuthStatusProps) {
             </AccordionDetails>
           </Accordion>
         ) : null}
-
-        <Box display="flex" flexDirection="row-reverse" width="100%">
-          <Button
-            variant="contained"
-            endIcon={<Iconify icon="material-symbols:arrow-forward" />}
-            data-test="button-create-response"
-            onClick={() => {
-              navigate('/dashboard/questionnaires');
-            }}>
-            Proceed to app anyway
-          </Button>
-        </Box>
-      </Box>
+        <UnlaunchedButton />
+      </CenteredWrapper>
     );
   }
 

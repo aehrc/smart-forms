@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import FaceIcon from '@mui/icons-material/Face';
 import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
@@ -37,6 +37,9 @@ function NavPatientDetails() {
       <FaceIcon fontSize="large" sx={{ color: theme.palette.primary.dark }} />
 
       <Box>
+        <Typography fontSize={10} variant="subtitle1" color={'text.secondary'}>
+          Patient
+        </Typography>
         <AccountNameTypography name={patient ? constructName(patient.name) : 'No Patient'} />
         {patient ? (
           <>

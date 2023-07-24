@@ -16,7 +16,6 @@
  */
 
 import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
-import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import DashboardFeedbackMessage from '../../DashboardFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 
@@ -30,14 +29,12 @@ interface Props {
 function ResponseListFeedback(props: Props) {
   const { isEmpty, status, searchInput, error } = props;
 
-  const questionnaireSource = useConfigStore((state) => state.questionnaireSource);
-
   const { enqueueSnackbar } = useSnackbar();
 
   let feedbackType: 'error' | 'empty' | 'loading' | null = null;
   if (status === 'error') {
     feedbackType = 'error';
-  } else if (status === 'loading' && questionnaireSource === 'remote') {
+  } else if (status === 'loading') {
     feedbackType = 'loading';
   } else if (isEmpty) {
     feedbackType = 'empty';

@@ -50,7 +50,7 @@ describe('populate form', () => {
   it('form items in Patient Details tab have expected populated answers', () => {
     cy.goToPatientDetailsTab();
 
-    cy.getByData('q-item-string-box').eq(0).find('input').should('have.value', 'Benito Lucio');
+    cy.getByData('q-item-string-box').eq(0).find('input').should('have.value', 'Lucio, Benito Mr.');
     cy.getByData('q-item-date-box').eq(0).find('input').should('have.value', '18/08/1936');
 
     cy.getByData('q-item-choice-radio-answer-value-set-box')
@@ -97,7 +97,7 @@ describe('populate form', () => {
     cy.previewForm();
 
     cy.getByData('response-item-text').contains('Name');
-    cy.getByData('response-item-answer').contains('Benito Lucio');
+    cy.getByData('response-item-answer').contains('Lucio, Benito Mr.');
 
     cy.getByData('response-item-text').contains('Date of birth');
     cy.getByData('response-item-answer').contains('18/08/1936');

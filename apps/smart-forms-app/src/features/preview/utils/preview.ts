@@ -30,7 +30,7 @@ export function qrToHTML(
 ): string {
   if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) return '';
 
-  let QrHtml = `<div style="font-size:24px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
+  let QrHtml = `<div style="font-size:20px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
 
   for (const topLevelQRItem of questionnaireResponse.item) {
     const topLevelQRItemHTML = qrItemToHTML(topLevelQRItem);

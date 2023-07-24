@@ -28,8 +28,7 @@ import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import { NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { NavErrorAlertWrapper } from '../../../../components/Nav/Nav.styles.ts';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
-
-const NAV_WIDTH = 240;
+import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 
 interface Props {
   openNav: boolean;
@@ -54,7 +53,7 @@ function RendererNav(props: Props) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
       }}>
       <NavLogoWrapper>
-        <Logo />
+        <Logo isNav />
       </NavLogoWrapper>
 
       <NavPatientDetails />

@@ -15,18 +15,10 @@
  * limitations under the License.
  */
 
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  LinearProgress,
-  Tooltip,
-  Typography,
-  useTheme
-} from '@mui/material';
+import { Box, InputAdornment, LinearProgress, Typography } from '@mui/material';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import {
-  getToolBarColors,
+  getResponseToolBarColors,
   StyledRoot,
   StyledSearch
 } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
@@ -34,31 +26,36 @@ import dayjs from 'dayjs';
 import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
-import { constructName } from '../../../../../smartAppLaunch/utils/launchContext.ts';
-import type { ResponseListItem } from '../../../../types/list.interface.ts';
-import useConfigStore from '../../../../../../stores/useConfigStore.ts';
+import type { SelectedResponse } from '../../../../types/list.interface.ts';
+import BackToQuestionnairesButton from '../Buttons/BackToQuestionnairesButton.tsx';
+import ResponseListToolbarButtons from './ResponseListToolbarButtons.tsx';
+import useResponsive from '../../../../../../hooks/useResponsive.ts';
 
-interface Props {
-  selected: ResponseListItem | undefined;
+interface ResponseListToolbarProps {
+  selectedResponse: SelectedResponse | null;
   searchInput: string;
   isFetching: boolean;
-  clearSelection: () => void;
+  onClearSelection: () => void;
   onSearch: (searchInput: string) => void;
 }
 
-function ResponseListToolbar(props: Props) {
-  const { selected, searchInput, isFetching, clearSelection, onSearch } = props;
+function ResponseListToolbar(props: ResponseListToolbarProps) {
+  const { selectedResponse, searchInput, isFetching, onClearSelection, onSearch } = props;
 
-  const { selectedQuestionnaire, existingResponses, clearSelectedQuestionnaire } = useContext(
-    SelectedQuestionnaireContext
-  );
-  const patient = useConfigStore((state) => state.patient);
-  const theme = useTheme();
+  const { selectedQuestionnaire, existingResponses } = useContext(SelectedQuestionnaireContext);
+
+  const isTabletAndUp = useResponsive('up', 'md');
 
   const selectedQuestionnaireTitle =
     selectedQuestionnaire?.listItem.title ?? 'selected questionnaire';
 
-  const toolBarColors = getToolBarColors(selected, selectedQuestionnaire, existingResponses);
+  const selected = selectedResponse?.listItem;
+
+  const toolBarColors = getResponseToolBarColors(
+    selected,
+    selectedQuestionnaire,
+    existingResponses
+  );
 
   return (
     <>
@@ -68,9 +65,12 @@ function ResponseListToolbar(props: Props) {
             {selected.title} — {dayjs(selected.authored).format('LL')} selected
           </Typography>
         ) : selectedQuestionnaire && existingResponses.length > 0 ? (
-          <Typography variant="subtitle1">
-            Displaying responses from the <b>{selectedQuestionnaireTitle}</b> questionnaire
-          </Typography>
+          <Box display="flex" alignItems="center">
+            <BackToQuestionnairesButton />
+            <Typography variant="subtitle1">
+              Displaying responses from the <b>{selectedQuestionnaireTitle}</b> questionnaire
+            </Typography>
+          </Box>
         ) : (
           <StyledSearch
             value={searchInput}
@@ -87,32 +87,16 @@ function ResponseListToolbar(props: Props) {
             data-test="search-field-responses"
             sx={{
               '&.Mui-focused': {
-                width: '50%',
-                boxShadow: theme.customShadows.z4
+                width: isTabletAndUp ? `50%` : '320px'
               }
             }}
           />
         )}
 
-        {selected ? (
-          <Tooltip title="Clear">
-            <IconButton onClick={clearSelection}>
-              <Iconify icon="ic:baseline-clear" />
-            </IconButton>
-          </Tooltip>
-        ) : selectedQuestionnaire && existingResponses.length > 0 ? (
-          <Tooltip title="Remove questionnaire filter">
-            <IconButton
-              onClick={() => clearSelectedQuestionnaire()}
-              data-test="button-remove-questionnaire-filter">
-              <Iconify icon="material-symbols:filter-alt-off-outline" />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Typography variant="subtitle1">
-            Showing responses for <b>{constructName(patient?.name)}</b>
-          </Typography>
-        )}
+        <ResponseListToolbarButtons
+          selectedResponse={selectedResponse}
+          onClearSelection={onClearSelection}
+        />
       </StyledRoot>
       {isFetching ? <LinearProgress /> : <Box pt={0.5} sx={{ ...toolBarColors }} />}
     </>

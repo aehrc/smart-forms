@@ -16,46 +16,40 @@
  */
 
 import PopupState, { bindPopover, bindTrigger } from 'material-ui-popup-state';
-import { Avatar, IconButton, Popover } from '@mui/material';
+import { Avatar, IconButton, Popover, Stack, Typography } from '@mui/material';
+import type { ReactElement } from 'react';
 
-interface PersonPopoverProps {
+interface HeaderPopoverProps {
+  entity: 'Patient' | 'User' | 'Form';
   bgColor: string;
-  displayIcon: JSX.Element;
-  menuContent: JSX.Element;
+  displayIcon: ReactElement;
+  menuContent: ReactElement;
 }
 
-function PersonPopover(props: PersonPopoverProps) {
-  const { bgColor, displayIcon, menuContent } = props;
+function HeaderPopover(props: HeaderPopoverProps) {
+  const { entity, bgColor, displayIcon, menuContent } = props;
 
   return (
     <>
       <PopupState
         variant="popover"
-        popupId="patient-details-popover"
+        popupId="header-popover"
         disableAutoFocus={true}
         parentPopupState={null}>
         {(popupState) => (
           <div>
-            <Avatar sx={{ bgcolor: bgColor, m: 0.5 }}>
-              <IconButton {...bindTrigger(popupState)}>{displayIcon}</IconButton>
-            </Avatar>
+            <Stack alignItems="center" mt={0.5} ml={1.25}>
+              <Avatar sx={{ bgcolor: bgColor, width: 34, height: 34 }}>
+                <IconButton {...bindTrigger(popupState)}>{displayIcon}</IconButton>
+              </Avatar>
+              <Typography fontSize={7.5} variant="subtitle2">
+                {entity}
+              </Typography>
+            </Stack>
             <Popover
               {...bindPopover(popupState)}
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              slotProps={{
-                paper: {
-                  sx: {
-                    p: 0,
-                    mt: 1.5,
-                    ml: 0.75,
-                    '& .MuiMenuItem-root': {
-                      typography: 'body2',
-                      borderRadius: 0.75
-                    }
-                  }
-                }
-              }}>
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
               {menuContent}
             </Popover>
           </div>
@@ -65,4 +59,4 @@ function PersonPopover(props: PersonPopoverProps) {
   );
 }
 
-export default PersonPopover;
+export default HeaderPopover;

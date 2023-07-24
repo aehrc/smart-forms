@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Box, Card, Container, Fade, Typography } from '@mui/material';
+import { Card, Container, Fade } from '@mui/material';
 import FormInvalid from '../FormPage/FormInvalid.tsx';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../../preview/utils/preview.ts';
@@ -23,6 +23,7 @@ import { removeHiddenAnswers } from '../../../save/api/saveQr.ts';
 import { Helmet } from 'react-helmet';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
+import PageHeading from '../../../dashboard/components/DashboardPages/PageHeading.tsx';
 
 function FormPreview() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -55,10 +56,8 @@ function FormPreview() {
         <title>{sourceQuestionnaire.title ?? 'Form Preview'}</title>
       </Helmet>
       <Fade in={true} timeout={500}>
-        <Container sx={{ mt: 3 }}>
-          <Box mb={3}>
-            <Typography variant="h3">Preview</Typography>
-          </Box>
+        <Container sx={{ mt: 2 }}>
+          <PageHeading>Preview</PageHeading>
           <Card sx={{ p: 4, mb: 2 }}>{parsedHTML}</Card>
         </Container>
       </Fade>

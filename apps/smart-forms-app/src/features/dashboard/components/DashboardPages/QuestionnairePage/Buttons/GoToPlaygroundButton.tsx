@@ -16,7 +16,6 @@
  */
 
 import { Button } from '@mui/material';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { useNavigate } from 'react-router-dom';
 
 function GoToPlaygroundButton() {
@@ -26,7 +25,6 @@ function GoToPlaygroundButton() {
     <Button
       variant="contained"
       color="info"
-      endIcon={<Iconify icon="mdi:playground-slide" />}
       sx={{ borderRadius: 15 }}
       onClick={() => {
         navigate('/playground');

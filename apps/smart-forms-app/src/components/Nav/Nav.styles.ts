@@ -64,12 +64,15 @@ export const StyledAlert = styled(Box, {
 })<{ color: 'info' | 'error' }>(({ theme, color }) => ({
   display: 'flex',
   alignItems: 'center',
-  padding: theme.spacing(1.5),
+  padding: theme.spacing(1.25),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
   backgroundColor: alpha(
     color === 'error' ? theme.palette.error.light : theme.palette.info.light,
     0.12
   ),
+  [theme.breakpoints.up('sm')]: {
+    padding: theme.spacing(1.5)
+  },
   [theme.breakpoints.up('md')]: {
     padding: theme.spacing(2)
   }

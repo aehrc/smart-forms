@@ -15,33 +15,28 @@
  * limitations under the License.
  */
 
-import { Button } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { useContext } from 'react';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
 import { useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function BackToQuestionnairesButton() {
   const { existingResponses } = useContext(SelectedQuestionnaireContext);
   const navigate = useNavigate();
 
   return existingResponses.length > 0 ? (
-    <Button
-      variant="contained"
-      endIcon={<Iconify icon="material-symbols:arrow-back" />}
-      data-test="button-responses-go-back"
-      sx={{
-        px: 2.5,
-        backgroundColor: 'primary.main',
-        '&:hover': {
-          backgroundColor: 'primary.dark'
-        }
-      }}
-      onClick={() => {
-        navigate('/dashboard/questionnaires');
-      }}>
-      Go back
-    </Button>
+    <Tooltip title="Go back">
+      <IconButton
+        color="secondary"
+        size="small"
+        onClick={() => {
+          navigate('/dashboard/questionnaires');
+        }}
+        sx={{ ml: -1, mr: 0.75 }}>
+        <ArrowBackIcon fontSize="small" />
+      </IconButton>
+    </Tooltip>
   ) : null;
 }
 

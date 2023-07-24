@@ -15,16 +15,11 @@
  * limitations under the License.
  */
 
+import type { ReactNode } from 'react';
+
 export interface OperationItem {
   title: string;
-  icon: JSX.Element;
+  icon: ReactNode;
   disabled?: boolean;
   onClick: () => unknown;
-}
-
-export interface NavItem {
-  title: string;
-  path: string;
-  icon: JSX.Element;
-  disabled?: boolean;
 }
