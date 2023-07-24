@@ -41,7 +41,7 @@ function ResponseTableRow(props: ResponseTableRowProps) {
       tabIndex={-1}
       selected={isSelected}
       sx={{ cursor: 'pointer' }}
-      data-test="questionnaire-list-row"
+      data-test="response-list-row"
       onClick={onRowClick}>
       <TableCell padding="checkbox">
         <StyledAvatar avatarColor={avatarColor}>

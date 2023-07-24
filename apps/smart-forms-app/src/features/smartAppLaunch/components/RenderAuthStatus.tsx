@@ -16,19 +16,12 @@
  */
 
 import { useState } from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
-import { useNavigate } from 'react-router-dom';
 import type { AuthState } from '../types/authorisation.interface.ts';
 import CenteredWrapper from '../../../components/Wrapper/CenteredWrapper.tsx';
+import UnlaunchedButton from '../../../components/Button/UnlaunchedButton.tsx';
 
 interface RenderAuthStatusProps {
   authState: AuthState;
@@ -38,8 +31,6 @@ function RenderAuthStatus(props: RenderAuthStatusProps) {
   const { authState } = props;
 
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const navigate = useNavigate();
 
   const launchFailed =
     authState.hasClient === false || authState.hasUser === false || authState.hasPatient === false;
@@ -64,15 +55,7 @@ function RenderAuthStatus(props: RenderAuthStatusProps) {
             </AccordionDetails>
           </Accordion>
         ) : null}
-        <Button
-          variant="contained"
-          color="warning"
-          sx={{ mt: 6 }}
-          onClick={() => {
-            navigate('/dashboard/questionnaires');
-          }}>
-          Proceed in unlaunched state
-        </Button>
+        <UnlaunchedButton />
       </CenteredWrapper>
     );
   }
