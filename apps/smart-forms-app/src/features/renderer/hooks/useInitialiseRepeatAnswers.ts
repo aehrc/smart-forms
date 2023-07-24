@@ -19,13 +19,13 @@ import type { QuestionnaireResponseItem } from 'fhir/r4';
 import type { RepeatAnswer } from '../types/repeatItem.interface.ts';
 import { nanoid } from 'nanoid';
 
-const emptyRepeatAnswer: RepeatAnswer = {
-  nanoId: nanoid(),
-  answer: null
-};
-
 function useInitialiseRepeatAnswers(qrItem: QuestionnaireResponseItem): RepeatAnswer[] {
-  let initialRepeatAnswers: RepeatAnswer[] = [emptyRepeatAnswer];
+  let initialRepeatAnswers: RepeatAnswer[] = [
+    {
+      nanoId: nanoid(),
+      answer: null
+    }
+  ];
 
   if (qrItem?.answer) {
     initialRepeatAnswers = qrItem.answer.map((answer) => {

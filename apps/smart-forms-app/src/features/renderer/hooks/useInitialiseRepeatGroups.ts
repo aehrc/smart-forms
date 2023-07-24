@@ -19,13 +19,13 @@ import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import type { RepeatGroupSingle } from '../types/repeatGroup.interface.ts';
 
-const emptyRepeatGroupAnswer: RepeatGroupSingle = {
-  nanoId: nanoid(),
-  qrItem: null
-};
-
 function useInitialiseRepeatGroups(qrItems: QuestionnaireResponseItem[]): RepeatGroupSingle[] {
-  let initialRepeatGroupAnswers: RepeatGroupSingle[] = [emptyRepeatGroupAnswer];
+  let initialRepeatGroupAnswers: RepeatGroupSingle[] = [
+    {
+      nanoId: nanoid(),
+      qrItem: null
+    }
+  ];
 
   if (qrItems.length > 0) {
     initialRepeatGroupAnswers = qrItems.map((qrItem) => {
