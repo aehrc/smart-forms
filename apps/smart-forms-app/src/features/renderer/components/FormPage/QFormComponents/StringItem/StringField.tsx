@@ -54,6 +54,7 @@ function StringField(props: StringFieldProps) {
       label={displayPrompt}
       placeholder={entryFormat}
       disabled={readOnly}
+      size="small"
       InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
       helperText={feedback}
       data-test="q-item-string-field"

@@ -16,19 +16,18 @@
  */
 
 import { Box, styled } from '@mui/material';
-
-const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 72;
+import {
+  HEADER_DESKTOP_HEIGHT,
+  HEADER_MOBILE_HEIGHT
+} from '../../../components/Header/Header.styles.ts';
 
 export const Main = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   overflow: 'auto',
   minHeight: '100%',
-  paddingTop: APP_BAR_MOBILE + 4,
+  paddingTop: HEADER_MOBILE_HEIGHT + 16,
   paddingBottom: theme.spacing(4),
-  [theme.breakpoints.up('lg')]: {
-    paddingTop: APP_BAR_DESKTOP + 8,
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
+  [theme.breakpoints.up('sm')]: {
+    paddingTop: HEADER_DESKTOP_HEIGHT + 16
   }
 }));

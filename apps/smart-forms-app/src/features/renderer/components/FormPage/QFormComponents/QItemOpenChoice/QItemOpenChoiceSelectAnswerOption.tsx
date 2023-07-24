@@ -107,6 +107,7 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       autoHighlight
       sx={{ maxWidth: !isTabled ? 280 : 3000, flexGrow: 1 }}
       disabled={readOnly}
+      size="small"
       placeholder={entryFormat}
       renderInput={(params) => (
         <StandardTextField

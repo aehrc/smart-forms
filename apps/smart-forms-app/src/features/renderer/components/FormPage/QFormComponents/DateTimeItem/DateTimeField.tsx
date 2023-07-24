@@ -44,6 +44,7 @@ function DateTimeField(props: DateTimeFieldProps) {
           onChange={onDateTimeChange}
           slotProps={{
             textField: {
+              size: 'small',
               fullWidth: true
             }
           }}

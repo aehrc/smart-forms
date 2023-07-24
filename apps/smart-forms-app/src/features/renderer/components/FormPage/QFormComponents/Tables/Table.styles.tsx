@@ -22,17 +22,11 @@ export const HeaderTableCell = styled(TableCell)(() => ({
   lineHeight: 'normal'
 }));
 
-export const FirstTableCell = styled(TableCell)(() => ({
-  width: '35%',
-  paddingLeft: 10,
-  paddingRight: 5
-}));
-
 export const StandardTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'numOfColumns'
-})<{ numOfColumns: number }>(({ numOfColumns }) => ({
-  width: `${65 / (numOfColumns - 1)}%`,
-  paddingLeft: 5,
+  shouldForwardProp: (prop) => prop !== 'numOfColumns' && prop !== 'isFirst'
+})<{ numOfColumns: number; isFirst: boolean }>(({ numOfColumns, isFirst }) => ({
+  width: `${100 / numOfColumns}%`,
+  paddingLeft: isFirst ? 10 : 5,
   paddingRight: 5
 }));
 

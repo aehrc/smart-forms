@@ -51,6 +51,7 @@ function QItemCheckboxSingleWithOpenLabel(props: Props) {
         onChange={handleInputChange}
         fullWidth
         isTabled={false}
+        size="small"
         data-test="q-item-checkbox-open-label-field"
       />
     </Box>

@@ -43,6 +43,7 @@ function QItemRadioButtonWithOpenLabel(props: Props) {
         onChange={handleInputChange}
         fullWidth
         isTabled={false}
+        size="small"
         data-test="q-item-radio-open-label-field"
       />
     </Box>

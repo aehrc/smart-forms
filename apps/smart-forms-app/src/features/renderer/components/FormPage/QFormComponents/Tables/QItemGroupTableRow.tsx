@@ -19,7 +19,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createQrGroup, updateLinkedItem } from '../../../../utils/qrItem.ts';
 import SingleItem from '../SingleItem/SingleItem.tsx';
 import { getQrItemsIndex } from '../../../../utils';
-import { FirstTableCell, StandardTableCell } from './Table.styles.tsx';
+import { StandardTableCell } from './Table.styles.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../../../types/renderProps.interface.ts';
 
 interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
@@ -52,37 +52,22 @@ function QItemGroupTableRow(props: Props) {
       {rowItems.map((rowItem, index) => {
         const qrItem = qrItemsByIndex[index];
 
-        if (!Array.isArray(qrItem)) {
-          if (index === 0) {
-            return (
-              <FirstTableCell key={index}>
-                <SingleItem
-                  key={qItem.linkId}
-                  qItem={rowItem}
-                  qrItem={qrItem}
-                  isRepeated={true}
-                  isTabled={true}
-                  onQrItemChange={handleQrRowItemChange}
-                />
-              </FirstTableCell>
-            );
-          } else {
-            return (
-              <StandardTableCell key={index} numOfColumns={rowItems.length}>
-                <SingleItem
-                  key={qItem.linkId}
-                  qItem={rowItem}
-                  qrItem={qrItem}
-                  isRepeated={true}
-                  isTabled={true}
-                  onQrItemChange={handleQrRowItemChange}
-                />
-              </StandardTableCell>
-            );
-          }
-        } else {
+        if (Array.isArray(qrItem)) {
           return null;
         }
+
+        return (
+          <StandardTableCell key={index} numOfColumns={rowItems.length} isFirst={index === 0}>
+            <SingleItem
+              key={qItem.linkId}
+              qItem={rowItem}
+              qrItem={qrItem}
+              isRepeated={true}
+              isTabled={true}
+              onQrItemChange={handleQrRowItemChange}
+            />
+          </StandardTableCell>
+        );
       })}
     </>
   );

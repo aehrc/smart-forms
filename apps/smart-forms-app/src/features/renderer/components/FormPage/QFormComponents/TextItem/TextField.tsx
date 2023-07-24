@@ -54,7 +54,8 @@ function TextField(props: TextFieldProps) {
       placeholder={entryFormat}
       fullWidth
       multiline
-      minRows={3}
+      size="small"
+      minRows={4}
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>

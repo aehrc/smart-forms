@@ -118,6 +118,7 @@ function QItemChoiceAutocomplete(props: QItemChoiceAutocompleteProps) {
             isTabled={isTabled}
             disabled={readOnly}
             label={displayPrompt}
+            size="small"
             InputProps={{
               ...params.InputProps,
 
