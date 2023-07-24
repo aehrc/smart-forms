@@ -17,27 +17,22 @@
 
 import { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
+import useHidden from '../../../../hooks/useHidden.ts';
 import LabelText from '../QItemParts/LabelText.tsx';
-import { isSpecificItemControl } from '../../../../utils/itemControl.ts';
 
-interface DisplayItemProps {
-  qItem: QuestionnaireItem;
+interface GroupHeadingIconProps {
+  displayItem: QuestionnaireItem;
 }
 
-const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
-  const { qItem } = props;
+const GroupHeadingIcon = memo(function GroupHeadingIcon(props: GroupHeadingIconProps) {
+  const { displayItem } = props;
 
-  const isContextDisplay = isSpecificItemControl(qItem, 'context-display');
-  if (isContextDisplay) {
+  const itemIsHidden = useHidden(displayItem);
+  if (itemIsHidden) {
     return null;
   }
 
-  return (
-    <FullWidthFormComponentBox>
-      <LabelText qItem={qItem} />
-    </FullWidthFormComponentBox>
-  );
+  return <LabelText qItem={displayItem} />;
 });
 
-export default DisplayItem;
+export default GroupHeadingIcon;

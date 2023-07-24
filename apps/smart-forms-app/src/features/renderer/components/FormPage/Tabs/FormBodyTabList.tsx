@@ -61,15 +61,14 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
 
               const tabIsSelected = currentTabIndex.toString() === i.toString();
               const tabLabel = getShortText(qItem) ?? qItem.text ?? '';
-              const tabIsMarkedAsComplete = tabs[qItem.linkId].isComplete ?? false;
 
               return (
                 <Collapse key={qItem.linkId} timeout={100}>
                   <FormBodySingleTab
+                    qItem={qItem}
                     selected={tabIsSelected}
                     tabLabel={tabLabel}
                     listIndex={i}
-                    markedAsComplete={tabIsMarkedAsComplete}
                   />
                 </Collapse>
               );

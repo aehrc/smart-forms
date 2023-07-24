@@ -16,7 +16,6 @@
  */
 
 import QuestionnaireListToolbar from './TableComponents/QuestionnaireListToolbar.tsx';
-import Scrollbar from '../../../../../components/Scrollbar/Scrollbar.tsx';
 import { Fade, Table as MuiTable, TableBody, TableContainer, Typography } from '@mui/material';
 import DashboardTableHead from '../DashboardTableHead.tsx';
 import QuestionnaireTableRow from './TableComponents/QuestionnaireTableRow.tsx';
@@ -71,38 +70,36 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
         onSearch={onSearch}
       />
 
-      <Scrollbar>
-        <TableContainer sx={{ minWidth: 575 }}>
-          <MuiTable>
-            <DashboardTableHead headers={headers} />
-            <TableBody>
-              {table.getRowModel().rows.map((row) => {
-                const rowData = row.original;
-                const isSelected = selectedQuestionnaire?.listItem.id === rowData.id;
+      <TableContainer sx={{ minWidth: 575 }}>
+        <MuiTable stickyHeader>
+          <DashboardTableHead headers={headers} />
+          <TableBody>
+            {table.getRowModel().rows.map((row) => {
+              const rowData = row.original;
+              const isSelected = selectedQuestionnaire?.listItem.id === rowData.id;
 
-                return (
-                  <QuestionnaireTableRow
-                    key={rowData.id}
-                    row={rowData}
-                    isSelected={isSelected}
-                    onRowClick={() => onRowClick(rowData.id)}
-                  />
-                );
-              })}
-            </TableBody>
+              return (
+                <QuestionnaireTableRow
+                  key={rowData.id}
+                  row={rowData}
+                  isSelected={isSelected}
+                  onRowClick={() => onRowClick(rowData.id)}
+                />
+              );
+            })}
+          </TableBody>
 
-            {isEmpty || fetchStatus === 'error' || isInitialLoading ? (
-              <QuestionnaireListFeedback
-                isEmpty={isEmpty}
-                isInitialLoading={isInitialLoading}
-                status={fetchStatus}
-                searchInput={searchInput}
-                error={fetchError}
-              />
-            ) : null}
-          </MuiTable>
-        </TableContainer>
-      </Scrollbar>
+          {isEmpty || fetchStatus === 'error' || isInitialLoading ? (
+            <QuestionnaireListFeedback
+              isEmpty={isEmpty}
+              isInitialLoading={isInitialLoading}
+              status={fetchStatus}
+              searchInput={searchInput}
+              error={fetchError}
+            />
+          ) : null}
+        </MuiTable>
+      </TableContainer>
 
       <DashboardTablePagination table={table}>
         <Fade in={isFetching}>

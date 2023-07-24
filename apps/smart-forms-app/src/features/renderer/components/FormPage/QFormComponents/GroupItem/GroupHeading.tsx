@@ -19,9 +19,10 @@ import { memo } from 'react';
 import { Box, Divider } from '@mui/material';
 import { QGroupHeadingTypography } from '../Typography.styles.ts';
 import LabelText from '../QItemParts/LabelText.tsx';
-import CompleteTabButton from '../../Tabs/CompleteTabButton.tsx';
 import type { PropsWithIsRepeatedAttribute } from '../../../../types/renderProps.interface.ts';
 import type { QuestionnaireItem } from 'fhir/r4';
+import { getContextDisplays } from '../../../../utils/tabs.ts';
+import GroupHeadingIcon from './GroupHeadingIcon.tsx';
 
 interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -30,6 +31,8 @@ interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
   const { qItem, tabIsMarkedAsComplete, isRepeated } = props;
+
+  const contextDisplayItems = getContextDisplays(qItem);
 
   if (isRepeated) {
     return null;
@@ -42,12 +45,11 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
           <LabelText qItem={qItem} />
         </QGroupHeadingTypography>
 
-        {tabIsMarkedAsComplete !== undefined ? (
-          <CompleteTabButton
-            tabLinkId={qItem.linkId}
-            tabIsMarkedAsComplete={tabIsMarkedAsComplete}
-          />
-        ) : null}
+        <Box display="flex" columnGap={1}>
+          {contextDisplayItems.map((item) => {
+            return <GroupHeadingIcon key={item.linkId} displayItem={item} />;
+          })}
+        </Box>
       </Box>
       {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5 }} light /> : null}
     </>

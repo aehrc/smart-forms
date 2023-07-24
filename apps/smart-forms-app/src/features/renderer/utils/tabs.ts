@@ -202,3 +202,14 @@ export function findNumOfVisibleTabs(
   });
   return tabsWithVisibility.filter((tab) => tab.isVisible).length;
 }
+
+export function getContextDisplays(item: QuestionnaireItem): QuestionnaireItem[] {
+  if (!item.item || item.item.length === 0) {
+    return [];
+  }
+
+  return item.item.filter(
+    (childItem) =>
+      isSpecificItemControl(childItem, 'context-display') && childItem.type === 'display'
+  );
+}
