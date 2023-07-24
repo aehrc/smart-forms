@@ -18,4 +18,5 @@ export interface QuestionnaireModel {
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   processedValueSetCodings: Record<string, Coding[]>;
+  processedValueSetUrls: Record<string, string>;
 }

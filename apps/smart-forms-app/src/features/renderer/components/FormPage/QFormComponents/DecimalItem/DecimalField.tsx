@@ -57,6 +57,7 @@ function DecimalField(props: DecimalFieldProps) {
       placeholder={entryFormat}
       fullWidth
       isTabled={isTabled}
+      size="small"
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
       InputProps={{
         endAdornment: (

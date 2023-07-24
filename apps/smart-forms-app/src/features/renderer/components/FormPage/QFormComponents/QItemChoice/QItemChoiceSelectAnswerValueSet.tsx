@@ -104,6 +104,7 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
         openOnFocus
         autoHighlight
         sx={{ maxWidth: !isTabled ? 280 : 3000, flexGrow: 1 }}
+        size="small"
         disabled={readOnly}
         placeholder={entryFormat}
         renderInput={(params) => (

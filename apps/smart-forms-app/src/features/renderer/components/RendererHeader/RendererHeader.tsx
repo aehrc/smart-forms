@@ -61,7 +61,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
           </LogoWrapper>
         )}
 
-        <Box mx={2} my={0.5}>
+        <Box m={0.5}>
           <Typography variant="subtitle1" color="text.primary" fontSize={isDesktop ? 13 : 11}>
             {sourceQuestionnaire.title}
           </Typography>

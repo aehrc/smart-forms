@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import { Container, Divider, Fade } from '@mui/material';
-import FormTitle from './FormTitle.tsx';
+import { Container, Fade } from '@mui/material';
 import FormTopLevelItem from '../FormTopLevelItem.tsx';
 import type { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import FormInvalid from '../FormInvalid.tsx';
@@ -42,9 +41,6 @@ function Form(props: FormProps) {
   return (
     <Fade in={true} timeout={500}>
       <Container maxWidth="xl">
-        <FormTitle questionnaire={questionnaire} />
-        <Divider light sx={{ my: 1.5 }} />
-
         {topLevelQItems.map((qItem, index) => {
           const qrItem = topLevelQRItems[index];
 

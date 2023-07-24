@@ -43,7 +43,10 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
 
   return (
     <>
-      <ListItemButton selected={selected} sx={{ my: 0.25, py: 0.75 }} onClick={handleTabClick}>
+      <ListItemButton
+        selected={selected}
+        sx={{ my: 0.2, minHeight: '36px' }}
+        onClick={handleTabClick}>
         <ListItemText
           primary={
             <Box display="flex" alignItems="center" justifyContent="space-between">

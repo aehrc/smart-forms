@@ -54,6 +54,7 @@ function UrlField(props: UrlFieldProps) {
       label={displayPrompt}
       placeholder={entryFormat}
       disabled={readOnly}
+      size="small"
       InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
       helperText={feedback}
       data-test="q-item-url-field"
