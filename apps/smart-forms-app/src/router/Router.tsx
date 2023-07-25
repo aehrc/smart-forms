@@ -28,6 +28,7 @@ import Authorisation from '../features/smartAppLaunch/components/Authorisation.t
 import PlaygroundLayout from '../features/playground/components/PlaygroundLayout.tsx';
 import Playground from '../features/playground/components/Playground.tsx';
 import ResponsesPage from '../features/dashboard/components/DashboardPages/ResponsesPage/ResponsesPage.tsx';
+import NotFound from '../features/notfound/NotFound.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -70,8 +71,12 @@ export default function Router() {
       element: <Launch />
     },
     {
+      path: '/notfound',
+      element: <NotFound />
+    },
+    {
       path: '*',
-      element: <Navigate to="/" replace />
+      element: <Navigate to="/notfound" replace />
     }
   ]);
 
