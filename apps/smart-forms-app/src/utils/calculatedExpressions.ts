@@ -18,6 +18,54 @@
 import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import type { Expression, QuestionnaireResponse } from 'fhir/r4';
+import _isEqual from 'lodash/isEqual';
+import { emptyResponse } from '../stores/useQuestionnaireStore.ts';
+import { createFhirPathContext } from './fhirpath.ts';
+
+interface EvaluateInitialCalculatedExpressionsParams {
+  initialResponse: QuestionnaireResponse;
+  calculatedExpressions: Record<string, CalculatedExpression>;
+  variablesFhirPath: Record<string, Expression[]>;
+}
+
+export function evaluateInitialCalculatedExpressions(
+  params: EvaluateInitialCalculatedExpressionsParams
+): Record<string, CalculatedExpression> {
+  const { initialResponse, calculatedExpressions, variablesFhirPath } = params;
+
+  // Return early if initialResponse is empty
+  if (_isEqual(initialResponse, emptyResponse)) {
+    return calculatedExpressions;
+  }
+
+  const initialExpressions: Record<string, CalculatedExpression> = { ...calculatedExpressions };
+
+  if (Object.keys(initialExpressions).length > 0) {
+    const fhirPathContext: Record<string, any> = createFhirPathContext(
+      initialResponse,
+      variablesFhirPath
+    );
+
+    for (const linkId in initialExpressions) {
+      try {
+        const result = fhirpath.evaluate(
+          initialResponse,
+          calculatedExpressions[linkId].expression,
+          fhirPathContext,
+          fhirpath_r4_model
+        );
+
+        if (calculatedExpressions[linkId].value !== result[0]) {
+          initialExpressions[linkId].value = result[0];
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
+  return initialExpressions;
+}
 
 export function evaluateCalculatedExpressions(
   fhirPathContext: Record<string, any>,

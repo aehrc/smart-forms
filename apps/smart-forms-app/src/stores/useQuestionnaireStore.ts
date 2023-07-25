@@ -77,11 +77,13 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
+      initialCalculatedExpressions,
       firstVisibleTab
     } = initialiseFormFromResponse({
       questionnaireResponse,
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
+      calculatedExpressions: questionnaireModel.calculatedExpressions,
       variablesFhirPath: questionnaireModel.variables.fhirPathVariables,
       tabs: questionnaireModel.tabs
     });
@@ -95,7 +97,7 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
-      calculatedExpressions: questionnaireModel.calculatedExpressions,
+      calculatedExpressions: initialCalculatedExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
       processedValueSetUrls: questionnaireModel.processedValueSetUrls
@@ -175,11 +177,13 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
+      initialCalculatedExpressions,
       firstVisibleTab
     } = initialiseFormFromResponse({
       questionnaireResponse: populatedResponse,
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
+      calculatedExpressions: get().calculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
       tabs: get().tabs
     });
@@ -188,6 +192,7 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
+      calculatedExpressions: initialCalculatedExpressions,
       currentTabIndex: firstVisibleTab
     }));
   }

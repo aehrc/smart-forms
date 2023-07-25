@@ -124,9 +124,8 @@ function Authorisation() {
             .then((encounter) => {
               setEncounter(encounter);
             })
-            .catch((error) => {
-              console.error(error);
-            });
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            .catch(() => {});
 
           // Set questionnaire launch context if available
           const questionnaireReferences = getQuestionnaireReferences(client);

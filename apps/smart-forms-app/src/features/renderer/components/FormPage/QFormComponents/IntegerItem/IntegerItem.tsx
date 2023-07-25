@@ -57,8 +57,13 @@ function IntegerItem(props: IntegerItemProps) {
 
   // Init input value
   let valueInteger = 0;
-  if (qrItem?.answer && qrItem?.answer[0].valueInteger) {
-    valueInteger = qrItem.answer[0].valueInteger;
+  if (qrItem?.answer) {
+    if (qrItem?.answer[0].valueInteger) {
+      valueInteger = qrItem.answer[0].valueInteger;
+    }
+    if (qrItem?.answer[0].valueDecimal) {
+      valueInteger = Math.round(qrItem.answer[0].valueDecimal);
+    }
   }
   const [value, setValue] = useState(valueInteger);
 

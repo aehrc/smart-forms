@@ -63,8 +63,15 @@ function DecimalItem(props: DecimalItemProps) {
   // Init input value
   let valueDecimal = 0.0;
   let initialInput = '0';
-  if (qrItem?.answer && qrItem?.answer[0].valueDecimal) {
-    valueDecimal = qrItem.answer[0].valueDecimal;
+  if (qrItem?.answer) {
+    if (qrItem?.answer[0].valueDecimal) {
+      valueDecimal = qrItem.answer[0].valueDecimal;
+    }
+
+    if (qrItem?.answer[0].valueInteger) {
+      valueDecimal = qrItem.answer[0].valueInteger;
+    }
+
     initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
   const [input, setInput] = useState(initialInput);
