@@ -28,6 +28,7 @@ import FieldGrid from '../FieldGrid.tsx';
 import DateField from './DateField.tsx';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import { checkStringIsDate } from '../../../../utils/parseInputs.ts';
 
 interface DateItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -46,8 +47,17 @@ function DateItem(props: DateItemProps) {
 
   // Init input value
   let dateString: string | null = null;
-  if (qrItem?.answer && qrItem?.answer[0].valueDate) {
-    dateString = qrItem.answer[0].valueDate;
+
+  if (qrItem?.answer) {
+    if (qrItem?.answer[0].valueDate) {
+      dateString = qrItem.answer[0].valueDate;
+    }
+
+    if (qrItem?.answer[0].valueString) {
+      if (checkStringIsDate(qrItem.answer[0].valueString)) {
+        dateString = qrItem.answer[0].valueString;
+      }
+    }
   }
   const dateDayJs = dateString ? dayjs(dateString) : null;
 

@@ -12,10 +12,8 @@
   "author": "Sean Fong",
   "license": "ISC",
   "dependencies": {
-    "dayjs": "^1.11.7",
     "fhirclient": "^2.5.2",
-    "fhirpath": "^3.5.0",
-    "moment": "^2.29.4"
+    "fhirpath": "^3.5.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",

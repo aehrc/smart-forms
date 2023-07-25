@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+import dayjs from 'dayjs';
+import moment from 'moment';
+
 export function parseValidInteger(input: string): number {
   const validNumericString = parseValidNumericString(input);
 
@@ -55,4 +58,14 @@ export function parseDecimalStringWithPrecision(input: string, precision: number
 
 export function parseDecimalStringToFloat(input: string, precision: number): number {
   return parseFloat(parseFloat(input).toFixed(precision));
+}
+
+export function checkStringIsDate(value: string): boolean {
+  const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD'];
+  return dayjs(value, acceptedFormats, true).isValid();
+}
+
+export function checkStringIsDateTime(value: string): boolean {
+  const acceptedFormats = ['YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
+  return moment(value, acceptedFormats, true).isValid();
 }
