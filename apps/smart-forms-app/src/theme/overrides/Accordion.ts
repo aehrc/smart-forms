@@ -15,29 +15,20 @@
  * limitations under the License.
  */
 
-import Card from './Card';
-import Paper from './Paper';
-import Input from './Input';
-import Table from './Table';
-import Button from './Button';
-import Backdrop from './Backdrop';
-import Typography from './Typography';
-import Autocomplete from './Autocomplete';
-import Accordion from './Accordion';
 import type { Theme } from '@mui/material';
 
-function ComponentsOverrides(theme: Theme) {
-  return Object.assign(
-    Accordion(theme),
-    Card(theme),
-    Table(theme),
-    Input(theme),
-    Paper(),
-    Button(theme),
-    Backdrop(theme),
-    Typography(theme),
-    Autocomplete(theme)
-  );
+export default function Accordion(theme: Theme) {
+  return {
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          boxShadow: theme.customShadows.z1,
+          borderRadius: Number(theme.shape.borderRadius) * 2,
+          '&:before': {
+            display: 'none'
+          }
+        }
+      }
+    }
+  };
 }
-
-export default ComponentsOverrides;

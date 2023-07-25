@@ -20,8 +20,6 @@ import { createQuestionnaireResponse } from '../../renderer/utils/qrItem.ts';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 
-// TODO this cant be used yet
-
 function PlaygroundRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
