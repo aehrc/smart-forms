@@ -26,8 +26,6 @@ import type {
 } from 'fhir/r4';
 import type { InitialExpression, ValueSetPromise } from './interfaces/expressions.interface';
 import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './processValueSets';
-import dayjs from 'dayjs';
-import moment from 'moment';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -229,10 +227,6 @@ function getAnswerValues(
       return { valueCoding: value };
     } else if (typeof value === 'number') {
       return Number.isInteger(value) ? { valueInteger: value } : { valueDecimal: value };
-    } else if (checkIsDate(value)) {
-      return { valueDate: value };
-    } else if (checkIsDateTime(value)) {
-      return { valueDateTime: value };
     } else {
       // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
       if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
@@ -243,26 +237,6 @@ function getAnswerValues(
     }
   });
   return { newValues, expandRequired };
-}
-
-/**
- * Check if an answer is a date in the formats YYYY, YYYY-MM, YYYY-MM-DD
- *
- * @author Sean Fong
- */
-export function checkIsDate(value: string): boolean {
-  const acceptedFormats = ['YYYY-MM', 'YYYY-MM-DD'];
-  return dayjs(value, acceptedFormats, true).isValid();
-}
-
-/**
- * Check if an answer is a datetime in the format YYYY, YYYY-MM, YYYY-MM-DD, YYYY-MM-DDThh:mm:ss+zz:zz
- *
- * @author Sean Fong
- */
-export function checkIsDateTime(value: string): boolean {
-  const acceptedFormats = ['YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
-  return moment(value, acceptedFormats, true).isValid();
 }
 
 /**
