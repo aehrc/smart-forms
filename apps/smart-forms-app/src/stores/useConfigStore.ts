@@ -13,7 +13,7 @@ export interface ConfigState {
   setPatient: (patient: Patient) => void;
   setUser: (user: Practitioner) => void;
   setEncounter: (encounter: Encounter) => void;
-  setLaunchIntent: (launchIntent: string) => void;
+  setLaunchIntent: (launchIntent: string | null) => void;
   activateDebugMode: () => void;
 }
 
@@ -28,7 +28,7 @@ const useConfigStore = create<ConfigState>()((set) => ({
   setPatient: (patient: Patient) => set(() => ({ patient: patient })),
   setUser: (user: Practitioner) => set(() => ({ user: user })),
   setEncounter: (encounter: Encounter) => set(() => ({ encounter: encounter })),
-  setLaunchIntent: (launchIntent: string) => set(() => ({ launchIntent: launchIntent })),
+  setLaunchIntent: (launchIntent: string | null) => set(() => ({ launchIntent: launchIntent })),
   activateDebugMode: () => set(() => ({ debugMode: true }))
 }));
 

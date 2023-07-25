@@ -21,13 +21,17 @@ import { Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useResponsive from '../../hooks/useResponsive.ts';
 
-function HeaderIcons() {
+interface HeaderIconsProps {
+  isEmbeddedView?: boolean;
+}
+function HeaderIcons(props: HeaderIconsProps) {
+  const { isEmbeddedView } = props;
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'lg');
 
   return (
     <Stack direction="row" alignItems="center" sx={{ color: theme.palette.grey['700'] }}>
-      {isDesktop ? <DesktopHeaderIcons /> : <MobileHeaderIcons />}
+      {isDesktop && !isEmbeddedView ? <DesktopHeaderIcons /> : <MobileHeaderIcons />}
     </Stack>
   );
 }

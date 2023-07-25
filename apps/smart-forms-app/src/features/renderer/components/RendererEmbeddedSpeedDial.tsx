@@ -31,6 +31,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererNav/SaveAsFinal/RendererSaveAsFinalDialog.tsx';
+import HomeIcon from '@mui/icons-material/Home';
 
 interface RendererEmbeddedSpeedDialProps {
   isPopulating: boolean;
@@ -121,6 +122,14 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
           '& .MuiFab-primary': { width: 46, height: 46 }
         }}
         icon={<BuildIcon />}>
+        <SpeedDialAction
+          icon={<HomeIcon />}
+          tooltipTitle="Back to Home (Debug)"
+          tooltipOpen
+          onClick={() => {
+            navigate('/dashboard/questionnaires');
+          }}
+        />
         <SpeedDialAction
           icon={<GradingIcon />}
           tooltipTitle="View Responses"

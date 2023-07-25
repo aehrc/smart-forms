@@ -134,13 +134,18 @@ function RendererLayout() {
 
   return (
     <StyledRoot>
-      <RendererHeader onOpenNav={() => setOpen(true)} navIsCollapsed={navIsCollapsed} />
+      <RendererHeader
+        onOpenNav={() => setOpen(true)}
+        navIsCollapsed={navIsCollapsed}
+        isEmbeddedView={isEmbeddedView}
+      />
 
       <RendererNavWrapper
         openNav={open}
         onCloseNav={() => setOpen(false)}
         navCollapsed={navIsCollapsed}
         setNavCollapsed={() => collapseNav(true)}
+        isEmbeddedView={isEmbeddedView}
       />
 
       <Main>

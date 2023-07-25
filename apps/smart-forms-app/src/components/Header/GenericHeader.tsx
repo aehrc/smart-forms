@@ -28,7 +28,7 @@ interface DashboardHeaderProps {
   onOpenNav: () => void;
 }
 
-const GenericHeader = memo(function DashboardHeader(props: DashboardHeaderProps) {
+const GenericHeader = memo(function GenericHeader(props: DashboardHeaderProps) {
   const { onOpenNav } = props;
 
   const isDesktop = useResponsive('up', 'lg');

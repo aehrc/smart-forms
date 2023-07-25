@@ -61,6 +61,8 @@ function CreateNewResponseButton() {
     // FIXME this is a hack to test tabs rendering in an embedded browser
     if (questionnaire.id === 'TestIntentCollapsible') {
       setLaunchIntent('embedded-browser');
+    } else {
+      setLaunchIntent(null);
     }
 
     navigate('/renderer');

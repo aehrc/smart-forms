@@ -23,16 +23,17 @@ import RendererNavDrawer from './RendererNavDrawer.tsx';
 interface Props {
   openNav: boolean;
   navCollapsed: boolean;
+  isEmbeddedView: boolean;
   onCloseNav: () => void;
   setNavCollapsed: () => void;
 }
 
 function RendererNavWrapper(props: Props) {
-  const { openNav, onCloseNav, navCollapsed, setNavCollapsed } = props;
+  const { openNav, navCollapsed, isEmbeddedView, onCloseNav, setNavCollapsed } = props;
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const navIsShown = isDesktop && !navCollapsed;
+  const navIsShown = isDesktop && !navCollapsed && !isEmbeddedView;
 
   return (
     <>
@@ -40,7 +41,7 @@ function RendererNavWrapper(props: Props) {
         component="nav"
         sx={{
           flexShrink: { lg: 0 },
-          width: { lg: navCollapsed ? 0 : NAV_WIDTH }
+          width: { lg: navCollapsed || isEmbeddedView ? 0 : NAV_WIDTH }
         }}>
         <RendererNavDrawer
           openNav={openNav}
