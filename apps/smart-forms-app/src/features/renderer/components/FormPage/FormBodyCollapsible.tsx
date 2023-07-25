@@ -22,14 +22,14 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../utils';
 import { updateLinkedItem } from '../../utils/qrItem.ts';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
-import FormBodySingleCollapsible from './Collapsible/FormBodySingleCollapsible.tsx';
+import FormBodySingleCollapsibleWrapper from './Collapsible/FormBodySingleCollapsibleWrapper.tsx';
 
 interface FormBodyCollapsibleProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem;
 }
 
-function FormBodyCollapsible(props: FormBodyCollapsibleProps) {
+function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
   const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
 
   const currentTab = useQuestionnaireStore((state) => state.currentTabIndex);
@@ -78,7 +78,7 @@ function FormBodyCollapsible(props: FormBodyCollapsibleProps) {
         }
 
         return (
-          <FormBodySingleCollapsible
+          <FormBodySingleCollapsibleWrapper
             key={qItem.linkId}
             qItem={qItem}
             qrItem={qrItem}
@@ -93,4 +93,4 @@ function FormBodyCollapsible(props: FormBodyCollapsibleProps) {
   );
 }
 
-export default FormBodyCollapsible;
+export default FormBodyCollapsibleWrapper;

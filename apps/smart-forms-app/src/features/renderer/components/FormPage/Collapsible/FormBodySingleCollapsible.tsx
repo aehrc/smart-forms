@@ -15,45 +15,62 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import GroupItem from '../QFormComponents/GroupItem/GroupItem.tsx';
-import FormBodySingleCollapsibleWrapper from './FormBodySingleCollapsibleWrapper.tsx';
-import type { PropsWithQrItemChangeHandler } from '../../../types/renderProps.interface.ts';
-import useHidden from '../../../hooks/useHidden.ts';
+import type { ReactNode } from 'react';
+import { memo } from 'react';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Tooltip,
+  Typography
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { getContextDisplays } from '../../../utils/tabs.ts';
+import { QuestionnaireItem } from 'fhir/r4';
+import { getShortText } from '../../../utils/itemControl.ts';
+import GroupHeadingIcon from '../QFormComponents/GroupItem/GroupHeadingIcon.tsx';
 
-interface FormBodySingleCollapsibleProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface FormBodySingleCollapsibleProps {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
   index: number;
   selectedIndex: number;
   onToggleExpand: (index: number) => void;
+  children: ReactNode;
 }
 
-function FormBodySingleCollapsible(props: FormBodySingleCollapsibleProps) {
-  const { qItem, qrItem, index, selectedIndex, onToggleExpand, onQrItemChange } = props;
+const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
+  props: FormBodySingleCollapsibleProps
+) {
+  const { qItem, index, selectedIndex, onToggleExpand, children } = props;
 
-  const itemIsHidden = useHidden(qItem);
-  if (itemIsHidden) {
-    return null;
-  }
+  const contextDisplayItems = getContextDisplays(qItem);
+
+  const collapsibleLabel = getShortText(qItem) ?? qItem.text ?? '';
 
   return (
-    <FormBodySingleCollapsibleWrapper
-      key={qItem.linkId}
-      qItem={qItem}
-      index={index}
-      selectedIndex={selectedIndex}
-      onToggleExpand={onToggleExpand}>
-      <GroupItem
-        qItem={qItem}
-        qrItem={qrItem}
-        isRepeated={true}
-        groupCardElevation={1}
-        onQrItemChange={onQrItemChange}
-      />
-    </FormBodySingleCollapsibleWrapper>
+    <Accordion
+      expanded={selectedIndex === index}
+      TransitionProps={{ unmountOnExit: true }}
+      onChange={() => onToggleExpand(index)}>
+      <AccordionSummary
+        expandIcon={
+          <Tooltip title={'Expand'}>
+            <ExpandMoreIcon />
+          </Tooltip>
+        }>
+        <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" mr={3}>
+          <Typography variant="subtitle2">{collapsibleLabel}</Typography>
+          <Box display="flex" columnGap={0.5}>
+            {contextDisplayItems.map((item) => {
+              return <GroupHeadingIcon key={item.linkId} displayItem={item} />;
+            })}
+          </Box>
+        </Box>
+      </AccordionSummary>
+      <AccordionDetails>{children}</AccordionDetails>
+    </Accordion>
   );
-}
+});
 
 export default FormBodySingleCollapsible;
