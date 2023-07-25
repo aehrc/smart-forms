@@ -17,7 +17,7 @@
 
 import { useState } from 'react';
 import RendererHeader from './RendererHeader/RendererHeader.tsx';
-import RendererNav from './RendererNav/RendererNav.tsx';
+import RendererNavWrapper from './RendererNav/RendererNavWrapper.tsx';
 import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Main } from './RendererLayout.styles.ts';
 import { populateQuestionnaire } from '../../prepopulate/utils/populate.ts';
@@ -37,6 +37,7 @@ import useConfigStore from '../../../stores/useConfigStore.ts';
 import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import _isEqual from 'lodash/isEqual';
+import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial.tsx';
 
 function RendererLayout() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -53,6 +54,7 @@ function RendererLayout() {
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
   const encounter = useConfigStore((state) => state.encounter);
+  const launchIntent = useConfigStore((state) => state.launchIntent);
 
   const [open, setOpen] = useState(false);
   const [navIsCollapsed, collapseNav] = useState(false);
@@ -128,15 +130,22 @@ function RendererLayout() {
       setSpinner({ ...spinner, isLoading: false });
     }
   }
+  const isEmbeddedView = launchIntent === 'embedded-browser';
 
   return (
     <StyledRoot>
-      <RendererHeader onOpenNav={() => setOpen(true)} navIsCollapsed={navIsCollapsed} />
-      <RendererNav
+      <RendererHeader
+        onOpenNav={() => setOpen(true)}
+        navIsCollapsed={navIsCollapsed}
+        isEmbeddedView={isEmbeddedView}
+      />
+
+      <RendererNavWrapper
         openNav={open}
         onCloseNav={() => setOpen(false)}
         navCollapsed={navIsCollapsed}
         setNavCollapsed={() => collapseNav(true)}
+        isEmbeddedView={isEmbeddedView}
       />
 
       <Main>
@@ -154,11 +163,15 @@ function RendererLayout() {
 
       <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => collapseNav(false)} />
 
-      <BackToTopButton>
-        <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
-          <KeyboardArrowUpIcon />
-        </Fab>
-      </BackToTopButton>
+      {isEmbeddedView ? (
+        <RendererEmbeddedSpeedDial isPopulating={spinner.isLoading} />
+      ) : (
+        <BackToTopButton>
+          <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
+            <KeyboardArrowUpIcon />
+          </Fab>
+        </BackToTopButton>
+      )}
     </StyledRoot>
   );
 }

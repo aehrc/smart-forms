@@ -15,38 +15,28 @@
  * limitations under the License.
  */
 
-import { Box, Drawer, Grid, IconButton, Tooltip } from '@mui/material';
-import useResponsive from '../../../../hooks/useResponsive.ts';
+import { NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
-import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
 import RendererNavSection from './RendererNavSection.tsx';
 import RendererOperationSection from './RendererOperationSection.tsx';
-import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
-import { NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
+import { Box, Grid, IconButton, Tooltip } from '@mui/material';
 import { NavErrorAlertWrapper } from '../../../../components/Nav/Nav.styles.ts';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
-import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
+import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
+import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 
-interface Props {
-  openNav: boolean;
-  navCollapsed: boolean;
-  onCloseNav: () => void;
-  setNavCollapsed: () => void;
+interface RendererNavProps {
+  isNotLaunched: boolean;
+  navIsShown: boolean;
+  onCollapseNav: () => void;
 }
 
-function RendererNav(props: Props) {
-  const { openNav, onCloseNav, navCollapsed, setNavCollapsed } = props;
+function RendererNav(props: RendererNavProps) {
+  const { isNotLaunched, navIsShown, onCollapseNav } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-
-  const isDesktop = useResponsive('up', 'lg');
-
-  const isNotLaunched = !smartClient;
-
-  const renderContent = (
+  return (
     <Scrollbar
       sx={{
         height: 1,
@@ -76,59 +66,21 @@ function RendererNav(props: Props) {
             <CsiroLogo />
           </Grid>
           <Grid item xs={4}>
-            {navCollapsed || !isDesktop ? null : (
+            {navIsShown ? (
               <Box display="flex" justifyContent="end" alignItems="center">
                 <Tooltip title="Collapse Sidebar" placement="right">
                   <span>
-                    <IconButton onClick={setNavCollapsed}>
+                    <IconButton onClick={onCollapseNav}>
                       <KeyboardDoubleArrowLeftIcon fontSize="small" />
                     </IconButton>
                   </span>
                 </Tooltip>
               </Box>
-            )}
+            ) : null}
           </Grid>
         </Grid>
       </Box>
     </Scrollbar>
-  );
-
-  return (
-    <>
-      <Box
-        component="nav"
-        sx={{
-          flexShrink: { lg: 0 },
-          width: { lg: navCollapsed ? 0 : NAV_WIDTH }
-        }}>
-        {isDesktop && !navCollapsed ? (
-          <Drawer
-            open
-            variant="permanent"
-            PaperProps={{
-              sx: {
-                width: NAV_WIDTH,
-                bgcolor: 'background.default',
-                borderRightStyle: 'dashed'
-              }
-            }}>
-            {renderContent}
-          </Drawer>
-        ) : (
-          <Drawer
-            open={openNav}
-            onClose={onCloseNav}
-            ModalProps={{
-              keepMounted: true
-            }}
-            PaperProps={{
-              sx: { width: NAV_WIDTH }
-            }}>
-            {renderContent}
-          </Drawer>
-        )}
-      </Box>
-    </>
   );
 }
 

@@ -29,35 +29,40 @@ import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
 
 interface RendererHeaderProps {
   navIsCollapsed: boolean;
+  isEmbeddedView: boolean;
   onOpenNav: () => void;
 }
 
 const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) {
-  const { navIsCollapsed, onOpenNav } = props;
+  const { navIsCollapsed, isEmbeddedView, onOpenNav } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'lg');
 
-  const navIsExpanded = !navIsCollapsed;
+  const navIsExpanded = !navIsCollapsed && !isEmbeddedView;
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={navIsCollapsed}>
+    <StyledRoot
+      sx={{ boxShadow: theme.customShadows.z4 }}
+      navCollapsed={navIsCollapsed || isEmbeddedView}>
       <StyledToolbar>
-        <IconButton
-          onClick={onOpenNav}
-          sx={{
-            color: 'text.primary',
-            ...(navIsExpanded && { display: { lg: 'none' } })
-          }}
-          data-test="button-expand-nav">
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
+        {isEmbeddedView ? null : (
+          <IconButton
+            onClick={onOpenNav}
+            sx={{
+              color: 'text.primary',
+              ...(navIsExpanded && { display: { lg: 'none' } })
+            }}
+            data-test="button-expand-nav">
+            <Iconify icon="eva:menu-2-fill" />
+          </IconButton>
+        )}
 
         {isDesktop && navIsExpanded ? null : (
           <LogoWrapper>
-            <Logo />
+            <Logo isEmbeddedView={isEmbeddedView} />
           </LogoWrapper>
         )}
 
@@ -70,7 +75,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
 
         <UpdatingIndicator />
 
-        <HeaderIcons />
+        <HeaderIcons isEmbeddedView={isEmbeddedView} />
       </StyledToolbar>
     </StyledRoot>
   );

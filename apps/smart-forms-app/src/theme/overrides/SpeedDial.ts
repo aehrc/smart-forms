@@ -15,31 +15,22 @@
  * limitations under the License.
  */
 
-import Card from './Card';
-import Paper from './Paper';
-import Input from './Input';
-import Table from './Table';
-import Button from './Button';
-import Backdrop from './Backdrop';
-import Typography from './Typography';
-import Autocomplete from './Autocomplete';
-import Accordion from './Accordion';
 import type { Theme } from '@mui/material';
-import SpeedDial from './SpeedDial.ts';
 
-function ComponentsOverrides(theme: Theme) {
-  return Object.assign(
-    Accordion(theme),
-    Card(theme),
-    Table(theme),
-    Input(theme),
-    Paper(),
-    Button(theme),
-    Backdrop(theme),
-    Typography(theme),
-    Autocomplete(theme),
-    SpeedDial(theme)
-  );
+export default function SpeedDial(theme: Theme) {
+  return {
+    MuiSpeedDialAction: {
+      styleOverrides: {
+        staticTooltipLabel: {
+          backgroundColor: theme.palette.grey[600],
+          color: theme.palette.common.white,
+          fontSize: theme.typography.subtitle2.fontSize,
+          fontWeight: theme.typography.subtitle2.fontWeight,
+          boxShadow: theme.customShadows.z8,
+          maxWidth: 150,
+          whiteSpace: 'nowrap'
+        }
+      }
+    }
+  };
 }
-
-export default ComponentsOverrides;

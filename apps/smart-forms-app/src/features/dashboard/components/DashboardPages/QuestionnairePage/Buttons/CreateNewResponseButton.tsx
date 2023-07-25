@@ -28,6 +28,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 
 function CreateNewResponseButton() {
   const smartClient = useConfigStore((state) => state.smartClient);
+  const setLaunchIntent = useConfigStore((state) => state.setLaunchIntent);
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
   const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
 
@@ -56,6 +57,13 @@ function CreateNewResponseButton() {
     // Assign questionnaireResponse to questionnaireResponse provider
     const questionnaireResponse = createQuestionnaireResponse(questionnaire);
     buildSourceResponse(questionnaireResponse);
+
+    // FIXME this is a hack to test tabs rendering in an embedded browser
+    if (questionnaire.id === 'TestIntentCollapsible') {
+      setLaunchIntent('embedded-browser');
+    } else {
+      setLaunchIntent(null);
+    }
 
     navigate('/renderer');
     setIsLoading(false);

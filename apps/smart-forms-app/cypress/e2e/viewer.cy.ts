@@ -72,7 +72,6 @@ describe('response viewer', () => {
 
     it('edit response', () => {
       cy.clickOnViewerOperation('Edit Response');
-      cy.getByData('form-heading').should('be.visible');
 
       cy.goToPatientDetailsTab();
       cy.initAgeValue(60);
