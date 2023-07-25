@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getContextDisplays } from '../../../utils/tabs.ts';
-import { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { getShortText } from '../../../utils/itemControl.ts';
 import GroupHeadingIcon from '../QFormComponents/GroupItem/GroupHeadingIcon.tsx';
 
