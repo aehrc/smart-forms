@@ -19,7 +19,7 @@
     "@mui/icons-material": "^5.14.1",
     "@mui/lab": "^5.0.0-alpha.137",
     "@mui/material": "^5.13.6",
-    "@mui/x-date-pickers": "^6.9.2",
+    "@mui/x-date-pickers": "^6.10.1",
     "@sentry/react": "^7.58.1",
     "@sentry/tracing": "^7.57.0",
     "@tanstack/react-query": "^4.29.5",
