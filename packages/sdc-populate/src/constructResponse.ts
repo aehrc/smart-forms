@@ -26,6 +26,8 @@ import type {
 } from 'fhir/r4';
 import type { InitialExpression, ValueSetPromise } from './interfaces/expressions.interface';
 import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './processValueSets';
+import moment from 'moment';
+import dayjs from 'dayjs';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -221,22 +223,74 @@ function getAnswerValues(
       if (answerOption) return answerOption;
     }
 
-    if (typeof value === 'boolean') {
+    if (typeof value === 'boolean' && qItem.type === 'boolean') {
       return { valueBoolean: value };
-    } else if (typeof value === 'object') {
-      return { valueCoding: value };
-    } else if (typeof value === 'number') {
-      return Number.isInteger(value) ? { valueInteger: value } : { valueDecimal: value };
-    } else {
-      // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
-      if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
-        expandRequired = true;
-      }
-
-      return { valueString: value };
     }
+
+    if (typeof value === 'number') {
+      if (qItem.type === 'decimal') {
+        return { valueDecimal: value };
+      }
+      if (qItem.type === 'integer') {
+        return { valueInteger: value };
+      }
+    }
+
+    if (typeof value === 'object') {
+      return { valueCoding: value };
+    }
+
+    // Value is string at this point
+    if (qItem.type === 'date' && checkIsDate(value)) {
+      return { valueDate: value };
+    }
+
+    if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
+      return { valueDateTime: value };
+    }
+
+    if (qItem.type === 'time' && checkIsTime(value)) {
+      return { valueTime: value };
+    }
+
+    // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
+    if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
+      expandRequired = true;
+    }
+
+    return { valueString: value };
   });
   return { newValues, expandRequired };
+}
+
+/**
+ * Check if an answer is a date in the formats YYYY, YYYY-MM, YYYY-MM-DD
+ *
+ * @author Sean Fong
+ */
+export function checkIsDate(value: string): boolean {
+  const acceptedFormats = ['YYYY-MM', 'YYYY-MM-DD'];
+  return dayjs(value, acceptedFormats, true).isValid();
+}
+
+/**
+ * Check if an answer is a datetime in the format YYYY, YYYY-MM, YYYY-MM-DD, YYYY-MM-DDThh:mm:ss+zz:zz
+ *
+ * @author Sean Fong
+ */
+export function checkIsDateTime(value: string): boolean {
+  const acceptedFormats = ['YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
+  return moment(value, acceptedFormats, true).isValid();
+}
+
+/**
+ * Check if an answer is in a  time format - Regex: ([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?
+ *
+ * @author Sean Fong
+ */
+export function checkIsTime(value: string): boolean {
+  const timeRegex = /^([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?$/;
+  return timeRegex.test(value);
 }
 
 /**
