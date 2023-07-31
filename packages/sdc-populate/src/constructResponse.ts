@@ -272,7 +272,7 @@ function getAnswerValues(
  * @author Sean Fong
  */
 export function checkIsDate(value: string): boolean {
-  const acceptedFormats = ['YYYY-MM', 'YYYY-MM-DD'];
+  const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD'];
   return dayjs(value, acceptedFormats, true).isValid();
 }
 
@@ -282,7 +282,7 @@ export function checkIsDate(value: string): boolean {
  * @author Sean Fong
  */
 export function checkIsDateTime(value: string): boolean {
-  const acceptedFormats = ['YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
+  const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
   return moment(value, acceptedFormats, true).isValid();
 }
 
