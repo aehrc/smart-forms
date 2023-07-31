@@ -51,8 +51,7 @@ export async function constructResponse(
 
   let valueSetPromises: Record<string, ValueSetPromise> = {};
 
-  const topLevelQItems = questionnaire.item;
-  if (!topLevelQItems || !topLevelQItems[0]) {
+  if (!questionnaire.item || questionnaire.item.length === 0) {
     return questionnaireResponse;
   }
 
@@ -60,7 +59,7 @@ export async function constructResponse(
   // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
   const topLevelQRItems: QuestionnaireResponseItem[] = [];
-  for (const qItem of topLevelQItems) {
+  for (const qItem of questionnaire.item) {
     const newTopLevelQRItem = constructResponseItemRecursive(
       qItem,
       {
@@ -74,15 +73,19 @@ export async function constructResponse(
 
     if (Array.isArray(newTopLevelQRItem)) {
       topLevelQRItems.push(...newTopLevelQRItem);
-    } else if (newTopLevelQRItem) {
-      topLevelQRItems.push(newTopLevelQRItem);
-    } else {
-      topLevelQRItems.push({
-        linkId: qItem.linkId,
-        text: qItem.text,
-        item: []
-      });
+      continue;
     }
+
+    if (newTopLevelQRItem) {
+      topLevelQRItems.push(newTopLevelQRItem);
+      continue;
+    }
+
+    topLevelQRItems.push({
+      linkId: qItem.linkId,
+      text: qItem.text,
+      item: []
+    });
   }
 
   valueSetPromises = await resolvePromises(valueSetPromises);

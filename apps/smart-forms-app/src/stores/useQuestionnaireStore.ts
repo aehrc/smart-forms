@@ -15,6 +15,10 @@ import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 import { updateItemAnswer } from '../utils/enableWhen.ts';
 import { initialiseFormFromResponse } from '../utils/initaliseForm.ts';
 import { evaluateUpdatedExpressions } from '../utils/fhirpath.ts';
+import {
+  evaluateInitialCalculatedExpressions,
+  initialiseCalculatedExpressionValues
+} from '../utils/calculatedExpressions.ts';
 
 const emptyQuestionnaire: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -52,7 +56,7 @@ export interface QuestionnaireState {
   toggleEnableWhenActivation: (isActivated: boolean) => void;
   updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
-  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => void;
+  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => QuestionnaireResponse;
 }
 
 const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
@@ -173,17 +177,28 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       }
     })),
   updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => {
+    const initialCalculatedExpressions = evaluateInitialCalculatedExpressions({
+      initialResponse: populatedResponse,
+      calculatedExpressions: get().calculatedExpressions,
+      variablesFhirPath: get().variables.fhirPathVariables
+    });
+
+    const updatedResponse = initialiseCalculatedExpressionValues(
+      get().sourceQuestionnaire,
+      populatedResponse,
+      initialCalculatedExpressions
+    );
+
     const {
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
-      initialCalculatedExpressions,
       firstVisibleTab
     } = initialiseFormFromResponse({
-      questionnaireResponse: populatedResponse,
+      questionnaireResponse: updatedResponse,
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
-      calculatedExpressions: get().calculatedExpressions,
+      calculatedExpressions: initialCalculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
       tabs: get().tabs
     });
@@ -195,6 +210,8 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
       calculatedExpressions: initialCalculatedExpressions,
       currentTabIndex: firstVisibleTab
     }));
+
+    return updatedResponse;
   }
 }));
 
