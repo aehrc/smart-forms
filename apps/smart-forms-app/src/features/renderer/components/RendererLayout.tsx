@@ -93,7 +93,7 @@ function RendererLayout() {
     patient &&
     user &&
     spinner.isLoading &&
-    (sourceQuestionnaire.contained || sourceResponse.extension) &&
+    (sourceQuestionnaire.contained || sourceQuestionnaire.extension) &&
     hasNotBeenPopulated &&
     !sourceResponse.id
   ) {
@@ -105,8 +105,8 @@ function RendererLayout() {
       user,
       encounter,
       (populated: QuestionnaireResponse, hasWarnings: boolean) => {
-        populateResponse(populated);
-        updatePopulatedProperties(populated);
+        const updatedResponse = updatePopulatedProperties(populated);
+        populateResponse(updatedResponse);
         setSpinner({ ...spinner, isLoading: false });
         if (hasWarnings) {
           enqueueSnackbar(

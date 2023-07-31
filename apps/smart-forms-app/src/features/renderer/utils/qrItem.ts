@@ -24,7 +24,6 @@ import type {
 
 import type { QrRepeatGroup } from '../types/repeatGroup.interface.ts';
 
-// @ts-ignore
 /**
  * Create a questionnaireResponse from a given questionnaire form item
  * A questionnaire form item is the first item of a questionnaire
@@ -135,7 +134,7 @@ export function createEmptyQrItemWithUnit(
  *
  * @author Sean Fong
  */
-export function updateLinkedItem(
+export function updateQrGroup(
   newQrItem: QuestionnaireResponseItem | null,
   newQrRepeatGroup: QrRepeatGroup | null,
   qrGroup: QuestionnaireResponseItem,

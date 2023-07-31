@@ -18,10 +18,19 @@
 import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import type { Expression, QuestionnaireResponse } from 'fhir/r4';
+import type {
+  Expression,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import _isEqual from 'lodash/isEqual';
 import { emptyResponse } from '../stores/useQuestionnaireStore.ts';
 import { createFhirPathContext } from './fhirpath.ts';
+import { getQrItemsIndex, mapQItemsIndex } from '../features/renderer/utils';
+import { updateQrGroup } from '../features/renderer/utils/qrItem.ts';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -103,4 +112,179 @@ export function evaluateCalculatedExpressions(
     calculatedExpsIsUpdated: isUpdated,
     updatedCalculatedExpressions: updatedCalculatedExpressions
   };
+}
+
+export function initialiseCalculatedExpressionValues(
+  questionnaire: Questionnaire,
+  populatedResponse: QuestionnaireResponse,
+  calculatedExpressions: Record<string, CalculatedExpression>
+): QuestionnaireResponse {
+  const calculatedExpressionsWithValues = Object.keys(calculatedExpressions)
+    .filter((key) => calculatedExpressions[key].value !== undefined)
+    .reduce(
+      (mapping: Record<string, CalculatedExpression>, key: string) => (
+        (mapping[key] = calculatedExpressions[key]), mapping
+      ),
+      {}
+    );
+
+  if (
+    !questionnaire.item ||
+    questionnaire.item.length === 0 ||
+    !populatedResponse.item ||
+    populatedResponse.item.length === 0
+  ) {
+    return populatedResponse;
+  }
+
+  const topLevelQrItems: QuestionnaireResponseItem[] = [];
+  for (const [index, topLevelQItem] of questionnaire.item.entries()) {
+    const populatedTopLevelQrItem = populatedResponse.item[index] ?? {
+      linkId: topLevelQItem.linkId,
+      text: topLevelQItem.text,
+      item: []
+    };
+
+    const updatedTopLevelQRItem = initialiseItemCalculatedExpressionValueRecursive(
+      topLevelQItem,
+      populatedTopLevelQrItem,
+      calculatedExpressionsWithValues
+    );
+
+    if (Array.isArray(updatedTopLevelQRItem)) {
+      topLevelQrItems.push(...updatedTopLevelQRItem);
+      continue;
+    }
+
+    if (updatedTopLevelQRItem) {
+      topLevelQrItems.push(updatedTopLevelQRItem);
+    }
+  }
+
+  return { ...populatedResponse, item: topLevelQrItems };
+}
+
+function initialiseItemCalculatedExpressionValueRecursive(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem | undefined,
+  calculatedExpressions: Record<string, CalculatedExpression>
+): QuestionnaireResponseItem[] | QuestionnaireResponseItem | null {
+  const childQItems = qItem.item;
+  if (childQItems && childQItems.length > 0) {
+    // iterate through items of item recursively
+    const childQrItems = qrItem?.item ?? [];
+    // const updatedChildQrItems: QuestionnaireResponseItem[] = [];
+
+    // FIXME Not implemented for repeat groups
+    if (qItem.type === 'group' && qItem.repeats) {
+      return qrItem ?? null;
+    }
+
+    const indexMap = mapQItemsIndex(qItem);
+    const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
+
+    // Otherwise loop through qItem as usual
+    for (const [index, childQItem] of childQItems.entries()) {
+      const childQrItem = qrItemsByIndex[index];
+
+      // FIXME Not implemented for repeat groups
+      if (Array.isArray(childQrItem)) {
+        continue;
+      }
+
+      const newQrItem = initialiseItemCalculatedExpressionValueRecursive(
+        childQItem,
+        childQrItem,
+        calculatedExpressions
+      );
+
+      // FIXME Not implemented for repeat groups
+      if (Array.isArray(newQrItem)) {
+        continue;
+      }
+
+      if (newQrItem) {
+        updateQrGroup(
+          newQrItem,
+          null,
+          qrItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
+          indexMap
+        );
+      }
+    }
+
+    return constructGroupItem(qItem, qrItem, calculatedExpressions);
+  }
+
+  return constructSingleItem(qItem, calculatedExpressions);
+}
+
+function constructGroupItem(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem | undefined,
+  calculatedExpressions: Record<string, CalculatedExpression>
+): QuestionnaireResponseItem | null {
+  const itemCalculatedExpression = calculatedExpressions[qItem.linkId];
+  let calculatedExpressionAnswer: QuestionnaireResponseItemAnswer | undefined;
+  if (itemCalculatedExpression && itemCalculatedExpression.value) {
+    calculatedExpressionAnswer = parseValueToAnswer(qItem, itemCalculatedExpression.value);
+  }
+
+  // If group item has an existing answer, do not overwrite it with calculated expression value
+  if (qrItem?.answer && qrItem?.answer.length > 0) {
+    return qrItem ?? null;
+  }
+
+  if (!calculatedExpressionAnswer) {
+    return qrItem ?? null;
+  }
+
+  if (qrItem) {
+    return {
+      ...qrItem,
+      answer: [calculatedExpressionAnswer]
+    };
+  }
+
+  return {
+    linkId: qItem.linkId,
+    text: qItem.text,
+    answer: [calculatedExpressionAnswer]
+  };
+}
+
+function constructSingleItem(
+  qItem: QuestionnaireItem,
+  calculatedExpressions: Record<string, CalculatedExpression>
+): QuestionnaireResponseItem | null {
+  const itemCalculatedExpression = calculatedExpressions[qItem.linkId];
+  let calculatedExpressionAnswer: QuestionnaireResponseItemAnswer | undefined;
+  if (itemCalculatedExpression && itemCalculatedExpression.value) {
+    calculatedExpressionAnswer = parseValueToAnswer(qItem, itemCalculatedExpression.value);
+  }
+
+  if (!calculatedExpressionAnswer) {
+    return null;
+  }
+
+  return {
+    linkId: qItem.linkId,
+    text: qItem.text,
+    answer: [calculatedExpressionAnswer]
+  };
+}
+
+function parseValueToAnswer(
+  qItem: QuestionnaireItem,
+  value: string | number
+): QuestionnaireResponseItemAnswer {
+  if (typeof value === 'number') {
+    if (qItem.type === 'integer') {
+      return { valueInteger: value };
+    }
+
+    return { valueDecimal: value };
+  }
+
+  return { valueString: value };
 }

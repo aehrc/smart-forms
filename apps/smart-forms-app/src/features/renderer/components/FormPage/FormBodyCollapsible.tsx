@@ -19,7 +19,7 @@ import { useMemo } from 'react';
 import { Stack } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils';
-import { updateLinkedItem } from '../../utils/qrItem.ts';
+import { updateQrGroup } from '../../utils/qrItem.ts';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 import FormBodySingleCollapsibleWrapper from './Collapsible/FormBodySingleCollapsibleWrapper.tsx';
@@ -46,7 +46,7 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
   const qrItems = topLevelQRItem.item;
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    updateLinkedItem(qrItem, null, topLevelQRItem, indexMap);
+    updateQrGroup(qrItem, null, topLevelQRItem, indexMap);
     onQrItemChange(topLevelQRItem);
   }
 

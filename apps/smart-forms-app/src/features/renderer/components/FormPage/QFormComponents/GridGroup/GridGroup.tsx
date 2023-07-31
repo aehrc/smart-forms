@@ -17,7 +17,7 @@
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { PropsWithQrItemChangeHandler } from '../../../../types/renderProps.interface.ts';
-import { createQrGroup, updateLinkedItem } from '../../../../utils/qrItem.ts';
+import { createQrGroup, updateQrGroup } from '../../../../utils/qrItem.ts';
 import useHidden from '../../../../hooks/useHidden.ts';
 import { QGroupContainerBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { Divider, Paper, TableContainer, Typography } from '@mui/material';
@@ -63,7 +63,7 @@ function GridGroup(props: GridGroupProps) {
   // Event Handlers
   function handleRowChange(newQrItem: QuestionnaireResponseItem) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
-    updateLinkedItem(newQrItem, null, updatedQrGroup, qItemsIndexMap);
+    updateQrGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup);
   }
 

@@ -21,7 +21,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils';
 import GroupItem from './QFormComponents/GroupItem/GroupItem.tsx';
-import { updateLinkedItem } from '../../utils/qrItem.ts';
+import { updateQrGroup } from '../../utils/qrItem.ts';
 import FormBodyTabList from './Tabs/FormBodyTabList.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
 import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
@@ -46,7 +46,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const qrItems = topLevelQRItem.item;
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    updateLinkedItem(qrItem, null, topLevelQRItem, indexMap);
+    updateQrGroup(qrItem, null, topLevelQRItem, indexMap);
     onQrItemChange(topLevelQRItem);
   }
 

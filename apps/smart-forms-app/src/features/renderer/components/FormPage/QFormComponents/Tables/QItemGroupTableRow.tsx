@@ -16,7 +16,7 @@
  */
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createQrGroup, updateLinkedItem } from '../../../../utils/qrItem.ts';
+import { createQrGroup, updateQrGroup } from '../../../../utils/qrItem.ts';
 import SingleItem from '../SingleItem/SingleItem.tsx';
 import { getQrItemsIndex } from '../../../../utils';
 import { StandardTableCell } from './Table.styles.tsx';
@@ -41,7 +41,7 @@ function QItemGroupTableRow(props: Props) {
 
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
-    updateLinkedItem(newQrRowItem, null, qrRow, qItemsIndexMap);
+    updateQrGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
     onQrItemChange(qrRow);
   }
 

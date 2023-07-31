@@ -17,7 +17,7 @@
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { PropsWithQrItemChangeHandler } from '../../../../types/renderProps.interface.ts';
-import { createQrGroup, updateLinkedItem } from '../../../../utils/qrItem.ts';
+import { createQrGroup, updateQrGroup } from '../../../../utils/qrItem.ts';
 import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles.tsx';
 import SingleItem from '../SingleItem/SingleItem.tsx';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../../utils';
@@ -46,7 +46,7 @@ function GridRow(props: GridRowProps) {
 
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
-    updateLinkedItem(newQrRowItem, null, qrRow, qItemsIndexMap);
+    updateQrGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
     onQrItemChange(qrRow);
   }
 
