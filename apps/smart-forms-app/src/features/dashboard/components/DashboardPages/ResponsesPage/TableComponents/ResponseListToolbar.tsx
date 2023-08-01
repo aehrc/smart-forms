@@ -15,24 +15,19 @@
  * limitations under the License.
  */
 
-import { Box, InputAdornment, LinearProgress, Typography } from '@mui/material';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
+import { Box, LinearProgress } from '@mui/material';
 import {
   getResponseToolBarColors,
-  StyledRoot,
-  StyledSearch
+  StyledRoot
 } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
-import dayjs from 'dayjs';
-import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
 import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
-import type { SelectedResponse } from '../../../../types/list.interface.ts';
-import BackToQuestionnairesButton from '../Buttons/BackToQuestionnairesButton.tsx';
 import ResponseListToolbarButtons from './ResponseListToolbarButtons.tsx';
-import useResponsive from '../../../../../../hooks/useResponsive.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
+import ResponseListToolbarLeftSection from './ResponseListToolbarLeftSection.tsx';
 
 interface ResponseListToolbarProps {
-  selectedResponse: SelectedResponse | null;
+  selectedResponse: QuestionnaireResponse | null;
   searchInput: string;
   isFetching: boolean;
   onClearSelection: () => void;
@@ -44,15 +39,8 @@ function ResponseListToolbar(props: ResponseListToolbarProps) {
 
   const { selectedQuestionnaire, existingResponses } = useContext(SelectedQuestionnaireContext);
 
-  const isTabletAndUp = useResponsive('up', 'md');
-
-  const selectedQuestionnaireTitle =
-    selectedQuestionnaire?.listItem.title ?? 'selected questionnaire';
-
-  const selected = selectedResponse?.listItem;
-
   const toolBarColors = getResponseToolBarColors(
-    selected,
+    selectedResponse,
     selectedQuestionnaire,
     existingResponses
   );
@@ -60,38 +48,13 @@ function ResponseListToolbar(props: ResponseListToolbarProps) {
   return (
     <>
       <StyledRoot data-test="responses-list-toolbar" sx={{ ...toolBarColors }}>
-        {selected ? (
-          <Typography component="div" variant="subtitle1">
-            {selected.title} — {dayjs(selected.authored).format('LL')} selected
-          </Typography>
-        ) : selectedQuestionnaire && existingResponses.length > 0 ? (
-          <Box display="flex" alignItems="center">
-            <BackToQuestionnairesButton />
-            <Typography variant="subtitle1">
-              Displaying responses from the <b>{selectedQuestionnaireTitle}</b> questionnaire
-            </Typography>
-          </Box>
-        ) : (
-          <StyledSearch
-            value={searchInput}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => onSearch(event.target.value)}
-            placeholder="Search responses..."
-            startAdornment={
-              <InputAdornment position="start">
-                <Iconify
-                  icon="eva:search-fill"
-                  sx={{ color: 'text.disabled', width: 20, height: 20 }}
-                />
-              </InputAdornment>
-            }
-            data-test="search-field-responses"
-            sx={{
-              '&.Mui-focused': {
-                width: isTabletAndUp ? `50%` : '320px'
-              }
-            }}
-          />
-        )}
+        <ResponseListToolbarLeftSection
+          selectedResponse={selectedResponse}
+          selectedQuestionnaire={selectedQuestionnaire}
+          existingResponses={existingResponses}
+          searchInput={searchInput}
+          onSearch={onSearch}
+        />
 
         <ResponseListToolbarButtons
           selectedResponse={selectedResponse}

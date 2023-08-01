@@ -16,9 +16,9 @@
  */
 
 import type { ColumnDef } from '@tanstack/react-table';
-import type { QuestionnaireListItem, ResponseListItem } from '../types/list.interface.ts';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-export function createQuestionnaireTableColumns(): ColumnDef<QuestionnaireListItem>[] {
+export function createQuestionnaireTableColumns(): ColumnDef<Questionnaire>[] {
   return [
     {
       accessorKey: 'title',
@@ -30,7 +30,8 @@ export function createQuestionnaireTableColumns(): ColumnDef<QuestionnaireListIt
     },
     {
       accessorKey: 'date',
-      header: 'Date'
+      header: 'Date',
+      sortingFn: (a, b) => sortDate(a.original.date, b.original.date)
     },
     {
       accessorKey: 'status',
@@ -39,7 +40,7 @@ export function createQuestionnaireTableColumns(): ColumnDef<QuestionnaireListIt
   ];
 }
 
-export function createResponseTableColumns(): ColumnDef<ResponseListItem>[] {
+export function createResponseTableColumns(): ColumnDef<QuestionnaireResponse>[] {
   return [
     {
       accessorKey: 'title',
@@ -51,11 +52,28 @@ export function createResponseTableColumns(): ColumnDef<ResponseListItem>[] {
     },
     {
       accessorKey: 'authored',
-      header: 'Authored On'
+      header: 'Authored On',
+      sortingFn: (a, b) => sortDate(a.original.authored, b.original.authored)
     },
     {
       accessorKey: 'status',
       header: 'Status'
     }
   ];
+}
+
+function sortDate(dateStringA: string | undefined, dateStringB: string | undefined): number {
+  if (dateStringA === undefined && dateStringB === undefined) {
+    return 0;
+  }
+
+  if (dateStringA === undefined) {
+    return 1;
+  }
+
+  if (dateStringB === undefined) {
+    return -1;
+  }
+
+  return dateStringA.localeCompare(dateStringB);
 }

@@ -16,7 +16,6 @@
  */
 
 import { useMemo, useState } from 'react';
-import type { SelectedResponse } from '../../../types/list.interface.ts';
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import useFetchResponses from '../../../hooks/useFetchResponses.ts';
 import { createResponseTableColumns } from '../../../utils/tableColumns.ts';
@@ -31,27 +30,22 @@ import type { QuestionnaireResponse } from 'fhir/r4';
 import ResponsesTableView from './ResponsesTableView.tsx';
 
 function ResponsesTable() {
-  const [selectedResponse, setSelectedResponse] = useState<SelectedResponse | null>(null);
+  const [selectedResponse, setSelectedResponse] = useState<QuestionnaireResponse | null>(null);
   const [searchInput, setSearchInput] = useState('');
 
   const debouncedInput = useDebounce(searchInput, 300);
 
-  const { responses, responseListItems, fetchStatus, fetchError, isFetching } = useFetchResponses(
+  const { responses, fetchStatus, fetchError, isFetching } = useFetchResponses(
     searchInput,
     debouncedInput
   );
 
   const columns = useMemo(() => createResponseTableColumns(), []);
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: 'authored',
-      desc: true
-    }
-  ]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
-    data: responseListItems,
+    data: responses,
     columns: columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -63,22 +57,13 @@ function ResponsesTable() {
   });
 
   function handleRowClick(id: string) {
-    const selectedItem = responseListItems.find((item) => item.id === id);
+    const response = responses.find((response) => response.id === id);
 
-    if (selectedItem) {
-      if (selectedItem.id === selectedResponse?.listItem.id) {
+    if (response) {
+      if (response.id === selectedResponse?.id) {
         setSelectedResponse(null);
       } else {
-        const resource = responses?.entry?.find((entry) => entry.resource?.id === id)?.resource;
-
-        if (resource) {
-          setSelectedResponse({
-            listItem: selectedItem,
-            resource: resource as QuestionnaireResponse
-          });
-        } else {
-          setSelectedResponse(null);
-        }
+        setSelectedResponse(response);
       }
     }
   }

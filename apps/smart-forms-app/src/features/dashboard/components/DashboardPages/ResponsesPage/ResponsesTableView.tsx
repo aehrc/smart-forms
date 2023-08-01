@@ -21,20 +21,21 @@ import DashboardTableHead from '../DashboardTableHead.tsx';
 import ResponseTableRow from './TableComponents/ResponseTableRow.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
 import DashboardTablePagination from '../DashboardTablePagination.tsx';
-import type { ResponseListItem, SelectedResponse } from '../../../types/list.interface.ts';
 import type { Table } from '@tanstack/react-table';
+import type { QuestionnaireResponse } from 'fhir/r4';
+import { createResponseListItem } from '../../../utils/dashboard.ts';
 
 interface ResponsesTableViewProps {
-  table: Table<ResponseListItem>;
+  table: Table<QuestionnaireResponse>;
   searchInput: string;
   debouncedInput: string;
   fetchStatus: 'error' | 'success' | 'loading';
   isFetching: boolean;
   fetchError: unknown;
-  selectedResponse: SelectedResponse | null;
+  selectedResponse: QuestionnaireResponse | null;
   onSearch: (input: string) => void;
   onRowClick: (id: string) => void;
-  onSelectResponse: (selected: SelectedResponse | null) => void;
+  onSelectResponse: (selected: QuestionnaireResponse | null) => void;
 }
 
 function ResponsesTableView(props: ResponsesTableViewProps) {
@@ -70,16 +71,17 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
         <MuiTable>
           <DashboardTableHead headers={headers} />
           <TableBody>
-            {table.getRowModel().rows.map((row) => {
+            {table.getRowModel().rows.map((row, index) => {
               const rowData = row.original;
-              const isSelected = selectedResponse?.listItem.id === rowData.id;
+              const listItem = createResponseListItem(rowData, index);
+              const isSelected = selectedResponse?.id === listItem.id;
 
               return (
                 <ResponseTableRow
-                  key={rowData.id}
-                  row={rowData}
+                  key={listItem.id}
+                  row={listItem}
                   isSelected={isSelected}
-                  onRowClick={() => onRowClick(rowData.id)}
+                  onRowClick={() => onRowClick(listItem.id)}
                 />
               );
             })}

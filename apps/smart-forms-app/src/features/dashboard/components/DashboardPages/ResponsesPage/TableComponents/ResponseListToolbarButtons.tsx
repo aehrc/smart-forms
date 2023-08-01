@@ -21,13 +21,13 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { constructName } from '../../../../../smartAppLaunch/utils/launchContext.ts';
 import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
-import type { SelectedResponse } from '../../../../types/list.interface.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
 import useResponsive from '../../../../../../hooks/useResponsive.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 interface ResponseListToolbarButtonsProps {
-  selectedResponse: SelectedResponse | null;
+  selectedResponse: QuestionnaireResponse | null;
   onClearSelection: () => void;
 }
 
@@ -42,9 +42,7 @@ function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const selected = selectedResponse?.listItem;
-
-  if (selected) {
+  if (selectedResponse) {
     return (
       <Box display="flex" alignItems="center" columnGap={2}>
         <OpenResponseButton selectedResponse={selectedResponse} />

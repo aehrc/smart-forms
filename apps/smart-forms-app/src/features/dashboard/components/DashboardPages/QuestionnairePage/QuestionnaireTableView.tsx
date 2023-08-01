@@ -22,23 +22,21 @@ import QuestionnaireTableRow from './TableComponents/QuestionnaireTableRow.tsx';
 import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedback.tsx';
 import DashboardTablePagination from '../DashboardTablePagination.tsx';
 import type { Table } from '@tanstack/react-table';
-import type {
-  QuestionnaireListItem,
-  SelectedQuestionnaire
-} from '../../../types/list.interface.ts';
+import type { Questionnaire } from 'fhir/r4';
+import { createQuestionnaireListItem } from '../../../utils/dashboard.ts';
 
 interface QuestionnaireTableViewProps {
-  table: Table<QuestionnaireListItem>;
+  table: Table<Questionnaire>;
   searchInput: string;
   debouncedInput: string;
   fetchStatus: 'error' | 'success' | 'loading';
   isInitialLoading: boolean;
   isFetching: boolean;
   fetchError: unknown;
-  selectedQuestionnaire: SelectedQuestionnaire | null;
+  selectedQuestionnaire: Questionnaire | null;
   onSearch: (input: string) => void;
   onRowClick: (id: string) => void;
-  onSelectQuestionnaire: (selected: SelectedQuestionnaire | null) => void;
+  onSelectQuestionnaire: (selected: Questionnaire | null) => void;
 }
 
 function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
@@ -64,7 +62,7 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
   return (
     <>
       <QuestionnaireListToolbar
-        selected={selectedQuestionnaire?.listItem}
+        selected={selectedQuestionnaire}
         searchInput={searchInput}
         onClearSelection={() => onSelectQuestionnaire(null)}
         onSearch={onSearch}
@@ -74,16 +72,17 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
         <MuiTable stickyHeader>
           <DashboardTableHead headers={headers} />
           <TableBody>
-            {table.getRowModel().rows.map((row) => {
+            {table.getRowModel().rows.map((row, index) => {
               const rowData = row.original;
-              const isSelected = selectedQuestionnaire?.listItem.id === rowData.id;
+              const listItem = createQuestionnaireListItem(rowData, index);
+              const isSelected = selectedQuestionnaire?.id === listItem.id;
 
               return (
                 <QuestionnaireTableRow
-                  key={rowData.id}
-                  row={rowData}
+                  key={listItem.id}
+                  row={listItem}
                   isSelected={isSelected}
-                  onRowClick={() => onRowClick(rowData.id)}
+                  onRowClick={() => onRowClick(listItem.id)}
                 />
               );
             })}

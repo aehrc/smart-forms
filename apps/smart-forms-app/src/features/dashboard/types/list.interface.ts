@@ -17,13 +17,3 @@ export interface ResponseListItem {
   authored: Date | null;
   status: QuestionnaireResponse['status'];
 }
-
-export interface SelectedQuestionnaire {
-  listItem: QuestionnaireListItem;
-  resource: Questionnaire;
-}
-
-export interface SelectedResponse {
-  listItem: ResponseListItem;
-  resource: QuestionnaireResponse;
-}
