@@ -18,7 +18,6 @@
 import { NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
-import RendererNavSection from './RendererNavSection.tsx';
 import RendererOperationSection from './RendererOperationSection.tsx';
 import { Box, Grid, IconButton, Tooltip } from '@mui/material';
 import { NavErrorAlertWrapper } from '../../../../components/Nav/Nav.styles.ts';
@@ -26,6 +25,9 @@ import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
+import RendererLaunchQuestionnaireNavSection from './RendererLaunchQuestionnaireNavSection.tsx';
+import RendererNavSection from './RendererNavSection.tsx';
 
 interface RendererNavProps {
   isNotLaunched: boolean;
@@ -36,6 +38,9 @@ interface RendererNavProps {
 function RendererNav(props: RendererNavProps) {
   const { isNotLaunched, navIsShown, onCollapseNav } = props;
 
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+
+  const launchQuestionnaireExists = !!launchQuestionnaire;
   return (
     <Scrollbar
       sx={{
@@ -48,7 +53,11 @@ function RendererNav(props: RendererNavProps) {
 
       <NavPatientDetails />
 
-      <RendererNavSection />
+      {launchQuestionnaireExists ? (
+        <RendererLaunchQuestionnaireNavSection />
+      ) : (
+        <RendererNavSection />
+      )}
       <RendererOperationSection />
 
       <Box flexGrow={1} />

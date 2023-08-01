@@ -30,6 +30,7 @@ import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
 import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 import { NAV_WIDTH } from '../../../components/Header/Header.styles.ts';
+import ViewerLaunchQuestionnaireNavSection from './ViewerLaunchQuestionnaireNavSection.tsx';
 
 interface Props {
   openNav: boolean;
@@ -40,9 +41,12 @@ function ViewerNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
   const smartClient = useConfigStore((state) => state.smartClient);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -59,8 +63,9 @@ function ViewerNav(props: Props) {
       </NavLogoWrapper>
 
       <NavPatientDetails />
+      {launchQuestionnaireExists ? <ViewerLaunchQuestionnaireNavSection /> : <ViewerNavSection />}
 
-      <ViewerNavSection />
+      {/*<ViewerNavSection />*/}
 
       {smartClient && sourceQuestionnaire.item && sourceResponse.item ? (
         <ViewerOperationSection />

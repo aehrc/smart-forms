@@ -37,7 +37,7 @@ function ViewerNavSection() {
       </NavSectionHeadingWrapper>
       <List disablePadding sx={{ px: 1 }}>
         <ViewerOperationItem
-          title={'Back to Home'}
+          title={'Back to Questionnaires'}
           icon={<HomeIcon />}
           onClick={() => {
             closeSnackbar();

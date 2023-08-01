@@ -53,7 +53,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
   const [isSaving, setIsSaving] = useState(false);
 
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   // Event Handlers
   function handleClose() {
@@ -61,6 +61,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
   }
 
   function handleSave() {
+    closeSnackbar();
     if (!(smartClient && patient && user)) return;
 
     setIsSaving(true);

@@ -39,7 +39,7 @@ function RendererSaveAsDraft() {
   const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
   const hasChanges = useQuestionnaireResponseStore((state) => state.saveResponse);
 
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -53,6 +53,7 @@ function RendererSaveAsDraft() {
   const buttonIsDisabled = !smartClient || !hasChanges || isUpdating;
 
   function handleClick() {
+    closeSnackbar();
     if (!(smartClient && patient && user)) {
       return;
     }

@@ -15,28 +15,35 @@
  * limitations under the License.
  */
 
-import { Box, List, Typography } from '@mui/material';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import RendererOperationItem from './RendererOperationItem.tsx';
+import useConfigStore from '../../../stores/useConfigStore.ts';
+import { SelectedQuestionnaireContext } from '../../dashboard/contexts/SelectedQuestionnaireContext.tsx';
+import { Box, List, Typography } from '@mui/material';
+import RendererOperationItem from '../../renderer/components/RendererNav/RendererOperationItem.tsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function RendererNavSection() {
+function ViewerLaunchQuestionnaireNavSection() {
   const navigate = useNavigate();
   const { closeSnackbar } = useSnackbar();
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+
+  const { setSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
 
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
-        <Typography variant="overline">Pages</Typography>
+        <Typography variant="overline">Responses</Typography>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
         <RendererOperationItem
-          title="Back to Home"
+          title="Back to Responses"
           icon={<ArrowBackIcon />}
           onClick={() => {
             closeSnackbar();
-            navigate('/dashboard/questionnaires');
+            setSelectedQuestionnaire(launchQuestionnaire);
+            navigate('/dashboard/existing');
           }}
         />
       </List>
@@ -44,4 +51,4 @@ function RendererNavSection() {
   );
 }
 
-export default RendererNavSection;
+export default ViewerLaunchQuestionnaireNavSection;
