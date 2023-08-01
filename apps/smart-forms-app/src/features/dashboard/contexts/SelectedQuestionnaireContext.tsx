@@ -17,13 +17,12 @@
 
 import type { ReactNode } from 'react';
 import { createContext, useState } from 'react';
-import type { QuestionnaireResponse } from 'fhir/r4';
-import type { SelectedQuestionnaire } from '../types/list.interface.ts';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export interface SelectedQuestionnaireContextType {
-  selectedQuestionnaire: SelectedQuestionnaire | null;
+  selectedQuestionnaire: Questionnaire | null;
   existingResponses: QuestionnaireResponse[];
-  setSelectedQuestionnaire: (selected: SelectedQuestionnaire | null) => unknown;
+  setSelectedQuestionnaire: (selected: Questionnaire | null) => unknown;
   setExistingResponses: (responses: QuestionnaireResponse[]) => unknown;
   clearSelectedQuestionnaire: () => unknown;
 }
@@ -39,9 +38,7 @@ export const SelectedQuestionnaireContext = createContext<SelectedQuestionnaireC
 function SelectedQuestionnaireContextProvider(props: { children: ReactNode }) {
   const { children } = props;
 
-  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<SelectedQuestionnaire | null>(
-    null
-  );
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [existingResponses, setExistingResponses] = useState<QuestionnaireResponse[]>([]);
 
   const selectedQuestionnaireContext: SelectedQuestionnaireContextType = {

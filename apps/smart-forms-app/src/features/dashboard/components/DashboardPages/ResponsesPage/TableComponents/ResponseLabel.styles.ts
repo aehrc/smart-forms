@@ -19,9 +19,9 @@ import { alpha, styled } from '@mui/material/styles';
 import type { Theme } from '@mui/material';
 import { Box } from '@mui/material';
 
-import type { ResponseListItem } from '../../../../types/list.interface.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
-const handleColorType = (color: ResponseListItem['status'], theme: Theme) => {
+const handleColorType = (color: QuestionnaireResponse['status'], theme: Theme) => {
   switch (color) {
     case 'in-progress':
       return theme.palette.primary.dark;
@@ -36,7 +36,7 @@ const handleColorType = (color: ResponseListItem['status'], theme: Theme) => {
   }
 };
 
-const handleBgColorType = (color: ResponseListItem['status'], theme: Theme) => {
+const handleBgColorType = (color: QuestionnaireResponse['status'], theme: Theme) => {
   switch (color) {
     case 'in-progress':
       return alpha(theme.palette.primary.main, 0.16);
@@ -53,7 +53,7 @@ const handleBgColorType = (color: ResponseListItem['status'], theme: Theme) => {
 
 export const ResponseStyledLabel = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'color'
-})<{ color: ResponseListItem['status'] }>(({ theme, color }) => ({
+})<{ color: QuestionnaireResponse['status'] }>(({ theme, color }) => ({
   height: 24,
   minWidth: 22,
   lineHeight: 0,

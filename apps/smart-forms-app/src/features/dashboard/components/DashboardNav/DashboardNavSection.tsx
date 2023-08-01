@@ -26,6 +26,7 @@ import {
   NavSectionWrapper
 } from '../../../../components/Nav/Nav.styles.ts';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
+import { useLocation } from 'react-router-dom';
 
 interface DashboardNavSectionProps {
   onCloseNav: () => void;
@@ -35,6 +36,11 @@ const DashboardNavSection = memo(function DashboardNavSection(props: DashboardNa
   const { onCloseNav } = props;
 
   const smartClient = useConfigStore((state) => state.smartClient);
+  const { pathname } = useLocation();
+
+  if (pathname === '/dashboard/existing') {
+    return null;
+  }
 
   return (
     <NavSectionWrapper>

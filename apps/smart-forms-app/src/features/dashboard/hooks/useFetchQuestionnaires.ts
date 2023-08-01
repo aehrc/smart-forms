@@ -16,14 +16,12 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import type { Bundle } from 'fhir/r4';
-import { getFormsServerBundlePromise, getQuestionnaireListItems } from '../utils/dashboard.ts';
+import type { Bundle, Questionnaire } from 'fhir/r4';
+import { filterQuestionnaires, getFormsServerBundlePromise } from '../utils/dashboard.ts';
 import { useMemo } from 'react';
-import type { QuestionnaireListItem } from '../types/list.interface.ts';
 
 interface useFetchQuestionnairesReturnParams {
-  remoteQuestionnaires: Bundle | undefined;
-  questionnaireListItems: QuestionnaireListItem[];
+  questionnaires: Questionnaire[];
   fetchStatus: 'error' | 'success' | 'loading';
   fetchError: unknown;
   isInitialLoading: boolean;
@@ -42,7 +40,7 @@ function useFetchQuestionnaires(
   }
 
   const {
-    data: remoteQuestionnaires,
+    data: bundle,
     status,
     isInitialLoading,
     error,
@@ -52,14 +50,10 @@ function useFetchQuestionnaires(
   });
 
   // construct questionnaire list items for data display
-  const questionnaireListItems: QuestionnaireListItem[] = useMemo(
-    () => getQuestionnaireListItems(remoteQuestionnaires),
-    [remoteQuestionnaires]
-  );
+  const questionnaires: Questionnaire[] = useMemo(() => filterQuestionnaires(bundle), [bundle]);
 
   return {
-    remoteQuestionnaires,
-    questionnaireListItems,
+    questionnaires,
     fetchStatus: status,
     fetchError: error,
     isInitialLoading,

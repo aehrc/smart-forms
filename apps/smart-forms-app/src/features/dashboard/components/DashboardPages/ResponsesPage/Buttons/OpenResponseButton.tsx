@@ -17,7 +17,7 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { Bundle, Questionnaire } from 'fhir/r4';
+import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import {
   getFormsServerBundleOrQuestionnairePromise,
   getReferencedQuestionnaire
@@ -25,7 +25,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
-import type { SelectedResponse } from '../../../../types/list.interface.ts';
 import { assembleIfRequired } from '../../../../../assemble/utils/assemble.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
@@ -34,7 +33,7 @@ import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 interface Props {
-  selectedResponse: SelectedResponse | null;
+  selectedResponse: QuestionnaireResponse | null;
 }
 function OpenResponseButton(props: Props) {
   const { selectedResponse } = props;
@@ -53,7 +52,7 @@ function OpenResponseButton(props: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   // reference could either be a canonical or an id
-  const questionnaireRef = selectedResponse?.resource.questionnaire;
+  const questionnaireRef = selectedResponse?.questionnaire;
 
   let queryUrl = '';
   if (questionnaireRef) {
@@ -109,7 +108,7 @@ function OpenResponseButton(props: Props) {
     }
 
     // Post questionnaire to client if it is SMART Health IT
-    if (smartClient?.state.serverUrl.includes('/v/r4/fhir')) {
+    if (smartClient?.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
       referencedQuestionnaire.id = referencedQuestionnaire.id + '-SMARTcopy';
       postQuestionnaireToSMARTHealthIT(smartClient, referencedQuestionnaire);
     }
@@ -118,8 +117,8 @@ function OpenResponseButton(props: Props) {
     await buildSourceQuestionnaire(referencedQuestionnaire);
 
     // Assign questionnaireResponse to questionnaireResponse provider
-    buildSourceResponse(selectedResponse.resource);
-    updatePopulatedProperties(selectedResponse.resource);
+    buildSourceResponse(selectedResponse);
+    updatePopulatedProperties(selectedResponse);
 
     navigate('/viewer');
     setIsLoading(false);
