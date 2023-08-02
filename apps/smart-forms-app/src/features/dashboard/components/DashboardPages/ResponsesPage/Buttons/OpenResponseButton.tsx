@@ -144,6 +144,7 @@ function OpenResponseButton(props: Props) {
         fontSize={9}
         variant="subtitle2"
         color={buttonIsDisabled ? 'text.disabled' : 'secondary'}
+        textAlign="center"
         sx={{ mt: -0.5, mb: 0.5 }}>
         Open Response
       </Typography>

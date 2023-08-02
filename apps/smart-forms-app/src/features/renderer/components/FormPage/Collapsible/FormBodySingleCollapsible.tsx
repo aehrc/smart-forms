@@ -51,7 +51,7 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
   return (
     <Accordion
       expanded={selectedIndex === index}
-      TransitionProps={{ unmountOnExit: true }}
+      TransitionProps={{ unmountOnExit: true, timeout: 250 }}
       onChange={() => onToggleExpand(index)}>
       <AccordionSummary
         expandIcon={

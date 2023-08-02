@@ -68,7 +68,7 @@ function ResponsePreview() {
         <title>{questionnaire.title ? questionnaire.title : 'Response Preview'}</title>
       </Helmet>
       <Fade in={true} timeout={500}>
-        <Container sx={{ mt: 2 }}>
+        <Container>
           <PageHeading>Response Preview</PageHeading>
           <Card sx={{ mb: 2 }}>
             <Box ref={componentRef} sx={{ p: 4 }} data-test="response-preview-box">

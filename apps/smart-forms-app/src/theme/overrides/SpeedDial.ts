@@ -27,7 +27,7 @@ export default function SpeedDial(theme: Theme) {
           fontSize: theme.typography.subtitle2.fontSize,
           fontWeight: theme.typography.subtitle2.fontWeight,
           boxShadow: theme.customShadows.z8,
-          maxWidth: 150,
+          maxWidth: 200,
           whiteSpace: 'nowrap'
         }
       }
