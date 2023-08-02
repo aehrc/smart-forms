@@ -17,7 +17,6 @@
 
 import { SpeedDial, SpeedDialAction } from '@mui/material';
 import BuildIcon from '@mui/icons-material/Build';
-import GradingIcon from '@mui/icons-material/Grading';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import EditIcon from '@mui/icons-material/Edit';
@@ -32,16 +31,19 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererNav/SaveAsFinal/RendererSaveAsFinalDialog.tsx';
 import HomeIcon from '@mui/icons-material/Home';
+import GradingIcon from '@mui/icons-material/Grading';
 
 interface RendererEmbeddedSpeedDialProps {
   isPopulating: boolean;
 }
+
 function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   const { isPopulating } = props;
 
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
@@ -57,11 +59,6 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
 
   const navigate = useNavigate();
   const { closeSnackbar } = useSnackbar();
-
-  function handleViewResponses() {
-    closeSnackbar();
-    navigate('/dashboard/responses');
-  }
 
   function handlePreview() {
     if (location.pathname === '/renderer/preview') {
@@ -106,6 +103,7 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   }
 
   const showSaveButtons = smartClient && sourceQuestionnaire.item;
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   if (isPopulating) {
     return null;
@@ -122,20 +120,27 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
           '& .MuiFab-primary': { width: 46, height: 46 }
         }}
         icon={<BuildIcon />}>
-        <SpeedDialAction
-          icon={<HomeIcon />}
-          tooltipTitle="Back to Home (Debug)"
-          tooltipOpen
-          onClick={() => {
-            navigate('/dashboard/questionnaires');
-          }}
-        />
-        <SpeedDialAction
-          icon={<GradingIcon />}
-          tooltipTitle="View Existing Responses"
-          tooltipOpen
-          onClick={handleViewResponses}
-        />
+        {launchQuestionnaireExists ? (
+          <SpeedDialAction
+            icon={<GradingIcon />}
+            tooltipTitle="View Existing Responses"
+            tooltipOpen
+            onClick={() => {
+              closeSnackbar();
+              navigate('/dashboard/existing');
+            }}
+          />
+        ) : (
+          <SpeedDialAction
+            icon={<HomeIcon />}
+            tooltipTitle="Back to Home"
+            tooltipOpen
+            onClick={() => {
+              closeSnackbar();
+              navigate('/dashboard/questionnaires');
+            }}
+          />
+        )}
         <SpeedDialAction
           icon={location.pathname === '/renderer/preview' ? <EditIcon /> : <VisibilityIcon />}
           tooltipTitle={location.pathname === '/renderer/preview' ? 'Editor' : 'Preview'}

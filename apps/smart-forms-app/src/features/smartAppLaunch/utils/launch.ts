@@ -51,12 +51,13 @@ interface FhirContext {
   identifier?: Identifier;
 }
 
-interface tokenResponseWithFhirContext extends fhirclient.TokenResponse {
-  fhirContext: FhirContext[] | undefined;
+interface tokenResponseCustomised extends fhirclient.TokenResponse {
+  fhirContext?: FhirContext[];
+  intent?: string;
 }
 
 export function getQuestionnaireReferences(client: Client): FhirContext[] {
-  const tokenResponse = client.state.tokenResponse as tokenResponseWithFhirContext;
+  const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
   const fhirContext = tokenResponse.fhirContext;
 
   if (!fhirContext) return [];
@@ -114,4 +115,11 @@ export function responseToQuestionnaireResource(
   if (response.resourceType === 'OperationOutcome') {
     console.error(response);
   }
+}
+
+export function getLaunchIntent(client: Client): string | null {
+  const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
+  const launchIntent = tokenResponse.intent;
+
+  return launchIntent ?? null;
 }
