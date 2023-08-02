@@ -75,6 +75,7 @@ function Authorisation() {
   const setPatient = useConfigStore((state) => state.setPatient);
   const setUser = useConfigStore((state) => state.setUser);
   const setEncounter = useConfigStore((state) => state.setEncounter);
+  const setLaunchQuestionnaire = useConfigStore((state) => state.setLaunchQuestionnaire);
 
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
 
@@ -145,12 +146,15 @@ function Authorisation() {
                 assembleIfRequired(questionnaire).then(async (questionnaire) => {
                   if (questionnaire) {
                     // Post questionnaire to client if it is SMART Health IT
-                    if (client.state.serverUrl.includes('/v/r4/fhir')) {
+                    if (
+                      client.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')
+                    ) {
                       questionnaire.id = questionnaire.id + '-SMARTcopy';
                       postQuestionnaireToSMARTHealthIT(client, questionnaire);
                     }
 
                     await buildSourceQuestionnaire(questionnaire);
+                    setLaunchQuestionnaire(questionnaire);
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                   } else {
                     enqueueSnackbar(

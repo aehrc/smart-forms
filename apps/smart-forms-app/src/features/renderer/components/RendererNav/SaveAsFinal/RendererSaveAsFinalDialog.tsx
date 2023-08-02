@@ -44,6 +44,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
@@ -56,7 +57,8 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   const [isSaving, setIsSaving] = useState(false);
 
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   // Event Handlers
   function handleClose() {
@@ -64,6 +66,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   }
 
   function handleSave() {
+    closeSnackbar();
     if (!(smartClient && patient && user)) return;
 
     setIsSaving(true);
@@ -84,7 +87,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
 
         // Wait until renderer.hasChanges is set to false before navigating away
         setTimeout(() => {
-          navigate('/dashboard/responses');
+          navigate(launchQuestionnaire ? '/dashboard/existing' : '/dashboard/responses');
           setIsSaving(false);
           handleClose();
         }, 1000);

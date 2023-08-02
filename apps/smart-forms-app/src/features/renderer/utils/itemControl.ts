@@ -235,7 +235,7 @@ export function getQuestionnaireNameFromResponse(
 
   if (itemControl) {
     if (itemControl.valueString) {
-      return itemControl.valueString;
+      return itemControl.valueString.charAt(0).toUpperCase() + itemControl.valueString.slice(1);
     }
   }
 

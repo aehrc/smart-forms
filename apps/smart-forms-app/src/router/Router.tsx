@@ -29,6 +29,7 @@ import PlaygroundLayout from '../features/playground/components/PlaygroundLayout
 import Playground from '../features/playground/components/Playground.tsx';
 import ResponsesPage from '../features/dashboard/components/DashboardPages/ResponsesPage/ResponsesPage.tsx';
 import NotFound from '../features/notfound/NotFound.tsx';
+import ExistingResponsesPage from '../features/renderer/components/ExistingResponses/ExistingResponsesPage.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -41,7 +42,8 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'questionnaires', element: <QuestionnairesPage /> },
-        { path: 'responses', element: <ResponsesPage /> }
+        { path: 'responses', element: <ResponsesPage /> },
+        { path: 'existing', element: <ExistingResponsesPage /> }
       ]
     },
     {

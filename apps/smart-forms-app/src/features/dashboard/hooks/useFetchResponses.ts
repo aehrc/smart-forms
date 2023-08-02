@@ -16,20 +16,14 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import type { Bundle } from 'fhir/r4';
-import {
-  constructBundle,
-  getClientBundlePromise,
-  getResponseListItems
-} from '../utils/dashboard.ts';
+import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
+import { constructBundle, filterResponses, getClientBundlePromise } from '../utils/dashboard.ts';
 import { useContext, useMemo } from 'react';
-import type { ResponseListItem } from '../types/list.interface.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
 import { SelectedQuestionnaireContext } from '../contexts/SelectedQuestionnaireContext.tsx';
 
 interface useFetchResponsesReturnParams {
-  responses: Bundle | undefined;
-  responseListItems: ResponseListItem[];
+  responses: QuestionnaireResponse[];
   fetchStatus: 'error' | 'success' | 'loading';
   fetchError: unknown;
   isFetching: boolean;
@@ -52,7 +46,7 @@ function useFetchResponses(
   }
 
   const {
-    data: responses,
+    data: bundle,
     status,
     error,
     isFetching
@@ -72,12 +66,12 @@ function useFetchResponses(
   );
 
   // construct response list items for data display
-  const responseListItems: ResponseListItem[] = useMemo(
-    () => getResponseListItems(existingResponses.length === 0 ? responses : existingResponseBundle),
-    [responses, existingResponseBundle, existingResponses.length]
+  const responses: QuestionnaireResponse[] = useMemo(
+    () => filterResponses(existingResponses.length === 0 ? bundle : existingResponseBundle),
+    [bundle, existingResponseBundle, existingResponses.length]
   );
 
-  return { responses, responseListItems, fetchStatus: status, fetchError: error, isFetching };
+  return { responses, fetchStatus: status, fetchError: error, isFetching };
 }
 
 export default useFetchResponses;

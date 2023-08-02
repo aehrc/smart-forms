@@ -16,9 +16,9 @@
  */
 
 import { useMemo, useState } from 'react';
-import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
-import useFetchResponses from '../../../hooks/useFetchResponses.ts';
-import { createResponseTableColumns } from '../../../utils/tableColumns.ts';
+import useFetchExistingResponses from '../../../dashboard/hooks/useFetchExistingResponses.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
+import { createResponseTableColumns } from '../../../dashboard/utils/tableColumns.ts';
 import type { SortingState } from '@tanstack/react-table';
 import {
   getCoreRowModel,
@@ -26,26 +26,19 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import type { QuestionnaireResponse } from 'fhir/r4';
-import ResponsesTableView from './ResponsesTableView.tsx';
+import ExistingResponsesTableView from './ExistingResponsesTableView.tsx';
 
-function ResponsesTable() {
+function ExistingResponsesTable() {
   const [selectedResponse, setSelectedResponse] = useState<QuestionnaireResponse | null>(null);
-  const [searchInput, setSearchInput] = useState('');
 
-  const debouncedInput = useDebounce(searchInput, 300);
-
-  const { responses, fetchStatus, fetchError, isFetching } = useFetchResponses(
-    searchInput,
-    debouncedInput
-  );
+  const { existingResponses, fetchError, isFetching } = useFetchExistingResponses();
 
   const columns = useMemo(() => createResponseTableColumns(), []);
 
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'authored', desc: true }]);
 
   const table = useReactTable({
-    data: responses,
+    data: existingResponses,
     columns: columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -57,7 +50,7 @@ function ResponsesTable() {
   });
 
   function handleRowClick(id: string) {
-    const response = responses.find((response) => response.id === id);
+    const response = existingResponses.find((response) => response.id === id);
 
     if (response) {
       if (response.id === selectedResponse?.id) {
@@ -69,22 +62,15 @@ function ResponsesTable() {
   }
 
   return (
-    <ResponsesTableView
+    <ExistingResponsesTableView
       table={table}
-      searchInput={searchInput}
-      debouncedInput={debouncedInput}
-      fetchStatus={fetchStatus}
       isFetching={isFetching}
       fetchError={fetchError}
       selectedResponse={selectedResponse}
-      onSearch={(input) => {
-        table.setPageIndex(0);
-        setSearchInput(input);
-      }}
       onRowClick={handleRowClick}
       onSelectResponse={setSelectedResponse}
     />
   );
 }
 
-export default ResponsesTable;
+export default ExistingResponsesTable;

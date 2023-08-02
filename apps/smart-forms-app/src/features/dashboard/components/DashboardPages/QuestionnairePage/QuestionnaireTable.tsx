@@ -27,7 +27,6 @@ import {
 import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
 import { createQuestionnaireTableColumns } from '../../../utils/tableColumns.ts';
-import type { Questionnaire } from 'fhir/r4';
 import QuestionnaireTableView from './QuestionnaireTableView.tsx';
 
 function QuestionnaireTable() {
@@ -39,26 +38,15 @@ function QuestionnaireTable() {
   const [searchInput, setSearchInput] = useState('');
   const debouncedInput = useDebounce(searchInput, 300);
 
-  const {
-    remoteQuestionnaires,
-    questionnaireListItems,
-    fetchStatus,
-    fetchError,
-    isInitialLoading,
-    isFetching
-  } = useFetchQuestionnaires(searchInput, debouncedInput);
+  const { questionnaires, fetchStatus, fetchError, isInitialLoading, isFetching } =
+    useFetchQuestionnaires(searchInput, debouncedInput);
 
   const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: 'date',
-      desc: true
-    }
-  ]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
-    data: questionnaireListItems,
+    data: questionnaires,
     columns: columns,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -70,24 +58,13 @@ function QuestionnaireTable() {
   });
 
   function handleRowClick(id: string) {
-    const selectedItem = questionnaireListItems.find((item) => item.id === id);
+    const questionnaire = questionnaires.find((questionnaire) => questionnaire.id === id);
 
-    if (selectedItem) {
-      if (selectedItem.id === selectedQuestionnaire?.listItem.id) {
+    if (questionnaire) {
+      if (questionnaire.id === selectedQuestionnaire?.id) {
         setSelectedQuestionnaire(null);
       } else {
-        const resource = remoteQuestionnaires?.entry?.find(
-          (entry) => entry.resource?.id === id
-        )?.resource;
-
-        if (resource) {
-          setSelectedQuestionnaire({
-            listItem: selectedItem,
-            resource: resource as Questionnaire
-          });
-        } else {
-          setSelectedQuestionnaire(null);
-        }
+        setSelectedQuestionnaire(questionnaire);
       }
     }
   }

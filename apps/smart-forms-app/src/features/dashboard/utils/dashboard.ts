@@ -29,6 +29,7 @@ import { getQuestionnaireNameFromResponse } from '../../renderer/utils/itemContr
 import type Client from 'fhirclient/lib/Client';
 import type { QuestionnaireListItem, ResponseListItem } from '../types/list.interface.ts';
 import { HEADERS } from '../../../api/headers.ts';
+import { nanoid } from 'nanoid';
 
 const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
@@ -73,7 +74,31 @@ export function getFormsServerBundleOrQuestionnairePromise(
   });
 }
 
-export function getQuestionnaireListItems(bundle: Bundle | undefined): QuestionnaireListItem[] {
+export function createQuestionnaireListItem(
+  questionnaire: Questionnaire,
+  index: number
+): QuestionnaireListItem {
+  const questionnaireTitle = questionnaire.title
+    ? questionnaire.title.charAt(0).toUpperCase() + questionnaire.title.slice(1)
+    : 'Untitled';
+
+  const questionnairePublisher = questionnaire.publisher
+    ? questionnaire.publisher.charAt(0).toUpperCase() + questionnaire.publisher.slice(1)
+    : '-';
+
+  const questionnaireId = questionnaire.id ?? nanoid();
+
+  return {
+    id: questionnaireId,
+    title: questionnaireTitle,
+    avatarColor: randomColor({ luminosity: 'dark', seed: questionnaireTitle + index.toString() }),
+    publisher: questionnairePublisher,
+    date: questionnaire.date ? dayjs(questionnaire.date).toDate() : null,
+    status: questionnaire.status
+  };
+}
+
+export function filterQuestionnaires(bundle: Bundle | undefined): Questionnaire[] {
   if (!bundle || !bundle.entry || bundle.entry.length === 0) return [];
 
   return bundle.entry
@@ -89,47 +114,41 @@ export function getQuestionnaireListItems(bundle: Bundle | undefined): Questionn
       }
       return false;
     })
-    .map((entry, i) => {
-      const questionnaire = entry.resource as Questionnaire; // non-questionnaire resources are filtered
-      const questionnaireTitle = questionnaire.title
-        ? questionnaire.title.charAt(0).toUpperCase() + questionnaire.title.slice(1)
-        : 'Untitled';
-
-      const questionnairePublisher = questionnaire.publisher
-        ? questionnaire.publisher.charAt(0).toUpperCase() + questionnaire.publisher.slice(1)
-        : '-';
-
-      const questionnaireListItem: QuestionnaireListItem = {
-        id: questionnaire.id ?? i.toString(),
-        title: questionnaireTitle,
-        avatarColor: randomColor({ luminosity: 'dark', seed: questionnaireTitle + i.toString() }),
-        publisher: questionnairePublisher,
-        date: questionnaire.date ? dayjs(questionnaire.date).toDate() : null,
-        status: questionnaire.status
-      };
-      return questionnaireListItem;
-    });
+    .map(
+      (entry) => entry.resource as Questionnaire // non-questionnaire resources are filtered
+    );
 }
 
-export function getResponseListItems(bundle: Bundle | undefined): ResponseListItem[] {
+export function filterResponses(bundle: Bundle | undefined): QuestionnaireResponse[] {
   if (!bundle || !bundle.entry || bundle.entry.length === 0) return [];
 
   return bundle.entry
     .filter((entry) => entry.resource && entry.resource.resourceType === 'QuestionnaireResponse')
-    .map((entry, i) => {
-      const response = entry.resource as QuestionnaireResponse; // non-questionnaire resources are filtered
-      const responseTitle = getQuestionnaireNameFromResponse(response);
+    .map(
+      (entry) => entry.resource as QuestionnaireResponse // non-questionnaireResponse resources are filtered
+    );
+}
 
-      const responseListItem: ResponseListItem = {
-        id: response.id ?? i.toString(),
-        title: responseTitle,
-        avatarColor: randomColor({ luminosity: 'dark', seed: responseTitle + i.toString() }),
-        author: response.author?.display ?? '—',
-        authored: response.authored ? dayjs(response.authored).toDate() : null,
-        status: response.status
-      };
-      return responseListItem;
-    });
+export function createResponseListItem(
+  response: QuestionnaireResponse,
+  index: number
+): ResponseListItem {
+  const responseTitle = getQuestionnaireNameFromResponse(response);
+
+  const responseAuthor = response.author?.display
+    ? response.author?.display.charAt(0).toUpperCase() + response.author?.display.slice(1)
+    : '-';
+
+  const responseId = response.id ?? nanoid();
+
+  return {
+    id: responseId,
+    title: responseTitle,
+    avatarColor: randomColor({ luminosity: 'dark', seed: responseTitle + index.toString() }),
+    author: responseAuthor,
+    authored: response.authored ? dayjs(response.authored).toDate() : null,
+    status: response.status
+  };
 }
 
 export function getResponsesFromBundle(bundle: Bundle | undefined): QuestionnaireResponse[] {

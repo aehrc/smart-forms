@@ -21,10 +21,10 @@ import { useTheme } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { ResponseStyledLabel } from './ResponseLabel.styles.ts';
-import type { ResponseListItem } from '../../../../types/list.interface.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 interface Props {
-  color: ResponseListItem['status'];
+  color: QuestionnaireResponse['status'];
   children: ReactNode;
   endIcon?: ReactNode;
   startIcon?: ReactNode;

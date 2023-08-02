@@ -132,7 +132,7 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
         />
         <SpeedDialAction
           icon={<GradingIcon />}
-          tooltipTitle="View Responses"
+          tooltipTitle="View Existing Responses"
           tooltipOpen
           onClick={handleViewResponses}
         />

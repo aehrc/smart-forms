@@ -33,20 +33,20 @@ function CreateNewResponseButton() {
   const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
 
   const { selectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;
 
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleClick() {
-    if (!selectedQuestionnaire) return;
+    if (!questionnaire) return;
 
     setIsLoading(true);
 
-    const questionnaire = selectedQuestionnaire.resource;
-
     // Post questionnaire to client if it is SMART Health IT and its variants
-    if (smartClient?.state.serverUrl.includes('/v/r4/fhir')) {
+    if (smartClient?.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
       questionnaire.id = questionnaire.id + '-SMARTcopy';
       postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
@@ -69,7 +69,7 @@ function CreateNewResponseButton() {
     setIsLoading(false);
   }
 
-  const buttonIsDisabled = !selectedQuestionnaire?.listItem || isLoading;
+  const buttonIsDisabled = !questionnaire || isLoading;
 
   return (
     <Stack alignItems="center">

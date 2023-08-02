@@ -25,12 +25,12 @@ import {
   StyledRoot,
   StyledSearch
 } from './QuestionnaireListToolbar.styles.ts';
-import type { QuestionnaireListItem } from '../../../../types/list.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
 import QuestionnaireListToolbarButtons from './QuestionnaireListToolbarButtons.tsx';
+import type { Questionnaire } from 'fhir/r4';
 
 interface QuestionnaireListToolbarProps {
-  selected: QuestionnaireListItem | undefined;
+  selected: Questionnaire | null;
   searchInput: string;
   onClearSelection: () => void;
   onSearch: (searchInput: string) => void;
@@ -46,7 +46,7 @@ function QuestionnaireListToolbar(props: QuestionnaireListToolbarProps) {
   return (
     <StyledRoot sx={{ ...toolBarColors }}>
       {selected ? (
-        <Typography variant="subtitle1">{selected.title} selected</Typography>
+        <Typography variant="subtitle1">{selected.title ?? 'Undefined title'} selected</Typography>
       ) : (
         <StyledSearch
           value={searchInput}

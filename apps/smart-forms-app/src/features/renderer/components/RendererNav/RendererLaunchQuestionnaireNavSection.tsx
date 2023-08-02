@@ -19,24 +19,31 @@ import { Box, List, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import RendererOperationItem from './RendererOperationItem.tsx';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import GradingIcon from '@mui/icons-material/Grading';
+import { useContext } from 'react';
+import { SelectedQuestionnaireContext } from '../../../dashboard/contexts/SelectedQuestionnaireContext.tsx';
+import useConfigStore from '../../../../stores/useConfigStore.ts';
 
-function RendererNavSection() {
+function RendererLaunchQuestionnaireNavSection() {
   const navigate = useNavigate();
   const { closeSnackbar } = useSnackbar();
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+
+  const { setSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
 
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
-        <Typography variant="overline">Pages</Typography>
+        <Typography variant="overline">Responses</Typography>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
         <RendererOperationItem
-          title="Back to Home"
-          icon={<ArrowBackIcon />}
+          title="View Existing Responses"
+          icon={<GradingIcon />}
           onClick={() => {
             closeSnackbar();
-            navigate('/dashboard/questionnaires');
+            setSelectedQuestionnaire(launchQuestionnaire);
+            navigate('/dashboard/existing');
           }}
         />
       </List>
@@ -44,4 +51,4 @@ function RendererNavSection() {
   );
 }
 
-export default RendererNavSection;
+export default RendererLaunchQuestionnaireNavSection;
