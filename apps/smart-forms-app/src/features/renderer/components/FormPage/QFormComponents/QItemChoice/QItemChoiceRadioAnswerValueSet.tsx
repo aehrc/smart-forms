@@ -23,7 +23,6 @@ import { findInAnswerValueSetCodings } from '../../../../utils/choice.ts';
 import QItemChoiceRadioSingle from './QItemChoiceRadioSingle.tsx';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { QRadioGroup } from '../Item.styles.tsx';
-import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useValueSetCodings from '../../../../hooks/useValueSetCodings.ts';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
@@ -34,6 +33,7 @@ import type {
 } from '../../../../types/renderProps.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -113,7 +113,7 @@ function QItemChoiceRadioAnswerValueSet(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelText qItem={qItem} />
+          <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceRadio}

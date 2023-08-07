@@ -24,7 +24,6 @@ import { QItemChoiceOrientation } from '../../../../types/choice.enum.ts';
 import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../../utils/choice.ts';
 import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle.tsx';
 import { QFormGroup } from '../Item.styles.tsx';
-import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -34,6 +33,7 @@ import type {
 } from '../../../../types/renderProps.interface.ts';
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -111,7 +111,7 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelText qItem={qItem} />
+          <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceCheckbox}

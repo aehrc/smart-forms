@@ -21,7 +21,6 @@ import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../../utils/choice.ts';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import LabelText from '../QItemParts/LabelText.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import useRenderingExtensions from '../../../../hooks/useRenderingExtensions.ts';
 import type {
@@ -31,6 +30,7 @@ import type {
 } from '../../../../types/renderProps.interface.ts';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
 import { Fragment } from 'react';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -115,7 +115,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
     <FullWidthFormComponentBox data-test="q-item-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelText qItem={qItem} />
+          <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {choiceSelectAnswerOption}

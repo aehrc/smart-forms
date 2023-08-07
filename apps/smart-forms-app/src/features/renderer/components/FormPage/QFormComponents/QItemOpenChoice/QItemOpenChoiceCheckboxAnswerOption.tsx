@@ -24,7 +24,6 @@ import QItemCheckboxSingle from '../QItemParts/QItemCheckboxSingle.tsx';
 import { getOpenLabelText } from '../../../../utils/itemControl.ts';
 import QItemCheckboxSingleWithOpenLabel from '../QItemParts/QItemCheckboxSingleWithOpenLabel.tsx';
 import { QFormGroup } from '../Item.styles.tsx';
-import LabelText from '../QItemParts/LabelText.tsx';
 import {
   getOldOpenLabelAnswer,
   updateQrOpenChoiceCheckboxAnswers
@@ -38,6 +37,7 @@ import type {
 } from '../../../../types/renderProps.interface.ts';
 import { DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface QItemOpenChoiceCheckboxProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -180,7 +180,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
     <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelText qItem={qItem} />
+          <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openChoiceCheckbox}
