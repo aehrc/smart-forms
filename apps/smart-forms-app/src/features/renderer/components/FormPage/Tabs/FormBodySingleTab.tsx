@@ -20,7 +20,7 @@ import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs.ts';
-import GroupHeadingIcon from '../QFormComponents/GroupItem/GroupHeadingIcon.tsx';
+import ContextDisplayItem from '../QFormComponents/QItemParts/ContextDisplayItem.tsx';
 
 interface FormBodySingleTabProps {
   qItem: QuestionnaireItem;
@@ -53,7 +53,7 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
               <Typography variant="subtitle2">{tabLabel}</Typography>
               <Box display="flex">
                 {contextDisplayItems.map((item) => {
-                  return <GroupHeadingIcon key={item.linkId} displayItem={item} />;
+                  return <ContextDisplayItem key={item.linkId} displayItem={item} />;
                 })}
               </Box>
             </Box>

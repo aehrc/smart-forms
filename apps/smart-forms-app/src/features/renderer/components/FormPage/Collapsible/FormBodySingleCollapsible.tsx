@@ -29,7 +29,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getContextDisplays } from '../../../utils/tabs.ts';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getShortText } from '../../../utils/itemControl.ts';
-import GroupHeadingIcon from '../QFormComponents/GroupItem/GroupHeadingIcon.tsx';
+import ContextDisplayItem from '../QFormComponents/QItemParts/ContextDisplayItem.tsx';
 
 interface FormBodySingleCollapsibleProps {
   qItem: QuestionnaireItem;
@@ -63,7 +63,7 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
           <Typography variant="subtitle2">{collapsibleLabel}</Typography>
           <Box display="flex" columnGap={0.5}>
             {contextDisplayItems.map((item) => {
-              return <GroupHeadingIcon key={item.linkId} displayItem={item} />;
+              return <ContextDisplayItem key={item.linkId} displayItem={item} />;
             })}
           </Box>
         </Box>

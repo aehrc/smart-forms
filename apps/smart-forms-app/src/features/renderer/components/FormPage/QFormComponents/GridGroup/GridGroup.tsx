@@ -21,10 +21,10 @@ import { createQrGroup, updateQrGroup } from '../../../../utils/qrItem.ts';
 import useHidden from '../../../../hooks/useHidden.ts';
 import { QGroupContainerBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { Divider, Paper, TableContainer, Typography } from '@mui/material';
-import LabelText from '../QItemParts/LabelText.tsx';
 import { useMemo } from 'react';
 import { mapQItemsIndex } from '../../../../utils';
 import GridTable from './GridTable.tsx';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface GridGroupProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -71,7 +71,7 @@ function GridGroup(props: GridGroupProps) {
     <>
       <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
         <Typography fontSize={13} variant="h6">
-          <LabelText qItem={qItem} />
+          <LabelWrapper qItem={qItem} />
         </Typography>
         <Divider sx={{ my: 1 }} light />
 

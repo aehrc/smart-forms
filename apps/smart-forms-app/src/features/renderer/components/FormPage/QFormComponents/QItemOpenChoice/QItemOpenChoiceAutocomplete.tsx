@@ -21,7 +21,6 @@ import { Autocomplete, Box, CircularProgress, Fade, Grid, Tooltip } from '@mui/m
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
-import LabelText from '../QItemParts/LabelText.tsx';
 import { StandardTextField } from '../Textfield.styles.tsx';
 import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
 import SearchIcon from '@mui/icons-material/Search';
@@ -40,6 +39,7 @@ import type {
 } from '../../../../types/renderProps.interface.ts';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../../utils/debounce.ts';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions.tsx';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface QItemOpenChoiceAutocompleteProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -192,7 +192,7 @@ function QItemOpenChoiceAutocomplete(props: QItemOpenChoiceAutocompleteProps) {
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelText qItem={qItem} />
+          <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
           {openChoiceAutocomplete}

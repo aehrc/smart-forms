@@ -18,13 +18,13 @@
 import { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useHidden from '../../../../hooks/useHidden.ts';
-import LabelText from '../QItemParts/LabelText.tsx';
+import LabelText from './LabelText.tsx';
 
 interface GroupHeadingIconProps {
   displayItem: QuestionnaireItem;
 }
 
-const GroupHeadingIcon = memo(function GroupHeadingIcon(props: GroupHeadingIconProps) {
+const ContextDisplayItem = memo(function GroupHeadingIcon(props: GroupHeadingIconProps) {
   const { displayItem } = props;
 
   const itemIsHidden = useHidden(displayItem);
@@ -35,4 +35,4 @@ const GroupHeadingIcon = memo(function GroupHeadingIcon(props: GroupHeadingIconP
   return <LabelText qItem={displayItem} />;
 });
 
-export default GroupHeadingIcon;
+export default ContextDisplayItem;

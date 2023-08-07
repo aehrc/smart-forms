@@ -34,7 +34,6 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import QItemGroupTableRow from './QItemGroupTableRow.tsx';
 import { HeaderTableCell } from './Table.styles.tsx';
-import LabelText from '../QItemParts/LabelText.tsx';
 import { QGroupContainerBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { mapQItemsIndex } from '../../../../utils';
 import type { PropsWithQrRepeatGroupChangeHandler } from '../../../../types/renderProps.interface.ts';
@@ -42,6 +41,7 @@ import useInitialiseGroupTable from '../../../../hooks/useInitialiseGroupTable.t
 import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import DeleteRowButton from './DeleteRowButton.tsx';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -114,7 +114,7 @@ function QItemGroupTable(props: Props) {
   return (
     <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
       <Typography fontSize={13} variant="h6">
-        <LabelText qItem={qItem} />
+        <LabelWrapper qItem={qItem} />
       </Typography>
       <Divider sx={{ my: 1 }} light />
       <TableContainer component={Paper} elevation={groupCardElevation}>

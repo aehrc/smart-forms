@@ -22,12 +22,12 @@ import useInitialiseRepeatGroups from '../../../../hooks/useInitialiseRepeatGrou
 import { QGroupContainerBox } from '../../../../../../components/Box/Box.styles.tsx';
 import { Card, Collapse, Divider } from '@mui/material';
 import { QGroupHeadingTypography } from '../Typography.styles.ts';
-import LabelText from '../QItemParts/LabelText.tsx';
 import { TransitionGroup } from 'react-transition-group';
 import { createEmptyQrItem } from '../../../../utils/qrItem.ts';
 import { nanoid } from 'nanoid';
 import RepeatGroupItem from './RepeatGroupItem.tsx';
 import AddItemButton from './AddItemButton.tsx';
+import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
 
 interface RepeatGroupProps extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -90,7 +90,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
       <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
         <QGroupHeadingTypography variant="h6">
-          <LabelText qItem={qItem} />
+          <LabelWrapper qItem={qItem} />
         </QGroupHeadingTypography>
         <Divider sx={{ mt: 1, mb: 1.5 }} light />
         <TransitionGroup>

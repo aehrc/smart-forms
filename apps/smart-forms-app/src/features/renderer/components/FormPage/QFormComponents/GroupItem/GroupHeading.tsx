@@ -18,11 +18,11 @@
 import { memo } from 'react';
 import { Box, Divider } from '@mui/material';
 import { QGroupHeadingTypography } from '../Typography.styles.ts';
-import LabelText from '../QItemParts/LabelText.tsx';
 import type { PropsWithIsRepeatedAttribute } from '../../../../types/renderProps.interface.ts';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../../utils/tabs.ts';
-import GroupHeadingIcon from './GroupHeadingIcon.tsx';
+import ContextDisplayItem from '../QItemParts/ContextDisplayItem.tsx';
+import LabelText from '../QItemParts/LabelText.tsx';
 
 interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -45,9 +45,9 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
           <LabelText qItem={qItem} />
         </QGroupHeadingTypography>
 
-        <Box display="flex" columnGap={1}>
+        <Box display="flex" columnGap={0.5}>
           {contextDisplayItems.map((item) => {
-            return <GroupHeadingIcon key={item.linkId} displayItem={item} />;
+            return <ContextDisplayItem key={item.linkId} displayItem={item} />;
           })}
         </Box>
       </Box>

@@ -15,29 +15,32 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
+import { Box } from '@mui/material';
+import ContextDisplayItem from './ContextDisplayItem.tsx';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { FullWidthFormComponentBox } from '../../../../../../components/Box/Box.styles.tsx';
-import { isSpecificItemControl } from '../../../../utils/itemControl.ts';
-import LabelWrapper from '../QItemParts/LabelWrapper.tsx';
+import { getContextDisplays } from '../../../../utils/tabs.ts';
+import LabelText from './LabelText.tsx';
 
-interface DisplayItemProps {
+interface LabelWrapperProps {
   qItem: QuestionnaireItem;
 }
 
-const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
+function LabelWrapper(props: LabelWrapperProps) {
   const { qItem } = props;
 
-  const isContextDisplay = isSpecificItemControl(qItem, 'context-display');
-  if (isContextDisplay) {
-    return null;
-  }
+  const contextDisplayItems = getContextDisplays(qItem);
 
   return (
-    <FullWidthFormComponentBox>
-      <LabelWrapper qItem={qItem} />
-    </FullWidthFormComponentBox>
-  );
-});
+    <Box display="flex" alignItems="center" justifyContent="space-between">
+      <LabelText qItem={qItem} />
 
-export default DisplayItem;
+      <Box display="flex" columnGap={0.5}>
+        {contextDisplayItems.map((item) => {
+          return <ContextDisplayItem key={item.linkId} displayItem={item} />;
+        })}
+      </Box>
+    </Box>
+  );
+}
+
+export default LabelWrapper;
