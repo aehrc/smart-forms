@@ -76,7 +76,7 @@ function QItemChoiceSelectAnswerOption(props: Props) {
       placeholder={entryFormat}
       label={displayPrompt}
       endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
-      sx={{ maxWidth: !isTabled ? 280 : 3000 }}
+      sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160 }}
       size="small"
       onChange={handleChange}>
       {qItem.answerOption?.map((option, index) => {

@@ -41,7 +41,7 @@ function QItemCheckboxSingleWithOpenLabel(props: Props) {
   return (
     <Box data-test="q-item-checkbox-open-label-box">
       <FormControlLabel
-        control={<Checkbox checked={isChecked} onChange={handleCheckedChange} />}
+        control={<Checkbox size="small" checked={isChecked} onChange={handleCheckedChange} />}
         label={label + ':'}
         sx={{ mr: 3 }}
       />

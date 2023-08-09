@@ -38,7 +38,7 @@ function TimeField(props: TimeFieldProps) {
         value={value}
         disabled={readOnly}
         label={displayPrompt}
-        sx={{ maxWidth: !isTabled ? 280 : 3000 }}
+        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160 }}
         slotProps={{
           textField: {
             fullWidth: true
