@@ -19,7 +19,6 @@ import { useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
 import {
   getEncounter,
-  getLaunchIntent,
   getPatient,
   getQuestionnaireContext,
   getQuestionnaireReferences,
@@ -77,7 +76,6 @@ function Authorisation() {
   const setUser = useConfigStore((state) => state.setUser);
   const setEncounter = useConfigStore((state) => state.setEncounter);
   const setLaunchQuestionnaire = useConfigStore((state) => state.setLaunchQuestionnaire);
-  const setLaunchIntent = useConfigStore((state) => state.setLaunchIntent);
 
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
 
@@ -175,11 +173,6 @@ function Authorisation() {
               });
           } else {
             dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
-          }
-
-          // Set launch intent if available
-          if (getLaunchIntent(client)) {
-            setLaunchIntent(getLaunchIntent(client));
           }
         })
         .catch((error: Error) => {

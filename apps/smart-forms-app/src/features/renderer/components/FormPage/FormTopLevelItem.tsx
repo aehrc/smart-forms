@@ -21,8 +21,8 @@ import { containsTabs, isTabContainer } from '../../utils/tabs.ts';
 import GroupItem from './QFormComponents/GroupItem/GroupItem.tsx';
 import SingleItem from './QFormComponents/SingleItem/SingleItem.tsx';
 import type { PropsWithQrItemChangeHandler } from '../../types/renderProps.interface.ts';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
 import FormBodyCollapsible from './FormBodyCollapsible.tsx';
+import useResponsive from '../../../../hooks/useResponsive.ts';
 
 interface FormTopLevelItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   topLevelQItem: QuestionnaireItem;
@@ -32,18 +32,18 @@ interface FormTopLevelItemProps extends PropsWithQrItemChangeHandler<Questionnai
 function FormTopLevelItem(props: FormTopLevelItemProps) {
   const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
 
-  const launchIntent = useConfigStore((state) => state.launchIntent);
-
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
+
+  const isDesktop = useResponsive('up', 'lg');
 
   const itemIsGroup = topLevelQItem.type === 'group';
 
   // If form is tabbed, it is rendered as a tabbed form
   if (itemContainsTabs || itemIsTabContainer) {
-    if (launchIntent === 'embedded-browser') {
+    if (isDesktop) {
       return (
-        <FormBodyCollapsible
+        <FormBodyTabbed
           key={topLevelQItem.linkId}
           topLevelQItem={topLevelQItem}
           topLevelQRItem={topLevelQRItem}
@@ -53,7 +53,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
     }
 
     return (
-      <FormBodyTabbed
+      <FormBodyCollapsible
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
