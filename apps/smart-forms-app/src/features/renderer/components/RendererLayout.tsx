@@ -38,6 +38,7 @@ import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireRespo
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import _isEqual from 'lodash/isEqual';
 import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial.tsx';
+import useResponsive from '../../../hooks/useResponsive.ts';
 
 function RendererLayout() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -54,7 +55,6 @@ function RendererLayout() {
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
   const encounter = useConfigStore((state) => state.encounter);
-  const launchIntent = useConfigStore((state) => state.launchIntent);
 
   const [open, setOpen] = useState(false);
   const [navIsCollapsed, collapseNav] = useState(false);
@@ -78,6 +78,8 @@ function RendererLayout() {
 
   const { enqueueSnackbar } = useSnackbar();
   useBackToTop();
+
+  const isDesktop = useResponsive('up', 'lg');
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
@@ -130,22 +132,16 @@ function RendererLayout() {
       setSpinner({ ...spinner, isLoading: false });
     }
   }
-  const isEmbeddedView = launchIntent === 'embedded-browser';
 
   return (
     <StyledRoot>
-      <RendererHeader
-        onOpenNav={() => setOpen(true)}
-        navIsCollapsed={navIsCollapsed}
-        isEmbeddedView={isEmbeddedView}
-      />
+      <RendererHeader onOpenNav={() => setOpen(true)} navIsCollapsed={navIsCollapsed} />
 
       <RendererNavWrapper
         openNav={open}
         onCloseNav={() => setOpen(false)}
         navCollapsed={navIsCollapsed}
         setNavCollapsed={() => collapseNav(true)}
-        isEmbeddedView={isEmbeddedView}
       />
 
       <Main>
@@ -163,14 +159,14 @@ function RendererLayout() {
 
       <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => collapseNav(false)} />
 
-      {isEmbeddedView ? (
-        <RendererEmbeddedSpeedDial isPopulating={spinner.isLoading} />
-      ) : (
+      {isDesktop ? (
         <BackToTopButton>
-          <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
+          <Fab size="medium" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
             <KeyboardArrowUpIcon />
           </Fab>
         </BackToTopButton>
+      ) : (
+        <RendererEmbeddedSpeedDial isPopulating={spinner.isLoading} />
       )}
     </StyledRoot>
   );
