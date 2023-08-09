@@ -88,7 +88,7 @@ function RepeatGroup(props: RepeatGroupProps) {
 
   return (
     <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
-      <Card elevation={groupCardElevation} sx={{ p: 3, pt: 2.5, mb: 3.5 }}>
+      <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
         <QGroupHeadingTypography variant="h6">
           <LabelWrapper qItem={qItem} />
         </QGroupHeadingTypography>

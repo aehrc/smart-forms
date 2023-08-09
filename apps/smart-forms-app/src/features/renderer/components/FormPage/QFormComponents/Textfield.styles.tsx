@@ -23,5 +23,6 @@ export const StandardTextField = styled(TextField, {
 })<{ isTabled: boolean }>(({ isTabled }) => ({
   // Set 280 as the standard width for a field
   // Set a theoretical infinite maxWidth if field is within a table to fill the table row
-  maxWidth: !isTabled ? 280 : 3000
+  maxWidth: !isTabled ? 280 : 3000,
+  minWidth: 160
 }));

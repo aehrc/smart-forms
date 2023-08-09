@@ -26,13 +26,13 @@ export const StandardTableCell = styled(TableCell, {
   shouldForwardProp: (prop) => prop !== 'numOfColumns' && prop !== 'isFirst'
 })<{ numOfColumns: number; isFirst: boolean }>(({ numOfColumns, isFirst }) => ({
   width: `${100 / numOfColumns}%`,
-  paddingLeft: isFirst ? 10 : 5,
-  paddingRight: 5
+  paddingLeft: isFirst ? 8 : 4,
+  paddingRight: 4
 }));
 
 export const DeleteButtonTableCell = styled(TableCell)(() => ({
   paddingLeft: 0,
-  paddingRight: 5
+  paddingRight: 4
 }));
 
 export const GridTextTableCell = styled(TableCell)(({ theme }) => ({

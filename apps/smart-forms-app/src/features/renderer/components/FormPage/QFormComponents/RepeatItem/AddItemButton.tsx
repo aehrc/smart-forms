@@ -30,7 +30,7 @@ function AddItemButton(props: AddItemButtonProps) {
   const isDisabled = repeatAnswers[repeatAnswers.length - 1].answer === null;
 
   return (
-    <Box display="flex" flexDirection="row-reverse" marginTop={1}>
+    <Box display="flex" flexDirection="row-reverse">
       <Button
         variant="contained"
         startIcon={<AddIcon />}

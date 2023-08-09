@@ -87,7 +87,7 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
         onInputChange={(event, newValue) => handleValueChange(event, newValue)}
         freeSolo
         autoHighlight
-        sx={{ maxWidth: !isTabled ? 280 : 3000, flexGrow: 1 }}
+        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
         disabled={readOnly}
         size="small"
         placeholder={entryFormat}

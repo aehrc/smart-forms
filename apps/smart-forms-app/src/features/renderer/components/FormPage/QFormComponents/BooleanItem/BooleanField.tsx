@@ -30,7 +30,11 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
     <FormControlLabel
       disabled={readOnly}
       control={
-        <Checkbox checked={checked} onChange={(event) => onCheckedChange(event.target.checked)} />
+        <Checkbox
+          size="small"
+          checked={checked}
+          onChange={(event) => onCheckedChange(event.target.checked)}
+        />
       }
       label=""
     />
