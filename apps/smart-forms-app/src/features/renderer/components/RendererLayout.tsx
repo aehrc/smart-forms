@@ -161,7 +161,7 @@ function RendererLayout() {
 
       {isDesktop ? (
         <BackToTopButton>
-          <Fab size="medium" sx={{ backgroundColor: 'primary.main', color: 'common.white' }}>
+          <Fab size="medium">
             <KeyboardArrowUpIcon />
           </Fab>
         </BackToTopButton>
