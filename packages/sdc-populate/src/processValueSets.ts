@@ -75,7 +75,7 @@ export async function resolvePromises(
  *
  * @author Sean Fong
  */
-export function addValueSetAnswers(
+export function addValueSetAnswersRecursive(
   qrItem: QuestionnaireResponseItem,
   valueSetPromises: Record<string, ValueSetPromise>
 ): QuestionnaireResponseItem {
@@ -84,7 +84,7 @@ export function addValueSetAnswers(
   if (items && items.length > 0) {
     // iterate through items of item recursively
     const qrItems: QuestionnaireResponseItem[] = items.map((item) =>
-      addValueSetAnswers(item, valueSetPromises)
+      addValueSetAnswersRecursive(item, valueSetPromises)
     );
 
     return { ...qrItem, item: qrItems };

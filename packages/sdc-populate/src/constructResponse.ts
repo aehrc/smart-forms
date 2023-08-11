@@ -25,7 +25,11 @@ import type {
   Reference
 } from 'fhir/r4';
 import type { InitialExpression, ValueSetPromise } from './interfaces/expressions.interface';
-import { addValueSetAnswers, getValueSetPromise, resolvePromises } from './processValueSets';
+import {
+  addValueSetAnswersRecursive,
+  getValueSetPromise,
+  resolvePromises
+} from './processValueSets';
 import moment from 'moment';
 import dayjs from 'dayjs';
 
@@ -72,7 +76,9 @@ export async function constructResponse(
     );
 
     if (Array.isArray(newTopLevelQRItem)) {
-      topLevelQRItems.push(...newTopLevelQRItem);
+      if (newTopLevelQRItem.length > 0) {
+        topLevelQRItems.push(...newTopLevelQRItem);
+      }
       continue;
     }
 
@@ -90,7 +96,7 @@ export async function constructResponse(
 
   valueSetPromises = await resolvePromises(valueSetPromises);
   const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems.map((qrItem) =>
-    addValueSetAnswers(qrItem, valueSetPromises)
+    addValueSetAnswersRecursive(qrItem, valueSetPromises)
   );
 
   questionnaireResponse.questionnaire = questionnaire.url;
@@ -124,7 +130,7 @@ function constructResponseItemRecursive(
     }
 
     // Otherwise loop through qItem as usual
-    items.forEach((item) => {
+    for (const item of items) {
       const newQrItem = constructResponseItemRecursive(
         item,
         qrItem,
@@ -133,11 +139,13 @@ function constructResponseItemRecursive(
       );
 
       if (Array.isArray(newQrItem)) {
-        qrItems.push(...newQrItem);
+        if (newQrItem.length > 0) {
+          qrItems.push(...newQrItem);
+        }
       } else if (newQrItem) {
         qrItems.push(newQrItem);
       }
-    });
+    }
 
     return constructGroupItem(qItem, qrItems, initialExpressions, valueSetPromises);
   }
@@ -197,6 +205,12 @@ function constructSingleItem(
         getValueSetPromise(qItem, valueSetUrl, valueSetPromises);
       }
 
+      if (newValues.length > 1) {
+        console.log('------------');
+        console.log(newValues);
+        console.log(newValues.length);
+      }
+
       return {
         linkId: qItem.linkId,
         text: qItem.text,
@@ -217,13 +231,22 @@ function getAnswerValues(
   qItem: QuestionnaireItem
 ): { newValues: QuestionnaireResponseItemAnswer[]; expandRequired: boolean } {
   let expandRequired = false;
+  if (initialValues.length > 1) {
+    console.log('------------');
+    console.log(initialValues);
+    console.log(initialValues.length);
+  }
+
   const newValues = initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
+    // console.log(value);
     if (qItem.answerOption) {
       const answerOption = qItem.answerOption.find(
-        (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value
+        (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
       );
 
-      if (answerOption) return answerOption;
+      if (answerOption) {
+        return answerOption;
+      }
     }
 
     if (typeof value === 'boolean' && qItem.type === 'boolean') {
@@ -263,6 +286,8 @@ function getAnswerValues(
 
     return { valueString: value };
   });
+
+  console.log(newValues);
   return { newValues, expandRequired };
 }
 
@@ -329,9 +354,10 @@ function constructRepeatGroupInstances(
       }
 
       childItemAnswers[i] = newValues;
-    } else {
-      childItemAnswers[i] = [];
+      continue;
     }
+
+    childItemAnswers[i] = [];
   }
 
   // calculate number of instances to be created by getting the length of the longest answer array
