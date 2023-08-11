@@ -152,7 +152,9 @@ export function initialiseCalculatedExpressionValues(
     );
 
     if (Array.isArray(updatedTopLevelQRItem)) {
-      topLevelQrItems.push(...updatedTopLevelQRItem);
+      if (updatedTopLevelQRItem.length > 0) {
+        topLevelQrItems.push(...updatedTopLevelQRItem);
+      }
       continue;
     }
 

@@ -18,9 +18,9 @@
 import type {
   Coding,
   QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-  ValueSet
+  QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import type { ValueSetPromise } from './interfaces/expressions.interface';
 import * as FHIR from 'fhirclient';
@@ -75,46 +75,83 @@ export async function resolvePromises(
  *
  * @author Sean Fong
  */
-export function addValueSetAnswers(
+export function addValueSetAnswersRecursive(
   qrItem: QuestionnaireResponseItem,
-  valueSetPromises: Record<string, ValueSetPromise>
+  valueSetPromises: Record<string, ValueSetPromise>,
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
 ): QuestionnaireResponseItem {
   const items = qrItem.item;
 
   if (items && items.length > 0) {
     // iterate through items of item recursively
     const qrItems: QuestionnaireResponseItem[] = items.map((item) =>
-      addValueSetAnswers(item, valueSetPromises)
+      addValueSetAnswersRecursive(item, valueSetPromises, answerOptions)
     );
 
     return { ...qrItem, item: qrItems };
   }
 
-  const valueSetPromise = valueSetPromises[qrItem.linkId];
-  if (valueSetPromise && valueSetPromise.valueSet && qrItem.answer) {
-    const answers = qrItem.answer;
-    const valueSet = valueSetPromise.valueSet;
-
-    const newAnswers: QuestionnaireResponseItemAnswer[] = [];
-    for (const answer of answers) {
-      const valueString = answer.valueString;
-
-      if (valueString) {
-        // Use string values to obtain valueCodings in valueSet
-        newAnswers.push(getCodingFromValueSet(valueString, valueSet));
-      } else {
-        // Skip if answer isn't a valueString
-        newAnswers.push(answer);
-      }
-    }
-    return { ...qrItem, answer: newAnswers };
+  const valueSetOptionCodings = valueSetPromises[qrItem.linkId]?.valueSet?.expansion?.contains;
+  if (qrItem.answer && valueSetOptionCodings) {
+    return { ...qrItem, answer: cleanAnswers(qrItem.answer, valueSetOptionCodings) };
   }
 
-  // If item does not have any valueSet
+  const answerOptionCodings = answerOptions[qrItem.linkId]?.map((option) => option.valueCoding);
+  if (qrItem.answer && answerOptionCodings) {
+    return { ...qrItem, answer: cleanAnswers(qrItem.answer, answerOptionCodings) };
+  }
+
+  // If item does not have any valueSet nor answerOption
   return qrItem;
 }
 
-function getCodingFromValueSet(value: string, valueSet: ValueSet): QuestionnaireResponseItemAnswer {
-  const coding = valueSet.expansion?.contains?.find((coding: Coding) => coding.code === value);
+function cleanAnswers(answers: QuestionnaireResponseItemAnswer[], options: (Coding | undefined)[]) {
+  const newAnswers: QuestionnaireResponseItemAnswer[] = [];
+
+  for (let answer of answers) {
+    if (answer.valueString) {
+      // attempt to obtain valueCodings in valueSet from valueString
+      answer = parseStringToCoding(answer.valueString, options);
+
+      // return as valueString if no valueCoding found
+      if (answer.valueString) {
+        newAnswers.push(answer);
+        continue;
+      }
+    }
+
+    // add answer to newAnswers if not valueCoding
+    if (!answer.valueCoding) {
+      newAnswers.push(answer);
+      continue;
+    }
+
+    // answer is valueCoding at this point, filter out codings that are not in valueSet
+    const valueCoding = codingIsInOptions(answer.valueCoding, options);
+    if (valueCoding) {
+      newAnswers.push(answer);
+    }
+  }
+
+  return newAnswers;
+}
+
+function parseStringToCoding(
+  value: string,
+  options: (Coding | undefined)[]
+): QuestionnaireResponseItemAnswer {
+  if (!options) {
+    return { valueString: value };
+  }
+
+  const coding = options.find((coding) => coding?.code === value);
   return coding ? { valueCoding: coding } : { valueString: value };
+}
+
+function codingIsInOptions(answerCoding: Coding, options: (Coding | undefined)[]): Coding | null {
+  if (!options) {
+    return null;
+  }
+
+  return options.find((option) => option?.code === answerCoding.code) ?? null;
 }

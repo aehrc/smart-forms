@@ -33,6 +33,10 @@ import type Client from 'fhirclient/lib/Client';
 import { createPopulateInputParameters } from './createInputParameters.ts';
 import { requestPopulate } from '../api/requestPopulate.ts';
 
+export interface PopulateFormParams {
+  populated: QuestionnaireResponse;
+  hasWarnings: boolean;
+}
 /**
  * Pre-populate questionnaire from CMS patient data to form a populated questionnaireResponse
  *
@@ -45,7 +49,7 @@ export async function populateQuestionnaire(
   user: Practitioner,
   encounter: Encounter | null,
   populateForm: {
-    (questionnaireResponse: QuestionnaireResponse, hasWarnings: boolean): void;
+    (params: PopulateFormParams): void;
   },
   exitSpinner: { (): void }
 ) {
@@ -79,32 +83,35 @@ export async function populateQuestionnaire(
     return;
   }
 
+  if (!isInputParameters(inputParameters)) {
+    exitSpinner();
+    return;
+  }
+
   // Perform population if parameters satisfies input parameters
-  if (isInputParameters(inputParameters)) {
-    const outputParameters = await requestPopulate(fhirClient, inputParameters);
+  const outputParameters = await requestPopulate(fhirClient, inputParameters);
 
-    if (outputParameters.resourceType === 'OperationOutcome') {
-      exitSpinner();
-    } else {
-      const responseParameter = outputParameters.parameter.find(
-        (param) => param.name === 'response'
-      ) as ResponseParameter;
-      const issuesParameter = outputParameters.parameter.find(
-        (param) => param.name === 'issues'
-      ) as IssuesParameter | undefined;
+  if (outputParameters.resourceType === 'OperationOutcome') {
+    exitSpinner();
+    return;
+  }
 
-      if (issuesParameter) {
-        for (const issue of issuesParameter.resource.issue) {
-          if (issue.details?.text) {
-            console.warn(issue.details.text);
-          }
-        }
-        populateForm(responseParameter.resource, true);
-      } else {
-        populateForm(responseParameter.resource, false);
+  const responseParameter = outputParameters.parameter.find(
+    (param) => param.name === 'response'
+  ) as ResponseParameter;
+  const issuesParameter = outputParameters.parameter.find((param) => param.name === 'issues') as
+    | IssuesParameter
+    | undefined;
+
+  if (issuesParameter) {
+    for (const issue of issuesParameter.resource.issue) {
+      if (issue.details?.text) {
+        console.warn(issue.details.text);
       }
     }
-  } else {
-    exitSpinner();
+    populateForm({ populated: responseParameter.resource, hasWarnings: true });
+    return;
   }
+
+  populateForm({ populated: responseParameter.resource, hasWarnings: false });
 }

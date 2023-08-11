@@ -20,41 +20,28 @@ import RendererHeader from './RendererHeader/RendererHeader.tsx';
 import RendererNavWrapper from './RendererNav/RendererNavWrapper.tsx';
 import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Main } from './RendererLayout.styles.ts';
-import { populateQuestionnaire } from '../../prepopulate/utils/populate.ts';
-import type { QuestionnaireResponse } from 'fhir/r4';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../../backToTop/components/BackToTopButton.tsx';
 import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog.tsx';
-import { useSnackbar } from 'notistack';
 import NavExpandButton from './NavCollapseButton.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
-import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
 import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
-import _isEqual from 'lodash/isEqual';
 import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial.tsx';
 import useResponsive from '../../../hooks/useResponsive.ts';
+import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
 
 function RendererLayout() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatePopulatedProperties = useQuestionnaireStore(
-    (state) => state.updatePopulatedProperties
-  );
-
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
   const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
-  const populateResponse = useQuestionnaireResponseStore((state) => state.populateResponse);
 
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
-  const encounter = useConfigStore((state) => state.encounter);
 
   const [open, setOpen] = useState(false);
   const [navIsCollapsed, collapseNav] = useState(false);
@@ -76,62 +63,11 @@ function RendererLayout() {
     setDialogOpen(true);
   }
 
-  const { enqueueSnackbar } = useSnackbar();
-  useBackToTop();
-
   const isDesktop = useResponsive('up', 'lg');
 
-  /*
-   * Perform pre-population if all the following requirements are fulfilled:
-   * 1. App is connected to a CMS
-   * 2. Pre-pop queries exist in the form of questionnaire-level extensions or contained resources
-   * 3. QuestionnaireResponse does not have answer items
-   * 4. QuestionnaireResponse is not from a saved draft response
-   */
-  const hasNotBeenPopulated = _isEqual(sourceResponse, updatableResponse);
+  useBackToTop();
 
-  if (
-    smartClient &&
-    patient &&
-    user &&
-    spinner.isLoading &&
-    (sourceQuestionnaire.contained || sourceQuestionnaire.extension) &&
-    hasNotBeenPopulated &&
-    !sourceResponse.id
-  ) {
-    // obtain questionnaireResponse for pre-population
-    populateQuestionnaire(
-      sourceQuestionnaire,
-      smartClient,
-      patient,
-      user,
-      encounter,
-      (populated: QuestionnaireResponse, hasWarnings: boolean) => {
-        const updatedResponse = updatePopulatedProperties(populated);
-        populateResponse(updatedResponse);
-        setSpinner({ ...spinner, isLoading: false });
-        if (hasWarnings) {
-          enqueueSnackbar(
-            'Questionnaire form partially populated, there might be issues while populating the form. View console for details.',
-            { action: <CloseSnackbar />, variant: 'warning' }
-          );
-        } else {
-          enqueueSnackbar('Questionnaire form populated', {
-            preventDuplicate: true,
-            action: <CloseSnackbar />
-          });
-        }
-      },
-      () => {
-        setSpinner({ ...spinner, isLoading: false });
-        enqueueSnackbar('Form not populated', { action: <CloseSnackbar />, variant: 'warning' });
-      }
-    );
-  } else {
-    if (spinner.isLoading) {
-      setSpinner({ ...spinner, isLoading: false });
-    }
-  }
+  usePopulate(spinner.isLoading, () => setSpinner({ ...spinner, isLoading: false }));
 
   return (
     <StyledRoot>

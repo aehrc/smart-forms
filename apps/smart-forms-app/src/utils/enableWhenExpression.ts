@@ -60,7 +60,10 @@ export function evaluateInitialEnableWhenExpressions(
           initialExpressions[linkId].isEnabled = result[0];
         }
       } catch (e) {
-        console.warn(e);
+        console.warn(
+          e,
+          `LinkId: ${linkId}\nExpression: ${enableWhenExpressions[linkId].expression}`
+        );
       }
     }
   }
