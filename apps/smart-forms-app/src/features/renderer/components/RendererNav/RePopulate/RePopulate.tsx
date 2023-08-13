@@ -15,24 +15,26 @@
  * limitations under the License.
  */
 
-import { ListItemText } from '@mui/material';
-import type { OperationItem } from '../../../../types/Nav.interface.ts';
-import { NavListItemButton, StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
+import { RendererOperationItem } from '../RendererOperationSection.tsx';
+import SyncIcon from '@mui/icons-material/Sync';
+import { useSnackbar } from 'notistack';
+import useSmartClient from '../../../../../hooks/useSmartClient.ts';
 
-function RendererOperationItem(props: OperationItem) {
-  const { title, icon, disabled, onClick } = props;
+function RePopulate() {
+  const { smartClient, patient, user } = useSmartClient();
+
+  const { closeSnackbar } = useSnackbar();
+
+  function handleClick() {
+    closeSnackbar();
+    if (!(smartClient && patient && user)) {
+      return;
+    }
+  }
 
   return (
-    <NavListItemButton
-      disableGutters
-      onClick={onClick}
-      disabled={disabled}
-      data-test="list-button-renderer-nav-page">
-      <StyledNavItemIcon>{icon}</StyledNavItemIcon>
-
-      <ListItemText disableTypography primary={title} />
-    </NavListItemButton>
+    <RendererOperationItem title="Repopulate Form" icon={<SyncIcon />} onClick={handleClick} />
   );
 }
 
-export default RendererOperationItem;
+export default RePopulate;

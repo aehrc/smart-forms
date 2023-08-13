@@ -33,7 +33,7 @@ export const NavSectionHeading = styled(Typography)(({ theme }) => ({
 
 export const NavListItemButton = styled(ListItemButton)(({ theme }) => ({
   ...theme.typography.subtitle2,
-  height: 48,
+  height: 46,
   textTransform: 'capitalize',
   color: theme.palette.text.secondary,
   borderRadius: Number(theme.shape.borderRadius)
@@ -50,9 +50,9 @@ export const NavMiddleWrapper = styled(Stack)({
 export const NavPatientDetailsWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  padding: theme.spacing(2.5),
-  marginLeft: theme.spacing(2.5),
-  marginRight: theme.spacing(2.5),
+  padding: theme.spacing(2),
+  marginLeft: theme.spacing(2.25),
+  marginRight: theme.spacing(2.25),
   marginTop: theme.spacing(4),
   marginBottom: theme.spacing(6),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,

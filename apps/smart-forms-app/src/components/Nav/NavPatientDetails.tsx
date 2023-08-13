@@ -33,7 +33,7 @@ function NavPatientDetails() {
   const theme = useTheme();
 
   return (
-    <NavPatientDetailsWrapper columnGap={2}>
+    <NavPatientDetailsWrapper columnGap={1.5}>
       <FaceIcon fontSize="large" sx={{ color: theme.palette.primary.dark }} />
 
       <Box>

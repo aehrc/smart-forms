@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
-import { Box, List, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
+import { Box, List, ListItemText, Typography } from '@mui/material';
 import RendererSaveAsDraft from './SaveAsDraft/RendererSaveAsDraft.tsx';
 import RendererSaveAsFinal from './SaveAsFinal/RendererSaveAsFinal.tsx';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { OperationItem } from '../../../../types/Nav.interface.ts';
-import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
+import { NavListItemButton, StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
+import RePopulate from './RePopulate/RePopulate.tsx';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
@@ -61,6 +62,7 @@ function RendererOperationSection() {
           <>
             <RendererSaveAsDraft />
             <RendererSaveAsFinal />
+            <RePopulate />
           </>
         ) : null}
       </List>
@@ -70,25 +72,17 @@ function RendererOperationSection() {
 
 export function RendererOperationItem(props: OperationItem) {
   const { title, icon, disabled, onClick } = props;
-  const theme = useTheme();
 
   return (
-    <ListItemButton
+    <NavListItemButton
       disableGutters
       onClick={onClick}
       disabled={disabled}
-      data-test="list-button-renderer-operation"
-      sx={{
-        ...theme.typography.subtitle2,
-        height: 48,
-        textTransform: 'capitalize',
-        color: theme.palette.text.secondary,
-        borderRadius: Number(theme.shape.borderRadius) * 0.2
-      }}>
+      data-test="list-button-renderer-operation">
       <StyledNavItemIcon>{icon}</StyledNavItemIcon>
 
       <ListItemText disableTypography primary={title} />
-    </ListItemButton>
+    </NavListItemButton>
   );
 }
 
