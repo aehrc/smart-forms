@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-import _isEqual from 'lodash/isEqual';
+import { useState } from 'react';
 import type { PopulateFormParams } from '../utils/populate.ts';
 import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
-function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void {
-  const { isSpinning, purpose } = spinner;
+function usePopulate(isSpinning: boolean, onStopSpinner: () => void): void {
   const { smartClient, patient, user, encounter } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -34,20 +32,20 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const updatePopulatedProperties = useQuestionnaireStore(
     (state) => state.updatePopulatedProperties
   );
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
     (state) => state.setUpdatableResponseAsPopulated
   );
+  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
+
+  const [isPopulated, setIsPopulated] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const hasNotBeenPopulated = _isEqual(sourceResponse, updatableResponse);
-
   // Do not run population if spinner purpose is "repopulate"
-  if (purpose === 'repopulate') {
-    return;
-  }
+  // if (purpose === 'repopulate') {
+  //   return;
+  // }
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
@@ -56,22 +54,27 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
    * 3. QuestionnaireResponse does not have answer items
    * 4. QuestionnaireResponse is not from a saved draft response
    */
-  const shouldPopulate =
+  const formCanBePopulated =
     !!smartClient &&
     !!patient &&
     !!user &&
     isSpinning &&
     !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension) &&
-    hasNotBeenPopulated &&
+    formChangesHistory.length === 0 &&
     !sourceResponse.id;
 
-  if (!shouldPopulate) {
+  if (!formCanBePopulated) {
     if (isSpinning) {
       onStopSpinner();
     }
     return;
   }
 
+  if (isPopulated) {
+    return;
+  }
+
+  setIsPopulated(true);
   populateQuestionnaire(
     sourceQuestionnaire,
     smartClient,
@@ -89,12 +92,13 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
           'Questionnaire form partially populated, there might be issues while populating the form. View console for details.',
           { action: <CloseSnackbar />, variant: 'warning' }
         );
-      } else {
-        enqueueSnackbar('Questionnaire form populated', {
-          preventDuplicate: true,
-          action: <CloseSnackbar />
-        });
+        return;
       }
+
+      enqueueSnackbar('Questionnaire form populated', {
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
     },
     () => {
       onStopSpinner();

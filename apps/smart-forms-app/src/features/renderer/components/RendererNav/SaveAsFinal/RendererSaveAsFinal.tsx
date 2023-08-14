@@ -26,12 +26,12 @@ function RendererSaveAsFinal() {
   const { smartClient } = useSmartClient();
 
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
+  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const responseWasSaved: boolean = !!updatableResponse.authored && !!updatableResponse.author;
-  const buttonIsDisabled = !hasChanges && !responseWasSaved;
+  const buttonIsDisabled = !responseWasSaved || formChangesHistory.length === 0;
 
   return (
     <>

@@ -2,11 +2,12 @@ import { create } from 'zustand';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import { emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
+import { diff } from 'json-diff';
 
 export interface UseQuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
-  hasChanges: boolean;
+  formChangesHistory: object[];
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
   updateResponse: (updatedResponse: QuestionnaireResponse) => void;
@@ -15,10 +16,10 @@ export interface UseQuestionnaireResponseStoreType {
   destroySourceResponse: () => void;
 }
 
-const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>()((set) => ({
+const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>()((set, get) => ({
   sourceResponse: cloneDeep(emptyResponse),
   updatableResponse: cloneDeep(emptyResponse),
-  hasChanges: false,
+  formChangesHistory: [],
   buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
     set(() => ({
       sourceResponse: questionnaireResponse,
@@ -26,32 +27,35 @@ const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>(
     }));
   },
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
+    const formChanges = diff(get().updatableResponse, populatedResponse);
     set(() => ({
       updatableResponse: populatedResponse,
-      hasChanges: false
+      formChanges: [...get().formChangesHistory, formChanges]
     }));
   },
-  updateResponse: (updatedResponse: QuestionnaireResponse) =>
+  updateResponse: (updatedResponse: QuestionnaireResponse) => {
+    const formChanges = diff(get().updatableResponse, updatedResponse);
     set(() => ({
       updatableResponse: updatedResponse,
-      hasChanges: true
-    })),
+      formChanges: [...get().formChangesHistory, formChanges]
+    }));
+  },
   setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) =>
     set(() => ({
       sourceResponse: savedResponse,
       updatableResponse: savedResponse,
-      hasChanges: false
+      formChanges: []
     })),
   setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) =>
     set(() => ({
       updatableResponse: clearedResponse,
-      hasChanges: false
+      formChanges: []
     })),
   destroySourceResponse: () =>
     set(() => ({
       sourceResponse: cloneDeep(emptyResponse),
       updatableResponse: cloneDeep(emptyResponse),
-      hasChanges: false
+      formChanges: []
     }))
 }));
 

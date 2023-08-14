@@ -22,6 +22,7 @@ import FormTopLevelItem from './FormTopLevelItem';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore';
+import cloneDeep from 'lodash.clonedeep';
 
 function BaseRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -30,24 +31,22 @@ function BaseRenderer() {
   const updateResponse = useQuestionnaireResponseStore((state) => state.updateResponse);
 
   function handleTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
-    if (!updatableResponse.item || updatableResponse.item.length === 0) {
+    const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
+    if (!updatedResponse.item || updatedResponse.item.length === 0) {
       return;
     }
 
-    const updatedItems = [...updatableResponse.item]; // Copy the original array of items
+    const updatedItems = [...updatedResponse.item]; // Copy the original array of items
     updatedItems[index] = newTopLevelQItem; // Modify the item at the specified index
 
-    const updatedResponse: QuestionnaireResponse = {
-      ...updatableResponse,
-      item: updatedItems
-    };
+    updatedResponse.item = updatedItems;
 
     updateExpressions(updatedResponse);
     updateResponse(updatedResponse);
   }
 
   const topLevelQItems = sourceQuestionnaire.item;
-  const topLevelQRItems = updatableResponse.item;
+  const topLevelQRItems = cloneDeep(updatableResponse.item);
 
   if (!topLevelQItems) {
     return <>Questionnaire does not have any items</>;

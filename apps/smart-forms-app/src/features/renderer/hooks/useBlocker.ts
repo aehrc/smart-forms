@@ -18,8 +18,12 @@
 import { useEffect } from 'react';
 import type { unstable_Blocker as Blocker } from 'react-router';
 import { unstable_useBlocker as useBlocker } from 'react-router';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
-function useLeavePageBlocker(isBlocked: boolean): Blocker {
+function useLeavePageBlocker(): Blocker {
+  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
+
+  const isBlocked = formChangesHistory.length > 0;
   const blocker = useBlocker(isBlocked);
 
   useEffect(() => {

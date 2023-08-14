@@ -40,7 +40,6 @@ function RendererLayout() {
   const { smartClient, patient, user } = useSmartClient();
 
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [desktopNavCollapsed, setDesktopNavCollapsed] = useState(false);
@@ -58,7 +57,7 @@ function RendererLayout() {
 
   // Page blocker
   const [dialogOpen, setDialogOpen] = useState(false);
-  const leavePageBlocker = useLeavePageBlocker(hasChanges);
+  const leavePageBlocker = useLeavePageBlocker();
   if (leavePageBlocker.state === 'blocked' && !dialogOpen) {
     setDialogOpen(true);
   }
@@ -67,7 +66,7 @@ function RendererLayout() {
 
   useBackToTop();
 
-  usePopulate(spinner, () => setSpinner({ ...spinner, isSpinning: false }));
+  usePopulate(spinner.isSpinning, () => setSpinner({ ...spinner, isSpinning: false }));
 
   const isPopulating = spinner.isSpinning && spinner.purpose === 'prepopulate';
   const isRepopulating = spinner.isSpinning && spinner.purpose === 'repopulate';
@@ -100,11 +99,12 @@ function RendererLayout() {
           <>
             <Backdrop
               sx={{
-                backdropFilter: 'blur(1px)',
-                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                backdropFilter: 'blur(1.5px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.33)',
                 zIndex: (theme) => theme.zIndex.drawer + 1
               }}
-              open={isRepopulating}>
+              open={isRepopulating}
+              onClick={() => setSpinner({ ...spinner, isSpinning: false })}>
               <PopulationProgressSpinner message={spinner.message} />
             </Backdrop>
             <Outlet />
