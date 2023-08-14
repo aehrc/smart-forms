@@ -19,18 +19,18 @@ import { IconButton } from '@mui/material';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import useResponsive from '../../../hooks/useResponsive.ts';
 
-interface Props {
-  navCollapsed: boolean;
-  expandNav: () => void;
+interface NavExpandButtonProps {
+  desktopNavCollapsed: boolean;
+  onExpandNav: () => void;
 }
 
-function NavExpandButton(props: Props) {
-  const { navCollapsed, expandNav } = props;
+function NavExpandButton(props: NavExpandButtonProps) {
+  const { desktopNavCollapsed, onExpandNav } = props;
 
   const isDesktop = useResponsive('up', 'lg');
 
-  return navCollapsed && isDesktop ? (
-    <IconButton onClick={expandNav} sx={{ position: 'fixed', bottom: 16, left: 16 }}>
+  return desktopNavCollapsed && isDesktop ? (
+    <IconButton onClick={onExpandNav} sx={{ position: 'fixed', bottom: 16, left: 16 }}>
       <KeyboardDoubleArrowRightIcon fontSize="small" />
     </IconButton>
   ) : null;

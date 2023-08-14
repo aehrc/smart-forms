@@ -19,23 +19,35 @@ import { Drawer } from '@mui/material';
 import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 import RendererNav from './RendererNav.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 
 interface RendererNavShownProps {
-  openNav: boolean;
-  navCollapsed: boolean;
-  navIsShown: boolean;
-  onCloseNav: () => void;
-  setNavCollapsed: () => void;
+  mobileNavOpen: boolean;
+  desktopNavCollapsed: boolean;
+  desktopNavIsShown: boolean;
+  onCloseMobileNav: () => void;
+  onCollapseDesktopNav: () => void;
+  spinner: RendererSpinner;
+  onStartRepopulating: () => void;
+  onStopRepopulating: () => void;
 }
 
 function RendererNavDrawer(props: RendererNavShownProps) {
-  const { openNav, navIsShown, onCloseNav, setNavCollapsed } = props;
+  const {
+    mobileNavOpen,
+    desktopNavIsShown,
+    onCloseMobileNav,
+    onCollapseDesktopNav,
+    spinner,
+    onStartRepopulating,
+    onStopRepopulating
+  } = props;
 
   const { smartClient } = useSmartClient();
 
   const isNotLaunched = !smartClient;
 
-  if (navIsShown) {
+  if (desktopNavIsShown) {
     return (
       <Drawer
         open
@@ -49,8 +61,11 @@ function RendererNavDrawer(props: RendererNavShownProps) {
         }}>
         <RendererNav
           isNotLaunched={isNotLaunched}
-          navIsShown={navIsShown}
-          onCollapseNav={setNavCollapsed}
+          navIsShown={desktopNavIsShown}
+          onCollapseNav={onCollapseDesktopNav}
+          spinner={spinner}
+          onStartRepopulating={onStartRepopulating}
+          onStopRepopulating={onStopRepopulating}
         />
       </Drawer>
     );
@@ -58,8 +73,8 @@ function RendererNavDrawer(props: RendererNavShownProps) {
 
   return (
     <Drawer
-      open={openNav}
-      onClose={onCloseNav}
+      open={mobileNavOpen}
+      onClose={onCloseMobileNav}
       ModalProps={{
         keepMounted: true
       }}
@@ -68,8 +83,11 @@ function RendererNavDrawer(props: RendererNavShownProps) {
       }}>
       <RendererNav
         isNotLaunched={isNotLaunched}
-        navIsShown={navIsShown}
-        onCollapseNav={setNavCollapsed}
+        navIsShown={desktopNavIsShown}
+        onCollapseNav={onCollapseDesktopNav}
+        spinner={spinner}
+        onStartRepopulating={onStartRepopulating}
+        onStopRepopulating={onStopRepopulating}
       />
     </Drawer>
   );

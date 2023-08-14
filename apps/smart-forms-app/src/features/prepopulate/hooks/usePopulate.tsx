@@ -22,8 +22,10 @@ import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
-function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void {
+function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void {
+  const { isSpinning, purpose } = spinner;
   const { smartClient, patient, user, encounter } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -42,6 +44,11 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
 
   const hasNotBeenPopulated = _isEqual(sourceResponse, updatableResponse);
 
+  // Do not run population if spinner purpose is "repopulate"
+  if (purpose === 'repopulate') {
+    return;
+  }
+
   /*
    * Perform pre-population if all the following requirements are fulfilled:
    * 1. App is connected to a CMS
@@ -53,13 +60,13 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
     !!smartClient &&
     !!patient &&
     !!user &&
-    spinnerIsLoading &&
+    isSpinning &&
     !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension) &&
     hasNotBeenPopulated &&
     !sourceResponse.id;
 
   if (!shouldPopulate) {
-    if (spinnerIsLoading) {
+    if (isSpinning) {
       onStopSpinner();
     }
     return;

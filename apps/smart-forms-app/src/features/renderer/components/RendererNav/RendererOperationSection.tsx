@@ -23,11 +23,20 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { OperationItem } from '../../../../types/Nav.interface.ts';
 import { NavListItemButton, StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
-import RePopulate from './RePopulate/RePopulate.tsx';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../../types/rendererSpinner.ts';
+import Repopulate from './RePopulate/RePopulate.tsx';
 
-function RendererOperationSection() {
+interface RendererOperationSectionProps {
+  spinner: RendererSpinner;
+  onStartRepopulating: () => void;
+  onStopRepopulating: () => void;
+}
+
+function RendererOperationSection(props: RendererOperationSectionProps) {
+  const { spinner, onStartRepopulating, onStopRepopulating } = props;
+
   const { smartClient } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -62,7 +71,11 @@ function RendererOperationSection() {
           <>
             <RendererSaveAsDraft />
             <RendererSaveAsFinal />
-            <RePopulate />
+            <Repopulate
+              spinner={spinner}
+              onStartRepopulating={onStartRepopulating}
+              onStopRepopulating={onStopRepopulating}
+            />
           </>
         ) : null}
       </List>

@@ -68,7 +68,10 @@ export interface UseQuestionnaireStoreType {
   toggleEnableWhenActivation: (isActivated: boolean) => void;
   updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
-  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => QuestionnaireResponse;
+  updatePopulatedProperties: (
+    populatedResponse: QuestionnaireResponse,
+    persistTabIndex?: boolean
+  ) => QuestionnaireResponse;
 }
 
 const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => ({
@@ -197,7 +200,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
         [valueSetUrl]: codings
       }
     })),
-  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => {
+  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse, persistTabIndex) => {
     const initialCalculatedExpressions = evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
       calculatedExpressions: get().calculatedExpressions,
@@ -229,7 +232,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
-      currentTabIndex: firstVisibleTab
+      currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab
     }));
 
     return updatedResponse;

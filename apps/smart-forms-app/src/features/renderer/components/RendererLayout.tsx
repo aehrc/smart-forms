@@ -22,7 +22,7 @@ import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Main } from './RendererLayout.styles.ts';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../../backToTop/components/BackToTopButton.tsx';
-import { Fab } from '@mui/material';
+import { Backdrop, Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog.tsx';
 import NavExpandButton from './NavCollapseButton.tsx';
@@ -34,6 +34,7 @@ import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../types/rendererSpinner.ts';
 
 function RendererLayout() {
   const { smartClient, patient, user } = useSmartClient();
@@ -41,18 +42,19 @@ function RendererLayout() {
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
   const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
 
-  const [open, setOpen] = useState(false);
-  const [navIsCollapsed, collapseNav] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [desktopNavCollapsed, setDesktopNavCollapsed] = useState(false);
 
   // Init population spinner
-  let initialSpinner = { isLoading: false, message: '' };
+  let initialSpinner: RendererSpinner = { isSpinning: false, purpose: 'prepopulate', message: '' };
   if (smartClient && patient && user && !sourceResponse.id) {
     initialSpinner = {
-      isLoading: true,
+      isSpinning: true,
+      purpose: 'prepopulate',
       message: 'Populating form'
     };
   }
-  const [spinner, setSpinner] = useState(initialSpinner);
+  const [spinner, setSpinner] = useState<RendererSpinner>(initialSpinner);
 
   // Page blocker
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -65,21 +67,49 @@ function RendererLayout() {
 
   useBackToTop();
 
-  usePopulate(spinner.isLoading, () => setSpinner({ ...spinner, isLoading: false }));
+  usePopulate(spinner, () => setSpinner({ ...spinner, isSpinning: false }));
+
+  const isPopulating = spinner.isSpinning && spinner.purpose === 'prepopulate';
+  const isRepopulating = spinner.isSpinning && spinner.purpose === 'repopulate';
 
   return (
     <StyledRoot>
-      <RendererHeader onOpenNav={() => setOpen(true)} navIsCollapsed={navIsCollapsed} />
+      <RendererHeader
+        onOpenMobileNav={() => setMobileNavOpen(true)}
+        desktopNavCollapsed={desktopNavCollapsed}
+      />
 
       <RendererNavWrapper
-        openNav={open}
-        onCloseNav={() => setOpen(false)}
-        navCollapsed={navIsCollapsed}
-        setNavCollapsed={() => collapseNav(true)}
+        mobileNavOpen={mobileNavOpen}
+        onCloseMobileNav={() => setMobileNavOpen(false)}
+        desktopNavCollapsed={desktopNavCollapsed}
+        onCollapseDesktopNav={() => setDesktopNavCollapsed(true)}
+        spinner={spinner}
+        onStartRepopulating={() =>
+          setSpinner({ isSpinning: true, purpose: 'repopulate', message: 'Re-populating form' })
+        }
+        onStopRepopulating={() =>
+          setSpinner({ isSpinning: false, purpose: 'repopulate', message: 'Re-populating form' })
+        }
       />
 
       <Main>
-        {spinner.isLoading ? <PopulationProgressSpinner message={spinner.message} /> : <Outlet />}
+        {isPopulating ? (
+          <PopulationProgressSpinner message={spinner.message} />
+        ) : (
+          <>
+            <Backdrop
+              sx={{
+                backdropFilter: 'blur(1px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                zIndex: (theme) => theme.zIndex.drawer + 1
+              }}
+              open={isRepopulating}>
+              <PopulationProgressSpinner message={spinner.message} />
+            </Backdrop>
+            <Outlet />
+          </>
+        )}
       </Main>
 
       {/* Dialogs and FABs */}
@@ -91,7 +121,10 @@ function RendererLayout() {
         />
       ) : null}
 
-      <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => collapseNav(false)} />
+      <NavExpandButton
+        desktopNavCollapsed={desktopNavCollapsed}
+        onExpandNav={() => setDesktopNavCollapsed(false)}
+      />
 
       {isDesktop ? (
         <BackToTopButton>
@@ -100,7 +133,7 @@ function RendererLayout() {
           </Fab>
         </BackToTopButton>
       ) : (
-        <RendererEmbeddedSpeedDial isPopulating={spinner.isLoading} />
+        <RendererEmbeddedSpeedDial isPopulating={spinner.isSpinning} />
       )}
     </StyledRoot>
   );
