@@ -15,33 +15,17 @@
  * limitations under the License.
  */
 
-import Card from './Card';
-import Paper from './Paper';
-import Input from './Input';
-import Table from './Table';
-import Button from './Button';
-import Backdrop from './Backdrop';
-import Typography from './Typography';
-import Autocomplete from './Autocomplete';
-import Accordion from './Accordion';
 import type { Theme } from '@mui/material';
-import SpeedDial from './SpeedDial.ts';
-import Dialog from './Dialog.ts';
 
-function ComponentsOverrides(theme: Theme) {
-  return Object.assign(
-    Accordion(theme),
-    Card(theme),
-    Dialog(theme),
-    Table(theme),
-    Input(theme),
-    Paper(),
-    Button(theme),
-    Backdrop(theme),
-    Typography(theme),
-    Autocomplete(theme),
-    SpeedDial(theme)
-  );
+export default function Dialog(theme: Theme) {
+  return {
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          boxShadow: theme.customShadows.dialog, // Customize the shadow
+          borderRadius: Number(theme.shape.borderRadius) * 1.5
+        }
+      }
+    }
+  };
 }
-
-export default ComponentsOverrides;

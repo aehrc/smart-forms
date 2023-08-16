@@ -70,7 +70,7 @@ declare module '@mui/material/styles' {
 
 const transparent = alpha(grey[500], 0.16);
 
-export const themeOptions: ThemeOptions = {
+const themeOptions: ThemeOptions = {
   palette,
   shape: { borderRadius: 6 },
   typography,
@@ -83,9 +83,9 @@ export const themeOptions: ThemeOptions = {
     z20: `0 20px 40px -4px ${transparent}`,
     z24: `0 24px 48px 0 ${transparent}`,
     //
-    card: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${alpha(grey[500], 0.12)}`,
-    dialog: `-40px 40px 80px -8px ${alpha(grey[500], 0.24)}`,
-    dropdown: `0 0 2px 0 ${alpha(grey[500], 0.24)}, -20px 20px 40px -4px ${alpha(grey[500], 0.24)}`
+    card: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${transparent}`,
+    dialog: `0 16px 32px -4px ${alpha(grey[600], 0.64)}`,
+    dropdown: `0 0 16px 0 ${alpha(grey[500], 0.24)}`
   }
 };
 
