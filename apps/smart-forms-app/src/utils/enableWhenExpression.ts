@@ -59,6 +59,11 @@ export function evaluateInitialEnableWhenExpressions(
         if (result.length > 0) {
           initialExpressions[linkId].isEnabled = result[0];
         }
+
+        // handle intersect edge case - evualate() returns empty array if result is false
+        if (enableWhenExpressions[linkId].expression.includes('intersect') && result.length === 0) {
+          initialExpressions[linkId].isEnabled = false;
+        }
       } catch (e) {
         console.warn(
           e,
@@ -96,6 +101,11 @@ export function evaluateEnableWhenExpressions(
           isUpdated = true;
           updatedEnableWhenExpressions[linkId].isEnabled = result[0];
         }
+      }
+
+      // handle intersect edge case - evualate() returns empty array if result is false
+      if (enableWhenExpressions[linkId].expression.includes('intersect') && result.length === 0) {
+        updatedEnableWhenExpressions[linkId].isEnabled = false;
       }
     } catch (e) {
       console.warn(e);
