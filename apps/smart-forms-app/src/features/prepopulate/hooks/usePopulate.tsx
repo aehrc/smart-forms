@@ -19,7 +19,8 @@ import useConfigStore from '../../../stores/useConfigStore.ts';
 import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import _isEqual from 'lodash/isEqual';
-import { PopulateFormParams, populateQuestionnaire } from '../utils/populate.ts';
+import type { PopulateFormParams } from '../utils/populate.ts';
+import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 
