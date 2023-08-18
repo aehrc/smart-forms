@@ -59,7 +59,7 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@sentry/cli": "^2.20.5",
-    "@tanstack/react-query-devtools": "^4.29.6",
+    "@tanstack/react-query-devtools": "^4.32.6",
     "@types/fhir": "^0.0.37",
     "@types/jest": "^29.5.3",
     "@types/lodash.clonedeep": "^4.5.7",
