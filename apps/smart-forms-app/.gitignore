@@ -26,3 +26,4 @@ yarn-error.log*
 # cypress non-test files
 cypress/screenshots
 cypress/videos
+temp
