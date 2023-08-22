@@ -33,7 +33,7 @@ export const fetchResourceCallback: FetchResourceCallback = (
   const { authToken } = requestConfig;
 
   const headers = {
-    Accept: 'application/json+fhir; charset=utf-8',
+    Accept: 'application/json; charset=utf-8',
     Authorization: `Bearer ${authToken}`
   };
 

@@ -28,7 +28,7 @@
  *   const { endpoint, token } = requestConfig;
  *   return axios.get(`${endpoint}/Questionnaire?url=${canonicalUrl}`, {
  *     method: 'GET',
- *     headers: { Accept: 'application/json+fhir; charset=utf-8', Authorization: `Bearer ${token}`, }
+ *     headers: { Accept: 'application/json; charset=utf-8', Authorization: `Bearer ${token}`, }
  *   });
  * };
  *
