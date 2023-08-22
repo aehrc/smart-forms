@@ -20,7 +20,7 @@ import { Avatar, IconButton, Popover, Stack, Typography } from '@mui/material';
 import type { ReactElement } from 'react';
 
 interface HeaderPopoverProps {
-  entity: 'Patient' | 'User' | 'Form';
+  entity: string;
   bgColor: string;
   displayIcon: ReactElement;
   menuContent: ReactElement;
@@ -42,7 +42,7 @@ function HeaderPopover(props: HeaderPopoverProps) {
               <Avatar sx={{ bgcolor: bgColor, width: 34, height: 34 }}>
                 <IconButton {...bindTrigger(popupState)}>{displayIcon}</IconButton>
               </Avatar>
-              <Typography fontSize={7.5} variant="subtitle2">
+              <Typography fontSize={9} variant="subtitle2">
                 {entity}
               </Typography>
             </Stack>

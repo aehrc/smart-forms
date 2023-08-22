@@ -22,12 +22,14 @@ import {
 import { constructName } from '../../../features/smartAppLaunch/utils/launchContext.ts';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
+import { Typography } from '@mui/material';
 
 function UserPopoverMenu() {
   const user = useConfigStore((state) => state.user);
 
   return (
     <PopoverMenuWrapper>
+      <Typography variant="body2">User</Typography>
       <AccountNameTypographyNoWrap name={user ? constructName(user.name) : 'No User'} />
       {user ? <AccountDetailsTypography details={user.gender ? `${user.gender}` : ''} /> : null}
     </PopoverMenuWrapper>
