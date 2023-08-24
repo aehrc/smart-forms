@@ -21,7 +21,7 @@ import DateItem from '../features/renderer/components/FormPage/QFormComponents/D
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'FormComponent/DateItem',
+  title: 'Component/DateItem',
   component: DateItem,
   argTypes: {
     onQrItemChange: { action: 'change' }

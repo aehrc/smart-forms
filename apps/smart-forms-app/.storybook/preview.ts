@@ -7,11 +7,12 @@ import '@fontsource/material-icons';
 import { withThemeFromJSXProvider } from '@storybook/addon-styling';
 import { createTheme } from '@mui/material/styles';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { themeOptions } from '../src/theme/Theme';
 
 export const decorators = [
   withThemeFromJSXProvider({
     themes: {
-      light: createTheme()
+      light: createTheme(themeOptions)
     },
     defaultTheme: 'light',
     Provider: ThemeProvider,

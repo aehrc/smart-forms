@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import FormRenderer from '../../renderer/components/FormPage/FormRenderer/FormRenderer.tsx';
+import FormWrapper from '../../renderer/components/FormPage/FormRenderer/FormWrapper.tsx';
 import { createQuestionnaireResponse } from '../../renderer/utils/qrItem.ts';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
@@ -29,7 +29,7 @@ function PlaygroundRenderer() {
   const questionnaireResponse = createQuestionnaireResponse(sourceQuestionnaire);
   buildSourceResponse(questionnaireResponse);
 
-  return <FormRenderer />;
+  return <FormWrapper />;
 }
 
 export default PlaygroundRenderer;

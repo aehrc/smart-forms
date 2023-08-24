@@ -21,7 +21,7 @@ import TextItem from '../features/renderer/components/FormPage/QFormComponents/T
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'FormComponent/TextItem',
+  title: 'Component/TextItem',
   component: TextItem,
   argTypes: {
     onQrItemChange: { action: 'change' }

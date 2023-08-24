@@ -20,7 +20,7 @@ import SingleItemSwitcher from '../features/renderer/components/FormPage/QFormCo
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'FormComponent/SingleItemSwitcher',
+  title: 'Component/SingleItemSwitcher',
   component: SingleItemSwitcher,
   argTypes: {
     onQrItemChange: { action: 'change' }

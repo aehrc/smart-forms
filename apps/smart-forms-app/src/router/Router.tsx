@@ -20,7 +20,7 @@ import DashboardLayout from '../features/dashboard/layout/DashboardLayout.tsx';
 import Launch from '../features/smartAppLaunch/components/Launch.tsx';
 import QuestionnairesPage from '../features/dashboard/components/DashboardPages/QuestionnairePage/QuestionnairesPage.tsx';
 import RendererLayout from '../features/renderer/components/RendererLayout.tsx';
-import FormRenderer from '../features/renderer/components/FormPage/FormRenderer/FormRenderer.tsx';
+import FormWrapper from '../features/renderer/components/FormPage/FormRenderer/FormWrapper.tsx';
 import FormPreview from '../features/renderer/components/FormPreviewPage/FormPreview.tsx';
 import ViewerLayout from '../features/viewer/ViewerLayout.tsx';
 import ResponsePreview from '../features/viewer/ResponsePreview.tsx';
@@ -50,7 +50,7 @@ export default function Router() {
       path: '/renderer',
       element: <RendererLayout />,
       children: [
-        { path: '', element: <FormRenderer /> },
+        { path: '', element: <FormWrapper /> },
         { path: 'preview', element: <FormPreview /> }
       ]
     },
