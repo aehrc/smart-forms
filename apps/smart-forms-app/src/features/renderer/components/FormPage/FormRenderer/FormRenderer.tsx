@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
+import { Container, Fade } from '@mui/material';
+import FormTopLevelItem from '../FormTopLevelItem.tsx';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import RendererDebugFooter from '../../RendererDebugFooter/RendererDebugFooter.tsx';
-import { Helmet } from 'react-helmet';
-import Form from './Form.tsx';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
 
 function FormRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -29,12 +27,6 @@ function FormRenderer() {
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
   const updateResponse = useQuestionnaireResponseStore((state) => state.updateResponse);
 
-  const debugMode = useConfigStore((state) => state.debugMode);
-
-  const topLevelQItems = sourceQuestionnaire.item;
-  const topLevelQRItems = updatableResponse.item;
-
-  // event handlers
   function handleTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
     if (!updatableResponse.item || updatableResponse.item.length === 0) {
       return;
@@ -52,22 +44,37 @@ function FormRenderer() {
     updateResponse(updatedResponse);
   }
 
+  const topLevelQItems = sourceQuestionnaire.item;
+  const topLevelQRItems = updatableResponse.item;
+
+  if (!topLevelQItems) {
+    return <>Questionnaire does not have any items</>;
+  }
+
   return (
-    <>
-      <Helmet>
-        <title>{sourceQuestionnaire.title ?? 'Form Renderer'}</title>
-      </Helmet>
+    <Fade in={true} timeout={500}>
+      <Container maxWidth="xl">
+        {topLevelQItems.map((qItem, index) => {
+          const qrItem = topLevelQRItems
+            ? topLevelQRItems[index]
+            : {
+                linkId: qItem.linkId,
+                text: qItem.text
+              };
 
-      <Form
-        questionnaire={sourceQuestionnaire}
-        topLevelQItems={topLevelQItems}
-        topLevelQRItems={topLevelQRItems}
-        onTopLevelQRItemChange={handleTopLevelQRItemChange}
-      />
-
-      {/* Debug footer */}
-      {debugMode ? <RendererDebugFooter /> : null}
-    </>
+          return (
+            <FormTopLevelItem
+              key={qItem.linkId}
+              topLevelQItem={qItem}
+              topLevelQRItem={qrItem}
+              onQrItemChange={(newTopLevelQRItem) =>
+                handleTopLevelQRItemChange(newTopLevelQRItem, index)
+              }
+            />
+          );
+        })}
+      </Container>
+    </Fade>
   );
 }
 

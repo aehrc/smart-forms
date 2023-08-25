@@ -16,11 +16,12 @@
  */
 
 import { List, styled } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 
 export const PrimarySelectableList = styled(List)(({ theme }) => ({
   '&& .Mui-selected': {
     color: theme.palette.primary.dark,
-    backgroundColor: theme.palette.accent1.main,
+    backgroundColor: alpha(theme.palette.primary.main, 0.2),
     borderRadius: 30,
     '& .MuiTypography-root': {
       fontWeight: 'bold'
@@ -32,7 +33,7 @@ export const PrimarySelectableList = styled(List)(({ theme }) => ({
   },
   '& .MuiListItemButton-root:hover': {
     color: theme.palette.primary.dark,
-    backgroundColor: theme.palette.accent1.light,
+    backgroundColor: alpha(theme.palette.primary.main, 0.09),
     borderRadius: 30
   }
 }));
