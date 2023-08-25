@@ -33,3 +33,14 @@ export function constructName(name: HumanName[] | undefined): string {
     return `${prefix} ${givenName} ${familyName}`;
   }
 }
+
+export function constructShortName(name: HumanName[] | undefined): string {
+  if (name?.[0]['text']) {
+    return `${name?.[0].text}`;
+  } else {
+    const givenName = name?.[0].given?.[0][0] ?? '';
+    const familyName = name?.[0].family ?? '';
+
+    return `${givenName}.${familyName}`;
+  }
+}

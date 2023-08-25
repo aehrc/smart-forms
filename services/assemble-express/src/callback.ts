@@ -23,6 +23,6 @@ const FORMS_SERVER_ENDPOINT = 'https://api.smartforms.io/fhir';
 export const fetchQuestionnaireCallback: FetchQuestionnaireCallback = (canonicalUrl: string) => {
   return axios.get(`${FORMS_SERVER_ENDPOINT}/Questionnaire?url=${canonicalUrl}`, {
     method: 'GET',
-    headers: { Accept: 'application/json+fhir; charset=utf-8' }
+    headers: { Accept: 'application/json;charset=utf-8' }
   });
 };

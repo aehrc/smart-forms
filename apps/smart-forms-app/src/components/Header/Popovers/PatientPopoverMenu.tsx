@@ -24,12 +24,14 @@ import { constructName } from '../../../features/smartAppLaunch/utils/launchCont
 import dayjs from 'dayjs';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
+import { Typography } from '@mui/material';
 
 function PatientPopoverMenu() {
   const patient = useConfigStore((state) => state.patient);
 
   return (
     <PopoverMenuWrapper>
+      <Typography variant="body2">Patient</Typography>
       <AccountNameTypographyNoWrap name={patient ? constructName(patient.name) : 'No Patient'} />
       <AccountDetailsTypography details={patient ? `${patient.gender}` : ''} />
       <AccountDetailsTypographyNoCaps

@@ -30,7 +30,7 @@
  * const { clientEndpoint, authToken } = requestConfig
  * const headers = {
  *     'Cache-Control': 'no-cache',
- *     Accept: 'application/json+fhir; charset=utf-8',
+ *     Accept: 'application/json;charset=utf-8',
  *     Authorization: `Bearer ${authToken}`
  *   };
  *

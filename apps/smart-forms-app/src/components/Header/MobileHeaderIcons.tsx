@@ -24,10 +24,13 @@ import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import NotLaunchedPopover from './Popovers/NotLaunchedPopover.tsx';
 import useConfigStore from '../../stores/useConfigStore.ts';
+import { constructShortName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 
 function MobileHeaderIcons() {
   const theme = useTheme();
   const smartClient = useConfigStore((state) => state.smartClient);
+  const patient = useConfigStore((state) => state.patient);
+  const user = useConfigStore((state) => state.user);
 
   const isNotLaunched = !smartClient;
 
@@ -39,13 +42,13 @@ function MobileHeaderIcons() {
         </Box>
       ) : null}
       <HeaderPopover
-        entity={'Patient'}
+        entity={patient ? constructShortName(patient.name) : 'Patient'}
         bgColor={theme.palette.primary.main}
         displayIcon={<FaceIcon fontSize="small" sx={{ color: theme.palette.common.white }} />}
         menuContent={<PatientPopoverMenu />}
       />
       <HeaderPopover
-        entity={'User'}
+        entity={user ? constructShortName(user.name) : 'user'}
         bgColor={theme.palette.error.main}
         displayIcon={
           <MedicalServicesIcon fontSize="small" sx={{ color: theme.palette.common.white }} />
