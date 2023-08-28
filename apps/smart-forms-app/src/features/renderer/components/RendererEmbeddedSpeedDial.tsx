@@ -59,6 +59,7 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   function handlePreview() {
     if (location.pathname === '/renderer/preview') {
@@ -92,7 +93,9 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
             <Tooltip title="View Responses" color="inherit">
               <IconButton
                 onClick={() => {
-                  navigate('/dashboard/responses');
+                  navigate(
+                    launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses'
+                  );
                   closeSnackbar();
                 }}>
                 <ReadMoreIcon />
@@ -116,7 +119,6 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   }
 
   const showSaveButtons = smartClient && sourceQuestionnaire.item;
-  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   if (isPopulating) {
     return null;

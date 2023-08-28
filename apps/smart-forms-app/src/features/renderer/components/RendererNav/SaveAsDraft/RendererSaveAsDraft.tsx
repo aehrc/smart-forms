@@ -24,7 +24,8 @@ import cloneDeep from 'lodash.clonedeep';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import type { NavigateFunction } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { IconButton, Tooltip } from '@mui/material';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 
@@ -32,6 +33,7 @@ function RendererSaveAsDraft() {
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
@@ -55,6 +57,7 @@ function RendererSaveAsDraft() {
   }, [updatableResponse]);
 
   const buttonIsDisabled = !smartClient || !hasChanges || isUpdating;
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   function handleClick() {
     closeSnackbar();
@@ -82,7 +85,9 @@ function RendererSaveAsDraft() {
               <IconButton
                 color="inherit"
                 onClick={() => {
-                  navigate('/dashboard/responses');
+                  navigate(
+                    launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses'
+                  );
                   closeSnackbar();
                 }}>
                 <ReadMoreIcon />
