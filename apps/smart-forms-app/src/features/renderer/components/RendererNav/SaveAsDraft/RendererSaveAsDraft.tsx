@@ -24,11 +24,16 @@ import cloneDeep from 'lodash.clonedeep';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
+import type { NavigateFunction } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { IconButton, Tooltip } from '@mui/material';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
 
 function RendererSaveAsDraft() {
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
@@ -43,6 +48,7 @@ function RendererSaveAsDraft() {
 
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const navigate: NavigateFunction = useNavigate();
   useEffect(() => {
     setIsUpdating(true);
     setTimeout(() => {
@@ -51,6 +57,7 @@ function RendererSaveAsDraft() {
   }, [updatableResponse]);
 
   const buttonIsDisabled = !smartClient || !hasChanges || isUpdating;
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   function handleClick() {
     closeSnackbar();
@@ -71,7 +78,23 @@ function RendererSaveAsDraft() {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         saveResponse(savedResponse);
-        enqueueSnackbar('Response saved as draft', { variant: 'success' });
+        enqueueSnackbar('Response saved as draft', {
+          variant: 'success',
+          action: (
+            <Tooltip title="View Responses">
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  navigate(
+                    launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses'
+                  );
+                  closeSnackbar();
+                }}>
+                <ReadMoreIcon />
+              </IconButton>
+            </Tooltip>
+          )
+        });
       })
       .catch((error) => {
         console.error(error);

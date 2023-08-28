@@ -45,6 +45,7 @@ function BlockerUnsavedFormDialog(props: Props) {
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
@@ -59,6 +60,7 @@ function BlockerUnsavedFormDialog(props: Props) {
   const navigate = useNavigate();
 
   const isLaunched = !!(smartClient && patient && user);
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   // Event handlers
   function handleCancel() {
@@ -97,7 +99,7 @@ function BlockerUnsavedFormDialog(props: Props) {
         setIsSaving(false);
         closeDialog();
         blocker.proceed?.();
-        navigate('/dashboard/responses');
+        navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);

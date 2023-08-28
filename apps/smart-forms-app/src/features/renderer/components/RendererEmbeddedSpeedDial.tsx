@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { SpeedDial, SpeedDialAction } from '@mui/material';
+import { IconButton, SpeedDial, SpeedDialAction, Tooltip } from '@mui/material';
 import BuildIcon from '@mui/icons-material/Build';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -32,6 +32,7 @@ import { useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererNav/SaveAsFinal/RendererSaveAsFinalDialog.tsx';
 import HomeIcon from '@mui/icons-material/Home';
 import GradingIcon from '@mui/icons-material/Grading';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
 
 interface RendererEmbeddedSpeedDialProps {
   isPopulating: boolean;
@@ -55,10 +56,10 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
 
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
-  const { closeSnackbar } = useSnackbar();
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   function handlePreview() {
     if (location.pathname === '/renderer/preview') {
@@ -86,7 +87,22 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         saveResponse(savedResponse);
-        enqueueSnackbar('Response saved as draft', { variant: 'success' });
+        enqueueSnackbar('Response saved as draft', {
+          variant: 'success',
+          action: (
+            <Tooltip title="View Responses" color="inherit">
+              <IconButton
+                onClick={() => {
+                  navigate(
+                    launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses'
+                  );
+                  closeSnackbar();
+                }}>
+                <ReadMoreIcon />
+              </IconButton>
+            </Tooltip>
+          )
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -103,7 +119,6 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   }
 
   const showSaveButtons = smartClient && sourceQuestionnaire.item;
-  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   if (isPopulating) {
     return null;
@@ -133,7 +148,7 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
         ) : (
           <SpeedDialAction
             icon={<HomeIcon />}
-            tooltipTitle="Back to Home"
+            tooltipTitle="Back to Questionnaires"
             tooltipOpen
             onClick={() => {
               closeSnackbar();

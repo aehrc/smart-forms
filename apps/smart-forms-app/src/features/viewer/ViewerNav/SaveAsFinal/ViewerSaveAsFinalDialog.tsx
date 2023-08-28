@@ -44,6 +44,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
+  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
@@ -54,6 +55,8 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
 
   const navigate = useNavigate();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const launchQuestionnaireExists = !!launchQuestionnaire;
 
   // Event Handlers
   function handleClose() {
@@ -75,7 +78,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
         saveResponse(savedResponse);
         handleClose();
         enqueueSnackbar('Response saved as final', { variant: 'success' });
-        navigate('/dashboard/responses');
+        navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);
