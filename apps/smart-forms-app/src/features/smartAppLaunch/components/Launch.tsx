@@ -29,7 +29,7 @@ function Launch() {
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
 
-  const clientId = import.meta.env.VITE_LAUNCH_CLIENT_ID ?? 'smart-forms';
+  const clientId = import.meta.env.VITE_LAUNCH_CLIENT_ID;
   const scope = import.meta.env.VITE_LAUNCH_SCOPE;
 
   if (iss && launch) {

@@ -24,6 +24,9 @@ import cloneDeep from 'lodash.clonedeep';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
 import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { IconButton, Tooltip } from '@mui/material';
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
 
 function RendererSaveAsDraft() {
   const smartClient = useConfigStore((state) => state.smartClient);
@@ -43,6 +46,7 @@ function RendererSaveAsDraft() {
 
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const navigate: NavigateFunction = useNavigate();
   useEffect(() => {
     setIsUpdating(true);
     setTimeout(() => {
@@ -71,7 +75,21 @@ function RendererSaveAsDraft() {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         saveResponse(savedResponse);
-        enqueueSnackbar('Response saved as draft', { variant: 'success' });
+        enqueueSnackbar('Response saved as draft', {
+          variant: 'success',
+          action: (
+            <Tooltip title="View Responses">
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  navigate('/dashboard/responses');
+                  closeSnackbar();
+                }}>
+                <ReadMoreIcon />
+              </IconButton>
+            </Tooltip>
+          )
+        });
       })
       .catch((error) => {
         console.error(error);

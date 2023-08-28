@@ -16,7 +16,6 @@
  */
 
 import { List } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import {
@@ -25,6 +24,7 @@ import {
   NavSectionWrapper
 } from '../../../components/Nav/Nav.styles.ts';
 import ViewerOperationItem from './ViewerOperationItem.tsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function ViewerNavSection() {
   const navigate = useNavigate();
@@ -37,11 +37,11 @@ function ViewerNavSection() {
       </NavSectionHeadingWrapper>
       <List disablePadding sx={{ px: 1 }}>
         <ViewerOperationItem
-          title={'Back to Questionnaires'}
-          icon={<HomeIcon />}
+          title={'Back to Responses'}
+          icon={<ArrowBackIcon />}
           onClick={() => {
             closeSnackbar();
-            navigate('/dashboard/questionnaires');
+            navigate('/dashboard/responses');
           }}
         />
       </List>

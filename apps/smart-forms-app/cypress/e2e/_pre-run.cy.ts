@@ -41,7 +41,7 @@ describe('pre-test setup', () => {
 
     cy.clickOnRendererOperation('Save as Draft');
     cy.wait('@saveAsDraft').its('response.statusCode').should('eq', 201);
-    cy.clickOnNavPage('Back to Home');
+    cy.clickOnNavPage('Back to Questionnaires');
   });
 });
 

@@ -32,7 +32,7 @@ function RendererNavSection() {
       </Box>
       <List disablePadding sx={{ px: 1 }}>
         <RendererOperationItem
-          title="Back to Home"
+          title="Back to Questionnaires"
           icon={<ArrowBackIcon />}
           onClick={() => {
             closeSnackbar();
