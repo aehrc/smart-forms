@@ -43,12 +43,7 @@ function QuestionnaireTable() {
 
   const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: 'authored',
-      desc: true
-    }
-  ]);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: questionnaires,
