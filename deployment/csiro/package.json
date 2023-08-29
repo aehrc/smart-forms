@@ -11,7 +11,7 @@
     "cdk": "cdk"
   },
   "dependencies": {
-    "assemble": "^1.0.1",
+    "sdc-assemble": "^1.0.1",
     "aws-cdk-lib": "^2.86.0",
     "constructs": "^10.2.52",
     "forms-server": "^0.1.0",
@@ -20,7 +20,6 @@
   "devDependencies": {
     "@types/jest": "^29.5.4",
     "@types/node": "^20.5.0",
-    "@types/prettier": "^2.7.3",
     "aws-cdk": "^2.89.0",
     "jest": "^29.6.4",
     "ts-jest": "^29.1.1",
