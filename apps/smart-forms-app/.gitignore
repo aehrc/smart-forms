@@ -27,6 +27,3 @@ yarn-error.log*
 cypress/screenshots
 cypress/videos
 temp
-
-# config js files
-*.config.js
