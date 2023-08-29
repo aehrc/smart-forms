@@ -15,6 +15,4 @@
  * limitations under the License.
  */
 
-export { default as Test } from './Test';
-export { default as DateItem } from './DateItem';
 export * from './FormRenderer';

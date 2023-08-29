@@ -16,7 +16,7 @@
  */
 
 import Q715 from '../../data/resources/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.1.0.json';
-import { FormRendererWrapper } from 'smart-forms-renderer';
+import { SmartFormsRenderer } from 'smart-forms-renderer';
 import type { Questionnaire } from 'fhir/r4';
 import { Box } from '@mui/material';
 
@@ -24,7 +24,7 @@ function Standalone() {
   const Questionnaire715 = Q715 as Questionnaire;
   return (
     <Box m={3}>
-      <FormRendererWrapper questionnaire={Questionnaire715} />
+      <SmartFormsRenderer questionnaire={Questionnaire715} />
     </Box>
   );
 }

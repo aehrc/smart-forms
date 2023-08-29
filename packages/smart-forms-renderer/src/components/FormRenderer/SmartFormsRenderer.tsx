@@ -23,13 +23,13 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import useQueryClient from '../../hooks/useQueryClient';
 import FormRenderer from './FormRenderer';
 
-interface FormRendererWrapperProps {
+interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
 }
 
 // TODO add terminiology server
-function FormRendererWrapper(props: FormRendererWrapperProps) {
+function SmartFormsRenderer(props: SmartFormsRendererProps) {
   const { questionnaire, questionnaireResponse } = props;
 
   const isLoading = useInitialiseRenderer(questionnaire, questionnaireResponse);
@@ -51,4 +51,4 @@ function FormRendererWrapper(props: FormRendererWrapperProps) {
   );
 }
 
-export default FormRendererWrapper;
+export default SmartFormsRenderer;

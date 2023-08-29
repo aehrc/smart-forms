@@ -15,5 +15,4 @@
  * limitations under the License.
  */
 
-export { default as FormRendererWrapper } from './FormRendererWrapper';
-export { default as FormRenderer } from './FormRenderer';
+export { default as SmartFormsRenderer } from './SmartFormsRenderer';

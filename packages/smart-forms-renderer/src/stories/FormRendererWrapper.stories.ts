@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { FormRendererWrapper } from '../components';
+import { SmartFormsRenderer } from '../components';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 // @ts-ignore
 import sourceQuestionnaireJson from './assets/sourceQuestionnaire.json';
@@ -25,11 +25,11 @@ import populatedResponseJson from './assets/populatedResponse.json';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/FormRendererWrapper',
-  component: FormRendererWrapper,
+  title: 'Component/SmartFormsRenderer',
+  component: SmartFormsRenderer,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs']
-} satisfies Meta<typeof FormRendererWrapper>;
+} satisfies Meta<typeof SmartFormsRenderer>;
 
 const sourceQuestionnaire = sourceQuestionnaireJson as Questionnaire;
 const populatedResponse = populatedResponseJson as QuestionnaireResponse;
