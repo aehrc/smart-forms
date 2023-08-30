@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-import QTestGridJson from '../data/QTestGrid.json';
-import RTestGridJson from '../data/RTestGrid.json';
-import AVarsTestGridJson from '../data/AddVariablesTestGrid.json';
-import { SmartFormsRenderer } from 'smart-forms-renderer';
+import Q715Json from '../data/Q715.json';
+import R715Json from '../data/R715.json';
+import { SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Stack } from '@mui/material';
 
 function Standalone() {
-  const questionnaireTestGrid = QTestGridJson as Questionnaire;
-  const responseTestGrid = RTestGridJson as QuestionnaireResponse;
-  const additionalVarsTestGrid = AVarsTestGridJson as Record<string, object>;
+  const questionnaire = Q715Json as Questionnaire;
+  const response = R715Json as QuestionnaireResponse;
   // const questionnaire715 = Q715Json as Questionnaire;
   // const response715 = R715Json as QuestionnaireResponse;
   //
@@ -44,11 +42,7 @@ function Standalone() {
       {/*    <MenuItem value={questionnaire715.id!}>{questionnaire715.name!}</MenuItem>*/}
       {/*  </Select>*/}
       {/*</FormControl>*/}
-      <SmartFormsRenderer
-        questionnaire={questionnaireTestGrid}
-        questionnaireResponse={responseTestGrid}
-        additionalVariables={additionalVarsTestGrid}
-      />
+      <SmartFormsRenderer questionnaire={questionnaire} questionnaireResponse={response} />
     </Stack>
   );
 }
