@@ -26,13 +26,18 @@ import FormRenderer from './FormRenderer';
 interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
+  additionalVariables?: Record<string, object>;
 }
 
 // TODO add terminiology server
 function SmartFormsRenderer(props: SmartFormsRendererProps) {
-  const { questionnaire, questionnaireResponse } = props;
+  const { questionnaire, questionnaireResponse, additionalVariables } = props;
 
-  const isLoading = useInitialiseRenderer(questionnaire, questionnaireResponse);
+  const isLoading = useInitialiseRenderer(
+    questionnaire,
+    questionnaireResponse,
+    additionalVariables
+  );
   const queryClient = useQueryClient();
 
   if (isLoading) {

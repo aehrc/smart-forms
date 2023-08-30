@@ -23,7 +23,8 @@ import useQuestionnaireResponseStore from '../stores/useQuestionnaireResponseSto
 
 function useInitialiseRenderer(
   questionnaire: Questionnaire,
-  questionnaireResponse?: QuestionnaireResponse
+  questionnaireResponse?: QuestionnaireResponse,
+  additionalVariables?: Record<string, object>
 ): boolean {
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
   const updatePopulatedProperties = useQuestionnaireStore(
@@ -35,7 +36,7 @@ function useInitialiseRenderer(
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    buildSourceQuestionnaire(questionnaire).then(() => {
+    buildSourceQuestionnaire(questionnaire, questionnaireResponse, additionalVariables).then(() => {
       buildSourceResponse(createQuestionnaireResponse(questionnaire));
 
       if (questionnaireResponse) {
@@ -50,7 +51,8 @@ function useInitialiseRenderer(
     buildSourceQuestionnaire,
     buildSourceResponse,
     populateResponse,
-    updatePopulatedProperties
+    updatePopulatedProperties,
+    additionalVariables
   ]);
 
   return loading;
