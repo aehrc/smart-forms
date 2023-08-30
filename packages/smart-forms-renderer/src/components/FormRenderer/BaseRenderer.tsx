@@ -22,7 +22,7 @@ import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore';
 
-function FormRenderer() {
+function BaseRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const updateExpressions = useQuestionnaireStore((state) => state.updateExpressions);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
@@ -79,4 +79,4 @@ function FormRenderer() {
   );
 }
 
-export default FormRenderer;
+export default BaseRenderer;

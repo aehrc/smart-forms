@@ -16,57 +16,34 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import sourceQuestionnaireJson from '../assets/sourceQuestionnaire.json';
+import populatedResponseJson from '../assets/populatedResponse.json';
+import { SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
 
-import TextItem from '../features/renderer/components/FormPage/QFormComponents/TextItem/TextItem.tsx';
+const sourceQuestionnaire = sourceQuestionnaireJson as Questionnaire;
+const populatedResponse = populatedResponseJson as QuestionnaireResponse;
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/TextItem',
-  component: TextItem,
-  argTypes: {
-    onQrItemChange: { action: 'change' }
-  },
+  title: 'Renderer/SmartFormsRenderer',
+  component: SmartFormsRenderer,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs']
-} satisfies Meta<typeof TextItem>;
+} satisfies Meta<typeof SmartFormsRenderer>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const ItemWithoutAnswer: Story = {
+export const RendererWithEmptyResponse: Story = {
   args: {
-    qItem: {
-      linkId: '17596726-34cf-4133-9960-7081e1d63558',
-      text: 'Name',
-      type: 'string',
-      repeats: false
-    },
-    qrItem: {
-      linkId: '17596726-34cf-4133-9960-7081e1d63558',
-      text: 'Name'
-    },
-    isRepeated: false
+    questionnaire: sourceQuestionnaire
   }
 };
 
-export const ItemWithAnswer: Story = {
+export const RendererWithPopulatedResponse: Story = {
   args: {
-    qItem: {
-      linkId: '17596726-34cf-4133-9960-7081e1d63558',
-      text: 'Name',
-      type: 'string',
-      repeats: false
-    },
-    qrItem: {
-      linkId: '17596726-34cf-4133-9960-7081e1d63558',
-      text: 'Name',
-      answer: [
-        {
-          valueString: 'John'
-        }
-      ]
-    },
-    isRepeated: false
+    questionnaire: sourceQuestionnaire,
+    questionnaireResponse: populatedResponse
   }
 };

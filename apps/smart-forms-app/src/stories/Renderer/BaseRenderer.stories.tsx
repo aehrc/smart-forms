@@ -16,13 +16,13 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import StoriesWrapper from '../storiesWrapper/StoriesWrapper.tsx';
-import FormRenderer from '../features/renderer/components/FormPage/FormRenderer/FormRenderer.tsx';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import sourceQuestionnaireJson from '../assets/sourceQuestionnaire.json';
+import populatedResponseJson from '../assets/populatedResponse.json';
+import { BaseRenderer } from '@aehrc/smart-forms-renderer';
 import type { DefaultOptions } from '@tanstack/react-query';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import sourceQuestionnaireJson from '../data/storybook/sourceQuestionnaire.json';
-import populatedResponseJson from '../data/storybook/populatedResponse.json';
+import BaseRendererWrapper from './BaseRendererWrapper.tsx';
 
 const DEFAULT_QUERY_OPTIONS: DefaultOptions = {
   queries: {
@@ -40,11 +40,11 @@ const populatedResponse = populatedResponseJson as QuestionnaireResponse;
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Renderer/FormRenderer',
-  component: FormRenderer,
+  title: 'Renderer/BaseRenderer',
+  component: BaseRenderer,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs']
-} satisfies Meta<typeof FormRenderer>;
+} satisfies Meta<typeof BaseRenderer>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -53,9 +53,9 @@ export const RendererWithEmptyResponse: Story = {
   decorators: [
     (Story) => (
       <QueryClientProvider client={queryClient}>
-        <StoriesWrapper questionnaire={sourceQuestionnaire}>
+        <BaseRendererWrapper questionnaire={sourceQuestionnaire}>
           <Story />
-        </StoriesWrapper>
+        </BaseRendererWrapper>
       </QueryClientProvider>
     )
   ]
@@ -65,11 +65,11 @@ export const RendererWithPopulatedResponse: Story = {
   decorators: [
     (Story) => (
       <QueryClientProvider client={queryClient}>
-        <StoriesWrapper
+        <BaseRendererWrapper
           questionnaire={sourceQuestionnaire}
           questionnaireResponse={populatedResponse}>
           <Story />
-        </StoriesWrapper>
+        </BaseRendererWrapper>
       </QueryClientProvider>
     )
   ]
