@@ -19,22 +19,17 @@ import { useContext, useEffect, useRef } from 'react';
 import { Box, Card, Container, Fade } from '@mui/material';
 import ViewerInvalid from '../renderer/components/FormPage/ViewerInvalid.tsx';
 import { PrintComponentRefContext } from './ViewerLayout.tsx';
-import { removeHiddenAnswers } from '../save/api/saveQr.ts';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../preview/utils/preview.ts';
 import { Helmet } from 'react-helmet';
-import useQuestionnaireStore from '../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore.ts';
 import PageHeading from '../dashboard/components/DashboardPages/PageHeading.tsx';
+import {
+  removeHiddenAnswersFromResponse,
+  useSourceQuestionnaire,
+  useSourceResponse
+} from '@aehrc/smart-forms-renderer';
 
 function ResponsePreview() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-
   const { setComponentRef } = useContext(PrintComponentRefContext);
   const componentRef = useRef(null);
 
@@ -47,25 +42,20 @@ function ResponsePreview() {
     []
   );
 
-  const questionnaire = sourceQuestionnaire;
+  const sourceQuestionnaire = useSourceQuestionnaire();
+  const sourceResponse = useSourceResponse();
 
-  if (!questionnaire.item || !sourceResponse.item)
-    return <ViewerInvalid questionnaire={questionnaire} />;
+  if (!sourceQuestionnaire.item || !sourceResponse.item) {
+    return <ViewerInvalid questionnaire={sourceQuestionnaire} />;
+  }
 
-  const responseCleaned = removeHiddenAnswers({
-    questionnaire,
-    questionnaireResponse: sourceResponse,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  });
-
-  const parsedHTML = parse(qrToHTML(questionnaire, responseCleaned));
+  const responseCleaned = removeHiddenAnswersFromResponse(sourceQuestionnaire, sourceResponse);
+  const parsedHTML = parse(qrToHTML(sourceQuestionnaire, responseCleaned));
 
   return (
     <>
       <Helmet>
-        <title>{questionnaire.title ? questionnaire.title : 'Response Preview'}</title>
+        <title>{sourceQuestionnaire.title ? sourceQuestionnaire.title : 'Response Preview'}</title>
       </Helmet>
       <Fade in={true} timeout={500}>
         <Container>

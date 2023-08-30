@@ -23,18 +23,10 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../contexts/SelectedQuestionnaireContext.tsx';
 import DashboardDebugFooter from '../components/DashboardDebugFooter/DashboardDebugFooter.tsx';
 import useConfigStore from '../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
+import { destroyForm } from '@aehrc/smart-forms-renderer';
 
 function DashboardLayout() {
   const [open, setOpen] = useState(false);
-
-  const destroySourceQuestionnaire = useQuestionnaireStore(
-    (state) => state.destroySourceQuestionnaire
-  );
-  const destroySourceResponse = useQuestionnaireResponseStore(
-    (state) => state.destroySourceResponse
-  );
 
   const smartClient = useConfigStore((state) => state.smartClient);
   const debugMode = useConfigStore((state) => state.debugMode);
@@ -44,9 +36,8 @@ function DashboardLayout() {
   const isNotLaunched = !smartClient;
 
   useEffect(() => {
-    destroySourceQuestionnaire();
-    destroySourceResponse();
-  }, [destroySourceQuestionnaire, destroySourceResponse]);
+    destroyForm();
+  }, []);
 
   useEffect(() => {
     // check if fhirClient is not present but app was previously authorised - happens when user refreshes the page

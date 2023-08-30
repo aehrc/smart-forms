@@ -26,12 +26,16 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 import { LoadingButton } from '@mui/lab';
+import {
+  removeHiddenAnswersFromResponse,
+  setSavedResponse,
+  useSourceQuestionnaire,
+  useUpdatableResponse
+} from '@aehrc/smart-forms-renderer';
 
 export interface Props {
   blocker: Blocker;
@@ -47,16 +51,10 @@ function BlockerUnsavedFormDialog(props: Props) {
   const user = useConfigStore((state) => state.user);
   const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
-
   const [isSaving, setIsSaving] = useState(false);
 
+  const sourceQuestionnaire = useSourceQuestionnaire();
+  const updatableResponse = useUpdatableResponse();
   const navigate = useNavigate();
 
   const isLaunched = !!(smartClient && patient && user);
@@ -83,19 +81,13 @@ function BlockerUnsavedFormDialog(props: Props) {
     setIsSaving(true);
 
     let responseToSave = cloneDeep(updatableResponse);
-    responseToSave = removeHiddenAnswers({
-      questionnaire: sourceQuestionnaire,
-      questionnaireResponse: responseToSave,
-      enableWhenIsActivated,
-      enableWhenItems,
-      enableWhenExpressions
-    });
+    responseToSave = removeHiddenAnswersFromResponse(sourceQuestionnaire, responseToSave);
 
     setIsSaving(true);
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        saveResponse(savedResponse);
+        setSavedResponse(savedResponse);
         setIsSaving(false);
         closeDialog();
         blocker.proceed?.();

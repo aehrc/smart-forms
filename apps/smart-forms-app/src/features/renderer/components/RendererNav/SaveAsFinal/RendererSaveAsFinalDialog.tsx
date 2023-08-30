@@ -19,7 +19,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
 import {
   Button,
   Dialog,
@@ -29,9 +29,13 @@ import {
   DialogTitle
 } from '@mui/material';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
 import { LoadingButton } from '@mui/lab';
+import {
+  removeHiddenAnswersFromResponse,
+  setSavedResponse,
+  useSourceQuestionnaire,
+  useUpdatableResponse
+} from '@aehrc/smart-forms-renderer';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
@@ -46,13 +50,8 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   const user = useConfigStore((state) => state.user);
   const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
+  const sourceQuestionnaire = useSourceQuestionnaire();
+  const updatableResponse = useUpdatableResponse();
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -70,19 +69,15 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
     if (!(smartClient && patient && user)) return;
 
     setIsSaving(true);
-    let responseToSave = cloneDeep(updatableResponse);
-    responseToSave = removeHiddenAnswers({
-      questionnaire: sourceQuestionnaire,
-      questionnaireResponse: responseToSave,
-      enableWhenIsActivated,
-      enableWhenItems,
-      enableWhenExpressions
-    });
+    const responseToSave = removeHiddenAnswersFromResponse(
+      sourceQuestionnaire,
+      cloneDeep(updatableResponse)
+    );
 
     responseToSave.status = 'completed';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        saveResponse(savedResponse);
+        setSavedResponse(savedResponse);
         enqueueSnackbar('Response saved as final', { variant: 'success' });
 
         // Wait until renderer.hasChanges is set to false before navigating away

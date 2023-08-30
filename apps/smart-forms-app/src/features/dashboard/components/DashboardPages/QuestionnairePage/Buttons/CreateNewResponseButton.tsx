@@ -16,20 +16,16 @@
  */
 
 import { useContext, useState } from 'react';
-import { createQuestionnaireResponse } from '../../../../../renderer/utils/qrItem.ts';
 import { useNavigate } from 'react-router-dom';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
-import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../../../stores/useQuestionnaireResponseStore.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import { buildForm } from '@aehrc/smart-forms-renderer';
 
 function CreateNewResponseButton() {
   const smartClient = useConfigStore((state) => state.smartClient);
-  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
-  const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
 
   const { selectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
   const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
@@ -50,12 +46,7 @@ function CreateNewResponseButton() {
       postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
 
-    // Assign questionnaire to questionnaire provider
-    await buildSourceQuestionnaire(questionnaire);
-
-    // Assign questionnaireResponse to questionnaireResponse provider
-    const questionnaireResponse = createQuestionnaireResponse(questionnaire);
-    buildSourceResponse(questionnaireResponse);
+    await buildForm(questionnaire);
 
     navigate('/renderer');
     setIsLoading(false);

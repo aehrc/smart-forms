@@ -30,18 +30,18 @@ import PopulationProgressSpinner from '../../../components/Spinners/PopulationPr
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
-import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial.tsx';
 import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
+import { useFormHasChanges, useSourceResponse } from '@aehrc/smart-forms-renderer';
 
 function RendererLayout() {
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
-
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
+
+  const sourceResponse = useSourceResponse();
+  const hasChanges = useFormHasChanges();
 
   const [open, setOpen] = useState(false);
   const [navIsCollapsed, collapseNav] = useState(false);

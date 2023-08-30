@@ -20,13 +20,13 @@ import { useEffect, useState } from 'react';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
-import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
+import { useFormHasChanges, useUpdatableResponse } from '@aehrc/smart-forms-renderer';
 
 function RendererSaveAsFinal() {
   const smartClient = useConfigStore((state) => state.smartClient);
 
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.saveResponse);
+  const updatableResponse = useUpdatableResponse();
+  const hasChanges = useFormHasChanges();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);

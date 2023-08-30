@@ -16,13 +16,17 @@
  */
 
 import useConfigStore from '../../../stores/useConfigStore.ts';
-import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import _isEqual from 'lodash/isEqual';
 import type { PopulateFormParams } from '../utils/populate.ts';
 import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
+import {
+  setPopulatedResponse,
+  useSourceQuestionnaire,
+  useSourceResponse,
+  useUpdatableResponse
+} from '@aehrc/smart-forms-renderer';
 
 function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void {
   const smartClient = useConfigStore((state) => state.smartClient);
@@ -30,14 +34,9 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
   const user = useConfigStore((state) => state.user);
   const encounter = useConfigStore((state) => state.encounter);
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatePopulatedProperties = useQuestionnaireStore(
-    (state) => state.updatePopulatedProperties
-  );
-
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const populateResponse = useQuestionnaireResponseStore((state) => state.populateResponse);
+  const sourceQuestionnaire = useSourceQuestionnaire();
+  const sourceResponse = useSourceResponse();
+  const updatableResponse = useUpdatableResponse();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -75,8 +74,7 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
     (params: PopulateFormParams) => {
       const { populated, hasWarnings } = params;
 
-      const updatedResponse = updatePopulatedProperties(populated);
-      populateResponse(updatedResponse);
+      setPopulatedResponse(populated);
       onStopSpinner();
       if (hasWarnings) {
         enqueueSnackbar(

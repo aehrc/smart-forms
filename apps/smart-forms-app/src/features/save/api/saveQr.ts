@@ -15,23 +15,14 @@
  * limitations under the License.
  */
 
-import type {
-  Patient,
-  Practitioner,
-  Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 import { qrToHTML } from '../../preview/utils/preview.ts';
-import { isHidden } from '../../renderer/utils/qItem.ts';
 import { fetchQuestionnaireById } from '../../../api/client.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { HEADERS } from '../../../api/headers.ts';
-import type { EnableWhenExpression, EnableWhenItems } from '../../../types/enableWhen.interface.ts';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
@@ -156,138 +147,4 @@ function getQuestionnaireName(questionnaire: Questionnaire): string {
   }
 
   return questionnaire.id ? `Unnamed Questionnaire-${questionnaire.id}` : 'Unnamed Questionnaire';
-}
-
-interface removeHiddenAnswersParams {
-  questionnaire: Questionnaire;
-  questionnaireResponse: QuestionnaireResponse;
-  enableWhenIsActivated: boolean;
-  enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
-}
-
-/**
- * Recursively go through the questionnaireResponse and remove qrItems whose qItems are hidden in the form
- *
- * @author Sean Fong
- */
-export function removeHiddenAnswers(params: removeHiddenAnswersParams): QuestionnaireResponse {
-  const {
-    questionnaire,
-    questionnaireResponse,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  } = params;
-
-  const topLevelQItems = questionnaire.item;
-  const topLevelQRItems = questionnaireResponse.item;
-  if (
-    !topLevelQItems ||
-    topLevelQItems.length === 0 ||
-    !topLevelQRItems ||
-    topLevelQRItems.length === 0
-  ) {
-    return questionnaireResponse;
-  }
-
-  topLevelQRItems.forEach((qrItem, i) => {
-    const qItem = topLevelQItems[i];
-    const newTopLevelQRItem = readQuestionnaireResponseItem({
-      qItem,
-      qrItem,
-      enableWhenIsActivated,
-      enableWhenItems,
-      enableWhenExpressions
-    });
-    if (newTopLevelQRItem && questionnaireResponse.item) {
-      questionnaireResponse.item[i] = { ...newTopLevelQRItem };
-    }
-  });
-
-  return questionnaireResponse;
-}
-
-interface readQuestionnaireResponseItemParams {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
-  enableWhenIsActivated: boolean;
-  enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
-}
-
-function readQuestionnaireResponseItem(
-  params: readQuestionnaireResponseItemParams
-): QuestionnaireResponseItem | null {
-  const { qItem, qrItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
-
-  const qItems = qItem.item;
-  const qrItems = qrItem.item;
-
-  // Process group items
-  if (qItems && qItems.length > 0) {
-    // Return nothing if corresponding qItem is hidden
-    if (
-      isHidden({
-        questionnaireItem: qItem,
-        enableWhenIsActivated,
-        enableWhenItems,
-        enableWhenExpressions
-      })
-    )
-      return null;
-
-    if (qrItems && qrItems.length > 0) {
-      const newQrItems: QuestionnaireResponseItem[] = [];
-
-      // Loop over qItems - but end loop if we either reach the end of qItems or qrItems
-      // Under normal circumstances we will reach the end of both arrays together
-      for (
-        let qItemIndex = 0, qrItemIndex = 0;
-        qItemIndex < qItems.length || qrItemIndex < qrItems.length;
-        qItemIndex++
-      ) {
-        // Save qrItem if linkIds of current qItem and qrItem are the same
-        if (qrItems[qrItemIndex] && qItems[qItemIndex].linkId === qrItems[qrItemIndex].linkId) {
-          const newQrItem = readQuestionnaireResponseItem({
-            qItem: qItems[qItemIndex],
-            qrItem: qrItems[qrItemIndex],
-            enableWhenIsActivated,
-            enableWhenItems,
-            enableWhenExpressions
-          });
-
-          if (newQrItem) {
-            newQrItems.push(newQrItem);
-          }
-
-          // Decrement qItem index if the next qrItem is an answer from a repeatGroup
-          // Essentially persisting the current qItem linked to be matched up with the next qrItem linkId
-          if (
-            qrItems.length !== qrItemIndex + 1 &&
-            qrItems[qrItemIndex].linkId === qrItems[qrItemIndex + 1].linkId
-          ) {
-            qItemIndex--;
-          }
-
-          // Only Increment qrItem index whenever the current qrItem linkId matches up with the current qItem
-          qrItemIndex++;
-        }
-      }
-      return { ...qrItem, item: newQrItems };
-    }
-
-    // Also perform checking if answer exists
-    return qrItem['answer'] ? qrItem : null;
-  }
-
-  // Process non-group items
-  return isHidden({
-    questionnaireItem: qItem,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  })
-    ? null
-    : { ...qrItem };
 }

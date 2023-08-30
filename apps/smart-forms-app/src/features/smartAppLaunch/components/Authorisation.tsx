@@ -34,7 +34,7 @@ import type { AuthActions, AuthState } from '../types/authorisation.interface.ts
 import RenderAuthStatus from './RenderAuthStatus.tsx';
 import { assembleIfRequired } from '../../assemble/utils/assemble.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import { setSourceQuestionnaire } from '@aehrc/smart-forms-renderer';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
@@ -76,8 +76,6 @@ function Authorisation() {
   const setUser = useConfigStore((state) => state.setUser);
   const setEncounter = useConfigStore((state) => state.setEncounter);
   const setLaunchQuestionnaire = useConfigStore((state) => state.setLaunchQuestionnaire);
-
-  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -153,7 +151,7 @@ function Authorisation() {
                       postQuestionnaireToSMARTHealthIT(client, questionnaire);
                     }
 
-                    await buildSourceQuestionnaire(questionnaire);
+                    await setSourceQuestionnaire(questionnaire);
                     setLaunchQuestionnaire(questionnaire);
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                   } else {

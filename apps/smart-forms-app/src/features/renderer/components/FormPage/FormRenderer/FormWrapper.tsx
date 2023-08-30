@@ -17,15 +17,17 @@
 
 import RendererDebugFooter from '../../RendererDebugFooter/RendererDebugFooter.tsx';
 import { Helmet } from 'react-helmet';
-import FormRenderer from './FormRenderer.tsx';
-import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import FormInvalid from '../FormInvalid.tsx';
+import {
+  BaseFormRenderer,
+  useSourceQuestionnaire,
+  useUpdatableResponse
+} from '@aehrc/smart-forms-renderer';
 
 function FormWrapper() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const sourceQuestionnaire = useSourceQuestionnaire();
+  const updatableResponse = useUpdatableResponse();
 
   const debugMode = useConfigStore((state) => state.debugMode);
 
@@ -46,7 +48,7 @@ function FormWrapper() {
         <title>{sourceQuestionnaire.title ?? 'Form Renderer'}</title>
       </Helmet>
 
-      <FormRenderer />
+      <BaseFormRenderer />
 
       {/* Debug footer */}
       {debugMode ? <RendererDebugFooter /> : null}

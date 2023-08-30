@@ -16,3 +16,4 @@
  */
 
 export { default as SmartFormsRenderer } from './SmartFormsRenderer';
+export { default as BaseFormRenderer } from './BaseFormRenderer';

@@ -27,10 +27,9 @@ import { useSnackbar } from 'notistack';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
 import { assembleIfRequired } from '../../../../../assemble/utils/assemble.ts';
 import useConfigStore from '../../../../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../../../stores/useQuestionnaireResponseStore.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { buildForm } from '@aehrc/smart-forms-renderer';
 
 interface Props {
   selectedResponse: QuestionnaireResponse | null;
@@ -39,12 +38,6 @@ function OpenResponseButton(props: Props) {
   const { selectedResponse } = props;
 
   const smartClient = useConfigStore((state) => state.smartClient);
-  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
-  const updatePopulatedProperties = useQuestionnaireStore(
-    (state) => state.updatePopulatedProperties
-  );
-
-  const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -113,12 +106,7 @@ function OpenResponseButton(props: Props) {
       postQuestionnaireToSMARTHealthIT(smartClient, referencedQuestionnaire);
     }
 
-    // Assign questionnaire to questionnaire provider
-    await buildSourceQuestionnaire(referencedQuestionnaire);
-
-    // Assign questionnaireResponse to questionnaireResponse provider
-    buildSourceResponse(selectedResponse);
-    updatePopulatedProperties(selectedResponse);
+    await buildForm(referencedQuestionnaire, selectedResponse);
 
     navigate('/viewer');
     setIsLoading(false);

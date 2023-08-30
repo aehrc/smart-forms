@@ -29,15 +29,14 @@ import {
   NavSectionHeadingWrapper,
   NavSectionWrapper
 } from '../../../components/Nav/Nav.styles.ts';
-import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
+import { useSourceResponse } from '@aehrc/smart-forms-renderer';
 
 function ViewerOperationSection() {
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-
-  const { componentRef } = useContext(PrintComponentRefContext);
+  const sourceResponse = useSourceResponse();
 
   const navigate = useNavigate();
 
+  const { componentRef } = useContext(PrintComponentRefContext);
   const handlePrint = useReactToPrint({
     content: () => (componentRef ? componentRef.current : null)
   });

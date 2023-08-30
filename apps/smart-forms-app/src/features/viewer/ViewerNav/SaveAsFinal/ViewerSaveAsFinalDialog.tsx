@@ -29,9 +29,12 @@ import {
   DialogTitle
 } from '@mui/material';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 import { LoadingButton } from '@mui/lab';
+import {
+  setSavedResponse,
+  useSourceQuestionnaire,
+  useUpdatableResponse
+} from '@aehrc/smart-forms-renderer';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -46,11 +49,8 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
   const user = useConfigStore((state) => state.user);
   const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
-
+  const sourceQuestionnaire = useSourceQuestionnaire();
+  const updatableResponse = useUpdatableResponse();
   const [isSaving, setIsSaving] = useState(false);
 
   const navigate = useNavigate();
@@ -75,7 +75,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setIsSaving(false);
-        saveResponse(savedResponse);
+        setSavedResponse(savedResponse);
         handleClose();
         enqueueSnackbar('Response saved as final', { variant: 'success' });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');

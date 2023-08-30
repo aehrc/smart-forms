@@ -27,25 +27,20 @@ import PlaygroundRenderer from './PlaygroundRenderer.tsx';
 import { Box, Stack } from '@mui/material';
 import FileCollector from './FileCollector.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
+import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
 
 function Playground() {
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
-  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
-  const destroySourceQuestionnaire = useQuestionnaireStore(
-    (state) => state.destroySourceQuestionnaire
-  );
-
   const { enqueueSnackbar } = useSnackbar();
 
   function handleDestroyForm() {
     setBuildingState('idle');
-    destroySourceQuestionnaire();
+    destroyForm();
   }
 
   async function handleBuildQuestionnaireFromString(jsonString: string) {
@@ -55,7 +50,7 @@ function Playground() {
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
-        await buildSourceQuestionnaire(parsedQuestionnaire);
+        await buildForm(parsedQuestionnaire);
         setBuildingState('built');
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
@@ -91,9 +86,7 @@ function Playground() {
         const jsonString = event.target?.result;
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
-          const parsedQuestionnaire = JSON.parse(jsonString);
-
-          await buildSourceQuestionnaire(parsedQuestionnaire);
+          await buildForm(JSON.parse(jsonString));
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {
