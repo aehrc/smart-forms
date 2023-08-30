@@ -1,5 +1,5 @@
 {
-  "name": "smart-forms-renderer",
+  "name": "@aehrc/smart-forms-renderer",
   "version": "0.1.0",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
