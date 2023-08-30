@@ -1,0 +1,166 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "TestGrid",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2023-08-01T02:13:04.050+00:00",
+    "source": "#Fs0N63GcYBhMkVP9"
+  },
+  "url": "http://www.test.com.au/assessments/Grid",
+  "version": "0.1.0",
+  "name": "Test Grid",
+  "title": "Test Grid",
+  "status": "active",
+  "experimental": true,
+  "subjectType": ["Patient"],
+  "date": "2023-07-05",
+  "publisher": "Test Publisher",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "grid",
+      "text": "Grid",
+      "type": "group",
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "version": "1.0.0",
+                    "code": "grid"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "1",
+          "text": "Limb Observations",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "linkId": "1.1",
+              "text": "Colour",
+              "type": "group",
+              "repeats": false,
+              "item": [
+                {
+                  "linkId": "1.1.1",
+                  "text": "Left limb",
+                  "type": "string",
+                  "repeats": false
+                },
+                {
+                  "linkId": "1.1.2",
+                  "text": "Right limb",
+                  "type": "string",
+                  "repeats": false
+                }
+              ]
+            },
+            {
+              "linkId": "1.2",
+              "text": "Warmth",
+              "type": "group",
+              "repeats": false,
+              "item": [
+                {
+                  "linkId": "1.2.1",
+                  "text": "Left limb",
+                  "type": "string",
+                  "repeats": false
+                },
+                {
+                  "linkId": "1.2.2",
+                  "text": "Right limb",
+                  "type": "string",
+                  "repeats": false
+                }
+              ]
+            },
+            {
+              "linkId": "1.3",
+              "text": "Pulses (Bounding +++, Normal ++, Diminished +, Absent 0)",
+              "type": "group",
+              "repeats": false,
+              "item": [
+                {
+                  "linkId": "1.3.1",
+                  "text": "Left limb",
+                  "type": "string",
+                  "repeats": false
+                },
+                {
+                  "linkId": "1.3.2",
+                  "text": "Right limb",
+                  "type": "string",
+                  "repeats": false
+                }
+              ]
+            },
+            {
+              "linkId": "1.4",
+              "text": "Ankle Brachial Index (ABI) (This must be known prior to compression bandaging)",
+              "type": "group",
+              "repeats": false,
+              "item": [
+                {
+                  "linkId": "1.4.1",
+                  "text": "Left limb",
+                  "type": "string",
+                  "repeats": false
+                },
+                {
+                  "linkId": "1.4.2",
+                  "text": "Right limb",
+                  "type": "string",
+                  "repeats": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%addVar1.exists()"
+              }
+            }
+          ],
+          "linkId": "2",
+          "text": "This item should only be displayed if: (1) addVar1 variable is supplied and (2) Colour in Left Limb has an answer",
+          "type": "display",
+          "repeats": false
+        }
+      ]
+    }
+  ]
+}

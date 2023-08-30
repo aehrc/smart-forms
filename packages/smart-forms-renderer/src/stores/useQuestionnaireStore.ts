@@ -39,7 +39,7 @@ import { initialiseFormFromResponse } from '../utils/initialiseForm';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
 
-export interface QuestionnaireState {
+export interface UseQuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
   tabs: Tabs;
   currentTabIndex: number;
@@ -56,7 +56,8 @@ export interface QuestionnaireState {
   cachedValueSetCodings: Record<string, Coding[]>;
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
-    questionnaireResponse?: QuestionnaireResponse
+    questionnaireResponse?: QuestionnaireResponse,
+    additionalVariables?: Record<string, object>
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
@@ -68,7 +69,7 @@ export interface QuestionnaireState {
   updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => QuestionnaireResponse;
 }
 
-const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
+const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => ({
   sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
   tabs: {},
   currentTabIndex: 0,
@@ -83,8 +84,12 @@ const useQuestionnaireStore = create<QuestionnaireState>()((set, get) => ({
   processedValueSetCodings: {},
   processedValueSetUrls: {},
   cachedValueSetCodings: {},
-  buildSourceQuestionnaire: async (questionnaire, questionnaireResponse = emptyResponse) => {
-    const questionnaireModel = await createQuestionnaireModel(questionnaire);
+  buildSourceQuestionnaire: async (
+    questionnaire,
+    questionnaireResponse = cloneDeep(emptyResponse),
+    additionalVariables = {}
+  ) => {
+    const questionnaireModel = await createQuestionnaireModel(questionnaire, additionalVariables);
 
     const {
       initialEnableWhenItems,

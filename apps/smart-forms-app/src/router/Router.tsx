@@ -30,7 +30,7 @@ import Playground from '../features/playground/components/Playground.tsx';
 import ResponsesPage from '../features/dashboard/components/DashboardPages/ResponsesPage/ResponsesPage.tsx';
 import NotFound from '../features/notfound/NotFound.tsx';
 import ExistingResponsesPage from '../features/renderer/components/ExistingResponses/ExistingResponsesPage.tsx';
-import Standalone from '../features/standalone/Standalone.tsx';
+import Standalone from '../features/standalone/components/Standalone.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([
