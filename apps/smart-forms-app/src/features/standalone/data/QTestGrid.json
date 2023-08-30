@@ -1,42 +1,8 @@
 {
   "resourceType": "Questionnaire",
   "id": "TestGrid",
-  "meta": {
-    "versionId": "1",
-    "lastUpdated": "2023-08-01T02:13:04.050+00:00",
-    "source": "#Fs0N63GcYBhMkVP9"
-  },
-  "url": "http://www.test.com.au/assessments/Grid",
-  "version": "0.1.0",
   "name": "Test Grid",
-  "title": "Test Grid",
-  "status": "active",
-  "experimental": true,
-  "subjectType": ["Patient"],
-  "date": "2023-07-05",
-  "publisher": "Test Publisher",
-  "extension": [
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-      "extension": [
-        {
-          "url": "name",
-          "valueCoding": {
-            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
-            "code": "patient"
-          }
-        },
-        {
-          "url": "type",
-          "valueCode": "Patient"
-        },
-        {
-          "url": "description",
-          "valueString": "The patient that is to be used to pre-populate the form"
-        }
-      ]
-    }
-  ],
+  "status": "draft",
   "item": [
     {
       "linkId": "grid",
@@ -158,6 +124,20 @@
           "linkId": "2",
           "text": "This item should only be displayed if: (1) addVar1 variable is supplied and (2) Colour in Left Limb has an answer",
           "type": "display",
+          "repeats": false
+        },
+        {
+          "linkId": "3",
+          "text": "Mark section as complete",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <style type=\"text/css\">\r\n        .alert {\r\n            padding: 0.875rem;\r\n            margin-bottom: 1rem;\r\n            font-size: 0.875rem;\r\n            color: #2E7D32;\r\n            border-radius: 0.5rem;\r\n            background-color: #d5e5d6;\r\n            font-weight: 700;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"alert\">Mark section as complete</div>\r\n</body>\r\n</div>"
+              }
+            ]
+          },
+          "type": "boolean",
           "repeats": false
         }
       ]
