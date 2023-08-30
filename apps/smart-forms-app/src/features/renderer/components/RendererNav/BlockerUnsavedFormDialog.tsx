@@ -32,7 +32,7 @@ import useConfigStore from '../../../../stores/useConfigStore.ts';
 import { LoadingButton } from '@mui/lab';
 import {
   removeHiddenAnswersFromResponse,
-  setSavedResponse,
+  setUpdatableResponseAsSaved,
   useSourceQuestionnaire,
   useUpdatableResponse
 } from '@aehrc/smart-forms-renderer';
@@ -87,7 +87,7 @@ function BlockerUnsavedFormDialog(props: Props) {
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        setSavedResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         setIsSaving(false);
         closeDialog();
         blocker.proceed?.();

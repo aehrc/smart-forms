@@ -21,7 +21,7 @@ import DebugResponse from './DebugResponse.tsx';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import RendererDebugBar from './RendererDebugBar.tsx';
 import {
-  setEmptyResponse,
+  setUpdatableResponseAsEmpty,
   useSourceQuestionnaire,
   useUpdatableResponse
 } from '@aehrc/smart-forms-renderer';
@@ -47,7 +47,7 @@ function RendererDebugFooter() {
       updatableResponse.item.length
     ).fill(clearTopLevelQRItem);
 
-    setEmptyResponse({
+    setUpdatableResponseAsEmpty({
       ...updatableResponse,
       item: clearTopLevelQRItems
     });

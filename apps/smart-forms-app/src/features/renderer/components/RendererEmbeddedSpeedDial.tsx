@@ -33,7 +33,7 @@ import GradingIcon from '@mui/icons-material/Grading';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import {
   removeHiddenAnswersFromResponse,
-  setSavedResponse,
+  setUpdatableResponseAsSaved,
   useSourceQuestionnaire,
   useUpdatableResponse
 } from '@aehrc/smart-forms-renderer';
@@ -80,7 +80,7 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        setSavedResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar('Response saved as draft', {
           variant: 'success',
           action: (

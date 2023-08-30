@@ -31,7 +31,7 @@ import {
 import useConfigStore from '../../../../stores/useConfigStore.ts';
 import { LoadingButton } from '@mui/lab';
 import {
-  setSavedResponse,
+  setUpdatableResponseAsSaved,
   useSourceQuestionnaire,
   useUpdatableResponse
 } from '@aehrc/smart-forms-renderer';
@@ -75,7 +75,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setIsSaving(false);
-        setSavedResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         handleClose();
         enqueueSnackbar('Response saved as final', { variant: 'success' });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');

@@ -28,7 +28,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import {
   removeHiddenAnswersFromResponse,
-  setSavedResponse,
+  setUpdatableResponseAsSaved,
   useFormHasChanges,
   useSourceQuestionnaire,
   useUpdatableResponse
@@ -73,7 +73,7 @@ function RendererSaveAsDraft() {
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        setSavedResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar('Response saved as draft', {
           variant: 'success',
           action: (

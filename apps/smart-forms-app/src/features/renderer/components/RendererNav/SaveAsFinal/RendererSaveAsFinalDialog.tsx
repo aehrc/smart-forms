@@ -32,7 +32,7 @@ import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import { LoadingButton } from '@mui/lab';
 import {
   removeHiddenAnswersFromResponse,
-  setSavedResponse,
+  setUpdatableResponseAsSaved,
   useSourceQuestionnaire,
   useUpdatableResponse
 } from '@aehrc/smart-forms-renderer';
@@ -77,7 +77,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
     responseToSave.status = 'completed';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        setSavedResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar('Response saved as final', { variant: 'success' });
 
         // Wait until renderer.hasChanges is set to false before navigating away

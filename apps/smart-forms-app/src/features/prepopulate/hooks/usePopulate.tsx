@@ -22,7 +22,7 @@ import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 import {
-  setPopulatedResponse,
+  setUpdatableResponse,
   useSourceQuestionnaire,
   useSourceResponse,
   useUpdatableResponse
@@ -74,7 +74,7 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
     (params: PopulateFormParams) => {
       const { populated, hasWarnings } = params;
 
-      setPopulatedResponse(populated);
+      setUpdatableResponse(populated);
       onStopSpinner();
       if (hasWarnings) {
         enqueueSnackbar(
