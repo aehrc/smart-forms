@@ -20,7 +20,7 @@ import { Helmet } from 'react-helmet';
 import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import FormInvalid from '../FormInvalid.tsx';
 import {
-  BaseFormRenderer,
+  BaseRenderer,
   useSourceQuestionnaire,
   useUpdatableResponse
 } from '@aehrc/smart-forms-renderer';
@@ -48,7 +48,7 @@ function FormWrapper() {
         <title>{sourceQuestionnaire.title ?? 'Form Renderer'}</title>
       </Helmet>
 
-      <BaseFormRenderer />
+      <BaseRenderer />
 
       {/* Debug footer */}
       {debugMode ? <RendererDebugFooter /> : null}
