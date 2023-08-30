@@ -16,7 +16,7 @@
  */
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { createQuestionnaireResponse } from '../utils/qrItem';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../stores/useQuestionnaireResponseStore';
@@ -35,7 +35,8 @@ function useInitialiseRenderer(
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    setLoading(true);
     buildSourceQuestionnaire(questionnaire, questionnaireResponse, additionalVariables).then(() => {
       buildSourceResponse(createQuestionnaireResponse(questionnaire));
 
