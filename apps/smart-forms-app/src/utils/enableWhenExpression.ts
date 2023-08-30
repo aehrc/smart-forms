@@ -108,7 +108,7 @@ export function evaluateEnableWhenExpressions(
         updatedEnableWhenExpressions[linkId].isEnabled = false;
       }
     } catch (e) {
-      console.warn(e);
+      console.warn((e as Error).message);
     }
   }
 

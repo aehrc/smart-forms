@@ -42,7 +42,12 @@ function ResponsesTable() {
 
   const columns = useMemo(() => createResponseTableColumns(), []);
 
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'authored',
+      desc: true
+    }
+  ]);
 
   const table = useReactTable({
     data: responses,
