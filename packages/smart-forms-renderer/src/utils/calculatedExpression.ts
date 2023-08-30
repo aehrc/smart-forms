@@ -70,7 +70,10 @@ export function evaluateInitialCalculatedExpressions(
           initialExpressions[linkId].value = result[0];
         }
       } catch (e) {
-        console.warn(e);
+        console.warn(
+          e.message,
+          `LinkId: ${linkId}\nExpression: ${calculatedExpressions[linkId].expression}`
+        );
       }
     }
   }
@@ -105,7 +108,10 @@ export function evaluateCalculatedExpressions(
         }
       }
     } catch (e) {
-      console.warn(e);
+      console.warn(
+        e.message,
+        `LinkId: ${linkId}\nExpression: ${calculatedExpressions[linkId].expression}`
+      );
     }
   }
 

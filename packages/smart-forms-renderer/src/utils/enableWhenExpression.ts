@@ -67,7 +67,7 @@ export function evaluateInitialEnableWhenExpressions(
         }
       } catch (e) {
         console.warn(
-          e,
+          e.message,
           `LinkId: ${linkId}\nExpression: ${enableWhenExpressions[linkId].expression}`
         );
       }
@@ -109,7 +109,10 @@ export function evaluateEnableWhenExpressions(
         updatedEnableWhenExpressions[linkId].isEnabled = false;
       }
     } catch (e) {
-      console.warn(e);
+      console.warn(
+        e.message,
+        `LinkId: ${linkId}\nExpression: ${enableWhenExpressions[linkId].expression}`
+      );
     }
   }
 

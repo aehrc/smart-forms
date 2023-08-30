@@ -1,12 +1,9 @@
 import { create } from 'zustand';
 import type { QuestionnaireResponse } from 'fhir/r4';
+import { emptyResponse } from '../utils/emptyResource';
+import cloneDeep from 'lodash.clonedeep';
 
-const emptyResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress'
-};
-
-export interface QuestionnaireResponseState {
+export interface UseQuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
   hasChanges: boolean;
@@ -18,9 +15,9 @@ export interface QuestionnaireResponseState {
   destroySourceResponse: () => void;
 }
 
-const useQuestionnaireResponseStore = create<QuestionnaireResponseState>()((set) => ({
-  sourceResponse: emptyResponse,
-  updatableResponse: emptyResponse,
+const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>()((set) => ({
+  sourceResponse: cloneDeep(emptyResponse),
+  updatableResponse: cloneDeep(emptyResponse),
   hasChanges: false,
 
   buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
@@ -52,8 +49,8 @@ const useQuestionnaireResponseStore = create<QuestionnaireResponseState>()((set)
     })),
   destroySourceResponse: () =>
     set(() => ({
-      sourceResponse: emptyResponse,
-      updatableResponse: emptyResponse,
+      sourceResponse: cloneDeep(emptyResponse),
+      updatableResponse: cloneDeep(emptyResponse),
       hasChanges: false
     }))
 }));

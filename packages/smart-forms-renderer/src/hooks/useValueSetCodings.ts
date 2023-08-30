@@ -103,7 +103,7 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
             return evaluated[0].coding;
           }
         } catch (e) {
-          console.warn(e);
+          console.warn(e.message);
         }
       }
     }

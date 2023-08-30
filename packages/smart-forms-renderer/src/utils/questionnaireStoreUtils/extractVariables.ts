@@ -21,6 +21,8 @@ import type { Variables } from '../../interfaces/variables.interface';
 export function extractQuestionnaireLevelVariables(questionnaire: Questionnaire): Variables {
   const variables: Variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };
 
+  variables.fhirPathVariables['QuestionnaireLevel'] = [];
+
   if (!questionnaire.extension || questionnaire.extension.length === 0) {
     return variables;
   }

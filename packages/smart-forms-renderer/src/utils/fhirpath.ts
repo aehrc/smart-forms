@@ -80,6 +80,8 @@ export function createFhirPathContext(
     return fhirPathContext;
   }
 
+  evaluateResourceLevelFhirPath(questionnaireResponse, variablesFhirPath, fhirPathContext);
+
   for (const topLevelItem of questionnaireResponse.item) {
     evaluateFhirPathRecursive(topLevelItem, variablesFhirPath, fhirPathContext);
   }
@@ -126,7 +128,36 @@ export function evaluateItemFhirPath(
           fhirpath_r4_model
         );
       } catch (e) {
-        console.warn(e);
+        console.warn(e.message, `LinkId: ${item.linkId}\nExpression: ${variable.expression}`);
+      }
+    }
+  });
+}
+
+export function evaluateResourceLevelFhirPath(
+  resource: QuestionnaireResponse,
+  variablesFhirPath: Record<string, Expression[]>,
+  fhirPathContext: Record<string, any>
+) {
+  const questionnaireLevelVariables = variablesFhirPath['QuestionnaireLevel'];
+  if (!questionnaireLevelVariables || questionnaireLevelVariables.length === 0) {
+    return;
+  }
+
+  questionnaireLevelVariables.forEach((variable) => {
+    if (variable.expression) {
+      try {
+        fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
+          resource,
+          {
+            base: 'QuestionnaireResponse',
+            expression: variable.expression
+          },
+          fhirPathContext,
+          fhirpath_r4_model
+        );
+      } catch (e) {
+        console.warn(e.message, `Questionnaire-level\nExpression: ${variable.expression}`);
       }
     }
   });

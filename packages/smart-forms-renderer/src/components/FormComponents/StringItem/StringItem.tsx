@@ -30,6 +30,7 @@ import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import StringField from './StringField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -62,6 +63,16 @@ function StringItem(props: StringItemProps) {
   // Perform validation checks
   const feedback = useValidationError(input, regexValidation, maxLength);
 
+  // Process calculated expressions
+  const { calcExpUpdated } = useStringCalculatedExpression({
+    qItem: qItem,
+    inputValue: input,
+    setInputValue: (value) => {
+      setInput(value);
+    },
+    onQrItemChange: onQrItemChange
+  });
+
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
@@ -91,6 +102,7 @@ function StringItem(props: StringItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
         isTabled={isTabled}
       />
@@ -107,6 +119,7 @@ function StringItem(props: StringItemProps) {
           displayUnit={displayUnit}
           entryFormat={entryFormat}
           readOnly={readOnly}
+          calcExpUpdated={calcExpUpdated}
           onInputChange={handleChange}
           isTabled={isTabled}
         />

@@ -26,9 +26,11 @@ import { extractContainedValueSets } from './extractContainedValueSets';
 import { extractOtherExtensions } from './extractOtherExtensions';
 import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
+import { addAdditionalVariables } from './addAdditionalVariables';
 
 export async function createQuestionnaireModel(
-  questionnaire: Questionnaire
+  questionnaire: Questionnaire,
+  additionalVariables: Record<string, object>
 ): Promise<QuestionnaireModel> {
   if (!questionnaire.item) {
     return createEmptyModel();
@@ -39,6 +41,7 @@ export async function createQuestionnaireModel(
   const launchContexts: Record<string, LaunchContext> = extractLaunchContexts(questionnaire);
 
   let variables: Variables = extractQuestionnaireLevelVariables(questionnaire);
+  variables = addAdditionalVariables(variables, additionalVariables);
 
   const extractContainedValueSetsResult = extractContainedValueSets(questionnaire);
   let valueSetPromises = extractContainedValueSetsResult.valueSetPromises;

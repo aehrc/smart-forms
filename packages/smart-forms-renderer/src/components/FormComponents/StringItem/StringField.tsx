@@ -19,6 +19,7 @@ import React from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { InputAdornment } from '@mui/material';
 import { StandardTextField } from '../Textfield.styles';
+import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 
 interface StringFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -28,6 +29,7 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
 }
 
@@ -41,6 +43,7 @@ function StringField(props: StringFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
+    calcExpUpdated,
     onInputChange
   } = props;
 
@@ -56,7 +59,14 @@ function StringField(props: StringFieldProps) {
       placeholder={entryFormat}
       disabled={readOnly}
       size="small"
-      InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position={'end'}>
+            <FadingCheckIcon fadeIn={calcExpUpdated} />
+            {displayUnit}
+          </InputAdornment>
+        )
+      }}
       helperText={feedback}
       data-test="q-item-string-field"
     />
