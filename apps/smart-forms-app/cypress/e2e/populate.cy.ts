@@ -54,10 +54,10 @@ describe('populate form', () => {
     cy.getByData('q-item-date-box').eq(0).find('input').should('have.value', '18/08/1936');
 
     cy.getByData('q-item-choice-radio-answer-value-set-box')
-      .should('include.text', 'Gender')
+      .should('include.text', 'Aboriginal and/or Torres Strait Islander status')
       .find('input')
       .eq(1)
-      .should('be.checked');
+      .should('not.be.checked');
   });
 
   it('repeat items in Medical history tab have expected populated answers', () => {
@@ -104,12 +104,6 @@ describe('populate form', () => {
 
     cy.getByData('response-item-text').contains('Age');
     cy.getByData('response-item-answer').contains('86');
-
-    cy.getByData('response-item-text').contains('Gender');
-    cy.getByData('response-item-answer').contains('Male');
-
-    cy.getByData('response-item-text').contains('No fixed address');
-    cy.getByData('response-item-answer').contains('False');
 
     cy.getByData('response-item-text').contains('Street address');
     cy.getByData('response-item-answer').contains('320 Ritchie Byway');

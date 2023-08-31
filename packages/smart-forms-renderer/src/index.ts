@@ -42,6 +42,16 @@ export function destroyForm(): void {
 }
 
 /**
+ * Get the filled QuestionnaireResponse at its current state.
+ * If no changes have been made to the form, the initial QuestionnaireResponse is returned.
+ *
+ * @author Sean Fong
+ */
+export function getUpdatableResponse(): QuestionnaireResponse {
+  return useQuestionnaireResponseStore.getState().updatableResponse;
+}
+
+/**
  * Remove all hidden answers from the filled QuestionnaireResponse.
  * This takes into account the questionnaire-hidden extension, enableWhens and enableWhenExpressions.
  *

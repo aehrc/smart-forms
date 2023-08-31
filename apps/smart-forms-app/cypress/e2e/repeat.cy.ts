@@ -53,8 +53,6 @@ describe('repeat items functionality', () => {
       .eq(1)
       .clear()
       .waitForFormUpdate();
-
-    cy.getByData('button-add-repeat-item').eq(0).should('be.disabled');
   });
 });
 

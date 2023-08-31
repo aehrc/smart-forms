@@ -40,7 +40,8 @@ function UpdatingIndicator() {
         variant="subtitle2"
         color="text.secondary"
         fontSize={isDesktop ? 12 : 9}
-        sx={{ mx: isDesktop ? 2 : 0.5 }}>
+        sx={{ mx: isDesktop ? 2 : 0.5 }}
+        data-test="updating-indicator">
         Updating...
       </Typography>
     </Fade>

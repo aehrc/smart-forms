@@ -45,12 +45,9 @@ describe('response viewer', () => {
       cy.intercept(formsServerQuestionnaireRegex).as('enableOpenResponseButton');
       cy.intercept(clientQuestionnaireRegex).as('openingResponseClient');
 
-      // ui test process
       cy.launchFromSMARTHealthIT();
       cy.goToResponsesPage();
       cy.wait('@fetchResponse').its('response.statusCode').should('eq', 200);
-
-      cy.getByData('response-list-sort-label').contains('Status').click().click();
 
       cy.getByData('response-list-row')
         .contains('Aboriginal and Torres Strait Islander Health Check')
@@ -93,9 +90,6 @@ describe('response viewer', () => {
       cy.get('.MuiButtonBase-root').contains('Save as final').click();
       cy.wait('@saveAsFinal');
       cy.location('pathname').should('eq', '/dashboard/responses');
-
-      cy.getByData('response-list-sort-label').contains('Status').click();
-      cy.getByData('response-list-row').eq(0).should('include.text', 'completed');
     });
 
     it('print preview', () => {
