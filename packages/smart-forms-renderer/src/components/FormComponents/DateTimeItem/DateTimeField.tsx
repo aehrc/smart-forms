@@ -20,7 +20,7 @@ import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps
 import type { Dayjs } from 'dayjs';
 import { DateTimePicker as MuiDateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;

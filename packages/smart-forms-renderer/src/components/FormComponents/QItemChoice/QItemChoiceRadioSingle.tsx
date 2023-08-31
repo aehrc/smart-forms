@@ -16,7 +16,8 @@
  */
 
 import React from 'react';
-import { FormControlLabel, Radio } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
 
 interface Props {
   value: string;

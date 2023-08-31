@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Theme } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 export default function Autocomplete(theme: Theme) {
   return {

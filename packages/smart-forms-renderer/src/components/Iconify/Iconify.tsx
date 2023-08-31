@@ -17,8 +17,8 @@
 
 import React, { forwardRef, memo } from 'react';
 import { Icon } from '@iconify/react';
-import type { SxProps, Theme } from '@mui/material';
-import { Box } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 
 interface IconifyProps {
   icon: string;

@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { Box, styled } from '@mui/material';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 
 export const DisplayInstructionsWrapper = styled(Box)(({ theme }) => ({
   color: theme.palette.text.secondary,

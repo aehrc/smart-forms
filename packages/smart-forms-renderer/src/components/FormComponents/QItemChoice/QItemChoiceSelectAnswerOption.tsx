@@ -16,8 +16,11 @@
  */
 
 import React, { Fragment } from 'react';
-import type { SelectChangeEvent } from '@mui/material';
-import { Grid, InputAdornment, MenuItem, Select } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import InputAdornment from '@mui/material/InputAdornment';
+import MenuItem from '@mui/material/MenuItem';
+import type { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';

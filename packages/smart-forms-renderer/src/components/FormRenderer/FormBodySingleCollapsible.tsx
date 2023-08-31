@@ -17,14 +17,12 @@
 
 import type { ReactNode } from 'react';
 import React, { memo } from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Tooltip,
-  Typography
-} from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getContextDisplays } from '../../utils/tabs';
 import type { QuestionnaireItem } from 'fhir/r4';

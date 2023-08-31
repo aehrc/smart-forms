@@ -16,7 +16,11 @@
  */
 
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import { HeaderTableCell } from '../Tables/Table.styles';
 import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';

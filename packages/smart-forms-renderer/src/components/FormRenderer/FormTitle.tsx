@@ -20,7 +20,7 @@ import type { Questionnaire } from 'fhir/r4';
 import parse from 'html-react-parser';
 import { getXHtmlStringFromQuestionnaire } from '../../utils/qItem';
 import { FormTitleWrapper } from '../Box.styles';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 interface FormTitleProps {
   questionnaire: Questionnaire;

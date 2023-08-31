@@ -27,7 +27,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import BooleanField from './BooleanField';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

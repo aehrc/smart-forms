@@ -19,7 +19,7 @@ import React from 'react';
 import QItemChoice from '../QItemChoice/QItemChoice';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import QItemOpenChoice from '../QItemOpenChoice/QItemOpenChoice';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,

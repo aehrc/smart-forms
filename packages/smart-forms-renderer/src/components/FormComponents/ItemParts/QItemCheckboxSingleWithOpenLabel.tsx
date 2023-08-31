@@ -17,7 +17,9 @@
 
 import type { ChangeEvent } from 'react';
 import React from 'react';
-import { Box, Checkbox, FormControlLabel } from '@mui/material';
+import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { StandardTextField } from '../Textfield.styles';
 
 interface Props {

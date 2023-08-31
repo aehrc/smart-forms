@@ -17,7 +17,7 @@
 
 import type { ChangeEvent } from 'react';
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { QItemChoiceOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';

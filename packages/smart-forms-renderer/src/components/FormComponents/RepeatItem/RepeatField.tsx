@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import { RepeatItemContainerStack } from './RepeatItem.styles';
 import SingleItem from '../SingleItem/SingleItem';
 import type {

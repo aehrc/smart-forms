@@ -16,7 +16,8 @@
  */
 
 import { alpha, styled } from '@mui/material/styles';
-import { Box, ListItemIcon } from '@mui/material';
+import Box from '@mui/material/Box';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 export const StyledAlert = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'color'

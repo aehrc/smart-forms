@@ -25,7 +25,7 @@ import Typography from './Typography';
 import Autocomplete from './Autocomplete';
 import Accordion from './Accordion';
 import SpeedDial from './SpeedDial';
-import type { Theme } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 function ComponentsOverrides(theme: Theme) {
   return Object.assign(

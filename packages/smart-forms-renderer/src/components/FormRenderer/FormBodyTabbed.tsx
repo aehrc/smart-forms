@@ -16,7 +16,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { TabContext, TabPanel } from '@mui/lab';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';

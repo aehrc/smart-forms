@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { Card, styled } from '@mui/material';
+import Card from '@mui/material/Card';
+import { styled } from '@mui/material/styles';
 
 export const GroupCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'elevation' && prop !== 'isRepeated'

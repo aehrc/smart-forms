@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import GroupItem from '../GroupItem/GroupItem';
 import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';

@@ -16,7 +16,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { Stack } from '@mui/material';
+import Stack from '@mui/material/Stack';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrGroup } from '../../utils/qrItem';

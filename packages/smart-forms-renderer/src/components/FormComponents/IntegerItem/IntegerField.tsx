@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { InputAdornment } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';

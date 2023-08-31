@@ -21,7 +21,10 @@ import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderPro
 import { createQrGroup, updateQrGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
 import { QGroupContainerBox } from '../../Box.styles';
-import { Divider, Paper, TableContainer, Typography } from '@mui/material';
+import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
+import TableContainer from '@mui/material/TableContainer';
+import Typography from '@mui/material/Typography';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import GridTable from './GridTable';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';

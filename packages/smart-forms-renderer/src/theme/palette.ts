@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-import type { PaletteOptions } from '@mui/material/styles';
+import type { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
-import type { PaletteColor, PaletteColorOptions } from '@mui/material';
 import { grey } from '@mui/material/colors';
 
 declare module '@mui/material/styles' {

@@ -25,7 +25,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import AddItemButton from './AddItemButton';
 import { TransitionGroup } from 'react-transition-group';
 import RepeatField from './RepeatField';
-import { Collapse } from '@mui/material';
+import Collapse from '@mui/material/Collapse';
 import useInitialiseRepeatAnswers from '../../../hooks/useInitialiseRepeatAnswers';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 

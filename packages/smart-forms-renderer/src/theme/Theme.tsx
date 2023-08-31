@@ -16,14 +16,14 @@
  */
 import type { ReactNode } from 'react';
 import React from 'react';
-import type { ThemeOptions } from '@mui/material';
-import { CssBaseline } from '@mui/material';
+import type { ThemeOptions } from '@mui/material/styles';
 import {
   alpha,
   createTheme,
   StyledEngineProvider,
   ThemeProvider as MUIThemeProvider
 } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import palette from './palette';
 import typography from './typography';
 import GlobalStyles from './globalStyles';

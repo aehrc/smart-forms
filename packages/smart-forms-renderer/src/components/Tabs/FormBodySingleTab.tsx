@@ -16,7 +16,11 @@
  */
 
 import React, { memo } from 'react';
-import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../utils/tabs';

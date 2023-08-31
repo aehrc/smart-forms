@@ -17,8 +17,9 @@
 
 import type { SyntheticEvent } from 'react';
 import React from 'react';
-import { Autocomplete, Grid, Typography } from '@mui/material';
-
+import Autocomplete from '@mui/material/Autocomplete';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { StandardTextField } from '../Textfield.styles';

@@ -22,7 +22,7 @@ import { createQrGroup, updateQrGroup } from '../../../utils/qrItem';
 import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 interface GridRowProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;

@@ -16,7 +16,8 @@
  */
 
 import React, { memo } from 'react';
-import { Box, Divider } from '@mui/material';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 import { QGroupHeadingTypography } from '../Typography.styles';
 import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem } from 'fhir/r4';

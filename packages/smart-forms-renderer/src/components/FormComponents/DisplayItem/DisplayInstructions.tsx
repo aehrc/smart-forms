@@ -16,7 +16,7 @@
  */
 
 import React, { memo } from 'react';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { DisplayInstructionsWrapper } from './DisplayInstructions.styles';
 
 interface DisplayInstructionsProps {

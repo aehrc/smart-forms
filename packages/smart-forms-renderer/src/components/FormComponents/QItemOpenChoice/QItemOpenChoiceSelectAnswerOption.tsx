@@ -17,8 +17,8 @@
 
 import type { SyntheticEvent } from 'react';
 import React from 'react';
-import { Autocomplete, Grid } from '@mui/material';
-
+import Autocomplete from '@mui/material/Autocomplete';
+import Grid from '@mui/material/Grid';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,

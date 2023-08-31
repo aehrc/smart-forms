@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import ContextDisplayItem from './ContextDisplayItem';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';

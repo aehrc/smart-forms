@@ -16,7 +16,7 @@
  */
 
 import React, { useCallback, useMemo, useState } from 'react';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
