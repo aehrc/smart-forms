@@ -16,7 +16,7 @@
  */
 
 import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
-import { setEnableWhenActivation, useEnableWhenActivated } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface RendererDebugBarProps {
   isHidden: boolean;
@@ -26,14 +26,17 @@ interface RendererDebugBarProps {
 function RendererDebugBar(props: RendererDebugBarProps) {
   const { isHidden, toggleIsHidden } = props;
 
-  const enableWhenIsActivated = useEnableWhenActivated();
+  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
+  const toggleEnableWhenActivation = useQuestionnaireStore(
+    (state) => state.toggleEnableWhenActivation
+  );
 
   return (
     <Box display="flex" flexDirection="row-reverse">
       <FormControlLabel
         control={
           <Switch
-            onChange={(event) => setEnableWhenActivation(event.target.checked)}
+            onChange={(event) => toggleEnableWhenActivation(event.target.checked)}
             checked={enableWhenIsActivated}
           />
         }

@@ -31,7 +31,9 @@ function useInitialiseRenderer(
     (state) => state.updatePopulatedProperties
   );
   const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
-  const populateResponse = useQuestionnaireResponseStore((state) => state.populateResponse);
+  const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsPopulated
+  );
 
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +44,7 @@ function useInitialiseRenderer(
 
       if (questionnaireResponse) {
         const updatedResponse = updatePopulatedProperties(questionnaireResponse);
-        populateResponse(updatedResponse);
+        setUpdatableResponseAsPopulated(updatedResponse);
       }
       setLoading(false);
     });
@@ -51,7 +53,7 @@ function useInitialiseRenderer(
     questionnaireResponse,
     buildSourceQuestionnaire,
     buildSourceResponse,
-    populateResponse,
+    setUpdatableResponseAsPopulated,
     updatePopulatedProperties,
     additionalVariables
   ]);

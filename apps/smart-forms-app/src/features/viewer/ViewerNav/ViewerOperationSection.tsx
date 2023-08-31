@@ -29,10 +29,10 @@ import {
   NavSectionHeadingWrapper,
   NavSectionWrapper
 } from '../../../components/Nav/Nav.styles.ts';
-import { useSourceResponse } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function ViewerOperationSection() {
-  const sourceResponse = useSourceResponse();
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
 
   const navigate = useNavigate();
 

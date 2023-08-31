@@ -18,10 +18,10 @@
 import { useEffect, useState } from 'react';
 import { Fade, Typography } from '@mui/material';
 import useResponsive from '../../../../hooks/useResponsive.ts';
-import { useUpdatableResponse } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function UpdatingIndicator() {
-  const updatableResponse = useUpdatableResponse();
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   const [isUpdating, setIsUpdating] = useState(false);
 

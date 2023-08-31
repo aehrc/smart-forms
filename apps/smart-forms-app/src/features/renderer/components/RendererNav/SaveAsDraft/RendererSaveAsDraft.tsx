@@ -28,10 +28,8 @@ import { IconButton, Tooltip } from '@mui/material';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import {
   removeHiddenAnswersFromResponse,
-  setUpdatableResponseAsSaved,
-  useFormHasChanges,
-  useSourceQuestionnaire,
-  useUpdatableResponse
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 
 function RendererSaveAsDraft() {
@@ -40,9 +38,12 @@ function RendererSaveAsDraft() {
   const user = useConfigStore((state) => state.user);
   const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const updatableResponse = useUpdatableResponse();
-  const hasChanges = useFormHasChanges();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
+  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsSaved
+  );
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 

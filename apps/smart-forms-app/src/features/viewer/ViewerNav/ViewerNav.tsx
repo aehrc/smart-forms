@@ -29,7 +29,7 @@ import { NavErrorAlertWrapper } from '../../../components/Nav/Nav.styles.ts';
 import useConfigStore from '../../../stores/useConfigStore.ts';
 import { NAV_WIDTH } from '../../../components/Header/Header.styles.ts';
 import ViewerLaunchQuestionnaireNavSection from './ViewerLaunchQuestionnaireNavSection.tsx';
-import { useSourceQuestionnaire, useSourceResponse } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface Props {
   openNav: boolean;
@@ -42,8 +42,8 @@ function ViewerNav(props: Props) {
   const smartClient = useConfigStore((state) => state.smartClient);
   const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const sourceResponse = useSourceResponse();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   const isDesktop = useResponsive('up', 'lg');
 

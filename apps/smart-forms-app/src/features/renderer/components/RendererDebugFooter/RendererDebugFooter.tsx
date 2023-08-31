@@ -20,11 +20,7 @@ import { useState } from 'react';
 import DebugResponse from './DebugResponse.tsx';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import RendererDebugBar from './RendererDebugBar.tsx';
-import {
-  setUpdatableResponseAsEmpty,
-  useSourceQuestionnaire,
-  useUpdatableResponse
-} from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 const clearTopLevelQRItem: QuestionnaireResponseItem = {
   linkId: 'clearedItem',
@@ -35,8 +31,11 @@ const clearTopLevelQRItem: QuestionnaireResponseItem = {
 function RendererDebugFooter() {
   const [isHidden, setIsHidden] = useState(true);
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const updatableResponse = useUpdatableResponse();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const setUpdatableResponseAsEmpty = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsEmpty
+  );
 
   function handleClearExistingResponse() {
     if (!updatableResponse.item || updatableResponse.item.length === 0) {

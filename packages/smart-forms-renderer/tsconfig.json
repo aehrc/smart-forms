@@ -17,5 +17,5 @@
     "checkJs": true
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.ts", "src/stories/**/*", "src/setup-jest.*"]
+  "exclude": ["src/**/*.test.ts", "src/stories/**/*", "src/setup-jest.*", "lib"]
 }

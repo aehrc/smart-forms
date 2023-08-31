@@ -21,12 +21,7 @@ import type { PopulateFormParams } from '../utils/populate.ts';
 import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
-import {
-  setUpdatableResponse,
-  useSourceQuestionnaire,
-  useSourceResponse,
-  useUpdatableResponse
-} from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void {
   const smartClient = useConfigStore((state) => state.smartClient);
@@ -34,9 +29,13 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
   const user = useConfigStore((state) => state.user);
   const encounter = useConfigStore((state) => state.encounter);
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const sourceResponse = useSourceResponse();
-  const updatableResponse = useUpdatableResponse();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+
+  const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsPopulated
+  );
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -74,7 +73,7 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
     (params: PopulateFormParams) => {
       const { populated, hasWarnings } = params;
 
-      setUpdatableResponse(populated);
+      setUpdatableResponseAsPopulated(populated);
       onStopSpinner();
       if (hasWarnings) {
         enqueueSnackbar(

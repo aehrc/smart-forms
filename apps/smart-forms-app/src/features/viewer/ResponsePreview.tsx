@@ -25,8 +25,8 @@ import { Helmet } from 'react-helmet';
 import PageHeading from '../dashboard/components/DashboardPages/PageHeading.tsx';
 import {
   removeHiddenAnswersFromResponse,
-  useSourceQuestionnaire,
-  useSourceResponse
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 
 function ResponsePreview() {
@@ -42,8 +42,8 @@ function ResponsePreview() {
     []
   );
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const sourceResponse = useSourceResponse();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
 
   if (!sourceQuestionnaire.item || !sourceResponse.item) {
     return <ViewerInvalid questionnaire={sourceQuestionnaire} />;

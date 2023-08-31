@@ -17,10 +17,10 @@
 
 import { AccountNameTypography } from '../../Typography/Typography.tsx';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
-import { useSourceQuestionnaire } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 function QuestionnairePopoverMenu() {
-  const sourceQuestionnaire = useSourceQuestionnaire();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
   return (
     <PopoverMenuWrapper>

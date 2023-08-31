@@ -23,13 +23,13 @@ import { Helmet } from 'react-helmet';
 import PageHeading from '../../../dashboard/components/DashboardPages/PageHeading.tsx';
 import {
   removeHiddenAnswersFromResponse,
-  useSourceQuestionnaire,
-  useUpdatableResponse
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 
 function FormPreview() {
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const updatableResponse = useUpdatableResponse();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   if (!sourceQuestionnaire.item || !updatableResponse.item) {
     return <FormInvalid />;

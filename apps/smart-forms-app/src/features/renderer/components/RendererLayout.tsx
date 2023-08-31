@@ -33,15 +33,15 @@ import useConfigStore from '../../../stores/useConfigStore.ts';
 import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial.tsx';
 import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
-import { useFormHasChanges, useSourceResponse } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function RendererLayout() {
   const smartClient = useConfigStore((state) => state.smartClient);
   const patient = useConfigStore((state) => state.patient);
   const user = useConfigStore((state) => state.user);
 
-  const sourceResponse = useSourceResponse();
-  const hasChanges = useFormHasChanges();
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
 
   const [open, setOpen] = useState(false);
   const [navIsCollapsed, collapseNav] = useState(false);

@@ -24,12 +24,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { OperationItem } from '../../../../types/Nav.interface.ts';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
 import useConfigStore from '../../../../stores/useConfigStore.ts';
-import { useSourceQuestionnaire } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 function RendererOperationSection() {
   const smartClient = useConfigStore((state) => state.smartClient);
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
   const navigate = useNavigate();
   const location = useLocation();

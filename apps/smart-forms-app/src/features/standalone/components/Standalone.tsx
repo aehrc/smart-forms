@@ -89,7 +89,6 @@ function Standalone() {
     additionalVars: rendererPropsList[0].additionalVars
   });
 
-  // console.log(state);
   return (
     <Container maxWidth="xl">
       <Stack my={3} rowGap={2}>

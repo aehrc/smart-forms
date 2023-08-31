@@ -32,9 +32,8 @@ import useConfigStore from '../../../../stores/useConfigStore.ts';
 import { LoadingButton } from '@mui/lab';
 import {
   removeHiddenAnswersFromResponse,
-  setUpdatableResponseAsSaved,
-  useSourceQuestionnaire,
-  useUpdatableResponse
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 
 export interface Props {
@@ -53,8 +52,11 @@ function BlockerUnsavedFormDialog(props: Props) {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const updatableResponse = useUpdatableResponse();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsSaved
+  );
   const navigate = useNavigate();
 
   const isLaunched = !!(smartClient && patient && user);

@@ -33,9 +33,8 @@ import GradingIcon from '@mui/icons-material/Grading';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import {
   removeHiddenAnswersFromResponse,
-  setUpdatableResponseAsSaved,
-  useSourceQuestionnaire,
-  useUpdatableResponse
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 
 interface RendererEmbeddedSpeedDialProps {
@@ -50,15 +49,18 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   const user = useConfigStore((state) => state.user);
   const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
 
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsSaved
+  );
+
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
   const launchQuestionnaireExists = !!launchQuestionnaire;
-
-  const sourceQuestionnaire = useSourceQuestionnaire();
-  const updatableResponse = useUpdatableResponse();
 
   function handlePreview() {
     if (location.pathname === '/renderer/preview') {

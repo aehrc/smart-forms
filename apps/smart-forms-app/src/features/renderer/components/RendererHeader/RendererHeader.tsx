@@ -25,7 +25,7 @@ import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
 import { memo } from 'react';
 import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
-import { useSourceQuestionnaire } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface RendererHeaderProps {
   navIsCollapsed: boolean;
@@ -35,7 +35,7 @@ interface RendererHeaderProps {
 const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) {
   const { navIsCollapsed, onOpenNav } = props;
 
-  const sourceQuestionnaire = useSourceQuestionnaire();
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'lg');
