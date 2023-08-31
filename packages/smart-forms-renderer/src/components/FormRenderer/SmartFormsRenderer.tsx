@@ -22,6 +22,7 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
 import useQueryClient from '../../hooks/useQueryClient';
 import BaseRenderer from './BaseRenderer';
+import ThemeProvider from '../../theme/Theme';
 
 interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
@@ -50,9 +51,11 @@ function SmartFormsRenderer(props: SmartFormsRendererProps) {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BaseRenderer />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BaseRenderer />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
