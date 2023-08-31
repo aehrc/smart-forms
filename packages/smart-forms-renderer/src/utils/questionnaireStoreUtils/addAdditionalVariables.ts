@@ -26,19 +26,12 @@ export function addAdditionalVariables(
     const variable = additionalVariables[key];
 
     if (variable && isVariable(variable)) {
-      if (
-        variable.valueExpression &&
-        variable.valueExpression.language &&
-        variable.valueExpression.name
-      ) {
-        const expression = variable.valueExpression;
-        const language = expression.language;
-        const name = expression.name;
-
-        if (language === 'text/fhirpath') {
-          existingVariables.fhirPathVariables['QuestionnaireLevel'].push(variable.valueExpression);
-        } else if (language === 'application/x-fhir-query') {
-          existingVariables.xFhirQueryVariables[name] = {
+      const expression = variable.valueExpression;
+      if (expression && expression.language && expression.name) {
+        if (expression.language === 'text/fhirpath') {
+          existingVariables.fhirPathVariables['QuestionnaireLevel'].push(expression);
+        } else if (expression.language === 'application/x-fhir-query') {
+          existingVariables.xFhirQueryVariables[expression.name] = {
             valueExpression: expression
           };
         }
