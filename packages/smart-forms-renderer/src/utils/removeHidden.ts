@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import {
+import type {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import {
+import type {
   EnableWhenExpression,
   EnableWhenItems
 } from 'smart-forms-app/src/types/enableWhen.interface';
