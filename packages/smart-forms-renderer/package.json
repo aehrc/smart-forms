@@ -23,7 +23,6 @@
     "@types/fhir": "^0.0.37",
     "zustand": "^4.4.1",
     "react-markdown": "^8.0.7",
-    "sdc-populate": "^1.0.2",
     "sdc-assemble": "^1.0.1"
   },
   "peerDependencies": {
