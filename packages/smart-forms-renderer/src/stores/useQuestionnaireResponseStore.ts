@@ -19,7 +19,6 @@ const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>(
   sourceResponse: cloneDeep(emptyResponse),
   updatableResponse: cloneDeep(emptyResponse),
   hasChanges: false,
-
   buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
     set(() => ({
       sourceResponse: questionnaireResponse,
