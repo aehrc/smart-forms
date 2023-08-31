@@ -16,23 +16,23 @@
  */
 
 import React from 'react';
-import { QItemChoiceControl } from '../../../interfaces/choice.enum';
+import { ChoiceItemControl } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import QItemChoiceRadioAnswerOption from './QItemChoiceRadioAnswerOption';
-import QItemChoiceSelectAnswerOption from './QItemChoiceSelectAnswerOption';
-import QItemChoiceCheckboxAnswerOption from './QItemChoiceCheckboxAnswerOption';
-import QItemChoiceAutocomplete from './QItemChoiceAutocomplete';
-import QItemChoiceSelectAnswerValueSet from './QItemChoiceSelectAnswerValueSet';
+import ChoiceRadioAnswerOptionItem from './ChoiceRadioAnswerOptionItem';
+import ChoiceSelectAnswerOptionItem from './ChoiceSelectAnswerOptionItem';
+import ChoiceCheckboxAnswerOptionItem from './ChoiceCheckboxAnswerOptionItem';
+import ChoiceAutocompleteItem from './ChoiceAutocompleteItem';
+import ChoiceSelectAnswerValueSetItem from './ChoiceSelectAnswerValueSetItem';
 import { getChoiceControlType, getChoiceOrientation } from '../../../utils/choice';
-import QItemChoiceRadioAnswerValueSet from './QItemChoiceRadioAnswerValueSet';
-import QItemChoiceCheckboxAnswerValueSet from './QItemChoiceCheckboxAnswerValueSet';
+import ChoiceRadioAnswerValueSetItem from './ChoiceRadioAnswerValueSetItem';
+import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 
-interface Props
+interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -40,16 +40,16 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemChoice(props: Props) {
+function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
   const choiceControlType = getChoiceControlType(qItem);
 
   switch (choiceControlType) {
-    case QItemChoiceControl.Radio:
+    case ChoiceItemControl.Radio:
       if (qItem.answerOption) {
         return (
-          <QItemChoiceRadioAnswerOption
+          <ChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
@@ -59,7 +59,7 @@ function QItemChoice(props: Props) {
         );
       } else {
         return (
-          <QItemChoiceRadioAnswerValueSet
+          <ChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
@@ -68,10 +68,10 @@ function QItemChoice(props: Props) {
           />
         );
       }
-    case QItemChoiceControl.Checkbox:
+    case ChoiceItemControl.Checkbox:
       if (qItem.answerOption) {
         return (
-          <QItemChoiceCheckboxAnswerOption
+          <ChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem['repeats'] ?? false}
@@ -81,7 +81,7 @@ function QItemChoice(props: Props) {
         );
       } else {
         return (
-          <QItemChoiceCheckboxAnswerValueSet
+          <ChoiceCheckboxAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem['repeats'] ?? false}
@@ -90,9 +90,9 @@ function QItemChoice(props: Props) {
           />
         );
       }
-    case QItemChoiceControl.Autocomplete:
+    case ChoiceItemControl.Autocomplete:
       return (
-        <QItemChoiceAutocomplete
+        <ChoiceAutocompleteItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -100,10 +100,10 @@ function QItemChoice(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemChoiceControl.Select:
+    case ChoiceItemControl.Select:
       if (qItem.answerOption) {
         return (
-          <QItemChoiceSelectAnswerOption
+          <ChoiceSelectAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
@@ -113,7 +113,7 @@ function QItemChoice(props: Props) {
         );
       } else {
         return (
-          <QItemChoiceSelectAnswerValueSet
+          <ChoiceSelectAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
@@ -127,4 +127,4 @@ function QItemChoice(props: Props) {
   }
 }
 
-export default QItemChoice;
+export default ChoiceItemSwitcher;

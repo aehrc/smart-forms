@@ -17,12 +17,12 @@
 
 import React, { useCallback, useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { CheckBoxOptionType, QItemChoiceOrientation } from '../../../interfaces/choice.enum';
+import { CheckBoxOption, ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import QItemCheckboxSingle from '../ItemParts/QItemCheckboxSingle';
+import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import { getOpenLabelText } from '../../../utils/itemControl';
-import QItemCheckboxSingleWithOpenLabel from '../ItemParts/QItemCheckboxSingleWithOpenLabel';
+import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 import { QFormGroup } from '../Item.styles';
 import {
   getOldOpenLabelAnswer,
@@ -39,15 +39,15 @@ import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface QItemOpenChoiceCheckboxProps
+interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
-  orientation: QItemChoiceOrientation;
+  orientation: ChoiceItemOrientation;
 }
 
-function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps) {
+function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptionItemProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init answers
@@ -85,7 +85,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
           answers,
           answerOptions,
           qrOpenChoiceCheckbox,
-          CheckBoxOptionType.AnswerOption,
+          CheckBoxOption.AnswerOption,
           isRepeated
         );
       } else if (changedOpenLabelValue !== null) {
@@ -95,7 +95,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
           answers,
           answerOptions,
           qrOpenChoiceCheckbox,
-          CheckBoxOptionType.AnswerOption,
+          CheckBoxOption.AnswerOption,
           isRepeated
         );
       }
@@ -116,11 +116,11 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const openChoiceCheckbox = (
-    <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
+    <QFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
-            <QItemCheckboxSingle
+            <CheckboxSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
@@ -133,7 +133,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
           );
         } else if (option['valueString']) {
           return (
-            <QItemCheckboxSingle
+            <CheckboxSingle
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
@@ -144,7 +144,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
           );
         } else if (option['valueInteger']) {
           return (
-            <QItemCheckboxSingle
+            <CheckboxSingle
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
@@ -159,7 +159,7 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
       })}
 
       {openLabelText ? (
-        <QItemCheckboxSingleWithOpenLabel
+        <CheckboxSingleWithOpenLabel
           value={openLabelValue}
           label={openLabelText}
           isChecked={openLabelChecked}
@@ -191,4 +191,4 @@ function QItemOpenChoiceCheckboxAnswerOption(props: QItemOpenChoiceCheckboxProps
   );
 }
 
-export default QItemOpenChoiceCheckboxAnswerOption;
+export default OpenChoiceCheckboxAnswerOptionItem;

@@ -35,7 +35,7 @@ import type {
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface Props
+interface ChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -43,7 +43,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemChoiceSelectAnswerOption(props: Props) {
+function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Init input value
@@ -112,9 +112,11 @@ function QItemChoiceSelectAnswerOption(props: Props) {
     </Select>
   );
 
-  const renderQItemChoiceSelectAnswerOption = isRepeated ? (
-    <>{choiceSelectAnswerOption}</>
-  ) : (
+  if (isRepeated) {
+    return <>{choiceSelectAnswerOption}</>;
+  }
+
+  return (
     <FullWidthFormComponentBox data-test="q-item-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -127,7 +129,6 @@ function QItemChoiceSelectAnswerOption(props: Props) {
       </Grid>
     </FullWidthFormComponentBox>
   );
-  return <>{renderQItemChoiceSelectAnswerOption}</>;
 }
 
-export default QItemChoiceSelectAnswerOption;
+export default ChoiceSelectAnswerOptionItem;

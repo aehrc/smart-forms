@@ -45,7 +45,7 @@ import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface QItemChoiceAutocompleteProps
+interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -53,7 +53,7 @@ interface QItemChoiceAutocompleteProps
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemChoiceAutocomplete(props: QItemChoiceAutocompleteProps) {
+function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem);
 
@@ -161,9 +161,11 @@ function QItemChoiceAutocomplete(props: QItemChoiceAutocompleteProps) {
     </>
   );
 
-  const renderQItemChoiceAutocomplete = isRepeated ? (
-    <>{choiceAutocomplete}</>
-  ) : (
+  if (isRepeated) {
+    return <>{choiceAutocomplete}</>;
+  }
+
+  return (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -176,7 +178,6 @@ function QItemChoiceAutocomplete(props: QItemChoiceAutocompleteProps) {
       </Grid>
     </FullWidthFormComponentBox>
   );
-  return <>{renderQItemChoiceAutocomplete}</>;
 }
 
-export default QItemChoiceAutocomplete;
+export default ChoiceAutocompleteItem;

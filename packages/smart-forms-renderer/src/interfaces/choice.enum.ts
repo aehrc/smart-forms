@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-export enum QItemChoiceControl {
+export enum ChoiceItemControl {
   Radio = 'radio',
   Select = 'select',
   Autocomplete = 'autocomplete',
   Checkbox = 'check-box'
 }
 
-export enum QItemOpenChoiceControl {
+export enum OpenChoiceItemControl {
   Select = 'select',
   Autocomplete = 'autocomplete',
   Checkbox = 'check-box',
   Radio = 'radio'
 }
 
-export enum QItemChoiceOrientation {
+export enum ChoiceItemOrientation {
   Horizontal = 'horizontal',
   Vertical = 'vertical'
 }
 
-export enum CheckBoxOptionType {
+export enum CheckBoxOption {
   AnswerOption = 'answerOption',
   AnswerValueSet = 'answerValueSet'
 }

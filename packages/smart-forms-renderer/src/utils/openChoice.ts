@@ -22,7 +22,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { CheckBoxOptionType, QItemOpenChoiceControl } from '../interfaces/choice.enum';
+import { CheckBoxOption, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
 import { findInAnswerOptions, findInAnswerValueSetCodings } from './choice';
 
@@ -37,12 +37,12 @@ export function updateQrOpenChoiceCheckboxAnswers(
   answers: QuestionnaireResponseItemAnswer[],
   answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
   qrChoiceCheckbox: QuestionnaireResponseItem,
-  checkboxOptionType: CheckBoxOptionType,
+  checkboxOptionType: CheckBoxOption,
   isMultiSelection: boolean
 ): QuestionnaireResponseItem | null {
   if (changedOptionAnswer) {
     const newAnswer =
-      checkboxOptionType === CheckBoxOptionType.AnswerOption
+      checkboxOptionType === CheckBoxOption.AnswerOption
         ? findInAnswerOptions(answerOptions, changedOptionAnswer)
         : findInAnswerValueSetCodings(answerOptions, changedOptionAnswer);
     if (!newAnswer) return null;
@@ -50,7 +50,7 @@ export function updateQrOpenChoiceCheckboxAnswers(
     if (isMultiSelection && answers.length > 0) {
       // check if new answer exists in existing answers
       const newAnswerInAnswers =
-        checkboxOptionType === CheckBoxOptionType.AnswerOption
+        checkboxOptionType === CheckBoxOption.AnswerOption
           ? findInAnswerOptions(answers, changedOptionAnswer)
           : findInAnswerValueSetCodings(answers, changedOptionAnswer);
 
@@ -147,13 +147,13 @@ export function getOldOpenLabelAnswer(
  */
 export function getOpenChoiceControlType(qItem: QuestionnaireItem) {
   if (isSpecificItemControl(qItem, 'autocomplete')) {
-    return QItemOpenChoiceControl.Autocomplete;
+    return OpenChoiceItemControl.Autocomplete;
   } else if (isSpecificItemControl(qItem, 'check-box')) {
-    return QItemOpenChoiceControl.Checkbox;
+    return OpenChoiceItemControl.Checkbox;
   } else if (isSpecificItemControl(qItem, 'radio-button')) {
-    return QItemOpenChoiceControl.Radio;
+    return OpenChoiceItemControl.Radio;
   } else {
-    return QItemOpenChoiceControl.Select;
+    return OpenChoiceItemControl.Select;
   }
 }
 

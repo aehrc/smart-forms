@@ -19,9 +19,9 @@ import type { ChangeEvent } from 'react';
 import React from 'react';
 import Box from '@mui/material/Box';
 import { StandardTextField } from '../Textfield.styles';
-import QItemChoiceRadioSingle from '../QItemChoice/QItemChoiceRadioSingle';
+import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 
-interface Props {
+interface RadioButtonWithOpenLabelProps {
   value: string | null;
   label: string;
   readOnly: boolean;
@@ -29,7 +29,7 @@ interface Props {
   onInputChange: (input: string) => unknown;
 }
 
-function QItemRadioButtonWithOpenLabel(props: Props) {
+function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
   const { value, label, readOnly, isSelected, onInputChange } = props;
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     onInputChange(event.target.value);
@@ -37,7 +37,7 @@ function QItemRadioButtonWithOpenLabel(props: Props) {
 
   return (
     <Box data-test="q-item-radio-open-label-box">
-      <QItemChoiceRadioSingle value={value ?? ''} label={label + ':'} readOnly={readOnly} />
+      <ChoiceRadioSingle value={value ?? ''} label={label + ':'} readOnly={readOnly} />
       <StandardTextField
         disabled={!isSelected}
         value={value}
@@ -51,4 +51,4 @@ function QItemRadioButtonWithOpenLabel(props: Props) {
   );
 }
 
-export default QItemRadioButtonWithOpenLabel;
+export default RadioButtonWithOpenLabel;

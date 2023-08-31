@@ -30,7 +30,7 @@ interface Props {
   onInputChange: (input: string) => unknown;
 }
 
-function QItemCheckboxSingleWithOpenLabel(props: Props) {
+function CheckboxSingleWithOpenLabel(props: Props) {
   const { value, label, isChecked, onCheckedChange, onInputChange } = props;
 
   function handleCheckedChange(event: ChangeEvent<HTMLInputElement>) {
@@ -61,4 +61,4 @@ function QItemCheckboxSingleWithOpenLabel(props: Props) {
   );
 }
 
-export default QItemCheckboxSingleWithOpenLabel;
+export default CheckboxSingleWithOpenLabel;

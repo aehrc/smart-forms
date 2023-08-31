@@ -27,7 +27,7 @@ interface Props {
   onCheckedChange: (value: string) => unknown;
 }
 
-function QItemCheckboxSingle(props: Props) {
+function CheckboxSingle(props: Props) {
   const { value, label, readOnly, isChecked, onCheckedChange } = props;
 
   return (
@@ -42,4 +42,4 @@ function QItemCheckboxSingle(props: Props) {
   );
 }
 
-export default QItemCheckboxSingle;
+export default CheckboxSingle;

@@ -37,7 +37,7 @@ import { StyledAlert } from '../../Alert.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface Props
+interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -45,7 +45,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemChoiceSelectAnswerValueSet(props: Props) {
+function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Init input value
@@ -143,9 +143,11 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
       </StyledAlert>
     );
 
-  const renderQItemChoiceSelectAnswerValueSet = isRepeated ? (
-    <>{choiceSelectAnswerValueSet}</>
-  ) : (
+  if (isRepeated) {
+    <>{choiceSelectAnswerValueSet}</>;
+  }
+
+  return (
     <FullWidthFormComponentBox data-test="q-item-choice-dropdown-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -158,7 +160,6 @@ function QItemChoiceSelectAnswerValueSet(props: Props) {
       </Grid>
     </FullWidthFormComponentBox>
   );
-  return <>{renderQItemChoiceSelectAnswerValueSet}</>;
 }
 
-export default QItemChoiceSelectAnswerValueSet;
+export default ChoiceSelectAnswerValueSetItem;

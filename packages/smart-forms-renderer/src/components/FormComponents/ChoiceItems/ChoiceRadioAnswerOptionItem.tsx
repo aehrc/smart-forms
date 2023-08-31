@@ -18,10 +18,10 @@
 import type { ChangeEvent } from 'react';
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { QItemChoiceOrientation } from '../../../interfaces/choice.enum';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
-import QItemChoiceRadioSingle from './QItemChoiceRadioSingle';
+import ChoiceRadioSingle from './ChoiceRadioSingle';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { QRadioGroup } from '../Item.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
@@ -33,15 +33,15 @@ import type {
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface Props
+interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
-  orientation: QItemChoiceOrientation;
+  orientation: ChoiceItemOrientation;
 }
 
-function QItemChoiceRadioAnswerOption(props: Props) {
+function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
@@ -63,7 +63,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
 
   const choiceRadio = (
     <QRadioGroup
-      row={orientation === QItemChoiceOrientation.Horizontal}
+      row={orientation === ChoiceItemOrientation.Horizontal}
       name={qItem.text}
       id={qItem.id}
       onChange={handleChange}
@@ -72,7 +72,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
-            <QItemChoiceRadioSingle
+            <ChoiceRadioSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
@@ -81,7 +81,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
           );
         } else if (option['valueString']) {
           return (
-            <QItemChoiceRadioSingle
+            <ChoiceRadioSingle
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
@@ -90,7 +90,7 @@ function QItemChoiceRadioAnswerOption(props: Props) {
           );
         } else if (option['valueInteger']) {
           return (
-            <QItemChoiceRadioSingle
+            <ChoiceRadioSingle
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
@@ -122,4 +122,4 @@ function QItemChoiceRadioAnswerOption(props: Props) {
   return <>{renderQItemChoiceRadio}</>;
 }
 
-export default QItemChoiceRadioAnswerOption;
+export default ChoiceRadioAnswerOptionItem;

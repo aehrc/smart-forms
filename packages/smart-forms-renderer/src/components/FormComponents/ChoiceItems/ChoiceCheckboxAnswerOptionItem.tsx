@@ -17,9 +17,9 @@
 
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { QItemChoiceOrientation } from '../../../interfaces/choice.enum';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import QItemChoiceCheckboxSingle from '../ItemParts/QItemCheckboxSingle';
+import QItemChoiceCheckboxSingle from '../ItemParts/CheckboxSingle';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { QFormGroup } from '../Item.styles';
 import { updateQrCheckboxAnswers } from '../../../utils/choice';
@@ -32,15 +32,15 @@ import type {
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface QItemChoiceCheckboxProps
+interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
-  orientation: QItemChoiceOrientation;
+  orientation: ChoiceItemOrientation;
 }
 
-function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
+function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
@@ -69,7 +69,7 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
   }
 
   const choiceCheckbox = (
-    <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
+    <QFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
@@ -128,4 +128,4 @@ function QItemChoiceCheckboxAnswerOption(props: QItemChoiceCheckboxProps) {
   );
 }
 
-export default QItemChoiceCheckboxAnswerOption;
+export default ChoiceCheckboxAnswerOptionItem;

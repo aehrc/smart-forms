@@ -18,7 +18,7 @@
 import React from 'react';
 import Container from '@mui/material/Container';
 import Fade from '@mui/material/Fade';
-import FormTopLevelItem from '../FormRenderer/FormTopLevelItem';
+import FormTopLevelItem from './FormTopLevelItem';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore';

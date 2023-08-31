@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
+import type { ChangeEvent } from 'react';
 import React from 'react';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findInAnswerValueSetCodings } from '../../../utils/choice';
+import ChoiceRadioSingle from './ChoiceRadioSingle';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import { QItemChoiceOrientation } from '../../../interfaces/choice.enum';
-import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../utils/choice';
-import QItemCheckboxSingle from '../ItemParts/QItemCheckboxSingle';
-import { QFormGroup } from '../Item.styles';
+import { QRadioGroup } from '../Item.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import type {
@@ -37,20 +37,24 @@ import { StyledAlert } from '../../Alert.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface Props
+interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
-  orientation: QItemChoiceOrientation;
+  orientation: ChoiceItemOrientation;
 }
 
-function QItemChoiceCheckboxAnswerValueSet(props: Props) {
+function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
   const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
 
   // Init input value
-  const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
-  const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
+  const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
+
+  let valueRadio: string | undefined;
+  if (qrChoiceRadio.answer) {
+    valueRadio = qrChoiceRadio.answer[0].valueCoding?.code;
+  }
 
   // Get additional rendering extensions
   const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
@@ -58,41 +62,37 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
 
-  // Event handlers
-  function handleCheckedChange(changedValue: string) {
-    if (codings.length < 1) return null;
-
-    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
-      changedValue,
-      answers,
-      mapCodingsToOptions(codings),
-      qrChoiceCheckbox,
-      isRepeated
-    );
-
-    if (updatedQrChoiceCheckbox) {
-      onQrItemChange(updatedQrChoiceCheckbox);
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    if (codings.length > 0) {
+      const qrAnswer = findInAnswerValueSetCodings(codings, event.target.value);
+      if (qrAnswer) {
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: [{ valueCoding: qrAnswer }]
+        });
+      }
     }
   }
 
-  const choiceCheckbox =
+  const choiceRadio =
     codings.length > 0 ? (
-      <QFormGroup row={orientation === QItemChoiceOrientation.Horizontal}>
-        {codings.map((coding) => {
+      <QRadioGroup
+        row={orientation === ChoiceItemOrientation.Horizontal}
+        name={qItem.text}
+        id={qItem.id}
+        onChange={handleChange}
+        value={valueRadio ?? null}>
+        {codings.map((coding: Coding) => {
           return (
-            <QItemCheckboxSingle
+            <ChoiceRadioSingle
               key={coding.code ?? ''}
               value={coding.code ?? ''}
               label={coding.display ?? `${coding.code}`}
               readOnly={readOnly}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer.valueCoding) === JSON.stringify(coding)
-              )}
-              onCheckedChange={handleCheckedChange}
             />
           );
         })}
-      </QFormGroup>
+      </QRadioGroup>
     ) : serverError ? (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
@@ -109,14 +109,18 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
       </StyledAlert>
     );
 
+  if (isRepeated) {
+    return <>{choiceRadio}</>;
+  }
+
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
+    <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {choiceCheckbox}
+          {choiceRadio}
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
@@ -124,4 +128,4 @@ function QItemChoiceCheckboxAnswerValueSet(props: Props) {
   );
 }
 
-export default QItemChoiceCheckboxAnswerValueSet;
+export default ChoiceRadioAnswerValueSetItem;

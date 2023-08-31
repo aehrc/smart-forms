@@ -15,4 +15,4 @@
  * limitations under the License.
  */
 
-export * from './FormRenderer';
+export * from './Renderer';

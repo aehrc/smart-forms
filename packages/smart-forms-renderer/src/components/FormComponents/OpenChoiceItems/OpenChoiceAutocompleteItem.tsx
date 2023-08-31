@@ -47,7 +47,7 @@ import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface QItemOpenChoiceAutocompleteProps
+interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -55,7 +55,7 @@ interface QItemOpenChoiceAutocompleteProps
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemOpenChoiceAutocomplete(props: QItemOpenChoiceAutocompleteProps) {
+function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
 
@@ -192,9 +192,11 @@ function QItemOpenChoiceAutocomplete(props: QItemOpenChoiceAutocompleteProps) {
     </>
   );
 
-  const renderQItemOpenChoiceAutocomplete = isRepeated ? (
-    <>{openChoiceAutocomplete}</>
-  ) : (
+  if (isRepeated) {
+    return <>{openChoiceAutocomplete}</>;
+  }
+
+  return (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -207,7 +209,6 @@ function QItemOpenChoiceAutocomplete(props: QItemOpenChoiceAutocompleteProps) {
       </Grid>
     </FullWidthFormComponentBox>
   );
-  return <>{renderQItemOpenChoiceAutocomplete}</>;
 }
 
-export default QItemOpenChoiceAutocomplete;
+export default OpenChoiceAutocompleteItem;

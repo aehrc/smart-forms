@@ -19,13 +19,13 @@ import React from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 
-interface Props {
+interface ChoiceRadioSingleProps {
   value: string;
   label: string;
   readOnly: boolean;
 }
 
-function QItemChoiceRadioSingle(props: Props) {
+function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
   const { value, label, readOnly } = props;
 
   return (
@@ -39,4 +39,4 @@ function QItemChoiceRadioSingle(props: Props) {
   );
 }
 
-export default QItemChoiceRadioSingle;
+export default ChoiceRadioSingle;

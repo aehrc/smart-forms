@@ -37,7 +37,7 @@ import type {
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface Props
+interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -45,7 +45,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemOpenChoiceSelectAnswerOption(props: Props) {
+function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
@@ -128,9 +128,12 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       )}
     />
   );
-  const renderQItemOpenChoiceAutocomplete = isRepeated ? (
-    <>{openOpenChoiceSelectAnswerOption}</>
-  ) : (
+
+  if (isRepeated) {
+    return <>{openOpenChoiceSelectAnswerOption}</>;
+  }
+
+  return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -143,7 +146,6 @@ function QItemOpenChoiceSelectAnswerOption(props: Props) {
       </Grid>
     </FullWidthFormComponentBox>
   );
-  return <>{renderQItemOpenChoiceAutocomplete}</>;
 }
 
-export default QItemOpenChoiceSelectAnswerOption;
+export default OpenChoiceSelectAnswerOptionItem;

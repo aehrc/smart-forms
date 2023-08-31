@@ -34,7 +34,7 @@ import type {
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
-interface Props
+interface OpenChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -42,7 +42,7 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
+function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSetItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Init input value
@@ -118,9 +118,11 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
     </>
   );
 
-  const renderQItemOpenChoiceSelectAnswerValueSet = isRepeated ? (
-    <>{openChoiceSelectAnswerValueSet}</>
-  ) : (
+  if (isRepeated) {
+    return <>{openChoiceSelectAnswerValueSet}</>;
+  }
+
+  return (
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
@@ -133,7 +135,6 @@ function QItemOpenChoiceSelectAnswerValueSet(props: Props) {
       </Grid>
     </FullWidthFormComponentBox>
   );
-  return <>{renderQItemOpenChoiceSelectAnswerValueSet}</>;
 }
 
-export default QItemOpenChoiceSelectAnswerValueSet;
+export default OpenChoiceSelectAnswerValueSetItem;

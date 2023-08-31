@@ -16,22 +16,22 @@
  */
 
 import React from 'react';
-import { QItemOpenChoiceControl } from '../../../interfaces/choice.enum';
+import { OpenChoiceItemControl } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import QItemOpenChoiceSelectAnswerOption from './QItemOpenChoiceSelectAnswerOption';
-import QItemOpenChoiceSelectAnswerValueSet from './QItemOpenChoiceSelectAnswerValueSet';
-import QItemOpenChoiceAutocomplete from './QItemOpenChoiceAutocomplete';
+import OpenChoiceSelectAnswerOptionItem from './OpenChoiceSelectAnswerOptionItem';
+import OpenChoiceSelectAnswerValueSetItem from './OpenChoiceSelectAnswerValueSetItem';
+import OpenChoiceAutocompleteItem from './OpenChoiceAutocompleteItem';
 import { getOpenChoiceControlType } from '../../../utils/openChoice';
 import { getChoiceOrientation } from '../../../utils/choice';
-import QItemOpenChoiceCheckboxAnswerOption from './QItemOpenChoiceCheckboxAnswerOption';
-import QItemOpenChoiceRadioAnswerOption from './QItemOpenChoiceRadioAnswerOption';
+import OpenChoiceCheckboxAnswerOptionItem from './OpenChoiceCheckboxAnswerOptionItem';
+import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 
-interface Props
+interface OpenChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute {
@@ -39,14 +39,14 @@ interface Props
   qrItem: QuestionnaireResponseItem;
 }
 
-function QItemOpenChoice(props: Props) {
+function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
 
   switch (getOpenChoiceControlType(qItem)) {
-    case QItemOpenChoiceControl.Checkbox:
+    case OpenChoiceItemControl.Checkbox:
       return (
-        <QItemOpenChoiceCheckboxAnswerOption
+        <OpenChoiceCheckboxAnswerOptionItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={qItem['repeats'] ?? false}
@@ -54,9 +54,9 @@ function QItemOpenChoice(props: Props) {
           orientation={orientation}
         />
       );
-    case QItemOpenChoiceControl.Radio:
+    case OpenChoiceItemControl.Radio:
       return (
-        <QItemOpenChoiceRadioAnswerOption
+        <OpenChoiceRadioAnswerOptionItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={qItem['repeats'] ?? false}
@@ -64,9 +64,9 @@ function QItemOpenChoice(props: Props) {
           orientation={orientation}
         />
       );
-    case QItemOpenChoiceControl.Autocomplete:
+    case OpenChoiceItemControl.Autocomplete:
       return (
-        <QItemOpenChoiceAutocomplete
+        <OpenChoiceAutocompleteItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -74,10 +74,10 @@ function QItemOpenChoice(props: Props) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case QItemOpenChoiceControl.Select:
+    case OpenChoiceItemControl.Select:
       if (qItem.answerValueSet) {
         return (
-          <QItemOpenChoiceSelectAnswerValueSet
+          <OpenChoiceSelectAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
@@ -87,7 +87,7 @@ function QItemOpenChoice(props: Props) {
         );
       } else {
         return (
-          <QItemOpenChoiceSelectAnswerOption
+          <OpenChoiceSelectAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
@@ -101,4 +101,4 @@ function QItemOpenChoice(props: Props) {
   }
 }
 
-export default QItemOpenChoice;
+export default OpenChoiceItemSwitcher;

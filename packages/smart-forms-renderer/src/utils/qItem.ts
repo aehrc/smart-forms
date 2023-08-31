@@ -18,7 +18,7 @@
 import type { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension } from './itemControl';
 import { getChoiceControlType } from './choice';
-import { QItemChoiceControl, QItemOpenChoiceControl } from '../interfaces/choice.enum';
+import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { getOpenChoiceControlType } from './openChoice';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 
@@ -82,8 +82,8 @@ export function isHiddenByEnableWhens(params: isHiddenByEnableWhensParams): bool
  */
 export function isRepeatItemAndNotCheckbox(qItem: QuestionnaireItem): boolean {
   const isCheckbox =
-    getChoiceControlType(qItem) === QItemChoiceControl.Checkbox ||
-    getOpenChoiceControlType(qItem) === QItemOpenChoiceControl.Checkbox;
+    getChoiceControlType(qItem) === ChoiceItemControl.Checkbox ||
+    getOpenChoiceControlType(qItem) === OpenChoiceItemControl.Checkbox;
 
   return !!qItem['repeats'] && !isCheckbox;
 }
