@@ -17,7 +17,11 @@
 
 import type { ChangeEvent, SyntheticEvent } from 'react';
 import React, { useState } from 'react';
-import { Autocomplete, CircularProgress, Fade, Grid, Tooltip } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
+import Fade from '@mui/material/Fade';
+import Grid from '@mui/material/Grid';
+import Tooltip from '@mui/material/Tooltip';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../utils/qrItem';
