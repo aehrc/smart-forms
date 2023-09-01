@@ -24,15 +24,13 @@ export interface SelectedQuestionnaireContextType {
   existingResponses: QuestionnaireResponse[];
   setSelectedQuestionnaire: (selected: Questionnaire | null) => unknown;
   setExistingResponses: (responses: QuestionnaireResponse[]) => unknown;
-  clearSelectedQuestionnaire: () => unknown;
 }
 
 export const SelectedQuestionnaireContext = createContext<SelectedQuestionnaireContextType>({
   selectedQuestionnaire: null,
   existingResponses: [],
   setSelectedQuestionnaire: () => void 0,
-  setExistingResponses: () => void 0,
-  clearSelectedQuestionnaire: () => void 0
+  setExistingResponses: () => void 0
 });
 
 function SelectedQuestionnaireContextProvider(props: { children: ReactNode }) {
@@ -45,11 +43,7 @@ function SelectedQuestionnaireContextProvider(props: { children: ReactNode }) {
     selectedQuestionnaire,
     existingResponses,
     setSelectedQuestionnaire,
-    setExistingResponses,
-    clearSelectedQuestionnaire: () => {
-      setSelectedQuestionnaire(null);
-      setExistingResponses([]);
-    }
+    setExistingResponses
   };
   return (
     <SelectedQuestionnaireContext.Provider value={selectedQuestionnaireContext}>

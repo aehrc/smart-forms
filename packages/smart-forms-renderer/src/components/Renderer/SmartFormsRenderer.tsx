@@ -26,21 +26,24 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import useQueryClient from '../../hooks/useQueryClient';
 import BaseRenderer from './BaseRenderer';
 import ThemeProvider from '../../theme/Theme';
+import type Client from 'fhirclient/lib/Client';
 
 interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   additionalVariables?: Record<string, object>;
+  fhirClient?: Client;
 }
 
 // TODO add terminiology server
 function SmartFormsRenderer(props: SmartFormsRendererProps) {
-  const { questionnaire, questionnaireResponse, additionalVariables } = props;
+  const { questionnaire, questionnaireResponse, additionalVariables, fhirClient } = props;
 
   const isLoading = useInitialiseRenderer(
     questionnaire,
     questionnaireResponse,
-    additionalVariables
+    additionalVariables,
+    fhirClient
   );
   const queryClient = useQueryClient();
 

@@ -15,26 +15,17 @@
  * limitations under the License.
  */
 
-import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme/Theme';
-import Router from './router/Router.tsx';
-import { SnackbarProvider } from 'notistack';
-import SmartClientContextProvider from './contexts/SmartClientContext.tsx';
-import DebugModeContextProvider from './contexts/DebugModeContext.tsx';
+import type Client from 'fhirclient/lib/Client';
+import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 
-function App() {
-  return (
-    <ThemeProvider>
-      <SnackbarProvider>
-        <SmartClientContextProvider>
-          <DebugModeContextProvider>
-            <CssBaseline />
-            <Router />
-          </DebugModeContextProvider>
-        </SmartClientContextProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
-  );
+export async function readPatient(client: Client): Promise<Patient> {
+  return await client.patient.read();
 }
 
-export default App;
+export async function readUser(client: Client): Promise<Practitioner> {
+  return (await client.user.read()) as Practitioner;
+}
+
+export async function readEncounter(client: Client): Promise<Encounter> {
+  return (await client.encounter.read()) as Encounter;
+}

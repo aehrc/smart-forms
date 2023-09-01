@@ -14,27 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { ReactNode } from 'react';
+import { createContext, useState } from 'react';
 
-import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme/Theme';
-import Router from './router/Router.tsx';
-import { SnackbarProvider } from 'notistack';
-import SmartClientContextProvider from './contexts/SmartClientContext.tsx';
-import DebugModeContextProvider from './contexts/DebugModeContext.tsx';
+export type DebugModeContextType = {
+  enabled: boolean;
+  setEnabled: (enabled: boolean) => void;
+};
 
-function App() {
+export const DebugModeContext = createContext<DebugModeContextType>({
+  enabled: false,
+  setEnabled: () => void 0
+});
+
+function DebugModeContextProvider(props: { children: ReactNode }) {
+  const { children } = props;
+
+  const [enabled, setEnabled] = useState(false);
+
   return (
-    <ThemeProvider>
-      <SnackbarProvider>
-        <SmartClientContextProvider>
-          <DebugModeContextProvider>
-            <CssBaseline />
-            <Router />
-          </DebugModeContextProvider>
-        </SmartClientContextProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
+    <DebugModeContext.Provider
+      value={{
+        enabled,
+        setEnabled
+      }}>
+      {children}
+    </DebugModeContext.Provider>
   );
 }
 
-export default App;
+export default DebugModeContextProvider;

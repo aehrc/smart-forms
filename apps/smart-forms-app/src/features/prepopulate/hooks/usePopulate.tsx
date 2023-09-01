@@ -15,19 +15,16 @@
  * limitations under the License.
  */
 
-import useConfigStore from '../../../stores/useConfigStore.ts';
 import _isEqual from 'lodash/isEqual';
 import type { PopulateFormParams } from '../utils/populate.ts';
 import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void {
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const encounter = useConfigStore((state) => state.encounter);
+  const { smartClient, patient, user, encounter } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);

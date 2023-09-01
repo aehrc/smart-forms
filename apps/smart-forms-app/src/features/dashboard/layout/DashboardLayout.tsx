@@ -22,14 +22,15 @@ import { Main, StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../contexts/SelectedQuestionnaireContext.tsx';
 import DashboardDebugFooter from '../components/DashboardDebugFooter/DashboardDebugFooter.tsx';
-import useConfigStore from '../../../stores/useConfigStore.ts';
 import { destroyForm } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
+import useDebugMode from '../../../hooks/useDebugMode.ts';
 
 function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const debugMode = useConfigStore((state) => state.debugMode);
+  const { smartClient } = useSmartClient();
+  const { debugModeEnabled } = useDebugMode();
 
   const navigate = useNavigate();
 
@@ -56,7 +57,7 @@ function DashboardLayout() {
         <Main>
           <Outlet />
         </Main>
-        {debugMode ? <DashboardDebugFooter /> : null}
+        {debugModeEnabled ? <DashboardDebugFooter /> : null}
       </StyledRoot>
     </SelectedQuestionnaireContextProvider>
   );

@@ -21,7 +21,6 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import useConfigStore from '../../../stores/useConfigStore.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../save/api/saveQr.ts';
 import SaveIcon from '@mui/icons-material/Save';
@@ -36,6 +35,7 @@ import {
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 interface RendererEmbeddedSpeedDialProps {
   isPopulating: boolean;
@@ -44,10 +44,7 @@ interface RendererEmbeddedSpeedDialProps {
 function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   const { isPopulating } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);

@@ -18,9 +18,9 @@
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import { constructBundle, filterResponses, getClientBundlePromise } from '../utils/dashboard.ts';
-import { useContext, useMemo } from 'react';
-import useConfigStore from '../../../stores/useConfigStore.ts';
-import { SelectedQuestionnaireContext } from '../contexts/SelectedQuestionnaireContext.tsx';
+import { useMemo } from 'react';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
+import useSelectedQuestionnaire from './useSelectedQuestionnaire.ts';
 
 interface useFetchResponsesReturnParams {
   responses: QuestionnaireResponse[];
@@ -33,10 +33,9 @@ function useFetchResponses(
   searchInput: string,
   debouncedInput: string
 ): useFetchResponsesReturnParams {
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
+  const { smartClient, patient } = useSmartClient();
 
-  const { existingResponses } = useContext(SelectedQuestionnaireContext);
+  const { existingResponses } = useSelectedQuestionnaire();
 
   const numOfSearchEntries = 50;
 

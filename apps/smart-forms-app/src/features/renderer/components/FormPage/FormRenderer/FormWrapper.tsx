@@ -17,19 +17,19 @@
 
 import RendererDebugFooter from '../../RendererDebugFooter/RendererDebugFooter.tsx';
 import { Helmet } from 'react-helmet';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import FormInvalid from '../FormInvalid.tsx';
 import {
   BaseRenderer,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
+import useDebugMode from '../../../../../hooks/useDebugMode.ts';
 
 function FormWrapper() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
-  const debugMode = useConfigStore((state) => state.debugMode);
+  const { debugModeEnabled } = useDebugMode();
 
   const topLevelQItems = sourceQuestionnaire.item;
   const topLevelQRItems = updatableResponse.item;
@@ -51,7 +51,7 @@ function FormWrapper() {
       <BaseRenderer />
 
       {/* Debug footer */}
-      {debugMode ? <RendererDebugFooter /> : null}
+      {debugModeEnabled ? <RendererDebugFooter /> : null}
     </>
   );
 }

@@ -86,19 +86,28 @@ export const QTestGridWithResponseAddFhirPath: Story = {
   }
 };
 
-// export const QTestGridWithResponseAddXFhirQuery: Story = {
-//   args: {
-//     questionnaire: QTestGrid,
-//     questionnaireResponse: RTestGrid,
-//     additionalVariables: {
-//       addVar2: {
-//         url: 'http://hl7.org/fhir/StructureDefinition/variable',
-//         valueExpression: {
-//           name: 'addVar2',
-//           language: 'application/x-fhir-query',
-//           expression: 'Condition?patient={{%patient.id}}'
-//         }
-//       }
-//     }
-//   }
-// };
+export const QTestGridWithResponseAddXFhirQuery: Story = {
+  args: {
+    questionnaire: QTestGrid,
+    questionnaireResponse: RTestGrid,
+    additionalVariables: {
+      addVar1: {
+        url: 'http://hl7.org/fhir/StructureDefinition/variable',
+        valueExpression: {
+          name: 'addVar1',
+          language: 'text/fhirpath',
+          expression:
+            "%resource.item.where(linkId='grid').item.where(linkId='1').item.where(linkId='1.1').item.where(linkId='1.1.1').answer.value"
+        }
+      },
+      addVar2: {
+        url: 'http://hl7.org/fhir/StructureDefinition/variable',
+        valueExpression: {
+          name: 'addVar2',
+          language: 'application/x-fhir-query',
+          expression: 'Condition?patient={{%patient.id}}'
+        }
+      }
+    }
+  }
+};

@@ -20,11 +20,10 @@ import {
   getResponseToolBarColors,
   StyledRoot
 } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
-import { useContext } from 'react';
-import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
 import ResponseListToolbarButtons from './ResponseListToolbarButtons.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import ResponseListToolbarLeftSection from './ResponseListToolbarLeftSection.tsx';
+import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 
 interface ResponseListToolbarProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -37,7 +36,7 @@ interface ResponseListToolbarProps {
 function ResponseListToolbar(props: ResponseListToolbarProps) {
   const { selectedResponse, searchInput, isFetching, onClearSelection, onSearch } = props;
 
-  const { selectedQuestionnaire, existingResponses } = useContext(SelectedQuestionnaireContext);
+  const { selectedQuestionnaire, existingResponses } = useSelectedQuestionnaire();
 
   const toolBarColors = getResponseToolBarColors(
     selectedResponse,

@@ -26,8 +26,9 @@ import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import GoToPlaygroundButton from '../DashboardPages/QuestionnairePage/Buttons/GoToPlaygroundButton.tsx';
 import { CsiroLogoWrapper, NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { NavMiddleWrapper } from '../../../../components/Nav/Nav.styles.ts';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
 import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import useDebugMode from '../../../../hooks/useDebugMode.ts';
 
 interface DashboardNavProps {
   openNav: boolean;
@@ -37,8 +38,8 @@ interface DashboardNavProps {
 export default function DashboardNav(props: DashboardNavProps) {
   const { openNav, onCloseNav } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const debugMode = useConfigStore((state) => state.debugMode);
+  const { smartClient } = useSmartClient();
+  const { debugModeEnabled } = useDebugMode();
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -64,7 +65,7 @@ export default function DashboardNav(props: DashboardNavProps) {
         {isNotLaunched ? (
           <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
         ) : null}
-        {isNotLaunched || debugMode ? <GoToPlaygroundButton /> : null}
+        {isNotLaunched || debugModeEnabled ? <GoToPlaygroundButton /> : null}
       </NavMiddleWrapper>
 
       <CsiroLogoWrapper>

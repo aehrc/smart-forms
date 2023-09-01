@@ -18,9 +18,9 @@
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import { getClientBundlePromise, getResponsesFromBundle } from '../utils/dashboard.ts';
-import { useContext, useMemo } from 'react';
-import useConfigStore from '../../../stores/useConfigStore.ts';
-import { SelectedQuestionnaireContext } from '../contexts/SelectedQuestionnaireContext.tsx';
+import { useMemo } from 'react';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
+import useSelectedQuestionnaire from './useSelectedQuestionnaire.ts';
 
 interface useFetchExistingResponsesReturnParams {
   existingResponses: QuestionnaireResponse[];
@@ -29,12 +29,10 @@ interface useFetchExistingResponsesReturnParams {
 }
 
 function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
-  const { selectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
-  const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;
+  const { selectedQuestionnaire } = useSelectedQuestionnaire();
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
+  const { smartClient, patient, launchQuestionnaire } = useSmartClient();
+  const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;
 
   // search responses from selected questionnaire
   let questionnaireRefParam = '';

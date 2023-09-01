@@ -23,11 +23,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { OperationItem } from '../../../../types/Nav.interface.ts';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 function RendererOperationSection() {
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 

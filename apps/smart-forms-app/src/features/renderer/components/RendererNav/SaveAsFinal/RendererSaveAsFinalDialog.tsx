@@ -28,13 +28,13 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import { LoadingButton } from '@mui/lab';
 import {
   removeHiddenAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../../hooks/useSmartClient.ts';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
@@ -44,10 +44,7 @@ export interface RendererSaveAsFinalDialogProps {
 function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   const { open, closeDialog } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);

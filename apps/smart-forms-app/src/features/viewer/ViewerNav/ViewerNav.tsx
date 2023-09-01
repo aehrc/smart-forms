@@ -26,10 +26,10 @@ import NavErrorAlert from '../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../components/Logos/CsiroLogo.tsx';
 import { CsiroLogoWrapper, NavLogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import { NavErrorAlertWrapper } from '../../../components/Nav/Nav.styles.ts';
-import useConfigStore from '../../../stores/useConfigStore.ts';
 import { NAV_WIDTH } from '../../../components/Header/Header.styles.ts';
 import ViewerLaunchQuestionnaireNavSection from './ViewerLaunchQuestionnaireNavSection.tsx';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 interface Props {
   openNav: boolean;
@@ -39,8 +39,7 @@ interface Props {
 function ViewerNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);

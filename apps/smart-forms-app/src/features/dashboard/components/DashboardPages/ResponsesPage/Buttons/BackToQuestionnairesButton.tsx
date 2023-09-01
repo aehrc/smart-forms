@@ -16,13 +16,12 @@
  */
 
 import { IconButton, Tooltip } from '@mui/material';
-import { useContext } from 'react';
-import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 
 function BackToQuestionnairesButton() {
-  const { existingResponses } = useContext(SelectedQuestionnaireContext);
+  const { existingResponses } = useSelectedQuestionnaire();
   const navigate = useNavigate();
 
   return existingResponses.length > 0 ? (

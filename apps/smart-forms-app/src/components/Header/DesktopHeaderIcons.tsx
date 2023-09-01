@@ -19,10 +19,10 @@ import { Avatar, Box, Typography, useTheme } from '@mui/material';
 import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography.tsx';
 import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import useConfigStore from '../../stores/useConfigStore.ts';
+import useSmartClient from '../../hooks/useSmartClient.ts';
 
 function DesktopHeaderIcons() {
-  const user = useConfigStore((state) => state.user);
+  const { user } = useSmartClient();
 
   const theme = useTheme();
 

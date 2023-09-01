@@ -15,26 +15,29 @@
  * limitations under the License.
  */
 
-import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme/Theme';
-import Router from './router/Router.tsx';
-import { SnackbarProvider } from 'notistack';
-import SmartClientContextProvider from './contexts/SmartClientContext.tsx';
-import DebugModeContextProvider from './contexts/DebugModeContext.tsx';
+import { useContext } from 'react';
+import { SelectedQuestionnaireContext } from '../contexts/SelectedQuestionnaireContext.tsx';
 
-function App() {
-  return (
-    <ThemeProvider>
-      <SnackbarProvider>
-        <SmartClientContextProvider>
-          <DebugModeContextProvider>
-            <CssBaseline />
-            <Router />
-          </DebugModeContextProvider>
-        </SmartClientContextProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
-  );
+function useSelectedQuestionnaire() {
+  const {
+    selectedQuestionnaire,
+    existingResponses,
+    setSelectedQuestionnaire,
+    setExistingResponses
+  } = useContext(SelectedQuestionnaireContext);
+
+  function clearSelectedQuestionnaire() {
+    setSelectedQuestionnaire(null);
+    setExistingResponses([]);
+  }
+
+  return {
+    selectedQuestionnaire,
+    existingResponses,
+    setSelectedQuestionnaire,
+    setExistingResponses,
+    clearSelectedQuestionnaire
+  };
 }
 
-export default App;
+export default useSelectedQuestionnaire;

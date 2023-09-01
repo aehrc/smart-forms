@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
-import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import GradingIcon from '@mui/icons-material/Grading';
 import useFetchExistingResponses from '../../../../hooks/useFetchExistingResponses.ts';
+import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 
 function ViewExistingResponsesButton() {
-  const { selectedQuestionnaire, setExistingResponses } = useContext(SelectedQuestionnaireContext);
+  const { selectedQuestionnaire, setExistingResponses } = useSelectedQuestionnaire();
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();

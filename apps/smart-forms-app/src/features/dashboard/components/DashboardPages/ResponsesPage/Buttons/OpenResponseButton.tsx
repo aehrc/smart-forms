@@ -26,10 +26,10 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
 import { assembleIfRequired } from '../../../../../assemble/utils/assemble.ts';
-import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { buildForm } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 
 interface Props {
   selectedResponse: QuestionnaireResponse | null;
@@ -37,7 +37,7 @@ interface Props {
 function OpenResponseButton(props: Props) {
   const { selectedResponse } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   const [isLoading, setIsLoading] = useState(false);
 

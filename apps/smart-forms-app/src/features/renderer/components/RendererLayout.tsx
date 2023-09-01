@@ -29,16 +29,14 @@ import NavExpandButton from './NavCollapseButton.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
-import useConfigStore from '../../../stores/useConfigStore.ts';
 import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial.tsx';
 import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 function RendererLayout() {
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
+  const { smartClient, patient, user } = useSmartClient();
 
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
   const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);

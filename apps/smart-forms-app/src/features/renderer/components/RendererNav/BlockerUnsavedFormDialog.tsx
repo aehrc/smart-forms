@@ -28,13 +28,13 @@ import {
 } from '@mui/material';
 import { saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
 import { LoadingButton } from '@mui/lab';
 import {
   removeHiddenAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 export interface Props {
   blocker: Blocker;
@@ -45,10 +45,7 @@ export interface Props {
 function BlockerUnsavedFormDialog(props: Props) {
   const { blocker, open, closeDialog } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const [isSaving, setIsSaving] = useState(false);
 

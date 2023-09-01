@@ -23,14 +23,13 @@ import UserPopoverMenu from './Popovers/UserPopoverMenu.tsx';
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import NotLaunchedPopover from './Popovers/NotLaunchedPopover.tsx';
-import useConfigStore from '../../stores/useConfigStore.ts';
 import { constructShortName } from '../../features/smartAppLaunch/utils/launchContext.ts';
+import useSmartClient from '../../hooks/useSmartClient.ts';
 
 function MobileHeaderIcons() {
   const theme = useTheme();
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
+
+  const { smartClient, patient, user } = useSmartClient();
 
   const isNotLaunched = !smartClient;
 

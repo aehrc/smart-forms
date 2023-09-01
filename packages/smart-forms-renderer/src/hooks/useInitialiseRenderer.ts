@@ -20,11 +20,15 @@ import { useLayoutEffect, useState } from 'react';
 import { createQuestionnaireResponse } from '../utils/qrItem';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../stores/useQuestionnaireResponseStore';
+import type Client from 'fhirclient/lib/Client';
+import useSmartConfigStore from '../stores/useSmartConfigStore';
+import { readEncounter, readPatient, readUser } from '../api/smartClient';
 
 function useInitialiseRenderer(
   questionnaire: Questionnaire,
   questionnaireResponse?: QuestionnaireResponse,
-  additionalVariables?: Record<string, object>
+  additionalVariables?: Record<string, object>,
+  fhirClient?: Client
 ): boolean {
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
   const updatePopulatedProperties = useQuestionnaireStore(
@@ -35,10 +39,28 @@ function useInitialiseRenderer(
     (state) => state.setUpdatableResponseAsPopulated
   );
 
+  const setSmartClient = useSmartConfigStore((state) => state.setClient);
+  const setPatient = useSmartConfigStore((state) => state.setPatient);
+  const setUser = useSmartConfigStore((state) => state.setUser);
+  const setEncounter = useSmartConfigStore((state) => state.setEncounter);
+
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
     setLoading(true);
+    if (fhirClient) {
+      setSmartClient(fhirClient);
+      readPatient(fhirClient).then((patient) => {
+        setPatient(patient);
+      });
+      readUser(fhirClient).then((user) => {
+        setUser(user);
+      });
+      readEncounter(fhirClient).then((encounter) => {
+        setEncounter(encounter);
+      });
+    }
+
     buildSourceQuestionnaire(questionnaire, questionnaireResponse, additionalVariables).then(() => {
       buildSourceResponse(createQuestionnaireResponse(questionnaire));
 
@@ -55,7 +77,12 @@ function useInitialiseRenderer(
     buildSourceResponse,
     setUpdatableResponseAsPopulated,
     updatePopulatedProperties,
-    additionalVariables
+    additionalVariables,
+    fhirClient,
+    setSmartClient,
+    setPatient,
+    setUser,
+    setEncounter
   ]);
 
   return loading;

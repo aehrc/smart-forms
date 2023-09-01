@@ -21,7 +21,6 @@ import { saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
 import type { NavigateFunction } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { IconButton, Tooltip } from '@mui/material';
@@ -31,12 +30,10 @@ import {
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../../hooks/useSmartClient.ts';
 
 function RendererSaveAsDraft() {
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);

@@ -144,7 +144,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     );
 
   if (isRepeated) {
-    <>{choiceSelectAnswerValueSet}</>;
+    return <>{choiceSelectAnswerValueSet}</>;
   }
 
   return (
