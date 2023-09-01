@@ -19,7 +19,7 @@ import { useContext } from 'react';
 import { SmartClientContext } from '../contexts/SmartClientContext.tsx';
 import type { Encounter, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
-import Client from 'fhirclient/lib/Client';
+import type Client from 'fhirclient/lib/Client';
 
 function useSmartClient() {
   const { state, dispatch } = useContext(SmartClientContext);

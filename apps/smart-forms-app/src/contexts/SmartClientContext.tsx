@@ -18,7 +18,7 @@
 import type { Dispatch, ReactNode } from 'react';
 import { createContext, useReducer } from 'react';
 import type { Encounter, Patient, Practitioner, Questionnaire } from 'fhir/r4';
-import Client from 'fhirclient/lib/Client';
+import type Client from 'fhirclient/lib/Client';
 
 export interface SmartClientState {
   smartClient: Client | null;
