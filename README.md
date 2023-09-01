@@ -1,4 +1,4 @@
-<div align="center">
+<div>
 <h1>Smart Forms</h1>
 <h3>An open source FHIR powered forms app built in React</h3>
 <h4>
