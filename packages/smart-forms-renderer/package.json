@@ -58,7 +58,7 @@
     "@storybook/react": "^7.4.0",
     "@storybook/react-vite": "^7.4.0",
     "@storybook/testing-library": "^0.2.0",
-    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/jest-dom": "^6.1.2",
     "@testing-library/react": "^14.0.0",
     "@testing-library/react-hooks": "^7.0.2",
     "@types/jest": "^29.5.4",
