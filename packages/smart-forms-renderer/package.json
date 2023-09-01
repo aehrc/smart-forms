@@ -1,16 +1,27 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "0.6.1",
+  "version": "0.6.5",
+  "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
   "scripts": {
     "compile": "tsc",
-    "build:watch": "tsc --watch",
+    "compile:watch": "tsc -w",
     "prepare": "npm run compile",
     "test": "jest",
     "test:watch": "jest --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aehrc/smart-forms.git"
+  },
+  "author": "Sean Fong",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aehrc/smart-forms/issues"
+  },
+  "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "@iconify/react": "^4.1.1",
     "dayjs": "^1.11.9",
@@ -23,7 +34,7 @@
     "@types/fhir": "^0.0.37",
     "zustand": "^4.4.1",
     "react-markdown": "^8.0.7",
-    "sdc-assemble": "^1.0.1"
+    "@aehrc/sdc-assemble": "^1.0.2"
   },
   "peerDependencies": {
     "@emotion/react": ">=11.11.0",

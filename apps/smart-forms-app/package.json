@@ -1,8 +1,9 @@
 {
-  "name": "smart-forms-app",
+  "name": "@aehrc/smart-forms-app",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
+  "description": "Typescript-based React web application implementing FHIR Structured Data Captured (SDC) specification",
   "scripts": {
     "dev": "vite",
     "start": "vite",
@@ -13,8 +14,18 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aehrc/smart-forms.git"
+  },
+  "author": "Sean Fong",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aehrc/smart-forms/issues"
+  },
+  "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "@aehrc/smart-forms-renderer": "^0.6.1",
+    "@aehrc/smart-forms-renderer": "^0.6.5",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.10.8",
     "@fontsource/material-icons": "^5.0.7",
@@ -55,8 +66,8 @@
     "react-router-dom": "6.15.0",
     "react-spinners": "^0.13.8",
     "react-to-print": "^2.14.13",
-    "sdc-assemble": "^1.0.1",
-    "sdc-populate": "^1.0.2",
+    "@aehrc/sdc-assemble": "^1.0.2",
+    "@aehrc/sdc-populate": "^1.0.3",
     "simplebar-react": "^3.2.4",
     "usehooks-ts": "^2.9.1",
     "zustand": "^4.4.1"
