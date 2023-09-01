@@ -16,14 +16,46 @@
  */
 
 import type { Questionnaire } from 'fhir/r4';
+import type { Extension } from 'fhir/r4';
 import type {
   LaunchContext,
   QuestionnaireLevelXFhirQueryVariable,
   SourceQuery
 } from '../types/populate.interface.ts';
-import { isLaunchContext } from '../../../providers/typePredicates/isLaunchContext.ts';
-import { isSourceQuery } from '../../../providers/typePredicates/isSourceQuery.ts';
-import { isXFhirQueryVariable } from '../../../providers/typePredicates/isXFhirQueryVariable.ts';
+
+export function isLaunchContext(extension: Extension): extension is LaunchContext {
+  const hasLaunchContextName =
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
+    !!extension.extension?.find(
+      (ext) =>
+        ext.url === 'name' &&
+        (ext.valueId ||
+          (ext.valueCoding &&
+            (ext.valueCoding.code === 'patient' ||
+              ext.valueCoding.code === 'encounter' ||
+              ext.valueCoding.code === 'location' ||
+              ext.valueCoding.code === 'user' ||
+              ext.valueCoding.code === 'study' ||
+              ext.valueCoding.code === 'sourceQueries')))
+    );
+
+  const hasLaunchContextType = !!extension.extension?.find(
+    (ext) =>
+      ext.url === 'type' &&
+      ext.valueCode &&
+      (ext.valueCode === 'Patient' ||
+        ext.valueCode === 'Practitioner' ||
+        ext.valueCode === 'Encounter')
+  );
+
+  return (
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
+    hasLaunchContextName &&
+    hasLaunchContextType
+  );
+}
 
 export function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
   if (questionnaire.extension && questionnaire.extension.length > 0) {
@@ -35,6 +67,14 @@ export function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[]
   return [];
 }
 
+export function isSourceQuery(extension: Extension): extension is SourceQuery {
+  return (
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries' &&
+    !!extension.valueReference
+  );
+}
+
 // get source query references
 export function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
   if (questionnaire.extension && questionnaire.extension.length > 0) {
@@ -42,6 +82,17 @@ export function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
   }
 
   return [];
+}
+
+export function isXFhirQueryVariable(
+  extension: Extension
+): extension is QuestionnaireLevelXFhirQueryVariable {
+  return (
+    extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
+    !!extension.valueExpression?.name &&
+    extension.valueExpression?.language === 'application/x-fhir-query' &&
+    !!extension.valueExpression?.expression
+  );
 }
 
 /**

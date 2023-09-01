@@ -22,7 +22,7 @@ import { useSnackbar } from 'notistack';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import cloneDeep from 'lodash.clonedeep';
-import { saveQuestionnaireResponse } from '../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import SaveIcon from '@mui/icons-material/Save';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';

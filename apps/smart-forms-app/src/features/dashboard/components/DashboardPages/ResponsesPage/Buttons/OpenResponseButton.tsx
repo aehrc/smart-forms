@@ -24,8 +24,8 @@ import {
 } from '../../../../utils/dashboard.ts';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
-import { assembleIfRequired } from '../../../../../assemble/utils/assemble.ts';
+import { postQuestionnaireToSMARTHealthIT } from '../../../../../../api/saveQr.ts';
+import { assembleIfRequired } from '../../../../../../utils/assemble.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { buildForm } from '@aehrc/smart-forms-renderer';

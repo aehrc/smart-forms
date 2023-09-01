@@ -18,7 +18,7 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
+import type { CalculatedExpression } from '../types/calculatedExpression.interface.ts';
 import type { EnableWhenExpression } from '../types/enableWhen.interface.ts';
 import { evaluateEnableWhenExpressions } from './enableWhenExpression.ts';
 import { evaluateCalculatedExpressions } from './calculatedExpressions.ts';

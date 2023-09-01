@@ -15,24 +15,9 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
-import type { QuestionnaireItem } from 'fhir/r4';
-import useHidden from '../../../../hooks/useHidden.ts';
-import LabelText from './LabelText.tsx';
+import type { MutableRefObject } from 'react';
 
-interface GroupHeadingIconProps {
-  displayItem: QuestionnaireItem;
-}
-
-const ContextDisplayItem = memo(function GroupHeadingIcon(props: GroupHeadingIconProps) {
-  const { displayItem } = props;
-
-  const itemIsHidden = useHidden(displayItem);
-  if (itemIsHidden) {
-    return null;
-  }
-
-  return <LabelText qItem={displayItem} />;
-});
-
-export default ContextDisplayItem;
+export type PrintComponentRefContextType = {
+  componentRef: MutableRefObject<null> | null;
+  setComponentRef: (componentRef: MutableRefObject<null>) => unknown;
+};

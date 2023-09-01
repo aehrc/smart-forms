@@ -21,7 +21,7 @@ import { createFhirPathContext } from './fhirpath.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import _isEqual from 'lodash/isEqual';
-import { emptyResponse } from '../stores/useQuestionnaireStore.ts';
+import { emptyResponse } from './qrItem.ts';
 
 interface EvaluateInitialEnableWhenExpressionsParams {
   initialResponse: QuestionnaireResponse;

@@ -17,7 +17,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { postQuestionnaireToSMARTHealthIT } from '../../../../../save/api/saveQr.ts';
+import { postQuestionnaireToSMARTHealthIT } from '../../../../../../api/saveQr.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { buildForm } from '@aehrc/smart-forms-renderer';

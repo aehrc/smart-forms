@@ -4,7 +4,7 @@ import type { Expression, QuestionnaireResponse } from 'fhir/r4';
 import type { EnableWhenExpression, EnableWhenItems } from '../types/enableWhen.interface.ts';
 import type { Tabs } from '../features/renderer/types/tab.interface.ts';
 import { assignPopulatedAnswersToEnableWhen } from './enableWhen.ts';
-import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
+import type { CalculatedExpression } from '../types/calculatedExpression.interface.ts';
 import { evaluateInitialCalculatedExpressions } from './calculatedExpressions.ts';
 
 interface initialFormFromResponseParams {

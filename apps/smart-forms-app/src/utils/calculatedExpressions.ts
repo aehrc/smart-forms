@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
+import type { CalculatedExpression } from '../types/calculatedExpression.interface.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
@@ -27,10 +27,10 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import _isEqual from 'lodash/isEqual';
-import { emptyResponse } from '../stores/useQuestionnaireStore.ts';
 import { createFhirPathContext } from './fhirpath.ts';
 import { getQrItemsIndex, mapQItemsIndex } from '../features/renderer/utils';
 import { updateQrGroup } from '../features/renderer/utils/qrItem.ts';
+import { emptyResponse } from './qrItem.ts';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;

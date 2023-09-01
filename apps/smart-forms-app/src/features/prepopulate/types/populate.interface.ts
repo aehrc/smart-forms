@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, Expression, Extension, Reference } from 'fhir/r4';
+import type { Coding, Expression, Extension, FhirResource, Reference } from 'fhir/r4';
 
 export interface LaunchContext extends Extension {
   url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext';
@@ -215,4 +215,14 @@ interface XFhirQueryVariableExpression extends Expression {
   name: string;
   language: 'application/x-fhir-query';
   expression: string;
+}
+
+export interface VariableXFhirQuery {
+  valueExpression: Expression;
+  result?: FhirResource;
+}
+
+export interface Variables {
+  fhirPathVariables: Record<string, Expression[]>;
+  xFhirQueryVariables: Record<string, VariableXFhirQuery>;
 }
