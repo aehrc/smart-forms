@@ -28,10 +28,9 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 import { LoadingButton } from '@mui/lab';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -41,16 +40,13 @@ export interface ViewerSaveAsFinalDialogProps {
 function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
   const { open, closeDialog } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
-
+  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsSaved
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   const navigate = useNavigate();
@@ -75,7 +71,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setIsSaving(false);
-        saveResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         handleClose();
         enqueueSnackbar('Response saved as final', { variant: 'success' });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');

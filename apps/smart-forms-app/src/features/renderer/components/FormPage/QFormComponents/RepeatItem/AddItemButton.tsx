@@ -33,6 +33,7 @@ function AddItemButton(props: AddItemButtonProps) {
     <Box display="flex" flexDirection="row-reverse">
       <Button
         variant="contained"
+        size="small"
         startIcon={<AddIcon />}
         disabled={isDisabled}
         onClick={onAddItem}

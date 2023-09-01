@@ -17,7 +17,7 @@
 
 import type { ReactNode } from 'react';
 import React from 'react';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem } from 'fhir/r4';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from './ItemLabelWrapper';

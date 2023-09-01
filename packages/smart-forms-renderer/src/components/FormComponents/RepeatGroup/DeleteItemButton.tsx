@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { RepeatDeleteTooltip } from '../RepeatItem/RepeatItem.styles';
-import { IconButton } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 

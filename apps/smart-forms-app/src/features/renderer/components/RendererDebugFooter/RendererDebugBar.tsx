@@ -16,7 +16,7 @@
  */
 
 import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
-import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface RendererDebugBarProps {
   isHidden: boolean;

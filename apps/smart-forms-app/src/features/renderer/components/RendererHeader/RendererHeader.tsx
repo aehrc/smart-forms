@@ -23,9 +23,9 @@ import { Box, IconButton, Typography } from '@mui/material';
 import UpdatingIndicator from './UpdatingIndicator.tsx';
 import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
-import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
 import { memo } from 'react';
 import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface RendererHeaderProps {
   navIsCollapsed: boolean;

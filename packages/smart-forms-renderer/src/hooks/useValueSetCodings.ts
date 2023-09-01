@@ -26,13 +26,13 @@ import {
 import { getAnswerExpression } from '../utils/itemControl';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import useConfigStore from '../stores/useConfigStore';
+import useSmartConfigStore from '../stores/useSmartConfigStore';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const encounter = useConfigStore((state) => state.encounter);
+  const patient = useSmartConfigStore((state) => state.patient);
+  const user = useSmartConfigStore((state) => state.user);
+  const encounter = useSmartConfigStore((state) => state.encounter);
 
   const launchContexts = useQuestionnaireStore((state) => state.launchContexts);
   const processedValueSetCodings = useQuestionnaireStore((state) => state.processedValueSetCodings);

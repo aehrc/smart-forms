@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-import { FormGroup, RadioGroup, styled, Typography } from '@mui/material';
+import FormGroup from '@mui/material/FormGroup';
+import RadioGroup from '@mui/material/RadioGroup';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
 
 export const QFormGroup = styled(FormGroup)(() => ({
   marginBottom: 4

@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-import { Stack, styled, Tooltip } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
 
 export const RepeatDeleteTooltip = styled(Tooltip)(() => ({
   marginLeft: 8

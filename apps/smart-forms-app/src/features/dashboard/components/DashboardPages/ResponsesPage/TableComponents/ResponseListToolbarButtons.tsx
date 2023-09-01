@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { constructName } from '../../../../../smartAppLaunch/utils/launchContext.ts';
-import { SelectedQuestionnaireContext } from '../../../../contexts/SelectedQuestionnaireContext.tsx';
-import useConfigStore from '../../../../../../stores/useConfigStore.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
 import useResponsive from '../../../../../../hooks/useResponsive.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
+import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
+import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 
 interface ResponseListToolbarButtonsProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -34,11 +33,10 @@ interface ResponseListToolbarButtonsProps {
 function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
   const { selectedResponse, onClearSelection } = props;
 
-  const { selectedQuestionnaire, existingResponses, clearSelectedQuestionnaire } = useContext(
-    SelectedQuestionnaireContext
-  );
+  const { selectedQuestionnaire, existingResponses, clearSelectedQuestionnaire } =
+    useSelectedQuestionnaire();
 
-  const patient = useConfigStore((state) => state.patient);
+  const { patient } = useSmartClient();
 
   const isDesktop = useResponsive('up', 'lg');
 

@@ -20,7 +20,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import { getMarkdownString, getXHtmlString } from '../../../utils/itemControl';
 import { QItemTypography } from '../Item.styles';
 import parse from 'html-react-parser';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import ReactMarkdown from 'react-markdown';
 
 interface ItemLabelTextProps {

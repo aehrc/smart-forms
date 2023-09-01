@@ -16,7 +16,9 @@
  */
 
 import React, { memo } from 'react';
-import { Box, Card, Collapse } from '@mui/material';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Collapse from '@mui/material/Collapse';
 import { PrimarySelectableList } from '../Lists.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { isHidden } from '../../utils/qItem';

@@ -19,10 +19,10 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
 import ViewerOperationItem from '../ViewerOperationItem.tsx';
 import ViewerSaveAsFinalDialog from './ViewerSaveAsFinalDialog.tsx';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 function ViewerSaveAsFinal() {
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 

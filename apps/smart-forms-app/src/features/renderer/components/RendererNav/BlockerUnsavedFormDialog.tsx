@@ -26,12 +26,15 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 import { LoadingButton } from '@mui/lab';
+import {
+  removeHiddenAnswersFromResponse,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 export interface Props {
   blocker: Blocker;
@@ -42,21 +45,15 @@ export interface Props {
 function BlockerUnsavedFormDialog(props: Props) {
   const { blocker, open, closeDialog } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
-
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const [isSaving, setIsSaving] = useState(false);
 
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsSaved
+  );
   const navigate = useNavigate();
 
   const isLaunched = !!(smartClient && patient && user);
@@ -83,19 +80,13 @@ function BlockerUnsavedFormDialog(props: Props) {
     setIsSaving(true);
 
     let responseToSave = cloneDeep(updatableResponse);
-    responseToSave = removeHiddenAnswers({
-      questionnaire: sourceQuestionnaire,
-      questionnaireResponse: responseToSave,
-      enableWhenIsActivated,
-      enableWhenItems,
-      enableWhenExpressions
-    });
+    responseToSave = removeHiddenAnswersFromResponse(sourceQuestionnaire, responseToSave);
 
     setIsSaving(true);
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        saveResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         setIsSaving(false);
         closeDialog();
         blocker.proceed?.();

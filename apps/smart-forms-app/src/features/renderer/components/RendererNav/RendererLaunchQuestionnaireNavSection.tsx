@@ -20,16 +20,15 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import RendererOperationItem from './RendererOperationItem.tsx';
 import GradingIcon from '@mui/icons-material/Grading';
-import { useContext } from 'react';
-import { SelectedQuestionnaireContext } from '../../../dashboard/contexts/SelectedQuestionnaireContext.tsx';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import useSelectedQuestionnaire from '../../../dashboard/hooks/useSelectedQuestionnaire.ts';
 
 function RendererLaunchQuestionnaireNavSection() {
   const navigate = useNavigate();
   const { closeSnackbar } = useSnackbar();
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { launchQuestionnaire } = useSmartClient();
 
-  const { setSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
+  const { setSelectedQuestionnaire } = useSelectedQuestionnaire();
 
   return (
     <Box sx={{ pb: 4 }}>

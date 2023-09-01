@@ -18,11 +18,9 @@
 import { useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
 import {
-  getEncounter,
-  getPatient,
-  getQuestionnaireContext,
   getQuestionnaireReferences,
-  getUser,
+  readCommonLaunchContexts,
+  readQuestionnaireContext,
   responseToQuestionnaireResource
 } from '../utils/launch.ts';
 import { postQuestionnaireToSMARTHealthIT } from '../../save/api/saveQr.ts';
@@ -33,9 +31,9 @@ import { StyledRoot } from './Authorisation.styles.tsx';
 import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
 import RenderAuthStatus from './RenderAuthStatus.tsx';
 import { assembleIfRequired } from '../../assemble/utils/assemble.ts';
-import useConfigStore from '../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {
@@ -71,11 +69,8 @@ const initialAuthState: AuthState = {
 function Authorisation() {
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  const setSmartClient = useConfigStore((state) => state.setSmartClient);
-  const setPatient = useConfigStore((state) => state.setPatient);
-  const setUser = useConfigStore((state) => state.setUser);
-  const setEncounter = useConfigStore((state) => state.setEncounter);
-  const setLaunchQuestionnaire = useConfigStore((state) => state.setLaunchQuestionnaire);
+  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext } =
+    useSmartClient();
 
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
 
@@ -92,46 +87,26 @@ function Authorisation() {
           sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
-          // Set patient launch context
-          getPatient(client)
-            .then((patient) => {
-              setPatient(patient);
-              dispatch({ type: 'UPDATE_HAS_PATIENT', payload: true });
-            })
-            .catch((error) => {
-              console.error(error);
-              dispatch({ type: 'UPDATE_HAS_PATIENT', payload: false });
-              enqueueSnackbar('Fail to fetch patient. Try launching the app again', {
-                variant: 'error'
-              });
-            });
+          readCommonLaunchContexts(client).then(({ patient, user, encounter }) => {
+            dispatch({ type: 'UPDATE_HAS_PATIENT', payload: !!patient });
+            dispatch({ type: 'UPDATE_HAS_USER', payload: !!user });
 
-          // Set user launch context
-          getUser(client)
-            .then((user) => {
-              setUser(user);
-              dispatch({ type: 'UPDATE_HAS_USER', payload: true });
-            })
-            .catch((error) => {
-              console.error(error);
-              dispatch({ type: 'UPDATE_HAS_USER', payload: false });
-              enqueueSnackbar('Fail to fetch user. Try launching the app again', {
-                variant: 'error'
-              });
-            });
+            setCommonLaunchContexts(patient, user, encounter);
 
-          // Set encounter launch context
-          getEncounter(client)
-            .then((encounter) => {
-              setEncounter(encounter);
-            })
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            .catch(() => {});
+            if (!patient || !user) {
+              enqueueSnackbar(
+                'Fail to fetch patient or user launch context. Try launching the app again',
+                {
+                  variant: 'error'
+                }
+              );
+            }
+          });
 
           // Set questionnaire launch context if available
           const questionnaireReferences = getQuestionnaireReferences(client);
           if (questionnaireReferences.length > 0) {
-            getQuestionnaireContext(client, questionnaireReferences)
+            readQuestionnaireContext(client, questionnaireReferences)
               .then((response) => {
                 const questionnaire = responseToQuestionnaireResource(response);
 
@@ -154,7 +129,7 @@ function Authorisation() {
                     }
 
                     await buildSourceQuestionnaire(questionnaire);
-                    setLaunchQuestionnaire(questionnaire);
+                    setQuestionnaireLaunchContext(questionnaire);
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                   } else {
                     enqueueSnackbar(

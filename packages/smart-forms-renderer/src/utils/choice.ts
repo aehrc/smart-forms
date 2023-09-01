@@ -23,7 +23,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { QItemChoiceControl, QItemChoiceOrientation } from '../interfaces/choice.enum';
+import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
 
 /**
@@ -34,27 +34,27 @@ import { isSpecificItemControl } from './itemControl';
 export function getChoiceControlType(qItem: QuestionnaireItem) {
   const dropdownOptionsCount = 5;
   if (isSpecificItemControl(qItem, 'autocomplete')) {
-    return QItemChoiceControl.Autocomplete;
+    return ChoiceItemControl.Autocomplete;
   }
 
   if (isSpecificItemControl(qItem, 'check-box')) {
-    return QItemChoiceControl.Checkbox;
+    return ChoiceItemControl.Checkbox;
   }
 
   if (isSpecificItemControl(qItem, 'radio-button')) {
-    return QItemChoiceControl.Radio;
+    return ChoiceItemControl.Radio;
   }
 
   if (isSpecificItemControl(qItem, 'drop-down')) {
-    return QItemChoiceControl.Select;
+    return ChoiceItemControl.Select;
   }
 
   if (qItem.answerOption) {
     return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
-      ? QItemChoiceControl.Radio
-      : QItemChoiceControl.Select;
+      ? ChoiceItemControl.Radio
+      : ChoiceItemControl.Select;
   } else {
-    return QItemChoiceControl.Select;
+    return ChoiceItemControl.Select;
   }
 }
 
@@ -162,7 +162,7 @@ export function updateQrCheckboxAnswers(
  *
  * @author Sean Fong
  */
-export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrientation {
+export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrientation {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation'
@@ -171,13 +171,13 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): QItemChoiceOrien
     const code = itemControl.valueCode;
     if (code) {
       if (code === 'horizontal') {
-        return QItemChoiceOrientation.Horizontal;
+        return ChoiceItemOrientation.Horizontal;
       } else if (code === 'vertical') {
-        return QItemChoiceOrientation.Vertical;
+        return ChoiceItemOrientation.Vertical;
       }
     }
   }
-  return QItemChoiceOrientation.Vertical;
+  return ChoiceItemOrientation.Vertical;
 }
 
 /**

@@ -20,7 +20,10 @@ import type { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/re
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import { QGroupContainerBox } from '../../Box.styles';
-import { Card, Collapse, Divider } from '@mui/material';
+import Card from '@mui/material/Card';
+import Collapse from '@mui/material/Collapse';
+import Divider from '@mui/material/Divider';
+
 import { QGroupHeadingTypography } from '../Typography.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { createEmptyQrItem } from '../../../utils/qrItem';

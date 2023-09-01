@@ -18,10 +18,10 @@
 import { StyledRoot } from '../../../../components/DebugFooter/DebugFooter.styles.ts';
 import { Box, Typography } from '@mui/material';
 import { FORMS_SERVER_ENDPOINT } from '../../../../utils/env.ts';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 function DashboardDebugFooter() {
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   return (
     <>

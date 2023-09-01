@@ -14,6 +14,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@aehrc/smart-forms-renderer": "^0.6.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.10.8",
     "@fontsource/material-icons": "^5.0.7",
@@ -57,7 +58,6 @@
     "sdc-assemble": "^1.0.1",
     "sdc-populate": "^1.0.2",
     "simplebar-react": "^3.2.4",
-    "@aehrc/smart-forms-renderer": "0.2.0",
     "usehooks-ts": "^2.9.1",
     "zustand": "^4.4.1"
   },
@@ -86,13 +86,11 @@
     "@types/react-dom": "^18.2.7",
     "@types/react-helmet": "^6.1.6",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "@typescript-eslint/parser": "^5.62.0",
+    "@typescript-eslint/parser": "^6.5.0",
     "@vitejs/plugin-react": "^4.0.4",
     "cypress": "^13.0.0",
-    "eslint": "^8.47.0",
-    "eslint-config-prettier": "^8.10.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-react": "^7.32.2",
+    "eslint": "^8.48.0",
+    "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "jest": "^29.6.4",

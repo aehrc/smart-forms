@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { List, styled } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import List from '@mui/material/List';
+import { alpha, styled } from '@mui/material/styles';
 
 export const PrimarySelectableList = styled(List)(({ theme }) => ({
   '&& .Mui-selected': {

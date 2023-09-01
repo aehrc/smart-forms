@@ -19,18 +19,16 @@ import { Card, Container, Fade } from '@mui/material';
 import FormInvalid from '../FormPage/FormInvalid.tsx';
 import parse from 'html-react-parser';
 import { qrToHTML } from '../../../preview/utils/preview.ts';
-import { removeHiddenAnswers } from '../../../save/api/saveQr.ts';
 import { Helmet } from 'react-helmet';
-import useQuestionnaireStore from '../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 import PageHeading from '../../../dashboard/components/DashboardPages/PageHeading.tsx';
+import {
+  removeHiddenAnswersFromResponse,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
 
 function FormPreview() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   if (!sourceQuestionnaire.item || !updatableResponse.item) {
@@ -41,13 +39,7 @@ function FormPreview() {
     return <FormInvalid />;
   }
 
-  const cleanResponse = removeHiddenAnswers({
-    questionnaire: sourceQuestionnaire,
-    questionnaireResponse: updatableResponse,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  });
+  const cleanResponse = removeHiddenAnswersFromResponse(sourceQuestionnaire, updatableResponse);
   const parsedHTML = parse(qrToHTML(sourceQuestionnaire, cleanResponse));
 
   return (

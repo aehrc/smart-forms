@@ -16,10 +16,10 @@
  */
 
 import React from 'react';
-import QItemChoice from '../QItemChoice/QItemChoice';
+import ChoiceItemSwitcher from '../ChoiceItems/ChoiceItemSwitcher';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import QItemOpenChoice from '../QItemOpenChoice/QItemOpenChoice';
-import { Typography } from '@mui/material';
+import OpenChoiceItemSwitcher from '../OpenChoiceItems/OpenChoiceItemSwitcher';
+import Typography from '@mui/material/Typography';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -131,7 +131,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       );
     case 'choice':
       return (
-        <QItemChoice
+        <ChoiceItemSwitcher
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -141,7 +141,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       );
     case 'open-choice':
       return (
-        <QItemOpenChoice
+        <OpenChoiceItemSwitcher
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}

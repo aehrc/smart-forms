@@ -20,7 +20,7 @@ import { createResponseListItem } from '../../../dashboard/utils/dashboard.ts';
 import { Box, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import BackToQuestionnairesButton from '../../../dashboard/components/DashboardPages/ResponsesPage/Buttons/BackToQuestionnairesButton.tsx';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 interface ExistingResponsesTableToolbarLeftSectionProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -30,7 +30,7 @@ function ExistingResponsesTableToolbarLeftSection(
   props: ExistingResponsesTableToolbarLeftSectionProps
 ) {
   const { selectedResponse } = props;
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { launchQuestionnaire } = useSmartClient();
 
   if (selectedResponse) {
     const listItem = createResponseListItem(selectedResponse, -1);

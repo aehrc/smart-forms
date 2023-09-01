@@ -29,7 +29,6 @@ describe('choice component behaviour', () => {
     const itemText = 'Cervical screening status';
     const indexFirstRadioToBeChecked = 0;
     const indexSecondRadioToBeChecked = 2;
-    const expectedAnswerFirst = 'Up to date';
     const expectedAnswerSecond = 'Not required';
 
     beforeEach(() => {
@@ -39,20 +38,7 @@ describe('choice component behaviour', () => {
       cy.goToTab('Participation in screening programs');
     });
 
-    it('reflects changes in questionnaire response on selection of first radio', () => {
-      cy.getByData('q-item-choice-radio-answer-option-box')
-        .should('include.text', itemText)
-        .eq(0)
-        .find('input')
-        .eq(indexFirstRadioToBeChecked)
-        .check()
-        .should('be.checked');
-
-      cy.previewForm();
-      cy.checkResponseTextAndAnswer(itemText, expectedAnswerFirst);
-    });
-
-    it('reflects changes in questionnaire response on change of selection to second radio button', () => {
+    it('reflects changes in questionnaire response on change of selection from first to second radio button', () => {
       cy.getByData('q-item-choice-radio-answer-option-box')
         .should('include.text', itemText)
         .eq(0)

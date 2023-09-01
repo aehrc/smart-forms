@@ -21,11 +21,11 @@ import {
 } from '../../Typography/Typography.tsx';
 import { constructName } from '../../../features/smartAppLaunch/utils/launchContext.ts';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
-import useConfigStore from '../../../stores/useConfigStore.ts';
 import { Typography } from '@mui/material';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 function UserPopoverMenu() {
-  const user = useConfigStore((state) => state.user);
+  const { user } = useSmartClient();
 
   return (
     <PopoverMenuWrapper>

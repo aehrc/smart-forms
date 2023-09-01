@@ -19,7 +19,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Coding, ValueSet } from 'fhir/r4';
 import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
-import type { AlertColor } from '@mui/material';
+import type { AlertColor } from '@mui/material/Alert';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
 
 function useTerminologyServerQuery(

@@ -23,12 +23,12 @@ import { LogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../components/Header/Header.styles.ts';
 import { memo } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import useConfigStore from '../../../stores/useConfigStore.ts';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 const PlaygroundHeader = memo(function PlaygroundHeader() {
   const theme = useTheme();
 
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { launchQuestionnaire } = useSmartClient();
   const launchQuestionnaireExists = !!launchQuestionnaire;
 
   const navigate = useNavigate();

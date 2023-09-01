@@ -19,13 +19,19 @@ import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/Theme';
 import Router from './router/Router.tsx';
 import { SnackbarProvider } from 'notistack';
+import SmartClientContextProvider from './contexts/SmartClientContext.tsx';
+import DebugModeContextProvider from './contexts/DebugModeContext.tsx';
 
 function App() {
   return (
     <ThemeProvider>
       <SnackbarProvider>
-        <CssBaseline />
-        <Router />
+        <SmartClientContextProvider>
+          <DebugModeContextProvider>
+            <CssBaseline />
+            <Router />
+          </DebugModeContextProvider>
+        </SmartClientContextProvider>
       </SnackbarProvider>
     </ThemeProvider>
   );

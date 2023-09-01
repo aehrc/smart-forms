@@ -17,8 +17,8 @@
 
 import { useEffect, useState } from 'react';
 import { Fade, Typography } from '@mui/material';
-import useQuestionnaireResponseStore from '../../../../stores/useQuestionnaireResponseStore.ts';
 import useResponsive from '../../../../hooks/useResponsive.ts';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function UpdatingIndicator() {
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
@@ -40,7 +40,8 @@ function UpdatingIndicator() {
         variant="subtitle2"
         color="text.secondary"
         fontSize={isDesktop ? 12 : 9}
-        sx={{ mx: isDesktop ? 2 : 0.5 }}>
+        sx={{ mx: isDesktop ? 2 : 0.5 }}
+        data-test="updating-indicator">
         Updating...
       </Typography>
     </Fade>

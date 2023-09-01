@@ -19,14 +19,14 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useEffect, useState } from 'react';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
-import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../../hooks/useSmartClient.ts';
 
 function RendererSaveAsFinal() {
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.saveResponse);
+  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);

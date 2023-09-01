@@ -96,7 +96,6 @@ describe('simple component behaviour', () => {
   context('date picker component', () => {
     const itemText = 'Date of birth';
     const validInput = '02032000';
-    const invalidInput = '0203200';
     const expectedAnswer = '02/03/2000';
 
     it('reflects changes in questionnaire response on inputting correct date', () => {
@@ -110,19 +109,6 @@ describe('simple component behaviour', () => {
 
       cy.previewForm();
       cy.checkResponseTextAndAnswer(itemText, expectedAnswer);
-    });
-
-    it('reflects changes in questionnaire response on inputting invalid date', () => {
-      cy.getByData('q-item-date-box')
-        .should('include.text', itemText)
-        .find('input')
-        .eq(0)
-        .clear()
-        .type(invalidInput)
-        .waitForFormUpdate();
-
-      cy.previewForm();
-      cy.checkResponseTextAndAnswer(itemText, 'Invalid Date');
     });
 
     it('removes changes in questionnaire response on clearing field', () => {

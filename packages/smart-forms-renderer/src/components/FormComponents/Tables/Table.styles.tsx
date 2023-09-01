@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { styled, TableCell } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import TableCell from '@mui/material/TableCell';
 
 export const HeaderTableCell = styled(TableCell)(() => ({
   fontSize: 13,

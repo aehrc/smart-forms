@@ -23,11 +23,11 @@ import {
 import { constructName } from '../../../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
-import useConfigStore from '../../../stores/useConfigStore.ts';
 import { Typography } from '@mui/material';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 function PatientPopoverMenu() {
-  const patient = useConfigStore((state) => state.patient);
+  const { patient } = useSmartClient();
 
   return (
     <PopoverMenuWrapper>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QrRepeatGroup } from './repeatGroup.interface.ts';
+import type { QrRepeatGroup } from './repeatGroup.interface';
 
 export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;

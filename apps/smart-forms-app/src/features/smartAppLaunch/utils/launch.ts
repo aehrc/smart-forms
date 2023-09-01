@@ -31,16 +31,43 @@ import { HEADERS } from '../../../api/headers.ts';
 
 const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 
-export async function getPatient(client: Client): Promise<Patient> {
-  return await client.patient.read();
-}
+export async function readCommonLaunchContexts(
+  client: Client
+): Promise<{ patient: Patient | null; user: Practitioner | null; encounter: Encounter | null }> {
+  const settledPromises = await Promise.allSettled([
+    client.patient.read(),
+    client.user.read(),
+    client.encounter.read()
+  ]);
 
-export async function getUser(client: Client): Promise<Practitioner> {
-  return (await client.user.read()) as Practitioner;
-}
+  let patient: Patient | null = null;
+  let user: Practitioner | null = null;
+  let encounter: Encounter | null = null;
+  for (const settledPromise of settledPromises) {
+    if (settledPromise.status === 'fulfilled') {
+      const resource = settledPromise.value;
 
-export async function getEncounter(client: Client): Promise<Encounter> {
-  return (await client.encounter.read()) as Encounter;
+      if (resource.resourceType === 'Patient') {
+        patient = resource;
+        continue;
+      }
+
+      if (resource.resourceType === 'Practitioner') {
+        user = resource;
+        continue;
+      }
+
+      if (resource.resourceType === 'Encounter') {
+        encounter = resource as Encounter;
+      }
+    }
+  }
+
+  return {
+    patient,
+    user,
+    encounter
+  };
 }
 
 interface FhirContext {
@@ -68,7 +95,7 @@ export function getQuestionnaireReferences(client: Client): FhirContext[] {
   );
 }
 
-export function getQuestionnaireContext(
+export function readQuestionnaireContext(
   client: Client,
   questionnaireReferences: FhirContext[]
 ): Promise<Questionnaire | Bundle | OperationOutcome> {

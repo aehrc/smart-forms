@@ -16,19 +16,8 @@
  */
 
 import FormWrapper from '../../renderer/components/FormPage/FormRenderer/FormWrapper.tsx';
-import { createQuestionnaireResponse } from '../../renderer/utils/qrItem.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 
 function PlaygroundRenderer() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-
-  const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
-
-  // Fill questionnaireResponse with questionnaire details if questionnaireResponse is in a clean state
-  const questionnaireResponse = createQuestionnaireResponse(sourceQuestionnaire);
-  buildSourceResponse(questionnaireResponse);
-
   return <FormWrapper />;
 }
 

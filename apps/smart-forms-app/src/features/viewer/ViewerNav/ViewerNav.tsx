@@ -26,11 +26,10 @@ import NavErrorAlert from '../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../components/Logos/CsiroLogo.tsx';
 import { CsiroLogoWrapper, NavLogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import { NavErrorAlertWrapper } from '../../../components/Nav/Nav.styles.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
-import useConfigStore from '../../../stores/useConfigStore.ts';
-import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
 import { NAV_WIDTH } from '../../../components/Header/Header.styles.ts';
 import ViewerLaunchQuestionnaireNavSection from './ViewerLaunchQuestionnaireNavSection.tsx';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 interface Props {
   openNav: boolean;
@@ -40,16 +39,14 @@ interface Props {
 function ViewerNav(props: Props) {
   const { openNav, onCloseNav } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-
-  const launchQuestionnaireExists = !!launchQuestionnaire;
+  const sourceResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   const isDesktop = useResponsive('up', 'lg');
 
+  const launchQuestionnaireExists = !!launchQuestionnaire;
   const isNotLaunched = !smartClient;
 
   const renderContent = (

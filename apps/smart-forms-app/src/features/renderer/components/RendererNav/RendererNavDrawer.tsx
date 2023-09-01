@@ -16,9 +16,9 @@
  */
 
 import { Drawer } from '@mui/material';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
 import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 import RendererNav from './RendererNav.tsx';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 interface RendererNavShownProps {
   openNav: boolean;
@@ -31,7 +31,7 @@ interface RendererNavShownProps {
 function RendererNavDrawer(props: RendererNavShownProps) {
   const { openNav, navIsShown, onCloseNav, setNavCollapsed } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   const isNotLaunched = !smartClient;
 

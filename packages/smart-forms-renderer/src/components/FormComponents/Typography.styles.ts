@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { styled, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 export const QGroupHeadingTypography = styled(Typography, {
   shouldForwardProp: (prop) => prop !== 'isTabHeading'

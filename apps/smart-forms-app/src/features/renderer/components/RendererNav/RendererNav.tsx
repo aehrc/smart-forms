@@ -25,9 +25,9 @@ import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
-import useConfigStore from '../../../../stores/useConfigStore.ts';
 import RendererLaunchQuestionnaireNavSection from './RendererLaunchQuestionnaireNavSection.tsx';
 import RendererNavSection from './RendererNavSection.tsx';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 interface RendererNavProps {
   isNotLaunched: boolean;
@@ -38,7 +38,7 @@ interface RendererNavProps {
 function RendererNav(props: RendererNavProps) {
   const { isNotLaunched, navIsShown, onCollapseNav } = props;
 
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { launchQuestionnaire } = useSmartClient();
 
   const launchQuestionnaireExists = !!launchQuestionnaire;
   return (

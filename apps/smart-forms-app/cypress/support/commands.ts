@@ -81,10 +81,7 @@ Cypress.Commands.add('checkResponseTextAndAnswer', (text: string, answer: string
 });
 
 Cypress.Commands.add('waitForFormUpdate', () => {
-  cy.getByData('list-button-renderer-operation')
-    .contains('Save as Draft')
-    .parent()
-    .should('not.have.class', 'Mui-disabled');
+  cy.getByData('updating-indicator').should('exist');
 });
 
 Cypress.Commands.add('waitForPopulation', () => {

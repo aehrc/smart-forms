@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { styled, TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
 
 // Always use this accompanied by the TextField prop fullWidth
 export const StandardTextField = styled(TextField, {

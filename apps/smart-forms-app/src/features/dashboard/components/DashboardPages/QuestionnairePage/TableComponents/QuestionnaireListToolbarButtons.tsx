@@ -19,7 +19,7 @@ import { Box, IconButton, Stack, Typography } from '@mui/material';
 import CreateNewResponseButton from '../Buttons/CreateNewResponseButton.tsx';
 import ViewExistingResponsesButton from '../Buttons/ViewExistingResponsesButton.tsx';
 import ClearIcon from '@mui/icons-material/Clear';
-import useConfigStore from '../../../../../../stores/useConfigStore.ts';
+import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 
 interface QuestionnaireListToolbarButtonsProps {
   onClearSelection: () => void;
@@ -28,7 +28,7 @@ interface QuestionnaireListToolbarButtonsProps {
 function QuestionnaireListToolbarButtons(props: QuestionnaireListToolbarButtonsProps) {
   const { onClearSelection } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   return (
     <Box display="flex" alignItems="center" columnGap={2}>

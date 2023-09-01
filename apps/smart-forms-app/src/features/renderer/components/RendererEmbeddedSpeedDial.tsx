@@ -21,11 +21,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import useConfigStore from '../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
 import cloneDeep from 'lodash.clonedeep';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../save/api/saveQr.ts';
-import useQuestionnaireResponseStore from '../../../stores/useQuestionnaireResponseStore.ts';
+import { saveQuestionnaireResponse } from '../../save/api/saveQr.ts';
 import SaveIcon from '@mui/icons-material/Save';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
@@ -33,6 +30,12 @@ import RendererSaveAsFinalDialog from './RendererNav/SaveAsFinal/RendererSaveAsF
 import HomeIcon from '@mui/icons-material/Home';
 import GradingIcon from '@mui/icons-material/Grading';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import {
+  removeHiddenAnswersFromResponse,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 interface RendererEmbeddedSpeedDialProps {
   isPopulating: boolean;
@@ -41,18 +44,13 @@ interface RendererEmbeddedSpeedDialProps {
 function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   const { isPopulating } = props;
 
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
+  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsSaved
+  );
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
 
@@ -75,18 +73,13 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
     }
 
     let responseToSave = cloneDeep(updatableResponse);
-    responseToSave = removeHiddenAnswers({
-      questionnaire: sourceQuestionnaire,
-      questionnaireResponse: responseToSave,
-      enableWhenIsActivated,
-      enableWhenItems,
-      enableWhenExpressions
-    });
+
+    responseToSave = removeHiddenAnswersFromResponse(sourceQuestionnaire, responseToSave);
 
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        saveResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar('Response saved as draft', {
           variant: 'success',
           action: (

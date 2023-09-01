@@ -17,32 +17,30 @@
 
 import SaveIcon from '@mui/icons-material/Save';
 import { useEffect, useState } from 'react';
-import { removeHiddenAnswers, saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
-import useConfigStore from '../../../../../stores/useConfigStore.ts';
-import useQuestionnaireStore from '../../../../../stores/useQuestionnaireStore.ts';
-import useQuestionnaireResponseStore from '../../../../../stores/useQuestionnaireResponseStore.ts';
 import type { NavigateFunction } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { IconButton, Tooltip } from '@mui/material';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import {
+  removeHiddenAnswersFromResponse,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
+import useSmartClient from '../../../../../hooks/useSmartClient.ts';
 
 function RendererSaveAsDraft() {
-  const smartClient = useConfigStore((state) => state.smartClient);
-  const patient = useConfigStore((state) => state.patient);
-  const user = useConfigStore((state) => state.user);
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const saveResponse = useQuestionnaireResponseStore((state) => state.saveResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.saveResponse);
+  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
+  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsSaved
+  );
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -65,19 +63,15 @@ function RendererSaveAsDraft() {
       return;
     }
 
-    let responseToSave = cloneDeep(updatableResponse);
-    responseToSave = removeHiddenAnswers({
-      questionnaire: sourceQuestionnaire,
-      questionnaireResponse: responseToSave,
-      enableWhenIsActivated,
-      enableWhenItems,
-      enableWhenExpressions
-    });
+    const responseToSave = removeHiddenAnswersFromResponse(
+      sourceQuestionnaire,
+      cloneDeep(updatableResponse)
+    );
 
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
-        saveResponse(savedResponse);
+        setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar('Response saved as draft', {
           variant: 'success',
           action: (

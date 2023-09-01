@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useMemo, useState } from 'react';
-import { SelectedQuestionnaireContext } from '../../../contexts/SelectedQuestionnaireContext.tsx';
+import { useMemo, useState } from 'react';
 import type { SortingState } from '@tanstack/react-table';
 import {
   getCoreRowModel,
@@ -28,11 +27,10 @@ import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
 import { createQuestionnaireTableColumns } from '../../../utils/tableColumns.ts';
 import QuestionnaireTableView from './QuestionnaireTableView.tsx';
+import useSelectedQuestionnaire from '../../../hooks/useSelectedQuestionnaire.ts';
 
 function QuestionnaireTable() {
-  const { selectedQuestionnaire, setSelectedQuestionnaire } = useContext(
-    SelectedQuestionnaireContext
-  );
+  const { selectedQuestionnaire, setSelectedQuestionnaire } = useSelectedQuestionnaire();
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');

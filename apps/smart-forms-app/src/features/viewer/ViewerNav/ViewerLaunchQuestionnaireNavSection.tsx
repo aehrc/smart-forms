@@ -15,21 +15,20 @@
  * limitations under the License.
  */
 
-import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import useConfigStore from '../../../stores/useConfigStore.ts';
-import { SelectedQuestionnaireContext } from '../../dashboard/contexts/SelectedQuestionnaireContext.tsx';
 import { Box, List, Typography } from '@mui/material';
 import RendererOperationItem from '../../renderer/components/RendererNav/RendererOperationItem.tsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
+import useSelectedQuestionnaire from '../../dashboard/hooks/useSelectedQuestionnaire.ts';
 
 function ViewerLaunchQuestionnaireNavSection() {
   const navigate = useNavigate();
   const { closeSnackbar } = useSnackbar();
-  const launchQuestionnaire = useConfigStore((state) => state.launchQuestionnaire);
+  const { launchQuestionnaire } = useSmartClient();
 
-  const { setSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
+  const { setSelectedQuestionnaire } = useSelectedQuestionnaire();
 
   return (
     <Box sx={{ pb: 4 }}>

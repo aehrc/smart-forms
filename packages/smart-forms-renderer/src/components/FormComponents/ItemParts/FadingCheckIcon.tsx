@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { Fade } from '@mui/material';
+import Fade from '@mui/material/Fade';
 import CheckIcon from '@mui/icons-material/Check';
 
 interface FadingCheckIconProps {

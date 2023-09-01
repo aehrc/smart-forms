@@ -8,10 +8,10 @@ export interface UseQuestionnaireResponseStoreType {
   updatableResponse: QuestionnaireResponse;
   hasChanges: boolean;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
-  populateResponse: (response: QuestionnaireResponse) => void;
+  setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
   updateResponse: (updatedResponse: QuestionnaireResponse) => void;
-  saveResponse: (savedResponse: QuestionnaireResponse) => void;
-  clearResponse: (clearedResponse: QuestionnaireResponse) => void;
+  setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => void;
+  setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => void;
   destroySourceResponse: () => void;
 }
 
@@ -19,16 +19,16 @@ const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>(
   sourceResponse: cloneDeep(emptyResponse),
   updatableResponse: cloneDeep(emptyResponse),
   hasChanges: false,
-
   buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
     set(() => ({
       sourceResponse: questionnaireResponse,
       updatableResponse: questionnaireResponse
     }));
   },
-  populateResponse: (populatedResponse: QuestionnaireResponse) => {
+  setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
     set(() => ({
-      updatableResponse: populatedResponse
+      updatableResponse: populatedResponse,
+      hasChanges: false
     }));
   },
   updateResponse: (updatedResponse: QuestionnaireResponse) =>
@@ -36,13 +36,13 @@ const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>(
       updatableResponse: updatedResponse,
       hasChanges: true
     })),
-  saveResponse: (savedResponse: QuestionnaireResponse) =>
+  setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) =>
     set(() => ({
       sourceResponse: savedResponse,
       updatableResponse: savedResponse,
       hasChanges: false
     })),
-  clearResponse: (clearedResponse: QuestionnaireResponse) =>
+  setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) =>
     set(() => ({
       updatableResponse: clearedResponse,
       hasChanges: false

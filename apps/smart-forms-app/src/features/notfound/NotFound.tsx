@@ -18,11 +18,11 @@
 import CenteredWrapper from '../../components/Wrapper/CenteredWrapper.tsx';
 import { Stack, Typography } from '@mui/material';
 import UnlaunchedButton from '../../components/Button/UnlaunchedButton.tsx';
-import useConfigStore from '../../stores/useConfigStore.ts';
 import ReauthenticateButton from '../../components/Button/ReauthenticateButton.tsx';
+import useSmartClient from '../../hooks/useSmartClient.ts';
 
 function NotFound() {
-  const smartClient = useConfigStore((state) => state.smartClient);
+  const { smartClient } = useSmartClient();
 
   const isNotLaunched = !smartClient;
 

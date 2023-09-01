@@ -17,7 +17,7 @@
 
 import { AccountNameTypography } from '../../Typography/Typography.tsx';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore.ts';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 function QuestionnairePopoverMenu() {
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);

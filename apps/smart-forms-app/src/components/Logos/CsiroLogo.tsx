@@ -20,11 +20,10 @@ import csiroLogo from '../../data/images/csiro-logo.png';
 import { useSnackbar } from 'notistack';
 import ConfettiExplosion from 'react-confetti-explosion';
 import useClickCounter from '../../features/easterEgg/hooks/useClickCounter.ts';
-import useConfigStore from '../../stores/useConfigStore.ts';
+import useDebugMode from '../../hooks/useDebugMode.ts';
 
 function CsiroLogo() {
-  const debugMode = useConfigStore((state) => state.debugMode);
-  const activateDebugMode = useConfigStore((state) => state.activateDebugMode);
+  const { debugModeEnabled, toggleDebugMode } = useDebugMode();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -40,10 +39,10 @@ function CsiroLogo() {
           maxWidth={35}
           src={csiroLogo}
           onClick={() => {
-            if (!debugMode && counter < 7) {
+            if (!debugModeEnabled && counter < 7) {
               addOneToCounter();
               if (counter === 6) {
-                activateDebugMode();
+                toggleDebugMode();
                 enqueueSnackbar('Debug mode enabled!', {
                   preventDuplicate: true
                 });

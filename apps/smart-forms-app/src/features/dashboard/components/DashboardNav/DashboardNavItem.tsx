@@ -19,8 +19,7 @@ import { ListItemButton, ListItemText, useTheme } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
 import type { ReactNode } from 'react';
-import { useContext } from 'react';
-import { SelectedQuestionnaireContext } from '../../contexts/SelectedQuestionnaireContext.tsx';
+import useSelectedQuestionnaire from '../../hooks/useSelectedQuestionnaire.ts';
 
 export interface DashboardNavItemProps {
   title: string;
@@ -33,7 +32,7 @@ export interface DashboardNavItemProps {
 function DashboardNavItem(props: DashboardNavItemProps) {
   const { title, path, icon, disabled, onCloseNav } = props;
 
-  const { setSelectedQuestionnaire } = useContext(SelectedQuestionnaireContext);
+  const { setSelectedQuestionnaire } = useSelectedQuestionnaire();
   const theme = useTheme();
 
   return (

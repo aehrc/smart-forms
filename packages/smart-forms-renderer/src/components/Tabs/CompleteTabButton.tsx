@@ -16,7 +16,8 @@
  */
 
 import React, { memo } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 

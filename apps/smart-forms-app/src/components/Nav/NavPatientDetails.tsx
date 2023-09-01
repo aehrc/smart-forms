@@ -23,12 +23,12 @@ import { AccountDetailsTypography, AccountNameTypography } from '../Typography/T
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { useTheme } from '@mui/material/styles';
 import { NavPatientDetailsWrapper } from './Nav.styles.ts';
-import useConfigStore from '../../stores/useConfigStore.ts';
+import useSmartClient from '../../hooks/useSmartClient.ts';
 
 dayjs.extend(localizedFormat);
 
 function NavPatientDetails() {
-  const patient = useConfigStore((state) => state.patient);
+  const { patient } = useSmartClient();
 
   const theme = useTheme();
 
