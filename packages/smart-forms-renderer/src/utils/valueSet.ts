@@ -64,6 +64,17 @@ export function getValueSetPromise(url: string, terminologyServer?: string): Pro
   });
 }
 
+async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`Promise timed out after ${timeoutMs} milliseconds`));
+    }, timeoutMs);
+  });
+
+  // Use Promise.race to wait for either the original promise or the timeout promise
+  return Promise.race([promise, timeoutPromise]);
+}
+
 export async function resolvePromises(
   valueSetPromises: Record<string, ValueSetPromise>
 ): Promise<Record<string, ValueSetPromise>> {
@@ -71,7 +82,11 @@ export async function resolvePromises(
 
   const valueSetPromiseKeys = Object.keys(valueSetPromises);
   const valueSetPromiseValues = Object.values(valueSetPromises);
-  const promises = valueSetPromiseValues.map((valueSetPromise) => valueSetPromise.promise);
+
+  const timeoutMs = 5000;
+  const promises = valueSetPromiseValues.map((valueSetPromise) =>
+    addTimeoutToPromise(valueSetPromise.promise, timeoutMs)
+  );
 
   const settledPromises = await Promise.allSettled(promises);
 
