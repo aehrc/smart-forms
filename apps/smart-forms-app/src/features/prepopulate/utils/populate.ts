@@ -27,8 +27,8 @@ import {
   getQuestionnaireLevelXFhirQueryVariables,
   getSourceQueries
 } from './getExtensions.ts';
-import type { IssuesParameter, ResponseParameter } from 'sdc-populate';
-import { isInputParameters } from 'sdc-populate';
+import type { IssuesParameter, ResponseParameter } from '@aehrc/sdc-populate';
+import { isInputParameters } from '@aehrc/sdc-populate';
 import type Client from 'fhirclient/lib/Client';
 import { createPopulateInputParameters } from './createInputParameters.ts';
 import { requestPopulate } from '../api/requestPopulate.ts';

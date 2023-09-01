@@ -16,7 +16,7 @@
  */
 
 import axios from 'axios';
-import type { FetchQuestionnaireCallback } from 'sdc-assemble';
+import type { FetchQuestionnaireCallback } from '@aehrc/sdc-assemble';
 
 const FORMS_SERVER_ENDPOINT = 'https://api.smartforms.io/fhir';
 

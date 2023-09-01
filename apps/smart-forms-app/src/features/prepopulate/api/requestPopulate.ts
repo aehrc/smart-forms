@@ -16,8 +16,8 @@
  */
 
 import { IS_IN_APP_POPULATE } from '../../../utils/env.ts';
-import type { InputParameters, OutputParameters } from 'sdc-populate';
-import { isOutputParameters, populate } from 'sdc-populate';
+import type { InputParameters, OutputParameters } from '@aehrc/sdc-populate';
+import { isOutputParameters, populate } from '@aehrc/sdc-populate';
 import type { RequestConfig } from '../utils/callback.ts';
 import { fetchResourceCallback } from '../utils/callback.ts';
 import { HEADERS } from '../../../api/headers.ts';

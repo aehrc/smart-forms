@@ -16,7 +16,7 @@
  */
 
 import axios from 'axios';
-import type { FetchResourceCallback } from 'sdc-populate';
+import type { FetchResourceCallback } from '@aehrc/sdc-populate';
 import type { RequestConfig } from 'smart-forms-app/src/features/prepopulate/utils/callback';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;

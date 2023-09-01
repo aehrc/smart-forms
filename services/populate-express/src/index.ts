@@ -16,7 +16,7 @@
  */
 
 import express from 'express';
-import populate, { isPopulateInputParameters } from 'sdc-populate';
+import populate, { isPopulateInputParameters } from '@aehrc/sdc-populate';
 import type { OperationOutcome } from 'fhir/r4';
 
 const app = express();
