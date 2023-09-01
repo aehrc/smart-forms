@@ -26,7 +26,7 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { saveQuestionnaireResponse } from '../../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { LoadingButton } from '@mui/lab';
 import {

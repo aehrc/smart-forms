@@ -19,7 +19,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
-import { saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../../../api/saveQr.ts';
 import {
   Button,
   Dialog,

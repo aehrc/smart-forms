@@ -17,10 +17,6 @@
 
 import type { MutableRefObject } from 'react';
 
-export type CurrentTabIndexContextType = {
-  currentTabIndex: number;
-  setCurrentTabIndex: (updatedIndex: number) => unknown;
-};
 export type PrintComponentRefContextType = {
   componentRef: MutableRefObject<null> | null;
   setComponentRef: (componentRef: MutableRefObject<null>) => unknown;

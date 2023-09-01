@@ -17,12 +17,12 @@
 
 import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
-import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
-import { qrToHTML } from '../../preview/utils/preview.ts';
-import { fetchQuestionnaireById } from '../../../api/client.ts';
+import { qrToHTML } from '../features/preview/utils/preview.ts';
+import { fetchQuestionnaireById } from './client.ts';
 import cloneDeep from 'lodash.clonedeep';
-import { HEADERS } from '../../../api/headers.ts';
+import { HEADERS } from './headers.ts';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed

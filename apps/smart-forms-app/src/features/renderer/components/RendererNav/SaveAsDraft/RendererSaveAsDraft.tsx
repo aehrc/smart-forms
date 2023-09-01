@@ -17,7 +17,7 @@
 
 import SaveIcon from '@mui/icons-material/Save';
 import { useEffect, useState } from 'react';
-import { saveQuestionnaireResponse } from '../../../../save/api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../../../api/saveQr.ts';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';

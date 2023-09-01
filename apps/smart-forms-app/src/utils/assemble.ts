@@ -18,8 +18,8 @@
 import type { Extension, OperationOutcome, Parameters, Questionnaire } from 'fhir/r4';
 import { isInputParameters } from 'sdc-assemble';
 import * as FHIR from 'fhirclient';
-import { HEADERS } from '../../../api/headers.ts';
-import { getFormsServerAssembledBundlePromise } from '../../dashboard/utils/dashboard.ts';
+import { HEADERS } from '../api/headers.ts';
+import { getFormsServerAssembledBundlePromise } from '../features/dashboard/utils/dashboard.ts';
 
 const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
 

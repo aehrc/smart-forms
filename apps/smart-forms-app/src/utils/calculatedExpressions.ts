@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { CalculatedExpression } from '../features/calculatedExpression/types/calculatedExpression.interface.ts';
+import type { CalculatedExpression } from '../types/calculatedExpression.interface.ts';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
