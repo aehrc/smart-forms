@@ -28,6 +28,10 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+
+  const updatePopulatedProperties = useQuestionnaireStore(
+    (state) => state.updatePopulatedProperties
+  );
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
 
   const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
@@ -70,7 +74,8 @@ function usePopulate(spinnerIsLoading: boolean, onStopSpinner: () => void): void
     (params: PopulateFormParams) => {
       const { populated, hasWarnings } = params;
 
-      setUpdatableResponseAsPopulated(populated);
+      const updatedResponse = updatePopulatedProperties(populated);
+      setUpdatableResponseAsPopulated(updatedResponse);
       onStopSpinner();
       if (hasWarnings) {
         enqueueSnackbar(
