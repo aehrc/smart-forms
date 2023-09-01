@@ -1,6 +1,6 @@
 import type { Questionnaire } from 'fhir/r4';
 import type { LaunchContext } from '../../../prepopulate/types/populate.interface.ts';
-import { isLaunchContext } from '../../../../providers/typePredicates/isLaunchContext.ts';
+import { isLaunchContext } from '../../../prepopulate/utils/getExtensions.ts';
 
 export function extractLaunchContexts(questionnaire: Questionnaire): Record<string, LaunchContext> {
   if (!questionnaire.extension || questionnaire.extension.length === 0) {

@@ -16,7 +16,7 @@
  */
 
 import type { Expression, Extension, Questionnaire } from 'fhir/r4';
-import type { Variables } from '../../../../providers/questionnaireProvider.interfaces.ts';
+import type { Variables } from '../../../prepopulate/types/populate.interface.ts';
 
 export function extractQuestionnaireLevelVariables(questionnaire: Questionnaire): Variables {
   const variables: Variables = { fhirPathVariables: {}, xFhirQueryVariables: {} };

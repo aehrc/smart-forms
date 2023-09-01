@@ -17,13 +17,12 @@
 
 import type { Questionnaire } from 'fhir/r4';
 import type { Tabs } from '../../../renderer/types/tab.interface.ts';
-import type { LaunchContext } from '../../../prepopulate/types/populate.interface.ts';
+import type { LaunchContext, Variables } from '../../../prepopulate/types/populate.interface.ts';
 import type { QuestionnaireModel } from '../../types/questionnaireModel.ts';
 import { extractLaunchContexts } from './extractLaunchContext.ts';
 import { extractQuestionnaireLevelVariables } from './extractVariables.ts';
 import { extractTabs } from './extractTabs.ts';
 import { extractContainedValueSets } from './extractContainedValueSets.ts';
-import type { Variables } from '../../../../providers/questionnaireProvider.interfaces.ts';
 import { extractOtherExtensions } from './extractOtherExtensions.ts';
 import { resolveValueSets } from './resolveValueSets.ts';
 

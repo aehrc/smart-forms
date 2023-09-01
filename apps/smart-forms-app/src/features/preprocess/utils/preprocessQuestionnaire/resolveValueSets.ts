@@ -22,8 +22,8 @@ import {
   getValueSetPromise,
   resolvePromises
 } from '../../../../utils/valueSet.ts';
-import type { Variables } from '../../../../providers/questionnaireProvider.interfaces.ts';
 import type { ValueSetPromise } from '../../../../types/valueSet.interface.ts';
+import type { Variables } from '../../../prepopulate/types/populate.interface.ts';
 
 export async function resolveValueSets(
   variables: Variables,

@@ -27,10 +27,10 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import _isEqual from 'lodash/isEqual';
-import { emptyResponse } from '../stores/useQuestionnaireStore.ts';
 import { createFhirPathContext } from './fhirpath.ts';
 import { getQrItemsIndex, mapQItemsIndex } from '../features/renderer/utils';
 import { updateQrGroup } from '../features/renderer/utils/qrItem.ts';
+import { emptyResponse } from './qrItem.ts';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;

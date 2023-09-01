@@ -14,15 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { QuestionnaireResponse } from 'fhir/r4';
 
-import type { Expression, FhirResource } from 'fhir/r4';
-
-export interface Variables {
-  fhirPathVariables: Record<string, Expression[]>;
-  xFhirQueryVariables: Record<string, VariableXFhirQuery>;
-}
-
-export interface VariableXFhirQuery {
-  valueExpression: Expression;
-  result?: FhirResource;
-}
+export const emptyResponse: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress'
+};

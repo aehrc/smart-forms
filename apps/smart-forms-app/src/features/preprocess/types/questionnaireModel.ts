@@ -1,7 +1,6 @@
 import type { Coding } from 'fhir/r4';
 import type { Tabs } from '../../renderer/types/tab.interface.ts';
-import type { Variables } from '../../../providers/questionnaireProvider.interfaces.ts';
-import type { LaunchContext } from '../../prepopulate/types/populate.interface.ts';
+import type { LaunchContext, Variables } from '../../prepopulate/types/populate.interface.ts';
 import type { CalculatedExpression } from '../../calculatedExpression/types/calculatedExpression.interface.ts';
 import type {
   EnableWhenExpression,

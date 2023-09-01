@@ -26,8 +26,8 @@ import type { AnswerExpression } from '../../../../types/answerExpression.interf
 import type { ValueSetPromise } from '../../../../types/valueSet.interface.ts';
 import { getAnswerExpression } from '../../../renderer/utils/itemControl.ts';
 import { getTerminologyServerUrl, getValueSetPromise } from '../../../../utils/valueSet.ts';
-import type { Variables } from '../../../../providers/questionnaireProvider.interfaces.ts';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables.ts';
+import type { Variables } from '../../../prepopulate/types/populate.interface.ts';
 
 interface ReturnParamsRecursive {
   variables: Variables;
