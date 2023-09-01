@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "@aehrc/smart-forms-renderer": "^0.6.5",
+    "@aehrc/smart-forms-renderer": "^0.6.6",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.10.8",
     "@fontsource/material-icons": "^5.0.7",

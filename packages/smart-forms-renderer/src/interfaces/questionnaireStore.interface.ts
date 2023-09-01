@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Tabs } from 'smart-forms-app/src/features/renderer/types/tab.interface';
+import type { Tabs } from './tab.interface';
 import type { Variables } from './variables.interface';
 import type { LaunchContext } from './populate.interface';
 import type { EnableWhenExpression, EnableWhenItemProperties } from './enableWhen.interface';
