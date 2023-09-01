@@ -18,7 +18,8 @@
 import React, { useMemo } from 'react';
 import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { TabContext, TabPanel } from '@mui/lab';
+import TabContext from '@mui/lab/TabContext';
+import TabPanel from '@mui/lab/TabPanel';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import { updateQrGroup } from '../../utils/qrItem';

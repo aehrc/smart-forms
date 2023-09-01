@@ -16,7 +16,8 @@
  */
 
 import React from 'react';
-import { InputAdornment, TextField as MuiTextField } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import MuiTextField from './MuiTextField';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 
 interface TextFieldProps {

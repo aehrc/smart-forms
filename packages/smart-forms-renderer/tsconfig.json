@@ -14,7 +14,8 @@
     "allowJs": true,
     "outDir": "lib",
     "declaration": true,
-    "checkJs": true
+    "checkJs": true,
+    "resolveJsonModule": true
   },
   "include": ["src"],
   "exclude": ["src/**/*.test.ts", "src/stories/**/*", "src/setup-jest.*", "lib"]

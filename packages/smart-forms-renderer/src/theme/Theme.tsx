@@ -26,7 +26,7 @@ import {
 import CssBaseline from '@mui/material/CssBaseline';
 import palette from './palette';
 import typography from './typography';
-import GlobalStyles from './globalStyles';
+import CustomGlobalStyles from './customGlobalStyles';
 import componentsOverride from './overrides/Overrides';
 import { grey } from '@mui/material/colors';
 
@@ -97,7 +97,7 @@ function ThemeProvider({ children }: { children: ReactNode }) {
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>
         <CssBaseline />
-        <GlobalStyles />
+        <CustomGlobalStyles />
         {children}
       </MUIThemeProvider>
     </StyledEngineProvider>

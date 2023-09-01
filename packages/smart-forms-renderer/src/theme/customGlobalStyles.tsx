@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 import React from 'react';
-import { GlobalStyles as MUIGlobalStyles } from '@mui/material';
+import GlobalStyles from '@mui/material/GlobalStyles';
 
-export default function GlobalStyles() {
+export default function CustomGlobalStyles() {
   return (
-    <MUIGlobalStyles
+    <GlobalStyles
       styles={{
         '*': {
           boxSizing: 'border-box'
