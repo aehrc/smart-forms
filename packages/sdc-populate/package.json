@@ -1,16 +1,24 @@
 {
-  "name": "sdc-populate",
-  "version": "1.0.2",
-  "description": "Performs the $populate operation from the SDC (Structured Data Capture) Specification of HL7 FHIR: http://hl7.org/fhir/uv/sdc/",
+  "name": "@aehrc/sdc-populate",
+  "version": "1.0.3",
+  "description": "Performs the $populate operation from the HL7 FHIR SDC (Structured Data Capture) specification: http://hl7.org/fhir/uv/sdc",
   "main": "lib/index.js",
   "scripts": {
-    "prepare": "npm run compile",
     "compile": "tsc",
     "watch": "tsc -w",
+    "prepare": "npm run compile",
     "test": "jest --config ./jest.config.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aehrc/smart-forms.git"
+  },
   "author": "Sean Fong",
-  "license": "ISC",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aehrc/smart-forms/issues"
+  },
+  "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "dayjs": "^1.11.9",
     "moment": "^2.29.4",

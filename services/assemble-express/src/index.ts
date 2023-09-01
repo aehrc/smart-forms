@@ -17,7 +17,7 @@
 
 import express from 'express';
 import cors from 'cors';
-import { assemble, isInputParameters } from 'sdc-assemble';
+import { assemble, isInputParameters } from '@aehrc/sdc-assemble';
 import { fetchQuestionnaireCallback } from './callback';
 
 const app = express();

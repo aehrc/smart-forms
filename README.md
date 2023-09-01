@@ -1,12 +1,9 @@
-<div>
 <h1>Smart Forms</h1>
 <h3>An open source FHIR powered forms app built in React</h3>
 <h4>
 Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to easily integrate forms into your existing healthcare system.
 </h4>
 <h3><a href="https://www.smartforms.io">Show me the app ➡️</a></h3>
-<br/>
-</div>
 
 ---
 Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web application currently ongoing development by [CSIRO's Australian e-Health Research Centre](https://aehrc.csiro.au/) as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
@@ -14,6 +11,10 @@ Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web applic
 The web app is intended to demonstrate the use of [HL7 FHIR](https://hl7.org/fhir/) specifications, such as the [Questionnaire](https://hl7.org/fhir/questionnaire.html) and [QuestionnaireResponse](https://hl7.org/fhir/questionnaireresponse.html) resources, the Structured Data Capture (SDC) implementation guide, and most notably it leverages [SMART on FHIR capabilities](https://hl7.org/fhir/smart-app-launch/index.html) that allows the app to be launched by a primary care Clinical Management System (CMS) and capture standardised health check information for healthcare clients.
 
 This project was bootstrapped with [Vite](https://vitejs.dev/).
+<br/>
+
+**If you are interested in using the rendering engine in your projects, a standalone package is published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).**
+**Try out the standalone package here: https://www.smartforms.io/standalone**
 
 
 ## Functionalities

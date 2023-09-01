@@ -5,7 +5,6 @@ import useQuestionnaireResponseStore from './stores/useQuestionnaireResponseStor
 import { removeHiddenAnswers } from './utils/removeHidden';
 
 export * from './components';
-export * from './hooks';
 export * from './stores';
 
 /**
@@ -47,7 +46,7 @@ export function destroyForm(): void {
  *
  * @author Sean Fong
  */
-export function getUpdatableResponse(): QuestionnaireResponse {
+export function getResponse(): QuestionnaireResponse {
   return useQuestionnaireResponseStore.getState().updatableResponse;
 }
 

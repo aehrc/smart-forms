@@ -21,10 +21,7 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import type {
-  EnableWhenExpression,
-  EnableWhenItems
-} from 'smart-forms-app/src/types/enableWhen.interface';
+import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHidden } from './qItem';
 
 interface removeHiddenAnswersParams {

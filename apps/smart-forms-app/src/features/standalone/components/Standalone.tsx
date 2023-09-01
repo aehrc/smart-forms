@@ -24,6 +24,8 @@ import QCVDRiskJson from '../data/QCVDRisk.json';
 import RCVDRiskJson from '../data/RCVDRisk.json';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import {
+  Box,
+  Button,
   Checkbox,
   Container,
   FormControl,
@@ -39,7 +41,7 @@ import type {
   RendererPropsActions,
   RendererPropsState
 } from '../interfaces/standalone.interface.ts';
-import { SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
+import { getResponse, SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
 
 const rendererPropsReducer = (state: RendererPropsState, action: RendererPropsActions) => {
   switch (action.type) {
@@ -124,46 +126,49 @@ function Standalone() {
 
           return (
             <Stack key={resource.id} rowGap={1}>
-              <FormControl>
-                <FormGroup row>
-                  <FormControlLabel
-                    disabled
-                    required
-                    control={<Checkbox defaultChecked />}
-                    label="Questionnaire"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={state.response !== null}
-                        onChange={() => {
-                          dispatch({
-                            type: 'SET_RESPONSE',
-                            payload: state.response ? null : resource.response
-                          });
-                        }}
-                      />
-                    }
-                    label="Questionnaire response"
-                  />
-                  {resource.additionalVars ? (
+              <Box display="flex" justifyContent="space-between">
+                <FormControl>
+                  <FormGroup row>
+                    <FormControlLabel
+                      disabled
+                      required
+                      control={<Checkbox defaultChecked />}
+                      label="Questionnaire"
+                    />
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={state.additionalVars !== null}
+                          checked={state.response !== null}
                           onChange={() => {
                             dispatch({
-                              type: 'SET_ADDITIONAL_VARS',
-                              payload: state.additionalVars ? null : resource.additionalVars
+                              type: 'SET_RESPONSE',
+                              payload: state.response ? null : resource.response
                             });
                           }}
                         />
                       }
-                      label="Additional variables"
+                      label="Questionnaire response"
                     />
-                  ) : null}
-                </FormGroup>
-              </FormControl>
+                    {resource.additionalVars ? (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={state.additionalVars !== null}
+                            onChange={() => {
+                              dispatch({
+                                type: 'SET_ADDITIONAL_VARS',
+                                payload: state.additionalVars ? null : resource.additionalVars
+                              });
+                            }}
+                          />
+                        }
+                        label="Additional variables"
+                      />
+                    ) : null}
+                  </FormGroup>
+                </FormControl>
+                <Button onClick={() => console.log(getResponse())}>Log response to console</Button>
+              </Box>
               <SmartFormsRenderer
                 questionnaire={state.questionnaire}
                 questionnaireResponse={state.response ?? undefined}

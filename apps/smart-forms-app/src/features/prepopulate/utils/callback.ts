@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback } from 'sdc-populate';
+import type { FetchResourceCallback } from '@aehrc/sdc-populate';
 import axios from 'axios';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;

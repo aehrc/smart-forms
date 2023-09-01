@@ -16,7 +16,7 @@
  */
 
 import type { Extension, OperationOutcome, Parameters, Questionnaire } from 'fhir/r4';
-import { isInputParameters } from 'sdc-assemble';
+import { isInputParameters } from '@aehrc/sdc-assemble';
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../api/headers.ts';
 import { getFormsServerAssembledBundlePromise } from '../features/dashboard/utils/dashboard.ts';

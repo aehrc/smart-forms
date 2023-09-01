@@ -11,7 +11,7 @@
     "cdk": "cdk"
   },
   "dependencies": {
-    "sdc-assemble": "^1.0.1",
+    "@aehrc/sdc-assemble": "^1.0.2",
     "aws-cdk-lib": "^2.86.0",
     "constructs": "^10.2.52",
     "forms-server": "^0.1.0",
