@@ -23,6 +23,7 @@ import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
+import useHidden from '../../../hooks/useHidden';
 
 interface GridRowProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
   qItem: QuestionnaireItem;
@@ -39,6 +40,11 @@ function GridRow(props: GridRowProps) {
   const rowQrItems = row.item;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
+
+  const itemIsHidden = useHidden(qItem);
+  if (itemIsHidden) {
+    return null;
+  }
 
   if (!rowQItems || !rowQrItems) {
     return null;

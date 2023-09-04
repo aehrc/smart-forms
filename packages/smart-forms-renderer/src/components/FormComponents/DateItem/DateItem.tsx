@@ -48,9 +48,14 @@ function DateItem(props: DateItemProps) {
   // Init input value
   let dateString: string | null = null;
 
-  if (qrItem?.answer && qrItem?.answer[0].valueDate) {
-    dateString = qrItem.answer[0].valueDate;
+  if (qrItem?.answer) {
+    if (qrItem?.answer[0].valueDate) {
+      dateString = qrItem.answer[0].valueDate;
+    } else if (qrItem?.answer[0].valueDateTime) {
+      dateString = qrItem.answer[0].valueDateTime;
+    }
   }
+
   const dateDayJs = dateString ? dayjs(dateString) : null;
 
   // Event handlers
