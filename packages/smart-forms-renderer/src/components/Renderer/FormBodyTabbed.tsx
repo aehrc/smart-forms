@@ -23,7 +23,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import { updateQrGroup } from '../../utils/qrItem';
-import FormBodyTabList from '../Tabs/FormBodyTabList';
+import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 
@@ -61,7 +61,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
     <Grid container spacing={2}>
       <TabContext value={currentTab.toString()}>
         <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
-          <FormBodyTabList qFormItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
+          <FormBodyTabListWrapper qFormItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
         </Grid>
 
         <Grid item xs={12} md={8.5} lg={9} xl={9.25}>
