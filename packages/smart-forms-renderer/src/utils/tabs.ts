@@ -19,7 +19,7 @@ import type { Tabs } from '../interfaces/tab.interface';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension, isSpecificItemControl } from './itemControl';
-import { isHiddenByEnableWhens } from './qItem';
+import { isHidden, isHiddenByEnableWhens } from './qItem';
 
 export function getFirstVisibleTab(
   tabs: Tabs,
@@ -252,4 +252,57 @@ export function getContextDisplays(item: QuestionnaireItem): QuestionnaireItem[]
     (childItem) =>
       isSpecificItemControl(childItem, 'context-display') && childItem.type === 'display'
   );
+}
+
+interface IsTabHiddenParams {
+  qItem: QuestionnaireItem;
+  contextDisplayItems: QuestionnaireItem[];
+  isTab: boolean;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  completedTabsCollapsed: boolean;
+}
+
+export function isTabHidden(params: IsTabHiddenParams): boolean {
+  const {
+    qItem,
+    contextDisplayItems,
+    isTab,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions,
+    completedTabsCollapsed
+  } = params;
+
+  if (
+    !isTab ||
+    isHidden({
+      questionnaireItem: qItem,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    })
+  ) {
+    return true;
+  }
+
+  if (completedTabsCollapsed) {
+    const completedDisplayItem = contextDisplayItems.find(
+      (contextDisplayItem) => contextDisplayItem.text === 'Complete'
+    );
+    if (
+      completedDisplayItem &&
+      !isHidden({
+        questionnaireItem: completedDisplayItem,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions
+      })
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }

@@ -15,99 +15,70 @@
  * limitations under the License.
  */
 
-import React, { memo, useState } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
+import React, { memo, useMemo } from 'react';
 import Collapse from '@mui/material/Collapse';
-import { PrimarySelectableList } from '../Lists.styles';
 import { TransitionGroup } from 'react-transition-group';
-import { isHidden } from '../../utils/qItem';
 import { getShortText } from '../../utils/itemControl';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
-import { IconButton } from '@mui/material';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
+import { getContextDisplays, isTabHidden } from '../../utils/tabs';
 
 interface FormBodyTabListProps {
-  qFormItems: QuestionnaireItem[];
+  topLevelItems: QuestionnaireItem[];
   currentTabIndex: number;
   tabs: Tabs;
+  completedTabsCollapsed: boolean;
 }
 
 const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProps) {
-  const { qFormItems, currentTabIndex, tabs } = props;
-
-  const [completedTabsExpanded, setCompletedTabsExpanded] = useState(true);
+  const { topLevelItems, currentTabIndex, tabs, completedTabsCollapsed } = props;
 
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
   const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
   const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
 
+  const allContextDisplayItems = useMemo(
+    () => topLevelItems.map((topLevelItem) => getContextDisplays(topLevelItem)),
+    [topLevelItems]
+  );
+
   return (
-    <Card sx={{ p: 0.75, mb: 2 }}>
-      <Box sx={{ flexGrow: 1 }}>
-        <PrimarySelectableList dense disablePadding sx={{ mb: 1 }} data-test="renderer-tab-list">
-          <Box display="flex" justifyContent="center" alignItems="center" mx={2} columnGap={0.5}>
-            <Typography
-              variant="overline"
-              fontSize={9}
-              color={completedTabsExpanded ? 'text.secondary' : 'text.disabled'}>
-              Completed tabs {completedTabsExpanded ? 'shown' : 'hidden'}
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={() => {
-                setCompletedTabsExpanded(!completedTabsExpanded);
-              }}>
-              {completedTabsExpanded ? (
-                <ExpandLess fontSize="small" />
-              ) : (
-                <ExpandMore fontSize="small" />
-              )}
-            </IconButton>
-          </Box>
-          <Divider sx={{ mx: 1 }} light />
+    <TransitionGroup>
+      {topLevelItems.map((qItem, i) => {
+        const contextDisplayItems = allContextDisplayItems[i];
+        const isTab = !!tabs[qItem.linkId];
 
-          <TransitionGroup>
-            {qFormItems.map((qItem, i) => {
-              const isTab = !!tabs[qItem.linkId];
+        if (
+          isTabHidden({
+            qItem,
+            contextDisplayItems,
+            isTab,
+            enableWhenIsActivated,
+            enableWhenItems,
+            enableWhenExpressions,
+            completedTabsCollapsed
+          })
+        ) {
+          return null;
+        }
 
-              if (
-                !isTab ||
-                isHidden({
-                  questionnaireItem: qItem,
-                  enableWhenIsActivated,
-                  enableWhenItems,
-                  enableWhenExpressions
-                })
-              ) {
-                return null;
-              }
+        const tabIsSelected = currentTabIndex.toString() === i.toString();
+        const tabLabel = getShortText(qItem) ?? qItem.text ?? '';
 
-              const tabIsSelected = currentTabIndex.toString() === i.toString();
-              const tabLabel = getShortText(qItem) ?? qItem.text ?? '';
-
-              return (
-                <Collapse key={qItem.linkId} timeout={100}>
-                  <FormBodySingleTab
-                    qItem={qItem}
-                    selected={tabIsSelected}
-                    tabLabel={tabLabel}
-                    listIndex={i}
-                    completedTabsCollapsed={!completedTabsExpanded}
-                  />
-                </Collapse>
-              );
-            })}
-          </TransitionGroup>
-        </PrimarySelectableList>
-      </Box>
-    </Card>
+        return (
+          <Collapse key={qItem.linkId} timeout={100}>
+            <FormBodySingleTab
+              contextDisplayItems={contextDisplayItems}
+              selected={tabIsSelected}
+              tabLabel={tabLabel}
+              listIndex={i}
+            />
+          </Collapse>
+        );
+      })}
+    </TransitionGroup>
   );
 });
 

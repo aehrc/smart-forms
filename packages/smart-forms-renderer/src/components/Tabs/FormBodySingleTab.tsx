@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -23,44 +23,19 @@ import Typography from '@mui/material/Typography';
 
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getContextDisplays } from '../../utils/tabs';
-import ItemLabelText from '../FormComponents/ItemParts/ItemLabelText';
-import { isHidden } from '../../utils/qItem';
+import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
 
 interface FormBodySingleTabProps {
-  qItem: QuestionnaireItem;
+  contextDisplayItems: QuestionnaireItem[];
   selected: boolean;
   tabLabel: string;
   listIndex: number;
-  completedTabsCollapsed: boolean;
 }
 
 const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleTabProps) {
-  const { qItem, selected, tabLabel, listIndex, completedTabsCollapsed } = props;
+  const { contextDisplayItems, selected, tabLabel, listIndex } = props;
 
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
   const switchTab = useQuestionnaireStore((state) => state.switchTab);
-
-  const visibleContextDisplayItems = useMemo(
-    () =>
-      getContextDisplays(qItem).filter(
-        (contextDisplayItem) =>
-          !isHidden({
-            questionnaireItem: contextDisplayItem,
-            enableWhenIsActivated,
-            enableWhenItems,
-            enableWhenExpressions
-          })
-      ),
-    [enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItem]
-  );
-
-  const tabIsCompleted = visibleContextDisplayItems.find((item) => item.text === 'Complete');
-  if (tabIsCompleted && completedTabsCollapsed) {
-    return null;
-  }
 
   function handleTabClick() {
     switchTab(listIndex);
@@ -78,9 +53,9 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
             <Box display="flex" alignItems="center" justifyContent="space-between">
               <Typography variant="subtitle2">{tabLabel}</Typography>
               <Box display="flex" minHeight={24} minWidth={24} ml={1}>
-                {visibleContextDisplayItems.map((item) => (
-                  <ItemLabelText key={item.linkId} qItem={item} />
-                ))}
+                {contextDisplayItems.map((item) => {
+                  return <ContextDisplayItem key={item.linkId} displayItem={item} />;
+                })}
               </Box>
             </Box>
           }
