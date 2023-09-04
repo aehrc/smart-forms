@@ -19,14 +19,23 @@ import { Box, List, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import RendererOperationItem from './RendererOperationItem.tsx';
-import GradingIcon from '@mui/icons-material/Grading';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../dashboard/hooks/useSelectedQuestionnaire.ts';
+import useFetchExistingResponses from '../../../dashboard/hooks/useFetchExistingResponses.ts';
+import { useMemo } from 'react';
+import ExistingResponsesBadgeIcon from './ExistingResponsesBadgeIcon.tsx';
 
 function RendererLaunchQuestionnaireNavSection() {
   const navigate = useNavigate();
   const { closeSnackbar } = useSnackbar();
   const { launchQuestionnaire } = useSmartClient();
+
+  const { existingResponses, fetchError } = useFetchExistingResponses();
+
+  const draftExistingResponses = useMemo(
+    () => existingResponses.map((response) => response.status === 'in-progress'),
+    [existingResponses]
+  );
 
   const { setSelectedQuestionnaire } = useSelectedQuestionnaire();
 
@@ -38,7 +47,12 @@ function RendererLaunchQuestionnaireNavSection() {
       <List disablePadding sx={{ px: 1 }}>
         <RendererOperationItem
           title="View Existing Responses"
-          icon={<GradingIcon />}
+          icon={
+            <ExistingResponsesBadgeIcon
+              numOfDraftResponses={draftExistingResponses.length}
+              fetchError={fetchError}
+            />
+          }
           onClick={() => {
             closeSnackbar();
             setSelectedQuestionnaire(launchQuestionnaire);
