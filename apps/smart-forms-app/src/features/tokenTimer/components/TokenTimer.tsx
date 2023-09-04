@@ -50,8 +50,8 @@ const TokenTimer = memo(function TokenTimer() {
 
   function checkRemainingTime() {
     const remaining = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
-    if (!remaining) {
-      return null;
+    if (remaining === null) {
+      return;
     }
 
     if (remaining <= reminderTime) {

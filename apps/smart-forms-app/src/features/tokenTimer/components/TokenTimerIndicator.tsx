@@ -30,7 +30,7 @@ function TokenTimerIndicator(props: TokenTimerIndicatorProps) {
 
   const isDesktop = useResponsive('up', 'lg');
 
-  if (!showRemainingTime || !timeLeft) {
+  if (!showRemainingTime || timeLeft === null) {
     return null;
   }
 
@@ -50,7 +50,7 @@ function getIndicatorText(isAutoSaving: boolean, timeLeft: number) {
     return 'Autosaving...';
   }
 
-  if (timeLeft < 0) {
+  if (timeLeft <= 0) {
     return 'Session ended';
   }
 

@@ -77,9 +77,7 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
 
   return (
     <Dialog open={true}>
-      <DialogTitle variant="h5" sx={{ m: 2 }}>
-        Autosaving...
-      </DialogTitle>
+      <DialogTitle sx={{ m: 2 }}>Autosaving...</DialogTitle>
     </Dialog>
   );
 }
