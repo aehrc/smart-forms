@@ -32,7 +32,7 @@ export function readPopulationExpressions(questionnaire: Questionnaire): Populat
   if (!questionnaire.item) return populationExpressions;
 
   questionnaire.item.forEach((item) => {
-    readQuestionnaireItem(item, populationExpressions);
+    readQuestionnaireItemRecursive(item, populationExpressions);
   });
   return populationExpressions;
 }
@@ -42,7 +42,7 @@ export function readPopulationExpressions(questionnaire: Questionnaire): Populat
  *
  * @author Sean Fong
  */
-function readQuestionnaireItem(
+function readQuestionnaireItemRecursive(
   item: QuestionnaireItem,
   populationExpressions: PopulationExpressions
 ): PopulationExpressions {
@@ -50,7 +50,7 @@ function readQuestionnaireItem(
   if (items && items.length > 0) {
     // iterate through items of item recursively
     items.forEach((item) => {
-      readQuestionnaireItem(item, populationExpressions);
+      readQuestionnaireItemRecursive(item, populationExpressions);
     });
 
     // Read item population context of qGroup

@@ -48,6 +48,7 @@ export function evaluateExpressions(
         }
         continue;
       }
+
       initialExpressions[linkId] = initialExpression;
     }
   }

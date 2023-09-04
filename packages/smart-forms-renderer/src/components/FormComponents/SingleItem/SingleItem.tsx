@@ -24,6 +24,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore';
 import SingleItemSwitcher from './SingleItemSwitcher';
+import useHidden from '../../../hooks/useHidden';
 
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -47,6 +48,11 @@ function SingleItem(props: SingleItemProps) {
     },
     [updateEnableWhenItem, onQrItemChange, qItem.linkId]
   );
+
+  const itemIsHidden = useHidden(qItem);
+  if (itemIsHidden) {
+    return null;
+  }
 
   return (
     <SingleItemSwitcher

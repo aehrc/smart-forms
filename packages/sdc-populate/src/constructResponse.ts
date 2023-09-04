@@ -288,7 +288,7 @@ function getAnswerValues(
     }
 
     // Value is string at this point
-    if (qItem.type === 'date' && checkIsDate(value)) {
+    if (qItem.type === 'date' && checkIsDateTime(value)) {
       return { valueDate: value };
     }
 
@@ -320,23 +320,14 @@ function itemIsHidden(item: QuestionnaireItem): boolean {
 }
 
 /**
- * Check if an answer is a date in the formats YYYY, YYYY-MM, YYYY-MM-DD
- *
- * @author Sean Fong
- */
-export function checkIsDate(value: string): boolean {
-  const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD'];
-  return dayjs(value, acceptedFormats, true).isValid();
-}
-
-/**
  * Check if an answer is a datetime in the format YYYY, YYYY-MM, YYYY-MM-DD, YYYY-MM-DDThh:mm:ss+zz:zz
  *
  * @author Sean Fong
  */
 export function checkIsDateTime(value: string): boolean {
   const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
-  return moment(value, acceptedFormats, true).isValid();
+  const formattedDate = dayjs(value).format();
+  return moment(formattedDate, acceptedFormats, true).isValid();
 }
 
 /**
