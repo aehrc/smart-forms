@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Collapse from '@mui/material/Collapse';
@@ -27,6 +27,11 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
+import { IconButton } from '@mui/material';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 
 interface FormBodyTabListProps {
   qFormItems: QuestionnaireItem[];
@@ -37,6 +42,8 @@ interface FormBodyTabListProps {
 const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProps) {
   const { qFormItems, currentTabIndex, tabs } = props;
 
+  const [completedTabsExpanded, setCompletedTabsExpanded] = useState(true);
+
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
   const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
   const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
@@ -44,7 +51,28 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <PrimarySelectableList dense disablePadding sx={{ my: 1 }} data-test="renderer-tab-list">
+        <PrimarySelectableList dense disablePadding sx={{ mb: 1 }} data-test="renderer-tab-list">
+          <Box display="flex" justifyContent="center" alignItems="center" mx={2} columnGap={0.5}>
+            <Typography
+              variant="overline"
+              fontSize={9}
+              color={completedTabsExpanded ? 'text.secondary' : 'text.disabled'}>
+              Completed tabs {completedTabsExpanded ? 'shown' : 'hidden'}
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => {
+                setCompletedTabsExpanded(!completedTabsExpanded);
+              }}>
+              {completedTabsExpanded ? (
+                <ExpandLess fontSize="small" />
+              ) : (
+                <ExpandMore fontSize="small" />
+              )}
+            </IconButton>
+          </Box>
+          <Divider sx={{ mx: 1 }} light />
+
           <TransitionGroup>
             {qFormItems.map((qItem, i) => {
               const isTab = !!tabs[qItem.linkId];
@@ -71,6 +99,7 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
                     selected={tabIsSelected}
                     tabLabel={tabLabel}
                     listIndex={i}
+                    completedTabsCollapsed={!completedTabsExpanded}
                   />
                 </Collapse>
               );

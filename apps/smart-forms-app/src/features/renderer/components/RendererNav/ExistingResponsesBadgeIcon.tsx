@@ -28,14 +28,14 @@ function ExistingResponsesBadgeIcon(props: ExistingResponsesBadgeProps) {
 
   if (fetchError) {
     return (
-      <Badge color="error" badgeContent=" " variant="dot">
+      <Badge color="warning" badgeContent=" " variant="dot">
         <GradingIcon />
       </Badge>
     );
   }
 
   return (
-    <Badge color="primary" badgeContent={numOfDraftResponses}>
+    <Badge color="error" badgeContent={numOfDraftResponses}>
       <GradingIcon />
     </Badge>
   );
