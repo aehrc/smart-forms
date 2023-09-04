@@ -76,6 +76,7 @@ function useSmartClient() {
   const user = state.user;
   const encounter = state.encounter;
   const launchQuestionnaire = state.launchQuestionnaire;
+  const tokenReceivedTimestamp = state.tokenReceivedTimestamp;
 
   return {
     smartClient,
@@ -83,6 +84,7 @@ function useSmartClient() {
     user,
     encounter,
     launchQuestionnaire,
+    tokenReceivedTimestamp,
     setSmartClient,
     setCommonLaunchContexts,
     setQuestionnaireLaunchContext
