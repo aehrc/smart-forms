@@ -26,6 +26,7 @@ import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.
 import { memo } from 'react';
 import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import TokenTimer from '../../../tokenTimer/components/TokenTimer.tsx';
 
 interface RendererHeaderProps {
   navIsCollapsed: boolean;
@@ -71,6 +72,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
         <Box flexGrow={1} />
 
         <UpdatingIndicator />
+        <TokenTimer />
 
         <HeaderIcons />
       </StyledToolbar>

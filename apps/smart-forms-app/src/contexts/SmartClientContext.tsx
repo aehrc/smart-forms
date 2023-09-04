@@ -26,6 +26,7 @@ export interface SmartClientState {
   user: Practitioner | null;
   encounter: Encounter | null;
   launchQuestionnaire: Questionnaire | null;
+  tokenReceivedTimestamp: number | null;
 }
 
 export type SmartClientActions =
@@ -39,7 +40,7 @@ export type SmartClientActions =
 function smartClientReducer(state: SmartClientState, action: SmartClientActions): SmartClientState {
   switch (action.type) {
     case 'SET_CLIENT':
-      return { ...state, smartClient: action.payload };
+      return { ...state, smartClient: action.payload, tokenReceivedTimestamp: Date.now() };
     case 'SET_COMMON_CONTEXTS':
       return {
         ...state,
@@ -59,7 +60,8 @@ const initialSmartClientState: SmartClientState = {
   patient: null,
   user: null,
   encounter: null,
-  launchQuestionnaire: null
+  launchQuestionnaire: null,
+  tokenReceivedTimestamp: null
 };
 
 export interface SmartClientContextType {
