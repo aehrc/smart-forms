@@ -32,7 +32,7 @@ interface isHiddenParams {
 /**
  * Test the given QItem on a series of checks to verify if the item should be displayed
  * Check if qItem has hidden attribute
- * Check if qItem fufilled its enableWhen criteria
+ * Check if qItem fulfilled its enableWhen criteria
  *
  * @author Sean Fong
  */
