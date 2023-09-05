@@ -30,7 +30,8 @@ import { addAdditionalVariables } from './addAdditionalVariables';
 
 export async function createQuestionnaireModel(
   questionnaire: Questionnaire,
-  additionalVariables: Record<string, object>
+  additionalVariables: Record<string, object>,
+  terminologyServerUrl: string
 ): Promise<QuestionnaireModel> {
   if (!questionnaire.item) {
     return createEmptyModel();
@@ -43,7 +44,10 @@ export async function createQuestionnaireModel(
   let variables: Variables = extractQuestionnaireLevelVariables(questionnaire);
   variables = addAdditionalVariables(variables, additionalVariables);
 
-  const extractContainedValueSetsResult = extractContainedValueSets(questionnaire);
+  const extractContainedValueSetsResult = extractContainedValueSets(
+    questionnaire,
+    terminologyServerUrl
+  );
   let valueSetPromises = extractContainedValueSetsResult.valueSetPromises;
   let processedValueSetCodings = extractContainedValueSetsResult.processedValueSetCodings;
   const processedValueSetUrls = extractContainedValueSetsResult.processedValueSetUrls;
@@ -51,7 +55,8 @@ export async function createQuestionnaireModel(
   const extractOtherExtensionsResult = extractOtherExtensions(
     questionnaire,
     variables,
-    valueSetPromises
+    valueSetPromises,
+    terminologyServerUrl
   );
 
   const { enableWhenItems, enableWhenExpressions, calculatedExpressions, answerExpressions } =
@@ -62,7 +67,8 @@ export async function createQuestionnaireModel(
   const resolveValueSetsResult = await resolveValueSets(
     variables,
     valueSetPromises,
-    processedValueSetCodings
+    processedValueSetCodings,
+    terminologyServerUrl
   );
 
   variables = resolveValueSetsResult.variables;

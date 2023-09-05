@@ -38,6 +38,7 @@ import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/creat
 import { initialiseFormFromResponse } from '../utils/initialiseForm';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
+import useTerminologyServerStore from './useTerminologyServerStore';
 
 export interface UseQuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
@@ -57,7 +58,8 @@ export interface UseQuestionnaireStoreType {
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
-    additionalVariables?: Record<string, object>
+    additionalVariables?: Record<string, object>,
+    terminologyServerUrl?: string
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
@@ -87,9 +89,14 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
   buildSourceQuestionnaire: async (
     questionnaire,
     questionnaireResponse = cloneDeep(emptyResponse),
-    additionalVariables = {}
+    additionalVariables = {},
+    terminologyServerUrl = useTerminologyServerStore.getState().url
   ) => {
-    const questionnaireModel = await createQuestionnaireModel(questionnaire, additionalVariables);
+    const questionnaireModel = await createQuestionnaireModel(
+      questionnaire,
+      additionalVariables,
+      terminologyServerUrl
+    );
 
     const {
       initialEnableWhenItems,

@@ -23,11 +23,13 @@ import useQuestionnaireResponseStore from '../stores/useQuestionnaireResponseSto
 import type Client from 'fhirclient/lib/Client';
 import useSmartConfigStore from '../stores/useSmartConfigStore';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
+import useTerminologyServerStore from '../stores/useTerminologyServerStore';
 
 function useInitialiseRenderer(
   questionnaire: Questionnaire,
   questionnaireResponse?: QuestionnaireResponse,
   additionalVariables?: Record<string, object>,
+  terminologyServerUrl?: string,
   fhirClient?: Client
 ): boolean {
   const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
@@ -39,6 +41,8 @@ function useInitialiseRenderer(
     (state) => state.setUpdatableResponseAsPopulated
   );
 
+  const setTerminologyServerUrl = useTerminologyServerStore((state) => state.setUrl);
+  const resetTerminologyServerUrl = useTerminologyServerStore((state) => state.resetUrl);
   const setSmartClient = useSmartConfigStore((state) => state.setClient);
   const setPatient = useSmartConfigStore((state) => state.setPatient);
   const setUser = useSmartConfigStore((state) => state.setUser);
@@ -48,6 +52,7 @@ function useInitialiseRenderer(
 
   useLayoutEffect(() => {
     setLoading(true);
+    // set fhirClient if provided
     if (fhirClient) {
       setSmartClient(fhirClient);
       readPatient(fhirClient).then((patient) => {
@@ -61,7 +66,20 @@ function useInitialiseRenderer(
       });
     }
 
-    buildSourceQuestionnaire(questionnaire, questionnaireResponse, additionalVariables).then(() => {
+    // set terminology server url if provided, otherwise reset it back to ontoserver
+    if (terminologyServerUrl) {
+      setTerminologyServerUrl(terminologyServerUrl);
+    } else {
+      resetTerminologyServerUrl();
+    }
+
+    // initialise form including enableWhen, enableWhenExpressions, calculatedExpressions, initialExpressions, answerExpressions, cache answerValueSets
+    buildSourceQuestionnaire(
+      questionnaire,
+      questionnaireResponse,
+      additionalVariables,
+      terminologyServerUrl
+    ).then(() => {
       buildSourceResponse(createQuestionnaireResponse(questionnaire));
 
       if (questionnaireResponse) {
@@ -82,7 +100,9 @@ function useInitialiseRenderer(
     setSmartClient,
     setPatient,
     setUser,
-    setEncounter
+    setEncounter,
+    terminologyServerUrl,
+    setTerminologyServerUrl
   ]);
 
   return loading;

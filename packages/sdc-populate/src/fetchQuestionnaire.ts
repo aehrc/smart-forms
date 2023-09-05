@@ -35,8 +35,8 @@ export async function fetchQuestionnaire(
     return questionnaireData.resource;
   }
 
-  const canonical = parameters.parameter.find((param) => isCanonicalParameter(param))
-    ?.valueCanonical;
+  const canonicalParam = parameters.parameter.find((param) => isCanonicalParameter(param));
+  const canonical = canonicalParam?.valueCanonical;
   const query = getQueryString(questionnaireData, canonical);
   const response: Questionnaire | Bundle | OperationOutcome = await fetchQuestionnaireCallback(
     query,

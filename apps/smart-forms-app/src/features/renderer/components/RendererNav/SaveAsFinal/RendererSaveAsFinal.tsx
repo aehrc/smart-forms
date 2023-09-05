@@ -16,7 +16,7 @@
  */
 
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
@@ -29,17 +29,9 @@ function RendererSaveAsFinal() {
   const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  useEffect(() => {
-    setIsUpdating(true);
-    setTimeout(() => {
-      setIsUpdating(false);
-    }, 800);
-  }, [updatableResponse]);
 
   const responseWasSaved: boolean = !!updatableResponse.authored && !!updatableResponse.author;
-  const buttonIsDisabled = (!hasChanges && !responseWasSaved) || isUpdating;
+  const buttonIsDisabled = !hasChanges && !responseWasSaved;
 
   return (
     <>

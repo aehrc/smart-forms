@@ -31,9 +31,10 @@ describe('pre-test setup', () => {
     cy.waitForPopulation();
 
     cy.getByData('q-item-choice-radio-answer-value-set-box')
-      .should('include.text', 'Aboriginal and/or Torres Strait Islander status')
+      .should('include.text', 'Eligible for health check')
       .eq(0)
       .find('input')
+      .eq(0)
       .check()
       .should('be.checked')
       .waitForFormUpdate();

@@ -22,6 +22,7 @@ export interface RendererPropsState {
   questionnaire: Questionnaire;
   response: QuestionnaireResponse | null;
   additionalVars: Record<string, object> | null;
+  terminologyServerUrl: string | null;
 }
 
 export type RendererPropsActions =
@@ -32,7 +33,9 @@ export type RendererPropsActions =
         questionnaire: Questionnaire;
         response: QuestionnaireResponse | null;
         additionalVars: Record<string, object> | null;
+        terminologyServerUrl: string | null;
       };
     }
   | { type: 'SET_RESPONSE'; payload: QuestionnaireResponse | null }
-  | { type: 'SET_ADDITIONAL_VARS'; payload: Record<string, object> | null };
+  | { type: 'SET_ADDITIONAL_VARS'; payload: Record<string, object> | null }
+  | { type: 'SET_TERMINOLOGY_SERVER'; payload: string | null };

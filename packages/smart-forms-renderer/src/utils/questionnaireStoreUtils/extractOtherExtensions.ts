@@ -41,7 +41,8 @@ interface ReturnParamsRecursive {
 export function extractOtherExtensions(
   questionnaire: Questionnaire,
   variables: Variables,
-  valueSetPromises: Record<string, ValueSetPromise>
+  valueSetPromises: Record<string, ValueSetPromise>,
+  terminologyServerUrl: string
 ): ReturnParamsRecursive {
   const enableWhenItems: Record<string, EnableWhenItemProperties> = {};
   const enableWhenExpressions: Record<string, EnableWhenExpression> = {};
@@ -67,7 +68,8 @@ export function extractOtherExtensions(
       enableWhenExpressions,
       calculatedExpressions,
       answerExpressions,
-      valueSetPromises
+      valueSetPromises,
+      defaultTerminologyServerUrl: terminologyServerUrl
     });
   }
 
@@ -89,6 +91,7 @@ interface extractExtensionsFromItemRecursiveParams {
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  defaultTerminologyServerUrl: string;
 }
 
 function extractExtensionsFromItemRecursive(
@@ -101,7 +104,8 @@ function extractExtensionsFromItemRecursive(
     enableWhenExpressions,
     calculatedExpressions,
     answerExpressions,
-    valueSetPromises
+    valueSetPromises,
+    defaultTerminologyServerUrl
   } = params;
 
   const items = item.item;
@@ -145,7 +149,7 @@ function extractExtensionsFromItemRecursive(
   const valueSetUrl = item.answerValueSet;
   if (valueSetUrl) {
     if (!valueSetPromises[valueSetUrl] && !valueSetUrl.startsWith('#')) {
-      const terminologyServerUrl = getTerminologyServerUrl(item);
+      const terminologyServerUrl = getTerminologyServerUrl(item) ?? defaultTerminologyServerUrl;
       valueSetPromises[valueSetUrl] = {
         promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
       };

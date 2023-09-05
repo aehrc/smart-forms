@@ -19,7 +19,10 @@ import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
 import { getValueSetCodings, getValueSetPromise } from '../valueSet';
 import type { Coding, Questionnaire, ValueSet } from 'fhir/r4';
 
-export function extractContainedValueSets(questionnaire: Questionnaire): {
+export function extractContainedValueSets(
+  questionnaire: Questionnaire,
+  terminologyServerUrl: string
+): {
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
   valueSetPromises: Record<string, ValueSetPromise>;
@@ -47,7 +50,7 @@ export function extractContainedValueSets(questionnaire: Questionnaire): {
     const valueSetUrl = getValueSetUrlFromContained(entry);
     if (valueSetUrl) {
       valueSetPromises[entry.id] = {
-        promise: getValueSetPromise(valueSetUrl)
+        promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
       };
       continue;
     }

@@ -17,7 +17,7 @@
 
 import React from 'react';
 import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import { StyledFormControlLabel } from '../../Box.styles';
 
 interface Props {
   value: string;
@@ -31,7 +31,7 @@ function CheckboxSingle(props: Props) {
   const { value, label, readOnly, isChecked, onCheckedChange } = props;
 
   return (
-    <FormControlLabel
+    <StyledFormControlLabel
       disabled={readOnly}
       control={
         <Checkbox size="small" checked={isChecked} onChange={() => onCheckedChange(value)} />
