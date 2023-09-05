@@ -22,11 +22,13 @@ const ONTOSERVER_R4 = 'https://r4.ontoserver.csiro.au/fhir';
 export interface UseTerminologyServerStoreType {
   url: string;
   setUrl: (newUrl: string) => void;
+  resetUrl: () => void;
 }
 
 const useTerminologyServerStore = create<UseTerminologyServerStoreType>()((set) => ({
   url: ONTOSERVER_R4,
-  setUrl: (newUrl: string) => set(() => ({ url: newUrl }))
+  setUrl: (newUrl: string) => set(() => ({ url: newUrl })),
+  resetUrl: () => set(() => ({ url: ONTOSERVER_R4 }))
 }));
 
 export default useTerminologyServerStore;

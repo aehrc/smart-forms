@@ -42,6 +42,7 @@ function useInitialiseRenderer(
   );
 
   const setTerminologyServerUrl = useTerminologyServerStore((state) => state.setUrl);
+  const resetTerminologyServerUrl = useTerminologyServerStore((state) => state.resetUrl);
   const setSmartClient = useSmartConfigStore((state) => state.setClient);
   const setPatient = useSmartConfigStore((state) => state.setPatient);
   const setUser = useSmartConfigStore((state) => state.setUser);
@@ -65,9 +66,11 @@ function useInitialiseRenderer(
       });
     }
 
-    // set terminology server url if provided
+    // set terminology server url if provided, otherwise reset it back to ontoserver
     if (terminologyServerUrl) {
       setTerminologyServerUrl(terminologyServerUrl);
+    } else {
+      resetTerminologyServerUrl();
     }
 
     // initialise form including enableWhen, enableWhenExpressions, calculatedExpressions, initialExpressions, answerExpressions, cache answerValueSets

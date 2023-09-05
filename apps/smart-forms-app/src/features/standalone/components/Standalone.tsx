@@ -15,33 +15,17 @@
  * limitations under the License.
  */
 
-import QTestGridJson from '../data/QTestGrid.json';
-import RTestGridJson from '../data/RTestGrid.json';
-import AddVarsTestGridJson from '../data/AddVariablesTestGrid.json';
-import Q715Json from '../data/Q715.json';
-import R715Json from '../data/R715.json';
-import QCVDRiskJson from '../data/QCVDRisk.json';
-import RCVDRiskJson from '../data/RCVDRisk.json';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  MenuItem,
-  Select,
-  Stack
-} from '@mui/material';
-import { useReducer } from 'react';
+import { Grid, Stack } from '@mui/material';
+import { useReducer, useState } from 'react';
 import type {
   RendererPropsActions,
   RendererPropsState
 } from '../interfaces/standalone.interface.ts';
-import { getResponse, SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
+import { SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
+import { rendererPropsList } from '../utils/standaloneList.ts';
+import StandaloneQuestionnairePicker from './StandaloneQuestionnairePicker.tsx';
+import StandalonePropsPicker from './StandalonePropsPicker.tsx';
+import StandaloneResourceViewer from './StandaloneResourceViewer.tsx';
 
 const rendererPropsReducer = (state: RendererPropsState, action: RendererPropsActions) => {
   switch (action.type) {
@@ -51,134 +35,72 @@ const rendererPropsReducer = (state: RendererPropsState, action: RendererPropsAc
         id: action.payload.id,
         questionnaire: action.payload.questionnaire,
         response: action.payload.response,
-        additionalVars: action.payload.additionalVars
+        additionalVars: action.payload.additionalVars,
+        terminologyServerUrl: action.payload.terminologyServerUrl
       };
     case 'SET_RESPONSE':
       return { ...state, response: action.payload };
     case 'SET_ADDITIONAL_VARS':
       return { ...state, additionalVars: action.payload };
+    case 'SET_TERMINOLOGY_SERVER':
+      return { ...state, terminologyServerUrl: action.payload };
     default:
       return state;
   }
 };
-
-const rendererPropsList: RendererPropsState[] = [
-  {
-    id: 'TestGrid',
-    questionnaire: QTestGridJson as Questionnaire,
-    response: RTestGridJson as QuestionnaireResponse,
-    additionalVars: AddVarsTestGridJson
-  },
-  {
-    id: 'AboriginalTorresStraitIslanderHealthCheck',
-    questionnaire: Q715Json as Questionnaire,
-    response: R715Json as QuestionnaireResponse,
-    additionalVars: null
-  },
-  {
-    id: 'CVDRiskCalculator',
-    questionnaire: QCVDRiskJson as Questionnaire,
-    response: RCVDRiskJson as QuestionnaireResponse,
-    additionalVars: null
-  }
-];
 
 function Standalone() {
   const [state, dispatch] = useReducer(rendererPropsReducer, {
     id: rendererPropsList[0].id,
     questionnaire: rendererPropsList[0].questionnaire,
     response: rendererPropsList[0].response,
-    additionalVars: rendererPropsList[0].additionalVars
+    additionalVars: rendererPropsList[0].additionalVars,
+    terminologyServerUrl: rendererPropsList[0].terminologyServerUrl
   });
+  const [resourcesShown, setResourcesShown] = useState(false);
 
   return (
-    <Container maxWidth="xl">
-      <Stack my={3} rowGap={2}>
-        <Stack rowGap={1}>
-          <FormControl>
-            <FormLabel sx={{ mb: 0.5 }}>Select questionnaire (hardcoded at the moment!)</FormLabel>
-            <Select
-              value={state.id}
-              onChange={(e) => {
-                const id = e.target.value;
-                const rendererProps = rendererPropsList.find((resource) => resource.id === id);
+    <Grid container>
+      <Grid item xs={12} xl={resourcesShown ? 8 : 12}>
+        <Stack my={3} rowGap={2}>
+          <StandaloneQuestionnairePicker
+            rendererPropsState={state}
+            rendererPropsDispatch={dispatch}
+            rendererPropsList={rendererPropsList}
+          />
+          {rendererPropsList.map((rendererPropsSingle) => {
+            if (rendererPropsSingle.id !== state.id) {
+              return null;
+            }
 
-                if (rendererProps) {
-                  dispatch({
-                    type: 'SET_QUESTIONNAIRE',
-                    payload: rendererProps
-                  });
-                }
-              }}>
-              {rendererPropsList.map((resource) => (
-                <MenuItem key={resource.id} value={resource.id}>
-                  {resource.questionnaire.name ?? resource.id}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            return (
+              <Stack key={rendererPropsSingle.id} rowGap={1}>
+                <StandalonePropsPicker
+                  rendererPropsState={state}
+                  rendererPropsDispatch={dispatch}
+                  rendererPropsSingle={rendererPropsSingle}
+                  resourcesShown={resourcesShown}
+                  onShowResources={() => setResourcesShown(!resourcesShown)}
+                />
+                <SmartFormsRenderer
+                  questionnaire={state.questionnaire}
+                  questionnaireResponse={state.response ?? undefined}
+                  additionalVariables={state.additionalVars ?? undefined}
+                  terminologyServerUrl={state.terminologyServerUrl ?? undefined}
+                />
+              </Stack>
+            );
+          })}
         </Stack>
-
-        {rendererPropsList.map((resource) => {
-          if (resource.id !== state.id) {
-            return null;
-          }
-
-          return (
-            <Stack key={resource.id} rowGap={1}>
-              <Box display="flex" justifyContent="space-between">
-                <FormControl>
-                  <FormGroup row>
-                    <FormControlLabel
-                      disabled
-                      required
-                      control={<Checkbox defaultChecked />}
-                      label="Questionnaire"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={state.response !== null}
-                          onChange={() => {
-                            dispatch({
-                              type: 'SET_RESPONSE',
-                              payload: state.response ? null : resource.response
-                            });
-                          }}
-                        />
-                      }
-                      label="Questionnaire response"
-                    />
-                    {resource.additionalVars ? (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={state.additionalVars !== null}
-                            onChange={() => {
-                              dispatch({
-                                type: 'SET_ADDITIONAL_VARS',
-                                payload: state.additionalVars ? null : resource.additionalVars
-                              });
-                            }}
-                          />
-                        }
-                        label="Additional variables"
-                      />
-                    ) : null}
-                  </FormGroup>
-                </FormControl>
-                <Button onClick={() => console.log(getResponse())}>Log response to console</Button>
-              </Box>
-              <SmartFormsRenderer
-                questionnaire={state.questionnaire}
-                questionnaireResponse={state.response ?? undefined}
-                additionalVariables={state.additionalVars ?? undefined}
-              />
-            </Stack>
-          );
-        })}
-      </Stack>
-    </Container>
+      </Grid>
+      {resourcesShown ? (
+        <>
+          <Grid item xs={12} xl={4}>
+            <StandaloneResourceViewer rendererPropsState={state} />
+          </Grid>
+        </>
+      ) : null}
+    </Grid>
   );
 }
 
