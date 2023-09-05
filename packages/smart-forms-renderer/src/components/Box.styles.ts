@@ -17,6 +17,7 @@
 
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 export const QGroupContainerBox = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'cardElevation' && prop !== 'isRepeated'
@@ -26,9 +27,13 @@ export const QGroupContainerBox = styled(Box, {
 }));
 
 export const FullWidthFormComponentBox = styled(Box)(() => ({
-  marginBottom: 14
+  marginBottom: 10
 }));
 
 export const FormTitleWrapper = styled(Box)(() => ({
   marginTop: 12
+}));
+
+export const StyledFormControlLabel = styled(FormControlLabel)(() => ({
+  height: 34
 }));

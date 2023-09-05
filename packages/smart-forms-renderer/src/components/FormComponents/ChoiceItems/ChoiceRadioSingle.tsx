@@ -16,8 +16,8 @@
  */
 
 import React from 'react';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
+import { StyledFormControlLabel } from '../../Box.styles';
 
 interface ChoiceRadioSingleProps {
   value: string;
@@ -29,7 +29,7 @@ function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
   const { value, label, readOnly } = props;
 
   return (
-    <FormControlLabel
+    <StyledFormControlLabel
       disabled={readOnly}
       value={value}
       control={<Radio size="small" />}
