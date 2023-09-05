@@ -16,7 +16,6 @@
  */
 
 import SaveIcon from '@mui/icons-material/Save';
-import { useEffect, useState } from 'react';
 import { saveQuestionnaireResponse } from '../../../../../api/saveQr.ts';
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import { useSnackbar } from 'notistack';
@@ -44,17 +43,9 @@ function RendererSaveAsDraft() {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const [isUpdating, setIsUpdating] = useState(false);
-
   const navigate: NavigateFunction = useNavigate();
-  useEffect(() => {
-    setIsUpdating(true);
-    setTimeout(() => {
-      setIsUpdating(false);
-    }, 800);
-  }, [updatableResponse]);
 
-  const buttonIsDisabled = !smartClient || !hasChanges || isUpdating;
+  const buttonIsDisabled = !smartClient || !hasChanges;
   const launchQuestionnaireExists = !!launchQuestionnaire;
 
   function handleClick() {

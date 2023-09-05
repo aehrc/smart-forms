@@ -10,7 +10,7 @@
     "build": "tsc && CI=false vite build",
     "test": "jest --config ./jest.config.ts",
     "preview": "vite preview",
-    "cypress:open": "cypress open",
+    "cypress": "cypress open",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
