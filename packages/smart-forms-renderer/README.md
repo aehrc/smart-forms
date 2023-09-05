@@ -1,6 +1,8 @@
 # Smart Forms Renderer
 This React-based package acts as the rendering engine for the [Smart Forms app](https://github.com/aehrc/smart-forms).
 
+Try out a minimal demo here: https://www.smartforms.io/standalone.
+
 ## Installation
 ```bash
 npm install @aehrc/smart-forms-renderer
@@ -30,18 +32,17 @@ export default function App () {
 ### SmartFormsRenderer Props 
 
 
-| Name                  | Type                                                 | Description                                                                                    | Required? |
-|-----------------------|------------------------------------------------------|------------------------------------------------------------------------------------------------|-----------|
-| questionnaire         | FHIR R4.Questionnaire                                | Questionnaire to be rendered                                                                   | Required  |
-| questionnaireResponse | FHIR R4.QuestionnaireResponse                        | Pre-populated QuestionnaireResponse to be rendered                                             | Optional  |
-| additionalVariables   | Record<string, Extension>                            | Key-value pair of [SDC variables](http://hl7.org/fhir/R4/extension-variable.html) <name, variable extension> | Optional  |
-
+| Name                  | Type                          | Description                                                                                                  | Required? |
+|-----------------------|-------------------------------|--------------------------------------------------------------------------------------------------------------|-----------|
+| questionnaire         | FHIR R4.Questionnaire         | Questionnaire to be rendered                                                                                 | Required  |
+| questionnaireResponse | FHIR R4.QuestionnaireResponse | Pre-populated QuestionnaireResponse to be rendered                                                           | Optional  |
+| additionalVariables   | Record<string, Extension>     | Key-value pair of [SDC variables](http://hl7.org/fhir/R4/extension-variable.html) <name, variable extension> | Optional  |
+| terminologyServerUrl  | string                        | Alternate terminology server url to fetch terminology                                                        |
 The below props are not supported at the moment, but will be in the future.
 
 | Name                 | Type                                                 | Description                                 |
 |----------------------|------------------------------------------------------|---------------------------------------------|
 | fhirClient           | [Client](https://github.com/smart-on-fhir/client-js) | FhirClient to perform further FHIR calls    |
-| terminologyServerUrl | string                                               | Terminology server url to fetch terminology |
 
 ### Functions
 
@@ -65,7 +66,8 @@ function getResponse() {}
 function SmartFormsRenderer(props: {
   questionnaire: Questionnaire,
   questionnaireResponse?: QuestionnaireResponse,
-  additionalVariables?: Record<string, Extension>
+  additionalVariables?: Record<string, Extension>,
+  terminologyServerUrl?: string,
 }): JSX.Element {}
 
 // BaseRenderer underneath the SmartFormsRenderer wrapper. Requires buildForm() to initialise form.
@@ -96,7 +98,7 @@ function removeHiddenAnswersFromResponse(
 
 The Smart Forms app uses a even finer-grained control which directly interacts with the state management stores.
 
-At the moment there are no plans to document it, but I am happy to do so if there is demand for it.
+At the moment there are no plans to document state management methods, but happy to do so if there is demand for it.
 Raise a request in https://github.com/aehrc/smart-forms/issues if you want to see it happen!
 
 ---
