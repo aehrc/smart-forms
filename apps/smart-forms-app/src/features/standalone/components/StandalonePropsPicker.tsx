@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 import {
   Box,
   Checkbox,
@@ -25,7 +25,10 @@ import {
   ToggleButton,
   Tooltip
 } from '@mui/material';
-import { RendererPropsActions, RendererPropsState } from '../interfaces/standalone.interface.ts';
+import type {
+  RendererPropsActions,
+  RendererPropsState
+} from '../interfaces/standalone.interface.ts';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 
 interface StandalonePropsPickerProps {

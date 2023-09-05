@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { RendererPropsState } from '../interfaces/standalone.interface.ts';
+import type { RendererPropsState } from '../interfaces/standalone.interface.ts';
 import QTestGridJson from '../data/QTestGrid.json';
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import RTestGridJson from '../data/RTestGrid.json';
 import AddVarsTestGridJson from '../data/AddVariablesTestGrid.json';
 import Q715Json from '../data/Q715.json';

@@ -15,9 +15,12 @@
  * limitations under the License.
  */
 
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 import { FormControl, FormLabel, MenuItem, Select, Stack } from '@mui/material';
-import { RendererPropsActions, RendererPropsState } from '../interfaces/standalone.interface.ts';
+import type {
+  RendererPropsActions,
+  RendererPropsState
+} from '../interfaces/standalone.interface.ts';
 
 interface StandaloneQuestionnairePickerProps {
   rendererPropsState: RendererPropsState;
