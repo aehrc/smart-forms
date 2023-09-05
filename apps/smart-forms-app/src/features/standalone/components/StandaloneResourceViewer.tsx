@@ -19,9 +19,9 @@ import { useState } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { RendererPropsState } from '../interfaces/standalone.interface.ts';
+import type { RendererPropsState } from '../interfaces/standalone.interface.ts';
 import { getResponse } from '@aehrc/smart-forms-renderer';
-import { QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireResponse } from 'fhir/r4';
 import cloneDeep from 'lodash.clonedeep';
 
 interface StandaloneResourceViewerProps {
