@@ -28,6 +28,7 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import useSmartConfigStore from '../stores/useSmartConfigStore';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
+import useTerminologyServerStore from '../stores/useTerminologyServerStore';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
   const patient = useSmartConfigStore((state) => state.patient);
@@ -39,6 +40,8 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
   const cachedValueSetCodings = useQuestionnaireStore((state) => state.cachedValueSetCodings);
   const addCodingToCache = useQuestionnaireStore((state) => state.addCodingToCache);
   const { xFhirQueryVariables } = useQuestionnaireStore((state) => state.variables);
+
+  const defaultTerminologyServerUrl = useTerminologyServerStore((state) => state.url);
 
   const valueSetUrl = qItem.answerValueSet;
   let initialCodings = useMemo(() => {
@@ -127,8 +130,8 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
     const valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl || codings.length > 0) return;
 
-    const terminologyServer = getTerminologyServerUrl(qItem);
-    const promise = getValueSetPromise(valueSetUrl, terminologyServer);
+    const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
+    const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
     if (promise) {
       promise
         .then((valueSet: ValueSet) => {

@@ -37,7 +37,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import { getTerminologyServerUrl } from '../../../utils/valueSet';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -80,17 +79,16 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const [input, setInput] = useState('');
   const debouncedInput = useDebounce(input, AUTOCOMPLETE_DEBOUNCE_DURATION);
 
-  const answerValueSetUrl = qItem.answerValueSet;
-  const terminologyServerUrl = getTerminologyServerUrl(qItem);
   const { options, loading, feedback } = useTerminologyServerQuery(
-    answerValueSetUrl,
+    qItem,
     maxList,
     input,
-    debouncedInput,
-    terminologyServerUrl
+    debouncedInput
   );
 
-  if (!answerValueSetUrl) return null;
+  if (!qItem.answerValueSet) {
+    return null;
+  }
 
   // Event handlers
   function handleValueChange(_: SyntheticEvent<Element, Event>, newValue: Coding | string | null) {

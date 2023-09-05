@@ -32,17 +32,24 @@ interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   additionalVariables?: Record<string, object>;
+  terminologyServerUrl?: string;
   fhirClient?: Client;
 }
 
-// TODO add terminiology server
 function SmartFormsRenderer(props: SmartFormsRendererProps) {
-  const { questionnaire, questionnaireResponse, additionalVariables, fhirClient } = props;
+  const {
+    questionnaire,
+    questionnaireResponse,
+    additionalVariables,
+    terminologyServerUrl,
+    fhirClient
+  } = props;
 
   const isLoading = useInitialiseRenderer(
     questionnaire,
     questionnaireResponse,
     additionalVariables,
+    terminologyServerUrl,
     fhirClient
   );
   const queryClient = useQueryClient();

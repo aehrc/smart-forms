@@ -16,23 +16,23 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import type { Coding, ValueSet } from 'fhir/r4';
-import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
+import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
 import type { AlertColor } from '@mui/material/Alert';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
+import useTerminologyServerStore from '../stores/useTerminologyServerStore';
 
 function useTerminologyServerQuery(
-  answerValueSetUrl: string | undefined,
+  qItem: QuestionnaireItem,
   maxList: number,
   input: string,
-  searchTerm: string,
-  terminologyServerUrl?: string
+  searchTerm: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
   const processedValueSetUrls = useQuestionnaireStore((state) => state.processedValueSetUrls);
+  const defaultTerminologyServerUrl = useTerminologyServerStore((state) => state.url);
 
   let fullUrl = '';
-
   let options: Coding[] = [];
   let loading = false;
   let feedback: { message: string; color: AlertColor } | undefined;
@@ -46,6 +46,7 @@ function useTerminologyServerQuery(
   }
 
   // Restructure url to include filter and count parameters
+  let answerValueSetUrl = qItem.answerValueSet;
   if (answerValueSetUrl) {
     if (answerValueSetUrl.startsWith('#')) {
       answerValueSetUrl = answerValueSetUrl.slice(1);
@@ -62,6 +63,7 @@ function useTerminologyServerQuery(
   }
 
   // Perform query
+  const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
   const { isInitialLoading, error, data } = useQuery<ValueSet>(
     ['expandValueSet', fullUrl],
     () => getValueSetPromise(fullUrl, terminologyServerUrl),

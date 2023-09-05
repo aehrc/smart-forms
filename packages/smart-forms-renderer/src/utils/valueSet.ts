@@ -35,7 +35,6 @@ const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;
 
 const VALID_FHIRPATH_VARIABLE_REGEX = /%(.*?)\./;
-const ONTOSERVER_ENDPOINT = 'https://r4.ontoserver.csiro.au/fhir/';
 
 export function getTerminologyServerUrl(qItem: QuestionnaireItem): string | undefined {
   const itemControl = qItem.extension?.find(
@@ -48,18 +47,18 @@ export function getTerminologyServerUrl(qItem: QuestionnaireItem): string | unde
   return undefined;
 }
 
-export function getValueSetPromise(url: string, terminologyServer?: string): Promise<ValueSet> {
+export function getValueSetPromise(url: string, terminologyServerUrl: string): Promise<ValueSet> {
   let valueSetUrl = url;
 
   if (url.includes('ValueSet/$expand?url=')) {
     const splitUrl = url.split('ValueSet/$expand?url=');
-    terminologyServer = splitUrl[0];
+    terminologyServerUrl = splitUrl[0];
     valueSetUrl = splitUrl[1];
   }
 
   valueSetUrl = valueSetUrl.replace('|', '&version=');
 
-  return FHIR.client({ serverUrl: terminologyServer ?? ONTOSERVER_ENDPOINT }).request({
+  return FHIR.client({ serverUrl: terminologyServerUrl }).request({
     url: 'ValueSet/$expand?url=' + valueSetUrl
   });
 }

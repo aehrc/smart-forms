@@ -28,7 +28,8 @@ import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
 export async function resolveValueSets(
   variables: Variables,
   valueSetPromises: Record<string, ValueSetPromise>,
-  processedValueSetCodings: Record<string, Coding[]>
+  processedValueSetCodings: Record<string, Coding[]>,
+  terminologyServerUrl: string
 ): Promise<{ variables: Variables; processedValueSetCodings: Record<string, Coding[]> }> {
   // Create a <valueSetUrl, XFhirQueryVariableName> map
   const valueSetToXFhirQueryVariableNameMap: Record<string, string> =
@@ -37,7 +38,7 @@ export async function resolveValueSets(
   if (Object.keys(valueSetToXFhirQueryVariableNameMap).length > 0) {
     for (const valueSetUrl in valueSetToXFhirQueryVariableNameMap) {
       valueSetPromises[valueSetUrl] = {
-        promise: getValueSetPromise(valueSetUrl)
+        promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
       };
     }
   }
