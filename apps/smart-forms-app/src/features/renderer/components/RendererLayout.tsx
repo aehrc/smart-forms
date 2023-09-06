@@ -66,7 +66,7 @@ function RendererLayout() {
 
   useBackToTop();
 
-  usePopulate(spinner.isSpinning, () => setSpinner({ ...spinner, isSpinning: false }));
+  usePopulate(spinner, () => setSpinner({ ...spinner, isSpinning: false }));
 
   const isPopulating = spinner.isSpinning && spinner.purpose === 'prepopulate';
   const isRepopulating = spinner.isSpinning && spinner.purpose === 'repopulate';

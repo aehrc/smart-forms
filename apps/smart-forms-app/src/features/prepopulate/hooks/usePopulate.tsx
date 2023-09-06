@@ -22,8 +22,11 @@ import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
-function usePopulate(isSpinning: boolean, onStopSpinner: () => void): void {
+function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void {
+  const { isSpinning, purpose } = spinner;
+
   const { smartClient, patient, user, encounter } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
@@ -43,9 +46,9 @@ function usePopulate(isSpinning: boolean, onStopSpinner: () => void): void {
   const { enqueueSnackbar } = useSnackbar();
 
   // Do not run population if spinner purpose is "repopulate"
-  // if (purpose === 'repopulate') {
-  //   return;
-  // }
+  if (purpose === 'repopulate') {
+    return;
+  }
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
