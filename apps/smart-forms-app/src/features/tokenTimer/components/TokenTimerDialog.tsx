@@ -125,9 +125,6 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
             'You have 15 minutes left in your session. Do you want to save your progress so far as a draft? You would be unable to save your progress after the session expires.'
           }
         </DialogContentText>
-        <DialogContentText variant="body1">
-          You would be unable to save your progress after the session expires.
-        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
