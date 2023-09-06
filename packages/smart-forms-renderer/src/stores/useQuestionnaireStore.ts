@@ -42,6 +42,7 @@ import useTerminologyServerStore from './useTerminologyServerStore';
 
 export interface UseQuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
+  itemTypes: Record<string, string>;
   tabs: Tabs;
   currentTabIndex: number;
   variables: Variables;
@@ -76,6 +77,7 @@ export interface UseQuestionnaireStoreType {
 
 const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => ({
   sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+  itemTypes: {},
   tabs: {},
   currentTabIndex: 0,
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
@@ -118,6 +120,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
 
     set({
       sourceQuestionnaire: questionnaire,
+      itemTypes: questionnaireModel.itemTypes,
       tabs: questionnaireModel.tabs,
       currentTabIndex: firstVisibleTab,
       variables: questionnaireModel.variables,
@@ -134,6 +137,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
   destroySourceQuestionnaire: () =>
     set({
       sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+      itemTypes: {},
       tabs: {},
       currentTabIndex: 0,
       variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },

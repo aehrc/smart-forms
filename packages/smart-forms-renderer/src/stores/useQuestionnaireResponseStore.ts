@@ -27,35 +27,35 @@ const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>(
     }));
   },
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
-    const formChanges = diff(get().updatableResponse, populatedResponse);
+    const formChanges = diff(get().updatableResponse, populatedResponse, { full: true });
     set(() => ({
       updatableResponse: populatedResponse,
-      formChanges: [...get().formChangesHistory, formChanges]
+      formChangesHistory: [...get().formChangesHistory, formChanges]
     }));
   },
   updateResponse: (updatedResponse: QuestionnaireResponse) => {
-    const formChanges = diff(get().updatableResponse, updatedResponse);
+    const formChanges = diff(get().updatableResponse, updatedResponse, { full: true });
     set(() => ({
       updatableResponse: updatedResponse,
-      formChanges: [...get().formChangesHistory, formChanges]
+      formChangesHistory: [...get().formChangesHistory, formChanges]
     }));
   },
   setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) =>
     set(() => ({
       sourceResponse: savedResponse,
       updatableResponse: savedResponse,
-      formChanges: []
+      formChangesHistory: []
     })),
   setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) =>
     set(() => ({
       updatableResponse: clearedResponse,
-      formChanges: []
+      formChangesHistory: []
     })),
   destroySourceResponse: () =>
     set(() => ({
       sourceResponse: cloneDeep(emptyResponse),
       updatableResponse: cloneDeep(emptyResponse),
-      formChanges: []
+      formChangesHistory: []
     }))
 }));
 
