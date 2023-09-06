@@ -41,6 +41,7 @@ import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import DeleteRowButton from './DeleteRowButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import cloneDeep from 'lodash.clonedeep';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -84,7 +85,9 @@ function QItemGroupTable(props: Props) {
     setTableRows(updatedTableRows);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
-      qrItems: updatedTableRows.flatMap((singleRow) => (singleRow.qrItem ? [singleRow.qrItem] : []))
+      qrItems: updatedTableRows.flatMap((singleRow) =>
+        singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []
+      )
     });
   }
 
@@ -96,7 +99,9 @@ function QItemGroupTable(props: Props) {
     setTableRows(updatedTableRows);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
-      qrItems: updatedTableRows.flatMap((singleRow) => (singleRow.qrItem ? [singleRow.qrItem] : []))
+      qrItems: updatedTableRows.flatMap((singleRow) =>
+        singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []
+      )
     });
   }
 
