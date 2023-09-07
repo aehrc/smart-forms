@@ -13,7 +13,7 @@
   "dependencies": {
     "@aehrc/sdc-assemble": "^1.0.2",
     "aws-cdk-lib": "^2.94.0",
-    "constructs": "^10.2.52",
+    "constructs": "^10.2.70",
     "forms-server": "^0.1.0",
     "source-map-support": "^0.5.21"
   },
