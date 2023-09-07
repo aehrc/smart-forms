@@ -8,7 +8,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -22,7 +22,7 @@ jobs:
     name: Jest Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -37,7 +37,7 @@ jobs:
     name: Cypress Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -53,7 +53,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
