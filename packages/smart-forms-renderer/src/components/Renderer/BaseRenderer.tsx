@@ -29,7 +29,6 @@ function BaseRenderer() {
   const updateExpressions = useQuestionnaireStore((state) => state.updateExpressions);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
   const updateResponse = useQuestionnaireResponseStore((state) => state.updateResponse);
-  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
 
   function handleTopLevelQRItemChange(newTopLevelQItem: QuestionnaireResponseItem, index: number) {
     const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);

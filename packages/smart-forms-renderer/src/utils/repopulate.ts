@@ -22,12 +22,13 @@ import type {
   QuestionnaireResponseItem
 } from 'fhir/r4';
 import type { Tabs } from '../interfaces/tab.interface';
-import { getShortText } from './itemControl';
 import _isEqual from 'lodash/isEqual';
+import { containsTabs, isTabContainer } from './tabs';
+import { getShortText } from './itemControl';
 
 export interface ItemToRepopulate {
   qItem: QuestionnaireItem | null;
-  tabName: string | null;
+  heading: string | null;
   newQRItem: QuestionnaireResponseItem;
   oldQRItem?: QuestionnaireResponseItem;
 }
@@ -59,7 +60,7 @@ export function getItemsToRepopulate(
     (mapping: Record<string, ItemToRepopulate>, item) => {
       mapping[item.linkId] = {
         qItem: null,
-        tabName: null,
+        heading: null,
         newQRItem: item
       };
       return mapping;
@@ -69,13 +70,15 @@ export function getItemsToRepopulate(
 
   // Get corresponding old items from updatableResponse if they are different
   for (const topLevelItem of sourceQuestionnaire.item) {
-    const isTab = !!tabs[topLevelItem.linkId];
-    let tabName: string | null = null;
-    if (isTab) {
-      tabName = getShortText(topLevelItem) ?? topLevelItem.text ?? null;
-    }
-
-    getCorrespondingQuestionnaireItemsRecursive(topLevelItem, tabName, itemsToRepopulate);
+    const heading = topLevelItem.text ?? null;
+    const hasTabs = isTabContainer(topLevelItem) || containsTabs(topLevelItem);
+    getCorrespondingQuestionnaireItemsRecursive(
+      topLevelItem,
+      heading,
+      tabs,
+      hasTabs,
+      itemsToRepopulate
+    );
   }
 
   // Get corresponding old items from updatableResponse if they are different
@@ -94,12 +97,25 @@ export function getItemsToRepopulate(
 
 function getCorrespondingQuestionnaireItemsRecursive(
   qItem: QuestionnaireItem,
-  tabName: string | null,
+  heading: string | null,
+  tabs: Tabs,
+  hasTabs: boolean,
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ): void {
   if (qItem.type === 'group' && qItem.item && qItem.item.length > 0) {
+    const isTab = !!tabs[qItem.linkId];
+    if (isTab) {
+      heading = getShortText(qItem) ?? qItem.text ?? null;
+    }
+
     for (const childItem of qItem.item) {
-      getCorrespondingQuestionnaireItemsRecursive(childItem, tabName, itemsToRepopulate);
+      getCorrespondingQuestionnaireItemsRecursive(
+        childItem,
+        heading,
+        tabs,
+        hasTabs,
+        itemsToRepopulate
+      );
     }
 
     return;
@@ -110,7 +126,7 @@ function getCorrespondingQuestionnaireItemsRecursive(
   }
 
   itemsToRepopulate[qItem.linkId].qItem = qItem;
-  itemsToRepopulate[qItem.linkId].tabName = tabName;
+  itemsToRepopulate[qItem.linkId].heading = heading;
 }
 
 function getPopulatedItemsRecursive(

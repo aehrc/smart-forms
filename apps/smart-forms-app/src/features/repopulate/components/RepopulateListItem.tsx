@@ -19,7 +19,7 @@ import ListItem from '@mui/material/ListItem';
 import { Checkbox, Grid, ListItemButton, ListItemIcon, Typography } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
 import { SingleItem, useHidden } from '@aehrc/smart-forms-renderer';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 interface RepopulateListItemProps {
   checkedIds: string[];
@@ -62,7 +62,9 @@ function RepopulateListItem(props: RepopulateListItemProps) {
             <Typography component="span">
               <Grid container columnSpacing={2} mt={1}>
                 <Grid item xs={12} md={6}>
-                  <Typography color="text.secondary">Old answer</Typography>
+                  <Typography color="text.secondary" fontSize={10.5}>
+                    Old answer
+                  </Typography>
                   <SingleItem
                     qItem={qItem}
                     qrItem={
@@ -77,7 +79,9 @@ function RepopulateListItem(props: RepopulateListItemProps) {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography color="text.secondary">New answer</Typography>
+                  <Typography color="text.secondary" fontSize={10.5}>
+                    New answer
+                  </Typography>
                   <SingleItem
                     qItem={qItem}
                     qrItem={newQRItem}
