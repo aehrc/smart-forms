@@ -120,9 +120,9 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
     <Dialog open={open}>
       <DialogTitle variant="h5">Session expiring soon</DialogTitle>
       <DialogContent>
-        <DialogContentText variant="body1">
+        <DialogContentText>
           {
-            'You have 15 minutes left in your session. Do you want to save your progress so far as a draft? You would be unable to save your progress after the session expires.'
+            "You have 15 minutes left in your session. Do you want to save your progress so far as a draft? You wouldn't be able to save your progress after the session expires."
           }
         </DialogContentText>
       </DialogContent>

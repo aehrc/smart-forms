@@ -28,8 +28,7 @@ interface RendererNavShownProps {
   onCloseMobileNav: () => void;
   onCollapseDesktopNav: () => void;
   spinner: RendererSpinner;
-  onStartRepopulating: () => void;
-  onStopRepopulating: () => void;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RendererNavDrawer(props: RendererNavShownProps) {
@@ -39,8 +38,7 @@ function RendererNavDrawer(props: RendererNavShownProps) {
     onCloseMobileNav,
     onCollapseDesktopNav,
     spinner,
-    onStartRepopulating,
-    onStopRepopulating
+    onSpinnerChange
   } = props;
 
   const { smartClient } = useSmartClient();
@@ -64,8 +62,7 @@ function RendererNavDrawer(props: RendererNavShownProps) {
           navIsShown={desktopNavIsShown}
           onCollapseNav={onCollapseDesktopNav}
           spinner={spinner}
-          onStartRepopulating={onStartRepopulating}
-          onStopRepopulating={onStopRepopulating}
+          onSpinnerChange={onSpinnerChange}
         />
       </Drawer>
     );
@@ -86,8 +83,7 @@ function RendererNavDrawer(props: RendererNavShownProps) {
         navIsShown={desktopNavIsShown}
         onCollapseNav={onCollapseDesktopNav}
         spinner={spinner}
-        onStartRepopulating={onStartRepopulating}
-        onStopRepopulating={onStopRepopulating}
+        onSpinnerChange={onSpinnerChange}
       />
     </Drawer>
   );

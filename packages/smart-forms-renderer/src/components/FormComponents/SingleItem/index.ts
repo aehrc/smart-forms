@@ -15,8 +15,4 @@
  * limitations under the License.
  */
 
-export interface RendererSpinner {
-  isSpinning: boolean;
-  status: 'prepopulate' | 'repopulate' | 'repopulated' | null;
-  message: string;
-}
+export { default as SingleItem } from './SingleItem';

@@ -31,7 +31,7 @@ function RendererSaveAsFinal() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const responseWasSaved: boolean = !!updatableResponse.authored && !!updatableResponse.author;
-  const buttonIsDisabled = !responseWasSaved || formChangesHistory.length === 0;
+  const buttonIsDisabled = !responseWasSaved && formChangesHistory.length === 0;
 
   return (
     <>

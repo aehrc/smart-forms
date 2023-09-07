@@ -27,8 +27,7 @@ interface Props {
   onCloseMobileNav: () => void;
   onCollapseDesktopNav: () => void;
   spinner: RendererSpinner;
-  onStartRepopulating: () => void;
-  onStopRepopulating: () => void;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RendererNavWrapper(props: Props) {
@@ -38,8 +37,7 @@ function RendererNavWrapper(props: Props) {
     onCloseMobileNav,
     onCollapseDesktopNav,
     spinner,
-    onStartRepopulating,
-    onStopRepopulating
+    onSpinnerChange
   } = props;
 
   const isDesktop = useResponsive('up', 'lg');
@@ -61,8 +59,7 @@ function RendererNavWrapper(props: Props) {
           onCloseMobileNav={onCloseMobileNav}
           onCollapseDesktopNav={onCollapseDesktopNav}
           spinner={spinner}
-          onStartRepopulating={onStartRepopulating}
-          onStopRepopulating={onStopRepopulating}
+          onSpinnerChange={onSpinnerChange}
         />
       </Box>
     </>

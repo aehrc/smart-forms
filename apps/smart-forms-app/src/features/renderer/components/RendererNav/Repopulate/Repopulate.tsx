@@ -21,33 +21,40 @@ import { useSnackbar } from 'notistack';
 import type { PopulateFormParams } from '../../../../prepopulate/utils/populate.ts';
 import { populateQuestionnaire } from '../../../../prepopulate/utils/populate.ts';
 import CloseSnackbar from '../../../../../components/Snackbar/CloseSnackbar.tsx';
-import { Tooltip } from '@mui/material';
+import { Backdrop, Tooltip } from '@mui/material';
 import type { RendererSpinner } from '../../../types/rendererSpinner.ts';
 import useSmartClient from '../../../../../hooks/useSmartClient.ts';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
+import {
+  repopulateResponse,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
+import { alpha } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
+import PopulationProgressSpinner from '../../../../../components/Spinners/PopulationProgressSpinner.tsx';
+import RepopulateDialog from '../../../../repopulate/components/RepopulateDialog.tsx';
+import { useState } from 'react';
 
 interface RepopulateProps {
   spinner: RendererSpinner;
-  onStartRepopulating: () => void;
-  onStopRepopulating: () => void;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function Repopulate(props: RepopulateProps) {
-  const { spinner, onStartRepopulating, onStopRepopulating } = props;
+  const { spinner, onSpinnerChange } = props;
 
   const { smartClient, patient, user, encounter } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatePopulatedProperties = useQuestionnaireStore(
-    (state) => state.updatePopulatedProperties
-  );
+  const [repopulatedItems, setRepopulatedItems] = useState<Record<string, ItemToRepopulate>>({});
 
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-  const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsPopulated
-  );
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const isRepopulating = spinner.isSpinning && spinner.status === 'repopulate';
+  const isRepopulated = !spinner.isSpinning && spinner.status === 'repopulate';
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
@@ -64,39 +71,42 @@ function Repopulate(props: RepopulateProps) {
 
   // dont change tab
 
-  function handleClick() {
+  async function handleClick() {
     closeSnackbar();
     if (!shouldRepopulate) {
       return;
     }
 
-    onStartRepopulating();
+    onSpinnerChange({ isSpinning: true, status: 'repopulate', message: 'Re-populating form' });
+    const newPatient = await smartClient.patient.read();
+    // FIXME get latest user and encounter info as well
+
     populateQuestionnaire(
       sourceQuestionnaire,
       smartClient,
-      patient,
+      newPatient,
       user,
       encounter,
       (params: PopulateFormParams) => {
         const { populated, hasWarnings } = params;
 
-        const updatedResponse = updatePopulatedProperties(populated, true);
-        setUpdatableResponseAsPopulated(updatedResponse);
-        onStopRepopulating();
+        const itemToRepopulate = repopulateResponse(populated);
+
+        if (Object.keys(itemToRepopulate).length > 0) {
+          setRepopulatedItems(itemToRepopulate);
+        }
+
+        onSpinnerChange({ isSpinning: false, status: 'repopulate', message: '' });
         if (hasWarnings) {
           enqueueSnackbar(
             'Questionnaire form partially re-populated, there might be issues while repopulating the form. View console for details.',
             { action: <CloseSnackbar />, variant: 'warning' }
           );
-        } else {
-          enqueueSnackbar('Questionnaire form re-populated', {
-            preventDuplicate: true,
-            action: <CloseSnackbar />
-          });
+          return;
         }
       },
       () => {
-        onStopRepopulating();
+        onSpinnerChange({ isSpinning: false, status: 'repopulate', message: '' });
         enqueueSnackbar('Form not re-populated', { action: <CloseSnackbar />, variant: 'warning' });
       }
     );
@@ -107,16 +117,33 @@ function Repopulate(props: RepopulateProps) {
   // 2. if a field is dirty, allow users to manually sync the field (current answer - changes from server ) under "Resolve repopulate conflicts" section
 
   return (
-    <Tooltip title="Form does not support pre-population" disableHoverListener={shouldRepopulate}>
-      <span>
-        <RendererOperationItem
-          title="Repopulate Form"
-          icon={<SyncIcon />}
-          disabled={!shouldRepopulate || spinner.isSpinning}
-          onClick={handleClick}
-        />
-      </span>
-    </Tooltip>
+    <>
+      <Tooltip title="Form does not support pre-population" disableHoverListener={shouldRepopulate}>
+        <span>
+          <RendererOperationItem
+            title="Repopulate Form"
+            icon={<SyncIcon />}
+            disabled={!shouldRepopulate || spinner.isSpinning}
+            onClick={handleClick}
+          />
+        </span>
+      </Tooltip>
+
+      <Backdrop
+        sx={{
+          backgroundColor: alpha(grey[200], 0.33),
+          zIndex: (theme) => theme.zIndex.drawer + 1
+        }}
+        open={isRepopulating}
+        onClick={() => onSpinnerChange({ ...spinner, isSpinning: false })}>
+        <PopulationProgressSpinner message={spinner.message} />
+      </Backdrop>
+      <RepopulateDialog
+        isRepopulated={isRepopulated}
+        repopulatedItems={repopulatedItems}
+        onCloseDialog={() => onSpinnerChange({ isSpinning: false, status: null, message: '' })}
+      />
+    </>
   );
 }
 

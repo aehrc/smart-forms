@@ -35,19 +35,11 @@ interface RendererNavProps {
   navIsShown: boolean;
   onCollapseNav: () => void;
   spinner: RendererSpinner;
-  onStartRepopulating: () => void;
-  onStopRepopulating: () => void;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RendererNav(props: RendererNavProps) {
-  const {
-    isNotLaunched,
-    navIsShown,
-    onCollapseNav,
-    spinner,
-    onStartRepopulating,
-    onStopRepopulating
-  } = props;
+  const { isNotLaunched, navIsShown, onCollapseNav, spinner, onSpinnerChange } = props;
 
   const { launchQuestionnaire } = useSmartClient();
 
@@ -69,11 +61,7 @@ function RendererNav(props: RendererNavProps) {
       ) : (
         <RendererNavSection />
       )}
-      <RendererOperationSection
-        spinner={spinner}
-        onStartRepopulating={onStartRepopulating}
-        onStopRepopulating={onStopRepopulating}
-      />
+      <RendererOperationSection spinner={spinner} onSpinnerChange={onSpinnerChange} />
 
       <Box flexGrow={1} />
 

@@ -26,16 +26,15 @@ import { NavListItemButton, StyledNavItemIcon } from '../../../../components/Nav
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
-import Repopulate from './RePopulate/RePopulate.tsx';
+import Repopulate from './Repopulate/Repopulate.tsx';
 
 interface RendererOperationSectionProps {
   spinner: RendererSpinner;
-  onStartRepopulating: () => void;
-  onStopRepopulating: () => void;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RendererOperationSection(props: RendererOperationSectionProps) {
-  const { spinner, onStartRepopulating, onStopRepopulating } = props;
+  const { spinner, onSpinnerChange } = props;
 
   const { smartClient } = useSmartClient();
 
@@ -71,11 +70,7 @@ function RendererOperationSection(props: RendererOperationSectionProps) {
           <>
             <RendererSaveAsDraft />
             <RendererSaveAsFinal />
-            <Repopulate
-              spinner={spinner}
-              onStartRepopulating={onStartRepopulating}
-              onStopRepopulating={onStopRepopulating}
-            />
+            <Repopulate spinner={spinner} onSpinnerChange={onSpinnerChange} />
           </>
         ) : null}
       </List>

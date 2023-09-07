@@ -3,9 +3,12 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { createQuestionnaireResponse } from './utils/qrItem';
 import useQuestionnaireResponseStore from './stores/useQuestionnaireResponseStore';
 import { removeHiddenAnswers } from './utils/removeHidden';
+import { getItemsToRepopulate } from './utils/repopulate';
 
 export * from './components';
 export * from './stores';
+export * from './hooks';
+export type { ItemToRepopulate } from './utils/repopulate';
 
 /**
  * Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse.
@@ -71,4 +74,24 @@ export function removeHiddenAnswersFromResponse(
     enableWhenItems,
     enableWhenExpressions
   });
+}
+
+/**
+ * Re-populate stuff
+ *
+ * @author Sean Fong
+ */
+export function repopulateResponse(populatedResponse: QuestionnaireResponse) {
+  const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
+  const itemTypes = useQuestionnaireStore.getState().itemTypes;
+  const tabs = useQuestionnaireStore.getState().tabs;
+  const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
+
+  return getItemsToRepopulate(
+    sourceQuestionnaire,
+    itemTypes,
+    tabs,
+    populatedResponse,
+    updatableResponse
+  );
 }

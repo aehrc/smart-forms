@@ -22,7 +22,7 @@ import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Main } from './RendererLayout.styles.ts';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../../backToTop/components/BackToTopButton.tsx';
-import { Backdrop, Fab } from '@mui/material';
+import { Fab } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog.tsx';
 import NavExpandButton from './NavCollapseButton.tsx';
@@ -45,11 +45,11 @@ function RendererLayout() {
   const [desktopNavCollapsed, setDesktopNavCollapsed] = useState(false);
 
   // Init population spinner
-  let initialSpinner: RendererSpinner = { isSpinning: false, purpose: 'prepopulate', message: '' };
+  let initialSpinner: RendererSpinner = { isSpinning: false, status: 'prepopulate', message: '' };
   if (smartClient && patient && user && !sourceResponse.id) {
     initialSpinner = {
       isSpinning: true,
-      purpose: 'prepopulate',
+      status: 'prepopulate',
       message: 'Populating form'
     };
   }
@@ -66,10 +66,9 @@ function RendererLayout() {
 
   useBackToTop();
 
-  usePopulate(spinner, () => setSpinner({ ...spinner, isSpinning: false }));
+  usePopulate(spinner, () => setSpinner({ isSpinning: false, status: null, message: '' }));
 
-  const isPopulating = spinner.isSpinning && spinner.purpose === 'prepopulate';
-  const isRepopulating = spinner.isSpinning && spinner.purpose === 'repopulate';
+  const isPrepopulating = spinner.isSpinning && spinner.status === 'prepopulate';
 
   return (
     <StyledRoot>
@@ -84,32 +83,10 @@ function RendererLayout() {
         desktopNavCollapsed={desktopNavCollapsed}
         onCollapseDesktopNav={() => setDesktopNavCollapsed(true)}
         spinner={spinner}
-        onStartRepopulating={() =>
-          setSpinner({ isSpinning: true, purpose: 'repopulate', message: 'Re-populating form' })
-        }
-        onStopRepopulating={() =>
-          setSpinner({ isSpinning: false, purpose: 'repopulate', message: 'Re-populating form' })
-        }
+        onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
       />
-
       <Main>
-        {isPopulating ? (
-          <PopulationProgressSpinner message={spinner.message} />
-        ) : (
-          <>
-            <Backdrop
-              sx={{
-                backdropFilter: 'blur(1.5px)',
-                backgroundColor: 'rgba(255, 255, 255, 0.33)',
-                zIndex: (theme) => theme.zIndex.drawer + 1
-              }}
-              open={isRepopulating}
-              onClick={() => setSpinner({ ...spinner, isSpinning: false })}>
-              <PopulationProgressSpinner message={spinner.message} />
-            </Backdrop>
-            <Outlet />
-          </>
-        )}
+        {isPrepopulating ? <PopulationProgressSpinner message={spinner.message} /> : <Outlet />}
       </Main>
 
       {/* Dialogs and FABs */}

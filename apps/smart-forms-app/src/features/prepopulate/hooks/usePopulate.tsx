@@ -25,7 +25,7 @@ import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
 function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void {
-  const { isSpinning, purpose } = spinner;
+  const { isSpinning, status } = spinner;
 
   const { smartClient, patient, user, encounter } = useSmartClient();
 
@@ -46,7 +46,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const { enqueueSnackbar } = useSnackbar();
 
   // Do not run population if spinner purpose is "repopulate"
-  if (purpose === 'repopulate') {
+  if (status !== 'prepopulate') {
     return;
   }
 
