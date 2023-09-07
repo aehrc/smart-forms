@@ -17,10 +17,10 @@
 
 import List from '@mui/material/List';
 import { useMemo, useState } from 'react';
-import { ListSubheader } from '@mui/material';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import RepopulateListItem from './RepopulateListItem.tsx';
 import { getRepopulatedItemTuplesByHeadings } from '../utils/repopulateSorting.ts';
+import { Divider, Typography } from '@mui/material';
 
 interface RepopulateListProps {
   repopulatedItems: Record<string, ItemToRepopulate>;
@@ -51,30 +51,40 @@ function RepopulateList(props: RepopulateListProps) {
 
   return (
     <>
-      {repopulatedItemTuplesByHeadings.map(([heading, itemsToRepopulate]) => (
-        <List
-          key={heading}
-          sx={{ width: '100%', minWidth: 360 }}
-          subheader={<ListSubheader disableGutters>{heading}</ListSubheader>}>
-          {itemsToRepopulate.map((itemToRepopulate) => {
-            const { qItem, newQRItem, oldQRItem } = itemToRepopulate;
+      {repopulatedItemTuplesByHeadings.map(([heading, itemsToRepopulate], index) => (
+        <>
+          <List
+            key={heading}
+            dense
+            sx={{ width: '100%', minWidth: 360 }}
+            subheader={
+              <Typography variant="subtitle1" color="text.secondary">
+                {heading}
+              </Typography>
+            }>
+            {itemsToRepopulate.map((itemToRepopulate) => {
+              const { qItem, newQRItem, oldQRItem } = itemToRepopulate;
 
-            if (!qItem) {
-              return null;
-            }
+              if (!qItem) {
+                return null;
+              }
 
-            return (
-              <RepopulateListItem
-                key={qItem.linkId}
-                qItem={qItem}
-                oldQRItem={oldQRItem}
-                newQRItem={newQRItem}
-                checkedIds={checkedIds}
-                onCheckItem={() => handleCheckItem(qItem.linkId)}
-              />
-            );
-          })}
-        </List>
+              return (
+                <RepopulateListItem
+                  key={qItem.linkId}
+                  qItem={qItem}
+                  oldQRItem={oldQRItem}
+                  newQRItem={newQRItem}
+                  checkedIds={checkedIds}
+                  onCheckItem={() => handleCheckItem(qItem.linkId)}
+                />
+              );
+            })}
+          </List>
+          {index !== repopulatedItemTuplesByHeadings.length - 1 && (
+            <Divider sx={{ mb: 1.5 }} light />
+          )}
+        </>
       ))}
     </>
   );

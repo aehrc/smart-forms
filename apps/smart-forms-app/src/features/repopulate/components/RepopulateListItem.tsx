@@ -53,16 +53,12 @@ function RepopulateListItem(props: RepopulateListItemProps) {
           />
         </ListItemIcon>
         <ListItemText
-          primary={
-            <Typography variant="subtitle1" fontWeight={600}>
-              {itemText}
-            </Typography>
-          }
+          primary={<Typography variant="subtitle2">{itemText}</Typography>}
           secondary={
             <Typography component="span">
-              <Grid container columnSpacing={2} mt={1}>
+              <Grid container columnSpacing={2} mt={0.25}>
                 <Grid item xs={12} md={6}>
-                  <Typography color="text.secondary" fontSize={10.5}>
+                  <Typography color="text.secondary" variant="overline" fontSize={7.5}>
                     Old answer
                   </Typography>
                   <SingleItem
@@ -79,7 +75,7 @@ function RepopulateListItem(props: RepopulateListItemProps) {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography color="text.secondary" fontSize={10.5}>
+                  <Typography color="text.secondary" variant="overline" fontSize={7.5}>
                     New answer
                   </Typography>
                   <SingleItem
