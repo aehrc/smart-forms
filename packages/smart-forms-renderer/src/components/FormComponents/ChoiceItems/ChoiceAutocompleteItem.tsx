@@ -106,6 +106,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
         options={options}
         getOptionLabel={(option) => `${option.display}`}
         isOptionEqualToValue={(option, value) => option.id === value.id}
+        disabled={readOnly}
         loading={loading}
         loadingText={'Fetching results...'}
         clearOnEscape
@@ -118,7 +119,6 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
             {...params}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
             isTabled={isTabled}
-            disabled={readOnly}
             label={displayPrompt}
             size="small"
             InputProps={{

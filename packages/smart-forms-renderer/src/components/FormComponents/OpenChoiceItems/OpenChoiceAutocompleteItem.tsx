@@ -122,6 +122,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
           value={valueAutocomplete}
           options={options}
           getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
+          disabled={readOnly}
           loading={loading}
           loadingText={'Fetching results...'}
           clearOnEscape
@@ -146,7 +147,6 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
               }}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
               isTabled={isTabled}
-              disabled={readOnly}
               label={displayPrompt}
               size="small"
               InputProps={{
