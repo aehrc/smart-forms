@@ -8,6 +8,7 @@ import { getItemsToRepopulate } from './utils/repopulate';
 export * from './components';
 export * from './stores';
 export * from './hooks';
+export * from './utils';
 export type { ItemToRepopulate } from './utils/repopulate';
 
 /**

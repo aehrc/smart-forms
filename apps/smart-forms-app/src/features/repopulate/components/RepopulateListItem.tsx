@@ -16,10 +16,12 @@
  */
 
 import ListItem from '@mui/material/ListItem';
-import { Checkbox, Grid, ListItemButton, ListItemIcon, Typography } from '@mui/material';
+import { Checkbox, ListItemButton, ListItemIcon, Typography } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
-import { SingleItem, useHidden } from '@aehrc/smart-forms-renderer';
+import { useHidden } from '@aehrc/smart-forms-renderer';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import cloneDeep from 'lodash.clonedeep';
+import RepopulateItemSwitcher from './RepopulateItemSwitcher.tsx';
 
 interface RepopulateListItemProps {
   checkedIds: string[];
@@ -37,13 +39,13 @@ function RepopulateListItem(props: RepopulateListItemProps) {
     return null;
   }
 
-  qItem.readOnly = true;
-  const linkId = qItem.linkId;
-  const itemText = qItem.text ?? '';
+  const qItemToRepopulate = cloneDeep({ ...qItem, readOnly: true });
+  const linkId = qItemToRepopulate.linkId;
+  const itemText = qItemToRepopulate.text ?? '';
 
   return (
     <ListItem disablePadding>
-      <ListItemButton onClick={onCheckItem}>
+      <ListItemButton onClick={onCheckItem} disableRipple>
         <ListItemIcon>
           <Checkbox
             edge="start"
@@ -56,37 +58,11 @@ function RepopulateListItem(props: RepopulateListItemProps) {
           primary={<Typography variant="subtitle2">{itemText}</Typography>}
           secondary={
             <Typography component="span">
-              <Grid container columnSpacing={2} mt={0.25}>
-                <Grid item xs={12} md={6}>
-                  <Typography color="text.secondary" variant="overline" fontSize={7.5}>
-                    Old answer
-                  </Typography>
-                  <SingleItem
-                    qItem={qItem}
-                    qrItem={
-                      oldQRItem ?? {
-                        linkId: qItem.linkId,
-                        text: qItem.text
-                      }
-                    }
-                    isRepeated={true}
-                    isTabled={false}
-                    onQrItemChange={() => void 0}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography color="text.secondary" variant="overline" fontSize={7.5}>
-                    New answer
-                  </Typography>
-                  <SingleItem
-                    qItem={qItem}
-                    qrItem={newQRItem}
-                    isRepeated={true}
-                    isTabled={false}
-                    onQrItemChange={() => void 0}
-                  />
-                </Grid>
-              </Grid>
+              <RepopulateItemSwitcher
+                qItem={qItemToRepopulate}
+                newQRItem={newQRItem}
+                oldQRItem={oldQRItem}
+              />
             </Typography>
           }
         />

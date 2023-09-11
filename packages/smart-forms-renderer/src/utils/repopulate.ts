@@ -25,6 +25,10 @@ import type { Tabs } from '../interfaces/tab.interface';
 import _isEqual from 'lodash/isEqual';
 import { containsTabs, isTabContainer } from './tabs';
 import { getShortText } from './itemControl';
+import {
+  checkIsRepeatGroupToRepopulate,
+  getRepeatGroupToRepopulate
+} from './repopulateRepeatGroup';
 
 export interface ItemToRepopulate {
   qItem: QuestionnaireItem | null;
@@ -63,10 +67,16 @@ export function getItemsToRepopulate(
         heading: null,
         newQRItem: item
       };
+
       return mapping;
     },
     {}
   );
+
+  // Get corresponding old items from updatableResponse if they are different
+  for (const topLevelItem of updatableResponse.item) {
+    checkCorrespondingOldItemsRecursive(topLevelItem, itemTypes, itemsToRepopulate);
+  }
 
   // Get corresponding old items from updatableResponse if they are different
   for (const topLevelItem of sourceQuestionnaire.item) {
@@ -79,11 +89,6 @@ export function getItemsToRepopulate(
       hasTabs,
       itemsToRepopulate
     );
-  }
-
-  // Get corresponding old items from updatableResponse if they are different
-  for (const topLevelItem of updatableResponse.item) {
-    checkCorrespondingOldItemsRecursive(topLevelItem, itemTypes, itemsToRepopulate);
   }
 
   return itemsToRepopulate;
@@ -108,6 +113,32 @@ function getCorrespondingQuestionnaireItemsRecursive(
       heading = getShortText(qItem) ?? qItem.text ?? null;
     }
 
+    // TODO it seems like there can only be one answer per linkId, we might need to do repeat groups differently
+    // so we need to fix this one first it seems like
+
+    /* Repeat group implementation */
+    if (qItem.type === 'group' && qItem.repeats) {
+      const isRepeatGroupToRepopulate = checkIsRepeatGroupToRepopulate(qItem, itemsToRepopulate);
+      if (isRepeatGroupToRepopulate) {
+        const repeatGroupToRepopulate = getRepeatGroupToRepopulate(qItem, itemsToRepopulate);
+        if (repeatGroupToRepopulate) {
+          itemsToRepopulate[qItem.linkId] = repeatGroupToRepopulate;
+          return;
+        }
+      }
+    }
+
+    // /* Grid implementation */
+    // if (qItem.type === 'group' && isSpecificItemControl(qItem, 'grid')) {
+    //   const isRepeatGroupToRepopulate = checkIsRepeatGroupToRepopulate(qItem, itemsToRepopulate);
+    //   if (isRepeatGroupToRepopulate) {
+    //     getRepeatGroupToRepopulate(qItem, itemsToRepopulate);
+    //   }
+    // }
+
+    /*  */
+
+    // console.log(itemsToRepopulate);
     for (const childItem of qItem.item) {
       getCorrespondingQuestionnaireItemsRecursive(
         childItem,
@@ -173,5 +204,7 @@ function checkCorrespondingOldItemsRecursive(
     return;
   }
 
-  itemsToRepopulate[qrItem.linkId].oldQRItem = qrItem;
+  // const filteredNewItems = newItems.filter((newItem) => !_isEqual(oldItem, newItem));
+
+  itemsToRepopulate[qrItem.linkId].oldQRItem = oldItem;
 }

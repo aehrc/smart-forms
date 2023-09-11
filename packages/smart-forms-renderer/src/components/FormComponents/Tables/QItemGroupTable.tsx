@@ -117,10 +117,14 @@ function QItemGroupTable(props: Props) {
 
   return (
     <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
-      <Typography fontSize={13} variant="h6">
-        <LabelWrapper qItem={qItem} />
-      </Typography>
-      <Divider sx={{ my: 1 }} light />
+      {groupCardElevation !== 1 ? (
+        <>
+          <Typography fontSize={13} variant="h6">
+            <LabelWrapper qItem={qItem} />
+          </Typography>
+          <Divider sx={{ my: 1 }} light />
+        </>
+      ) : null}
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
           <caption>

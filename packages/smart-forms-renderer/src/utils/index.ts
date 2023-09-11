@@ -15,6 +15,4 @@
  * limitations under the License.
  */
 
-export * from './SingleItem';
-export * from './RepeatGroup';
-export * from './Tables';
+export { isSpecificItemControl } from './itemControl';
