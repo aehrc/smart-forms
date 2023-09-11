@@ -84,7 +84,7 @@
     "@storybook/react": "^7.4.0",
     "@storybook/react-vite": "^7.4.0",
     "@storybook/testing-library": "^0.2.0",
-    "@tanstack/react-query-devtools": "^4.32.6",
+    "@tanstack/react-query-devtools": "^4.35.0",
     "@types/fhir": "^0.0.37",
     "@types/jest": "^29.5.4",
     "@types/lodash.clonedeep": "^4.5.7",
