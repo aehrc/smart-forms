@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { QuestionnaireItem } from 'fhir/r4';
-import { ItemToRepopulate } from './repopulate';
+import type { QuestionnaireItem } from 'fhir/r4';
+import type { ItemToRepopulate } from './repopulate';
 
 export function checkIsRepeatGroupToRepopulate(
   qItem: QuestionnaireItem,

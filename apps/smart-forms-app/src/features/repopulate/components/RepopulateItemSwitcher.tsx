@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import RepopulateSingleItem from './RepopulateSingleItem.tsx';
 import RepopulateGroupTable from './RepopulateGroupTable.tsx';
 import { isSpecificItemControl } from '@aehrc/smart-forms-renderer';

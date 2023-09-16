@@ -17,7 +17,7 @@
 
 import { Grid, Stack, Typography } from '@mui/material';
 import { SingleItem } from '@aehrc/smart-forms-renderer';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 interface RepopulateSingleItemProps {
   qItem: QuestionnaireItem;

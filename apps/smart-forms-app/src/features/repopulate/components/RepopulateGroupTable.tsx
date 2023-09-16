@@ -16,7 +16,7 @@
  */
 
 import { Grid, Typography } from '@mui/material';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { GroupTable } from '@aehrc/smart-forms-renderer';
 
 interface RepopulateRepeatGroupProps {
