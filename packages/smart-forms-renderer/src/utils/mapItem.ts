@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { isRepeatItemAndNotCheckbox } from './qItem';
 
 /**
@@ -91,6 +91,18 @@ export function mapQItemsIndex(qGroup: QuestionnaireItem): Record<string, number
 
   // generate a <linkId, QItemIndex> dictionary
   return qGroup.item.reduce((mapping: Record<string, number>, item, i) => {
+    mapping[item.linkId] = i;
+    return mapping;
+  }, {});
+}
+
+export function mapTopLevelItemsIndex(questionnaire: Questionnaire): Record<string, number> {
+  if (!questionnaire.item) {
+    return {};
+  }
+
+  // generate a <linkId, QItemIndex> dictionary
+  return questionnaire.item.reduce((mapping: Record<string, number>, item, i) => {
     mapping[item.linkId] = i;
     return mapping;
   }, {});
