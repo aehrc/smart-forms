@@ -134,7 +134,7 @@ export function createEmptyQrItemWithUnit(
  *
  * @author Sean Fong
  */
-export function updateQrGroup(
+export function updateQrItemsInGroup(
   newQrItem: QuestionnaireResponseItem | null,
   newQrRepeatGroup: QrRepeatGroup | null,
   questionnaireResponseOrQrItem: QuestionnaireResponseItem | QuestionnaireResponse,

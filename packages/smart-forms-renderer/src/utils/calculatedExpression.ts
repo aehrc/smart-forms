@@ -30,7 +30,7 @@ import _isEqual from 'lodash/isEqual';
 import { emptyResponse } from './emptyResource';
 import { createFhirPathContext } from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import { updateQrGroup } from './qrItem';
+import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
 
 interface EvaluateInitialCalculatedExpressionsParams {
@@ -213,7 +213,7 @@ function initialiseItemCalculatedExpressionValueRecursive(
       }
 
       if (newQrItem) {
-        updateQrGroup(
+        updateQrItemsInGroup(
           newQrItem,
           null,
           qrItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },

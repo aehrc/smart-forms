@@ -17,7 +17,7 @@
 
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createQrGroup, updateQrGroup } from '../../../utils/qrItem';
+import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import { StandardTableCell } from './Table.styles';
@@ -42,7 +42,7 @@ function QItemGroupTableRow(props: Props) {
 
   function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
-    updateQrGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
+    updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
     onQrItemChange(qrRow);
   }
 

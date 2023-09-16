@@ -24,7 +24,7 @@ import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore';
 import cloneDeep from 'lodash.clonedeep';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
-import { updateQrGroup } from '../../utils/qrItem';
+import { updateQrItemsInGroup } from '../../utils/qrItem';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 
 function BaseRenderer() {
@@ -59,7 +59,7 @@ function BaseRenderer() {
       return;
     }
 
-    updateQrGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
+    updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
     updateExpressions(updatedResponse);
     updateResponse(updatedResponse);
