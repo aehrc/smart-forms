@@ -23,8 +23,8 @@ import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore';
 import cloneDeep from 'lodash.clonedeep';
-import { getQrItemsIndex, mapTopLevelItemsIndex } from '../../utils/mapItem';
-import { updateItemsInQuestionnaireResponse } from '../../utils/qrItem';
+import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
+import { updateQrGroup } from '../../utils/qrItem';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 
 function BaseRenderer() {
@@ -33,10 +33,7 @@ function BaseRenderer() {
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
   const updateResponse = useQuestionnaireResponseStore((state) => state.updateResponse);
 
-  const qItemsIndexMap = useMemo(
-    () => mapTopLevelItemsIndex(sourceQuestionnaire),
-    [sourceQuestionnaire]
-  );
+  const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
   function handleTopLevelQRItemSingleChange(
     newTopLevelQRItem: QuestionnaireResponseItem,
@@ -62,7 +59,7 @@ function BaseRenderer() {
       return;
     }
 
-    updateItemsInQuestionnaireResponse(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
+    updateQrGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
     updateExpressions(updatedResponse);
     updateResponse(updatedResponse);
