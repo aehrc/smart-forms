@@ -21,12 +21,12 @@ export function getRepopulatedItemTuplesByHeadings(
   repopulatedItems: Record<string, ItemToRepopulate>
 ): {
   linkIds: string[];
-  repopulatedItemTuplesByHeadings: [string, ItemToRepopulate[]][];
+  itemsToRepopulateTuplesByHeadings: [string, ItemToRepopulate[]][];
 } {
   if (!repopulatedItems) {
     return {
       linkIds: [],
-      repopulatedItemTuplesByHeadings: []
+      itemsToRepopulateTuplesByHeadings: []
     };
   }
 
@@ -58,6 +58,18 @@ export function getRepopulatedItemTuplesByHeadings(
 
   return {
     linkIds: Object.keys(repopulatedItems),
-    repopulatedItemTuplesByHeadings: itemsToRepopulateByHeadings
+    itemsToRepopulateTuplesByHeadings: itemsToRepopulateByHeadings
   };
+}
+
+export function filterCheckedItemsToRepopulate(
+  itemsToRepopulate: Record<string, ItemToRepopulate>,
+  checkedLinkIds: string[]
+): Record<string, ItemToRepopulate> {
+  return Object.keys(itemsToRepopulate)
+    .filter((linkId) => checkedLinkIds.includes(linkId))
+    .reduce((acc: Record<string, ItemToRepopulate>, linkId) => {
+      acc[linkId] = itemsToRepopulate[linkId];
+      return acc;
+    }, {});
 }

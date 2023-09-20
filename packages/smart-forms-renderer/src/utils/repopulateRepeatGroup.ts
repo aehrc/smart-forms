@@ -16,7 +16,7 @@
  */
 
 import type { QuestionnaireItem } from 'fhir/r4';
-import type { ItemToRepopulate } from './repopulate';
+import type { ItemToRepopulate } from './repopulateItems';
 
 export function checkIsRepeatGroupToRepopulate(
   qItem: QuestionnaireItem,

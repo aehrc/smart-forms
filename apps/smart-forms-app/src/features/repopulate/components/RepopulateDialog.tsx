@@ -21,25 +21,25 @@ import RepopulateSelectDialog from './RepopulateSelectDialog.tsx';
 
 interface RepopulateDialogProps {
   isRepopulated: boolean;
-  repopulatedItems: Record<string, ItemToRepopulate>;
+  itemsToRepopulate: Record<string, ItemToRepopulate>;
   onCloseDialog: () => void;
 }
 
 function RepopulateDialog(props: RepopulateDialogProps) {
-  const { isRepopulated, repopulatedItems, onCloseDialog } = props;
+  const { isRepopulated, itemsToRepopulate, onCloseDialog } = props;
 
   if (!isRepopulated) {
     return null;
   }
 
-  const repopulateItemsEmpty = Object.keys(repopulatedItems).length === 0;
+  const itemsToRepopulateEmpty = Object.keys(itemsToRepopulate).length === 0;
 
-  if (!repopulatedItems || repopulateItemsEmpty) {
+  if (!itemsToRepopulate || itemsToRepopulateEmpty) {
     return <RepopulateEmptyDialog onCloseDialog={onCloseDialog} />;
   }
 
   return (
-    <RepopulateSelectDialog repopulatedItems={repopulatedItems} onCloseDialog={onCloseDialog} />
+    <RepopulateSelectDialog itemsToRepopulate={itemsToRepopulate} onCloseDialog={onCloseDialog} />
   );
 }
 

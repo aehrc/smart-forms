@@ -136,9 +136,6 @@ function getCorrespondingQuestionnaireItemsRecursive(
     //   }
     // }
 
-    /*  */
-
-    // console.log(itemsToRepopulate);
     for (const childItem of qItem.item) {
       getCorrespondingQuestionnaireItemsRecursive(
         childItem,

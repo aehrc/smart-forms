@@ -15,29 +15,90 @@
  * limitations under the License.
  */
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
+import {
+  repopulate,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
 import RepopulateList from './RepopulateList.tsx';
+import { useMemo, useState } from 'react';
+import {
+  filterCheckedItemsToRepopulate,
+  getRepopulatedItemTuplesByHeadings
+} from '../utils/repopulateSorting.ts';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import { useSnackbar } from 'notistack';
 
 interface RepopulateSelectDialogProps {
-  repopulatedItems: Record<string, ItemToRepopulate>;
+  itemsToRepopulate: Record<string, ItemToRepopulate>;
   onCloseDialog: () => void;
 }
 
 function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
-  const { repopulatedItems, onCloseDialog } = props;
+  const { itemsToRepopulate, onCloseDialog } = props;
+
+  const updatePopulatedProperties = useQuestionnaireStore(
+    (state) => state.updatePopulatedProperties
+  );
+
+  const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
+    (state) => state.setUpdatableResponseAsPopulated
+  );
+
+  const { linkIds, itemsToRepopulateTuplesByHeadings } = useMemo(
+    () => getRepopulatedItemTuplesByHeadings(itemsToRepopulate),
+    [itemsToRepopulate]
+  );
+
+  const [checkedLinkIds, setCheckedLinkIds] = useState<string[]>(linkIds);
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  function handleCheckItem(linkId: string) {
+    const currentIndex = checkedLinkIds.indexOf(linkId);
+    const newCheckedIds = [...checkedLinkIds];
+
+    if (currentIndex === -1) {
+      newCheckedIds.push(linkId);
+    } else {
+      newCheckedIds.splice(currentIndex, 1);
+    }
+
+    setCheckedLinkIds(newCheckedIds);
+  }
+
+  function handleConfirmRepopulate() {
+    const checkedRepopulatedItems = filterCheckedItemsToRepopulate(
+      itemsToRepopulate,
+      checkedLinkIds
+    );
+
+    const repopulatedResponse = repopulate(checkedRepopulatedItems);
+    const updatedResponse = updatePopulatedProperties(repopulatedResponse);
+    setUpdatableResponseAsPopulated(updatedResponse);
+
+    onCloseDialog();
+    enqueueSnackbar('Questionnaire form re-populated', {
+      preventDuplicate: true,
+      action: <CloseSnackbar />
+    });
+  }
 
   return (
     <Dialog open={true} onClose={onCloseDialog} maxWidth="xl">
       <DialogTitle variant="h5">Select items to be re-populated</DialogTitle>
       <DialogContent>
-        <Box>
-          <RepopulateList repopulatedItems={repopulatedItems} />
-        </Box>
+        <RepopulateList
+          itemsToRepopulateTuplesByHeadings={itemsToRepopulateTuplesByHeadings}
+          checkedLinkIds={checkedLinkIds}
+          onCheckItem={(linkId) => handleCheckItem(linkId)}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onCloseDialog}>Cancel</Button>
-        <Button onClick={onCloseDialog}>Confirm</Button>
+        <Button onClick={() => handleConfirmRepopulate()}>Confirm</Button>
       </DialogActions>
     </Dialog>
   );

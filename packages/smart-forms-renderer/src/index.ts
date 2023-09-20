@@ -3,13 +3,15 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { createQuestionnaireResponse } from './utils/qrItem';
 import useQuestionnaireResponseStore from './stores/useQuestionnaireResponseStore';
 import { removeHiddenAnswers } from './utils/removeHidden';
-import { getItemsToRepopulate } from './utils/repopulate';
+import type { ItemToRepopulate } from './utils/repopulateItems';
+import { getItemsToRepopulate } from './utils/repopulateItems';
+import { repopulateItemsIntoResponse } from './utils/repopulateIntoResponse';
 
 export * from './components';
 export * from './stores';
 export * from './hooks';
 export * from './utils';
-export type { ItemToRepopulate } from './utils/repopulate';
+export type { ItemToRepopulate };
 
 /**
  * Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse.
@@ -82,11 +84,12 @@ export function removeHiddenAnswersFromResponse(
  *
  * @author Sean Fong
  */
-export function repopulateResponse(populatedResponse: QuestionnaireResponse) {
+export function generateItemsToRepopulate(populatedResponse: QuestionnaireResponse) {
   const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
   const itemTypes = useQuestionnaireStore.getState().itemTypes;
   const tabs = useQuestionnaireStore.getState().tabs;
   const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
+  console.log(updatableResponse);
 
   return getItemsToRepopulate(
     sourceQuestionnaire,
@@ -94,5 +97,21 @@ export function repopulateResponse(populatedResponse: QuestionnaireResponse) {
     tabs,
     populatedResponse,
     updatableResponse
+  );
+}
+
+/**
+ * Re-populate stuff
+ *
+ * @author Sean Fong
+ */
+export function repopulate(checkedItemsToRepopulate: Record<string, ItemToRepopulate>) {
+  const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
+  const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
+
+  return repopulateItemsIntoResponse(
+    sourceQuestionnaire,
+    updatableResponse,
+    checkedItemsToRepopulate
   );
 }

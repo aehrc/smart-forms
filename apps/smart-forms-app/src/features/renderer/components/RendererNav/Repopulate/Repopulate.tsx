@@ -26,7 +26,7 @@ import type { RendererSpinner } from '../../../types/rendererSpinner.ts';
 import useSmartClient from '../../../../../hooks/useSmartClient.ts';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import {
-  repopulateResponse,
+  generateItemsToRepopulate,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -46,7 +46,7 @@ function Repopulate(props: RepopulateProps) {
 
   const { smartClient, patient, user, encounter } = useSmartClient();
 
-  const [repopulatedItems, setRepopulatedItems] = useState<Record<string, ItemToRepopulate>>({});
+  const [itemsToRepopulate, setItemsToRepopulate] = useState<Record<string, ItemToRepopulate>>({});
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
@@ -90,10 +90,10 @@ function Repopulate(props: RepopulateProps) {
       (params: PopulateFormParams) => {
         const { populated, hasWarnings } = params;
 
-        const itemToRepopulate = repopulateResponse(populated);
+        const itemToRepopulate = generateItemsToRepopulate(populated);
 
         if (Object.keys(itemToRepopulate).length > 0) {
-          setRepopulatedItems(itemToRepopulate);
+          setItemsToRepopulate(itemToRepopulate);
         }
 
         onSpinnerChange({ isSpinning: false, status: 'repopulate', message: '' });
@@ -140,7 +140,7 @@ function Repopulate(props: RepopulateProps) {
       </Backdrop>
       <RepopulateDialog
         isRepopulated={isRepopulated}
-        repopulatedItems={repopulatedItems}
+        itemsToRepopulate={itemsToRepopulate}
         onCloseDialog={() => onSpinnerChange({ isSpinning: false, status: null, message: '' })}
       />
     </>
