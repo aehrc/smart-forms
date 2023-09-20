@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -32,6 +32,7 @@ import IntegerField from './IntegerField';
 import useIntegerCalculatedExpression from '../../../hooks/useIntegerCalculatedExpression';
 import { parseValidInteger } from '../../../utils/parseInputs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import useNumberInput from '../../../hooks/useNumberInput';
 
 interface IntegerItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -65,7 +66,7 @@ function IntegerItem(props: IntegerItemProps) {
       valueInteger = Math.round(qrItem.answer[0].valueDecimal);
     }
   }
-  const [value, setValue] = useState(valueInteger);
+  const [value, setValue] = useNumberInput(valueInteger);
 
   // Perform validation checks
   const feedback = useValidationError(value.toString(), regexValidation, maxLength);
