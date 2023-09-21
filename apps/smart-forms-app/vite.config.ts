@@ -7,7 +7,6 @@ export default defineConfig({
   plugins: [react(), svgr()],
   define: {
     'process.argv': process.argv, // temporary solution for json-diff & vite combination (see: https://github.com/andreyvit/json-diff/issues/123)
-    'process.env': process.env, // temporary solution for json-diff & vite combination (see: https://github.com/andreyvit/json-diff/issues/123)
-    'process.platform': '"web"'
+    'process.env': {} // temporary solution for json-diff & vite combination (see: https://github.com/andreyvit/json-diff/issues/123)
   }
 });
