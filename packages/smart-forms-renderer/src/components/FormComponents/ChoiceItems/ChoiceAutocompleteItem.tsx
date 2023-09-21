@@ -66,7 +66,6 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
-  // Query ontoserver for options
   const maxList = 10;
 
   const [input, setInput] = useState('');

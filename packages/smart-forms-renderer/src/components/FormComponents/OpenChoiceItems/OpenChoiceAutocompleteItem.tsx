@@ -73,7 +73,6 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
     useRenderingExtensions(qItem);
 
-  // Query ontoserver for options
   const maxList = 10;
 
   const [input, setInput] = useState('');
@@ -115,79 +114,77 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   }
 
   const openChoiceAutocomplete = (
-    <>
-      <Box display="flex">
-        <Autocomplete
-          id={qItem.id}
-          value={valueAutocomplete}
-          options={options}
-          getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
-          disabled={readOnly}
-          loading={loading}
-          loadingText={'Fetching results...'}
-          clearOnEscape
-          freeSolo
-          autoHighlight
-          sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 220, flexGrow: 1 }}
-          placeholder={entryFormat}
-          onChange={handleValueChange}
-          filterOptions={(x) => x}
-          renderInput={(params) => (
-            <StandardTextField
-              {...params}
-              value={input}
-              onBlur={() => {
-                // set answer to current input when text field is unfocused
-                if (!valueAutocomplete && input !== '') {
-                  onQrItemChange({
-                    ...createEmptyQrItem(qItem),
-                    answer: [{ valueString: input }]
-                  });
-                }
-              }}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-              isTabled={isTabled}
-              label={displayPrompt}
-              size="small"
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <>
-                    {!valueAutocomplete || valueAutocomplete === '' ? (
-                      <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    ) : null}
-                    {params.InputProps.startAdornment}
-                  </>
-                ),
-                endAdornment: (
-                  <>
-                    {loading ? (
-                      <CircularProgress color="inherit" size={16} />
-                    ) : feedback ? (
-                      <Fade in={!!feedback} timeout={300}>
-                        <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
+    <Box display="flex">
+      <Autocomplete
+        id={qItem.id}
+        value={valueAutocomplete}
+        options={options}
+        getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
+        disabled={readOnly}
+        loading={loading}
+        loadingText={'Fetching results...'}
+        clearOnEscape
+        freeSolo
+        autoHighlight
+        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 220, flexGrow: 1 }}
+        placeholder={entryFormat}
+        onChange={handleValueChange}
+        filterOptions={(x) => x}
+        renderInput={(params) => (
+          <StandardTextField
+            {...params}
+            value={input}
+            onBlur={() => {
+              // set answer to current input when text field is unfocused
+              if (!valueAutocomplete && input !== '') {
+                onQrItemChange({
+                  ...createEmptyQrItem(qItem),
+                  answer: [{ valueString: input }]
+                });
+              }
+            }}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+            isTabled={isTabled}
+            label={displayPrompt}
+            size="small"
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <>
+                  {!valueAutocomplete || valueAutocomplete === '' ? (
+                    <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  ) : null}
+                  {params.InputProps.startAdornment}
+                </>
+              ),
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={16} />
+                  ) : feedback ? (
+                    <Fade in={!!feedback} timeout={300}>
+                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
+                        {
                           {
-                            {
-                              info: <InfoIcon fontSize="small" color="info" />,
-                              warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                              success: <DoneIcon fontSize="small" color="success" />,
-                              error: <ErrorIcon fontSize="small" color="error" />
-                            }[feedback.color]
-                          }
-                        </Tooltip>
-                      </Fade>
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                    {displayUnit}
-                  </>
-                )
-              }}
-              data-test="q-item-open-choice-autocomplete-field"
-            />
-          )}
-        />
-      </Box>
-    </>
+                            info: <InfoIcon fontSize="small" color="info" />,
+                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                            success: <DoneIcon fontSize="small" color="success" />,
+                            error: <ErrorIcon fontSize="small" color="error" />
+                          }[feedback.color]
+                        }
+                      </Tooltip>
+                    </Fade>
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                  {displayUnit}
+                </>
+              )
+            }}
+            data-test="q-item-open-choice-autocomplete-field"
+          />
+        )}
+      />
+    </Box>
   );
 
   if (isRepeated) {

@@ -49,7 +49,6 @@ function useFetchQuestionnaires(
     enabled: debouncedInput === searchInput
   });
 
-  // construct questionnaire list items for data display
   const questionnaires: Questionnaire[] = useMemo(() => filterQuestionnaires(bundle), [bundle]);
 
   return {
