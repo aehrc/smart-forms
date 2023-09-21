@@ -31,7 +31,7 @@
     "html-react-parser": "^4.2.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
-    "nanoid": "^4.0.2",
+    "nanoid": "^5.0.1",
     "@types/fhir": "^0.0.37",
     "zustand": "^4.4.1",
     "react-markdown": "^8.0.7",
