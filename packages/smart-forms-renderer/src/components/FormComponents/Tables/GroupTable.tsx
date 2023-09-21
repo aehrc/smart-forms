@@ -18,10 +18,8 @@
 import React, { useMemo, useState } from 'react';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -29,9 +27,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-
-import AddIcon from '@mui/icons-material/Add';
-import QItemGroupTableRow from './QItemGroupTableRow';
+import GroupTableRow from './GroupTableRow';
 import { HeaderTableCell } from './Table.styles';
 import { QGroupContainerBox } from '../../Box.styles';
 import { mapQItemsIndex } from '../../../utils/mapItem';
@@ -42,6 +38,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import DeleteRowButton from './DeleteRowButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
+import AddRowButton from './AddRowButton';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -49,7 +46,7 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler {
   groupCardElevation: number;
 }
 
-function QItemGroupTable(props: Props) {
+function GroupTable(props: Props) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
   const initialisedGroupTables = useInitialiseGroupTable(qrItems);
@@ -128,15 +125,7 @@ function QItemGroupTable(props: Props) {
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
           <caption>
-            <Stack direction="row" justifyContent="end">
-              <Button
-                variant="contained"
-                size="small"
-                startIcon={<AddIcon />}
-                onClick={handleAddRow}>
-                Add Row
-              </Button>
-            </Stack>
+            <AddRowButton repeatGroups={tableRows} onAddItem={handleAddRow} />
           </caption>
           <TableHead>
             <TableRow>
@@ -155,7 +144,7 @@ function QItemGroupTable(props: Props) {
 
               return (
                 <TableRow key={nanoId}>
-                  <QItemGroupTableRow
+                  <GroupTableRow
                     qItem={qItem}
                     qrItem={answeredQrItem}
                     qItemsIndexMap={qItemsIndexMap}
@@ -176,4 +165,4 @@ function QItemGroupTable(props: Props) {
   );
 }
 
-export default QItemGroupTable;
+export default GroupTable;
