@@ -2,12 +2,13 @@ import { create } from 'zustand';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import { emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
-import { diff } from 'json-diff';
+import type { Diff } from 'deep-diff';
+import { diff } from 'deep-diff';
 
 export interface UseQuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
-  formChangesHistory: object[];
+  formChangesHistory: (Diff<QuestionnaireResponse, QuestionnaireResponse>[] | null)[];
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
   updateResponse: (updatedResponse: QuestionnaireResponse) => void;
@@ -27,14 +28,14 @@ const useQuestionnaireResponseStore = create<UseQuestionnaireResponseStoreType>(
     }));
   },
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
-    const formChanges = diff(get().updatableResponse, populatedResponse, { full: true });
+    const formChanges = diff(get().updatableResponse, populatedResponse) ?? null;
     set(() => ({
       updatableResponse: populatedResponse,
       formChangesHistory: [...get().formChangesHistory, formChanges]
     }));
   },
   updateResponse: (updatedResponse: QuestionnaireResponse) => {
-    const formChanges = diff(get().updatableResponse, updatedResponse, { full: true });
+    const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
     set(() => ({
       updatableResponse: updatedResponse,
       formChangesHistory: [...get().formChangesHistory, formChanges]
