@@ -16,7 +16,7 @@
  */
 
 import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
-import DashboardFeedbackMessage from '../../DashboardFeedbackMessage.tsx';
+import ResponseFeedbackMessage from './ResponseFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 import type { Questionnaire } from 'fhir/r4';
 
@@ -54,8 +54,7 @@ function ResponseListFeedback(props: Props) {
       <TableRow>
         <TableCell align="center" colSpan={6}>
           <Stack rowGap={3} my={5}>
-            <DashboardFeedbackMessage
-              itemType={'responses'}
+            <ResponseFeedbackMessage
               feedbackType={feedbackType}
               searchedQuestionnaire={searchedQuestionnaire}
             />
