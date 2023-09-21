@@ -15,7 +15,15 @@
  * limitations under the License.
  */
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography
+} from '@mui/material';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import {
   repopulate,
@@ -109,6 +117,10 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
         />
       </DialogContent>
       <DialogActions>
+        <Typography fontSize={10} color="text.secondary" sx={{ mx: 1.5 }}>
+          This is still an experimental feature, you might encounter bugs.
+        </Typography>
+        <Box flexGrow={1} />
         <Button onClick={onCloseDialog}>Cancel</Button>
         <Button onClick={() => handleConfirmRepopulate()}>Confirm</Button>
       </DialogActions>
