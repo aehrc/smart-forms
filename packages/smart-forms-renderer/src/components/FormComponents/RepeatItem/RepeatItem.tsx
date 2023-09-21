@@ -40,7 +40,7 @@ function RepeatItem(props: RepeatItemProps) {
   // Get additional rendering extensions
   const { displayInstructions } = useRenderingExtensions(qItem);
 
-  const initialRepeatAnswers = useInitialiseRepeatAnswers(qrItem);
+  const initialRepeatAnswers = useInitialiseRepeatAnswers(qItem, qrItem);
 
   const [repeatAnswers, setRepeatAnswers] = useState(initialRepeatAnswers);
 

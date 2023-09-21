@@ -42,7 +42,7 @@ interface RepeatGroupProps extends PropsWithQrRepeatGroupChangeHandler {
 function RepeatGroup(props: RepeatGroupProps) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const initialRepeatGroups = useInitialiseRepeatGroups(qrItems);
+  const initialRepeatGroups = useInitialiseRepeatGroups(qItem, qrItems);
 
   const [repeatGroups, setRepeatGroups] = useState(initialRepeatGroups);
 

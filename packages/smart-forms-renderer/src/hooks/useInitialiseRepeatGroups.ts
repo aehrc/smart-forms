@@ -16,27 +16,38 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
+import { useMemo } from 'react';
 
-function useInitialiseRepeatGroups(qrItems: QuestionnaireResponseItem[]): RepeatGroupSingle[] {
-  let initialRepeatGroupAnswers: RepeatGroupSingle[] = [
-    {
-      nanoId: nanoid(),
-      qrItem: null
-    }
-  ];
+function useInitialiseRepeatGroups(
+  qItem: QuestionnaireItem,
+  qrItems: QuestionnaireResponseItem[]
+): RepeatGroupSingle[] {
+  return useMemo(
+    () => {
+      let initialRepeatGroupAnswers: RepeatGroupSingle[] = [
+        {
+          nanoId: nanoid(),
+          qrItem: null
+        }
+      ];
 
-  if (qrItems.length > 0) {
-    initialRepeatGroupAnswers = qrItems.map((qrItem) => {
-      return {
-        nanoId: nanoid(),
-        qrItem
-      };
-    });
-  }
-
-  return initialRepeatGroupAnswers;
+      if (qrItems.length > 0) {
+        initialRepeatGroupAnswers = qrItems.map((qrItem) => {
+          return {
+            nanoId: nanoid(),
+            qrItem
+          };
+        });
+      }
+      return initialRepeatGroupAnswers;
+    },
+    // init initialRepeatAnswers on first render only, leave dependency array empty
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [qItem]
+  );
 }
 
 export default useInitialiseRepeatGroups;
