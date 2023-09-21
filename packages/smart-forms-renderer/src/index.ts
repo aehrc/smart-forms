@@ -1,6 +1,6 @@
 import useQuestionnaireStore from './stores/useQuestionnaireStore';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { createQuestionnaireResponse } from './utils/qrItem';
+import { createEmptyQuestionnaireResponse } from './utils/qrItem';
 import useQuestionnaireResponseStore from './stores/useQuestionnaireResponseStore';
 import { removeHiddenAnswers } from './utils/removeHidden';
 import type { ItemToRepopulate } from './utils/repopulateItems';
@@ -28,7 +28,7 @@ export async function buildForm(
   if (!questionnaireResponse) {
     useQuestionnaireResponseStore
       .getState()
-      .buildSourceResponse(createQuestionnaireResponse(questionnaire));
+      .buildSourceResponse(createEmptyQuestionnaireResponse(questionnaire));
     return;
   }
 

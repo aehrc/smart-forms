@@ -25,12 +25,13 @@ import type {
 import type { QrRepeatGroup } from '../interfaces/repeatGroup.interface';
 
 /**
- * Create a questionnaireResponse from a given questionnaire form item
- * A questionnaire form item is the first item of a questionnaire
+ * Create an empty questionnaireResponse from a given questionnaire
  *
  * @author Sean Fong
  */
-export function createQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse {
+export function createEmptyQuestionnaireResponse(
+  questionnaire: Questionnaire
+): QuestionnaireResponse {
   const questionnaireResponse: QuestionnaireResponse = {
     resourceType: 'QuestionnaireResponse',
     status: 'in-progress'
