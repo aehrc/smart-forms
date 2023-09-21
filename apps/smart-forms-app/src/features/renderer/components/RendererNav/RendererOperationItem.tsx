@@ -15,31 +15,23 @@
  * limitations under the License.
  */
 
-import { ListItemButton, ListItemText, useTheme } from '@mui/material';
+import { ListItemText } from '@mui/material';
 import type { OperationItem } from '../../../../types/Nav.interface.ts';
-import { StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
+import { NavListItemButton, StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
 
 function RendererOperationItem(props: OperationItem) {
   const { title, icon, disabled, onClick } = props;
-  const theme = useTheme();
 
   return (
-    <ListItemButton
+    <NavListItemButton
       disableGutters
       onClick={onClick}
       disabled={disabled}
-      data-test="list-button-renderer-nav-page"
-      sx={{
-        ...theme.typography.subtitle2,
-        height: 48,
-        textTransform: 'capitalize',
-        color: theme.palette.text.secondary,
-        borderRadius: Number(theme.shape.borderRadius) * 0.2
-      }}>
+      data-test="list-button-renderer-nav-page">
       <StyledNavItemIcon>{icon}</StyledNavItemIcon>
 
       <ListItemText disableTypography primary={title} />
-    </ListItemButton>
+    </NavListItemButton>
   );
 }
 

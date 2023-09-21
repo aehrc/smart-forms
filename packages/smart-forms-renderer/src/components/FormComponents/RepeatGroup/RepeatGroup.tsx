@@ -31,6 +31,7 @@ import { nanoid } from 'nanoid';
 import RepeatGroupItem from './RepeatGroupItem';
 import AddItemButton from './AddItemButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import cloneDeep from 'lodash.clonedeep';
 
 interface RepeatGroupProps extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -41,7 +42,7 @@ interface RepeatGroupProps extends PropsWithQrRepeatGroupChangeHandler {
 function RepeatGroup(props: RepeatGroupProps) {
   const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
 
-  const initialRepeatGroups = useInitialiseRepeatGroups(qrItems);
+  const initialRepeatGroups = useInitialiseRepeatGroups(qItem, qrItems);
 
   const [repeatGroups, setRepeatGroups] = useState(initialRepeatGroups);
 
@@ -60,7 +61,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [singleGroup.qrItem] : []
+        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
       )
     });
   }
@@ -74,7 +75,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [singleGroup.qrItem] : []
+        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
       )
     });
   }

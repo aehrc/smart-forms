@@ -18,7 +18,7 @@
 import React, { useMemo } from 'react';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createQrGroup, updateQrGroup } from '../../../utils/qrItem';
+import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -70,13 +70,13 @@ function GroupItem(props: GroupItemProps) {
   // Event Handlers
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
-    updateQrGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
+    updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup);
   }
 
   function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
-    updateQrGroup(null, qrRepeatGroup, updatedQrGroup, qItemsIndexMap);
+    updateQrItemsInGroup(null, qrRepeatGroup, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup);
   }
 

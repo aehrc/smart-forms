@@ -20,7 +20,8 @@ import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItemAnswer,
+  ValueSet
 } from 'fhir/r4';
 import type { ValueSetPromise } from './interfaces/expressions.interface';
 import * as FHIR from 'fhirclient';
@@ -75,18 +76,21 @@ export async function resolvePromises(
  *
  * @author Sean Fong
  */
-export function addValueSetAnswersRecursive(
+export function filterValueSetAnswersRecursive(
   qrItem: QuestionnaireResponseItem,
   valueSetPromises: Record<string, ValueSetPromise>,
-  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
-): QuestionnaireResponseItem {
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
+  containedResources: Record<string, ValueSet>
+): QuestionnaireResponseItem | null {
   const items = qrItem.item;
 
   if (items && items.length > 0) {
     // iterate through items of item recursively
-    const qrItems: QuestionnaireResponseItem[] = items.map((item) =>
-      addValueSetAnswersRecursive(item, valueSetPromises, answerOptions)
-    );
+    const qrItems: QuestionnaireResponseItem[] = items
+      .map((item) =>
+        filterValueSetAnswersRecursive(item, valueSetPromises, answerOptions, containedResources)
+      )
+      .filter((item): item is QuestionnaireResponseItem => item !== null);
 
     return { ...qrItem, item: qrItems };
   }
@@ -99,6 +103,18 @@ export function addValueSetAnswersRecursive(
   const answerOptionCodings = answerOptions[qrItem.linkId]?.map((option) => option.valueCoding);
   if (qrItem.answer && answerOptionCodings) {
     return { ...qrItem, answer: cleanAnswers(qrItem.answer, answerOptionCodings) };
+  }
+
+  const containedValueSetOptionCodings = containedResources[qrItem.linkId]?.expansion?.contains;
+  if (qrItem.answer && containedValueSetOptionCodings) {
+    const cleanedAnswers = cleanAnswers(qrItem.answer, containedValueSetOptionCodings);
+
+    return cleanedAnswers.length > 0
+      ? {
+          ...qrItem,
+          answer: cleanAnswers(qrItem.answer, containedValueSetOptionCodings)
+        }
+      : null;
   }
 
   // If item does not have any valueSet nor answerOption

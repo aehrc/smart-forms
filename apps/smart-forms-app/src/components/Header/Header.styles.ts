@@ -18,7 +18,7 @@
 import { alpha, styled } from '@mui/material/styles';
 import { AppBar, IconButton, Toolbar } from '@mui/material';
 
-export const NAV_WIDTH = 240;
+export const NAV_WIDTH = 228;
 export const HEADER_MOBILE_HEIGHT = 52;
 export const HEADER_DESKTOP_HEIGHT = 60;
 

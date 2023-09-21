@@ -41,6 +41,7 @@ import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import DeleteRowButton from './DeleteRowButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import cloneDeep from 'lodash.clonedeep';
 
 interface Props extends PropsWithQrRepeatGroupChangeHandler {
   qItem: QuestionnaireItem;
@@ -84,7 +85,9 @@ function QItemGroupTable(props: Props) {
     setTableRows(updatedTableRows);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
-      qrItems: updatedTableRows.flatMap((singleRow) => (singleRow.qrItem ? [singleRow.qrItem] : []))
+      qrItems: updatedTableRows.flatMap((singleRow) =>
+        singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []
+      )
     });
   }
 
@@ -96,7 +99,9 @@ function QItemGroupTable(props: Props) {
     setTableRows(updatedTableRows);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
-      qrItems: updatedTableRows.flatMap((singleRow) => (singleRow.qrItem ? [singleRow.qrItem] : []))
+      qrItems: updatedTableRows.flatMap((singleRow) =>
+        singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []
+      )
     });
   }
 
@@ -112,10 +117,14 @@ function QItemGroupTable(props: Props) {
 
   return (
     <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
-      <Typography fontSize={13} variant="h6">
-        <LabelWrapper qItem={qItem} />
-      </Typography>
-      <Divider sx={{ my: 1 }} light />
+      {groupCardElevation !== 1 ? (
+        <>
+          <Typography fontSize={13} variant="h6">
+            <LabelWrapper qItem={qItem} />
+          </Typography>
+          <Divider sx={{ my: 1 }} light />
+        </>
+      ) : null}
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
           <caption>

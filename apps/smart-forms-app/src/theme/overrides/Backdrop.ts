@@ -23,7 +23,8 @@ export default function Backdrop(theme: Theme) {
     MuiBackdrop: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha(theme.palette.grey[800], 0.8)
+          backgroundColor: alpha(theme.palette.grey[800], 0.33),
+          backdropFilter: 'blur(1px)'
         },
         invisible: {
           background: 'transparent'

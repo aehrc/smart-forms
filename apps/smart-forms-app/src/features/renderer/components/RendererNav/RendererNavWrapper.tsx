@@ -19,20 +19,30 @@ import { Box } from '@mui/material';
 import useResponsive from '../../../../hooks/useResponsive.ts';
 import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 import RendererNavDrawer from './RendererNavDrawer.tsx';
+import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 
 interface Props {
-  openNav: boolean;
-  navCollapsed: boolean;
-  onCloseNav: () => void;
-  setNavCollapsed: () => void;
+  mobileNavOpen: boolean;
+  desktopNavCollapsed: boolean;
+  onCloseMobileNav: () => void;
+  onCollapseDesktopNav: () => void;
+  spinner: RendererSpinner;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RendererNavWrapper(props: Props) {
-  const { openNav, navCollapsed, onCloseNav, setNavCollapsed } = props;
+  const {
+    mobileNavOpen,
+    desktopNavCollapsed,
+    onCloseMobileNav,
+    onCollapseDesktopNav,
+    spinner,
+    onSpinnerChange
+  } = props;
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const navIsShown = isDesktop && !navCollapsed;
+  const desktopNavIsShown = isDesktop && !desktopNavCollapsed;
 
   return (
     <>
@@ -40,14 +50,16 @@ function RendererNavWrapper(props: Props) {
         component="nav"
         sx={{
           flexShrink: { lg: 0 },
-          width: { lg: navCollapsed ? 0 : NAV_WIDTH }
+          width: { lg: desktopNavCollapsed ? 0 : NAV_WIDTH }
         }}>
         <RendererNavDrawer
-          openNav={openNav}
-          navCollapsed={navCollapsed}
-          navIsShown={navIsShown}
-          onCloseNav={onCloseNav}
-          setNavCollapsed={setNavCollapsed}
+          mobileNavOpen={mobileNavOpen}
+          desktopNavCollapsed={desktopNavCollapsed}
+          desktopNavIsShown={desktopNavIsShown}
+          onCloseMobileNav={onCloseMobileNav}
+          onCollapseDesktopNav={onCollapseDesktopNav}
+          spinner={spinner}
+          onSpinnerChange={onSpinnerChange}
         />
       </Box>
     </>

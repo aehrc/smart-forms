@@ -28,15 +28,18 @@ import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import RendererLaunchQuestionnaireNavSection from './RendererLaunchQuestionnaireNavSection.tsx';
 import RendererNavSection from './RendererNavSection.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 
 interface RendererNavProps {
   isNotLaunched: boolean;
   navIsShown: boolean;
   onCollapseNav: () => void;
+  spinner: RendererSpinner;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RendererNav(props: RendererNavProps) {
-  const { isNotLaunched, navIsShown, onCollapseNav } = props;
+  const { isNotLaunched, navIsShown, onCollapseNav, spinner, onSpinnerChange } = props;
 
   const { launchQuestionnaire } = useSmartClient();
 
@@ -58,7 +61,7 @@ function RendererNav(props: RendererNavProps) {
       ) : (
         <RendererNavSection />
       )}
-      <RendererOperationSection />
+      <RendererOperationSection spinner={spinner} onSpinnerChange={onSpinnerChange} />
 
       <Box flexGrow={1} />
 

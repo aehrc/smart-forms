@@ -26,11 +26,13 @@ import Autocomplete from './Autocomplete';
 import Accordion from './Accordion';
 import type { Theme } from '@mui/material';
 import SpeedDial from './SpeedDial.ts';
+import Dialog from './Dialog.ts';
 
 function ComponentsOverrides(theme: Theme) {
   return Object.assign(
     Accordion(theme),
     Card(theme),
+    Dialog(theme),
     Table(theme),
     Input(theme),
     Paper(),

@@ -16,7 +16,7 @@
  */
 
 import { useEffect } from 'react';
-import { Dialog, DialogTitle } from '@mui/material';
+import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import {
   removeHiddenAnswersFromResponse,
   useQuestionnaireResponseStore,
@@ -76,8 +76,13 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
   }
 
   return (
-    <Dialog open={true}>
-      <DialogTitle sx={{ m: 2 }}>Autosaving...</DialogTitle>
+    <Dialog open={true} maxWidth="xl">
+      <DialogTitle variant="h5">Autosaving...</DialogTitle>
+      <DialogContent sx={{ mb: 2 }}>
+        <DialogContentText>
+          Due to inactivity, your form is currently being autosaved as a draft.
+        </DialogContentText>
+      </DialogContent>
     </Dialog>
   );
 }

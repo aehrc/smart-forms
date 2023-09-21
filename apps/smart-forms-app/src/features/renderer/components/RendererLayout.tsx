@@ -34,29 +34,30 @@ import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../types/rendererSpinner.ts';
 
 function RendererLayout() {
   const { smartClient, patient, user } = useSmartClient();
 
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
 
-  const [open, setOpen] = useState(false);
-  const [navIsCollapsed, collapseNav] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [desktopNavCollapsed, setDesktopNavCollapsed] = useState(false);
 
   // Init population spinner
-  let initialSpinner = { isLoading: false, message: '' };
+  let initialSpinner: RendererSpinner = { isSpinning: false, status: 'prepopulate', message: '' };
   if (smartClient && patient && user && !sourceResponse.id) {
     initialSpinner = {
-      isLoading: true,
+      isSpinning: true,
+      status: 'prepopulate',
       message: 'Populating form'
     };
   }
-  const [spinner, setSpinner] = useState(initialSpinner);
+  const [spinner, setSpinner] = useState<RendererSpinner>(initialSpinner);
 
   // Page blocker
   const [dialogOpen, setDialogOpen] = useState(false);
-  const leavePageBlocker = useLeavePageBlocker(hasChanges);
+  const leavePageBlocker = useLeavePageBlocker();
   if (leavePageBlocker.state === 'blocked' && !dialogOpen) {
     setDialogOpen(true);
   }
@@ -65,21 +66,32 @@ function RendererLayout() {
 
   useBackToTop();
 
-  usePopulate(spinner.isLoading, () => setSpinner({ ...spinner, isLoading: false }));
+  usePopulate(spinner, () => setSpinner({ isSpinning: false, status: null, message: '' }));
+
+  const isPrepopulating = spinner.isSpinning && spinner.status === 'prepopulate';
+  const isRepopulateWriting = spinner.isSpinning && spinner.status === 'repopulate-write';
 
   return (
     <StyledRoot>
-      <RendererHeader onOpenNav={() => setOpen(true)} navIsCollapsed={navIsCollapsed} />
-
-      <RendererNavWrapper
-        openNav={open}
-        onCloseNav={() => setOpen(false)}
-        navCollapsed={navIsCollapsed}
-        setNavCollapsed={() => collapseNav(true)}
+      <RendererHeader
+        onOpenMobileNav={() => setMobileNavOpen(true)}
+        desktopNavCollapsed={desktopNavCollapsed}
       />
 
+      <RendererNavWrapper
+        mobileNavOpen={mobileNavOpen}
+        onCloseMobileNav={() => setMobileNavOpen(false)}
+        desktopNavCollapsed={desktopNavCollapsed}
+        onCollapseDesktopNav={() => setDesktopNavCollapsed(true)}
+        spinner={spinner}
+        onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
+      />
       <Main>
-        {spinner.isLoading ? <PopulationProgressSpinner message={spinner.message} /> : <Outlet />}
+        {isPrepopulating || isRepopulateWriting ? (
+          <PopulationProgressSpinner message={spinner.message} />
+        ) : (
+          <Outlet />
+        )}
       </Main>
 
       {/* Dialogs and FABs */}
@@ -91,7 +103,10 @@ function RendererLayout() {
         />
       ) : null}
 
-      <NavExpandButton navCollapsed={navIsCollapsed} expandNav={() => collapseNav(false)} />
+      <NavExpandButton
+        desktopNavCollapsed={desktopNavCollapsed}
+        onExpandNav={() => setDesktopNavCollapsed(false)}
+      />
 
       {isDesktop ? (
         <BackToTopButton>
@@ -100,7 +115,7 @@ function RendererLayout() {
           </Fab>
         </BackToTopButton>
       ) : (
-        <RendererEmbeddedSpeedDial isPopulating={spinner.isLoading} />
+        <RendererEmbeddedSpeedDial isPopulating={spinner.isSpinning} />
       )}
     </StyledRoot>
   );

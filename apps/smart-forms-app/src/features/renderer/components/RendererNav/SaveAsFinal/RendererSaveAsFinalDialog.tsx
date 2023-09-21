@@ -97,7 +97,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
       <DialogTitle variant="h5">Confirm save</DialogTitle>
       <DialogContent>
-        <DialogContentText variant="body1">
+        <DialogContentText>
           {"Are you sure you want to save this form as final? You won't be able to edit it after."}
         </DialogContentText>
       </DialogContent>

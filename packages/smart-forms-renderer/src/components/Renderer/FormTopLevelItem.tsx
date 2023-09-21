@@ -21,17 +21,24 @@ import FormBodyTabbed from './FormBodyTabbed';
 import { containsTabs, isTabContainer } from '../../utils/tabs';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
-import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
+import type {
+  PropsWithQrItemChangeHandler,
+  PropsWithQrRepeatGroupChangeHandler
+} from '../../interfaces/renderProps.interface';
 import FormBodyCollapsible from './FormBodyCollapsible';
 import useResponsive from '../../hooks/useResponsive';
+import useHidden from '../../hooks/useHidden';
+import GroupItemSwitcher from '../FormComponents/GroupItem/GroupItemSwitcher';
 
-interface FormTopLevelItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface FormTopLevelItemProps
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithQrRepeatGroupChangeHandler {
   topLevelQItem: QuestionnaireItem;
-  topLevelQRItem: QuestionnaireResponseItem;
+  topLevelQRItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[];
 }
 
 function FormTopLevelItem(props: FormTopLevelItemProps) {
-  const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItemOrItems, onQrItemChange, onQrRepeatGroupChange } = props;
 
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
@@ -39,6 +46,28 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   const isDesktop = useResponsive('up', 'lg');
 
   const itemIsGroup = topLevelQItem.type === 'group';
+
+  const itemIsHidden = useHidden(topLevelQItem);
+  if (itemIsHidden) {
+    return null;
+  }
+
+  // If item has multiple answers, use a group item switcher to determine how to render it.
+  const hasMultipleAnswers = Array.isArray(topLevelQRItemOrItems);
+  if (hasMultipleAnswers) {
+    return (
+      <GroupItemSwitcher
+        qItem={topLevelQItem}
+        qrItemOrItems={topLevelQRItemOrItems}
+        groupCardElevation={1}
+        onQrItemChange={onQrItemChange}
+        onQrRepeatGroupChange={onQrRepeatGroupChange}
+      />
+    );
+  }
+
+  // At this point, item only has one answer
+  const topLevelQRItem = topLevelQRItemOrItems;
 
   // If form is tabbed, it is rendered as a tabbed form
   if (itemContainsTabs || itemIsTabContainer) {

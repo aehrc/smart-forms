@@ -42,6 +42,7 @@ import useTerminologyServerStore from './useTerminologyServerStore';
 
 export interface UseQuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
+  itemTypes: Record<string, string>;
   tabs: Tabs;
   currentTabIndex: number;
   variables: Variables;
@@ -68,11 +69,15 @@ export interface UseQuestionnaireStoreType {
   toggleEnableWhenActivation: (isActivated: boolean) => void;
   updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
-  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => QuestionnaireResponse;
+  updatePopulatedProperties: (
+    populatedResponse: QuestionnaireResponse,
+    persistTabIndex?: boolean
+  ) => QuestionnaireResponse;
 }
 
 const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => ({
   sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+  itemTypes: {},
   tabs: {},
   currentTabIndex: 0,
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
@@ -115,6 +120,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
 
     set({
       sourceQuestionnaire: questionnaire,
+      itemTypes: questionnaireModel.itemTypes,
       tabs: questionnaireModel.tabs,
       currentTabIndex: firstVisibleTab,
       variables: questionnaireModel.variables,
@@ -131,6 +137,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
   destroySourceQuestionnaire: () =>
     set({
       sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+      itemTypes: {},
       tabs: {},
       currentTabIndex: 0,
       variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
@@ -197,7 +204,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
         [valueSetUrl]: codings
       }
     })),
-  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse) => {
+  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse, persistTabIndex) => {
     const initialCalculatedExpressions = evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
       calculatedExpressions: get().calculatedExpressions,
@@ -229,7 +236,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
-      currentTabIndex: firstVisibleTab
+      currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab
     }));
 
     return updatedResponse;

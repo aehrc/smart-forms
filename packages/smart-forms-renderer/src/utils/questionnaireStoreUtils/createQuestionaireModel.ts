@@ -27,6 +27,7 @@ import { extractOtherExtensions } from './extractOtherExtensions';
 import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
 import { addAdditionalVariables } from './addAdditionalVariables';
+import { getLinkIdTypeTuples } from '../qItem';
 
 export async function createQuestionnaireModel(
   questionnaire: Questionnaire,
@@ -37,6 +38,7 @@ export async function createQuestionnaireModel(
     return createEmptyModel();
   }
 
+  const itemTypes: Record<string, string> = Object.fromEntries(getLinkIdTypeTuples(questionnaire));
   const tabs: Tabs = extractTabs(questionnaire);
 
   const launchContexts: Record<string, LaunchContext> = extractLaunchContexts(questionnaire);
@@ -75,6 +77,7 @@ export async function createQuestionnaireModel(
   processedValueSetCodings = resolveValueSetsResult.processedValueSetCodings;
 
   return {
+    itemTypes,
     tabs,
     variables,
     launchContexts,
@@ -89,6 +92,7 @@ export async function createQuestionnaireModel(
 
 function createEmptyModel(): QuestionnaireModel {
   return {
+    itemTypes: {},
     tabs: {},
     variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
     launchContexts: {},

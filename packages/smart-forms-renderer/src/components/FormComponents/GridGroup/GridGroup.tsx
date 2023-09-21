@@ -18,7 +18,7 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
-import { createQrGroup, updateQrGroup } from '../../../utils/qrItem';
+import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
 import { QGroupContainerBox } from '../../Box.styles';
 import Divider from '@mui/material/Divider';
@@ -66,7 +66,7 @@ function GridGroup(props: GridGroupProps) {
   // Event Handlers
   function handleRowChange(newQrItem: QuestionnaireResponseItem) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
-    updateQrGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
+    updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup);
   }
 

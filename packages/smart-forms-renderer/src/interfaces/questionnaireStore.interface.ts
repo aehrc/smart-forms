@@ -24,6 +24,7 @@ import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding } from 'fhir/r4';
 
 export interface QuestionnaireModel {
+  itemTypes: Record<string, string>;
   tabs: Tabs;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;

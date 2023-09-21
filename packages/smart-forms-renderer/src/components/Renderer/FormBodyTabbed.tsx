@@ -22,7 +22,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
-import { updateQrGroup } from '../../utils/qrItem';
+import { updateQrItemsInGroup } from '../../utils/qrItem';
 import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
@@ -47,7 +47,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const qrItems = topLevelQRItem.item;
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    updateQrGroup(qrItem, null, topLevelQRItem, indexMap);
+    updateQrItemsInGroup(qrItem, null, topLevelQRItem, indexMap);
     onQrItemChange(topLevelQRItem);
   }
 

@@ -101,3 +101,32 @@ export function getXHtmlStringFromQuestionnaire(questionnaire: Questionnaire): s
   }
   return null;
 }
+
+export function getLinkIdTypeTuples(questionnaire: Questionnaire): [string, string][] {
+  if (!questionnaire.item || questionnaire.item.length === 0) {
+    return [];
+  }
+
+  const linkIds: [string, string][] = [];
+  for (const topLevelItem of questionnaire.item) {
+    linkIds.push(...getLinkIdTypeTuplesFromItemRecursive(topLevelItem));
+  }
+
+  return linkIds;
+}
+
+export function getLinkIdTypeTuplesFromItemRecursive(qItem: QuestionnaireItem): [string, string][] {
+  const linkIds: [string, string][] = [];
+
+  if (qItem.linkId) {
+    linkIds.push([qItem.linkId, qItem.type]);
+  }
+
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      linkIds.push(...getLinkIdTypeTuplesFromItemRecursive(childItem));
+    }
+  }
+
+  return linkIds;
+}

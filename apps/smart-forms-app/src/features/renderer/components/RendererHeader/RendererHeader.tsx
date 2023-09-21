@@ -29,26 +29,26 @@ import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import TokenTimer from '../../../tokenTimer/components/TokenTimer.tsx';
 
 interface RendererHeaderProps {
-  navIsCollapsed: boolean;
-  onOpenNav: () => void;
+  desktopNavCollapsed: boolean;
+  onOpenMobileNav: () => void;
 }
 
 const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) {
-  const { navIsCollapsed, onOpenNav } = props;
+  const { desktopNavCollapsed, onOpenMobileNav } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'lg');
 
-  const navIsExpanded = !navIsCollapsed;
+  const navIsExpanded = !desktopNavCollapsed;
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={navIsCollapsed}>
+    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={desktopNavCollapsed}>
       <StyledToolbar>
         {isDesktop ? (
           <IconButton
-            onClick={onOpenNav}
+            onClick={onOpenMobileNav}
             sx={{
               color: 'text.primary',
               ...(navIsExpanded && { display: { lg: 'none' } })

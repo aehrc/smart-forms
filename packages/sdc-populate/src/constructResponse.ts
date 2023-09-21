@@ -16,17 +16,19 @@
  */
 
 import type {
+  FhirResource,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
-  Reference
+  Reference,
+  ValueSet
 } from 'fhir/r4';
 import type { InitialExpression, ValueSetPromise } from './interfaces/expressions.interface';
 import {
-  addValueSetAnswersRecursive,
+  filterValueSetAnswersRecursive,
   getValueSetPromise,
   resolvePromises
 } from './processValueSets';
@@ -55,27 +57,32 @@ export async function constructResponse(
 
   let valueSetPromises: Record<string, ValueSetPromise> = {};
   const answerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {};
+  const containedValueSets: Record<string, ValueSet> = {};
 
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return questionnaireResponse;
   }
+
+  const containedResources = questionnaire.contained ?? [];
 
   // Populate questionnaire response as a two-step process
   // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
   const topLevelQRItems: QuestionnaireResponseItem[] = [];
   for (const qItem of questionnaire.item) {
-    const newTopLevelQRItem = constructResponseItemRecursive(
+    const newTopLevelQRItem = constructResponseItemRecursive({
       qItem,
-      {
+      qrItem: {
         linkId: qItem.linkId,
         text: qItem.text,
         item: []
       },
+      qContainedResources: containedResources,
       initialExpressions,
       valueSetPromises,
-      answerOptions
-    );
+      answerOptions,
+      containedValueSets
+    });
 
     if (Array.isArray(newTopLevelQRItem)) {
       if (newTopLevelQRItem.length > 0) {
@@ -98,9 +105,11 @@ export async function constructResponse(
 
   // Step 2: populate valueSet answers
   valueSetPromises = await resolvePromises(valueSetPromises);
-  const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems.map((qrItem) =>
-    addValueSetAnswersRecursive(qrItem, valueSetPromises, answerOptions)
-  );
+  const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems
+    .map((qrItem) =>
+      filterValueSetAnswersRecursive(qrItem, valueSetPromises, answerOptions, containedValueSets)
+    )
+    .filter((item): item is QuestionnaireResponseItem => item !== null);
 
   questionnaireResponse.questionnaire = questionnaire.url;
   questionnaireResponse.item = updatedTopLevelQRItems;
@@ -109,18 +118,34 @@ export async function constructResponse(
   return questionnaireResponse;
 }
 
+interface ConstructResponseItemRecursiveParams {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
+  qContainedResources: FhirResource[];
+  initialExpressions: Record<string, InitialExpression>;
+  valueSetPromises: Record<string, ValueSetPromise>;
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  containedValueSets: Record<string, ValueSet>;
+}
+
 /**
  * Read a single questionnaire item/group recursively and generating questionnaire response items from initialExpressions if present
  *
  * @author Sean Fong
  */
 function constructResponseItemRecursive(
-  qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem,
-  initialExpressions: Record<string, InitialExpression>,
-  valueSetPromises: Record<string, ValueSetPromise>,
-  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
+  params: ConstructResponseItemRecursiveParams
 ): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
+  const {
+    qItem,
+    qrItem,
+    qContainedResources,
+    initialExpressions,
+    valueSetPromises,
+    answerOptions,
+    containedValueSets
+  } = params;
+
   const items = qItem.item;
 
   if (items && items.length > 0) {
@@ -140,13 +165,15 @@ function constructResponseItemRecursive(
 
     // Otherwise loop through qItem as usual
     for (const item of items) {
-      const newQrItem = constructResponseItemRecursive(
-        item,
+      const newQrItem = constructResponseItemRecursive({
+        qItem: item,
         qrItem,
+        qContainedResources,
         initialExpressions,
         valueSetPromises,
-        answerOptions
-      );
+        answerOptions,
+        containedValueSets
+      });
 
       if (Array.isArray(newQrItem)) {
         if (newQrItem.length > 0) {
@@ -157,19 +184,36 @@ function constructResponseItemRecursive(
       }
     }
 
-    return constructGroupItem(qItem, qrItems, initialExpressions, valueSetPromises, answerOptions);
+    return constructGroupItem({
+      qItem,
+      qrItems,
+      initialExpressions,
+      valueSetPromises,
+      answerOptions
+    });
   }
 
-  return constructSingleItem(qItem, initialExpressions, valueSetPromises, answerOptions);
+  return constructSingleItem({
+    qItem,
+    qContainedResources,
+    initialExpressions,
+    valueSetPromises,
+    answerOptions,
+    containedValueSets
+  });
 }
 
-function constructGroupItem(
-  qItem: QuestionnaireItem,
-  qrItems: QuestionnaireResponseItem[],
-  initialExpressions: Record<string, InitialExpression>,
-  valueSetPromises: Record<string, ValueSetPromise>,
-  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
-): QuestionnaireResponseItem | null {
+interface ConstructGroupItemParams {
+  qItem: QuestionnaireItem;
+  qrItems: QuestionnaireResponseItem[];
+  initialExpressions: Record<string, InitialExpression>;
+  valueSetPromises: Record<string, ValueSetPromise>;
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+}
+
+function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResponseItem | null {
+  const { qItem, qrItems, initialExpressions, valueSetPromises, answerOptions } = params;
+
   // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
   let populatedAnswers: QuestionnaireResponseItemAnswer[] | undefined;
@@ -199,12 +243,25 @@ function constructGroupItem(
     : null;
 }
 
-function constructSingleItem(
-  qItem: QuestionnaireItem,
-  initialExpressions: Record<string, InitialExpression>,
-  valueSetPromises: Record<string, ValueSetPromise>,
-  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
-): QuestionnaireResponseItem | null {
+interface ConstructSingleItemParams {
+  qItem: QuestionnaireItem;
+  qContainedResources: FhirResource[];
+  initialExpressions: Record<string, InitialExpression>;
+  valueSetPromises: Record<string, ValueSetPromise>;
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  containedValueSets: Record<string, ValueSet>;
+}
+
+function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireResponseItem | null {
+  const {
+    qItem,
+    qContainedResources,
+    initialExpressions,
+    valueSetPromises,
+    answerOptions,
+    containedValueSets
+  } = params;
+
   if (itemIsHidden(qItem)) {
     return null;
   }
@@ -222,6 +279,7 @@ function constructSingleItem(
       }
 
       recordAnswerOption(qItem, answerOptions);
+      recordContainedValueSet(qItem, qContainedResources, containedValueSets);
 
       return {
         linkId: qItem.linkId,
@@ -242,9 +300,29 @@ function recordAnswerValueSet(
   }
 }
 
-function recordAnswerOption(qItem: QuestionnaireItem, answerOptions: Record<string, any>) {
+function recordAnswerOption(
+  qItem: QuestionnaireItem,
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
+) {
   if (qItem.answerOption) {
     answerOptions[qItem.linkId] = qItem.answerOption;
+  }
+}
+
+function recordContainedValueSet(
+  qItem: QuestionnaireItem,
+  qContainedResources: FhirResource[],
+  containedValueSets: Record<string, ValueSet>
+) {
+  if (qItem.answerValueSet && qItem.answerValueSet.startsWith('#')) {
+    const containedReference = qItem.answerValueSet.slice(1);
+    const containedValueSet = qContainedResources.find(
+      (resource) => resource.id === containedReference
+    );
+
+    if (containedValueSet) {
+      containedValueSets[qItem.linkId] = containedValueSet as ValueSet;
+    }
   }
 }
 

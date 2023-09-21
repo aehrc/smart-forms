@@ -20,13 +20,13 @@ import { useEffect, useState } from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { buildForm } from '@aehrc/smart-forms-renderer';
 
-interface StoriesWrapperProps {
+interface BaseRendererWrapperProps {
   children: ReactNode;
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
 }
 
-function BaseRendererWrapper(props: StoriesWrapperProps) {
+function BaseRendererWrapper(props: BaseRendererWrapperProps) {
   const { children, questionnaire, questionnaireResponse } = props;
 
   const [loading, setLoading] = useState(true);

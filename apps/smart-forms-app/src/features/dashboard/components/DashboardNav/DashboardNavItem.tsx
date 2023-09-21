@@ -48,7 +48,7 @@ function DashboardNavItem(props: DashboardNavItemProps) {
       }}
       sx={{
         ...theme.typography.subtitle2,
-        height: 48,
+        height: 46,
         textTransform: 'capitalize',
         color: theme.palette.text.secondary,
         borderRadius: Number(theme.shape.borderRadius) * 0.2,

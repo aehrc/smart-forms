@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -36,6 +36,7 @@ import {
 } from '../../../utils/parseInputs';
 import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
+import useStringInput from '../../../hooks/useStringInput';
 
 interface DecimalItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -74,7 +75,7 @@ function DecimalItem(props: DecimalItemProps) {
 
     initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
-  const [input, setInput] = useState(initialInput);
+  const [input, setInput] = useStringInput(initialInput);
 
   // Perform validation checks
   const feedback = useValidationError(input, regexValidation, maxLength);

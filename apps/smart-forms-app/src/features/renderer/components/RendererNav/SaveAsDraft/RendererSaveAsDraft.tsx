@@ -36,7 +36,7 @@ function RendererSaveAsDraft() {
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const hasChanges = useQuestionnaireResponseStore((state) => state.hasChanges);
+  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
   const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
     (state) => state.setUpdatableResponseAsSaved
   );
@@ -45,7 +45,7 @@ function RendererSaveAsDraft() {
 
   const navigate: NavigateFunction = useNavigate();
 
-  const buttonIsDisabled = !smartClient || !hasChanges;
+  const buttonIsDisabled = !smartClient || formChangesHistory.length === 0;
   const launchQuestionnaireExists = !!launchQuestionnaire;
 
   function handleClick() {

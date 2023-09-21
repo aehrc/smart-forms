@@ -20,7 +20,6 @@ import Paper from './Paper';
 import Input from './Input';
 import Table from './Table';
 import Button from './Button';
-import Backdrop from './Backdrop';
 import Autocomplete from './Autocomplete';
 import Accordion from './Accordion';
 import SpeedDial from './SpeedDial';
@@ -34,7 +33,6 @@ function ComponentsOverrides(theme: Theme) {
     Input(theme),
     Paper(),
     Button(theme),
-    Backdrop(theme),
     Autocomplete(theme),
     SpeedDial(theme)
   );

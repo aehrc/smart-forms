@@ -15,18 +15,8 @@
  * limitations under the License.
  */
 
-import type { Extension, Questionnaire } from 'fhir/r4';
-
-export function getXHtmlStringFromQuestionnaire(questionnaire: Questionnaire): string | null {
-  const itemControl = questionnaire._title?.extension?.find(
-    (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
-  );
-
-  if (itemControl) {
-    if (itemControl.valueString) {
-      return itemControl.valueString;
-    }
-  }
-  return null;
+export interface RendererSpinner {
+  isSpinning: boolean;
+  status: 'prepopulate' | 'repopulate-fetch' | 'repopulate-write' | 'repopulated' | null;
+  message: string;
 }

@@ -4,5 +4,10 @@ import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), svgr()]
+  plugins: [react(), svgr()],
+  define: {
+    'process.argv': process.argv, // temporary solution for json-diff & vite combination (see: https://github.com/andreyvit/json-diff/issues/123)
+    'process.env': process.env, // temporary solution for json-diff & vite combination (see: https://github.com/andreyvit/json-diff/issues/123)
+    'process.platform': '"web"'
+  }
 });

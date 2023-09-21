@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -31,6 +31,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import StringField from './StringField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
+import useStringInput from '../../../hooks/useStringInput';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -58,7 +59,7 @@ function StringItem(props: StringItemProps) {
   if (qrItem?.answer && qrItem?.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;
   }
-  const [input, setInput] = useState(valueString);
+  const [input, setInput] = useStringInput(valueString);
 
   // Perform validation checks
   const feedback = useValidationError(input, regexValidation, maxLength);
