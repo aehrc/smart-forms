@@ -12,7 +12,7 @@ npm install @aehrc/smart-forms-renderer
 
 ```typescript jsx
 import React from 'react';
-import { SmartFormsRenderer, getResponse } from 'aehrc/smart-forms-renderer';
+import { SmartFormsRenderer, getResponse } from '@aehrc/smart-forms-renderer';
 
 export default function App () {
   const questionnaire = {...}   // FHIR R4.Questionnaire
