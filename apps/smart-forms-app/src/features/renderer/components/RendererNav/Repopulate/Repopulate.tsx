@@ -35,6 +35,7 @@ import { grey } from '@mui/material/colors';
 import PopulationProgressSpinner from '../../../../../components/Spinners/PopulationProgressSpinner.tsx';
 import RepopulateDialog from '../../../../repopulate/components/RepopulateDialog.tsx';
 import { useState } from 'react';
+import type { Practitioner } from 'fhir/r4';
 
 interface RepopulateProps {
   spinner: RendererSpinner;
@@ -53,8 +54,8 @@ function Repopulate(props: RepopulateProps) {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const isRepopulating = spinner.isSpinning && spinner.status === 'repopulate';
-  const isRepopulated = !spinner.isSpinning && spinner.status === 'repopulate';
+  const isRepopulateFetching = spinner.isSpinning && spinner.status === 'repopulate-fetch';
+  const repopulateFetchEnded = !spinner.isSpinning && spinner.status === 'repopulate-fetch';
 
   /*
    * Perform pre-population if all the following requirements are fulfilled:
@@ -69,45 +70,48 @@ function Repopulate(props: RepopulateProps) {
     !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension) &&
     !sourceResponse.id;
 
-  // dont change tab
-
   async function handleClick() {
     closeSnackbar();
     if (!shouldRepopulate) {
       return;
     }
 
-    onSpinnerChange({ isSpinning: true, status: 'repopulate', message: 'Re-populating form' });
+    onSpinnerChange({
+      isSpinning: true,
+      status: 'repopulate-fetch',
+      message: 'Retrieving latest information'
+    });
     const newPatient = await smartClient.patient.read();
-    // FIXME get latest user and encounter info as well
+    const newUser = (await smartClient.user.read()) as Practitioner;
 
     populateQuestionnaire(
       sourceQuestionnaire,
       smartClient,
       newPatient,
-      user,
+      newUser,
       encounter,
       (params: PopulateFormParams) => {
         const { populated, hasWarnings } = params;
 
         const itemToRepopulate = generateItemsToRepopulate(populated);
 
-        if (Object.keys(itemToRepopulate).length > 0) {
-          setItemsToRepopulate(itemToRepopulate);
-        }
+        setItemsToRepopulate(itemToRepopulate);
 
-        onSpinnerChange({ isSpinning: false, status: 'repopulate', message: '' });
+        onSpinnerChange({ isSpinning: false, status: 'repopulate-fetch', message: '' });
         if (hasWarnings) {
           enqueueSnackbar(
-            'Questionnaire form partially re-populated, there might be issues while repopulating the form. View console for details.',
+            'There might be issues while retrieving the latest information, data is partially retrieved. View console for details.',
             { action: <CloseSnackbar />, variant: 'warning' }
           );
           return;
         }
       },
       () => {
-        onSpinnerChange({ isSpinning: false, status: 'repopulate', message: '' });
-        enqueueSnackbar('Form not re-populated', { action: <CloseSnackbar />, variant: 'warning' });
+        onSpinnerChange({ isSpinning: false, status: null, message: '' });
+        enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
+          action: <CloseSnackbar />,
+          variant: 'warning'
+        });
       }
     );
   }
@@ -134,14 +138,15 @@ function Repopulate(props: RepopulateProps) {
           backgroundColor: alpha(grey[200], 0.33),
           zIndex: (theme) => theme.zIndex.drawer + 1
         }}
-        open={isRepopulating}
+        open={isRepopulateFetching}
         onClick={() => onSpinnerChange({ ...spinner, isSpinning: false })}>
         <PopulationProgressSpinner message={spinner.message} />
       </Backdrop>
       <RepopulateDialog
-        isRepopulated={isRepopulated}
+        repopulateFetchingEnded={repopulateFetchEnded}
         itemsToRepopulate={itemsToRepopulate}
         onCloseDialog={() => onSpinnerChange({ isSpinning: false, status: null, message: '' })}
+        onSpinnerChange={onSpinnerChange}
       />
     </>
   );

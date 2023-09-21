@@ -17,8 +17,9 @@
 
 import List from '@mui/material/List';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
-import RepopulateListItem from './RepopulateListItem.tsx';
 import { Divider, Typography } from '@mui/material';
+import { Fragment } from 'react';
+import RepopulateListItem from './RepopulateListItem.tsx';
 
 interface RepopulateListProps {
   itemsToRepopulateTuplesByHeadings: [string, ItemToRepopulate[]][];
@@ -32,9 +33,8 @@ function RepopulateList(props: RepopulateListProps) {
   return (
     <>
       {itemsToRepopulateTuplesByHeadings.map(([heading, itemsToRepopulate], index) => (
-        <>
+        <Fragment key={heading}>
           <List
-            key={heading}
             dense
             sx={{ width: '100%', minWidth: 360 }}
             subheader={
@@ -64,7 +64,7 @@ function RepopulateList(props: RepopulateListProps) {
           {index !== itemsToRepopulateTuplesByHeadings.length - 1 && (
             <Divider sx={{ mb: 1.5 }} light />
           )}
-        </>
+        </Fragment>
       ))}
     </>
   );

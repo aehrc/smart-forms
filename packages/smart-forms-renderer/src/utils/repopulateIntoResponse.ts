@@ -1,10 +1,10 @@
-import {
+import type {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { ItemToRepopulate } from './repopulateItems';
+import type { ItemToRepopulate } from './repopulateItems';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 

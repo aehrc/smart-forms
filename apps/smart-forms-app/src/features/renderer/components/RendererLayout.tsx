@@ -69,6 +69,7 @@ function RendererLayout() {
   usePopulate(spinner, () => setSpinner({ isSpinning: false, status: null, message: '' }));
 
   const isPrepopulating = spinner.isSpinning && spinner.status === 'prepopulate';
+  const isRepopulateWriting = spinner.isSpinning && spinner.status === 'repopulate-write';
 
   return (
     <StyledRoot>
@@ -86,7 +87,11 @@ function RendererLayout() {
         onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
       />
       <Main>
-        {isPrepopulating ? <PopulationProgressSpinner message={spinner.message} /> : <Outlet />}
+        {isPrepopulating || isRepopulateWriting ? (
+          <PopulationProgressSpinner message={spinner.message} />
+        ) : (
+          <Outlet />
+        )}
       </Main>
 
       {/* Dialogs and FABs */}

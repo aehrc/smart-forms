@@ -18,17 +18,19 @@
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import RepopulateEmptyDialog from './RepopulateEmptyDialog.tsx';
 import RepopulateSelectDialog from './RepopulateSelectDialog.tsx';
+import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
 interface RepopulateDialogProps {
-  isRepopulated: boolean;
+  repopulateFetchingEnded: boolean;
   itemsToRepopulate: Record<string, ItemToRepopulate>;
   onCloseDialog: () => void;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RepopulateDialog(props: RepopulateDialogProps) {
-  const { isRepopulated, itemsToRepopulate, onCloseDialog } = props;
+  const { repopulateFetchingEnded, itemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
 
-  if (!isRepopulated) {
+  if (!repopulateFetchingEnded) {
     return null;
   }
 
@@ -39,7 +41,11 @@ function RepopulateDialog(props: RepopulateDialogProps) {
   }
 
   return (
-    <RepopulateSelectDialog itemsToRepopulate={itemsToRepopulate} onCloseDialog={onCloseDialog} />
+    <RepopulateSelectDialog
+      itemsToRepopulate={itemsToRepopulate}
+      onCloseDialog={onCloseDialog}
+      onSpinnerChange={onSpinnerChange}
+    />
   );
 }
 

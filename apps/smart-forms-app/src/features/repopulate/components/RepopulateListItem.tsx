@@ -60,8 +60,8 @@ function RepopulateListItem(props: RepopulateListItemProps) {
             <Typography component="span">
               <RepopulateItemSwitcher
                 qItem={qItemToRepopulate}
-                newQRItem={newQRItem}
                 oldQRItem={oldQRItem}
+                newQRItem={newQRItem}
               />
             </Typography>
           }

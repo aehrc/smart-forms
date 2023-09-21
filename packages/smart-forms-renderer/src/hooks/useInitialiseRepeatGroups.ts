@@ -16,7 +16,7 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
 import { useMemo } from 'react';
