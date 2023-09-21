@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
 import { getShortText } from '../../utils/itemControl';
@@ -23,26 +23,23 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
-import { getContextDisplays, isTabHidden } from '../../utils/tabs';
+import { isTabHidden } from '../../utils/tabs';
 
 interface FormBodyTabListProps {
   topLevelItems: QuestionnaireItem[];
   currentTabIndex: number;
   tabs: Tabs;
   completedTabsCollapsed: boolean;
+  allContextDisplayItems: QuestionnaireItem[][];
 }
 
 const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProps) {
-  const { topLevelItems, currentTabIndex, tabs, completedTabsCollapsed } = props;
+  const { topLevelItems, currentTabIndex, tabs, completedTabsCollapsed, allContextDisplayItems } =
+    props;
 
   const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
   const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
   const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-
-  const allContextDisplayItems = useMemo(
-    () => topLevelItems.map((topLevelItem) => getContextDisplays(topLevelItem)),
-    [topLevelItems]
-  );
 
   return (
     <TransitionGroup>

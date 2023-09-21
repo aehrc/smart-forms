@@ -21,15 +21,13 @@ import Card from '@mui/material/Card';
 import { PrimarySelectableList } from '../Lists.styles';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { Tabs } from '../../interfaces/tab.interface';
-import { IconButton } from '@mui/material';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import FormBodyTabList from './FormBodyTabList';
+import ShowCompletedTabsSection from './ShowCompletedTabsSection';
+import useContextDisplayItems from '../../hooks/useContextDisplayItems';
 
 interface FormBodyTabListWrapperProps {
-  qFormItems: QuestionnaireItem[];
+  topLevelItems: QuestionnaireItem[];
   currentTabIndex: number;
   tabs: Tabs;
 }
@@ -37,39 +35,30 @@ interface FormBodyTabListWrapperProps {
 const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
   props: FormBodyTabListWrapperProps
 ) {
-  const { qFormItems, currentTabIndex, tabs } = props;
+  const { topLevelItems, currentTabIndex, tabs } = props;
 
   const [completedTabsExpanded, setCompletedTabsExpanded] = useState(true);
+
+  const { allContextDisplayItems, completedDisplayItemExists } =
+    useContextDisplayItems(topLevelItems);
 
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
         <PrimarySelectableList dense disablePadding sx={{ mb: 1 }} data-test="renderer-tab-list">
-          <Box display="flex" justifyContent="center" alignItems="center" mx={2} columnGap={0.5}>
-            <Typography
-              variant="overline"
-              fontSize={9}
-              color={completedTabsExpanded ? 'text.secondary' : 'text.disabled'}>
-              Completed tabs {completedTabsExpanded ? 'shown' : 'hidden'}
-            </Typography>
-            <IconButton
-              size="small"
-              onClick={() => {
-                setCompletedTabsExpanded(!completedTabsExpanded);
-              }}>
-              {completedTabsExpanded ? (
-                <ExpandLess fontSize="small" />
-              ) : (
-                <ExpandMore fontSize="small" />
-              )}
-            </IconButton>
-          </Box>
+          {completedDisplayItemExists ? (
+            <ShowCompletedTabsSection
+              completedTabsExpanded={completedTabsExpanded}
+              setCompletedTabsExpanded={setCompletedTabsExpanded}
+            />
+          ) : null}
           <Divider sx={{ mx: 1 }} light />
           <FormBodyTabList
-            topLevelItems={qFormItems}
+            topLevelItems={topLevelItems}
             currentTabIndex={currentTabIndex}
             tabs={tabs}
             completedTabsCollapsed={!completedTabsExpanded}
+            allContextDisplayItems={allContextDisplayItems}
           />
         </PrimarySelectableList>
       </Box>

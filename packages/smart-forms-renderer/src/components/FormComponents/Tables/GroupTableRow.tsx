@@ -29,7 +29,7 @@ interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> 
   qItemsIndexMap: Record<string, number>;
 }
 
-function QItemGroupTableRow(props: Props) {
+function GroupTableRow(props: Props) {
   const { qItem, qrItem, qItemsIndexMap, onQrItemChange } = props;
 
   const rowItems = qItem.item;
@@ -74,4 +74,4 @@ function QItemGroupTableRow(props: Props) {
   );
 }
 
-export default QItemGroupTableRow;
+export default GroupTableRow;

@@ -92,13 +92,13 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
       onStopSpinner();
       if (hasWarnings) {
         enqueueSnackbar(
-          'Questionnaire form partially populated, there might be issues while populating the form. View console for details.',
+          'Form partially populated, there might be issues while populating the form. View console for details.',
           { action: <CloseSnackbar />, variant: 'warning' }
         );
         return;
       }
 
-      enqueueSnackbar('Questionnaire form populated', {
+      enqueueSnackbar('Form populated', {
         preventDuplicate: true,
         action: <CloseSnackbar />
       });

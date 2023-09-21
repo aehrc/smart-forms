@@ -21,8 +21,8 @@ import type {
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { isSpecificItemControl } from '../../../utils/itemControl';
-import QItemGroupTable from '../Tables/QItemGroupTable';
+import { isSpecificItemControl } from '../../../utils';
+import GroupTable from '../Tables/GroupTable';
 import RepeatGroup from '../RepeatGroup/RepeatGroup';
 import { isRepeatItemAndNotCheckbox } from '../../../utils/qItem';
 import RepeatItem from '../RepeatItem/RepeatItem';
@@ -60,7 +60,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
 
     if (isSpecificItemControl(qItem, 'gtable')) {
       return (
-        <QItemGroupTable
+        <GroupTable
           qItem={qItem}
           qrItems={qrItems}
           groupCardElevation={groupCardElevation + 1}
@@ -100,7 +100,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       // their qrItem array should always be empty
       if (isSpecificItemControl(qItem, 'gtable')) {
         return (
-          <QItemGroupTable
+          <GroupTable
             qItem={qItem}
             qrItems={[]}
             groupCardElevation={groupCardElevation + 1}

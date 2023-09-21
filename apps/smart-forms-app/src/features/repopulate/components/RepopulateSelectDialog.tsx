@@ -99,7 +99,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     setUpdatableResponseAsPopulated(updatedResponse);
 
     onCloseDialog();
-    enqueueSnackbar('Questionnaire form re-populated', {
+    enqueueSnackbar('Form re-populated', {
       preventDuplicate: true,
       action: <CloseSnackbar />
     });

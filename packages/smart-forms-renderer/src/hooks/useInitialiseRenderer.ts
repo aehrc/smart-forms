@@ -17,7 +17,7 @@
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useLayoutEffect, useState } from 'react';
-import { createQuestionnaireResponse } from '../utils/qrItem';
+import { createEmptyQuestionnaireResponse } from '../utils/qrItem';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
 import useQuestionnaireResponseStore from '../stores/useQuestionnaireResponseStore';
 import type Client from 'fhirclient/lib/Client';
@@ -80,7 +80,7 @@ function useInitialiseRenderer(
       additionalVariables,
       terminologyServerUrl
     ).then(() => {
-      buildSourceResponse(createQuestionnaireResponse(questionnaire));
+      buildSourceResponse(createEmptyQuestionnaireResponse(questionnaire));
 
       if (questionnaireResponse) {
         const updatedResponse = updatePopulatedProperties(questionnaireResponse);

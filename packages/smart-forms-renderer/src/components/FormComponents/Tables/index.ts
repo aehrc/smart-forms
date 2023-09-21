@@ -15,4 +15,4 @@
  * limitations under the License.
  */
 
-export { default as GroupTable } from './QItemGroupTable';
+export { default as GroupTable } from './GroupTable';
