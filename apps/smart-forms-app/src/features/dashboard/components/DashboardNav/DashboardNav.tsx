@@ -63,7 +63,7 @@ export default function DashboardNav(props: DashboardNavProps) {
 
       <NavMiddleWrapper gap={2}>
         {isNotLaunched ? (
-          <NavErrorAlert message={'Viewing responses disabled, app not launched via SMART'} />
+          <NavErrorAlert message="Responses not available, app not launched via SMART" />
         ) : null}
         {isNotLaunched || debugModeEnabled ? <GoToPlaygroundButton /> : null}
       </NavMiddleWrapper>

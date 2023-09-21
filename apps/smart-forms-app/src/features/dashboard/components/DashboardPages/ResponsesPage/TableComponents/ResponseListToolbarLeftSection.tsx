@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import dayjs from 'dayjs';
-import { Box, InputAdornment, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import BackToQuestionnairesButton from '../Buttons/BackToQuestionnairesButton.tsx';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
-import { StyledSearch } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
 import { createResponseListItem } from '../../../../utils/dashboard.ts';
-import useResponsive from '../../../../../../hooks/useResponsive.ts';
+import ResponseListToolbarSearch from './ResponseListToolbarSearch.tsx';
 
 interface ResponseListToolbarLeftSectionProps {
   selectedResponse: QuestionnaireResponse | null;
   selectedQuestionnaire: Questionnaire | null;
   existingResponses: QuestionnaireResponse[];
-  searchInput: string;
-  onSearch: (input: string) => void;
+  searchedQuestionnaire: Questionnaire | null;
+  onChangeSearchedQuestionnaire: (searched: Questionnaire | null) => void;
 }
 
 function ResponseListToolbarLeftSection(props: ResponseListToolbarLeftSectionProps) {
-  const { selectedResponse, selectedQuestionnaire, existingResponses, searchInput, onSearch } =
-    props;
-
-  const isTabletAndUp = useResponsive('up', 'md');
+  const {
+    selectedResponse,
+    selectedQuestionnaire,
+    existingResponses,
+    searchedQuestionnaire,
+    onChangeSearchedQuestionnaire
+  } = props;
 
   if (selectedResponse) {
     const listItem = createResponseListItem(selectedResponse, -1);
@@ -61,21 +61,9 @@ function ResponseListToolbarLeftSection(props: ResponseListToolbarLeftSectionPro
   }
 
   return (
-    <StyledSearch
-      value={searchInput}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => onSearch(event.target.value)}
-      placeholder="Search responses..."
-      startAdornment={
-        <InputAdornment position="start">
-          <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-        </InputAdornment>
-      }
-      data-test="search-field-responses"
-      sx={{
-        '&.Mui-focused': {
-          width: isTabletAndUp ? `50%` : '320px'
-        }
-      }}
+    <ResponseListToolbarSearch
+      searchedQuestionnaire={searchedQuestionnaire}
+      onChangeQuestionnaire={onChangeSearchedQuestionnaire}
     />
   );
 }

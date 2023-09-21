@@ -16,7 +16,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
+import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { constructBundle, filterResponses, getClientBundlePromise } from '../utils/dashboard.ts';
 import { useMemo } from 'react';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
@@ -30,18 +30,26 @@ interface useFetchResponsesReturnParams {
 }
 
 function useFetchResponses(
-  searchInput: string,
-  debouncedInput: string
+  searchedQuestionnaire: Questionnaire | null
 ): useFetchResponsesReturnParams {
   const { smartClient, patient } = useSmartClient();
 
   const { existingResponses } = useSelectedQuestionnaire();
 
-  const numOfSearchEntries = 50;
+  const numOfSearchEntries = 100;
 
   let queryUrl = `/QuestionnaireResponse?_count=${numOfSearchEntries}&_sort=-authored&patient=${patient?.id}&`;
-  if (debouncedInput) {
-    queryUrl += 'questionnaire.title:contains=' + debouncedInput;
+
+  if (smartClient?.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
+    const questionnaireId = searchedQuestionnaire?.id;
+    if (questionnaireId) {
+      queryUrl += `questionnaire=Questionnaire/${questionnaireId}-SMARTcopy`;
+    }
+  } else {
+    const canonicalUrl = searchedQuestionnaire?.url;
+    if (canonicalUrl) {
+      queryUrl += `questionnaire=${canonicalUrl}`;
+    }
   }
 
   const {
@@ -54,7 +62,7 @@ function useFetchResponses(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => getClientBundlePromise(smartClient!, queryUrl),
     {
-      enabled: !!smartClient && debouncedInput === searchInput
+      enabled: !!smartClient
     }
   );
 

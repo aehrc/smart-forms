@@ -17,26 +17,28 @@
 
 import { Typography } from '@mui/material';
 import EmptyListImage from '../../../../components/Logos/EmptyListImage.tsx';
+import type { Questionnaire } from 'fhir/r4';
+import { createResponseSearchOption } from '../../utils/dashboard.ts';
 
 interface ResponseEmptyFeedbackProps {
-  searchInput: string;
+  searchedQuestionnaire: Questionnaire | null;
 }
 
 function ResponseEmptyFeedback(props: ResponseEmptyFeedbackProps) {
-  const { searchInput } = props;
+  const { searchedQuestionnaire } = props;
 
   return (
     <>
       <EmptyListImage />
-      {searchInput === '' ? (
+      {searchedQuestionnaire === null ? (
         <Typography>
-          No results found.
+          No responses found.
           <br /> It doesn&apos;t seem like you have any responses yet.
         </Typography>
       ) : (
         <Typography>
-          No results found for &nbsp;
-          <strong>&quot;{searchInput}&quot;</strong>.
+          No responses found for &nbsp;
+          <strong>{createResponseSearchOption(searchedQuestionnaire)}</strong>.
           <br /> Try searching for something else.
         </Typography>
       )}

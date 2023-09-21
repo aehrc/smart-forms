@@ -78,9 +78,7 @@ export function createQuestionnaireListItem(
   questionnaire: Questionnaire,
   index: number
 ): QuestionnaireListItem {
-  const questionnaireTitle = questionnaire.title
-    ? questionnaire.title.charAt(0).toUpperCase() + questionnaire.title.slice(1)
-    : 'Untitled';
+  const questionnaireTitle = createQuestionnaireTitle(questionnaire);
 
   const questionnairePublisher = questionnaire.publisher
     ? questionnaire.publisher.charAt(0).toUpperCase() + questionnaire.publisher.slice(1)
@@ -96,6 +94,12 @@ export function createQuestionnaireListItem(
     date: questionnaire.date ? dayjs(questionnaire.date).toDate() : null,
     status: questionnaire.status
   };
+}
+
+export function createQuestionnaireTitle(questionnaire: Questionnaire): string {
+  return questionnaire.title
+    ? questionnaire.title.charAt(0).toUpperCase() + questionnaire.title.slice(1)
+    : 'Untitled';
 }
 
 export function filterQuestionnaires(bundle: Bundle | undefined): Questionnaire[] {
@@ -189,4 +193,14 @@ export function constructBundle(resources: FhirResource[]): Bundle {
     resourceType: 'Bundle',
     type: 'collection'
   };
+}
+
+export function createResponseSearchOption(questionnaire: Questionnaire): string {
+  let optionString = createQuestionnaireTitle(questionnaire);
+
+  if (optionString === 'Untitled') {
+    optionString += ' (' + questionnaire.id + ')';
+  }
+
+  return optionString;
 }

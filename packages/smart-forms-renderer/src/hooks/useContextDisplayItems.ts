@@ -17,7 +17,7 @@
 
 import { useMemo } from 'react';
 import { getContextDisplays } from '../utils/tabs';
-import { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 function useContextDisplayItems(topLevelItems: QuestionnaireItem[]) {
   return useMemo(() => {
