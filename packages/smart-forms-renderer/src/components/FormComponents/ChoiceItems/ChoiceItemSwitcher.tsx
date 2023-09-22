@@ -74,7 +74,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            isRepeated={qItem['repeats'] ?? false}
+            isRepeated={qItem.repeats ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />
@@ -84,7 +84,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            isRepeated={qItem['repeats'] ?? false}
+            isRepeated={qItem.repeats ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
           />

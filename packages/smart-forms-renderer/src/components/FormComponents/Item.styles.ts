@@ -20,11 +20,11 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
-export const QFormGroup = styled(FormGroup)(() => ({
+export const StyledFormGroup = styled(FormGroup)(() => ({
   marginBottom: 4
 }));
 
-export const QRadioGroup = styled(RadioGroup)(() => ({
+export const StyledRadioGroup = styled(RadioGroup)(() => ({
   marginBottom: 4
 }));
 

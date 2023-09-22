@@ -23,7 +23,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import { getOpenLabelText } from '../../../utils/itemControl';
 import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
-import { QFormGroup } from '../Item.styles';
+import { StyledFormGroup } from '../Item.styles';
 import {
   getOldOpenLabelAnswer,
   updateQrOpenChoiceCheckboxAnswers
@@ -116,7 +116,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   const openChoiceCheckbox = (
-    <QFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+    <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
@@ -173,7 +173,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           }}
         />
       ) : null}
-    </QFormGroup>
+    </StyledFormGroup>
   );
 
   return (

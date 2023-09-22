@@ -19,9 +19,7 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import QItemChoiceCheckboxSingle from '../ItemParts/CheckboxSingle';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { QFormGroup } from '../Item.styles';
 import { updateQrCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
@@ -31,6 +29,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerOptionFields';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -38,10 +37,11 @@ interface ChoiceCheckboxAnswerOptionItemProps
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
+  showText?: boolean;
 }
 
 function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation, showText = true } = props;
 
   // Init input value
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
@@ -68,63 +68,39 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     }
   }
 
-  const choiceCheckbox = (
-    <QFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-      {qItem.answerOption?.map((option) => {
-        if (option['valueCoding']) {
-          return (
-            <QItemChoiceCheckboxSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
+  if (showText) {
+    return (
+      <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
+        <Grid container columnSpacing={6}>
+          <Grid item xs={5}>
+            <LabelWrapper qItem={qItem} />
+          </Grid>
+          <Grid item xs={7}>
+            <ChoiceCheckboxAnswerValueSetFields
+              qItem={qItem}
+              answers={answers}
+              orientation={orientation}
               readOnly={readOnly}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(option)
-              )}
               onCheckedChange={handleCheckedChange}
             />
-          );
-        } else if (option['valueString']) {
-          return (
-            <QItemChoiceCheckboxSingle
-              key={option.valueString}
-              value={option.valueString}
-              label={option.valueString}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueString === option.valueString)}
-              onCheckedChange={handleCheckedChange}
-            />
-          );
-        } else if (option['valueInteger']) {
-          return (
-            <QItemChoiceCheckboxSingle
-              key={option.valueInteger}
-              value={option.valueInteger.toString()}
-              label={option.valueInteger.toString()}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
-              onCheckedChange={handleCheckedChange}
-            />
-          );
-        } else {
-          return null;
-        }
-      })}
-    </QFormGroup>
-  );
+            <DisplayInstructions displayInstructions={displayInstructions} />
+          </Grid>
+        </Grid>
+      </FullWidthFormComponentBox>
+    );
+  }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
-        </Grid>
-        <Grid item xs={7}>
-          {choiceCheckbox}
-          <DisplayInstructions displayInstructions={displayInstructions} />
-        </Grid>
-      </Grid>
-    </FullWidthFormComponentBox>
+    <>
+      <ChoiceCheckboxAnswerValueSetFields
+        qItem={qItem}
+        answers={answers}
+        orientation={orientation}
+        readOnly={readOnly}
+        onCheckedChange={handleCheckedChange}
+      />
+      <DisplayInstructions displayInstructions={displayInstructions} />
+    </>
   );
 }
 

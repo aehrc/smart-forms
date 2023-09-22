@@ -22,7 +22,7 @@ import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { getOpenLabelText } from '../../../utils/itemControl';
-import { QRadioGroup } from '../Item.styles';
+import { StyledRadioGroup } from '../Item.styles';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
@@ -120,7 +120,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   }
 
   const openChoiceRadio = (
-    <QRadioGroup
+    <StyledRadioGroup
       row={orientation === ChoiceItemOrientation.Horizontal}
       name={qItem.text}
       id={qItem.id}
@@ -169,7 +169,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
           onInputChange={(input) => handleValueChange(null, input)}
         />
       ) : null}
-    </QRadioGroup>
+    </StyledRadioGroup>
   );
 
   return (
