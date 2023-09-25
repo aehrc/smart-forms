@@ -15,27 +15,22 @@
  * limitations under the License.
  */
 
-import type { SyntheticEvent } from 'react';
 import React, { useEffect, useMemo } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { StandardTextField } from '../Textfield.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { StyledAlert } from '../../Alert.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -50,14 +45,13 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
 
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
-  let valueCoding: Coding | undefined;
+  let valueCoding: Coding | null = null;
   if (qrChoiceSelect.answer) {
-    valueCoding = qrChoiceSelect.answer[0].valueCoding;
+    valueCoding = qrChoiceSelect.answer[0].valueCoding ?? null;
   }
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
@@ -84,7 +78,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   );
 
   // Event handlers
-  function handleChange(_: SyntheticEvent<Element, Event>, newValue: Coding | null) {
+  function handleChange(newValue: Coding | null) {
     if (newValue) {
       onQrItemChange({
         ...createEmptyQrItem(qItem),
@@ -95,56 +89,17 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     onQrItemChange(createEmptyQrItem(qItem));
   }
 
-  const choiceSelectAnswerValueSet =
-    codings.length > 0 ? (
-      <Autocomplete
-        id={qItem.id}
-        options={codings}
-        getOptionLabel={(option) => `${option.display}`}
-        value={valueCoding ?? null}
-        onChange={handleChange}
-        openOnFocus
-        autoHighlight
-        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
-        size="small"
-        disabled={readOnly}
-        placeholder={entryFormat}
-        renderInput={(params) => (
-          <StandardTextField
-            isTabled={isTabled}
-            label={displayPrompt}
-            {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {params.InputProps.endAdornment}
-                  {displayUnit}
-                </>
-              )
-            }}
-            data-test="q-item-choice-dropdown-answer-value-set-field"
-          />
-        )}
-      />
-    ) : serverError ? (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server
-        </Typography>
-      </StyledAlert>
-    ) : (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
-          Unable to fetch options from the questionnaire or launch context
-        </Typography>
-      </StyledAlert>
-    );
-
   if (isRepeated) {
-    return <>{choiceSelectAnswerValueSet}</>;
+    return (
+      <ChoiceSelectAnswerValueSetFields
+        qItem={qItem}
+        codings={codings}
+        valueCoding={valueCoding}
+        serverError={serverError}
+        isTabled={isTabled}
+        onSelectChange={handleChange}
+      />
+    );
   }
 
   return (
@@ -154,7 +109,14 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {choiceSelectAnswerValueSet}
+          <ChoiceSelectAnswerValueSetFields
+            qItem={qItem}
+            codings={codings}
+            valueCoding={valueCoding}
+            serverError={serverError}
+            isTabled={isTabled}
+            onSelectChange={handleChange}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>

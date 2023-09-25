@@ -16,42 +16,46 @@
  */
 
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import CheckboxSingle from '../ItemParts/CheckboxSingle';
-import { StyledFormGroup } from '../Item.styles';
-import { StyledAlert } from '../../Alert.styles';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { Coding, QuestionnaireItem } from 'fhir/r4';
+import ChoiceRadioSingle from './ChoiceRadioSingle';
+import { StyledRadioGroup } from '../Item.styles';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { StyledAlert } from '../../Alert.styles';
 
-interface ChoiceCheckboxAnswerValueSetFieldsProps {
+interface ChoiceRadioAnswerValueSetFieldsProps {
+  qItem: QuestionnaireItem;
   codings: Coding[];
-  answers: QuestionnaireResponseItemAnswer[];
+  valueRadio: string | null;
   orientation: ChoiceItemOrientation;
   readOnly: boolean;
   serverError: Error | null;
   onCheckedChange: (newValue: string) => void;
 }
 
-function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { codings, answers, orientation, readOnly, serverError, onCheckedChange } = props;
+function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsProps) {
+  const { qItem, codings, valueRadio, orientation, readOnly, serverError, onCheckedChange } = props;
 
   if (codings.length > 0) {
     return (
-      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        {codings.map((coding) => (
-          <CheckboxSingle
-            key={coding.code ?? ''}
-            value={coding.code ?? ''}
-            label={coding.display ?? `${coding.code}`}
-            readOnly={readOnly}
-            isChecked={answers.some(
-              (answer) => JSON.stringify(answer.valueCoding) === JSON.stringify(coding)
-            )}
-            onCheckedChange={onCheckedChange}
-          />
-        ))}
-      </StyledFormGroup>
+      <StyledRadioGroup
+        row={orientation === ChoiceItemOrientation.Horizontal}
+        name={qItem.text}
+        id={qItem.id}
+        onChange={(e) => onCheckedChange(e.target.value)}
+        value={valueRadio ?? null}>
+        {codings.map((coding: Coding) => {
+          return (
+            <ChoiceRadioSingle
+              key={coding.code ?? ''}
+              value={coding.code ?? ''}
+              label={coding.display ?? `${coding.code}`}
+              readOnly={readOnly}
+            />
+          );
+        })}
+      </StyledRadioGroup>
     );
   }
 
@@ -76,4 +80,4 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
   );
 }
 
-export default ChoiceCheckboxAnswerValueSetFields;
+export default ChoiceRadioAnswerValueSetFields;

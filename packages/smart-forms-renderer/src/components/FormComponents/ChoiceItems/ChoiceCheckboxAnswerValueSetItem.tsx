@@ -20,7 +20,7 @@ import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';

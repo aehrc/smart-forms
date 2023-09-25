@@ -17,69 +17,67 @@
 
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import QItemChoiceCheckboxSingle from '../ItemParts/CheckboxSingle';
-import { StyledFormGroup } from '../Item.styles';
+import type { QuestionnaireItem } from 'fhir/r4';
+import ChoiceRadioSingle from './ChoiceRadioSingle';
+import { StyledRadioGroup } from '../Item.styles';
 
-interface ChoiceCheckboxAnswerOptionFieldsProps {
+interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
-  answers: QuestionnaireResponseItemAnswer[];
+  valueRadio: string | null;
   orientation: ChoiceItemOrientation;
   readOnly: boolean;
   onCheckedChange: (newValue: string) => void;
 }
 
-function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionFieldsProps) {
-  const { qItem, answers, orientation, readOnly, onCheckedChange } = props;
+function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps) {
+  const { qItem, valueRadio, orientation, readOnly, onCheckedChange } = props;
 
   return (
-    <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+    <StyledRadioGroup
+      row={orientation === ChoiceItemOrientation.Horizontal}
+      name={qItem.text}
+      id={qItem.id}
+      onChange={(e) => onCheckedChange(e.target.value)}
+      value={valueRadio}
+      data-test="q-item-radio-group">
       {qItem.answerOption?.map((option) => {
         if (option['valueCoding']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <ChoiceRadioSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               readOnly={readOnly}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(option)
-              )}
-              onCheckedChange={onCheckedChange}
             />
           );
         }
 
         if (option['valueString']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <ChoiceRadioSingle
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
               readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueString === option.valueString)}
-              onCheckedChange={onCheckedChange}
             />
           );
         }
 
         if (option['valueInteger']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <ChoiceRadioSingle
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
               readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
-              onCheckedChange={onCheckedChange}
             />
           );
         }
 
         return null;
       })}
-    </StyledFormGroup>
+    </StyledRadioGroup>
   );
 }
 
-export default ChoiceCheckboxAnswerOptionFields;
+export default ChoiceRadioAnswerOptionFields;

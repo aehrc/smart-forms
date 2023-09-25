@@ -15,12 +15,8 @@
  * limitations under the License.
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import Grid from '@mui/material/Grid';
-import InputAdornment from '@mui/material/InputAdornment';
-import MenuItem from '@mui/material/MenuItem';
-import type { SelectChangeEvent } from '@mui/material/Select';
-import Select from '@mui/material/Select';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
@@ -34,6 +30,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 
 interface ChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -54,13 +51,12 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   }
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
-  function handleChange(e: SelectChangeEvent) {
+  function handleChange(newValue: string) {
     if (qItem.answerOption) {
-      const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
+      const qrAnswer = findInAnswerOptions(qItem.answerOption, newValue);
       if (qrAnswer) {
         onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
         return;
@@ -69,51 +65,15 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     onQrItemChange(createEmptyQrItem(qItem));
   }
 
-  const choiceSelectAnswerOption = (
-    <Select
-      id={qItem.id}
-      name={qItem.text}
-      value={valueSelect}
-      disabled={readOnly}
-      fullWidth
-      placeholder={entryFormat}
-      label={displayPrompt}
-      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
-      sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160 }}
-      size="small"
-      onChange={handleChange}>
-      {qItem.answerOption?.map((option, index) => {
-        if (option['valueCoding']) {
-          return (
-            <MenuItem key={option.valueCoding.code} value={option.valueCoding.code}>
-              {option.valueCoding.display ?? option.valueCoding.code}
-            </MenuItem>
-          );
-        }
-
-        if (option['valueString']) {
-          return (
-            <MenuItem key={option.valueString} value={option.valueString}>
-              {option.valueString}
-            </MenuItem>
-          );
-        }
-
-        if (option['valueInteger']) {
-          return (
-            <MenuItem key={option.valueInteger} value={option.valueInteger.toString()}>
-              {option.valueInteger}
-            </MenuItem>
-          );
-        }
-
-        return <Fragment key={index} />;
-      })}
-    </Select>
-  );
-
   if (isRepeated) {
-    return <>{choiceSelectAnswerOption}</>;
+    return (
+      <ChoiceSelectAnswerOptionFields
+        qItem={qItem}
+        valueSelect={valueSelect}
+        onSelectChange={handleChange}
+        isTabled={isTabled}
+      />
+    );
   }
 
   return (
@@ -123,7 +83,12 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {choiceSelectAnswerOption}
+          <ChoiceSelectAnswerOptionFields
+            qItem={qItem}
+            valueSelect={valueSelect}
+            onSelectChange={handleChange}
+            isTabled={isTabled}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>

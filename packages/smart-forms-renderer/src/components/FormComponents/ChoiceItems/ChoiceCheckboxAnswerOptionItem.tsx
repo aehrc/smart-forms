@@ -17,7 +17,7 @@
 
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { updateQrCheckboxAnswers } from '../../../utils/choice';
