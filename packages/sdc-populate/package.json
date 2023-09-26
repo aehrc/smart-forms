@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "dayjs": "^1.11.9",
+    "dayjs": "^1.11.10",
     "moment": "^2.29.4",
     "fhirclient": "^2.5.2",
     "fhirpath": "^3.6.1"
