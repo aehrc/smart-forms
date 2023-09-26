@@ -25,7 +25,8 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
@@ -33,15 +34,15 @@ import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerOptionFiel
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithTextShownAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
-  showText?: boolean;
 }
 
 function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation, showText = true } = props;
+  const { qItem, qrItem, isRepeated, onQrItemChange, orientation, textShown = true } = props;
 
   // Init input value
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
@@ -68,7 +69,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     }
   }
 
-  if (showText) {
+  if (textShown) {
     return (
       <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
         <Grid container columnSpacing={6}>

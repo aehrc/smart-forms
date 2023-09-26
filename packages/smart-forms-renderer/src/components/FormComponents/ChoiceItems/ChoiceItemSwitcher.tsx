@@ -29,19 +29,22 @@ import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 
 interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithTextShownAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
+
   const orientation = getChoiceOrientation(qItem);
   const choiceControlType = getChoiceControlType(qItem);
 
@@ -77,6 +80,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             isRepeated={qItem.repeats ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
+            textShown={textShown}
           />
         );
       } else {
@@ -87,6 +91,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             isRepeated={qItem.repeats ?? false}
             onQrItemChange={onQrItemChange}
             orientation={orientation}
+            textShown={textShown}
           />
         );
       }

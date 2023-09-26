@@ -59,6 +59,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
             qrItem={newQRItem}
             isRepeated={true}
             isTabled={false}
+            textShown={true}
             onQrItemChange={() => void 0}
           />
         </Stack>

@@ -23,7 +23,8 @@ import Typography from '@mui/material/Typography';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 import StringItem from '../StringItem/StringItem';
 import BooleanItem from '../BooleanItem/BooleanItem';
@@ -39,13 +40,14 @@ import UrlItem from '../UrlItem/UrlItem';
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithTextShownAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function SingleItemSwitcher(props: SingleItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
 
   switch (qItem.type) {
     case 'string':
@@ -136,6 +138,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          textShown={textShown}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -146,6 +149,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          textShown={textShown}
           onQrItemChange={onQrItemChange}
         />
       );

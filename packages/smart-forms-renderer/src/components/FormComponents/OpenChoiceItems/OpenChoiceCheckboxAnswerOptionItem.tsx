@@ -31,7 +31,8 @@ import debounce from 'lodash.debounce';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
@@ -40,14 +41,15 @@ import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOpti
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithTextShownAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, orientation, isRepeated, textShown = true, onQrItemChange } = props;
 
   // Init answers
   const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
@@ -124,29 +126,49 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     updateOpenLabelValueWithDebounce(newValue);
   }
 
+  if (textShown) {
+    return (
+      <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
+        <Grid container columnSpacing={6}>
+          <Grid item xs={5}>
+            <LabelWrapper qItem={qItem} />
+          </Grid>
+          <Grid item xs={7}>
+            <OpenChoiceCheckboxAnswerOptionFields
+              qItem={qItem}
+              answers={answers}
+              openLabelText={openLabelText}
+              openLabelValue={openLabelValue}
+              openLabelChecked={openLabelChecked}
+              readOnly={readOnly}
+              orientation={orientation}
+              onValueChange={handleValueChange}
+              onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+              onOpenLabelInputChange={handleOpenLabelInputChange}
+            />
+            <DisplayInstructions displayInstructions={displayInstructions} />
+          </Grid>
+        </Grid>
+      </FullWidthFormComponentBox>
+    );
+  }
+
   return (
-    <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
-        </Grid>
-        <Grid item xs={7}>
-          <OpenChoiceCheckboxAnswerOptionFields
-            qItem={qItem}
-            answers={answers}
-            openLabelText={openLabelText}
-            openLabelValue={openLabelValue}
-            openLabelChecked={openLabelChecked}
-            readOnly={readOnly}
-            orientation={orientation}
-            onValueChange={handleValueChange}
-            onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
-            onOpenLabelInputChange={handleOpenLabelInputChange}
-          />
-          <DisplayInstructions displayInstructions={displayInstructions} />
-        </Grid>
-      </Grid>
-    </FullWidthFormComponentBox>
+    <>
+      <OpenChoiceCheckboxAnswerOptionFields
+        qItem={qItem}
+        answers={answers}
+        openLabelText={openLabelText}
+        openLabelValue={openLabelValue}
+        openLabelChecked={openLabelChecked}
+        readOnly={readOnly}
+        orientation={orientation}
+        onValueChange={handleValueChange}
+        onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+        onOpenLabelInputChange={handleOpenLabelInputChange}
+      />
+      <DisplayInstructions displayInstructions={displayInstructions} />
+    </>
   );
 }
 
