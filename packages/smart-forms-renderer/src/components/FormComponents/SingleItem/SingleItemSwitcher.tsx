@@ -93,6 +93,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );

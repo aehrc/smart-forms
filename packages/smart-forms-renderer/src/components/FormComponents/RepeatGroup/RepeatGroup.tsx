@@ -26,8 +26,6 @@ import { QGroupContainerBox } from '../../Box.styles';
 import Card from '@mui/material/Card';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
-
-import { QGroupHeadingTypography } from '../Typography.styles';
 import { TransitionGroup } from 'react-transition-group';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { nanoid } from 'nanoid';
@@ -36,6 +34,7 @@ import AddItemButton from './AddItemButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
 import useReadOnly from '../../../hooks/useReadOnly';
+import Typography from '@mui/material/Typography';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -48,7 +47,7 @@ interface RepeatGroupProps
 function RepeatGroup(props: RepeatGroupProps) {
   const { qItem, qrItems, groupCardElevation, parentIsReadOnly, onQrRepeatGroupChange } = props;
 
-  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const initialRepeatGroups = useInitialiseRepeatGroups(qItem, qrItems);
 
@@ -101,9 +100,9 @@ function RepeatGroup(props: RepeatGroupProps) {
   return (
     <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
-        <QGroupHeadingTypography variant="h6">
-          <LabelWrapper qItem={qItem} />
-        </QGroupHeadingTypography>
+        <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
+        </Typography>
         <Divider sx={{ mt: 1, mb: 1.5 }} light />
         <TransitionGroup>
           {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
@@ -120,7 +119,7 @@ function RepeatGroup(props: RepeatGroupProps) {
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
                   groupCardElevation={groupCardElevation + 1}
-                  parentIsReadOnly={itemIsReadOnly}
+                  parentIsReadOnly={parentIsReadOnly}
                   onDeleteItem={() => handleDeleteItem(index)}
                   onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
                 />
@@ -129,11 +128,7 @@ function RepeatGroup(props: RepeatGroupProps) {
           })}
         </TransitionGroup>
 
-        <AddItemButton
-          repeatGroups={repeatGroups}
-          parentIsReadOnly={itemIsReadOnly}
-          onAddItem={handleAddItem}
-        />
+        <AddItemButton repeatGroups={repeatGroups} readOnly={readOnly} onAddItem={handleAddItem} />
       </Card>
     </QGroupContainerBox>
   );

@@ -75,7 +75,7 @@ function BooleanItem(props: BooleanItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-boolean-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>

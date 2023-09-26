@@ -24,16 +24,17 @@ import ItemLabelText from './ItemLabelText';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
+  readOnly: boolean;
 }
 
 function ItemLabelWrapper(props: LabelWrapperProps) {
-  const { qItem } = props;
+  const { qItem, readOnly } = props;
 
   const contextDisplayItems = getContextDisplays(qItem);
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <ItemLabelText qItem={qItem} />
+      <ItemLabelText qItem={qItem} readOnly={readOnly} />
 
       <Box display="flex" columnGap={0.5}>
         {contextDisplayItems.map((item) => {

@@ -20,17 +20,17 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import type { RepeatGroupSingle } from '../../../interfaces/repeatGroup.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
-interface AddItemButtonProps extends PropsWithParentIsReadOnlyAttribute {
+interface AddItemButtonProps {
   repeatGroups: RepeatGroupSingle[];
+  readOnly: boolean;
   onAddItem: () => void;
 }
 
 function AddItemButton(props: AddItemButtonProps) {
-  const { repeatGroups, parentIsReadOnly, onAddItem } = props;
+  const { repeatGroups, readOnly, onAddItem } = props;
 
-  const isDisabled = repeatGroups[repeatGroups.length - 1].qrItem === null || parentIsReadOnly;
+  const isDisabled = repeatGroups[repeatGroups.length - 1].qrItem === null || readOnly;
 
   return (
     <Box display="flex" flexDirection="row-reverse">

@@ -8,7 +8,6 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledAttribute,
@@ -17,14 +16,13 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
   options: Coding[];
   valueSelect: Coding | null;
   serverError: Error | null;
+  readOnly: boolean;
   onValueChange: (newValue: Coding | string | null) => void;
 }
 
 function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueSetFieldProps) {
-  const { qItem, options, valueSelect, serverError, isTabled, parentIsReadOnly, onValueChange } =
-    props;
+  const { qItem, options, valueSelect, serverError, readOnly, isTabled, onValueChange } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   return (

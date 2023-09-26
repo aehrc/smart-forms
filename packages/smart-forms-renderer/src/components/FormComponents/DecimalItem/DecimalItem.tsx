@@ -19,9 +19,9 @@ import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../Box.styles';
@@ -134,7 +134,7 @@ function DecimalItem(props: DecimalItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-decimal-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <DecimalField
           linkId={qItem.linkId}
           input={input}

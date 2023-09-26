@@ -53,7 +53,7 @@ interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithParentIsRe
 function GroupTable(props: Props) {
   const { qItem, qrItems, groupCardElevation, parentIsReadOnly, onQrRepeatGroupChange } = props;
 
-  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const initialisedGroupTables = useInitialiseGroupTable(qrItems);
 
@@ -122,8 +122,11 @@ function GroupTable(props: Props) {
     <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
       {groupCardElevation !== 1 ? (
         <>
-          <Typography fontSize={13} variant="h6">
-            <LabelWrapper qItem={qItem} />
+          <Typography
+            fontSize={13}
+            variant="h6"
+            color={readOnly ? 'text.secondary' : 'text.primary'}>
+            <LabelWrapper qItem={qItem} readOnly={readOnly} />
           </Typography>
           <Divider sx={{ my: 1 }} light />
         </>
@@ -131,11 +134,7 @@ function GroupTable(props: Props) {
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
           <caption>
-            <AddRowButton
-              repeatGroups={tableRows}
-              parentIsReadOnly={itemIsReadOnly}
-              onAddItem={handleAddRow}
-            />
+            <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={handleAddRow} />
           </caption>
           <TableHead>
             <TableRow>
@@ -158,13 +157,13 @@ function GroupTable(props: Props) {
                     qItem={qItem}
                     qrItem={answeredQrItem}
                     qItemsIndexMap={qItemsIndexMap}
-                    parentIsReadOnly={itemIsReadOnly}
+                    parentIsReadOnly={parentIsReadOnly}
                     onQrItemChange={(newQrGroup) => handleRowChange(newQrGroup, index)}
                   />
                   <DeleteRowButton
                     nullableQrItem={nullableQrItem}
                     numOfRows={tableRows.length}
-                    parentIsReadOnly={itemIsReadOnly}
+                    readOnly={readOnly}
                     onDeleteItem={() => handleDeleteRow(index)}
                   />
                 </TableRow>

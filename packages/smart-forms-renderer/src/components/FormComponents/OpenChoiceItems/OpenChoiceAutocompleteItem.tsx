@@ -35,6 +35,7 @@ import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -48,6 +49,9 @@ interface OpenChoiceAutocompleteItemProps
 function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
 
   // Init input value
@@ -60,9 +64,6 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   if (!valueAutocomplete) {
     valueAutocomplete = '';
   }
-
-  // Get additional rendering extensions
-  const { displayInstructions } = useRenderingExtensions(qItem);
 
   const maxList = 10;
 
@@ -123,8 +124,8 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         input={input}
         loading={loading}
         feedback={feedback ?? null}
+        readOnly={readOnly}
         isTabled={isTabled}
-        parentIsReadOnly={parentIsReadOnly}
         onInputChange={(newValue) => setInput(newValue)}
         onValueChange={handleValueChange}
         onUnfocus={handleUnfocus}
@@ -136,7 +137,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <OpenChoiceAutocompleteField
@@ -146,13 +147,13 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
             input={input}
             loading={loading}
             feedback={feedback ?? null}
+            readOnly={readOnly}
             isTabled={isTabled}
-            parentIsReadOnly={parentIsReadOnly}
             onInputChange={(newValue) => setInput(newValue)}
             onValueChange={handleValueChange}
             onUnfocus={handleUnfocus}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

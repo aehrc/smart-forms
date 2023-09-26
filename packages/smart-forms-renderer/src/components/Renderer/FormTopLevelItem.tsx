@@ -29,6 +29,7 @@ import FormBodyCollapsible from './FormBodyCollapsible';
 import useResponsive from '../../hooks/useResponsive';
 import useHidden from '../../hooks/useHidden';
 import GroupItemSwitcher from '../FormComponents/GroupItem/GroupItemSwitcher';
+import useReadOnly from '../../hooks/useReadOnly';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -47,6 +48,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   const itemIsGroup = topLevelQItem.type === 'group';
 
+  const readOnly = useReadOnly(topLevelQItem, false);
   const itemIsHidden = useHidden(topLevelQItem);
   if (itemIsHidden) {
     return null;
@@ -60,6 +62,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         qItem={topLevelQItem}
         qrItemOrItems={topLevelQRItemOrItems}
         groupCardElevation={1}
+        parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
       />
@@ -100,8 +103,9 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         qItem={topLevelQItem}
         qrItem={topLevelQRItem}
         groupCardElevation={1}
-        onQrItemChange={onQrItemChange}
         isRepeated={false}
+        parentIsReadOnly={readOnly}
+        onQrItemChange={onQrItemChange}
       />
     );
   }
@@ -112,9 +116,10 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
       key={topLevelQItem.linkId}
       qItem={topLevelQItem}
       qrItem={topLevelQRItem}
-      isTabled={false}
-      onQrItemChange={onQrItemChange}
       isRepeated={false}
+      isTabled={false}
+      parentIsReadOnly={readOnly}
+      onQrItemChange={onQrItemChange}
     />
   );
 }

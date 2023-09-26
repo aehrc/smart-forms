@@ -31,6 +31,7 @@ import RepeatField from './RepeatField';
 import Collapse from '@mui/material/Collapse';
 import useInitialiseRepeatAnswers from '../../../hooks/useInitialiseRepeatAnswers';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -42,6 +43,7 @@ interface RepeatItemProps
 function RepeatItem(props: RepeatItemProps) {
   const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   const initialRepeatAnswers = useInitialiseRepeatAnswers(qItem, qrItem);
@@ -88,7 +90,7 @@ function RepeatItem(props: RepeatItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-repeat-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <TransitionGroup>
           {repeatAnswers.map(({ nanoId, answer }, index) => {
             const repeatAnswerQrItem = createEmptyQrItem(qItem);
@@ -113,7 +115,7 @@ function RepeatItem(props: RepeatItemProps) {
         </TransitionGroup>
       </ItemFieldGrid>
 
-      <AddItemButton repeatAnswers={repeatAnswers} onAddItem={handleAddItem} />
+      <AddItemButton repeatAnswers={repeatAnswers} readOnly={readOnly} onAddItem={handleAddItem} />
     </FullWidthFormComponentBox>
   );
 }

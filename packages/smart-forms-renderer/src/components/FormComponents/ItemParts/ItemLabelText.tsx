@@ -18,17 +18,18 @@
 import React, { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getMarkdownString, getXHtmlString } from '../../../utils/itemControl';
-import { QItemTypography } from '../Item.styles';
 import parse from 'html-react-parser';
 import Box from '@mui/material/Box';
 import ReactMarkdown from 'react-markdown';
+import Typography from '@mui/material/Typography';
 
 interface ItemLabelTextProps {
   qItem: QuestionnaireItem;
+  readOnly?: boolean;
 }
 
 const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
-  const { qItem } = props;
+  const { qItem, readOnly } = props;
 
   // parse xHTML if found
   const xHtmlString = getXHtmlString(qItem);
@@ -47,12 +48,16 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
     );
   }
 
-  // parse regular text
   if (qItem.type === 'group') {
     return <>{qItem.text}</>;
-  } else {
-    return <QItemTypography>{qItem.text}</QItemTypography>;
   }
+
+  // parse regular text
+  return (
+    <Typography color={readOnly ? 'text.secondary' : 'text.primary'} sx={{ mt: 0.5 }}>
+      {qItem.text}
+    </Typography>
+  );
 });
 
 export default ItemLabelText;

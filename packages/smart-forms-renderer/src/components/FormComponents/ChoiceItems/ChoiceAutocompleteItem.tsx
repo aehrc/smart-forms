@@ -38,9 +38,9 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
@@ -169,11 +169,11 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

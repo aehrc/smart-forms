@@ -25,9 +25,9 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
@@ -78,7 +78,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <ChoiceRadioAnswerOptionFields
@@ -88,7 +88,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
             readOnly={readOnly}
             onCheckedChange={handleChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

@@ -19,9 +19,9 @@ import React from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -83,7 +83,7 @@ function DateTimeItem(props: DateTimeItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-date-time-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <DateTimeField
           value={dateTimeDayJs}
           displayPrompt={displayPrompt}

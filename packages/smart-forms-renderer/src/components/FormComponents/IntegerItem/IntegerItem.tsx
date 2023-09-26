@@ -19,9 +19,9 @@ import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationError from '../../../hooks/useValidationError';
@@ -122,7 +122,7 @@ function IntegerItem(props: IntegerItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-integer-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}
           value={value}

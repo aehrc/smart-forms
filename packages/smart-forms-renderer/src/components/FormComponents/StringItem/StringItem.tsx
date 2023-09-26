@@ -113,7 +113,7 @@ function StringItem(props: StringItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <StringField
           linkId={qItem.linkId}
           input={input}

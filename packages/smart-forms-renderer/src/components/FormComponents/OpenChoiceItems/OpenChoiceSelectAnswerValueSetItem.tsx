@@ -31,6 +31,7 @@ import type {
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSetField';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -44,6 +45,9 @@ interface OpenChoiceSelectAnswerValueSetItemProps
 function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSetItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
   // Init input value
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
   let valueSelect: Coding | null = null;
@@ -53,9 +57,6 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
 
   // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
-
-  // Get additional rendering extensions
-  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleValueChange(newValue: Coding | string | null) {
@@ -84,7 +85,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
         valueSelect={valueSelect}
         serverError={serverError}
         isTabled={isTabled}
-        parentIsReadOnly={parentIsReadOnly}
+        readOnly={readOnly}
         onValueChange={handleValueChange}
       />
     );
@@ -94,7 +95,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <OpenChoiceSelectAnswerValueSetField
@@ -103,10 +104,10 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
             valueSelect={valueSelect}
             serverError={serverError}
             isTabled={isTabled}
-            parentIsReadOnly={parentIsReadOnly}
+            readOnly={readOnly}
             onValueChange={handleValueChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

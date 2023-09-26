@@ -21,14 +21,18 @@ import { DisplayInstructionsWrapper } from './DisplayInstructions.styles';
 
 interface DisplayInstructionsProps {
   displayInstructions: string;
+  readOnly: boolean;
 }
 
 const DisplayInstructions = memo(function DisplayInstructions(props: DisplayInstructionsProps) {
-  const { displayInstructions } = props;
+  const { displayInstructions, readOnly } = props;
 
   return displayInstructions ? (
     <DisplayInstructionsWrapper>
-      <Typography variant="caption" fontSize={10.5}>
+      <Typography
+        variant="caption"
+        fontSize={10.5}
+        color={readOnly ? 'text.secondary' : 'text.primary'}>
         {displayInstructions}
       </Typography>
     </DisplayInstructionsWrapper>

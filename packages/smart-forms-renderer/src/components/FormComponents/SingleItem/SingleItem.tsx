@@ -55,7 +55,7 @@ function SingleItem(props: SingleItemProps) {
     [updateEnableWhenItem, onQrItemChange, qItem.linkId]
   );
 
-  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
@@ -68,7 +68,7 @@ function SingleItem(props: SingleItemProps) {
       isRepeated={isRepeated}
       isTabled={isTabled}
       textShown={textShown}
-      parentIsReadOnly={itemIsReadOnly}
+      parentIsReadOnly={readOnly}
       onQrItemChange={handleQrItemChange}
     />
   );

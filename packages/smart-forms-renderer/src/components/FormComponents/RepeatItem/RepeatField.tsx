@@ -29,6 +29,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import DeleteItemButton from './DeleteItemButton';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatFieldProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -51,6 +52,8 @@ function RepeatField(props: RepeatFieldProps) {
     onQrItemChange
   } = props;
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
   return (
     <RepeatItemContainerStack direction="row">
       <Box sx={{ flexGrow: 1 }}>
@@ -66,7 +69,7 @@ function RepeatField(props: RepeatFieldProps) {
       <DeleteItemButton
         answer={answer}
         numOfRepeatAnswers={numOfRepeatAnswers}
-        parentIsReadOnly={parentIsReadOnly}
+        readOnly={readOnly}
         onDeleteAnswer={onDeleteAnswer}
       />
     </RepeatItemContainerStack>

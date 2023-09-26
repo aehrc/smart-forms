@@ -31,10 +31,10 @@ import debounce from 'lodash.debounce';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
@@ -142,7 +142,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
       <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
         <Grid container columnSpacing={6}>
           <Grid item xs={5}>
-            <LabelWrapper qItem={qItem} />
+            <LabelWrapper qItem={qItem} readOnly={readOnly} />
           </Grid>
           <Grid item xs={7}>
             <OpenChoiceCheckboxAnswerOptionFields
@@ -157,7 +157,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
               onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
               onOpenLabelInputChange={handleOpenLabelInputChange}
             />
-            <DisplayInstructions displayInstructions={displayInstructions} />
+            <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
           </Grid>
         </Grid>
       </FullWidthFormComponentBox>
@@ -178,7 +178,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
         onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
         onOpenLabelInputChange={handleOpenLabelInputChange}
       />
-      <DisplayInstructions displayInstructions={displayInstructions} />
+      <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
     </>
   );
 }

@@ -18,7 +18,7 @@
 import React, { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import { isSpecificItemControl } from '../../../utils/itemControl';
+import { isSpecificItemControl } from '../../../utils';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 
 interface DisplayItemProps {
@@ -35,7 +35,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <LabelWrapper qItem={qItem} />
+      <LabelWrapper qItem={qItem} readOnly={false} />
     </FullWidthFormComponentBox>
   );
 });

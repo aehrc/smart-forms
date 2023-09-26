@@ -23,13 +23,14 @@ import type { RepeatAnswer } from '../../../interfaces/repeatItem.interface';
 
 interface AddItemButtonProps {
   repeatAnswers: RepeatAnswer[];
+  readOnly: boolean;
   onAddItem: () => void;
 }
 
 function AddItemButton(props: AddItemButtonProps) {
-  const { repeatAnswers, onAddItem } = props;
+  const { repeatAnswers, readOnly, onAddItem } = props;
 
-  const isDisabled = repeatAnswers[repeatAnswers.length - 1].answer === null;
+  const isDisabled = repeatAnswers[repeatAnswers.length - 1].answer === null || readOnly;
 
   return (
     <Box display="flex" flexDirection="row-reverse">

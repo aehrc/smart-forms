@@ -28,10 +28,10 @@ import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
 interface OpenChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

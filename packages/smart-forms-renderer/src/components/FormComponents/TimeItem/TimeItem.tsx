@@ -79,7 +79,7 @@ function TimeItem(props: TimeItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <TimeField
           value={timeDayJs}
           displayPrompt={displayPrompt}

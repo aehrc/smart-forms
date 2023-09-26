@@ -28,11 +28,12 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute
+} from '../../../interfaces/renderProps.interface';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { AlertColor } from '@mui/material/Alert';
-import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceAutocompleteFieldProps
   extends PropsWithIsTabledAttribute,
@@ -43,6 +44,7 @@ interface OpenChoiceAutocompleteFieldProps
   input: string;
   loading: boolean;
   feedback: { message: string; color: AlertColor } | null;
+  readOnly: boolean;
   onInputChange: (newInput: string) => void;
   onValueChange: (newValue: Coding | string | null) => void;
   onUnfocus: () => void;
@@ -56,14 +58,13 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     input,
     loading,
     feedback,
+    readOnly,
     isTabled,
-    parentIsReadOnly,
     onInputChange,
     onValueChange,
     onUnfocus
   } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   return (

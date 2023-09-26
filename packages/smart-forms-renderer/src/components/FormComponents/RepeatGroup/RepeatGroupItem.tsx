@@ -25,6 +25,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import DeleteItemButton from './DeleteItemButton';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatGroupItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,6 +50,8 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     onQrItemChange
   } = props;
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
   return (
     <RepeatGroupContainerStack direction="row" justifyContent="end">
       <Box sx={{ flexGrow: 1 }}>
@@ -64,7 +67,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
       <DeleteItemButton
         nullableQrItem={nullableQrItem}
         numOfRepeatGroups={numOfRepeatGroups}
-        parentIsReadOnly={parentIsReadOnly}
+        readOnly={readOnly}
         onDeleteItem={onDeleteItem}
       />
     </RepeatGroupContainerStack>

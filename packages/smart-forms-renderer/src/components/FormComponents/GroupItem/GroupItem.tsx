@@ -22,9 +22,9 @@ import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';
@@ -61,7 +61,7 @@ function GroupItem(props: GroupItemProps) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
@@ -100,6 +100,7 @@ function GroupItem(props: GroupItemProps) {
       <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
         <GroupHeading
           qItem={qItem}
+          readOnly={readOnly}
           tabIsMarkedAsComplete={tabIsMarkedAsComplete}
           isRepeated={isRepeated}
         />
@@ -112,7 +113,7 @@ function GroupItem(props: GroupItemProps) {
               qItem={qItem}
               qrItemOrItems={qrItemOrItems}
               groupCardElevation={groupCardElevation}
-              parentIsReadOnly={itemIsReadOnly}
+              parentIsReadOnly={readOnly}
               onQrItemChange={handleQrItemChange}
               onQrRepeatGroupChange={handleQrRepeatGroupChange}
             />

@@ -100,7 +100,7 @@ function UrlItem(props: UrlItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <UrlField
           linkId={qItem.linkId}
           input={input}

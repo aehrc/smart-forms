@@ -26,12 +26,13 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -45,15 +46,15 @@ interface ChoiceSelectAnswerValueSetItemProps
 function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
   let valueCoding: Coding | null = null;
   if (qrChoiceSelect.answer) {
     valueCoding = qrChoiceSelect.answer[0].valueCoding ?? null;
   }
-
-  // Get additional rendering extensions
-  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
@@ -98,8 +99,8 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         codings={codings}
         valueCoding={valueCoding}
         serverError={serverError}
+        readOnly={readOnly}
         isTabled={isTabled}
-        parentIsReadOnly={parentIsReadOnly}
         onSelectChange={handleChange}
       />
     );
@@ -109,7 +110,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     <FullWidthFormComponentBox data-test="q-item-choice-dropdown-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <ChoiceSelectAnswerValueSetFields
@@ -117,11 +118,11 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
             codings={codings}
             valueCoding={valueCoding}
             serverError={serverError}
+            readOnly={readOnly}
             isTabled={isTabled}
-            parentIsReadOnly={parentIsReadOnly}
             onSelectChange={handleChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

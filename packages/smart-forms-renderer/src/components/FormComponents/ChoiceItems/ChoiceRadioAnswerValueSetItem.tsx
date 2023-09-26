@@ -26,9 +26,9 @@ import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceRadioAnswerValueSetFields from './ChoiceRadioAnswerValueSetFields';
@@ -46,6 +46,9 @@ interface ChoiceRadioAnswerValueSetItemProps
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
   const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
   // Init input value
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
 
@@ -53,9 +56,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   if (qrChoiceRadio.answer) {
     valueRadio = qrChoiceRadio.answer[0].valueCoding?.code ?? null;
   }
-
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
@@ -90,7 +90,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <ChoiceRadioAnswerValueSetFields
@@ -102,7 +102,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             serverError={serverError}
             onCheckedChange={handleChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
