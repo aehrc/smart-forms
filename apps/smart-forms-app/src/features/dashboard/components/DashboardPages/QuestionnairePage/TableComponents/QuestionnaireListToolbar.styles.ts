@@ -16,6 +16,7 @@
  */
 
 import { alpha, styled } from '@mui/material/styles';
+import type { Theme } from '@mui/material';
 import { OutlinedInput, Toolbar } from '@mui/material';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
@@ -42,6 +43,22 @@ export const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
     borderColor: `${alpha(theme.palette.grey[500], 0.32)} !important`
   }
 }));
+
+export function getResponseSearchStyles(theme: Theme) {
+  return {
+    transition: theme.transitions.create(['box-shadow', 'width'], {
+      easing: theme.transitions.easing.easeInOut,
+      duration: theme.transitions.duration.shorter
+    }),
+    '&.Mui-focused': {
+      boxShadow: theme.customShadows.z4
+    },
+    '& fieldset': {
+      borderWidth: `1px !important`,
+      borderColor: `${alpha(theme.palette.grey[500], 0.32)} !important`
+    }
+  };
+}
 
 export function getResponseToolBarColors(
   selected: QuestionnaireResponse | null,

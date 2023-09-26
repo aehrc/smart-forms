@@ -16,18 +16,19 @@
  */
 
 import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
-import DashboardFeedbackMessage from '../../DashboardFeedbackMessage.tsx';
+import ResponseFeedbackMessage from './ResponseFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
+import type { Questionnaire } from 'fhir/r4';
 
 interface Props {
   isEmpty: boolean;
   status: 'loading' | 'error' | 'success';
-  searchInput: string;
+  searchedQuestionnaire: Questionnaire | null;
   error?: unknown;
 }
 
 function ResponseListFeedback(props: Props) {
-  const { isEmpty, status, searchInput, error } = props;
+  const { isEmpty, status, searchedQuestionnaire, error } = props;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -53,10 +54,9 @@ function ResponseListFeedback(props: Props) {
       <TableRow>
         <TableCell align="center" colSpan={6}>
           <Stack rowGap={3} my={5}>
-            <DashboardFeedbackMessage
-              itemType={'responses'}
+            <ResponseFeedbackMessage
               feedbackType={feedbackType}
-              searchInput={searchInput}
+              searchedQuestionnaire={searchedQuestionnaire}
             />
           </Stack>
         </TableCell>

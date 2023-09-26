@@ -15,27 +15,15 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent, SyntheticEvent } from 'react';
 import React, { useState } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import Fade from '@mui/material/Fade';
 import Grid from '@mui/material/Grid';
-import Tooltip from '@mui/material/Tooltip';
 
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { StandardTextField } from '../Textfield.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import SearchIcon from '@mui/icons-material/Search';
 import useDebounce from '../../../hooks/useDebounce';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import InfoIcon from '@mui/icons-material/Info';
-import DoneIcon from '@mui/icons-material/Done';
-import ErrorIcon from '@mui/icons-material/Error';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -45,6 +33,7 @@ import type {
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -70,10 +59,8 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   }
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
-  // Query ontoserver for options
   const maxList = 10;
 
   const [input, setInput] = useState('');
@@ -91,7 +78,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   }
 
   // Event handlers
-  function handleValueChange(_: SyntheticEvent<Element, Event>, newValue: Coding | string | null) {
+  function handleValueChange(newValue: Coding | string | null) {
     if (newValue === null) {
       setInput('');
       newValue = '';
@@ -114,84 +101,31 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     }
   }
 
-  const openChoiceAutocomplete = (
-    <>
-      <Box display="flex">
-        <Autocomplete
-          id={qItem.id}
-          value={valueAutocomplete}
-          options={options}
-          getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
-          disabled={readOnly}
-          loading={loading}
-          loadingText={'Fetching results...'}
-          clearOnEscape
-          freeSolo
-          autoHighlight
-          sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 220, flexGrow: 1 }}
-          placeholder={entryFormat}
-          onChange={handleValueChange}
-          filterOptions={(x) => x}
-          renderInput={(params) => (
-            <StandardTextField
-              {...params}
-              value={input}
-              onBlur={() => {
-                // set answer to current input when text field is unfocused
-                if (!valueAutocomplete && input !== '') {
-                  onQrItemChange({
-                    ...createEmptyQrItem(qItem),
-                    answer: [{ valueString: input }]
-                  });
-                }
-              }}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-              isTabled={isTabled}
-              label={displayPrompt}
-              size="small"
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <>
-                    {!valueAutocomplete || valueAutocomplete === '' ? (
-                      <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    ) : null}
-                    {params.InputProps.startAdornment}
-                  </>
-                ),
-                endAdornment: (
-                  <>
-                    {loading ? (
-                      <CircularProgress color="inherit" size={16} />
-                    ) : feedback ? (
-                      <Fade in={!!feedback} timeout={300}>
-                        <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
-                          {
-                            {
-                              info: <InfoIcon fontSize="small" color="info" />,
-                              warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                              success: <DoneIcon fontSize="small" color="success" />,
-                              error: <ErrorIcon fontSize="small" color="error" />
-                            }[feedback.color]
-                          }
-                        </Tooltip>
-                      </Fade>
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                    {displayUnit}
-                  </>
-                )
-              }}
-              data-test="q-item-open-choice-autocomplete-field"
-            />
-          )}
-        />
-      </Box>
-    </>
-  );
+  function handleUnfocus() {
+    // set answer to current input when text field is unfocused
+    if (!valueAutocomplete && input !== '') {
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueString: input }]
+      });
+    }
+  }
 
   if (isRepeated) {
-    return <>{openChoiceAutocomplete}</>;
+    return (
+      <OpenChoiceAutocompleteField
+        qItem={qItem}
+        options={options}
+        valueAutocomplete={valueAutocomplete}
+        input={input}
+        loading={loading}
+        feedback={feedback ?? null}
+        isTabled={isTabled}
+        onInputChange={(newValue) => setInput(newValue)}
+        onValueChange={handleValueChange}
+        onUnfocus={handleUnfocus}
+      />
+    );
   }
 
   return (
@@ -201,7 +135,18 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {openChoiceAutocomplete}
+          <OpenChoiceAutocompleteField
+            qItem={qItem}
+            options={options}
+            valueAutocomplete={valueAutocomplete}
+            input={input}
+            loading={loading}
+            feedback={feedback ?? null}
+            isTabled={isTabled}
+            onInputChange={(newValue) => setInput(newValue)}
+            onValueChange={handleValueChange}
+            onUnfocus={handleUnfocus}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>

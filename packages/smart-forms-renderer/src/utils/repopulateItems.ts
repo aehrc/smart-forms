@@ -114,7 +114,6 @@ function getCorrespondingQuestionnaireItemsRecursive(
     }
 
     // TODO it seems like there can only be one answer per linkId, we might need to do repeat groups differently
-    // so we need to fix this one first it seems like
 
     /* Repeat group implementation */
     if (qItem.type === 'group' && qItem.repeats) {

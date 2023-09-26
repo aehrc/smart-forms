@@ -15,19 +15,15 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { getOpenLabelText } from '../../../utils/itemControl';
-import { QRadioGroup } from '../Item.styles';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
-import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -35,6 +31,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -119,59 +116,6 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
     }
   }
 
-  const openChoiceRadio = (
-    <QRadioGroup
-      row={orientation === ChoiceItemOrientation.Horizontal}
-      name={qItem.text}
-      id={qItem.id}
-      onChange={(e: ChangeEvent<HTMLInputElement>) => handleValueChange(e.target.value, null)}
-      value={valueRadio}
-      data-test="q-item-radio-group">
-      {qItem.answerOption?.map((option) => {
-        if (option['valueCoding']) {
-          return (
-            <ChoiceRadioSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly}
-            />
-          );
-        } else if (option['valueString']) {
-          return (
-            <ChoiceRadioSingle
-              key={option.valueString}
-              value={option.valueString}
-              label={option.valueString}
-              readOnly={readOnly}
-            />
-          );
-        } else if (option['valueInteger']) {
-          return (
-            <ChoiceRadioSingle
-              key={option.valueInteger}
-              value={option.valueInteger.toString()}
-              label={option.valueInteger.toString()}
-              readOnly={readOnly}
-            />
-          );
-        } else {
-          return null;
-        }
-      })}
-
-      {openLabelText ? (
-        <RadioButtonWithOpenLabel
-          value={openLabelValue}
-          label={openLabelText}
-          readOnly={readOnly}
-          isSelected={openLabelSelected}
-          onInputChange={(input) => handleValueChange(null, input)}
-        />
-      ) : null}
-    </QRadioGroup>
-  );
-
   return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
@@ -179,7 +123,16 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {openChoiceRadio}
+          <OpenChoiceRadioAnswerOptionFields
+            qItem={qItem}
+            valueRadio={valueRadio}
+            openLabelText={openLabelText}
+            openLabelValue={openLabelValue}
+            openLabelSelected={openLabelSelected}
+            orientation={orientation}
+            readOnly={readOnly}
+            onValueChange={handleValueChange}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>

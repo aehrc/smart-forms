@@ -20,7 +20,8 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore';
 import SingleItemSwitcher from './SingleItemSwitcher';
@@ -29,13 +30,14 @@ import useHidden from '../../../hooks/useHidden';
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithTextShownAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function SingleItem(props: SingleItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
 
   const updateEnableWhenItem = useQuestionnaireStore((state) => state.updateEnableWhenItem);
 
@@ -60,6 +62,7 @@ function SingleItem(props: SingleItemProps) {
       qrItem={qrItem}
       isRepeated={isRepeated}
       isTabled={isTabled}
+      textShown={textShown}
       onQrItemChange={handleQrItemChange}
     />
   );

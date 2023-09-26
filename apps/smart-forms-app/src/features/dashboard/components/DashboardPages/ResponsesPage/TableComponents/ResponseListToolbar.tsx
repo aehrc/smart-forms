@@ -22,19 +22,26 @@ import {
 } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
 import ResponseListToolbarButtons from './ResponseListToolbarButtons.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 import ResponseListToolbarLeftSection from './ResponseListToolbarLeftSection.tsx';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 
 interface ResponseListToolbarProps {
   selectedResponse: QuestionnaireResponse | null;
-  searchInput: string;
+  searchedQuestionnaire: Questionnaire | null;
   isFetching: boolean;
   onClearSelection: () => void;
-  onSearch: (searchInput: string) => void;
+  onChangeSearchedQuestionnaire: (searched: Questionnaire | null) => void;
 }
 
 function ResponseListToolbar(props: ResponseListToolbarProps) {
-  const { selectedResponse, searchInput, isFetching, onClearSelection, onSearch } = props;
+  const {
+    selectedResponse,
+    searchedQuestionnaire,
+    isFetching,
+    onClearSelection,
+    onChangeSearchedQuestionnaire
+  } = props;
 
   const { selectedQuestionnaire, existingResponses } = useSelectedQuestionnaire();
 
@@ -51,8 +58,8 @@ function ResponseListToolbar(props: ResponseListToolbarProps) {
           selectedResponse={selectedResponse}
           selectedQuestionnaire={selectedQuestionnaire}
           existingResponses={existingResponses}
-          searchInput={searchInput}
-          onSearch={onSearch}
+          searchedQuestionnaire={searchedQuestionnaire}
+          onChangeSearchedQuestionnaire={onChangeSearchedQuestionnaire}
         />
 
         <ResponseListToolbarButtons

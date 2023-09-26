@@ -16,17 +16,16 @@
  */
 
 import { Typography } from '@mui/material';
-import GenericEmptyFeedback from './GenericEmptyFeedback.tsx';
-import ResponseEmptyFeedback from './ResponseEmptyFeedback.tsx';
+import type { Questionnaire } from 'fhir/r4';
+import ResponseEmptyFeedback from '../../ResponseEmptyFeedback.tsx';
 
-interface DashboardFeedbackMessageProps {
-  itemType: string;
+interface ResponseFeedbackMessageProps {
   feedbackType: 'error' | 'empty' | 'loading';
-  searchInput: string;
+  searchedQuestionnaire: Questionnaire | null;
 }
 
-function DashboardFeedbackMessage(props: DashboardFeedbackMessageProps) {
-  const { itemType, feedbackType, searchInput } = props;
+function ResponseFeedbackMessage(props: ResponseFeedbackMessageProps) {
+  const { feedbackType, searchedQuestionnaire } = props;
 
   if (feedbackType === 'error') {
     return (
@@ -38,15 +37,10 @@ function DashboardFeedbackMessage(props: DashboardFeedbackMessageProps) {
   }
 
   if (feedbackType === 'loading') {
-    return <Typography variant="subtitle1">Loading {itemType}...</Typography>;
+    return <Typography variant="subtitle1">Loading responses...</Typography>;
   }
 
-  // Feedback type = empty
-  if (itemType === 'responses') {
-    return <ResponseEmptyFeedback searchInput={searchInput} />;
-  }
-
-  return <GenericEmptyFeedback searchInput={searchInput} />;
+  return <ResponseEmptyFeedback searchedQuestionnaire={searchedQuestionnaire} />;
 }
 
-export default DashboardFeedbackMessage;
+export default ResponseFeedbackMessage;

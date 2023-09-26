@@ -22,18 +22,17 @@ import ResponseTableRow from './TableComponents/ResponseTableRow.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
 import DashboardTablePagination from '../DashboardTablePagination.tsx';
 import type { Table } from '@tanstack/react-table';
-import type { QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { createResponseListItem } from '../../../utils/dashboard.ts';
 
 interface ResponsesTableViewProps {
   table: Table<QuestionnaireResponse>;
-  searchInput: string;
-  debouncedInput: string;
+  searchedQuestionnaire: Questionnaire | null;
   fetchStatus: 'error' | 'success' | 'loading';
   isFetching: boolean;
   fetchError: unknown;
   selectedResponse: QuestionnaireResponse | null;
-  onSearch: (input: string) => void;
+  onChangeSearchedQuestionnaire: (searched: Questionnaire | null) => void;
   onRowClick: (id: string) => void;
   onSelectResponse: (selected: QuestionnaireResponse | null) => void;
 }
@@ -41,30 +40,28 @@ interface ResponsesTableViewProps {
 function ResponsesTableView(props: ResponsesTableViewProps) {
   const {
     table,
-    searchInput,
-    debouncedInput,
+    searchedQuestionnaire,
     fetchStatus,
     isFetching,
     fetchError,
     selectedResponse,
-    onSearch,
+    onChangeSearchedQuestionnaire,
     onRowClick,
     onSelectResponse
   } = props;
 
   const headers = table.getHeaderGroups()[0].headers;
 
-  const isEmpty =
-    table.getRowModel().rows.length === 0 && !!debouncedInput && fetchStatus !== 'loading';
+  const isEmpty = table.getRowModel().rows.length === 0 && fetchStatus !== 'loading';
 
   return (
     <>
       <ResponseListToolbar
         selectedResponse={selectedResponse}
-        searchInput={searchInput}
+        searchedQuestionnaire={searchedQuestionnaire}
         isFetching={isFetching}
         onClearSelection={() => onSelectResponse(null)}
-        onSearch={onSearch}
+        onChangeSearchedQuestionnaire={onChangeSearchedQuestionnaire}
       />
 
       <TableContainer sx={{ minWidth: 575 }}>
@@ -92,7 +89,7 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
             <ResponseListFeedback
               isEmpty={isEmpty}
               status={fetchStatus}
-              searchInput={searchInput}
+              searchedQuestionnaire={searchedQuestionnaire}
               error={fetchError}
             />
           ) : null}

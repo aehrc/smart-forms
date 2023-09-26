@@ -28,19 +28,21 @@ import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 
 interface OpenChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithTextShownAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
   const orientation = getChoiceOrientation(qItem);
 
   switch (getOpenChoiceControlType(qItem)) {
@@ -49,9 +51,10 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
         <OpenChoiceCheckboxAnswerOptionItem
           qItem={qItem}
           qrItem={qrItem}
-          isRepeated={qItem['repeats'] ?? false}
-          onQrItemChange={onQrItemChange}
           orientation={orientation}
+          isRepeated={qItem['repeats'] ?? false}
+          textShown={textShown}
+          onQrItemChange={onQrItemChange}
         />
       );
     case OpenChoiceItemControl.Radio:
@@ -59,9 +62,9 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
         <OpenChoiceRadioAnswerOptionItem
           qItem={qItem}
           qrItem={qrItem}
+          orientation={orientation}
           isRepeated={qItem['repeats'] ?? false}
           onQrItemChange={onQrItemChange}
-          orientation={orientation}
         />
       );
     case OpenChoiceItemControl.Autocomplete:

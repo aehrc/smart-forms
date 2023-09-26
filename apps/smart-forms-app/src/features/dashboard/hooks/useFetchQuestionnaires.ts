@@ -30,7 +30,8 @@ interface useFetchQuestionnairesReturnParams {
 
 function useFetchQuestionnaires(
   searchInput: string,
-  debouncedInput: string
+  debouncedInput: string,
+  minLengthToQuery?: number
 ): useFetchQuestionnairesReturnParams {
   const numOfSearchEntries = 100;
 
@@ -39,17 +40,22 @@ function useFetchQuestionnaires(
     queryUrl += 'title:contains=' + debouncedInput;
   }
 
+  const queryIsLongEnough = minLengthToQuery ? debouncedInput.length >= minLengthToQuery : true;
+
   const {
     data: bundle,
     status,
     isInitialLoading,
     error,
     isFetching
-  } = useQuery<Bundle>(['questionnaires', queryUrl], () => getFormsServerBundlePromise(queryUrl), {
-    enabled: debouncedInput === searchInput
-  });
+  } = useQuery<Bundle>(
+    ['questionnaires' + numOfSearchEntries.toString(), queryUrl],
+    () => getFormsServerBundlePromise(queryUrl),
+    {
+      enabled: queryIsLongEnough && debouncedInput === searchInput
+    }
+  );
 
-  // construct questionnaire list items for data display
   const questionnaires: Questionnaire[] = useMemo(() => filterQuestionnaires(bundle), [bundle]);
 
   return {

@@ -17,7 +17,7 @@
 
 import { useSnackbar } from 'notistack';
 import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
-import DashboardFeedbackMessage from '../../../dashboard/components/DashboardPages/DashboardFeedbackMessage.tsx';
+import ResponseFeedbackMessage from '../../../dashboard/components/DashboardPages/ResponsesPage/TableComponents/ResponseFeedbackMessage.tsx';
 
 interface ExistingResponsesListFeedbackProps {
   isEmpty: boolean;
@@ -52,11 +52,7 @@ function ExistingResponsesTableFeedback(props: ExistingResponsesListFeedbackProp
       <TableRow>
         <TableCell align="center" colSpan={6}>
           <Stack rowGap={3} my={5}>
-            <DashboardFeedbackMessage
-              itemType={'responses'}
-              feedbackType={feedbackType}
-              searchInput={''}
-            />
+            <ResponseFeedbackMessage feedbackType={feedbackType} searchedQuestionnaire={null} />
           </Stack>
         </TableCell>
       </TableRow>

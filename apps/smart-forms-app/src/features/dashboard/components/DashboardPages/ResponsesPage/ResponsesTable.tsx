@@ -16,7 +16,6 @@
  */
 
 import { useMemo, useState } from 'react';
-import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
 import useFetchResponses from '../../../hooks/useFetchResponses.ts';
 import { createResponseTableColumns } from '../../../utils/tableColumns.ts';
 import type { SortingState } from '@tanstack/react-table';
@@ -26,19 +25,15 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import type { QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import ResponsesTableView from './ResponsesTableView.tsx';
 
 function ResponsesTable() {
   const [selectedResponse, setSelectedResponse] = useState<QuestionnaireResponse | null>(null);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchedQuestionnaire, setSearchedQuestionnaire] = useState<Questionnaire | null>(null);
 
-  const debouncedInput = useDebounce(searchInput, 300);
-
-  const { responses, fetchStatus, fetchError, isFetching } = useFetchResponses(
-    searchInput,
-    debouncedInput
-  );
+  const { responses, fetchStatus, fetchError, isFetching } =
+    useFetchResponses(searchedQuestionnaire);
 
   const columns = useMemo(() => createResponseTableColumns(), []);
 
@@ -76,15 +71,13 @@ function ResponsesTable() {
   return (
     <ResponsesTableView
       table={table}
-      searchInput={searchInput}
-      debouncedInput={debouncedInput}
+      searchedQuestionnaire={searchedQuestionnaire}
       fetchStatus={fetchStatus}
       isFetching={isFetching}
       fetchError={fetchError}
       selectedResponse={selectedResponse}
-      onSearch={(input) => {
-        table.setPageIndex(0);
-        setSearchInput(input);
+      onChangeSearchedQuestionnaire={(searched) => {
+        setSearchedQuestionnaire(searched);
       }}
       onRowClick={handleRowClick}
       onSelectResponse={setSelectedResponse}

@@ -15,18 +15,14 @@
  * limitations under the License.
  */
 
-import type { SyntheticEvent } from 'react';
 import React from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
 import Grid from '@mui/material/Grid';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { StandardTextField } from '../Textfield.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
@@ -36,6 +32,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
 
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -49,88 +46,61 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
   const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
 
   // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init input value
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
-  let valueSelect: QuestionnaireItemAnswerOption | undefined = undefined;
+  let valueSelect: QuestionnaireItemAnswerOption | null = null;
   if (qrOpenChoice.answer) {
-    valueSelect = qrOpenChoice.answer[0];
+    valueSelect = qrOpenChoice.answer[0] ?? null;
   }
 
   // Event handlers
-  function handleChange(
-    _: SyntheticEvent<Element, Event>,
-    newValue: QuestionnaireItemAnswerOption | string | null
-  ) {
+  function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
     if (newValue) {
       if (typeof newValue === 'string') {
         onQrItemChange({
           ...qrOpenChoice,
           answer: [{ valueString: newValue }]
         });
-      } else {
-        const option = newValue;
-        if (option['valueCoding']) {
-          onQrItemChange({
-            ...qrOpenChoice,
-            answer: [{ valueCoding: option.valueCoding }]
-          });
-        } else if (option['valueString']) {
-          onQrItemChange({
-            ...qrOpenChoice,
-            answer: [{ valueString: option.valueString }]
-          });
-        } else if (option['valueInteger']) {
-          onQrItemChange({
-            ...qrOpenChoice,
-            answer: [{ valueInteger: option.valueInteger }]
-          });
-        }
+        return;
+      }
+
+      const option = newValue;
+      if (option['valueCoding']) {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ valueCoding: option.valueCoding }]
+        });
+      } else if (option['valueString']) {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ valueString: option.valueString }]
+        });
+      } else if (option['valueInteger']) {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ valueInteger: option.valueInteger }]
+        });
       }
       return;
     }
     onQrItemChange(createEmptyQrItem(qItem));
   }
 
-  const openOpenChoiceSelectAnswerOption = (
-    <Autocomplete
-      id={qItem.id}
-      value={valueSelect ?? null}
-      options={answerOptions}
-      getOptionLabel={(option) => getAnswerOptionLabel(option)}
-      onChange={handleChange}
-      freeSolo
-      autoHighlight
-      sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
-      disabled={readOnly}
-      size="small"
-      placeholder={entryFormat}
-      renderInput={(params) => (
-        <StandardTextField
-          isTabled={isTabled}
-          label={displayPrompt}
-          {...params}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {params.InputProps.endAdornment}
-                {displayUnit}
-              </>
-            )
-          }}
-        />
-      )}
-    />
-  );
-
   if (isRepeated) {
-    return <>{openOpenChoiceSelectAnswerOption}</>;
+    return (
+      <OpenChoiceSelectAnswerOptionField
+        qItem={qItem}
+        options={answerOptions}
+        valueSelect={valueSelect}
+        isTabled={isTabled}
+        onChange={handleChange}
+      />
+    );
   }
 
   return (
@@ -140,7 +110,13 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {openOpenChoiceSelectAnswerOption}
+          <OpenChoiceSelectAnswerOptionField
+            qItem={qItem}
+            options={answerOptions}
+            valueSelect={valueSelect}
+            isTabled={isTabled}
+            onChange={handleChange}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>

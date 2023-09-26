@@ -34,7 +34,6 @@ function useTerminologyServerQuery(
 
   let fullUrl = '';
   let options: Coding[] = [];
-  let loading = false;
   let feedback: { message: string; color: AlertColor } | undefined;
 
   if (input.length === 0) {
@@ -64,7 +63,7 @@ function useTerminologyServerQuery(
 
   // Perform query
   const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
-  const { isInitialLoading, error, data } = useQuery<ValueSet>(
+  const { isFetching, error, data } = useQuery<ValueSet>(
     ['expandValueSet', fullUrl],
     () => getValueSetPromise(fullUrl, terminologyServerUrl),
     {
@@ -72,9 +71,7 @@ function useTerminologyServerQuery(
     }
   );
 
-  if (isInitialLoading) {
-    loading = true;
-  }
+  console.log(isFetching);
 
   if (error) {
     console.warn('Ontoserver query failed. Details below: \n' + error);
@@ -95,6 +92,6 @@ function useTerminologyServerQuery(
     }
   }
 
-  return { options, loading, feedback };
+  return { options, loading: isFetching, feedback };
 }
 export default useTerminologyServerQuery;

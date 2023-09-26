@@ -32,3 +32,7 @@ export interface PropsWithIsRepeatedAttribute {
 export interface PropsWithIsTabledAttribute {
   isTabled: boolean;
 }
+
+export interface PropsWithTextShownAttribute {
+  textShown?: boolean;
+}

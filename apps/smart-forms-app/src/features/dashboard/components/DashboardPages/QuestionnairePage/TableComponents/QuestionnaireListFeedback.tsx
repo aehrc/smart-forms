@@ -16,7 +16,7 @@
  */
 
 import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
-import DashboardFeedbackMessage from '../../DashboardFeedbackMessage.tsx';
+import QuestionnaireFeedbackMessage from './QuestionnaireFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 
 interface Props {
@@ -53,11 +53,7 @@ function QuestionnaireListFeedback(props: Props) {
       <TableRow>
         <TableCell align="center" colSpan={6}>
           <Stack rowGap={3} my={5}>
-            <DashboardFeedbackMessage
-              itemType={'questionnaires'}
-              feedbackType={feedbackType}
-              searchInput={searchInput}
-            />
+            <QuestionnaireFeedbackMessage feedbackType={feedbackType} searchInput={searchInput} />
           </Stack>
         </TableCell>
       </TableRow>

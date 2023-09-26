@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
-import ChoiceRadioSingle from './ChoiceRadioSingle';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { QRadioGroup } from '../Item.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
@@ -32,6 +29,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -52,74 +50,48 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
 
   // Event handlers
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+  function handleChange(newValue: string) {
     if (qItem.answerOption) {
-      const qrAnswer = findInAnswerOptions(qItem.answerOption, e.target.value);
+      const qrAnswer = findInAnswerOptions(qItem.answerOption, newValue);
       if (qrAnswer) {
         onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
       }
     }
   }
 
-  const choiceRadio = (
-    <QRadioGroup
-      row={orientation === ChoiceItemOrientation.Horizontal}
-      name={qItem.text}
-      id={qItem.id}
-      onChange={handleChange}
-      value={valueRadio}
-      data-test="q-item-radio-group">
-      {qItem.answerOption?.map((option) => {
-        if (option['valueCoding']) {
-          return (
-            <ChoiceRadioSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly}
-            />
-          );
-        } else if (option['valueString']) {
-          return (
-            <ChoiceRadioSingle
-              key={option.valueString}
-              value={option.valueString}
-              label={option.valueString}
-              readOnly={readOnly}
-            />
-          );
-        } else if (option['valueInteger']) {
-          return (
-            <ChoiceRadioSingle
-              key={option.valueInteger}
-              value={option.valueInteger.toString()}
-              label={option.valueInteger.toString()}
-              readOnly={readOnly}
-            />
-          );
-        } else {
-          return null;
-        }
-      })}
-    </QRadioGroup>
-  );
+  // TODO need to put in showText? in repopulate
 
-  const renderQItemChoiceRadio = isRepeated ? (
-    <>{choiceRadio}</>
-  ) : (
+  if (isRepeated) {
+    return (
+      <ChoiceRadioAnswerOptionFields
+        qItem={qItem}
+        valueRadio={valueRadio}
+        orientation={orientation}
+        readOnly={readOnly}
+        onCheckedChange={handleChange}
+      />
+    );
+  }
+
+  return (
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {choiceRadio}
+          <ChoiceRadioAnswerOptionFields
+            qItem={qItem}
+            valueRadio={valueRadio}
+            orientation={orientation}
+            readOnly={readOnly}
+            onCheckedChange={handleChange}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>
   );
-  return <>{renderQItemChoiceRadio}</>;
 }
 
 export default ChoiceRadioAnswerOptionItem;

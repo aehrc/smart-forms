@@ -23,7 +23,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import useDebounce from '../../../../renderer/hooks/useDebounce.ts';
+import { useDebounce } from 'usehooks-ts';
 import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
 import { createQuestionnaireTableColumns } from '../../../utils/tableColumns.ts';
 import QuestionnaireTableView from './QuestionnaireTableView.tsx';

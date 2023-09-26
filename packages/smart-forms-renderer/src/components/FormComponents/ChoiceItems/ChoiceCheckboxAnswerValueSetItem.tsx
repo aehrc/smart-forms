@@ -17,36 +17,34 @@
 
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../utils/choice';
-import CheckboxSingle from '../ItemParts/CheckboxSingle';
-import { QFormGroup } from '../Item.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
-import { StyledAlert } from '../../Alert.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFields';
 
 interface ChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithTextShownAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
+  showText?: boolean;
 }
 
 function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, orientation, isRepeated, textShown = true, onQrItemChange } = props;
 
   // Init input value
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
@@ -75,52 +73,41 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
     }
   }
 
-  const choiceCheckbox =
-    codings.length > 0 ? (
-      <QFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        {codings.map((coding) => {
-          return (
-            <CheckboxSingle
-              key={coding.code ?? ''}
-              value={coding.code ?? ''}
-              label={coding.display ?? `${coding.code}`}
+  if (textShown) {
+    return (
+      <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
+        <Grid container columnSpacing={6}>
+          <Grid item xs={5}>
+            <LabelWrapper qItem={qItem} />
+          </Grid>
+          <Grid item xs={7}>
+            <ChoiceCheckboxAnswerValueSetFields
+              codings={codings}
+              answers={answers}
+              orientation={orientation}
               readOnly={readOnly}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer.valueCoding) === JSON.stringify(coding)
-              )}
+              serverError={serverError}
               onCheckedChange={handleCheckedChange}
             />
-          );
-        })}
-      </QFormGroup>
-    ) : serverError ? (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server
-        </Typography>
-      </StyledAlert>
-    ) : (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
-          Unable to fetch options from the questionnaire or launch context
-        </Typography>
-      </StyledAlert>
+            <DisplayInstructions displayInstructions={displayInstructions} />
+          </Grid>
+        </Grid>
+      </FullWidthFormComponentBox>
     );
+  }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
-        </Grid>
-        <Grid item xs={7}>
-          {choiceCheckbox}
-          <DisplayInstructions displayInstructions={displayInstructions} />
-        </Grid>
-      </Grid>
-    </FullWidthFormComponentBox>
+    <>
+      <ChoiceCheckboxAnswerValueSetFields
+        codings={codings}
+        answers={answers}
+        orientation={orientation}
+        readOnly={readOnly}
+        serverError={serverError}
+        onCheckedChange={handleCheckedChange}
+      />
+      <DisplayInstructions displayInstructions={displayInstructions} />
+    </>
   );
 }
 
