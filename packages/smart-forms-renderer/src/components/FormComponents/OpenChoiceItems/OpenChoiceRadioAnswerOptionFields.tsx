@@ -15,34 +15,58 @@
  * limitations under the License.
  */
 
+import type { ChangeEvent } from 'react';
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem } from 'fhir/r4';
-import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
 import { StyledRadioGroup } from '../Item.styles';
+import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
+import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
 
-interface ChoiceRadioAnswerOptionFieldsProps {
+interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   valueRadio: string | null;
+  openLabelText: string | null;
+  openLabelValue: string | null;
+  openLabelSelected: boolean;
   orientation: ChoiceItemOrientation;
   readOnly: boolean;
-  onCheckedChange: (newValue: string) => void;
+  onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
 }
 
-function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps) {
-  const { qItem, valueRadio, orientation, readOnly, onCheckedChange } = props;
+function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFieldsProps) {
+  const {
+    qItem,
+    valueRadio,
+    openLabelText,
+    openLabelValue,
+    openLabelSelected,
+    orientation,
+    readOnly,
+    onValueChange
+  } = props;
 
   return (
     <StyledRadioGroup
       row={orientation === ChoiceItemOrientation.Horizontal}
       name={qItem.text}
       id={qItem.id}
-      onChange={(e) => onCheckedChange(e.target.value)}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
       value={valueRadio}
       data-test="q-item-radio-group">
       <RadioAnswerOptionButtons qItem={qItem} readOnly={readOnly} />
+
+      {openLabelText ? (
+        <RadioButtonWithOpenLabel
+          value={openLabelValue}
+          label={openLabelText}
+          readOnly={readOnly}
+          isSelected={openLabelSelected}
+          onInputChange={(input) => onValueChange(null, input)}
+        />
+      ) : null}
     </StyledRadioGroup>
   );
 }
 
-export default ChoiceRadioAnswerOptionFields;
+export default OpenChoiceRadioAnswerOptionFields;

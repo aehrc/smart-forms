@@ -17,13 +17,11 @@
 
 import React, { useCallback, useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { CheckBoxOption, ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import { CheckBoxOption } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import { getOpenLabelText } from '../../../utils/itemControl';
-import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
-import { StyledFormGroup } from '../Item.styles';
 import {
   getOldOpenLabelAnswer,
   updateQrOpenChoiceCheckboxAnswers
@@ -38,6 +36,7 @@ import type {
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -115,66 +114,15 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     [handleValueChange]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
-  const openChoiceCheckbox = (
-    <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-      {qItem.answerOption?.map((option) => {
-        if (option['valueCoding']) {
-          return (
-            <CheckboxSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(option)
-              )}
-              onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
-            />
-          );
-        } else if (option['valueString']) {
-          return (
-            <CheckboxSingle
-              key={option.valueString}
-              value={option.valueString}
-              label={option.valueString}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueString === option.valueString)}
-              onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
-            />
-          );
-        } else if (option['valueInteger']) {
-          return (
-            <CheckboxSingle
-              key={option.valueInteger}
-              value={option.valueInteger.toString()}
-              label={option.valueInteger.toString()}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
-              onCheckedChange={(changedValue) => handleValueChange(changedValue, null)}
-            />
-          );
-        } else {
-          return null;
-        }
-      })}
+  function handleOpenLabelCheckedChange(checked: boolean) {
+    handleValueChange(null, openLabelValue);
+    setOpenLabelChecked(checked);
+  }
 
-      {openLabelText ? (
-        <CheckboxSingleWithOpenLabel
-          value={openLabelValue}
-          label={openLabelText}
-          isChecked={openLabelChecked}
-          onCheckedChange={(checked) => {
-            handleValueChange(null, openLabelValue);
-            setOpenLabelChecked(checked);
-          }}
-          onInputChange={(input) => {
-            setOpenLabelValue(input);
-            updateOpenLabelValueWithDebounce(input);
-          }}
-        />
-      ) : null}
-    </StyledFormGroup>
-  );
+  function handleOpenLabelInputChange(newValue: string) {
+    setOpenLabelValue(newValue);
+    updateOpenLabelValueWithDebounce(newValue);
+  }
 
   return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
@@ -183,7 +131,18 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           <LabelWrapper qItem={qItem} />
         </Grid>
         <Grid item xs={7}>
-          {openChoiceCheckbox}
+          <OpenChoiceCheckboxAnswerOptionFields
+            qItem={qItem}
+            answers={answers}
+            openLabelText={openLabelText}
+            openLabelValue={openLabelValue}
+            openLabelChecked={openLabelChecked}
+            readOnly={readOnly}
+            orientation={orientation}
+            onValueChange={handleValueChange}
+            onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+            onOpenLabelInputChange={handleOpenLabelInputChange}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} />
         </Grid>
       </Grid>
