@@ -19,11 +19,16 @@ import React from 'react';
 import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles';
 import Box from '@mui/material/Box';
 import GroupItem from '../GroupItem/GroupItem';
-import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import DeleteItemButton from './DeleteItemButton';
 
-interface RepeatGroupItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface RepeatGroupItemProps
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   answeredQrItem: QuestionnaireResponseItem;
   nullableQrItem: QuestionnaireResponseItem | null;
@@ -39,6 +44,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     nullableQrItem,
     numOfRepeatGroups,
     groupCardElevation,
+    parentIsReadOnly,
     onDeleteItem,
     onQrItemChange
   } = props;
@@ -50,6 +56,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
           qItem={qItem}
           qrItem={answeredQrItem}
           isRepeated={true}
+          parentIsReadOnly={parentIsReadOnly}
           groupCardElevation={groupCardElevation + 1}
           onQrItemChange={onQrItemChange}
         />
@@ -57,6 +64,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
       <DeleteItemButton
         nullableQrItem={nullableQrItem}
         numOfRepeatGroups={numOfRepeatGroups}
+        parentIsReadOnly={parentIsReadOnly}
         onDeleteItem={onDeleteItem}
       />
     </RepeatGroupContainerStack>

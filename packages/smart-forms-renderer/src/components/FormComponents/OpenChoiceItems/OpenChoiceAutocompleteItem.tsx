@@ -28,6 +28,7 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -38,13 +39,15 @@ import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
 
   // Init input value
@@ -121,6 +124,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         loading={loading}
         feedback={feedback ?? null}
         isTabled={isTabled}
+        parentIsReadOnly={parentIsReadOnly}
         onInputChange={(newValue) => setInput(newValue)}
         onValueChange={handleValueChange}
         onUnfocus={handleUnfocus}
@@ -143,6 +147,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
             loading={loading}
             feedback={feedback ?? null}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onInputChange={(newValue) => setInput(newValue)}
             onValueChange={handleValueChange}
             onUnfocus={handleUnfocus}

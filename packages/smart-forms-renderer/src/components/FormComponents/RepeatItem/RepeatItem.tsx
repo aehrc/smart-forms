@@ -16,7 +16,10 @@
  */
 
 import React, { useState } from 'react';
-import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
@@ -29,15 +32,16 @@ import Collapse from '@mui/material/Collapse';
 import useInitialiseRepeatAnswers from '../../../hooks/useInitialiseRepeatAnswers';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 
-interface RepeatItemProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface RepeatItemProps
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function RepeatItem(props: RepeatItemProps) {
-  const { qItem, qrItem, onQrItemChange } = props;
+  const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   const initialRepeatAnswers = useInitialiseRepeatAnswers(qItem, qrItem);
@@ -99,6 +103,7 @@ function RepeatItem(props: RepeatItemProps) {
                   qrItem={repeatAnswerQrItem}
                   answer={answer}
                   numOfRepeatAnswers={repeatAnswers.length}
+                  parentIsReadOnly={parentIsReadOnly}
                   onDeleteAnswer={() => handleDeleteItem(index)}
                   onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
                 />

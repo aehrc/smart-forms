@@ -4,9 +4,13 @@ import { StandardTextField } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import useReadOnly from '../../../hooks/useReadOnly';
 
-interface OpenChoiceSelectAnswerOptionFieldProps extends PropsWithIsTabledAttribute {
+interface OpenChoiceSelectAnswerOptionFieldProps
+  extends PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
@@ -14,9 +18,10 @@ interface OpenChoiceSelectAnswerOptionFieldProps extends PropsWithIsTabledAttrib
 }
 
 function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFieldProps) {
-  const { qItem, options, valueSelect, isTabled, onChange } = props;
+  const { qItem, options, valueSelect, isTabled, parentIsReadOnly, onChange } = props;
 
-  const { displayUnit, displayPrompt, readOnly, entryFormat } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   return (
     <Autocomplete

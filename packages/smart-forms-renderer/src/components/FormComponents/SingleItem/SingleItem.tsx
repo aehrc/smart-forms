@@ -20,24 +20,28 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore';
 import SingleItemSwitcher from './SingleItemSwitcher';
 import useHidden from '../../../hooks/useHidden';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute {
+    PropsWithTextShownAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function SingleItem(props: SingleItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+    props;
 
   const updateEnableWhenItem = useQuestionnaireStore((state) => state.updateEnableWhenItem);
 
@@ -51,6 +55,7 @@ function SingleItem(props: SingleItemProps) {
     [updateEnableWhenItem, onQrItemChange, qItem.linkId]
   );
 
+  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
@@ -63,6 +68,7 @@ function SingleItem(props: SingleItemProps) {
       isRepeated={isRepeated}
       isTabled={isTabled}
       textShown={textShown}
+      parentIsReadOnly={itemIsReadOnly}
       onQrItemChange={handleQrItemChange}
     />
   );

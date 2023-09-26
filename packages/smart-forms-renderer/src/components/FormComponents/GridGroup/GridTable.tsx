@@ -26,8 +26,11 @@ import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
-interface GridTableProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface GridTableProps
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithParentIsReadOnlyAttribute {
   qItems: QuestionnaireItem[];
   qrItems: QuestionnaireResponseItem[];
   qItemsIndexMap: Record<string, number>;
@@ -35,7 +38,7 @@ interface GridTableProps extends PropsWithQrItemChangeHandler<QuestionnaireRespo
 }
 
 function GridTable(props: GridTableProps) {
-  const { qItems, qrItems, qItemsIndexMap, columnLabels, onQrItemChange } = props;
+  const { qItems, qrItems, qItemsIndexMap, columnLabels, parentIsReadOnly, onQrItemChange } = props;
 
   const qrItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[] =
     getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
@@ -68,6 +71,7 @@ function GridTable(props: GridTableProps) {
                 qrItem={qrItem}
                 columnLabels={columnLabels}
                 numOfColumns={numOfColumns}
+                parentIsReadOnly={parentIsReadOnly}
                 onQrItemChange={onQrItemChange}
               />
             </TableRow>

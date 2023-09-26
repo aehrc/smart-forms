@@ -28,28 +28,39 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerOptionFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithTextShownAttribute {
+    PropsWithTextShownAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation, textShown = true } = props;
+  const {
+    qItem,
+    qrItem,
+    orientation,
+    isRepeated,
+    textShown = true,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   // Init input value
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
   const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
 
-  // Get additional rendering extensions
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {

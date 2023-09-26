@@ -25,6 +25,7 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
@@ -34,13 +35,14 @@ import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSe
 interface OpenChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   // Init input value
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
@@ -82,6 +84,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
         valueSelect={valueSelect}
         serverError={serverError}
         isTabled={isTabled}
+        parentIsReadOnly={parentIsReadOnly}
         onValueChange={handleValueChange}
       />
     );
@@ -100,6 +103,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
             valueSelect={valueSelect}
             serverError={serverError}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onValueChange={handleValueChange}
           />
           <DisplayInstructions displayInstructions={displayInstructions} />

@@ -19,6 +19,7 @@ import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -32,23 +33,24 @@ import StringField from './StringField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 function StringItem(props: StringItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const {
     displayUnit,
     displayPrompt,
     displayInstructions,
-    readOnly,
     entryFormat,
     regexValidation,
     maxLength

@@ -27,27 +27,30 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
   // Init input value
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
   const valueRadio = getQrChoiceValue(qrChoiceRadio);
 
-  // Get additional rendering extensions
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: string) {
@@ -58,8 +61,6 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
       }
     }
   }
-
-  // TODO need to put in showText? in repopulate
 
   if (isRepeated) {
     return (

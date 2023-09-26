@@ -24,8 +24,12 @@ import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import useReadOnly from '../../../hooks/useReadOnly';
 
-interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
+interface ChoiceSelectAnswerValueSetFieldsProps
+  extends PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   codings: Coding[];
   valueCoding: Coding | null;
@@ -34,9 +38,11 @@ interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribu
 }
 
 function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetFieldsProps) {
-  const { qItem, codings, valueCoding, serverError, isTabled, onSelectChange } = props;
+  const { qItem, codings, valueCoding, serverError, isTabled, parentIsReadOnly, onSelectChange } =
+    props;
 
-  const { displayUnit, displayPrompt, readOnly, entryFormat } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   if (codings.length > 0) {
     return (

@@ -29,10 +29,14 @@ import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { AlertColor } from '@mui/material/Alert';
+import useReadOnly from '../../../hooks/useReadOnly';
 
-interface OpenChoiceAutocompleteFieldProps extends PropsWithIsTabledAttribute {
+interface OpenChoiceAutocompleteFieldProps
+  extends PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
   valueAutocomplete: string | Coding;
@@ -53,13 +57,14 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     loading,
     feedback,
     isTabled,
+    parentIsReadOnly,
     onInputChange,
     onValueChange,
     onUnfocus
   } = props;
 
-  // Get additional rendering extensions
-  const { displayUnit, displayPrompt, readOnly, entryFormat } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   return (
     <Box display="flex">

@@ -30,6 +30,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
@@ -37,13 +38,14 @@ import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionFie
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   // Get additional rendering extensions
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -98,6 +100,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
         options={answerOptions}
         valueSelect={valueSelect}
         isTabled={isTabled}
+        parentIsReadOnly={parentIsReadOnly}
         onChange={handleChange}
       />
     );
@@ -115,6 +118,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
             options={answerOptions}
             valueSelect={valueSelect}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onChange={handleChange}
           />
           <DisplayInstructions displayInstructions={displayInstructions} />

@@ -31,7 +31,10 @@ import GroupTableRow from './GroupTableRow';
 import { HeaderTableCell } from './Table.styles';
 import { QGroupContainerBox } from '../../Box.styles';
 import { mapQItemsIndex } from '../../../utils/mapItem';
-import type { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrRepeatGroupChangeHandler
+} from '../../../interfaces/renderProps.interface';
 import useInitialiseGroupTable from '../../../hooks/useInitialiseGroupTable';
 import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -39,15 +42,18 @@ import DeleteRowButton from './DeleteRowButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
 import AddRowButton from './AddRowButton';
+import useReadOnly from '../../../hooks/useReadOnly';
 
-interface Props extends PropsWithQrRepeatGroupChangeHandler {
+interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
 }
 
 function GroupTable(props: Props) {
-  const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
+  const { qItem, qrItems, groupCardElevation, parentIsReadOnly, onQrRepeatGroupChange } = props;
+
+  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const initialisedGroupTables = useInitialiseGroupTable(qrItems);
 
@@ -125,7 +131,11 @@ function GroupTable(props: Props) {
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
           <caption>
-            <AddRowButton repeatGroups={tableRows} onAddItem={handleAddRow} />
+            <AddRowButton
+              repeatGroups={tableRows}
+              parentIsReadOnly={itemIsReadOnly}
+              onAddItem={handleAddRow}
+            />
           </caption>
           <TableHead>
             <TableRow>
@@ -148,11 +158,13 @@ function GroupTable(props: Props) {
                     qItem={qItem}
                     qrItem={answeredQrItem}
                     qItemsIndexMap={qItemsIndexMap}
+                    parentIsReadOnly={itemIsReadOnly}
                     onQrItemChange={(newQrGroup) => handleRowChange(newQrGroup, index)}
                   />
                   <DeleteRowButton
                     nullableQrItem={nullableQrItem}
                     numOfRows={tableRows.length}
+                    parentIsReadOnly={itemIsReadOnly}
                     onDeleteItem={() => handleDeleteRow(index)}
                   />
                 </TableRow>

@@ -17,6 +17,7 @@
 
 import React from 'react';
 import type {
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -30,18 +31,28 @@ import SingleItem from '../SingleItem/SingleItem';
 import useHidden from '../../../hooks/useHidden';
 import GroupItem from './GroupItem';
 import GridGroup from '../GridGroup/GridGroup';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface GroupItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithQrRepeatGroupChangeHandler {
+    PropsWithQrRepeatGroupChangeHandler,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[];
   groupCardElevation: number;
 }
 
 function GroupItemSwitcher(props: GroupItemSwitcherProps) {
-  const { qItem, qrItemOrItems, groupCardElevation, onQrItemChange, onQrRepeatGroupChange } = props;
+  const {
+    qItem,
+    qrItemOrItems,
+    groupCardElevation,
+    parentIsReadOnly,
+    onQrItemChange,
+    onQrRepeatGroupChange
+  } = props;
 
+  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
@@ -64,6 +75,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           qItem={qItem}
           qrItems={qrItems}
           groupCardElevation={groupCardElevation + 1}
+          parentIsReadOnly={itemIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
         />
       );
@@ -74,6 +86,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         qItem={qItem}
         qrItems={qrItems}
         groupCardElevation={groupCardElevation + 1}
+        parentIsReadOnly={itemIsReadOnly}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
       />
     );
@@ -88,6 +101,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         qItem={qItem}
         qrItem={qrItem}
         groupCardElevation={groupCardElevation}
+        parentIsReadOnly={itemIsReadOnly}
         onQrItemChange={onQrItemChange}
       />
     );
@@ -104,6 +118,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
             qItem={qItem}
             qrItems={[]}
             groupCardElevation={groupCardElevation + 1}
+            parentIsReadOnly={itemIsReadOnly}
             onQrRepeatGroupChange={onQrRepeatGroupChange}
           />
         );
@@ -114,12 +129,20 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           qItem={qItem}
           qrItems={[]}
           groupCardElevation={groupCardElevation + 1}
+          parentIsReadOnly={itemIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
         />
       );
     }
 
-    return <RepeatItem qItem={qItem} qrItem={qrItem} onQrItemChange={onQrItemChange} />;
+    return (
+      <RepeatItem
+        qItem={qItem}
+        qrItem={qrItem}
+        parentIsReadOnly={itemIsReadOnly}
+        onQrItemChange={onQrItemChange}
+      />
+    );
   }
 
   // if qItem is not a repeating question or is a checkbox
@@ -130,6 +153,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         qrItem={qrItem}
         isRepeated={false}
         groupCardElevation={groupCardElevation + 1}
+        parentIsReadOnly={itemIsReadOnly}
         onQrItemChange={onQrItemChange}
       />
     );
@@ -142,6 +166,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       qrItem={qrItem}
       isRepeated={false}
       isTabled={false}
+      parentIsReadOnly={itemIsReadOnly}
       onQrItemChange={onQrItemChange}
     />
   );

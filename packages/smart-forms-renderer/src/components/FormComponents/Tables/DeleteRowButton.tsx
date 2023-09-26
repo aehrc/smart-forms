@@ -22,17 +22,18 @@ import Tooltip from '@mui/material/Tooltip';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
-interface DeleteRowButtonProps {
+interface DeleteRowButtonProps extends PropsWithParentIsReadOnlyAttribute {
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRows: number;
   onDeleteItem: () => void;
 }
 
 function DeleteRowButton(props: DeleteRowButtonProps) {
-  const { nullableQrItem, numOfRows, onDeleteItem } = props;
+  const { nullableQrItem, numOfRows, parentIsReadOnly, onDeleteItem } = props;
 
-  const isDisabled = nullableQrItem === null || numOfRows === 1;
+  const isDisabled = nullableQrItem === null || numOfRows === 1 || parentIsReadOnly;
   return (
     <DeleteButtonTableCell>
       <Tooltip title="Delete item">

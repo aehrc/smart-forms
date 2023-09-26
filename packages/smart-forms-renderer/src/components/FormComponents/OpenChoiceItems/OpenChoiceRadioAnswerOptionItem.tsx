@@ -29,20 +29,27 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, orientation, parentIsReadOnly, onQrItemChange } = props;
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const openLabelText = getOpenLabelText(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init answers
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
@@ -69,10 +76,6 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
   }
-
-  // Get additional rendering extensions
-  const openLabelText = getOpenLabelText(qItem);
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleValueChange(

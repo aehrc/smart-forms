@@ -16,7 +16,10 @@
  */
 
 import React, { useState } from 'react';
-import type { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrRepeatGroupChangeHandler
+} from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import { QGroupContainerBox } from '../../Box.styles';
@@ -32,15 +35,20 @@ import RepeatGroupItem from './RepeatGroupItem';
 import AddItemButton from './AddItemButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
+import useReadOnly from '../../../hooks/useReadOnly';
 
-interface RepeatGroupProps extends PropsWithQrRepeatGroupChangeHandler {
+interface RepeatGroupProps
+  extends PropsWithQrRepeatGroupChangeHandler,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
 }
 
 function RepeatGroup(props: RepeatGroupProps) {
-  const { qItem, qrItems, groupCardElevation, onQrRepeatGroupChange } = props;
+  const { qItem, qrItems, groupCardElevation, parentIsReadOnly, onQrRepeatGroupChange } = props;
+
+  const itemIsReadOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const initialRepeatGroups = useInitialiseRepeatGroups(qItem, qrItems);
 
@@ -112,6 +120,7 @@ function RepeatGroup(props: RepeatGroupProps) {
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
                   groupCardElevation={groupCardElevation + 1}
+                  parentIsReadOnly={itemIsReadOnly}
                   onDeleteItem={() => handleDeleteItem(index)}
                   onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
                 />
@@ -120,7 +129,11 @@ function RepeatGroup(props: RepeatGroupProps) {
           })}
         </TransitionGroup>
 
-        <AddItemButton repeatGroups={repeatGroups} onAddItem={handleAddItem} />
+        <AddItemButton
+          repeatGroups={repeatGroups}
+          parentIsReadOnly={itemIsReadOnly}
+          onAddItem={handleAddItem}
+        />
       </Card>
     </QGroupContainerBox>
   );

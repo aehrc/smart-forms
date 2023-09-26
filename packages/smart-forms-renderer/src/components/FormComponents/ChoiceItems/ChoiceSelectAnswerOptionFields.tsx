@@ -22,17 +22,22 @@ import Select from '@mui/material/Select';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import useReadOnly from '../../../hooks/useReadOnly';
 
-interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
+interface ChoiceSelectAnswerOptionFieldsProps
+  extends PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   valueSelect: string;
   onSelectChange: (newValue: string) => void;
 }
 
 function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsProps) {
-  const { qItem, valueSelect, isTabled, onSelectChange } = props;
+  const { qItem, valueSelect, isTabled, parentIsReadOnly, onSelectChange } = props;
 
-  const { displayUnit, displayPrompt, readOnly, entryFormat } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   return (
     <Select

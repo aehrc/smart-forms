@@ -15,28 +15,16 @@
  * limitations under the License.
  */
 
-import type { QrRepeatGroup } from './repeatGroup.interface';
+import type { QuestionnaireItem } from 'fhir/r4';
+import useRenderingExtensions from './useRenderingExtensions';
 
-export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
-  onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
+function useReadOnly(qItem: QuestionnaireItem, parentIsReadOnly: boolean | undefined): boolean {
+  let { readOnly } = useRenderingExtensions(qItem);
+  if (typeof parentIsReadOnly === 'boolean' && parentIsReadOnly) {
+    readOnly = parentIsReadOnly;
+  }
+
+  return readOnly;
 }
 
-export interface PropsWithQrRepeatGroupChangeHandler {
-  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
-}
-
-export interface PropsWithIsRepeatedAttribute {
-  isRepeated: boolean;
-}
-
-export interface PropsWithIsTabledAttribute {
-  isTabled: boolean;
-}
-
-export interface PropsWithTextShownAttribute {
-  textShown?: boolean;
-}
-
-export interface PropsWithParentIsReadOnlyAttribute {
-  parentIsReadOnly?: boolean;
-}
+export default useReadOnly;

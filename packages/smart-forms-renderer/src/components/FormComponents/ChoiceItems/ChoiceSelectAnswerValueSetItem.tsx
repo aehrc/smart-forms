@@ -28,6 +28,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields';
@@ -35,13 +36,14 @@ import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
@@ -97,6 +99,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         valueCoding={valueCoding}
         serverError={serverError}
         isTabled={isTabled}
+        parentIsReadOnly={parentIsReadOnly}
         onSelectChange={handleChange}
       />
     );
@@ -115,6 +118,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
             valueCoding={valueCoding}
             serverError={serverError}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onSelectChange={handleChange}
           />
           <DisplayInstructions displayInstructions={displayInstructions} />

@@ -20,17 +20,18 @@ import { RepeatDeleteTooltip } from './RepeatItem.styles';
 import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
-interface DeleteItemButtonProps {
+interface DeleteItemButtonProps extends PropsWithParentIsReadOnlyAttribute {
   answer: QuestionnaireResponseItemAnswer | null;
   numOfRepeatAnswers: number;
   onDeleteAnswer: () => void;
 }
 
 function DeleteItemButton(props: DeleteItemButtonProps) {
-  const { answer, numOfRepeatAnswers, onDeleteAnswer } = props;
+  const { answer, numOfRepeatAnswers, parentIsReadOnly, onDeleteAnswer } = props;
 
-  const isDisabled = answer === null || numOfRepeatAnswers === 1;
+  const isDisabled = answer === null || numOfRepeatAnswers === 1 || parentIsReadOnly;
 
   return (
     <RepeatDeleteTooltip className="repeat-item-delete" title="Delete item">
