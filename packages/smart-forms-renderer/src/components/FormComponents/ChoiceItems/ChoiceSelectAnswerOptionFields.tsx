@@ -22,7 +22,7 @@ import Select from '@mui/material/Select';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceSelectAnswerOptionFieldsProps

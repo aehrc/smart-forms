@@ -20,7 +20,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import type { RepeatGroupSingle } from '../../../interfaces/repeatGroup.interface';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
 interface AddItemButtonProps extends PropsWithParentIsReadOnlyAttribute {
   repeatGroups: RepeatGroupSingle[];

@@ -24,7 +24,7 @@ import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceSelectAnswerValueSetFieldsProps

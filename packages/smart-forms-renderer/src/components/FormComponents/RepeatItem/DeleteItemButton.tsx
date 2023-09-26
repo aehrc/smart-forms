@@ -20,7 +20,7 @@ import { RepeatDeleteTooltip } from './RepeatItem.styles';
 import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
 interface DeleteItemButtonProps extends PropsWithParentIsReadOnlyAttribute {
   answer: QuestionnaireResponseItemAnswer | null;

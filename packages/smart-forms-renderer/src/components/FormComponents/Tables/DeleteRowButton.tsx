@@ -22,7 +22,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
 interface DeleteRowButtonProps extends PropsWithParentIsReadOnlyAttribute {
   nullableQrItem: QuestionnaireResponseItem | null;

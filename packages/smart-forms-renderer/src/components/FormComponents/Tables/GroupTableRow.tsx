@@ -22,7 +22,7 @@ import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import { StandardTableCell } from './Table.styles';
 import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,

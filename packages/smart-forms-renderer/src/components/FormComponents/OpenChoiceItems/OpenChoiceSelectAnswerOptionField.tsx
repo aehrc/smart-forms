@@ -4,7 +4,7 @@ import { StandardTextField } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useReadOnly from '../../../hooks/useReadOnly';
 

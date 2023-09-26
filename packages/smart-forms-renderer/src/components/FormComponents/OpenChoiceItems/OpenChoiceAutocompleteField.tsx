@@ -29,7 +29,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { AlertColor } from '@mui/material/Alert';
 import useReadOnly from '../../../hooks/useReadOnly';

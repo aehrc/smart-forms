@@ -18,7 +18,7 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
 import { QGroupContainerBox } from '../../Box.styles';
