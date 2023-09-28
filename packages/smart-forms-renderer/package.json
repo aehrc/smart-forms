@@ -25,7 +25,7 @@
   "dependencies": {
     "deep-diff": "^1.0.2",
     "@iconify/react": "^4.1.1",
-    "dayjs": "^1.11.9",
+    "dayjs": "^1.11.10",
     "fhirclient": "^2.5.2",
     "fhirpath": "^3.6.1",
     "html-react-parser": "^4.2.0",
