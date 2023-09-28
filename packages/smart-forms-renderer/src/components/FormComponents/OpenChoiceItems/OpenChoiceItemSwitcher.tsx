@@ -28,6 +28,7 @@ import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -36,13 +37,16 @@ interface OpenChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute {
+    PropsWithTextShownAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+    props;
+
   const orientation = getChoiceOrientation(qItem);
 
   switch (getOpenChoiceControlType(qItem)) {
@@ -54,6 +58,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           orientation={orientation}
           isRepeated={qItem['repeats'] ?? false}
           textShown={textShown}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -64,6 +69,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           qrItem={qrItem}
           orientation={orientation}
           isRepeated={qItem['repeats'] ?? false}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -74,6 +80,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -85,6 +92,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -95,6 +103,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
         );

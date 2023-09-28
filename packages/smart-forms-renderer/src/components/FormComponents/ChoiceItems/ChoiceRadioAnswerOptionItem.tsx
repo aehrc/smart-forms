@@ -25,29 +25,32 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
   // Init input value
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
   const valueRadio = getQrChoiceValue(qrChoiceRadio);
 
-  // Get additional rendering extensions
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: string) {
@@ -58,8 +61,6 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
       }
     }
   }
-
-  // TODO need to put in showText? in repopulate
 
   if (isRepeated) {
     return (
@@ -77,7 +78,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <ChoiceRadioAnswerOptionFields
@@ -87,7 +88,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
             readOnly={readOnly}
             onCheckedChange={handleChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

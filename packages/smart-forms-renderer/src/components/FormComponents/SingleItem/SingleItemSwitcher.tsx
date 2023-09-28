@@ -23,6 +23,7 @@ import Typography from '@mui/material/Typography';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -41,13 +42,15 @@ interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute {
+    PropsWithTextShownAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function SingleItemSwitcher(props: SingleItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+    props;
 
   switch (qItem.type) {
     case 'string':
@@ -57,6 +60,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -67,6 +71,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -77,6 +82,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -87,6 +93,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -97,6 +104,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -106,6 +114,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -118,6 +127,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -128,6 +138,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -139,6 +150,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           isRepeated={isRepeated}
           isTabled={isTabled}
           textShown={textShown}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -150,6 +162,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           isRepeated={isRepeated}
           isTabled={isTabled}
           textShown={textShown}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -160,6 +173,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );

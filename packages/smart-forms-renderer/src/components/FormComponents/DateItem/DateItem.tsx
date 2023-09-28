@@ -21,6 +21,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -29,21 +30,22 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import DateField from './DateField';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface DateItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function DateItem(props: DateItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
-  const { displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayPrompt, displayInstructions, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let dateString: string | null = null;
@@ -83,7 +85,7 @@ function DateItem(props: DateItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-date-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <DateField
           value={dateDayJs}
           displayPrompt={displayPrompt}

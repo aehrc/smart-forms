@@ -22,15 +22,18 @@ import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import { StandardTableCell } from './Table.styles';
 import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
-interface Props extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface Props
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   qItemsIndexMap: Record<string, number>;
 }
 
 function GroupTableRow(props: Props) {
-  const { qItem, qrItem, qItemsIndexMap, onQrItemChange } = props;
+  const { qItem, qrItem, qItemsIndexMap, parentIsReadOnly, onQrItemChange } = props;
 
   const rowItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -65,6 +68,7 @@ function GroupTableRow(props: Props) {
               qrItem={qrItem}
               isRepeated={true}
               isTabled={true}
+              parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={handleQrRowItemChange}
             />
           </StandardTableCell>

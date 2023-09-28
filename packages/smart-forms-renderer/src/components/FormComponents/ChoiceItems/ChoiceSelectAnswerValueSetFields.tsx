@@ -30,13 +30,14 @@ interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribu
   codings: Coding[];
   valueCoding: Coding | null;
   serverError: Error | null;
+  readOnly: boolean;
   onSelectChange: (newValue: Coding | null) => void;
 }
 
 function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetFieldsProps) {
-  const { qItem, codings, valueCoding, serverError, isTabled, onSelectChange } = props;
+  const { qItem, codings, valueCoding, serverError, readOnly, isTabled, onSelectChange } = props;
 
-  const { displayUnit, displayPrompt, readOnly, entryFormat } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   if (codings.length > 0) {
     return (

@@ -17,7 +17,6 @@
 
 import FormGroup from '@mui/material/FormGroup';
 import RadioGroup from '@mui/material/RadioGroup';
-import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
 export const StyledFormGroup = styled(FormGroup)(() => ({
@@ -26,8 +25,4 @@ export const StyledFormGroup = styled(FormGroup)(() => ({
 
 export const StyledRadioGroup = styled(RadioGroup)(() => ({
   marginBottom: 4
-}));
-
-export const QItemTypography = styled(Typography)(() => ({
-  marginTop: 4
 }));

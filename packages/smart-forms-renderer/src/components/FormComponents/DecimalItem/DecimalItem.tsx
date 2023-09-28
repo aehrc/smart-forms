@@ -19,6 +19,7 @@ import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -37,25 +38,26 @@ import {
 import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface DecimalItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function DecimalItem(props: DecimalItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
   const {
     displayUnit,
     displayPrompt,
     displayInstructions,
-    readOnly,
     entryFormat,
     regexValidation,
     maxLength
@@ -132,7 +134,7 @@ function DecimalItem(props: DecimalItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-decimal-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <DecimalField
           linkId={qItem.linkId}
           input={input}

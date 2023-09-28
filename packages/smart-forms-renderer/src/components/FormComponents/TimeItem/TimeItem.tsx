@@ -19,6 +19,7 @@ import React from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -29,21 +30,22 @@ import TimeField from './TimeField';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface TimeItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function TimeItem(props: TimeItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
-  const { displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayPrompt, displayInstructions, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let timeString: string | null = null;
@@ -77,7 +79,7 @@ function TimeItem(props: TimeItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <TimeField
           value={timeDayJs}
           displayPrompt={displayPrompt}

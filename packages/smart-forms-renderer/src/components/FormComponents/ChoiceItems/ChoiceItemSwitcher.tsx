@@ -32,18 +32,21 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
 interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute {
+    PropsWithTextShownAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+    props;
 
   const orientation = getChoiceOrientation(qItem);
   const choiceControlType = getChoiceControlType(qItem);
@@ -55,9 +58,10 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            isRepeated={isRepeated}
-            onQrItemChange={onQrItemChange}
             orientation={orientation}
+            isRepeated={isRepeated}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
           />
         );
       } else {
@@ -65,9 +69,10 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            isRepeated={isRepeated}
-            onQrItemChange={onQrItemChange}
             orientation={orientation}
+            isRepeated={isRepeated}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
           />
         );
       }
@@ -77,10 +82,11 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            isRepeated={qItem.repeats ?? false}
-            onQrItemChange={onQrItemChange}
             orientation={orientation}
+            isRepeated={qItem.repeats ?? false}
             textShown={textShown}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
           />
         );
       } else {
@@ -89,9 +95,10 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem.repeats ?? false}
-            onQrItemChange={onQrItemChange}
             orientation={orientation}
             textShown={textShown}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
           />
         );
       }
@@ -102,6 +109,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -113,6 +121,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -123,6 +132,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
         );

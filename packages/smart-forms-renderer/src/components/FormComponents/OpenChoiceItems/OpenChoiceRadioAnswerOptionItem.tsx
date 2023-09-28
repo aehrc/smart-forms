@@ -27,22 +27,29 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, orientation, parentIsReadOnly, onQrItemChange } = props;
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const openLabelText = getOpenLabelText(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init answers
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
@@ -69,10 +76,6 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
   }
-
-  // Get additional rendering extensions
-  const openLabelText = getOpenLabelText(qItem);
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleValueChange(
@@ -120,7 +123,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
     <FullWidthFormComponentBox data-test="q-item-open-choice-radio-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <OpenChoiceRadioAnswerOptionFields
@@ -133,7 +136,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
             readOnly={readOnly}
             onValueChange={handleValueChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

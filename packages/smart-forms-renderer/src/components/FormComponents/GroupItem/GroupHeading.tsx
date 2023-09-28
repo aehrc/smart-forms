@@ -18,20 +18,21 @@
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import { QGroupHeadingTypography } from '../Typography.styles';
+import Typography from '@mui/material/Typography';
 import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
-import LabelText from '../ItemParts/ItemLabelText';
+import ItemLabelText from '../ItemParts/ItemLabelText';
 
 interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
+  readOnly: boolean;
   tabIsMarkedAsComplete?: boolean;
 }
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
-  const { qItem, tabIsMarkedAsComplete, isRepeated } = props;
+  const { qItem, readOnly, tabIsMarkedAsComplete, isRepeated } = props;
 
   const contextDisplayItems = getContextDisplays(qItem);
 
@@ -39,12 +40,17 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
     return null;
   }
 
+  const isTabHeading = tabIsMarkedAsComplete !== undefined;
+
   return (
     <>
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <QGroupHeadingTypography variant="h6" isTabHeading={tabIsMarkedAsComplete !== undefined}>
-          <LabelText qItem={qItem} />
-        </QGroupHeadingTypography>
+        <Typography
+          variant="h6"
+          fontSize={isTabHeading ? 16 : 15}
+          color={readOnly && !isTabHeading ? 'text.secondary' : 'text.primary'}>
+          <ItemLabelText qItem={qItem} />
+        </Typography>
 
         <Box display="flex" columnGap={0.5}>
           {contextDisplayItems.map((item) => {

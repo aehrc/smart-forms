@@ -26,22 +26,28 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
@@ -49,9 +55,6 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   if (valueSelect === null) {
     valueSelect = '';
   }
-
-  // Get additional rendering extensions
-  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: string) {
@@ -70,8 +73,9 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       <ChoiceSelectAnswerOptionFields
         qItem={qItem}
         valueSelect={valueSelect}
-        onSelectChange={handleChange}
+        readOnly={readOnly}
         isTabled={isTabled}
+        onSelectChange={handleChange}
       />
     );
   }
@@ -80,16 +84,17 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     <FullWidthFormComponentBox data-test="q-item-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <ChoiceSelectAnswerOptionFields
             qItem={qItem}
             valueSelect={valueSelect}
-            onSelectChange={handleChange}
+            readOnly={readOnly}
             isTabled={isTabled}
+            onSelectChange={handleChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

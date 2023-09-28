@@ -19,6 +19,7 @@ import React, { useCallback, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -30,23 +31,24 @@ import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import UrlField from './UrlField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface UrlItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 function UrlItem(props: UrlItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const {
     displayUnit,
     displayPrompt,
     displayInstructions,
-    readOnly,
     entryFormat,
     regexValidation,
     maxLength
@@ -98,7 +100,7 @@ function UrlItem(props: UrlItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <UrlField
           linkId={qItem.linkId}
           input={input}

@@ -26,13 +26,14 @@ import type { QuestionnaireResponseItem } from 'fhir/r4';
 interface DeleteRowButtonProps {
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRows: number;
+  readOnly: boolean;
   onDeleteItem: () => void;
 }
 
 function DeleteRowButton(props: DeleteRowButtonProps) {
-  const { nullableQrItem, numOfRows, onDeleteItem } = props;
+  const { nullableQrItem, numOfRows, readOnly, onDeleteItem } = props;
 
-  const isDisabled = nullableQrItem === null || numOfRows === 1;
+  const isDisabled = nullableQrItem === null || numOfRows === 1 || readOnly;
   return (
     <DeleteButtonTableCell>
       <Tooltip title="Delete item">

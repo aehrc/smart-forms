@@ -24,13 +24,14 @@ import type { QuestionnaireResponseItem } from 'fhir/r4';
 interface DeleteItemButtonProps {
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
+  readOnly: boolean;
   onDeleteItem: () => void;
 }
 
 function DeleteItemButton(props: DeleteItemButtonProps) {
-  const { nullableQrItem, numOfRepeatGroups, onDeleteItem } = props;
+  const { nullableQrItem, numOfRepeatGroups, readOnly, onDeleteItem } = props;
 
-  const isDisabled = nullableQrItem === null || numOfRepeatGroups === 1;
+  const isDisabled = nullableQrItem === null || numOfRepeatGroups === 1 || readOnly;
 
   return (
     <RepeatDeleteTooltip className="repeat-group-delete" title="Delete item">

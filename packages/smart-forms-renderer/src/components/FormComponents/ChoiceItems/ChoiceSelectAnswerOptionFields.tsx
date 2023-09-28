@@ -26,13 +26,14 @@ import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps
 interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   valueSelect: string;
+  readOnly: boolean;
   onSelectChange: (newValue: string) => void;
 }
 
 function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsProps) {
-  const { qItem, valueSelect, isTabled, onSelectChange } = props;
+  const { qItem, valueSelect, readOnly, isTabled, onSelectChange } = props;
 
-  const { displayUnit, displayPrompt, readOnly, entryFormat } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   return (
     <Select

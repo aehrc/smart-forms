@@ -28,24 +28,27 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init input value
@@ -97,6 +100,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
         qItem={qItem}
         options={answerOptions}
         valueSelect={valueSelect}
+        readOnly={readOnly}
         isTabled={isTabled}
         onChange={handleChange}
       />
@@ -107,17 +111,18 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
     <FullWidthFormComponentBox data-test="q-item-open-choice-select-answer-option-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <OpenChoiceSelectAnswerOptionField
             qItem={qItem}
             options={answerOptions}
             valueSelect={valueSelect}
+            readOnly={readOnly}
             isTabled={isTabled}
             onChange={handleChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

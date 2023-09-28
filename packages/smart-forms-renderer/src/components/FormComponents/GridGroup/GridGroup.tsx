@@ -17,7 +17,10 @@
 
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../interfaces/renderProps.interface';
 import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
 import { QGroupContainerBox } from '../../Box.styles';
@@ -28,15 +31,18 @@ import Typography from '@mui/material/Typography';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import GridTable from './GridTable';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import useReadOnly from '../../../hooks/useReadOnly';
 
-interface GridGroupProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface GridGroupProps
+  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
 }
 
 function GridGroup(props: GridGroupProps) {
-  const { qItem, qrItem, groupCardElevation, onQrItemChange } = props;
+  const { qItem, qrItem, groupCardElevation, parentIsReadOnly, onQrItemChange } = props;
 
   const qRowItems = qItem.item;
   const qrGroup = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -49,6 +55,7 @@ function GridGroup(props: GridGroupProps) {
     [qRowItems]
   );
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
@@ -73,8 +80,8 @@ function GridGroup(props: GridGroupProps) {
   return (
     <>
       <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
-        <Typography fontSize={13} variant="h6">
-          <LabelWrapper qItem={qItem} />
+        <Typography fontSize={13} variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Typography>
         <Divider sx={{ my: 1 }} light />
 
@@ -84,6 +91,7 @@ function GridGroup(props: GridGroupProps) {
             qrItems={qrRowItems}
             qItemsIndexMap={qItemsIndexMap}
             columnLabels={columnLabels}
+            parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={handleRowChange}
           />
         </TableContainer>

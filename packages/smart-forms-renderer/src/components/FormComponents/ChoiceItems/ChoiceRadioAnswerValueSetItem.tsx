@@ -26,22 +26,28 @@ import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceRadioAnswerValueSetFields from './ChoiceRadioAnswerValueSetFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation } = props;
+  const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init input value
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
@@ -50,9 +56,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   if (qrChoiceRadio.answer) {
     valueRadio = qrChoiceRadio.answer[0].valueCoding?.code ?? null;
   }
-
-  // Get additional rendering extensions
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
 
   // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
@@ -87,7 +90,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-value-set-box">
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           <ChoiceRadioAnswerValueSetFields
@@ -99,7 +102,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             serverError={serverError}
             onCheckedChange={handleChange}
           />
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

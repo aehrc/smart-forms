@@ -23,13 +23,14 @@ import type { RepeatGroupSingle } from '../../../interfaces/repeatGroup.interfac
 
 interface AddItemButtonProps {
   repeatGroups: RepeatGroupSingle[];
+  readOnly: boolean;
   onAddItem: () => void;
 }
 
 function AddItemButton(props: AddItemButtonProps) {
-  const { repeatGroups, onAddItem } = props;
+  const { repeatGroups, readOnly, onAddItem } = props;
 
-  const isDisabled = repeatGroups[repeatGroups.length - 1].qrItem === null;
+  const isDisabled = repeatGroups[repeatGroups.length - 1].qrItem === null || readOnly;
 
   return (
     <Box display="flex" flexDirection="row-reverse">

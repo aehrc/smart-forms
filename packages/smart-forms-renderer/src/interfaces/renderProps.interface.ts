@@ -36,3 +36,7 @@ export interface PropsWithIsTabledAttribute {
 export interface PropsWithTextShownAttribute {
   textShown?: boolean;
 }
+
+export interface PropsWithParentIsReadOnlyAttribute {
+  parentIsReadOnly?: boolean;
+}

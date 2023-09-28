@@ -25,31 +25,42 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithTextShownAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerOptionFields';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithTextShownAttribute {
+    PropsWithTextShownAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   orientation: ChoiceItemOrientation;
 }
 
 function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange, orientation, textShown = true } = props;
+  const {
+    qItem,
+    qrItem,
+    orientation,
+    isRepeated,
+    textShown = true,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   // Init input value
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
   const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
 
-  // Get additional rendering extensions
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {
@@ -74,7 +85,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
       <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
         <Grid container columnSpacing={6}>
           <Grid item xs={5}>
-            <LabelWrapper qItem={qItem} />
+            <LabelWrapper qItem={qItem} readOnly={readOnly} />
           </Grid>
           <Grid item xs={7}>
             <ChoiceCheckboxAnswerValueSetFields
@@ -84,7 +95,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
               readOnly={readOnly}
               onCheckedChange={handleCheckedChange}
             />
-            <DisplayInstructions displayInstructions={displayInstructions} />
+            <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
           </Grid>
         </Grid>
       </FullWidthFormComponentBox>
@@ -100,7 +111,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
         readOnly={readOnly}
         onCheckedChange={handleCheckedChange}
       />
-      <DisplayInstructions displayInstructions={displayInstructions} />
+      <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
     </>
   );
 }

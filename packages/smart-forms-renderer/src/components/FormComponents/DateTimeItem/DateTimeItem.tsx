@@ -19,6 +19,7 @@ import React from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -29,21 +30,22 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import DateTimeField from './DateTimeField';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface DateTimeItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function DateTimeItem(props: DateTimeItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
-  const { displayPrompt, displayInstructions, readOnly, entryFormat } =
-    useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayPrompt, displayInstructions, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let dateTimeString: string | null = null;
@@ -81,7 +83,7 @@ function DateTimeItem(props: DateTimeItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-date-time-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <DateTimeField
           value={dateTimeDayJs}
           displayPrompt={displayPrompt}

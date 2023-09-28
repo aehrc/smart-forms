@@ -18,6 +18,7 @@
 import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -31,23 +32,24 @@ import TextField from './TextField';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringInput from '../../../hooks/useStringInput';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface TextItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function TextItem(props: TextItemProps) {
-  const { qItem, qrItem, isRepeated, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const {
     displayUnit,
     displayPrompt,
     displayInstructions,
-    readOnly,
     entryFormat,
     regexValidation,
     maxLength
@@ -109,7 +111,7 @@ function TextItem(props: TextItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-text-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <TextField
           linkId={qItem.linkId}
           input={input}

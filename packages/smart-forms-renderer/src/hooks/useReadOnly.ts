@@ -15,11 +15,16 @@
  * limitations under the License.
  */
 
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
+import type { QuestionnaireItem } from 'fhir/r4';
+import useRenderingExtensions from './useRenderingExtensions';
 
-export const QGroupHeadingTypography = styled(Typography, {
-  shouldForwardProp: (prop) => prop !== 'isTabHeading'
-})<{ isTabHeading?: boolean }>(({ isTabHeading }) => ({
-  fontSize: isTabHeading ? 16 : 15
-}));
+function useReadOnly(qItem: QuestionnaireItem, parentIsReadOnly: boolean | undefined): boolean {
+  let { readOnly } = useRenderingExtensions(qItem);
+  if (typeof parentIsReadOnly === 'boolean' && parentIsReadOnly) {
+    readOnly = parentIsReadOnly;
+  }
+
+  return readOnly;
+}
+
+export default useReadOnly;

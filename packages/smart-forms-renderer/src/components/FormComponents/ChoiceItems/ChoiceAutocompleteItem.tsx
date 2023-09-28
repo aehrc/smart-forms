@@ -38,22 +38,25 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem);
 
   // Init input value
@@ -62,8 +65,8 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
     valueCoding = qrChoice.answer[0].valueCoding;
   }
 
-  // Get additional rendering extensions
-  const { displayUnit, displayPrompt, displayInstructions, readOnly, entryFormat } =
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayUnit, displayPrompt, displayInstructions, entryFormat } =
     useRenderingExtensions(qItem);
 
   const maxList = 10;
@@ -166,11 +169,11 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
     <FullWidthFormComponentBox>
       <Grid container columnSpacing={6}>
         <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} />
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
           {choiceAutocomplete}
-          <DisplayInstructions displayInstructions={displayInstructions} />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>
     </FullWidthFormComponentBox>

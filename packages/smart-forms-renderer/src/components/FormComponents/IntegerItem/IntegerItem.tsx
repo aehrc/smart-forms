@@ -19,6 +19,7 @@ import React, { useCallback } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -33,24 +34,25 @@ import useIntegerCalculatedExpression from '../../../hooks/useIntegerCalculatedE
 import { parseValidInteger } from '../../../utils/parseInputs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useNumberInput from '../../../hooks/useNumberInput';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface IntegerItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function IntegerItem(props: IntegerItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const {
     displayUnit,
     displayPrompt,
     displayInstructions,
-    readOnly,
     entryFormat,
     regexValidation,
     maxLength
@@ -120,7 +122,7 @@ function IntegerItem(props: IntegerItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-integer-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}
           value={value}

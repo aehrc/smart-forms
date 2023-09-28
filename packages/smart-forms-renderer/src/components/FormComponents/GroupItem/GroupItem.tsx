@@ -22,6 +22,7 @@ import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
@@ -31,17 +32,18 @@ import GroupHeading from './GroupHeading';
 import { GroupCard } from './GroupItem.styles';
 import NextTabButtonWrapper from './NextTabButtonWrapper';
 import GroupItemSwitcher from './GroupItemSwitcher';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface GroupItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithIsRepeatedAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
   tabs?: Tabs;
   currentTabIndex?: number;
-  goToNextTab?: (nextTabIndex: number) => unknown;
 }
 
 function GroupItem(props: GroupItemProps) {
@@ -53,11 +55,13 @@ function GroupItem(props: GroupItemProps) {
     tabIsMarkedAsComplete,
     tabs,
     currentTabIndex,
+    parentIsReadOnly,
     onQrItemChange
   } = props;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
@@ -96,6 +100,7 @@ function GroupItem(props: GroupItemProps) {
       <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
         <GroupHeading
           qItem={qItem}
+          readOnly={readOnly}
           tabIsMarkedAsComplete={tabIsMarkedAsComplete}
           isRepeated={isRepeated}
         />
@@ -108,6 +113,7 @@ function GroupItem(props: GroupItemProps) {
               qItem={qItem}
               qrItemOrItems={qrItemOrItems}
               groupCardElevation={groupCardElevation}
+              parentIsReadOnly={readOnly}
               onQrItemChange={handleQrItemChange}
               onQrRepeatGroupChange={handleQrRepeatGroupChange}
             />

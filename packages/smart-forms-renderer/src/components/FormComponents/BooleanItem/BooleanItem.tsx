@@ -19,6 +19,7 @@ import React from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -28,20 +29,22 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import BooleanField from './BooleanField';
 import Box from '@mui/material/Box';
+import useReadOnly from '../../../hooks/useReadOnly';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function BooleanItem(props: BooleanItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
-  // Get additional rendering extensions
-  const { displayInstructions, readOnly } = useRenderingExtensions(qItem);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init input value
   let checked = false;
@@ -72,7 +75,7 @@ function BooleanItem(props: BooleanItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-boolean-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>
