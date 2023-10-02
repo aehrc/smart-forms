@@ -39,7 +39,7 @@ describe('pre-test setup', () => {
       .should('be.checked')
       .waitForFormUpdate();
 
-    cy.clickOnRendererOperation('Save as Draft');
+    cy.clickOnRendererOperation('Save Progress');
     cy.wait('@saveAsDraft').its('response.statusCode').should('eq', 201);
     cy.clickOnNavPage('Back to Questionnaires');
   });

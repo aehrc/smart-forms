@@ -150,7 +150,7 @@ Cypress.Commands.add('createDraftResponse', () => {
   cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
   cy.initAgeValue(60);
 
-  cy.clickOnRendererOperation('Save as Draft');
+  cy.clickOnRendererOperation('Save Progress');
   cy.wait('@savingResponse');
 });
 
