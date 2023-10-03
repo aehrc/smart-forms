@@ -34,7 +34,7 @@ function ShowCompletedTabsSection(props: ShowCompletedTabsSectionProps) {
     <Box display="flex" justifyContent="center" alignItems="center" mx={2} columnGap={0.5}>
       <Typography
         variant="overline"
-        fontSize={9}
+        fontSize={8.5}
         color={completedTabsExpanded ? 'text.secondary' : 'text.disabled'}>
         Completed tabs {completedTabsExpanded ? 'shown' : 'hidden'}
       </Typography>

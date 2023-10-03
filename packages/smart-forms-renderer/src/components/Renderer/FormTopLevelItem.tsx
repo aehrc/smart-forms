@@ -44,7 +44,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isTablet = useResponsive('up', 'md');
 
   const itemIsGroup = topLevelQItem.type === 'group';
 
@@ -74,7 +74,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // If form is tabbed, it is rendered as a tabbed form
   if (itemContainsTabs || itemIsTabContainer) {
-    if (isDesktop) {
+    if (isTablet) {
       return (
         <FormBodyTabbed
           key={topLevelQItem.linkId}
