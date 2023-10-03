@@ -48,7 +48,7 @@ function NotLaunchedPopover() {
               }}>
               <PopoverMenuWrapper>
                 <Typography variant="subtitle1">
-                  Save operations disabled, app not launched via SMART
+                  Saving is disabled, app not launched via SMART
                 </Typography>
               </PopoverMenuWrapper>
             </Popover>

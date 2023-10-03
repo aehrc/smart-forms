@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import { Box, List, Typography } from '@mui/material';
+import { Box, List } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import RendererOperationItem from './RendererOperationItem.tsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { NavSectionHeading } from '../../../../components/Nav/Nav.styles.ts';
 
 function RendererNavSection() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function RendererNavSection() {
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
-        <Typography variant="overline">Pages</Typography>
+        <NavSectionHeading>Pages</NavSectionHeading>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
         <RendererOperationItem

@@ -65,8 +65,7 @@ export const ResponseStyledLabel = styled(Box, {
   justifyContent: 'center',
   textTransform: 'capitalize',
   padding: theme.spacing(0, 1),
-  fontSize: theme.typography.pxToRem(12),
-  fontFamily: theme.typography.fontFamily,
+  fontSize: theme.typography.body1.fontSize,
   color: handleColorType(color, theme),
   backgroundColor: handleBgColorType(color, theme),
   fontWeight: theme.typography.fontWeightBold
