@@ -95,17 +95,19 @@ export function filterValueSetAnswersRecursive(
     return { ...qrItem, item: qrItems };
   }
 
-  const valueSetOptionCodings = valueSetPromises[qrItem.linkId]?.valueSet?.expansion?.contains;
+  const linkId = qrItem.linkId;
+
+  const valueSetOptionCodings = valueSetPromises[linkId]?.valueSet?.expansion?.contains;
   if (qrItem.answer && valueSetOptionCodings) {
     return { ...qrItem, answer: cleanAnswers(qrItem.answer, valueSetOptionCodings) };
   }
 
-  const answerOptionCodings = answerOptions[qrItem.linkId]?.map((option) => option.valueCoding);
+  const answerOptionCodings = answerOptions[linkId]?.map((option) => option.valueCoding);
   if (qrItem.answer && answerOptionCodings) {
     return { ...qrItem, answer: cleanAnswers(qrItem.answer, answerOptionCodings) };
   }
 
-  const containedValueSetOptionCodings = containedResources[qrItem.linkId]?.expansion?.contains;
+  const containedValueSetOptionCodings = containedResources[linkId]?.expansion?.contains;
   if (qrItem.answer && containedValueSetOptionCodings) {
     const cleanedAnswers = cleanAnswers(qrItem.answer, containedValueSetOptionCodings);
 

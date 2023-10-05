@@ -63,7 +63,7 @@ export function evaluateExpressions(
  * @author Sean Fong
  */
 export function evaluateItemPopulationContexts(
-  itemPopulationContexts: ItemPopulationContext[],
+  itemPopulationContexts: Record<string, ItemPopulationContext>,
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[]
 ): Record<string, any> {

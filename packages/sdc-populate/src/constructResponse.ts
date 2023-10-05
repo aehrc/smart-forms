@@ -157,9 +157,11 @@ function constructResponseItemRecursive(
       // Create number of repeat group instances based on the number of answers that the first child item has
       return constructRepeatGroupInstances(
         qItem,
+        qContainedResources,
         initialExpressions,
         valueSetPromises,
-        answerOptions
+        answerOptions,
+        containedValueSets
       );
     }
 
@@ -187,9 +189,11 @@ function constructResponseItemRecursive(
     return constructGroupItem({
       qItem,
       qrItems,
+      qContainedResources,
       initialExpressions,
       valueSetPromises,
-      answerOptions
+      answerOptions,
+      containedValueSets
     });
   }
 
@@ -206,13 +210,23 @@ function constructResponseItemRecursive(
 interface ConstructGroupItemParams {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
+  qContainedResources: FhirResource[];
   initialExpressions: Record<string, InitialExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  containedValueSets: Record<string, ValueSet>;
 }
 
 function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResponseItem | null {
-  const { qItem, qrItems, initialExpressions, valueSetPromises, answerOptions } = params;
+  const {
+    qItem,
+    qrItems,
+    qContainedResources,
+    initialExpressions,
+    valueSetPromises,
+    answerOptions,
+    containedValueSets
+  } = params;
 
   // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
@@ -229,6 +243,7 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
       }
 
       recordAnswerOption(qItem, answerOptions);
+      recordContainedValueSet(qItem, qContainedResources, containedValueSets);
     }
   }
 
@@ -428,9 +443,11 @@ export function checkIsTime(value: string): boolean {
  */
 function constructRepeatGroupInstances(
   qRepeatGroupParent: QuestionnaireItem,
+  qContainedResources: FhirResource[],
   initialExpressions: Record<string, InitialExpression>,
   valueSetPromises: Record<string, ValueSetPromise>,
-  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
+  containedValueSets: Record<string, ValueSet>
 ): QuestionnaireResponseItem[] {
   if (!qRepeatGroupParent.item) return [];
 
@@ -456,6 +473,7 @@ function constructRepeatGroupInstances(
       }
 
       recordAnswerOption(childItem, answerOptions);
+      recordContainedValueSet(childItem, qContainedResources, containedValueSets);
 
       childItemAnswers[i] = newValues;
       continue;

@@ -20,16 +20,18 @@ import type { ValueSet } from 'fhir/r4';
 export interface InitialExpression {
   expression: string;
   value: any[] | undefined;
+  itemPopulationContextLinkId?: string;
 }
 
 export interface ItemPopulationContext {
+  linkId: string;
   name: string;
   expression: string;
 }
 
 export interface PopulationExpressions {
   initialExpressions: Record<string, InitialExpression>;
-  itemPopulationContexts: ItemPopulationContext[];
+  itemPopulationContexts: Record<string, ItemPopulationContext>;
 }
 
 export interface ValueSetPromise {
