@@ -49,15 +49,17 @@ export function evaluateInitialCalculatedExpressions(
     return calculatedExpressions;
   }
 
-  const initialExpressions: Record<string, CalculatedExpression> = { ...calculatedExpressions };
+  const initialCalculatedExpressions: Record<string, CalculatedExpression> = {
+    ...calculatedExpressions
+  };
 
-  if (Object.keys(initialExpressions).length > 0) {
+  if (Object.keys(initialCalculatedExpressions).length > 0) {
     const fhirPathContext: Record<string, any> = createFhirPathContext(
       initialResponse,
       variablesFhirPath
     );
 
-    for (const linkId in initialExpressions) {
+    for (const linkId in initialCalculatedExpressions) {
       try {
         const result = fhirpath.evaluate(
           initialResponse,
@@ -67,7 +69,7 @@ export function evaluateInitialCalculatedExpressions(
         );
 
         if (calculatedExpressions[linkId].value !== result[0]) {
-          initialExpressions[linkId].value = result[0];
+          initialCalculatedExpressions[linkId].value = result[0];
         }
       } catch (e) {
         console.warn(
@@ -77,7 +79,7 @@ export function evaluateInitialCalculatedExpressions(
       }
     }
   }
-  return initialExpressions;
+  return initialCalculatedExpressions;
 }
 
 export function evaluateCalculatedExpressions(
@@ -285,7 +287,7 @@ function constructSingleItem(
 
 function parseValueToAnswer(
   qItem: QuestionnaireItem,
-  value: string | number
+  value: string | number | object
 ): QuestionnaireResponseItemAnswer {
   if (typeof value === 'number') {
     if (qItem.type === 'integer') {
@@ -295,5 +297,9 @@ function parseValueToAnswer(
     return { valueDecimal: value };
   }
 
-  return { valueString: value };
+  if (typeof value === 'string') {
+    return { valueString: value };
+  }
+
+  return { valueCoding: value };
 }
