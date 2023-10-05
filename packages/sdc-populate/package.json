@@ -23,7 +23,7 @@
     "dayjs": "^1.11.10",
     "moment": "^2.29.4",
     "fhirclient": "^2.5.2",
-    "fhirpath": "^3.6.1"
+    "fhirpath": "^3.7.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",

@@ -45,7 +45,7 @@
     "allotment": "^1.19.2",
     "dayjs": "^1.11.10",
     "fhirclient": "^2.5.2",
-    "fhirpath": "^3.6.1",
+    "fhirpath": "^3.7.1",
     "html-react-parser": "^4.2.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
