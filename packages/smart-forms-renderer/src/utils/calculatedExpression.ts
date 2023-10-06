@@ -71,7 +71,7 @@ export function evaluateInitialCalculatedExpressions(
           fhirpath_r4_model
         );
 
-        if (calculatedExpressions[linkId].value !== result[0]) {
+        if (!_isEqual(calculatedExpressions[linkId].value, result[0])) {
           initialCalculatedExpressions[linkId].value = result[0];
         }
       } catch (e) {
@@ -107,7 +107,7 @@ export function evaluateCalculatedExpressions(
       );
 
       if (result.length > 0) {
-        if (calculatedExpressions[linkId].value !== result[0]) {
+        if (!_isEqual(calculatedExpressions[linkId].value, result[0])) {
           isUpdated = true;
           updatedCalculatedExpressions[linkId].value = result[0];
         }
