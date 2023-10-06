@@ -352,53 +352,13 @@ function getAnswerValues(
 ): { newValues: QuestionnaireResponseItemAnswer[]; expandRequired: boolean } {
   let expandRequired = false;
 
-  const newValues = initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
-    if (qItem.answerOption) {
-      const answerOption = qItem.answerOption.find(
-        (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
-      );
-
-      if (answerOption) {
-        return answerOption;
-      }
-    }
-
-    if (typeof value === 'boolean' && qItem.type === 'boolean') {
-      return { valueBoolean: value };
-    }
-
-    if (typeof value === 'number') {
-      if (qItem.type === 'decimal') {
-        return { valueDecimal: value };
-      }
-      if (qItem.type === 'integer') {
-        return { valueInteger: value };
-      }
-    }
-
-    if (typeof value === 'object') {
-      return { valueCoding: value };
-    }
-
-    // Value is string at this point
-    if (qItem.type === 'date' && checkIsDateTime(value)) {
-      return { valueDate: value };
-    }
-
-    if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
-      return { valueDateTime: value };
-    }
-
-    if (qItem.type === 'time' && checkIsTime(value)) {
-      return { valueTime: value };
-    }
-
-    // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
-    if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
+  const newValues = initialValues.map((value: any) => {
+    const parsedAnswer = parseValueToAnswer(qItem, value);
+    if (parsedAnswer.valueString && qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
       expandRequired = true;
     }
 
-    return { valueString: value };
+    return parsedAnswer;
   });
 
   return { newValues, expandRequired };
@@ -410,6 +370,50 @@ function itemIsHidden(item: QuestionnaireItem): boolean {
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden' &&
       extension.valueBoolean === true
   );
+}
+
+function parseValueToAnswer(qItem: QuestionnaireItem, value: any): QuestionnaireResponseItemAnswer {
+  if (qItem.answerOption) {
+    const answerOption = qItem.answerOption.find(
+      (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
+    );
+
+    if (answerOption) {
+      return answerOption;
+    }
+  }
+
+  if (typeof value === 'boolean' && qItem.type === 'boolean') {
+    return { valueBoolean: value };
+  }
+
+  if (typeof value === 'number') {
+    if (qItem.type === 'decimal') {
+      return { valueDecimal: value };
+    }
+    if (qItem.type === 'integer') {
+      return { valueInteger: value };
+    }
+  }
+
+  if (typeof value === 'object') {
+    return { valueCoding: value };
+  }
+
+  // Value is string at this point
+  if (qItem.type === 'date' && checkIsDateTime(value)) {
+    return { valueDate: value };
+  }
+
+  if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
+    return { valueDateTime: value };
+  }
+
+  if (qItem.type === 'time' && checkIsTime(value)) {
+    return { valueTime: value };
+  }
+
+  return { valueString: value };
 }
 
 /**
