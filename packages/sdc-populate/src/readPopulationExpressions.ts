@@ -26,7 +26,7 @@ import type { PopulationExpressions } from './interfaces/expressions.interface';
 export function readPopulationExpressions(questionnaire: Questionnaire): PopulationExpressions {
   const populationExpressions = {
     initialExpressions: {},
-    itemPopulationContexts: []
+    itemPopulationContexts: {}
   };
 
   if (!questionnaire.item) return populationExpressions;
@@ -53,16 +53,17 @@ function readQuestionnaireItemRecursive(
       readQuestionnaireItemRecursive(item, populationExpressions);
     });
 
-    // Read item population context of qGroup
+    // Read item population context of group item
     const itemPopulationContext = getItemPopulationContext(item);
     if (itemPopulationContext && itemPopulationContext.expression && itemPopulationContext.name) {
-      populationExpressions.itemPopulationContexts.push({
+      populationExpressions.itemPopulationContexts[item.linkId] = {
+        linkId: item.linkId,
         name: itemPopulationContext.name,
         expression: itemPopulationContext.expression
-      });
+      };
     }
 
-    // Read initial expression of qItem
+    // Read initial expression of single item
     const initialExpression = getInitialExpression(item);
     if (initialExpression && initialExpression.expression) {
       populationExpressions.initialExpressions[item.linkId] = {

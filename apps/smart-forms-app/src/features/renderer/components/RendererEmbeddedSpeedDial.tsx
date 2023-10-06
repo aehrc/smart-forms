@@ -159,7 +159,7 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
         {showSaveButtons && (
           <SpeedDialAction
             icon={<SaveIcon />}
-            tooltipTitle={'Save as Draft'}
+            tooltipTitle={'Save Progress'}
             tooltipOpen
             onClick={handleSaveAsDraft}
           />

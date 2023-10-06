@@ -67,7 +67,7 @@ function RendererNav(props: RendererNavProps) {
 
       {isNotLaunched ? (
         <NavErrorAlertWrapper>
-          <NavErrorAlert message={'Save operations disabled, app not launched via SMART'} />
+          <NavErrorAlert message="Saving is disabled, app not launched via SMART" />
         </NavErrorAlertWrapper>
       ) : null}
 

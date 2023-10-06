@@ -73,7 +73,7 @@ describe('response viewer', () => {
       cy.goToPatientDetailsTab();
       cy.initAgeValue(60);
 
-      cy.clickOnRendererOperation('Save as Draft');
+      cy.clickOnRendererOperation('Save Progress');
     });
 
     it('save as final', () => {

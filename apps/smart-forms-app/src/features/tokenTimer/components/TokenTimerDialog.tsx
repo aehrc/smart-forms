@@ -129,7 +129,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <LoadingButton loading={isSaving} onClick={handleSave}>
-          Save as Draft
+          Save Progress
         </LoadingButton>
       </DialogActions>
     </Dialog>

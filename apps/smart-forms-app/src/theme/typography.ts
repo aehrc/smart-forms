@@ -38,9 +38,7 @@ export function responsiveFontSizes(props: { sm: number; md: number; lg: number 
 
 const typography = {
   fontFamily: ['Inter', 'sans-serif', 'Roboto', 'Arial', '"Helvetica Neue"', 'Helvetica'].join(','),
-  fontWeightRegular: 400,
-  fontWeightMedium: 600,
-  fontWeightBold: 700,
+  fontWeightRegular: 500,
   h1: {
     fontWeight: 800,
     lineHeight: 80 / 64,
@@ -85,11 +83,11 @@ const typography = {
   subtitle2: {
     fontWeight: 600,
     lineHeight: 22 / 14,
-    fontSize: pxToRem(11)
+    fontSize: pxToRem(11.5)
   },
   body1: {
     lineHeight: 1.5,
-    fontSize: pxToRem(12)
+    fontSize: pxToRem(12.25)
   },
   body2: {
     lineHeight: 22 / 14,

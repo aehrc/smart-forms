@@ -157,9 +157,11 @@ function constructResponseItemRecursive(
       // Create number of repeat group instances based on the number of answers that the first child item has
       return constructRepeatGroupInstances(
         qItem,
+        qContainedResources,
         initialExpressions,
         valueSetPromises,
-        answerOptions
+        answerOptions,
+        containedValueSets
       );
     }
 
@@ -187,9 +189,11 @@ function constructResponseItemRecursive(
     return constructGroupItem({
       qItem,
       qrItems,
+      qContainedResources,
       initialExpressions,
       valueSetPromises,
-      answerOptions
+      answerOptions,
+      containedValueSets
     });
   }
 
@@ -206,13 +210,23 @@ function constructResponseItemRecursive(
 interface ConstructGroupItemParams {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
+  qContainedResources: FhirResource[];
   initialExpressions: Record<string, InitialExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  containedValueSets: Record<string, ValueSet>;
 }
 
 function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResponseItem | null {
-  const { qItem, qrItems, initialExpressions, valueSetPromises, answerOptions } = params;
+  const {
+    qItem,
+    qrItems,
+    qContainedResources,
+    initialExpressions,
+    valueSetPromises,
+    answerOptions,
+    containedValueSets
+  } = params;
 
   // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
@@ -229,6 +243,7 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
       }
 
       recordAnswerOption(qItem, answerOptions);
+      recordContainedValueSet(qItem, qContainedResources, containedValueSets);
     }
   }
 
@@ -337,53 +352,13 @@ function getAnswerValues(
 ): { newValues: QuestionnaireResponseItemAnswer[]; expandRequired: boolean } {
   let expandRequired = false;
 
-  const newValues = initialValues.map((value: any): QuestionnaireResponseItemAnswer => {
-    if (qItem.answerOption) {
-      const answerOption = qItem.answerOption.find(
-        (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
-      );
-
-      if (answerOption) {
-        return answerOption;
-      }
-    }
-
-    if (typeof value === 'boolean' && qItem.type === 'boolean') {
-      return { valueBoolean: value };
-    }
-
-    if (typeof value === 'number') {
-      if (qItem.type === 'decimal') {
-        return { valueDecimal: value };
-      }
-      if (qItem.type === 'integer') {
-        return { valueInteger: value };
-      }
-    }
-
-    if (typeof value === 'object') {
-      return { valueCoding: value };
-    }
-
-    // Value is string at this point
-    if (qItem.type === 'date' && checkIsDateTime(value)) {
-      return { valueDate: value };
-    }
-
-    if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
-      return { valueDateTime: value };
-    }
-
-    if (qItem.type === 'time' && checkIsTime(value)) {
-      return { valueTime: value };
-    }
-
-    // Process answerValueSets only if value is a string - so we don't make unnecessary $expand requests
-    if (qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
+  const newValues = initialValues.map((value: any) => {
+    const parsedAnswer = parseValueToAnswer(qItem, value);
+    if (parsedAnswer.valueString && qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
       expandRequired = true;
     }
 
-    return { valueString: value };
+    return parsedAnswer;
   });
 
   return { newValues, expandRequired };
@@ -395,6 +370,50 @@ function itemIsHidden(item: QuestionnaireItem): boolean {
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden' &&
       extension.valueBoolean === true
   );
+}
+
+function parseValueToAnswer(qItem: QuestionnaireItem, value: any): QuestionnaireResponseItemAnswer {
+  if (qItem.answerOption) {
+    const answerOption = qItem.answerOption.find(
+      (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
+    );
+
+    if (answerOption) {
+      return answerOption;
+    }
+  }
+
+  if (typeof value === 'boolean' && qItem.type === 'boolean') {
+    return { valueBoolean: value };
+  }
+
+  if (typeof value === 'number') {
+    if (qItem.type === 'decimal') {
+      return { valueDecimal: value };
+    }
+    if (qItem.type === 'integer') {
+      return { valueInteger: value };
+    }
+  }
+
+  if (typeof value === 'object') {
+    return { valueCoding: value };
+  }
+
+  // Value is string at this point
+  if (qItem.type === 'date' && checkIsDateTime(value)) {
+    return { valueDate: value };
+  }
+
+  if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
+    return { valueDateTime: value };
+  }
+
+  if (qItem.type === 'time' && checkIsTime(value)) {
+    return { valueTime: value };
+  }
+
+  return { valueString: value };
 }
 
 /**
@@ -428,9 +447,11 @@ export function checkIsTime(value: string): boolean {
  */
 function constructRepeatGroupInstances(
   qRepeatGroupParent: QuestionnaireItem,
+  qContainedResources: FhirResource[],
   initialExpressions: Record<string, InitialExpression>,
   valueSetPromises: Record<string, ValueSetPromise>,
-  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
+  containedValueSets: Record<string, ValueSet>
 ): QuestionnaireResponseItem[] {
   if (!qRepeatGroupParent.item) return [];
 
@@ -456,6 +477,7 @@ function constructRepeatGroupInstances(
       }
 
       recordAnswerOption(childItem, answerOptions);
+      recordContainedValueSet(childItem, qContainedResources, containedValueSets);
 
       childItemAnswers[i] = newValues;
       continue;

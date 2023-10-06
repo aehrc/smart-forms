@@ -60,7 +60,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
 
         {isDesktop && navIsExpanded ? null : (
           <LogoWrapper>
-            <Logo />
+            <Logo isRendererHeader />
           </LogoWrapper>
         )}
 

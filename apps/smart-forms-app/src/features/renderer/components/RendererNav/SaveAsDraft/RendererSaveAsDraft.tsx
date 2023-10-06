@@ -91,7 +91,7 @@ function RendererSaveAsDraft() {
 
   return (
     <RendererOperationItem
-      title={'Save as Draft'}
+      title={'Save Progress'}
       icon={<SaveIcon />}
       disabled={buttonIsDisabled}
       onClick={handleClick}

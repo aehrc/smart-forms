@@ -22,6 +22,7 @@ import type {
   Expression,
   Questionnaire,
   QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
@@ -32,6 +33,8 @@ import { createFhirPathContext } from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
+import dayjs from 'dayjs';
+import moment from 'moment';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -49,15 +52,17 @@ export function evaluateInitialCalculatedExpressions(
     return calculatedExpressions;
   }
 
-  const initialExpressions: Record<string, CalculatedExpression> = { ...calculatedExpressions };
+  const initialCalculatedExpressions: Record<string, CalculatedExpression> = {
+    ...calculatedExpressions
+  };
 
-  if (Object.keys(initialExpressions).length > 0) {
+  if (Object.keys(initialCalculatedExpressions).length > 0) {
     const fhirPathContext: Record<string, any> = createFhirPathContext(
       initialResponse,
       variablesFhirPath
     );
 
-    for (const linkId in initialExpressions) {
+    for (const linkId in initialCalculatedExpressions) {
       try {
         const result = fhirpath.evaluate(
           initialResponse,
@@ -67,7 +72,7 @@ export function evaluateInitialCalculatedExpressions(
         );
 
         if (calculatedExpressions[linkId].value !== result[0]) {
-          initialExpressions[linkId].value = result[0];
+          initialCalculatedExpressions[linkId].value = result[0];
         }
       } catch (e) {
         console.warn(
@@ -77,7 +82,7 @@ export function evaluateInitialCalculatedExpressions(
       }
     }
   }
-  return initialExpressions;
+  return initialCalculatedExpressions;
 }
 
 export function evaluateCalculatedExpressions(
@@ -283,17 +288,68 @@ function constructSingleItem(
   };
 }
 
-function parseValueToAnswer(
-  qItem: QuestionnaireItem,
-  value: string | number
-): QuestionnaireResponseItemAnswer {
+// duplicate functions in sdc-populate
+function parseValueToAnswer(qItem: QuestionnaireItem, value: any): QuestionnaireResponseItemAnswer {
+  if (qItem.answerOption) {
+    const answerOption = qItem.answerOption.find(
+      (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
+    );
+
+    if (answerOption) {
+      return answerOption;
+    }
+  }
+
+  if (typeof value === 'boolean' && qItem.type === 'boolean') {
+    return { valueBoolean: value };
+  }
+
   if (typeof value === 'number') {
+    if (qItem.type === 'decimal') {
+      return { valueDecimal: value };
+    }
     if (qItem.type === 'integer') {
       return { valueInteger: value };
     }
+  }
 
-    return { valueDecimal: value };
+  if (typeof value === 'object') {
+    return { valueCoding: value };
+  }
+
+  // Value is string at this point
+  if (qItem.type === 'date' && checkIsDateTime(value)) {
+    return { valueDate: value };
+  }
+
+  if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
+    return { valueDateTime: value };
+  }
+
+  if (qItem.type === 'time' && checkIsTime(value)) {
+    return { valueTime: value };
   }
 
   return { valueString: value };
+}
+
+/**
+ * Check if an answer is a datetime in the format YYYY, YYYY-MM, YYYY-MM-DD, YYYY-MM-DDThh:mm:ss+zz:zz
+ *
+ * @author Sean Fong
+ */
+export function checkIsDateTime(value: string): boolean {
+  const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
+  const formattedDate = dayjs(value).format();
+  return moment(formattedDate, acceptedFormats, true).isValid();
+}
+
+/**
+ * Check if an answer is in a  time format - Regex: ([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?
+ *
+ * @author Sean Fong
+ */
+export function checkIsTime(value: string): boolean {
+  const timeRegex = /^([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?$/;
+  return timeRegex.test(value);
 }
