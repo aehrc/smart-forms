@@ -32,6 +32,8 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
 
+  const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
+
   const updatePopulatedProperties = useQuestionnaireStore(
     (state) => state.updatePopulatedProperties
   );
@@ -84,6 +86,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
     patient,
     user,
     encounter,
+    fhirPathContext,
     (params: PopulateFormParams) => {
       const { populated, hasWarnings } = params;
 

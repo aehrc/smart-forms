@@ -69,33 +69,33 @@ function createLaunchContextParam(
   launchContext: LaunchContext,
   patient: Patient,
   user: Practitioner,
-  encounter: Encounter | null
+  encounter: Encounter | null,
+  fhirPathContext: Record<string, any>
 ): ParametersParameter | null {
   const name = launchContext.extension[0].valueId ?? launchContext.extension[0].valueCoding?.code;
   if (!name) {
     return null;
   }
 
-  // let resource :string
+  // FIXME need to eventually extend this to other resources like PractitionerRole
   const resourceType = launchContext.extension[1].valueCode;
   let resource: FhirResource | null;
-  switch (resourceType) {
-    case 'Patient':
-      resource = patient;
-      break;
-    case 'Practitioner':
-      resource = user;
-      break;
-    case 'Encounter':
-      resource = encounter;
-      break;
-    default:
-      return null;
+  if (name === 'patient' && resourceType === 'Patient') {
+    resource = patient;
+  } else if (name === 'user' && resourceType === 'Practitioner') {
+    resource = user;
+  } else if (name === 'encounter' && resourceType === 'Encounter') {
+    resource = encounter;
+  } else {
+    return null;
   }
 
   if (!resource) {
     return null;
   }
+
+  // Update fhirPathContext with launchContext resources
+  fhirPathContext[name] = resource;
 
   return {
     name: 'context',
@@ -179,7 +179,8 @@ export function createPopulateInputParameters(
   encounter: Encounter | null,
   launchContexts: LaunchContext[],
   sourceQueries: SourceQuery[],
-  questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[]
+  questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[],
+  fhirPathContext: Record<string, any>
 ): Parameters | null {
   const patientSubject = createPatientSubject(questionnaire, patient);
   if (!patientSubject) {
@@ -210,7 +211,13 @@ export function createPopulateInputParameters(
   // add launch contexts
   if (launchContexts.length > 0) {
     for (const launchContext of launchContexts) {
-      const launchContextParam = createLaunchContextParam(launchContext, patient, user, encounter);
+      const launchContextParam = createLaunchContextParam(
+        launchContext,
+        patient,
+        user,
+        encounter,
+        fhirPathContext
+      );
       if (launchContextParam) {
         contexts.push(launchContextParam);
       }

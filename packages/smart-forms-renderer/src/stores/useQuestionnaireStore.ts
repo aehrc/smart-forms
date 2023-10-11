@@ -56,6 +56,7 @@ export interface UseQuestionnaireStoreType {
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
   cachedValueSetCodings: Record<string, Coding[]>;
+  fhirPathContext: Record<string, any>;
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
@@ -91,6 +92,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
   processedValueSetCodings: {},
   processedValueSetUrls: {},
   cachedValueSetCodings: {},
+  fhirPathContext: {},
   buildSourceQuestionnaire: async (
     questionnaire,
     questionnaireResponse = cloneDeep(emptyResponse),
@@ -108,14 +110,16 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
       initialCalculatedExpressions,
-      firstVisibleTab
+      firstVisibleTab,
+      updatedFhirPathContext
     } = initialiseFormFromResponse({
       questionnaireResponse,
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
       variablesFhirPath: questionnaireModel.variables.fhirPathVariables,
-      tabs: questionnaireModel.tabs
+      tabs: questionnaireModel.tabs,
+      fhirPathContext: questionnaireModel.fhirPathContext
     });
 
     set({
@@ -131,7 +135,8 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
       calculatedExpressions: initialCalculatedExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
-      processedValueSetUrls: questionnaireModel.processedValueSetUrls
+      processedValueSetUrls: questionnaireModel.processedValueSetUrls,
+      fhirPathContext: updatedFhirPathContext
     });
   },
   destroySourceQuestionnaire: () =>
@@ -148,7 +153,8 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
       calculatedExpressions: {},
       answerExpressions: {},
       processedValueSetCodings: {},
-      processedValueSetUrls: {}
+      processedValueSetUrls: {},
+      fhirPathContext: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
   markTabAsComplete: (tabLinkId: string) => {
@@ -182,20 +188,31 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: (updatedResponse: QuestionnaireResponse) => {
-    const { isUpdated, updatedCalculatedExpressions, updatedEnableWhenExpressions } =
-      evaluateUpdatedExpressions({
-        updatedResponse: updatedResponse,
-        enableWhenExpressions: get().enableWhenExpressions,
-        calculatedExpressions: get().calculatedExpressions,
-        variablesFhirPath: get().variables.fhirPathVariables
-      });
+    const {
+      isUpdated,
+      updatedEnableWhenExpressions,
+      updatedCalculatedExpressions,
+      updatedFhirPathContext
+    } = evaluateUpdatedExpressions({
+      updatedResponse,
+      enableWhenExpressions: get().enableWhenExpressions,
+      calculatedExpressions: get().calculatedExpressions,
+      variablesFhirPath: get().variables.fhirPathVariables,
+      existingFhirPathContext: get().fhirPathContext
+    });
 
     if (isUpdated) {
       set(() => ({
         enableWhenExpressions: updatedEnableWhenExpressions,
-        calculatedExpressions: updatedCalculatedExpressions
+        calculatedExpressions: updatedCalculatedExpressions,
+        fhirPathContext: updatedFhirPathContext
       }));
+      return 0;
     }
+
+    set(() => ({
+      fhirPathContext: updatedFhirPathContext
+    }));
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({
@@ -205,11 +222,14 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
       }
     })),
   updatePopulatedProperties: (populatedResponse: QuestionnaireResponse, persistTabIndex) => {
-    const initialCalculatedExpressions = evaluateInitialCalculatedExpressions({
+    const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
       calculatedExpressions: get().calculatedExpressions,
-      variablesFhirPath: get().variables.fhirPathVariables
+      variablesFhirPath: get().variables.fhirPathVariables,
+      existingFhirPathContext: get().fhirPathContext
     });
+    const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
+    let updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
 
     const updatedResponse = initialiseCalculatedExpressionValues(
       get().sourceQuestionnaire,
@@ -228,15 +248,18 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
-      tabs: get().tabs
+      tabs: get().tabs,
+      fhirPathContext: updatedFhirPathContext
     });
+    updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
 
     set(() => ({
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
-      currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab
+      currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab,
+      fhirPathContext: updatedFhirPathContext
     }));
 
     return updatedResponse;

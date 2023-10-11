@@ -86,7 +86,8 @@ export async function createQuestionnaireModel(
     calculatedExpressions,
     answerExpressions,
     processedValueSetCodings,
-    processedValueSetUrls
+    processedValueSetUrls,
+    fhirPathContext: {}
   };
 }
 
@@ -101,6 +102,7 @@ function createEmptyModel(): QuestionnaireModel {
     answerExpressions: {},
     enableWhenItems: {},
     processedValueSetCodings: {},
-    processedValueSetUrls: {}
+    processedValueSetUrls: {},
+    fhirPathContext: {}
   };
 }

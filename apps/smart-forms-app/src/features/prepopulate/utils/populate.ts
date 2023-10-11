@@ -48,6 +48,7 @@ export async function populateQuestionnaire(
   patient: Patient,
   user: Practitioner,
   encounter: Encounter | null,
+  fhirPathContext: Record<string, any>,
   populateForm: {
     (params: PopulateFormParams): void;
   },
@@ -75,7 +76,8 @@ export async function populateQuestionnaire(
     encounter,
     launchContexts,
     sourceQueries,
-    questionnaireLevelVariables
+    questionnaireLevelVariables,
+    fhirPathContext
   );
 
   if (!inputParameters) {

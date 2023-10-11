@@ -31,6 +31,7 @@ interface initialFormFromResponseParams {
   calculatedExpressions: Record<string, CalculatedExpression>;
   variablesFhirPath: Record<string, Expression[]>;
   tabs: Tabs;
+  fhirPathContext: Record<string, any>;
 }
 
 export function initialiseFormFromResponse(params: initialFormFromResponseParams): {
@@ -39,6 +40,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
   initialEnableWhenExpressions: Record<string, EnableWhenExpression>;
   initialCalculatedExpressions: Record<string, CalculatedExpression>;
   firstVisibleTab: number;
+  updatedFhirPathContext: Record<string, any>;
 } {
   const {
     questionnaireResponse,
@@ -48,23 +50,30 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     variablesFhirPath,
     tabs
   } = params;
+  let updatedFhirPathContext = params.fhirPathContext;
 
   const { initialisedItems, linkedQuestions } = assignPopulatedAnswersToEnableWhen(
     enableWhenItems,
     questionnaireResponse
   );
 
-  const initialEnableWhenExpressions = evaluateInitialEnableWhenExpressions({
+  const evaluateInitialEnableWhenExpressionsResult = evaluateInitialEnableWhenExpressions({
     initialResponse: questionnaireResponse,
     enableWhenExpressions: enableWhenExpressions,
-    variablesFhirPath: variablesFhirPath
+    variablesFhirPath: variablesFhirPath,
+    existingFhirPathContext: updatedFhirPathContext
   });
+  const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
+  updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
 
-  const initialCalculatedExpressions = evaluateInitialCalculatedExpressions({
+  const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
     initialResponse: questionnaireResponse,
     calculatedExpressions: calculatedExpressions,
-    variablesFhirPath: variablesFhirPath
+    variablesFhirPath: variablesFhirPath,
+    existingFhirPathContext: updatedFhirPathContext
   });
+  const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
+  updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
 
   const firstVisibleTab =
     Object.keys(tabs).length > 0
@@ -76,6 +85,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     initialEnableWhenLinkedQuestions: linkedQuestions,
     initialEnableWhenExpressions,
     initialCalculatedExpressions,
-    firstVisibleTab
+    firstVisibleTab,
+    updatedFhirPathContext
   };
 }

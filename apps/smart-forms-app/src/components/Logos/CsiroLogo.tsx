@@ -39,9 +39,9 @@ function CsiroLogo() {
           maxWidth={35}
           src={csiroLogo}
           onClick={() => {
-            if (!debugModeEnabled && counter < 7) {
+            if (!debugModeEnabled && counter < 3) {
               addOneToCounter();
-              if (counter === 6) {
+              if (counter === 2) {
                 toggleDebugMode();
                 enqueueSnackbar('Debug mode enabled!', {
                   preventDuplicate: true
@@ -51,7 +51,7 @@ function CsiroLogo() {
           }}
         />
       </Box>
-      {counter === 7 ? (
+      {counter === 3 ? (
         <ConfettiExplosion particleCount={400} width={2000} duration={3000} />
       ) : null}
     </>
