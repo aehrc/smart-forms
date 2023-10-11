@@ -21,8 +21,10 @@ import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import { StandardTableCell } from './Table.styles';
-import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../interfaces/renderProps.interface';
 
 interface Props
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -68,6 +70,7 @@ function GroupTableRow(props: Props) {
               qrItem={qrItem}
               isRepeated={true}
               isTabled={true}
+              textShown={false}
               parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={handleQrRowItemChange}
             />

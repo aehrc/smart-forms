@@ -17,7 +17,7 @@
 
 import React from 'react';
 import Fade from '@mui/material/Fade';
-import CheckIcon from '@mui/icons-material/Check';
+import SyncIcon from '@mui/icons-material/Sync';
 
 interface FadingCheckIconProps {
   fadeIn: boolean;
@@ -28,7 +28,7 @@ function FadingCheckIcon(props: FadingCheckIconProps) {
 
   return (
     <Fade in={fadeIn} timeout={{ enter: 100, exit: 300 }}>
-      <CheckIcon color="success" fontSize="small" />
+      <SyncIcon color="success" fontSize="small" />
     </Fade>
   );
 }
