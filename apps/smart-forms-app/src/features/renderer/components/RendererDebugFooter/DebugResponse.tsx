@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Box, IconButton, Stack, Typography } from '@mui/material';
-import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { RoundButton } from '../../../../components/Button/Button.styles.tsx';
+import { JSONTree } from 'react-json-tree';
+import { jsonTreeTheme } from '../../utils/jsonTreeTheme.ts';
 
 interface Props {
   questionnaire: Questionnaire;
@@ -32,31 +34,29 @@ interface Props {
 function DebugResponse(props: Props) {
   const { questionnaire, questionnaireResponse, fhirPathContext, clearQResponse } = props;
 
-  const [displayInfo, setDisplayInfo] = useState<{
-    name: string;
-    data: Questionnaire | QuestionnaireResponse | Bundle | Record<string, any>;
-  }>({ name: 'Questionnaire Response', data: questionnaireResponse });
+  const [displayName, setDisplayName] = useState('Questionnaire Response');
 
-  useEffect(
-    () => {
-      if (displayInfo.name === 'Questionnaire Response') {
-        setDisplayInfo({ ...displayInfo, data: questionnaireResponse });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [questionnaireResponse]
-  );
+  const displayObject =
+    {
+      Questionnaire: questionnaire,
+      'Questionnaire Response': questionnaireResponse,
+      Variables: fhirPathContext
+    }[displayName] || null;
+
+  const questionnaireSelected = displayName === 'Questionnaire';
+  const questionnaireResponseSelected = displayName === 'Questionnaire Response';
+  const variablesSelected = displayName === 'Variables';
 
   return (
     <Box sx={{ pt: 6 }}>
       <Stack direction="row" justifyContent="space-between">
         <Stack direction="row">
-          <Typography variant="h5">{displayInfo.name}</Typography>
+          <Typography variant="h5">{displayName}</Typography>
           <IconButton
             onClick={() => {
               navigator.clipboard
-                .writeText(JSON.stringify(displayInfo.data, null, 2))
-                .then(() => alert(`${displayInfo.name} copied to clipboard`))
+                .writeText(JSON.stringify(displayObject, null, 2))
+                .then(() => alert(`${displayName} copied to clipboard`))
                 .catch(() =>
                   alert(
                     'The copy operation doesnt work within an iframe (CMS-launched app in this case)\n:('
@@ -65,7 +65,7 @@ function DebugResponse(props: Props) {
             }}>
             <ContentCopyIcon />
           </IconButton>
-          {displayInfo.name === 'Questionnaire Response' ? (
+          {questionnaireResponseSelected ? (
             <IconButton onClick={clearQResponse} color="error">
               <DeleteIcon />
             </IconButton>
@@ -74,35 +74,37 @@ function DebugResponse(props: Props) {
         <Box display="flex" columnGap={1}>
           <RoundButton
             variant="outlined"
-            disabled={displayInfo.name === 'Questionnaire'}
-            onClick={() => setDisplayInfo({ name: 'Questionnaire', data: questionnaire })}>
+            disabled={questionnaireSelected}
+            onClick={() => setDisplayName('Questionnaire')}>
             Questionnaire
           </RoundButton>
           <RoundButton
             variant="outlined"
-            disabled={displayInfo.name === 'Questionnaire Response'}
-            onClick={() =>
-              setDisplayInfo({
-                name: 'Questionnaire Response',
-                data: questionnaireResponse
-              })
-            }>
+            disabled={questionnaireResponseSelected}
+            onClick={() => setDisplayName('Questionnaire Response')}>
             QuestionnaireResponse
           </RoundButton>
           <RoundButton
             variant="outlined"
-            disabled={displayInfo.name === 'Variables'}
-            onClick={() =>
-              setDisplayInfo({
-                name: 'Variables',
-                data: fhirPathContext
-              })
-            }>
+            disabled={variablesSelected}
+            onClick={() => setDisplayName('Variables')}>
             Variables
           </RoundButton>
         </Box>
       </Stack>
-      <pre>{JSON.stringify(displayInfo.data, null, 2)}</pre>
+
+      {questionnaireSelected ? <pre>{JSON.stringify(questionnaire, null, 2)}</pre> : null}
+      {questionnaireResponseSelected ? (
+        <pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>
+      ) : null}
+      {variablesSelected ? (
+        <JSONTree
+          data={fhirPathContext}
+          shouldExpandNodeInitially={(_keyName, _data, level) => level < 2}
+          theme={jsonTreeTheme}
+          invertTheme
+        />
+      ) : null}
     </Box>
   );
 }

@@ -33,6 +33,9 @@ function RendererDebugFooter() {
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+
+  const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
+
   const setUpdatableResponseAsEmpty = useQuestionnaireResponseStore(
     (state) => state.setUpdatableResponseAsEmpty
   );
@@ -58,6 +61,7 @@ function RendererDebugFooter() {
         <DebugResponse
           questionnaire={sourceQuestionnaire}
           questionnaireResponse={updatableResponse}
+          fhirPathContext={fhirPathContext}
           clearQResponse={() => handleClearExistingResponse()}
         />
       )}

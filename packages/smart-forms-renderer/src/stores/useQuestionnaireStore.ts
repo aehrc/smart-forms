@@ -207,7 +207,12 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
         calculatedExpressions: updatedCalculatedExpressions,
         fhirPathContext: updatedFhirPathContext
       }));
+      return 0;
     }
+
+    set(() => ({
+      fhirPathContext: updatedFhirPathContext
+    }));
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({
