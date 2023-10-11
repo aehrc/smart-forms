@@ -20,7 +20,7 @@ import type { OutputParameters } from './interfaces/outputParameters.interface';
 import type { OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
 import { fetchQuestionnaire } from './fetchQuestionnaire';
 import { isSubjectParameter } from './typePredicates';
-import { getContextMap } from './getContextMap';
+import { createFhirPathContext } from './createFhirPathContext';
 import { readPopulationExpressions } from './readPopulationExpressions';
 import { evaluateExpressions, evaluateItemPopulationContexts } from './evaluateExpressions';
 import { sortResourceArrays } from './sortResourceArrays';
@@ -50,7 +50,7 @@ export async function populate(
     ?.valueReference as Reference;
 
   // Create contextMap to hold variables for population
-  let contextMap = await getContextMap(
+  let fhirPathContext = await createFhirPathContext(
     parameters,
     questionnaire,
     fetchResourceCallback,
@@ -63,17 +63,17 @@ export async function populate(
   const populationExpressions = readPopulationExpressions(questionnaire);
 
   // Evaluate itemPopulationContexts and add them to contextMap
-  contextMap = evaluateItemPopulationContexts(
+  fhirPathContext = evaluateItemPopulationContexts(
     populationExpressions.itemPopulationContexts,
-    contextMap,
+    fhirPathContext,
     issues
   );
-  contextMap = sortResourceArrays(contextMap);
+  fhirPathContext = sortResourceArrays(fhirPathContext);
 
   // Evaluate initialExpressions
   const evaluatedInitialExpressions = evaluateExpressions(
     populationExpressions.initialExpressions,
-    contextMap,
+    fhirPathContext,
     issues
   );
 

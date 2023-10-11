@@ -25,15 +25,16 @@ import { RoundButton } from '../../../../components/Button/Button.styles.tsx';
 interface Props {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
+  fhirPathContext: Record<string, any>;
   clearQResponse: () => unknown;
 }
 
 function DebugResponse(props: Props) {
-  const { questionnaire, questionnaireResponse, clearQResponse } = props;
+  const { questionnaire, questionnaireResponse, fhirPathContext, clearQResponse } = props;
 
   const [displayInfo, setDisplayInfo] = useState<{
     name: string;
-    data: Questionnaire | QuestionnaireResponse | Bundle;
+    data: Questionnaire | QuestionnaireResponse | Bundle | Record<string, any>;
   }>({ name: 'Questionnaire Response', data: questionnaireResponse });
 
   useEffect(
@@ -70,7 +71,7 @@ function DebugResponse(props: Props) {
             </IconButton>
           ) : null}
         </Stack>
-        <Box>
+        <Box display="flex" columnGap={1}>
           <RoundButton
             variant="outlined"
             disabled={displayInfo.name === 'Questionnaire'}
@@ -87,6 +88,17 @@ function DebugResponse(props: Props) {
               })
             }>
             QuestionnaireResponse
+          </RoundButton>
+          <RoundButton
+            variant="outlined"
+            disabled={displayInfo.name === 'Variables'}
+            onClick={() =>
+              setDisplayInfo({
+                name: 'Variables',
+                data: fhirPathContext
+              })
+            }>
+            Variables
           </RoundButton>
         </Box>
       </Stack>

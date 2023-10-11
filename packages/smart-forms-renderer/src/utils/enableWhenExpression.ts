@@ -28,52 +28,67 @@ interface EvaluateInitialEnableWhenExpressionsParams {
   initialResponse: QuestionnaireResponse;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
   variablesFhirPath: Record<string, Expression[]>;
+  existingFhirPathContext: Record<string, any>;
 }
 
 export function evaluateInitialEnableWhenExpressions(
   params: EvaluateInitialEnableWhenExpressionsParams
-): Record<string, EnableWhenExpression> {
-  const { initialResponse, enableWhenExpressions, variablesFhirPath } = params;
+): {
+  initialEnableWhenExpressions: Record<string, EnableWhenExpression>;
+  updatedFhirPathContext: Record<string, any>;
+} {
+  const { initialResponse, enableWhenExpressions, variablesFhirPath, existingFhirPathContext } =
+    params;
 
-  // Return early if initialResponse is empty
-  if (_isEqual(initialResponse, cloneDeep(emptyResponse))) {
-    return enableWhenExpressions;
+  // Return early if initialResponse is empty or there are no enableWhen expressions to evaluate
+  if (
+    _isEqual(initialResponse, cloneDeep(emptyResponse)) ||
+    Object.keys(enableWhenExpressions).length === 0
+  ) {
+    return {
+      initialEnableWhenExpressions: enableWhenExpressions,
+      updatedFhirPathContext: existingFhirPathContext
+    };
   }
 
-  const initialExpressions: Record<string, EnableWhenExpression> = { ...enableWhenExpressions };
+  const initialEnableWhenExpressions: Record<string, EnableWhenExpression> = {
+    ...enableWhenExpressions
+  };
+  const updatedFhirPathContext = createFhirPathContext(
+    initialResponse,
+    variablesFhirPath,
+    existingFhirPathContext
+  );
 
-  if (Object.keys(initialExpressions).length > 0) {
-    const fhirPathContext: Record<string, any> = createFhirPathContext(
-      initialResponse,
-      variablesFhirPath
-    );
+  for (const linkId in initialEnableWhenExpressions) {
+    try {
+      const result = fhirpath.evaluate(
+        initialResponse,
+        enableWhenExpressions[linkId].expression,
+        updatedFhirPathContext,
+        fhirpath_r4_model
+      );
 
-    for (const linkId in initialExpressions) {
-      try {
-        const result = fhirpath.evaluate(
-          initialResponse,
-          enableWhenExpressions[linkId].expression,
-          fhirPathContext,
-          fhirpath_r4_model
-        );
-
-        if (result.length > 0) {
-          initialExpressions[linkId].isEnabled = result[0];
-        }
-
-        // handle intersect edge case - evualate() returns empty array if result is false
-        if (enableWhenExpressions[linkId].expression.includes('intersect') && result.length === 0) {
-          initialExpressions[linkId].isEnabled = false;
-        }
-      } catch (e) {
-        console.warn(
-          e.message,
-          `LinkId: ${linkId}\nExpression: ${enableWhenExpressions[linkId].expression}`
-        );
+      if (result.length > 0) {
+        initialEnableWhenExpressions[linkId].isEnabled = result[0];
       }
+
+      // handle intersect edge case - evaluate() returns empty array if result is false
+      if (enableWhenExpressions[linkId].expression.includes('intersect') && result.length === 0) {
+        initialEnableWhenExpressions[linkId].isEnabled = false;
+      }
+    } catch (e) {
+      console.warn(
+        e.message,
+        `LinkId: ${linkId}\nExpression: ${enableWhenExpressions[linkId].expression}`
+      );
     }
   }
-  return initialExpressions;
+
+  return {
+    initialEnableWhenExpressions,
+    updatedFhirPathContext
+  };
 }
 
 export function evaluateEnableWhenExpressions(
@@ -104,7 +119,7 @@ export function evaluateEnableWhenExpressions(
         }
       }
 
-      // handle intersect edge case - evualate() returns empty array if result is false
+      // handle intersect edge case - evaluate() returns empty array if result is false
       if (enableWhenExpressions[linkId].expression.includes('intersect') && result.length === 0) {
         updatedEnableWhenExpressions[linkId].isEnabled = false;
       }

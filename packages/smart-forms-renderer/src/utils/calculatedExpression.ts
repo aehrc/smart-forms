@@ -40,49 +40,62 @@ interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
   calculatedExpressions: Record<string, CalculatedExpression>;
   variablesFhirPath: Record<string, Expression[]>;
+  existingFhirPathContext: Record<string, any>;
 }
 
 export function evaluateInitialCalculatedExpressions(
   params: EvaluateInitialCalculatedExpressionsParams
-): Record<string, CalculatedExpression> {
-  const { initialResponse, calculatedExpressions, variablesFhirPath } = params;
+): {
+  initialCalculatedExpressions: Record<string, CalculatedExpression>;
+  updatedFhirPathContext: Record<string, any>;
+} {
+  const { initialResponse, calculatedExpressions, variablesFhirPath, existingFhirPathContext } =
+    params;
 
-  // Return early if initialResponse is empty
-  if (_isEqual(initialResponse, cloneDeep(emptyResponse))) {
-    return calculatedExpressions;
+  // Return early if initialResponse is empty or there are no calculated expressions to evaluate
+  if (
+    _isEqual(initialResponse, cloneDeep(emptyResponse)) ||
+    Object.keys(calculatedExpressions).length === 0
+  ) {
+    return {
+      initialCalculatedExpressions: calculatedExpressions,
+      updatedFhirPathContext: existingFhirPathContext
+    };
   }
 
   const initialCalculatedExpressions: Record<string, CalculatedExpression> = {
     ...calculatedExpressions
   };
+  const updatedFhirPathContext = createFhirPathContext(
+    initialResponse,
+    variablesFhirPath,
+    existingFhirPathContext
+  );
 
-  if (Object.keys(initialCalculatedExpressions).length > 0) {
-    const fhirPathContext: Record<string, any> = createFhirPathContext(
-      initialResponse,
-      variablesFhirPath
-    );
+  for (const linkId in initialCalculatedExpressions) {
+    try {
+      const result = fhirpath.evaluate(
+        initialResponse,
+        calculatedExpressions[linkId].expression,
+        updatedFhirPathContext,
+        fhirpath_r4_model
+      );
 
-    for (const linkId in initialCalculatedExpressions) {
-      try {
-        const result = fhirpath.evaluate(
-          initialResponse,
-          calculatedExpressions[linkId].expression,
-          fhirPathContext,
-          fhirpath_r4_model
-        );
-
-        if (!_isEqual(calculatedExpressions[linkId].value, result[0])) {
-          initialCalculatedExpressions[linkId].value = result[0];
-        }
-      } catch (e) {
-        console.warn(
-          e.message,
-          `LinkId: ${linkId}\nExpression: ${calculatedExpressions[linkId].expression}`
-        );
+      if (!_isEqual(calculatedExpressions[linkId].value, result[0])) {
+        initialCalculatedExpressions[linkId].value = result[0];
       }
+    } catch (e) {
+      console.warn(
+        e.message,
+        `LinkId: ${linkId}\nExpression: ${calculatedExpressions[linkId].expression}`
+      );
     }
   }
-  return initialCalculatedExpressions;
+
+  return {
+    initialCalculatedExpressions,
+    updatedFhirPathContext
+  };
 }
 
 export function evaluateCalculatedExpressions(

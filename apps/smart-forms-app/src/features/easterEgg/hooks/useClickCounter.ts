@@ -9,7 +9,7 @@ function useClickCounter(): UseClickCounter {
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
-    if (counter === 7) {
+    if (counter === 3) {
       const timeout = setTimeout(() => {
         setCounter(0);
       }, 2500);

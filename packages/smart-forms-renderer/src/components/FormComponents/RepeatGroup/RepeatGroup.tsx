@@ -100,10 +100,14 @@ function RepeatGroup(props: RepeatGroupProps) {
   return (
     <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
-        <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Typography>
-        <Divider sx={{ mt: 1, mb: 1.5 }} light />
+        {qItem.text ? (
+          <>
+            <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
+              <LabelWrapper qItem={qItem} readOnly={readOnly} />
+            </Typography>
+            <Divider sx={{ mt: 1, mb: 1.5 }} light />
+          </>
+        ) : null}
         <TransitionGroup>
           {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
             const answeredQrItem = createEmptyQrItem(qItem);

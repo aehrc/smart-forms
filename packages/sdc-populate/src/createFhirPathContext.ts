@@ -27,7 +27,7 @@ import axios from 'axios';
 import { createWarningIssue } from './operationOutcome';
 import type { FetchResourceCallback } from './interfaces/callback.interface';
 
-export async function getContextMap(
+export async function createFhirPathContext(
   parameters: InputParameters,
   questionnaire: Questionnaire,
   fetchResourceCallback: FetchResourceCallback,

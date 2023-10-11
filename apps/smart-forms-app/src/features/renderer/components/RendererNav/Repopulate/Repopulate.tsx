@@ -16,7 +16,7 @@
  */
 
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
-import SyncIcon from '@mui/icons-material/Sync';
+import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import { useSnackbar } from 'notistack';
 import type { PopulateFormParams } from '../../../../prepopulate/utils/populate.ts';
 import { populateQuestionnaire } from '../../../../prepopulate/utils/populate.ts';
@@ -51,6 +51,8 @@ function Repopulate(props: RepopulateProps) {
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
   const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+
+  const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -90,6 +92,7 @@ function Repopulate(props: RepopulateProps) {
       newPatient,
       newUser,
       encounter,
+      fhirPathContext,
       (params: PopulateFormParams) => {
         const { populated, hasWarnings } = params;
 
@@ -126,7 +129,7 @@ function Repopulate(props: RepopulateProps) {
         <span>
           <RendererOperationItem
             title="Repopulate Form"
-            icon={<SyncIcon />}
+            icon={<CloudSyncIcon />}
             disabled={!shouldRepopulate || spinner.isSpinning}
             onClick={handleClick}
           />

@@ -28,53 +28,72 @@ interface EvaluateUpdatedExpressionsParams {
   calculatedExpressions: Record<string, CalculatedExpression>;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
   variablesFhirPath: Record<string, Expression[]>;
+  existingFhirPathContext: Record<string, any>;
 }
 
 export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsParams): {
   isUpdated: boolean;
   updatedEnableWhenExpressions: Record<string, EnableWhenExpression>;
   updatedCalculatedExpressions: Record<string, CalculatedExpression>;
+  updatedFhirPathContext: Record<string, any>;
 } {
-  const { updatedResponse, enableWhenExpressions, calculatedExpressions, variablesFhirPath } =
-    params;
+  const {
+    updatedResponse,
+    enableWhenExpressions,
+    calculatedExpressions,
+    variablesFhirPath,
+    existingFhirPathContext
+  } = params;
 
-  const hasExpressionToBeUpdated =
-    Object.keys(enableWhenExpressions).length > 0 || Object.keys(calculatedExpressions).length > 0;
-  if (hasExpressionToBeUpdated && updatedResponse.item) {
-    const fhirPathContext: Record<string, any> = createFhirPathContext(
-      updatedResponse,
-      variablesFhirPath
-    );
-
-    // Update enableWhenExpressions
-    const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } = evaluateEnableWhenExpressions(
-      fhirPathContext,
-      enableWhenExpressions
-    );
-
-    // Update calculatedExpressions
-    const { calculatedExpsIsUpdated, updatedCalculatedExpressions } = evaluateCalculatedExpressions(
-      fhirPathContext,
-      calculatedExpressions
-    );
-
-    const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated;
-
-    return { isUpdated, updatedEnableWhenExpressions, updatedCalculatedExpressions };
+  const noExpressionsToBeUpdated =
+    Object.keys(enableWhenExpressions).length === 0 &&
+    Object.keys(calculatedExpressions).length === 0;
+  if (noExpressionsToBeUpdated || !updatedResponse.item) {
+    return {
+      isUpdated: false,
+      updatedEnableWhenExpressions: enableWhenExpressions,
+      updatedCalculatedExpressions: calculatedExpressions,
+      updatedFhirPathContext: existingFhirPathContext
+    };
   }
 
+  const updatedFhirPathContext = createFhirPathContext(
+    updatedResponse,
+    variablesFhirPath,
+    existingFhirPathContext
+  );
+
+  // Update enableWhenExpressions
+  const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } = evaluateEnableWhenExpressions(
+    updatedFhirPathContext,
+    enableWhenExpressions
+  );
+
+  // Update calculatedExpressions
+  const { calculatedExpsIsUpdated, updatedCalculatedExpressions } = evaluateCalculatedExpressions(
+    updatedFhirPathContext,
+    calculatedExpressions
+  );
+
+  const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated;
+
   return {
-    isUpdated: false,
-    updatedEnableWhenExpressions: enableWhenExpressions,
-    updatedCalculatedExpressions: calculatedExpressions
+    isUpdated,
+    updatedEnableWhenExpressions,
+    updatedCalculatedExpressions,
+    updatedFhirPathContext
   };
 }
 
 export function createFhirPathContext(
   questionnaireResponse: QuestionnaireResponse,
-  variablesFhirPath: Record<string, Expression[]>
+  variablesFhirPath: Record<string, Expression[]>,
+  existingFhirPathContext: Record<string, any>
 ): Record<string, any> {
-  const fhirPathContext: Record<string, any> = { resource: questionnaireResponse };
+  let fhirPathContext: Record<string, any> = { resource: questionnaireResponse };
+  if (Object.keys(existingFhirPathContext).length > 0) {
+    fhirPathContext = { ...fhirPathContext, ...existingFhirPathContext };
+  }
 
   if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) {
     return fhirPathContext;
