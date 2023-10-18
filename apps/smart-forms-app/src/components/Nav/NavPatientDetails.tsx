@@ -20,12 +20,9 @@ import FaceIcon from '@mui/icons-material/Face';
 import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
 import dayjs from 'dayjs';
 import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography.tsx';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { useTheme } from '@mui/material/styles';
 import { NavPatientDetailsWrapper } from './Nav.styles.ts';
 import useSmartClient from '../../hooks/useSmartClient.ts';
-
-dayjs.extend(localizedFormat);
 
 function NavPatientDetails() {
   const { patient } = useSmartClient();
