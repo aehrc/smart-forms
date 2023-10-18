@@ -15,12 +15,20 @@
  * limitations under the License.
  */
 
-import { Card, Container, Fade } from '@mui/material';
+import { Box, Card, Container, Fade } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import PageHeading from '../PageHeading.tsx';
 import QuestionnaireTable from './QuestionnaireTable.tsx';
+import DatePickerAutocompleteField from '../../../../customDateTimePicker/DatePickerAutocompleteField.tsx';
+import { useState } from 'react';
+import Typography from '@mui/material/Typography';
+import { getSelectedDateFormat } from '../../../../customDateTimePicker/lib/parseDates.ts';
 
 function QuestionnairesPage() {
+  const [date, setDate] = useState<string>('');
+
+  const dateToDisplay = date.length === 0 ? 'N/A' : date;
+
   return (
     <>
       <Helmet>
@@ -33,6 +41,24 @@ function QuestionnairesPage() {
           <Card>
             <QuestionnaireTable />
           </Card>
+          <Box display="flex" mt={3}>
+            <Box>
+              <DatePickerAutocompleteField
+                value={date}
+                onValueChange={(newValue) => {
+                  setDate(newValue);
+                }}
+              />
+              <Box>
+                <Typography variant="caption" fontSize={10.5}>
+                  Selected date: <b>{dateToDisplay}</b>
+                </Typography>
+                <Typography fontSize={10.5}>
+                  Format: <b>{getSelectedDateFormat(date)}</b>
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
         </Container>
       </Fade>
     </>
