@@ -16,5 +16,6 @@
  */
 
 export * from './SingleItem';
+export * from './RepeatItem';
 export * from './RepeatGroup';
 export * from './Tables';

@@ -89,7 +89,6 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
   const itemTypes = useQuestionnaireStore.getState().itemTypes;
   const tabs = useQuestionnaireStore.getState().tabs;
   const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
-  console.log(updatableResponse);
 
   return getItemsToRepopulate(
     sourceQuestionnaire,

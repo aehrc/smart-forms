@@ -18,7 +18,8 @@
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import RepopulateSingleItem from './RepopulateSingleItem.tsx';
 import RepopulateGroupTable from './RepopulateGroupTable.tsx';
-import { isSpecificItemControl } from '@aehrc/smart-forms-renderer';
+import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '@aehrc/smart-forms-renderer';
+import RepopulateRepeatItem from './RepopulateRepeatItem.tsx';
 
 interface RepopulateItemSwitcherProps {
   qItem: QuestionnaireItem;
@@ -31,6 +32,11 @@ function RepopulateItemSwitcher(props: RepopulateItemSwitcherProps) {
 
   if (qItem.type === 'group' && qItem.repeats && isSpecificItemControl(qItem, 'gtable')) {
     return <RepopulateGroupTable qItem={qItem} newQRItem={newQRItem} oldQRItem={oldQRItem} />;
+  }
+
+  const itemRepeatsAndIsNotCheckbox = isRepeatItemAndNotCheckbox(qItem);
+  if (itemRepeatsAndIsNotCheckbox) {
+    return <RepopulateRepeatItem qItem={qItem} newQRItem={newQRItem} oldQRItem={oldQRItem} />;
   }
 
   return <RepopulateSingleItem qItem={qItem} oldQRItem={oldQRItem} newQRItem={newQRItem} />;

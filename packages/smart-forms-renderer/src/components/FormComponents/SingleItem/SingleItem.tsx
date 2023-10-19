@@ -22,7 +22,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithTextShownAttribute
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../../stores/useQuestionnaireStore';
 import SingleItemSwitcher from './SingleItemSwitcher';
@@ -33,14 +33,14 @@ interface SingleItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function SingleItem(props: SingleItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
   const updateEnableWhenItem = useQuestionnaireStore((state) => state.updateEnableWhenItem);
@@ -67,7 +67,7 @@ function SingleItem(props: SingleItemProps) {
       qrItem={qrItem}
       isRepeated={isRepeated}
       isTabled={isTabled}
-      textShown={textShown}
+      showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
       onQrItemChange={handleQrItemChange}
     />

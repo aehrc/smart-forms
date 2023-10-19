@@ -70,7 +70,7 @@ function GroupTableRow(props: Props) {
               qrItem={qrItem}
               isRepeated={true}
               isTabled={true}
-              textShown={false}
+              showMinimalView={true}
               parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={handleQrRowItemChange}
             />

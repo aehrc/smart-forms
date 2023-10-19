@@ -107,7 +107,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
   }
 
   return (
-    <Dialog open={true} onClose={onCloseDialog} maxWidth="xl">
+    <Dialog open={true} onClose={onCloseDialog} maxWidth="xl" fullWidth>
       <DialogTitle variant="h5">Select items to be re-populated</DialogTitle>
       <DialogContent>
         <RepopulateList
