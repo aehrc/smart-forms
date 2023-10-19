@@ -21,6 +21,7 @@ import React, { useRef } from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
+import Tooltip from '@mui/material/Tooltip';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -55,37 +56,39 @@ function CustomDateField(props: CustomDateFieldProps) {
   const anchorRef: RefObject<HTMLDivElement> = useRef(null);
 
   return (
-    <StandardTextField
-      id={linkId}
-      ref={anchorRef}
-      fullWidth
-      isTabled={isTabled}
-      value={input}
-      error={!!feedback}
-      onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
-      label={displayPrompt}
-      placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
-      disabled={readOnly}
-      size="small"
-      focused={isFocused}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
-      InputProps={{
-        endAdornment: (
-          <>
-            <DatePicker
-              valueString={valueDate}
-              anchorEl={anchorRef.current}
-              onSelectDate={(valueDayjs: Dayjs) => {
-                onSelectDate(valueDayjs.format('DD/MM/YYYY'));
-              }}
-              onFocus={(focus) => setFocused(focus)}
-            />
-          </>
-        )
-      }}
-      helperText={feedback}
-    />
+    <Tooltip title={isTabled ? feedback : ''}>
+      <StandardTextField
+        id={linkId}
+        ref={anchorRef}
+        fullWidth
+        isTabled={isTabled}
+        value={input}
+        error={!!feedback}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
+        label={displayPrompt}
+        placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
+        disabled={readOnly}
+        size="small"
+        focused={isFocused}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        InputProps={{
+          endAdornment: (
+            <>
+              <DatePicker
+                valueString={valueDate}
+                anchorEl={anchorRef.current}
+                onSelectDate={(valueDayjs: Dayjs) => {
+                  onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+                }}
+                onFocus={(focus) => setFocused(focus)}
+              />
+            </>
+          )
+        }}
+        helperText={isTabled ? '' : feedback}
+      />
+    </Tooltip>
   );
 }
 
