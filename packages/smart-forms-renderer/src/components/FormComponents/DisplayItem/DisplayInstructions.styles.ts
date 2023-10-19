@@ -20,6 +20,5 @@ import { styled } from '@mui/material/styles';
 
 export const DisplayInstructionsWrapper = styled(Box)(({ theme }) => ({
   color: theme.palette.text.secondary,
-  textTransform: 'capitalize',
   marginBottom: '8px'
 }));

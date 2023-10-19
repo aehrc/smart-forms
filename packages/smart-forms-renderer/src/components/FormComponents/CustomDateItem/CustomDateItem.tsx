@@ -27,14 +27,14 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import useParseDates from './customDateTimePicker/hooks/useParseDates';
-import CustomDateField from './customDateTimePicker/CustomDateField';
 import {
-  parseDisplayDateToFhirDate,
   parseFhirDateToDisplayDate,
-  replaceMonthNameWithNumber
+  parseInputDateToFhirDate,
+  validateInput
 } from './customDateTimePicker/utils/parseDates';
 import { createEmptyQrItem } from '../../../utils/qrItem';
+import useDateValidation from '../../../hooks/useDateValidation';
+import CustomDateField from './customDateTimePicker/CustomDateField';
 
 interface CustomDateItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -63,86 +63,74 @@ function CustomDateItem(props: CustomDateItemProps) {
     }
   }
 
-  valueDate = parseFhirDateToDisplayDate(valueDate);
-  const selectedDateToDisplay = valueDate.length === 0 ? 'N/A' : valueDate;
+  const { displayDate, parseFail } = parseFhirDateToDisplayDate(valueDate);
 
-  const [input, setInput] = useState(valueDate);
+  const [input, setInput] = useState(displayDate);
   const [focused, setFocused] = useState(false);
 
-  let options: string[] = [];
-  const { dateOptions, seperator } = useParseDates(input);
-  if (dateOptions) {
-    options = dateOptions;
-  }
+  // Perform validation checks
+  const errorFeedback = useDateValidation(input, parseFail);
 
-  function handleValueChange(newDateString: string) {
+  function handleSelectDate(selectedDate: string) {
+    setInput(selectedDate);
     onQrItemChange({
       ...createEmptyQrItem(qItem),
-      answer: [{ valueDate: parseDisplayDateToFhirDate(newDateString, seperator) }]
+      answer: [{ valueDate: parseInputDateToFhirDate(selectedDate) }]
     });
   }
 
-  function handleUnfocus() {
-    // set answer to current input when text field is unfocused
-    if (!valueDate && input !== '') {
-      const replacedInput = replaceMonthNameWithNumber(input);
-      const matchedOption = options.find((option) => replacedInput === option);
-      if (matchedOption) {
-        const newDateString = matchedOption.split(seperator).join('/');
-        onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueDate: parseDisplayDateToFhirDate(newDateString, seperator) }]
-        });
-      }
+  function handleInputChange(newInput: string) {
+    setInput(newInput);
+
+    if (newInput === '') {
+      onQrItemChange(createEmptyQrItem(qItem));
     }
 
-    setFocused(false);
+    if (!validateInput(newInput)) {
+      return;
+    }
+
+    onQrItemChange({
+      ...createEmptyQrItem(qItem),
+      answer: [{ valueDate: parseInputDateToFhirDate(newInput) }]
+    });
   }
 
   if (isRepeated) {
     return (
       <CustomDateField
-        valueDate={valueDate}
+        linkId={qItem.linkId}
+        valueDate={displayDate}
         input={input}
+        feedback={errorFeedback ?? ''}
         isFocused={focused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
         isTabled={isTabled}
         setFocused={setFocused}
-        onInputChange={(newInput) => setInput(newInput)}
-        onValueChange={handleValueChange}
-        onUnfocus={handleUnfocus}
+        onInputChange={handleInputChange}
+        onSelectDate={handleSelectDate}
       />
     );
   }
 
   return (
     <FullWidthFormComponentBox data-test="q-item-date-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={
-          displayInstructions.length > 0 ? (
-            displayInstructions
-          ) : (
-            <>
-              Selected date: <b>{selectedDateToDisplay}</b>
-            </>
-          )
-        }
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
         <CustomDateField
-          valueDate={valueDate}
+          linkId={qItem.linkId}
+          valueDate={displayDate}
           input={input}
+          feedback={errorFeedback ?? ''}
           isFocused={focused}
           displayPrompt={displayPrompt}
           entryFormat={entryFormat}
           readOnly={readOnly}
           isTabled={isTabled}
           setFocused={setFocused}
-          onInputChange={(newInput) => setInput(newInput)}
-          onValueChange={handleValueChange}
-          onUnfocus={handleUnfocus}
+          onInputChange={handleInputChange}
+          onSelectDate={handleSelectDate}
         />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>

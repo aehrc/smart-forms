@@ -15,34 +15,33 @@
  * limitations under the License.
  */
 
-import { Dayjs } from 'dayjs';
-import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import type { Dayjs } from 'dayjs';
+import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from 'react';
 import React, { useRef } from 'react';
-import useParseDates from './hooks/useParseDates';
-import Autocomplete from '@mui/material/Autocomplete';
-import { Box } from '@mui/material';
 import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
-import { getDateOptionLabel } from './utils/parseDates';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
+  linkId: string;
   valueDate: string;
   input: string;
+  feedback: string;
   isFocused: boolean;
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
-  onValueChange: (newDateValue: string) => void;
-  onUnfocus?: () => void;
+  onSelectDate: (newDateValue: string) => void;
 }
 
 function CustomDateField(props: CustomDateFieldProps) {
   const {
+    linkId,
     valueDate,
     input,
+    feedback,
     isFocused,
     displayPrompt,
     entryFormat,
@@ -50,70 +49,43 @@ function CustomDateField(props: CustomDateFieldProps) {
     isTabled,
     setFocused,
     onInputChange,
-    onValueChange,
-    onUnfocus
+    onSelectDate
   } = props;
 
-  const anchorRef: MutableRefObject<null | HTMLElement> = useRef(null);
-
-  let options: string[] = [];
-  const { dateOptions, seperator } = useParseDates(input);
-  if (dateOptions) {
-    options = dateOptions;
-  }
+  const anchorRef: RefObject<HTMLDivElement> = useRef(null);
 
   return (
-    <Box display="flex">
-      <Autocomplete
-        ref={anchorRef}
-        value={valueDate}
-        size="small"
-        options={options}
-        disabled={readOnly}
-        filterOptions={(options) => options} // show all options, we are using regex to limit options
-        freeSolo
-        clearOnEscape
-        disableClearable
-        autoHighlight
-        onFocus={() => setFocused(true)}
-        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 220, flexGrow: 1 }}
-        onChange={(_, newValue) => {
-          return onValueChange(newValue);
-        }}
-        getOptionLabel={(option) => getDateOptionLabel(option, seperator)}
-        renderInput={(params) => (
-          <StandardTextField
-            {...params}
-            value={input}
-            onBlur={onUnfocus}
-            focused={isFocused}
-            isTabled={isTabled}
-            label={displayPrompt}
-            size="small"
-            placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
-            onChange={(e) => onInputChange(e.target.value)}
-            fullWidth
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  <DatePicker
-                    valueString={valueDate}
-                    anchorEl={anchorRef.current}
-                    onSelectDate={(valueDayjs: Dayjs) => {
-                      const valueInString = valueDayjs.format('DD/MM/YYYY');
-                      onValueChange(valueInString);
-                    }}
-                    onFocus={(focus) => setFocused(focus)}
-                  />
-                  {params.InputProps.endAdornment}
-                </>
-              )
-            }}
-          />
-        )}
-      />
-    </Box>
+    <StandardTextField
+      id={linkId}
+      ref={anchorRef}
+      fullWidth
+      isTabled={isTabled}
+      value={input}
+      error={!!feedback}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
+      label={displayPrompt}
+      placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
+      disabled={readOnly}
+      size="small"
+      focused={isFocused}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      InputProps={{
+        endAdornment: (
+          <>
+            <DatePicker
+              valueString={valueDate}
+              anchorEl={anchorRef.current}
+              onSelectDate={(valueDayjs: Dayjs) => {
+                onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+              }}
+              onFocus={(focus) => setFocused(focus)}
+            />
+          </>
+        )
+      }}
+      helperText={feedback}
+    />
   );
 }
 
