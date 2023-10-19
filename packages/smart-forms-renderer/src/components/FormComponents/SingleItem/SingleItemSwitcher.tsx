@@ -31,12 +31,12 @@ import StringItem from '../StringItem/StringItem';
 import BooleanItem from '../BooleanItem/BooleanItem';
 import TimeItem from '../TimeItem/TimeItem';
 import DateTimeItem from '../DateTimeItem/DateTimeItem';
-import DateItem from '../DateItem/DateItem';
 import TextItem from '../TextItem/TextItem';
 import DisplayItem from '../DisplayItem/DisplayItem';
 import IntegerItem from '../IntegerItem/IntegerItem';
 import DecimalItem from '../DecimalItem/DecimalItem';
 import UrlItem from '../UrlItem/UrlItem';
+import CustomDateItem from '../CustomDateItem/CustomDateItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -88,7 +88,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       );
     case 'date':
       return (
-        <DateItem
+        <CustomDateItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}

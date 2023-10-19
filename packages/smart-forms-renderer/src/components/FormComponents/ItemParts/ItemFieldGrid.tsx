@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import React from 'react';
 import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem } from 'fhir/r4';
@@ -25,7 +25,7 @@ import LabelWrapper from './ItemLabelWrapper';
 interface ItemFieldGridProps {
   children: ReactNode;
   qItem: QuestionnaireItem;
-  displayInstructions: string;
+  displayInstructions: string | ReactElement;
   readOnly: boolean;
 }
 

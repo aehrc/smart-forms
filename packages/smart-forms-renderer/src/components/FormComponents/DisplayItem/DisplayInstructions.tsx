@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
+import type { ReactElement } from 'react';
 import React, { memo } from 'react';
 import Typography from '@mui/material/Typography';
 import { DisplayInstructionsWrapper } from './DisplayInstructions.styles';
 
 interface DisplayInstructionsProps {
-  displayInstructions: string;
+  displayInstructions: string | ReactElement;
   readOnly: boolean;
 }
 

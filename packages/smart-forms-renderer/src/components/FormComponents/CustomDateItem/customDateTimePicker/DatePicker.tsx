@@ -15,48 +15,23 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import type {
-  BaseSingleInputFieldProps,
-  DateValidationError,
-  FieldSection
-} from '@mui/x-date-pickers/models';
-import EventIcon from '@mui/icons-material/Event';
-import { IconButton } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
+import MuiDatePicker from './MuiDatePicker';
+// import { DatePicker as MuiDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import DatePickerButton from './DatePickerButton';
 
-interface ButtonFieldProps
-  extends BaseSingleInputFieldProps<Dayjs | null, Dayjs, FieldSection, DateValidationError> {
-  onOpen?: () => void;
-}
-
-function ButtonField(props: ButtonFieldProps) {
-  const { onOpen } = props;
-
-  return (
-    <IconButton
-      size="small"
-      onClick={(e) => {
-        e.stopPropagation();
-        onOpen?.();
-      }}>
-      <EventIcon fontSize="small" />
-    </IconButton>
-  );
-}
-
-interface PickerWithButtonFieldProps {
+interface DatePickerProps {
   valueString: string;
   anchorEl: HTMLElement | null;
   onSelectDate: (newValueDayjs: Dayjs) => void;
   onFocus: (focus: boolean) => void;
 }
 
-function PickerWithButtonField(props: PickerWithButtonFieldProps) {
+function DatePicker(props: DatePickerProps) {
   const { valueString, anchorEl, onSelectDate, onFocus } = props;
 
   const [open, setOpen] = useState(false);
@@ -65,9 +40,9 @@ function PickerWithButtonField(props: PickerWithButtonFieldProps) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DatePicker
+      <MuiDatePicker
         value={valueDayJs ?? null}
-        slots={{ field: ButtonField }}
+        slots={{ field: DatePickerButton }}
         slotProps={{
           field: {
             onOpen: () => {
@@ -75,6 +50,9 @@ function PickerWithButtonField(props: PickerWithButtonFieldProps) {
               onFocus(true);
             }
           } as any,
+          textField: {
+            size: 'small'
+          },
           popper: {
             anchorEl: () => anchorEl as HTMLElement
           }
@@ -97,4 +75,4 @@ function PickerWithButtonField(props: PickerWithButtonFieldProps) {
   );
 }
 
-export default PickerWithButtonField;
+export default DatePicker;

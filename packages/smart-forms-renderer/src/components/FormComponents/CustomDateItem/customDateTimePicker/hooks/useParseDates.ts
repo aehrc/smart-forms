@@ -15,28 +15,20 @@
  * limitations under the License.
  */
 
-import { Card, Container, Fade } from '@mui/material';
-import { Helmet } from 'react-helmet';
-import PageHeading from '../PageHeading.tsx';
-import QuestionnaireTable from './QuestionnaireTable.tsx';
+import { parseInputToDateOptions } from '../utils/parseDates';
 
-function QuestionnairesPage() {
-  return (
-    <>
-      <Helmet>
-        <title>Questionnaires</title>
-      </Helmet>
-      <Fade in={true}>
-        <Container data-test="dashboard-questionnaires-container">
-          <PageHeading>Questionnaires</PageHeading>
+function useParseDates(input: string): {
+  dateOptions: string[];
+  seperator: string;
+} {
+  // No options displayed when input is empty or search term is less than 2 characters
+  if (input.length === 0 || (input.length < 2 && input.length > 0)) {
+    return { dateOptions: [], seperator: '' };
+  }
 
-          <Card>
-            <QuestionnaireTable />
-          </Card>
-        </Container>
-      </Fade>
-    </>
-  );
+  const { dateOptions, seperator } = parseInputToDateOptions(input);
+
+  return { dateOptions, seperator };
 }
 
-export default QuestionnairesPage;
+export default useParseDates;

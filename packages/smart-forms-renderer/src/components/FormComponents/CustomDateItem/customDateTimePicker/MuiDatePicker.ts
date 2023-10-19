@@ -15,20 +15,8 @@
  * limitations under the License.
  */
 
-import { parseInputToDateOptions } from '../lib/parseDates.ts';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-function useParseDates(input: string): {
-  dateOptions: string[];
-  seperator: string;
-} {
-  // No options displayed when input is empty or search term is less than 2 characters
-  if (input.length === 0 || (input.length < 2 && input.length > 0)) {
-    return { dateOptions: [], seperator: '' };
-  }
+const MuiDatePicker = DatePicker;
 
-  const { dateOptions, seperator } = parseInputToDateOptions(input);
-
-  return { dateOptions, seperator };
-}
-
-export default useParseDates;
+export default MuiDatePicker;

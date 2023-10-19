@@ -267,6 +267,28 @@ function getDayOption(partialDay: string) {
   return null;
 }
 
+export function getDateOptionLabel(option: string, seperator: string) {
+  const threeMatchesOption = dayjs(option, [
+    `DD${seperator}MM${seperator}YYYY`,
+    `DD${seperator}MMM${seperator}YYYY`
+  ]);
+  if (threeMatchesOption.isValid()) {
+    return threeMatchesOption.format('DD MMM YYYY');
+  }
+
+  const twoMatchesOption = dayjs(option, [`MM${seperator}YYYY`, `MMM${seperator}YYYY`]);
+  if (twoMatchesOption.isValid()) {
+    return twoMatchesOption.format('MMM YYYY');
+  }
+
+  const oneMatchOption = dayjs(option, `YYYY`);
+  if (oneMatchOption.isValid()) {
+    return option;
+  }
+
+  return '';
+}
+
 export function getSelectedDateFormat(valueDate: string) {
   if (!valueDate) {
     return 'N/A';
@@ -287,4 +309,55 @@ export function getSelectedDateFormat(valueDate: string) {
 export function getNumOfSeparators(valueDate: string, seperator: string) {
   const regex = new RegExp(seperator, 'g');
   return [...valueDate.matchAll(regex)].length;
+}
+
+export function parseFhirDateToDisplayDate(fhirDate: string) {
+  const numOfSeparators = getNumOfSeparators(fhirDate, '-');
+
+  if (numOfSeparators === 2) {
+    const threeMatchesDate = dayjs(fhirDate, `YYYY-MM-DD`);
+    if (threeMatchesDate.isValid()) {
+      return threeMatchesDate.format('DD MMM YYYY');
+    }
+  }
+
+  if (numOfSeparators === 1) {
+    const twoMatchesDate = dayjs(fhirDate, `YYYY-MM`);
+    if (twoMatchesDate.isValid()) {
+      return twoMatchesDate.format('MMM YYYY');
+    }
+  }
+
+  return fhirDate;
+}
+
+export function parseDisplayDateToFhirDate(displayDate: string, seperator: string) {
+  const numOfSeparators = getNumOfSeparators(displayDate, seperator);
+
+  if (numOfSeparators === 2) {
+    const threeMatchesDate = dayjs(displayDate, [
+      `DD${seperator}MM${seperator}YYYY`,
+      `DD${seperator}MMM${seperator}YYYY`
+    ]);
+    if (threeMatchesDate.isValid()) {
+      return threeMatchesDate.format('YYYY-MM-DD');
+    }
+  }
+
+  if (numOfSeparators === 1) {
+    const twoMatchesDate = dayjs(displayDate, [`MM${seperator}YYYY`, `MMM${seperator}YYYY`]);
+    if (twoMatchesDate.isValid()) {
+      return twoMatchesDate.format('YYYY-MM');
+    }
+  }
+
+  if (displayDate.length <= 4) {
+    const oneMatchDate = dayjs(displayDate, 'YYYY');
+    if (oneMatchDate.isValid()) {
+      return displayDate;
+    }
+  }
+
+  // Default to YYYY-MM-DD format if all else fails
+  return dayjs(displayDate).format('YYYY-MM-DD');
 }
