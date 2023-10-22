@@ -43,7 +43,7 @@ function RepopulateList(props: RepopulateListProps) {
               </Typography>
             }>
             {itemsToRepopulate.map((itemToRepopulate) => {
-              const { qItem, newQRItem, oldQRItem } = itemToRepopulate;
+              const { qItem, newQRItem, oldQRItem, newQRItems, oldQRItems } = itemToRepopulate;
 
               if (!qItem) {
                 return null;
@@ -55,6 +55,8 @@ function RepopulateList(props: RepopulateListProps) {
                   qItem={qItem}
                   oldQRItem={oldQRItem}
                   newQRItem={newQRItem}
+                  oldQRItems={oldQRItems}
+                  newQRItems={newQRItems}
                   checkedIds={checkedLinkIds}
                   onCheckItem={() => onCheckItem(qItem.linkId)}
                 />
