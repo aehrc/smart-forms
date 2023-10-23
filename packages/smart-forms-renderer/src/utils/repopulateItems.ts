@@ -146,7 +146,7 @@ function getItemsToRepopulateRecursive(
     // For grid groups
     const itemIsGrid = isSpecificItemControl(qItem, 'grid');
     if (itemIsGrid) {
-      getGridGroupToRepopulate(
+      getGridTableToRepopulate(
         qItem,
         childQItems,
         populatedQRItemsByIndex,
@@ -214,7 +214,7 @@ function getRepeatGroupToRepopulate(
   };
 }
 
-function getGridGroupToRepopulate(
+function getGridTableToRepopulate(
   qItem: QuestionnaireItem,
   gridChildQItems: QuestionnaireItem[],
   gridChildQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[],

@@ -57,13 +57,15 @@ function GridTable(props: GridTableProps) {
 
   const numOfColumns = columnLabels.length;
 
+  const minimalViewHeaderCellSx = showMinimalView ? { py: 2 } : null;
+
   return (
     <Table size={showMinimalView ? 'small' : 'medium'}>
       <TableHead>
         <TableRow>
           <HeaderTableCell />
           {columnLabels.map((label) => (
-            <HeaderTableCell key={label} size="medium">
+            <HeaderTableCell key={label} size="medium" sx={{ ...minimalViewHeaderCellSx }}>
               {label}
             </HeaderTableCell>
           ))}
@@ -74,12 +76,12 @@ function GridTable(props: GridTableProps) {
         {qItems.map((qItem, index) => {
           const qrItem = qrItemsByIndex[index];
 
-          if (!qrItem || Array.isArray(qrItem)) {
+          if (Array.isArray(qrItem)) {
             return null;
           }
 
           // In minimal view, dont display items with no answers
-          if (showMinimalView && qrItem.answer?.length === 0) {
+          if (showMinimalView && !qrItem) {
             return null;
           }
 
