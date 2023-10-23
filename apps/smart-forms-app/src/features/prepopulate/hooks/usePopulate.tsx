@@ -16,7 +16,6 @@
  */
 
 import { useState } from 'react';
-import type { PopulateFormParams } from '../utils/populate.ts';
 import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
@@ -80,16 +79,15 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   }
 
   setIsPopulated(true);
-  populateQuestionnaire(
-    sourceQuestionnaire,
-    smartClient,
-    patient,
-    user,
-    encounter,
-    fhirPathContext,
-    (params: PopulateFormParams) => {
-      const { populated, hasWarnings } = params;
+  populateQuestionnaire(sourceQuestionnaire, smartClient, patient, user, encounter, fhirPathContext)
+    .then(({ populateSuccess, populateResult }) => {
+      if (!populateSuccess || !populateResult) {
+        onStopSpinner();
+        enqueueSnackbar('Form not populated', { action: <CloseSnackbar />, variant: 'warning' });
+        return;
+      }
 
+      const { populated, hasWarnings } = populateResult;
       const updatedResponse = updatePopulatedProperties(populated);
       setUpdatableResponseAsPopulated(updatedResponse);
       onStopSpinner();
@@ -105,12 +103,11 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
         preventDuplicate: true,
         action: <CloseSnackbar />
       });
-    },
-    () => {
+    })
+    .catch(() => {
       onStopSpinner();
       enqueueSnackbar('Form not populated', { action: <CloseSnackbar />, variant: 'warning' });
-    }
-  );
+    });
 }
 
 export default usePopulate;
