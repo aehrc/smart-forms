@@ -15,8 +15,4 @@
  * limitations under the License.
  */
 
-export * from './SingleItem';
-export * from './RepeatItem';
-export * from './RepeatGroup';
-export * from './GridGroup';
-export * from './Tables';
+export { default as GridGroup } from './GridGroup';

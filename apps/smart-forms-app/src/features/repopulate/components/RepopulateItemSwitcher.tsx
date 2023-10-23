@@ -21,6 +21,7 @@ import RepopulateGroupTable from './RepopulateGroupTable.tsx';
 import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '@aehrc/smart-forms-renderer';
 import RepopulateRepeatItem from './RepopulateRepeatItem.tsx';
 import RepopulateRepeatGroup from './RepopulateRepeatGroup.tsx';
+import RepopulateGridGroup from './RepopulateGridGroup.tsx';
 
 interface RepopulateItemSwitcherProps {
   qItem: QuestionnaireItem;
@@ -40,6 +41,10 @@ function RepopulateItemSwitcher(props: RepopulateItemSwitcherProps) {
   // normal repeat group
   if (qItem.type === 'group' && qItem.repeats) {
     return <RepopulateRepeatGroup qItem={qItem} newQRItems={newQRItems} oldQRItems={oldQRItems} />;
+  }
+
+  if (isSpecificItemControl(qItem, 'grid')) {
+    return <RepopulateGridGroup qItem={qItem} newQRItem={newQRItem} oldQRItem={oldQRItem} />;
   }
 
   // non-checkbox repeat items

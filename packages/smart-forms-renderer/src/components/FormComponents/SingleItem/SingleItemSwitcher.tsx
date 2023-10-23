@@ -180,7 +180,8 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     default:
       return (
         <Typography>
-          Item type not supported yet. Only R4 datatypes are supported at the moment.
+          Item type not supported yet, or something has went wrong. If your questionnnaire is not a
+          FHIR R4 resource, there might be issues rendering it.
         </Typography>
       );
   }

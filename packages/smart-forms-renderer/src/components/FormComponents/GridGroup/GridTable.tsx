@@ -25,11 +25,15 @@ import { HeaderTableCell } from '../Tables/Table.styles';
 import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex } from '../../../utils/mapItem';
-import type { PropsWithQrItemChangeHandler } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../../interfaces/renderProps.interface';
+import { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItems: QuestionnaireItem[];
   qrItems: QuestionnaireResponseItem[];
@@ -38,7 +42,15 @@ interface GridTableProps
 }
 
 function GridTable(props: GridTableProps) {
-  const { qItems, qrItems, qItemsIndexMap, columnLabels, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItems,
+    qrItems,
+    qItemsIndexMap,
+    columnLabels,
+    showMinimalView,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const qrItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[] =
     getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
@@ -46,12 +58,14 @@ function GridTable(props: GridTableProps) {
   const numOfColumns = columnLabels.length;
 
   return (
-    <Table>
+    <Table size={showMinimalView ? 'small' : 'medium'}>
       <TableHead>
         <TableRow>
           <HeaderTableCell />
           {columnLabels.map((label) => (
-            <HeaderTableCell key={label}>{label}</HeaderTableCell>
+            <HeaderTableCell key={label} size="medium">
+              {label}
+            </HeaderTableCell>
           ))}
           <TableCell />
         </TableRow>
@@ -60,7 +74,12 @@ function GridTable(props: GridTableProps) {
         {qItems.map((qItem, index) => {
           const qrItem = qrItemsByIndex[index];
 
-          if (Array.isArray(qrItem)) {
+          if (!qrItem || Array.isArray(qrItem)) {
+            return null;
+          }
+
+          // In minimal view, dont display items with no answers
+          if (showMinimalView && qrItem.answer?.length === 0) {
             return null;
           }
 

@@ -19,7 +19,8 @@ import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
@@ -35,6 +36,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
@@ -42,7 +44,8 @@ interface GridGroupProps
 }
 
 function GridGroup(props: GridGroupProps) {
-  const { qItem, qrItem, groupCardElevation, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, groupCardElevation, showMinimalView, parentIsReadOnly, onQrItemChange } =
+    props;
 
   const qRowItems = qItem.item;
   const qrGroup = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
@@ -77,26 +80,49 @@ function GridGroup(props: GridGroupProps) {
     onQrItemChange(updatedQrGroup);
   }
 
-  return (
-    <>
-      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
-        <Typography fontSize={13} variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Typography>
-        <Divider sx={{ my: 1 }} light />
-
+  if (showMinimalView) {
+    return (
+      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
         <TableContainer component={Paper} elevation={groupCardElevation}>
           <GridTable
             qItems={qRowItems}
             qrItems={qrRowItems}
             qItemsIndexMap={qItemsIndexMap}
             columnLabels={columnLabels}
+            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={handleRowChange}
           />
         </TableContainer>
       </QGroupContainerBox>
-    </>
+    );
+  }
+
+  return (
+    <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
+      {qItem.text ? (
+        <>
+          <Typography
+            fontSize={13}
+            variant="h6"
+            color={readOnly ? 'text.secondary' : 'text.primary'}>
+            <LabelWrapper qItem={qItem} readOnly={readOnly} />
+          </Typography>
+          <Divider sx={{ my: 1 }} light />
+        </>
+      ) : null}
+
+      <TableContainer component={Paper} elevation={groupCardElevation}>
+        <GridTable
+          qItems={qRowItems}
+          qrItems={qrRowItems}
+          qItemsIndexMap={qItemsIndexMap}
+          columnLabels={columnLabels}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={handleRowChange}
+        />
+      </TableContainer>
+    </QGroupContainerBox>
   );
 }
 
