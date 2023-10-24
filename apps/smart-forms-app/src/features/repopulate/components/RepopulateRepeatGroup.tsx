@@ -17,7 +17,7 @@
 
 import { Grid, Typography } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { GroupTable } from '@aehrc/smart-forms-renderer';
+import { RepeatGroup } from '@aehrc/smart-forms-renderer';
 
 interface RepopulateRepeatGroupProps {
   qItem: QuestionnaireItem;
@@ -25,7 +25,7 @@ interface RepopulateRepeatGroupProps {
   oldQRItems?: QuestionnaireResponseItem[];
 }
 
-function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
+function RepopulateRepeatGroup(props: RepopulateRepeatGroupProps) {
   const { qItem, newQRItems, oldQRItems } = props;
 
   return (
@@ -34,7 +34,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           Old answer
         </Typography>
-        <GroupTable
+        <RepeatGroup
           qItem={qItem}
           qrItems={oldQRItems ?? []}
           groupCardElevation={1}
@@ -47,7 +47,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           New answer
         </Typography>
-        <GroupTable
+        <RepeatGroup
           qItem={qItem}
           qrItems={newQRItems}
           groupCardElevation={1}
@@ -60,4 +60,4 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
   );
 }
 
-export default RepopulateGroupTable;
+export default RepopulateRepeatGroup;

@@ -87,7 +87,7 @@ function GridRow(props: GridRowProps) {
               qrItem={cellQrItem}
               isRepeated={true}
               isTabled={true}
-              textShown={false}
+              showMinimalView={true}
               parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={handleQrRowItemChange}
             />

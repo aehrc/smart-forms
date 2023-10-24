@@ -17,47 +17,48 @@
 
 import { Grid, Typography } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { GroupTable } from '@aehrc/smart-forms-renderer';
+import { RepeatItem } from '@aehrc/smart-forms-renderer';
 
-interface RepopulateRepeatGroupProps {
+interface RepopulateRepeatItemProps {
   qItem: QuestionnaireItem;
-  newQRItems: QuestionnaireResponseItem[];
-  oldQRItems?: QuestionnaireResponseItem[];
+  oldQRItem?: QuestionnaireResponseItem;
+  newQRItem: QuestionnaireResponseItem;
 }
 
-function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
-  const { qItem, newQRItems, oldQRItems } = props;
+function RepopulateRepeatItem(props: RepopulateRepeatItemProps) {
+  const { qItem, oldQRItem, newQRItem } = props;
 
   return (
-    <Grid container rowGap={2} mt={0.25}>
-      <Grid item xs={12}>
+    <Grid container columnSpacing={2} mt={0.25}>
+      <Grid item xs={12} md={6}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
-          Old answer
+          Old answers
         </Typography>
-        <GroupTable
+        <RepeatItem
           qItem={qItem}
-          qrItems={oldQRItems ?? []}
-          groupCardElevation={1}
+          qrItem={
+            oldQRItem ?? {
+              linkId: qItem.linkId,
+              text: qItem.text
+            }
+          }
           showMinimalView={true}
-          parentIsReadOnly={true}
-          onQrRepeatGroupChange={() => void 0}
+          onQrItemChange={() => void 0}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
-          New answer
+          New answers
         </Typography>
-        <GroupTable
+        <RepeatItem
           qItem={qItem}
-          qrItems={newQRItems}
-          groupCardElevation={1}
+          qrItem={newQRItem}
           showMinimalView={true}
-          parentIsReadOnly={true}
-          onQrRepeatGroupChange={() => void 0}
+          onQrItemChange={() => void 0}
         />
       </Grid>
     </Grid>
   );
 }
 
-export default RepopulateGroupTable;
+export default RepopulateRepeatItem;

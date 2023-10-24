@@ -25,7 +25,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithTextShownAttribute
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import StringItem from '../StringItem/StringItem';
 import BooleanItem from '../BooleanItem/BooleanItem';
@@ -42,14 +42,14 @@ interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function SingleItemSwitcher(props: SingleItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
   switch (qItem.type) {
@@ -149,7 +149,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          textShown={textShown}
+          showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -161,7 +161,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          textShown={textShown}
+          showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -180,7 +180,8 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     default:
       return (
         <Typography>
-          Item type not supported yet. Only R4 datatypes are supported at the moment.
+          Item type not supported yet, or something has went wrong. If your questionnnaire is not a
+          FHIR R4 resource, there might be issues rendering it.
         </Typography>
       );
   }

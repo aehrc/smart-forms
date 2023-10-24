@@ -29,23 +29,23 @@ import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithTextShownAttribute
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
 interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
   const orientation = getChoiceOrientation(qItem);
@@ -84,7 +84,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             orientation={orientation}
             isRepeated={qItem.repeats ?? false}
-            textShown={textShown}
+            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
@@ -96,7 +96,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={qItem.repeats ?? false}
             orientation={orientation}
-            textShown={textShown}
+            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />

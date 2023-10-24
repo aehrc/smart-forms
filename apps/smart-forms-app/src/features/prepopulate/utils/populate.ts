@@ -33,7 +33,7 @@ import type Client from 'fhirclient/lib/Client';
 import { createPopulateInputParameters } from './createInputParameters.ts';
 import { requestPopulate } from '../api/requestPopulate.ts';
 
-export interface PopulateFormParams {
+export interface PopulateResult {
   populated: QuestionnaireResponse;
   hasWarnings: boolean;
 }
@@ -48,12 +48,11 @@ export async function populateQuestionnaire(
   patient: Patient,
   user: Practitioner,
   encounter: Encounter | null,
-  fhirPathContext: Record<string, any>,
-  populateForm: {
-    (params: PopulateFormParams): void;
-  },
-  exitSpinner: { (): void }
-) {
+  fhirPathContext: Record<string, any>
+): Promise<{
+  populateSuccess: boolean;
+  populateResult: PopulateResult | null;
+}> {
   // Get launch contexts, source queries and questionnaire-level variables
   const launchContexts = getLaunchContexts(questionnaire);
   const sourceQueries = getSourceQueries(questionnaire);
@@ -64,8 +63,10 @@ export async function populateQuestionnaire(
     sourceQueries.length === 0 &&
     questionnaireLevelVariables.length === 0
   ) {
-    exitSpinner();
-    return;
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
   }
 
   // Define population input parameters from launch contexts, source queries and questionnaire-level variables
@@ -81,21 +82,27 @@ export async function populateQuestionnaire(
   );
 
   if (!inputParameters) {
-    exitSpinner();
-    return;
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
   }
 
   if (!isInputParameters(inputParameters)) {
-    exitSpinner();
-    return;
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
   }
 
   // Perform population if parameters satisfies input parameters
   const outputParameters = await requestPopulate(fhirClient, inputParameters);
 
   if (outputParameters.resourceType === 'OperationOutcome') {
-    exitSpinner();
-    return;
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
   }
 
   const responseParameter = outputParameters.parameter.find(
@@ -111,9 +118,14 @@ export async function populateQuestionnaire(
         console.warn(issue.details.text);
       }
     }
-    populateForm({ populated: responseParameter.resource, hasWarnings: true });
-    return;
+    return {
+      populateSuccess: true,
+      populateResult: { populated: responseParameter.resource, hasWarnings: true }
+    };
   }
 
-  populateForm({ populated: responseParameter.resource, hasWarnings: false });
+  return {
+    populateSuccess: true,
+    populateResult: { populated: responseParameter.resource, hasWarnings: false }
+  };
 }

@@ -28,11 +28,13 @@ interface RepopulateListItemProps {
   qItem: QuestionnaireItem;
   newQRItem: QuestionnaireResponseItem;
   oldQRItem?: QuestionnaireResponseItem;
+  newQRItems: QuestionnaireResponseItem[];
+  oldQRItems?: QuestionnaireResponseItem[];
   onCheckItem: () => void;
 }
 
 function RepopulateListItem(props: RepopulateListItemProps) {
-  const { qItem, oldQRItem, newQRItem, checkedIds, onCheckItem } = props;
+  const { qItem, oldQRItem, newQRItem, newQRItems, oldQRItems, checkedIds, onCheckItem } = props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
@@ -62,6 +64,8 @@ function RepopulateListItem(props: RepopulateListItemProps) {
                 qItem={qItemToRepopulate}
                 oldQRItem={oldQRItem}
                 newQRItem={newQRItem}
+                newQRItems={newQRItems}
+                oldQRItems={oldQRItems}
               />
             </Typography>
           }

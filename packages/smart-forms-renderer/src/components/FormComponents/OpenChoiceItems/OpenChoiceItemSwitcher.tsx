@@ -30,21 +30,21 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithTextShownAttribute
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 
 interface OpenChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithTextShownAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, textShown, parentIsReadOnly, onQrItemChange } =
+  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
   const orientation = getChoiceOrientation(qItem);
@@ -57,7 +57,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           qrItem={qrItem}
           orientation={orientation}
           isRepeated={qItem['repeats'] ?? false}
-          textShown={textShown}
+          showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />

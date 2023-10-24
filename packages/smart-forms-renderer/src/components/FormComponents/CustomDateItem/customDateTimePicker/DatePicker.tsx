@@ -26,13 +26,14 @@ import DatePickerButton from './DatePickerButton';
 
 interface DatePickerProps {
   valueString: string;
+  readOnly: boolean;
   anchorEl: HTMLElement | null;
   onSelectDate: (newValueDayjs: Dayjs) => void;
   onFocus: (focus: boolean) => void;
 }
 
 function DatePicker(props: DatePickerProps) {
-  const { valueString, anchorEl, onSelectDate, onFocus } = props;
+  const { valueString, readOnly, anchorEl, onSelectDate, onFocus } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -42,13 +43,15 @@ function DatePicker(props: DatePickerProps) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MuiDatePicker
         value={valueDayJs ?? null}
+        disabled={readOnly}
         slots={{ field: DatePickerButton }}
         slotProps={{
           field: {
             onOpen: () => {
               setOpen(!open);
               onFocus(true);
-            }
+            },
+            readOnly: readOnly
           } as any,
           textField: {
             size: 'small'

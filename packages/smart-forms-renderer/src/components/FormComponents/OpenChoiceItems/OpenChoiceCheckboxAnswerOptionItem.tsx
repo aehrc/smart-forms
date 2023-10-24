@@ -33,7 +33,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithTextShownAttribute
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
@@ -44,7 +44,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithTextShownAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
@@ -57,7 +57,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     qrItem,
     orientation,
     isRepeated,
-    textShown = true,
+    showMinimalView = false,
     parentIsReadOnly,
     onQrItemChange
   } = props;
@@ -137,49 +137,49 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     updateOpenLabelValueWithDebounce(newValue);
   }
 
-  if (textShown) {
+  if (showMinimalView) {
     return (
-      <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
-        <Grid container columnSpacing={6}>
-          <Grid item xs={5}>
-            <LabelWrapper qItem={qItem} readOnly={readOnly} />
-          </Grid>
-          <Grid item xs={7}>
-            <OpenChoiceCheckboxAnswerOptionFields
-              qItem={qItem}
-              answers={answers}
-              openLabelText={openLabelText}
-              openLabelValue={openLabelValue}
-              openLabelChecked={openLabelChecked}
-              readOnly={readOnly}
-              orientation={orientation}
-              onValueChange={handleValueChange}
-              onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
-              onOpenLabelInputChange={handleOpenLabelInputChange}
-            />
-            <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-          </Grid>
-        </Grid>
-      </FullWidthFormComponentBox>
+      <>
+        <OpenChoiceCheckboxAnswerOptionFields
+          qItem={qItem}
+          answers={answers}
+          openLabelText={openLabelText}
+          openLabelValue={openLabelValue}
+          openLabelChecked={openLabelChecked}
+          readOnly={readOnly}
+          orientation={orientation}
+          onValueChange={handleValueChange}
+          onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+          onOpenLabelInputChange={handleOpenLabelInputChange}
+        />
+        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+      </>
     );
   }
 
   return (
-    <>
-      <OpenChoiceCheckboxAnswerOptionFields
-        qItem={qItem}
-        answers={answers}
-        openLabelText={openLabelText}
-        openLabelValue={openLabelValue}
-        openLabelChecked={openLabelChecked}
-        readOnly={readOnly}
-        orientation={orientation}
-        onValueChange={handleValueChange}
-        onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
-        onOpenLabelInputChange={handleOpenLabelInputChange}
-      />
-      <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-    </>
+    <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
+      <Grid container columnSpacing={6}>
+        <Grid item xs={5}>
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
+        </Grid>
+        <Grid item xs={7}>
+          <OpenChoiceCheckboxAnswerOptionFields
+            qItem={qItem}
+            answers={answers}
+            openLabelText={openLabelText}
+            openLabelValue={openLabelValue}
+            openLabelChecked={openLabelChecked}
+            readOnly={readOnly}
+            orientation={orientation}
+            onValueChange={handleValueChange}
+            onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+            onOpenLabelInputChange={handleOpenLabelInputChange}
+          />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        </Grid>
+      </Grid>
+    </FullWidthFormComponentBox>
   );
 }
 

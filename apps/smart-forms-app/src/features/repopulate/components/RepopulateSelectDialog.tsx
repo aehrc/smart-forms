@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import {
-  repopulate,
+  repopulateResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -94,7 +94,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       });
     });
 
-    const repopulatedResponse = repopulate(checkedRepopulatedItems);
+    const repopulatedResponse = repopulateResponse(checkedRepopulatedItems);
     const updatedResponse = updatePopulatedProperties(repopulatedResponse, true);
     setUpdatableResponseAsPopulated(updatedResponse);
 
@@ -107,7 +107,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
   }
 
   return (
-    <Dialog open={true} onClose={onCloseDialog} maxWidth="xl">
+    <Dialog open={true} onClose={onCloseDialog} maxWidth="xl" fullWidth>
       <DialogTitle variant="h5">Select items to be re-populated</DialogTitle>
       <DialogContent>
         <RepopulateList

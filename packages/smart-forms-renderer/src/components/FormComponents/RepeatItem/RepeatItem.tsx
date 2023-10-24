@@ -20,6 +20,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
@@ -35,13 +36,14 @@ import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
 }
 
 function RepeatItem(props: RepeatItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, showMinimalView, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -88,6 +90,33 @@ function RepeatItem(props: RepeatItemProps) {
     ]);
   }
 
+  if (showMinimalView) {
+    return (
+      <>
+        {repeatAnswers.map(({ nanoId, answer }, index) => {
+          const repeatAnswerQrItem = createEmptyQrItem(qItem);
+          if (answer) {
+            repeatAnswerQrItem.answer = [answer];
+          }
+
+          return (
+            <RepeatField
+              key={nanoId}
+              qItem={qItem}
+              qrItem={repeatAnswerQrItem}
+              answer={answer}
+              numOfRepeatAnswers={repeatAnswers.length}
+              parentIsReadOnly={parentIsReadOnly}
+              showMinimalView={showMinimalView}
+              onDeleteAnswer={() => handleDeleteItem(index)}
+              onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
+            />
+          );
+        })}
+      </>
+    );
+  }
+
   return (
     <FullWidthFormComponentBox data-test="q-item-repeat-box">
       <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
@@ -106,6 +135,7 @@ function RepeatItem(props: RepeatItemProps) {
                   answer={answer}
                   numOfRepeatAnswers={repeatAnswers.length}
                   parentIsReadOnly={parentIsReadOnly}
+                  showMinimalView={showMinimalView}
                   onDeleteAnswer={() => handleDeleteItem(index)}
                   onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
                 />

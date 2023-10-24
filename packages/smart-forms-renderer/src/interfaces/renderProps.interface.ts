@@ -33,8 +33,8 @@ export interface PropsWithIsTabledAttribute {
   isTabled: boolean;
 }
 
-export interface PropsWithTextShownAttribute {
-  textShown?: boolean;
+export interface PropsWithShowMinimalViewAttribute {
+  showMinimalView?: boolean;
 }
 
 export interface PropsWithParentIsReadOnlyAttribute {

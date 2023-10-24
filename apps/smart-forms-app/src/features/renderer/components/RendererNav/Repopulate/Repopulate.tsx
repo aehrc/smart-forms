@@ -18,7 +18,6 @@
 import { RendererOperationItem } from '../RendererOperationSection.tsx';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import { useSnackbar } from 'notistack';
-import type { PopulateFormParams } from '../../../../prepopulate/utils/populate.ts';
 import { populateQuestionnaire } from '../../../../prepopulate/utils/populate.ts';
 import CloseSnackbar from '../../../../../components/Snackbar/CloseSnackbar.tsx';
 import { Backdrop, Tooltip } from '@mui/material';
@@ -35,7 +34,8 @@ import { grey } from '@mui/material/colors';
 import PopulationProgressSpinner from '../../../../../components/Spinners/PopulationProgressSpinner.tsx';
 import RepopulateDialog from '../../../../repopulate/components/RepopulateDialog.tsx';
 import { useState } from 'react';
-import type { Practitioner } from 'fhir/r4';
+import type { Patient, Practitioner } from 'fhir/r4';
+import { useMutation } from '@tanstack/react-query';
 
 interface RepopulateProps {
   spinner: RendererSpinner;
@@ -60,10 +60,9 @@ function Repopulate(props: RepopulateProps) {
   const repopulateFetchEnded = !spinner.isSpinning && spinner.status === 'repopulate-fetch';
 
   /*
-   * Perform pre-population if all the following requirements are fulfilled:
+   * Perform re-population if all the following requirements are fulfilled:
    * 1. App is connected to a CMS
    * 2. Pre-pop queries exist in the form of questionnaire-level extensions or contained resources
-   * 3. QuestionnaireResponse does not have answer items
    */
   const shouldRepopulate =
     !!smartClient &&
@@ -71,6 +70,57 @@ function Repopulate(props: RepopulateProps) {
     !!user &&
     !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension) &&
     !sourceResponse.id;
+
+  const { mutate: handleRepopulate } = useMutation({
+    mutationFn: (params: { newPatient: Patient; newUser: Practitioner }) => {
+      const { newPatient, newUser } = params;
+
+      return populateQuestionnaire(
+        sourceQuestionnaire,
+        smartClient!,
+        newPatient,
+        newUser,
+        encounter,
+        fhirPathContext
+      );
+    },
+    onSuccess: ({ populateSuccess, populateResult }) => {
+      // Repopulate operation has already been cancelled, don't show repopulate dialog
+      if (!spinner.isSpinning && spinner.status === 'repopulate-cancel') {
+        return;
+      }
+
+      if (!populateSuccess || !populateResult) {
+        onSpinnerChange({ isSpinning: false, status: null, message: '' });
+        enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
+          action: <CloseSnackbar />,
+          variant: 'warning'
+        });
+        return;
+      }
+
+      const { populated, hasWarnings } = populateResult;
+      const itemToRepopulate = generateItemsToRepopulate(populated);
+
+      setItemsToRepopulate(itemToRepopulate);
+
+      onSpinnerChange({ isSpinning: false, status: 'repopulate-fetch', message: '' });
+      if (hasWarnings) {
+        enqueueSnackbar(
+          'There might be issues while retrieving the latest information, data is partially retrieved. View console for details.',
+          { action: <CloseSnackbar />, variant: 'warning' }
+        );
+        return;
+      }
+    },
+    onError: () => {
+      onSpinnerChange({ isSpinning: false, status: null, message: '' });
+      enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
+        action: <CloseSnackbar />,
+        variant: 'warning'
+      });
+    }
+  });
 
   async function handleClick() {
     closeSnackbar();
@@ -86,42 +136,8 @@ function Repopulate(props: RepopulateProps) {
     const newPatient = await smartClient.patient.read();
     const newUser = (await smartClient.user.read()) as Practitioner;
 
-    populateQuestionnaire(
-      sourceQuestionnaire,
-      smartClient,
-      newPatient,
-      newUser,
-      encounter,
-      fhirPathContext,
-      (params: PopulateFormParams) => {
-        const { populated, hasWarnings } = params;
-
-        const itemToRepopulate = generateItemsToRepopulate(populated);
-
-        setItemsToRepopulate(itemToRepopulate);
-
-        onSpinnerChange({ isSpinning: false, status: 'repopulate-fetch', message: '' });
-        if (hasWarnings) {
-          enqueueSnackbar(
-            'There might be issues while retrieving the latest information, data is partially retrieved. View console for details.',
-            { action: <CloseSnackbar />, variant: 'warning' }
-          );
-          return;
-        }
-      },
-      () => {
-        onSpinnerChange({ isSpinning: false, status: null, message: '' });
-        enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
-          action: <CloseSnackbar />,
-          variant: 'warning'
-        });
-      }
-    );
+    handleRepopulate({ newPatient, newUser });
   }
-
-  // Re-population strategy
-  // 1. re-populate fields not marked as dirty and have these under "Re-populated fields" section
-  // 2. if a field is dirty, allow users to manually sync the field (current answer - changes from server ) under "Resolve repopulate conflicts" section
 
   return (
     <>
@@ -142,7 +158,9 @@ function Repopulate(props: RepopulateProps) {
           zIndex: (theme) => theme.zIndex.drawer + 1
         }}
         open={isRepopulateFetching}
-        onClick={() => onSpinnerChange({ ...spinner, isSpinning: false })}>
+        onClick={() =>
+          onSpinnerChange({ isSpinning: false, status: 'repopulate-cancel', message: '' })
+        }>
         <PopulationProgressSpinner message={spinner.message} />
       </Backdrop>
       <RepopulateDialog

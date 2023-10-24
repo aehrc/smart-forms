@@ -15,5 +15,4 @@
  * limitations under the License.
  */
 
-export { isSpecificItemControl } from './itemControl';
-export { isRepeatItemAndNotCheckbox } from './qItem';
+export { default as RepeatItem } from './RepeatItem';

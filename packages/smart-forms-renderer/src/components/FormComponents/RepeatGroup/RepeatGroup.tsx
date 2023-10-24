@@ -18,7 +18,8 @@
 import React, { useState } from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrRepeatGroupChangeHandler
+  PropsWithQrRepeatGroupChangeHandler,
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
@@ -38,6 +39,7 @@ import Typography from '@mui/material/Typography';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
@@ -45,7 +47,14 @@ interface RepeatGroupProps
 }
 
 function RepeatGroup(props: RepeatGroupProps) {
-  const { qItem, qrItems, groupCardElevation, parentIsReadOnly, onQrRepeatGroupChange } = props;
+  const {
+    qItem,
+    qrItems,
+    groupCardElevation,
+    showMinimalView,
+    parentIsReadOnly,
+    onQrRepeatGroupChange
+  } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -95,6 +104,36 @@ function RepeatGroup(props: RepeatGroupProps) {
         qrItem: null
       }
     ]);
+  }
+
+  if (showMinimalView) {
+    return (
+      <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
+        <Card elevation={groupCardElevation} sx={{ p: 2 }}>
+          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+            const answeredQrItem = createEmptyQrItem(qItem);
+            if (nullableQrItem) {
+              answeredQrItem.item = nullableQrItem.item;
+            }
+
+            return (
+              <RepeatGroupItem
+                key={nanoId}
+                qItem={qItem}
+                answeredQrItem={answeredQrItem}
+                nullableQrItem={nullableQrItem}
+                numOfRepeatGroups={repeatGroups.length}
+                groupCardElevation={groupCardElevation + 1}
+                showMinimalView={showMinimalView}
+                parentIsReadOnly={parentIsReadOnly}
+                onDeleteItem={() => handleDeleteItem(index)}
+                onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
+              />
+            );
+          })}
+        </Card>
+      </QGroupContainerBox>
+    );
   }
 
   return (

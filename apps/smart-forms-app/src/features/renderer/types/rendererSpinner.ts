@@ -17,6 +17,12 @@
 
 export interface RendererSpinner {
   isSpinning: boolean;
-  status: 'prepopulate' | 'repopulate-fetch' | 'repopulate-write' | 'repopulated' | null;
+  status:
+    | 'prepopulate'
+    | 'repopulate-fetch'
+    | 'repopulate-cancel'
+    | 'repopulate-write'
+    | 'repopulated'
+    | null;
   message: string;
 }

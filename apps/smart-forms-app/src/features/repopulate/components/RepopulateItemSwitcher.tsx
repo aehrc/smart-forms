@@ -18,19 +18,39 @@
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import RepopulateSingleItem from './RepopulateSingleItem.tsx';
 import RepopulateGroupTable from './RepopulateGroupTable.tsx';
-import { isSpecificItemControl } from '@aehrc/smart-forms-renderer';
+import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '@aehrc/smart-forms-renderer';
+import RepopulateRepeatItem from './RepopulateRepeatItem.tsx';
+import RepopulateRepeatGroup from './RepopulateRepeatGroup.tsx';
+import RepopulateGridGroup from './RepopulateGridGroup.tsx';
 
 interface RepopulateItemSwitcherProps {
   qItem: QuestionnaireItem;
-  oldQRItem?: QuestionnaireResponseItem;
   newQRItem: QuestionnaireResponseItem;
+  oldQRItem?: QuestionnaireResponseItem;
+  newQRItems: QuestionnaireResponseItem[];
+  oldQRItems?: QuestionnaireResponseItem[];
 }
 
 function RepopulateItemSwitcher(props: RepopulateItemSwitcherProps) {
-  const { qItem, oldQRItem, newQRItem } = props;
+  const { qItem, oldQRItem, newQRItem, newQRItems, oldQRItems } = props;
 
   if (qItem.type === 'group' && qItem.repeats && isSpecificItemControl(qItem, 'gtable')) {
-    return <RepopulateGroupTable qItem={qItem} newQRItem={newQRItem} oldQRItem={oldQRItem} />;
+    return <RepopulateGroupTable qItem={qItem} newQRItems={newQRItems} oldQRItems={oldQRItems} />;
+  }
+
+  // normal repeat group
+  if (qItem.type === 'group' && qItem.repeats) {
+    return <RepopulateRepeatGroup qItem={qItem} newQRItems={newQRItems} oldQRItems={oldQRItems} />;
+  }
+
+  if (isSpecificItemControl(qItem, 'grid')) {
+    return <RepopulateGridGroup qItem={qItem} newQRItem={newQRItem} oldQRItem={oldQRItem} />;
+  }
+
+  // non-checkbox repeat items
+  const itemRepeatsAndIsNotCheckbox = isRepeatItemAndNotCheckbox(qItem);
+  if (itemRepeatsAndIsNotCheckbox) {
+    return <RepopulateRepeatItem qItem={qItem} newQRItem={newQRItem} oldQRItem={oldQRItem} />;
   }
 
   return <RepopulateSingleItem qItem={qItem} oldQRItem={oldQRItem} newQRItem={newQRItem} />;

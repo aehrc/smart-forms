@@ -27,7 +27,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithTextShownAttribute
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
@@ -37,7 +37,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
     PropsWithIsRepeatedAttribute,
-    PropsWithTextShownAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
@@ -50,7 +50,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     qrItem,
     orientation,
     isRepeated,
-    textShown = true,
+    showMinimalView = false,
     parentIsReadOnly,
     onQrItemChange
   } = props;
@@ -80,39 +80,39 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     }
   }
 
-  if (textShown) {
+  if (showMinimalView) {
     return (
-      <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
-        <Grid container columnSpacing={6}>
-          <Grid item xs={5}>
-            <LabelWrapper qItem={qItem} readOnly={readOnly} />
-          </Grid>
-          <Grid item xs={7}>
-            <ChoiceCheckboxAnswerValueSetFields
-              qItem={qItem}
-              answers={answers}
-              orientation={orientation}
-              readOnly={readOnly}
-              onCheckedChange={handleCheckedChange}
-            />
-            <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-          </Grid>
-        </Grid>
-      </FullWidthFormComponentBox>
+      <>
+        <ChoiceCheckboxAnswerValueSetFields
+          qItem={qItem}
+          answers={answers}
+          orientation={orientation}
+          readOnly={readOnly}
+          onCheckedChange={handleCheckedChange}
+        />
+        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+      </>
     );
   }
 
   return (
-    <>
-      <ChoiceCheckboxAnswerValueSetFields
-        qItem={qItem}
-        answers={answers}
-        orientation={orientation}
-        readOnly={readOnly}
-        onCheckedChange={handleCheckedChange}
-      />
-      <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-    </>
+    <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
+      <Grid container columnSpacing={6}>
+        <Grid item xs={5}>
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
+        </Grid>
+        <Grid item xs={7}>
+          <ChoiceCheckboxAnswerValueSetFields
+            qItem={qItem}
+            answers={answers}
+            orientation={orientation}
+            readOnly={readOnly}
+            onCheckedChange={handleCheckedChange}
+          />
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        </Grid>
+      </Grid>
+    </FullWidthFormComponentBox>
   );
 }
 

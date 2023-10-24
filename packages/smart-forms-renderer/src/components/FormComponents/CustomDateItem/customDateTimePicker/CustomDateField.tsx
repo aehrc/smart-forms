@@ -77,6 +77,7 @@ function CustomDateField(props: CustomDateFieldProps) {
             <>
               <DatePicker
                 valueString={valueDate}
+                readOnly={readOnly}
                 anchorEl={anchorRef.current}
                 onSelectDate={(valueDayjs: Dayjs) => {
                   onSelectDate(valueDayjs.format('DD/MM/YYYY'));

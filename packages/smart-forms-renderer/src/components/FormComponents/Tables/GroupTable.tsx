@@ -35,6 +35,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 import useInitialiseGroupTable from '../../../hooks/useInitialiseGroupTable';
 import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -44,14 +45,24 @@ import cloneDeep from 'lodash.clonedeep';
 import AddRowButton from './AddRowButton';
 import useReadOnly from '../../../hooks/useReadOnly';
 
-interface Props extends PropsWithQrRepeatGroupChangeHandler, PropsWithParentIsReadOnlyAttribute {
+interface GroupTableProps
+  extends PropsWithQrRepeatGroupChangeHandler,
+    PropsWithShowMinimalViewAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
 }
 
-function GroupTable(props: Props) {
-  const { qItem, qrItems, groupCardElevation, parentIsReadOnly, onQrRepeatGroupChange } = props;
+function GroupTable(props: GroupTableProps) {
+  const {
+    qItem,
+    qrItems,
+    groupCardElevation,
+    showMinimalView,
+    parentIsReadOnly,
+    onQrRepeatGroupChange
+  } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -116,6 +127,47 @@ function GroupTable(props: Props) {
         qrItem: null
       }
     ]);
+  }
+
+  if (showMinimalView) {
+    return (
+      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
+        <TableContainer component={Paper} elevation={groupCardElevation}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                {itemLabels.map((itemLabel) => (
+                  <HeaderTableCell key={itemLabel} size="medium">
+                    {itemLabel}
+                  </HeaderTableCell>
+                ))}
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tableRows.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+                const answeredQrItem = createEmptyQrItem(qItem);
+                if (nullableQrItem) {
+                  answeredQrItem.item = nullableQrItem.item;
+                }
+
+                return (
+                  <TableRow key={nanoId}>
+                    <GroupTableRow
+                      qItem={qItem}
+                      qrItem={answeredQrItem}
+                      qItemsIndexMap={qItemsIndexMap}
+                      parentIsReadOnly={parentIsReadOnly}
+                      onQrItemChange={(newQrGroup) => handleRowChange(newQrGroup, index)}
+                    />
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </QGroupContainerBox>
+    );
   }
 
   return (
