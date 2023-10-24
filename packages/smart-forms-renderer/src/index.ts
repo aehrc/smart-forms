@@ -104,7 +104,7 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
  *
  * @author Sean Fong
  */
-export function repopulate(checkedItemsToRepopulate: Record<string, ItemToRepopulate>) {
+export function repopulateResponse(checkedItemsToRepopulate: Record<string, ItemToRepopulate>) {
   const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
   const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
 
