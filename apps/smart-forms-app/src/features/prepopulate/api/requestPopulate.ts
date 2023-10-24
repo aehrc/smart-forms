@@ -33,33 +33,71 @@ export async function requestPopulate(
     authToken: fhirClient.state.tokenResponse!.access_token!
   };
 
-  if (IS_IN_APP_POPULATE) {
-    return await populate(inputParameters, fetchResourceCallback, requestConfig);
-  }
+  const populatePromise = IS_IN_APP_POPULATE
+    ? populate(inputParameters, fetchResourceCallback, requestConfig)
+    : fhirClient.request({
+        url: 'Questionnaire/$populate',
+        method: 'POST',
+        body: JSON.stringify(inputParameters),
+        headers: {
+          ...HEADERS,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${requestConfig.authToken}`
+        }
+      });
 
-  const outputParameters = await fhirClient.request({
-    url: 'Questionnaire/$populate',
-    method: 'POST',
-    body: JSON.stringify(inputParameters),
-    headers: {
-      ...HEADERS,
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${requestConfig.authToken}`
+  try {
+    const promiseResult = await addTimeoutToPromise(populatePromise, 10000);
+
+    if (promiseResult.timeout) {
+      return {
+        resourceType: 'OperationOutcome',
+        issue: [
+          {
+            severity: 'error',
+            code: 'timeout',
+            details: { text: '$populate operation timed out.' }
+          }
+        ]
+      };
     }
+
+    if (isOutputParameters(promiseResult)) {
+      return promiseResult;
+    }
+
+    return {
+      resourceType: 'OperationOutcome',
+      issue: [
+        {
+          severity: 'error',
+          code: 'invalid',
+          details: { text: 'Output parameters do not match the specification.' }
+        }
+      ]
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      resourceType: 'OperationOutcome',
+      issue: [
+        {
+          severity: 'error',
+          code: 'unknown',
+          details: { text: 'An unknown error occurred.' }
+        }
+      ]
+    };
+  }
+}
+
+async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`Promise timed out after ${timeoutMs} milliseconds`));
+    }, timeoutMs);
   });
 
-  if (isOutputParameters(outputParameters)) {
-    return outputParameters;
-  }
-
-  return {
-    resourceType: 'OperationOutcome',
-    issue: [
-      {
-        severity: 'error',
-        code: 'invalid',
-        details: { text: 'Output parameters does not match the specification.' }
-      }
-    ]
-  };
+  // Use Promise.race to wait for either the original promise or the timeout promise
+  return Promise.race([promise, timeoutPromise]);
 }
