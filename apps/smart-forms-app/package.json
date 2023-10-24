@@ -33,7 +33,7 @@
     "@fontsource/material-icons": "^5.0.7",
     "@fontsource/roboto": "^5.0.8",
     "@iconify/react": "^4.1.1",
-    "@monaco-editor/react": "^4.5.1",
+    "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.14.3",
     "@mui/lab": "^5.0.0-alpha.145",
     "@mui/material": "^5.14.11",
