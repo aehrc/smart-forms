@@ -38,6 +38,7 @@ import {
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
 
 export interface TokenTimerDialogProps {
   open: boolean;
@@ -84,7 +85,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
-        enqueueSnackbar('Response saved', {
+        enqueueSnackbar(saveSuccessMessage, {
           variant: 'success',
           action: (
             <Tooltip title="View Responses">
@@ -110,7 +111,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar('An error occurred while saving. Try again later.', {
+        enqueueSnackbar(saveErrorMessage, {
           variant: 'error'
         });
       });
