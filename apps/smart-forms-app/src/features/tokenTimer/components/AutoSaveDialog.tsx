@@ -63,7 +63,7 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
-        enqueueSnackbar('Response saved as draft', {
+        enqueueSnackbar('Response saved', {
           variant: 'success'
         });
         onAutoSave();
