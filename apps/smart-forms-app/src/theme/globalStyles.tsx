@@ -57,10 +57,6 @@ export default function GlobalStyles() {
         img: {
           display: 'block',
           maxWidth: '100%'
-        },
-        ul: {
-          margin: 0,
-          padding: 0
         }
       }}
     />
