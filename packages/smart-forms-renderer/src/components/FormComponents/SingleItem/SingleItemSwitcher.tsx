@@ -38,6 +38,7 @@ import UrlItem from '../UrlItem/UrlItem';
 import CustomDateItem from '../CustomDateItem/CustomDateItem';
 import { isSpecificItemControl } from '../../../utils';
 import SliderItem from '../SliderItem/SliderItem';
+import IntegerItem from '../IntegerItem/IntegerItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -136,7 +137,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       }
 
       return (
-        <SliderItem
+        <IntegerItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
