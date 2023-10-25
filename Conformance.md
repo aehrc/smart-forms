@@ -39,9 +39,37 @@ View the page here: http://hl7.org/fhir/uv/sdc/rendering.html
 **Control Apperance**
 - [x] itemControl
 - [x] choiceOrientation
-- [ ] sliderStepValue
+- [x] sliderStepValue
 - [ ] width
 - [ ] collapsible
+
+**Questionnaire Item Controls** (http://hl7.org/fhir/r4/valueset-questionnaire-item-control.html)
+- [ ] group
+    - [ ] list
+    - [ ] table
+    - [ ] htable
+    - [x] gtable
+    - [ ] atable
+    - [ ] header
+    - [ ] footer
+- [ ] text
+    - [ ] inline
+    - [x] prompt
+    - [x] unit
+    - [ ] lower (supported for slider currently)
+    - [ ] upper (supported for slider currently)
+    - [ ] flyover
+    - [ ] help
+- [ ] question
+    - [x] autocomplete
+    - [x] drop-down
+    - [x] check-box
+    - [ ] lookup
+    - [x] radio-button
+    - [x] slider
+    - [ ] spinner
+    - [ ] text-box
+
 
 **Additional Display Content**
 - [ ] supportLink
@@ -103,6 +131,14 @@ View the page here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [x] calculatedExpression
 - [ ] cqf-calculatedValue
 - [ ] cqf-expression
+
+| Item types that support calculations <br/>(refer https://www.hl7.org/fhir/r4/codesystem-item-type.html) |
+|---------------------------------------------------------------------------------------------------------|
+| integer                                                                                                 |
+| decimal                                                                                                 |
+| string                                                                                                  |
+| text                                                                                                    | |
+
 
 **Other Control**
 - [ ] entryMode

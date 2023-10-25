@@ -285,6 +285,38 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
 }
 
 /**
+ * Get text display lower bound for items with itemControlCode "lower" and has a "lower" childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayLower(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'lower')) {
+        return `${childItem.text}`;
+      }
+    }
+  }
+  return '';
+}
+
+/**
+ * Get text display upper bound for items with itemControlCode "upper" and has a "upper" childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayUpper(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'upper')) {
+        return `${childItem.text}`;
+      }
+    }
+  }
+  return '';
+}
+
+/**
  * Get text display instructions for items with itemControlCode instructions and has an instructions childItem
  *
  * @author Sean Fong

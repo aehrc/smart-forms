@@ -71,8 +71,6 @@ function useTerminologyServerQuery(
     }
   );
 
-  console.log(isFetching);
-
   if (error) {
     console.warn('Ontoserver query failed. Details below: \n' + error);
     feedback = {

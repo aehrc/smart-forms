@@ -30,6 +30,7 @@ import useResponsive from '../../hooks/useResponsive';
 import useHidden from '../../hooks/useHidden';
 import GroupItemSwitcher from '../FormComponents/GroupItem/GroupItemSwitcher';
 import useReadOnly from '../../hooks/useReadOnly';
+import Box from '@mui/material/Box';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -112,15 +113,17 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // Otherwise, it is rendered as a non-group item
   return (
-    <SingleItem
-      key={topLevelQItem.linkId}
-      qItem={topLevelQItem}
-      qrItem={topLevelQRItem}
-      isRepeated={false}
-      isTabled={false}
-      parentIsReadOnly={readOnly}
-      onQrItemChange={onQrItemChange}
-    />
+    <Box pt={1}>
+      <SingleItem
+        key={topLevelQItem.linkId}
+        qItem={topLevelQItem}
+        qrItem={topLevelQRItem}
+        isRepeated={false}
+        isTabled={false}
+        parentIsReadOnly={readOnly}
+        onQrItemChange={onQrItemChange}
+      />
+    </Box>
   );
 }
 
