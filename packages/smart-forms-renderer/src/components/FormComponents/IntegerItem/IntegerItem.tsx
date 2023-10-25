@@ -26,7 +26,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationError from '../../../hooks/useValidationError';
 import debounce from 'lodash.debounce';
-import { createEmptyQrItemWithUnit } from '../../../utils/qrItem';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import IntegerField from './IntegerField';
@@ -96,7 +96,7 @@ function IntegerItem(props: IntegerItemProps) {
   const updateQrItemWithDebounce = useCallback(
     debounce((newValue: number) => {
       onQrItemChange({
-        ...createEmptyQrItemWithUnit(qItem, displayUnit),
+        ...createEmptyQrItem(qItem),
         answer: [{ valueInteger: newValue }]
       });
     }, DEBOUNCE_DURATION),

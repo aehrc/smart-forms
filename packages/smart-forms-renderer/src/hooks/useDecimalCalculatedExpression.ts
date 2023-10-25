@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createEmptyQrItemWithUnit } from '../utils/qrItem';
+import { createEmptyQrItem } from '../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
 
@@ -63,7 +63,7 @@ function useDecimalCalculatedExpression(
           // update questionnaireResponse
           setInputValue(precision ? value.toFixed(precision) : value.toString());
           onQrItemChange({
-            ...createEmptyQrItemWithUnit(qItem, displayUnit),
+            ...createEmptyQrItem(qItem),
             answer: [{ valueDecimal: value }]
           });
         }
