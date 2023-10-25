@@ -69,7 +69,10 @@ export function getQrItemsIndex(
       if (isRepeatItemAndNotCheckbox(qItem) && qItem.type === 'group') {
         mapping[i] = qrItemOrItems ? qrItemsCollected[qItem.linkId] : [];
       } else {
-        mapping[i] = qrItemsCollected[qItem.linkId];
+        mapping[i] = qrItemsCollected[qItem.linkId] ?? {
+          linkId: qItem.linkId,
+          text: qItem.text
+        };
       }
       return mapping;
     },
