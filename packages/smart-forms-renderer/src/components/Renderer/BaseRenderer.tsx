@@ -35,19 +35,13 @@ function BaseRenderer() {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
-  function handleTopLevelQRItemSingleChange(
-    newTopLevelQRItem: QuestionnaireResponseItem,
-    index: number
-  ) {
+  function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
     const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
     if (!updatedResponse.item || updatedResponse.item.length === 0) {
       return;
     }
 
-    const updatedItems = [...updatedResponse.item]; // Copy the original array of items
-    updatedItems[index] = newTopLevelQRItem; // Modify the item at the specified index
-
-    updatedResponse.item = updatedItems;
+    updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
     updateExpressions(updatedResponse);
     updateResponse(updatedResponse);
@@ -73,8 +67,7 @@ function BaseRenderer() {
   }
 
   // If an item has multiple answers, it is a repeat group
-  const topLevelQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[] =
-    getQrItemsIndex(topLevelQItems, topLevelQRItems, qItemsIndexMap);
+  const topLevelQRItemsByIndex = getQrItemsIndex(topLevelQItems, topLevelQRItems, qItemsIndexMap);
 
   return (
     <Fade in={true} timeout={500}>
@@ -88,7 +81,7 @@ function BaseRenderer() {
               topLevelQItem={qItem}
               topLevelQRItemOrItems={qrItemOrItems}
               onQrItemChange={(newTopLevelQRItem) =>
-                handleTopLevelQRItemSingleChange(newTopLevelQRItem, index)
+                handleTopLevelQRItemSingleChange(newTopLevelQRItem)
               }
               onQrRepeatGroupChange={(newTopLevelQRItems) =>
                 handleTopLevelQRItemMultipleChange(newTopLevelQRItems)

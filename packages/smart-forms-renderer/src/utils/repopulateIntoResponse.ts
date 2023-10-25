@@ -191,10 +191,19 @@ function constructGridGroup(
   }
 
   const qrItemsToRepopulate = itemToRepopulate.newQRItem.item;
-  const oldQrItems = qrItem.item;
 
-  if (!qrItemsToRepopulate || !oldQrItems) {
+  if (!qrItemsToRepopulate) {
     return qrItem;
+  }
+
+  const oldQrItems = qrItem?.item;
+
+  if (!oldQrItems) {
+    return {
+      linkId: qItem.linkId,
+      text: qItem.text,
+      item: qrItemsToRepopulate
+    };
   }
 
   const qrItemsToRepopulateMap = qrItemsToRepopulate.reduce(

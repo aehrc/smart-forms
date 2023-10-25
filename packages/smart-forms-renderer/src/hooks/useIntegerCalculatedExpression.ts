@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createEmptyQrItemWithUnit } from '../utils/qrItem';
+import { createEmptyQrItem } from '../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useQuestionnaireStore from '../stores/useQuestionnaireStore';
 
@@ -56,7 +56,7 @@ function useIntegerCalculatedExpression(
         // update questionnaireResponse
         setInputValue(calcExpression.value);
         onQrItemChange({
-          ...createEmptyQrItemWithUnit(qItem, displayUnit),
+          ...createEmptyQrItem(qItem),
           answer: [{ valueInteger: calcExpression.value }]
         });
       }

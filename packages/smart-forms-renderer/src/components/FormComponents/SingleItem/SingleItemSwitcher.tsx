@@ -33,10 +33,12 @@ import TimeItem from '../TimeItem/TimeItem';
 import DateTimeItem from '../DateTimeItem/DateTimeItem';
 import TextItem from '../TextItem/TextItem';
 import DisplayItem from '../DisplayItem/DisplayItem';
-import IntegerItem from '../IntegerItem/IntegerItem';
 import DecimalItem from '../DecimalItem/DecimalItem';
 import UrlItem from '../UrlItem/UrlItem';
 import CustomDateItem from '../CustomDateItem/CustomDateItem';
+import { isSpecificItemControl } from '../../../utils';
+import SliderItem from '../SliderItem/SliderItem';
+import IntegerItem from '../IntegerItem/IntegerItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -121,6 +123,19 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'display':
       return <DisplayItem qItem={qItem} />;
     case 'integer':
+      if (isSpecificItemControl(qItem, 'slider')) {
+        return (
+          <SliderItem
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={isRepeated}
+            isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      }
+
       return (
         <IntegerItem
           qItem={qItem}

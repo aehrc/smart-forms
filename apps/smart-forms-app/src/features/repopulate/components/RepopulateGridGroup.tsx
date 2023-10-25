@@ -18,6 +18,7 @@
 import { Grid, Typography } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { GridGroup } from '@aehrc/smart-forms-renderer';
+import cloneDeep from 'lodash.clonedeep';
 
 interface RepopulateGridGroupProps {
   qItem: QuestionnaireItem;
@@ -28,6 +29,20 @@ interface RepopulateGridGroupProps {
 function RepopulateGridGroup(props: RepopulateGridGroupProps) {
   const { qItem, newQRItem, oldQRItem } = props;
 
+  // Create a duplicate old QR item with all answers removed if its undefined
+  const oldQRItemWithRowsToRepopulate: QuestionnaireResponseItem =
+    oldQRItem ??
+    cloneDeep({
+      ...newQRItem,
+      item: newQRItem.item?.map((item) => ({
+        ...item,
+        item: item.item?.map((subItem) => ({
+          ...subItem,
+          answer: undefined
+        }))
+      }))
+    });
+
   return (
     <Grid container rowGap={2} mt={0.25}>
       <Grid item xs={12}>
@@ -36,12 +51,7 @@ function RepopulateGridGroup(props: RepopulateGridGroupProps) {
         </Typography>
         <GridGroup
           qItem={qItem}
-          qrItem={
-            oldQRItem ?? {
-              linkId: qItem.linkId,
-              text: qItem.text
-            }
-          }
+          qrItem={oldQRItemWithRowsToRepopulate}
           groupCardElevation={1}
           showMinimalView={true}
           parentIsReadOnly={true}

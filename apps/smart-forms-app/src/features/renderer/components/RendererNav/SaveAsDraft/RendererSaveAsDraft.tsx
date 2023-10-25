@@ -63,7 +63,7 @@ function RendererSaveAsDraft() {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
-        enqueueSnackbar('Response saved as draft', {
+        enqueueSnackbar('Response saved', {
           variant: 'success',
           action: (
             <Tooltip title="View Responses">

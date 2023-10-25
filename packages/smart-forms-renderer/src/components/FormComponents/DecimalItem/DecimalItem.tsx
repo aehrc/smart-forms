@@ -28,7 +28,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValidationError from '../../../hooks/useValidationError';
 import debounce from 'lodash.debounce';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { createEmptyQrItemWithUnit } from '../../../utils/qrItem';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import DecimalField from './DecimalField';
 import {
@@ -106,7 +106,7 @@ function DecimalItem(props: DecimalItemProps) {
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
       onQrItemChange({
-        ...createEmptyQrItemWithUnit(qItem, displayUnit),
+        ...createEmptyQrItem(qItem),
         answer: precision
           ? [{ valueDecimal: parseDecimalStringToFloat(parsedNewInput, precision) }]
           : [{ valueDecimal: parseFloat(parsedNewInput) }]
