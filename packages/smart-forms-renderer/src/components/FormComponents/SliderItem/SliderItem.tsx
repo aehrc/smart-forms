@@ -30,6 +30,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import SliderField from './SliderField';
 import useSliderExtensions from '../../../hooks/useSliderExtensions';
+import Box from '@mui/material/Box';
 
 interface SliderItemProps
   extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
@@ -69,24 +70,7 @@ function SliderItem(props: SliderItemProps) {
 
   if (isRepeated) {
     return (
-      <SliderField
-        linkId={qItem.linkId}
-        value={valueInteger}
-        minValue={minValue}
-        maxValue={maxValue}
-        stepValue={stepValue}
-        minLabel={minLabel}
-        maxLabel={maxLabel}
-        readOnly={readOnly}
-        isTabled={isTabled}
-        onValueChange={handleValueChange}
-      />
-    );
-  }
-
-  return (
-    <FullWidthFormComponentBox data-test="q-item-slider-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <Box px={4}>
         <SliderField
           linkId={qItem.linkId}
           value={valueInteger}
@@ -99,8 +83,29 @@ function SliderItem(props: SliderItemProps) {
           isTabled={isTabled}
           onValueChange={handleValueChange}
         />
-      </ItemFieldGrid>
-    </FullWidthFormComponentBox>
+      </Box>
+    );
+  }
+
+  return (
+    <Box px={4}>
+      <FullWidthFormComponentBox data-test="q-item-slider-box">
+        <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+          <SliderField
+            linkId={qItem.linkId}
+            value={valueInteger}
+            minValue={minValue}
+            maxValue={maxValue}
+            stepValue={stepValue}
+            minLabel={minLabel}
+            maxLabel={maxLabel}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            onValueChange={handleValueChange}
+          />
+        </ItemFieldGrid>
+      </FullWidthFormComponentBox>
+    </Box>
   );
 }
 
