@@ -35,7 +35,7 @@ import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../types/rendererSpinner.ts';
-import RepopulateBackdrop from './RendererNav/Repopulate/RepopulateBackdrop.tsx';
+import RepopulateBackdrop from '../../repopulate/components/RepopulateBackdrop.tsx';
 
 function RendererLayout() {
   const { smartClient, patient, user } = useSmartClient();

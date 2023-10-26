@@ -18,14 +18,14 @@
 import { SpeedDial } from '@mui/material';
 import BuildIcon from '@mui/icons-material/Build';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import ViewExistingResponsesAction from './RendererSpeedDial/ViewExistingResponsesAction.tsx';
-import BackToQuestionnairesAction from './RendererSpeedDial/BackToQuestionnairesAction.tsx';
-import PreviewAction from './RendererSpeedDial/PreviewAction.tsx';
-import SaveProgressAction from './RendererSpeedDial/SaveProgressAction.tsx';
-import SaveAsFinalAction from './RendererSpeedDial/SaveAsFinalAction.tsx';
+import ViewExistingResponsesAction from './RendererActions/ViewExistingResponsesAction.tsx';
+import BackToQuestionnairesAction from './RendererActions/BackToQuestionnairesAction.tsx';
+import PreviewAction from './RendererActions/PreviewAction.tsx';
+import SaveProgressAction from './RendererActions/SaveProgressAction.tsx';
+import SaveAsFinalAction from './RendererActions/SaveAsFinalAction.tsx';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-import RepopulateAction from './RendererNav/Repopulate/RepopulateAction.tsx';
-import { RendererSpinner } from '../types/rendererSpinner.ts';
+import RepopulateAction from './RendererActions/RepopulateAction.tsx';
+import type { RendererSpinner } from '../types/rendererSpinner.ts';
 
 interface RendererEmbeddedSpeedDialProps {
   spinner: RendererSpinner;

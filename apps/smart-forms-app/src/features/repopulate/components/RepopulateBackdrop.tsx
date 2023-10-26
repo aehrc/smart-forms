@@ -16,10 +16,10 @@
  */
 
 import { Backdrop } from '@mui/material';
-import PopulationProgressSpinner from '../../../../../components/Spinners/PopulationProgressSpinner.tsx';
+import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import { alpha } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
-import { RendererSpinner } from '../../../types/rendererSpinner.ts';
+import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
 interface RepopulateBackdropProps {
   spinner: RendererSpinner;

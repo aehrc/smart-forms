@@ -21,10 +21,10 @@ import { NavListItemButton, StyledNavItemIcon } from '../../../../components/Nav
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
-import SaveProgressAction from '../RendererSpeedDial/SaveProgressAction.tsx';
-import SaveAsFinalAction from '../RendererSpeedDial/SaveAsFinalAction.tsx';
-import PreviewAction from '../RendererSpeedDial/PreviewAction.tsx';
-import RepopulateAction from './Repopulate/RepopulateAction.tsx';
+import SaveProgressAction from '../RendererActions/SaveProgressAction.tsx';
+import SaveAsFinalAction from '../RendererActions/SaveAsFinalAction.tsx';
+import PreviewAction from '../RendererActions/PreviewAction.tsx';
+import RepopulateAction from '../RendererActions/RepopulateAction.tsx';
 
 interface RendererOperationSectionProps {
   spinner: RendererSpinner;

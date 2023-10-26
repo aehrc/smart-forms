@@ -19,7 +19,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import cloneDeep from 'lodash.clonedeep';
-import { saveQuestionnaireResponse } from '../../../../../api/saveQr.ts';
+import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
 import {
   Button,
   Dialog,
@@ -34,8 +34,8 @@ import {
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
-import useSmartClient from '../../../../../hooks/useSmartClient.ts';
-import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../../utils/snackbar.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;

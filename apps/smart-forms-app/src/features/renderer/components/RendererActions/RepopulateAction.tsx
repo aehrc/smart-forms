@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-import { RendererOperationItem } from '../RendererOperationSection.tsx';
+import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import { useSnackbar } from 'notistack';
-import { populateQuestionnaire } from '../../../../prepopulate/utils/populate.ts';
-import CloseSnackbar from '../../../../../components/Snackbar/CloseSnackbar.tsx';
-import { SpeedDialAction, SpeedDialActionProps, Tooltip } from '@mui/material';
-import type { RendererSpinner } from '../../../types/rendererSpinner.ts';
-import useSmartClient from '../../../../../hooks/useSmartClient.ts';
+import { populateQuestionnaire } from '../../../prepopulate/utils/populate.ts';
+import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import type { SpeedDialActionProps } from '@mui/material';
+import { SpeedDialAction, Tooltip } from '@mui/material';
+import type { RendererSpinner } from '../../types/rendererSpinner.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import { generateItemsToRepopulate, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-import RepopulateDialog from '../../../../repopulate/components/RepopulateDialog.tsx';
+import RepopulateDialog from '../../../repopulate/components/RepopulateDialog.tsx';
 import { useState } from 'react';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { useMutation } from '@tanstack/react-query';
