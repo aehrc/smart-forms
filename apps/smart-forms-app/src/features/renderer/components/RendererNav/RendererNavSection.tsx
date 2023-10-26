@@ -16,30 +16,23 @@
  */
 
 import { Box, List } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
-import RendererOperationItem from './RendererOperationItem.tsx';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { NavSectionHeading } from '../../../../components/Nav/Nav.styles.ts';
+import BackToQuestionnairesAction from '../RendererSpeedDial/BackToQuestionnairesAction.tsx';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import ViewExistingResponsesAction from '../RendererSpeedDial/ViewExistingResponsesAction.tsx';
 
 function RendererNavSection() {
-  const navigate = useNavigate();
-  const { closeSnackbar } = useSnackbar();
+  const { launchQuestionnaire } = useSmartClient();
+
+  const headingText = launchQuestionnaire ? 'Responses' : 'Pages';
 
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
-        <NavSectionHeading>Pages</NavSectionHeading>
+        <NavSectionHeading>{headingText}</NavSectionHeading>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
-        <RendererOperationItem
-          title="Back to Questionnaires"
-          icon={<ArrowBackIcon />}
-          onClick={() => {
-            closeSnackbar();
-            navigate('/dashboard/questionnaires');
-          }}
-        />
+        {launchQuestionnaire ? <ViewExistingResponsesAction /> : <BackToQuestionnairesAction />}
       </List>
     </Box>
   );

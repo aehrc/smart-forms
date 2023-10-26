@@ -16,17 +16,15 @@
  */
 
 import { Box, List, ListItemText, Typography } from '@mui/material';
-import RendererSaveAsDraft from './SaveAsDraft/RendererSaveAsDraft.tsx';
-import RendererSaveAsFinal from './SaveAsFinal/RendererSaveAsFinal.tsx';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { useLocation, useNavigate } from 'react-router-dom';
 import type { OperationItem } from '../../../../types/Nav.interface.ts';
 import { NavListItemButton, StyledNavItemIcon } from '../../../../components/Nav/Nav.styles.ts';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
-import Repopulate from './Repopulate/Repopulate.tsx';
+import RepopulateOperation from './Repopulate/RepopulateOperation.tsx';
+import SaveProgressAction from '../RendererSpeedDial/SaveProgressAction.tsx';
+import SaveAsFinalAction from '../RendererSpeedDial/SaveAsFinalAction.tsx';
+import PreviewAction from '../RendererSpeedDial/PreviewAction.tsx';
 
 interface RendererOperationSectionProps {
   spinner: RendererSpinner;
@@ -40,37 +38,18 @@ function RendererOperationSection(props: RendererOperationSectionProps) {
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   return (
     <Box sx={{ pb: 4 }}>
       <Box sx={{ px: 2.5, pb: 0.75 }}>
         <Typography variant="overline">Operations</Typography>
       </Box>
       <List disablePadding sx={{ px: 1 }}>
-        {location.pathname === '/renderer/preview' ? (
-          <RendererOperationItem
-            title={'Editor'}
-            icon={<EditIcon />}
-            onClick={() => {
-              navigate('/renderer');
-            }}
-          />
-        ) : (
-          <RendererOperationItem
-            title={'Preview'}
-            icon={<VisibilityIcon />}
-            onClick={() => {
-              navigate('/renderer/preview');
-            }}
-          />
-        )}
+        <PreviewAction />
         {smartClient && sourceQuestionnaire.item ? (
           <>
-            <RendererSaveAsDraft />
-            <RendererSaveAsFinal />
-            <Repopulate spinner={spinner} onSpinnerChange={onSpinnerChange} />
+            <SaveProgressAction />
+            <SaveAsFinalAction />
+            <RepopulateOperation spinner={spinner} onSpinnerChange={onSpinnerChange} />
           </>
         ) : null}
       </List>

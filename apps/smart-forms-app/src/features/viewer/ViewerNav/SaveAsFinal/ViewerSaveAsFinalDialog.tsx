@@ -31,6 +31,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -73,12 +74,12 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
         setIsSaving(false);
         setUpdatableResponseAsSaved(savedResponse);
         handleClose();
-        enqueueSnackbar('Response saved as final', { variant: 'success' });
+        enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success' });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar('An error occurred while saving. Try again later.', { variant: 'error' });
+        enqueueSnackbar(saveErrorMessage, { variant: 'error' });
         handleClose();
       });
   }

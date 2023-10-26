@@ -35,6 +35,7 @@ import {
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../../hooks/useSmartClient.ts';
+import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../../utils/snackbar.ts';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
@@ -77,7 +78,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
-        enqueueSnackbar('Response saved as final', { variant: 'success' });
+        enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success' });
 
         // Wait until renderer.hasChanges is set to false before navigating away
         setTimeout(() => {
@@ -88,7 +89,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar('An error occurred while saving. Try again later.', { variant: 'error' });
+        enqueueSnackbar(saveErrorMessage, { variant: 'error' });
         handleClose();
       });
   }

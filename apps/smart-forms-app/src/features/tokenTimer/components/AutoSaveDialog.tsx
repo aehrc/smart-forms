@@ -26,6 +26,7 @@ import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import { useSnackbar } from 'notistack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
 
 interface AutoSaveDialogProps {
   onAutoSave: () => void;
@@ -63,14 +64,14 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
-        enqueueSnackbar('Response saved', {
+        enqueueSnackbar(saveSuccessMessage, {
           variant: 'success'
         });
         onAutoSave();
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar('An error occurred while saving.', { variant: 'error' });
+        enqueueSnackbar(saveErrorMessage, { variant: 'error' });
         onAutoSave();
       });
   }
