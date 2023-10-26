@@ -155,7 +155,8 @@ function Repopulate(props: RepopulateProps) {
       <Backdrop
         sx={{
           backgroundColor: alpha(grey[200], 0.33),
-          zIndex: (theme) => theme.zIndex.drawer + 1
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backdropFilter: 'blur(1.5px)'
         }}
         open={isRepopulateFetching}
         onClick={() =>
