@@ -80,7 +80,7 @@ export function removeHiddenAnswersFromResponse(
 }
 
 /**
- * Re-populate stuff
+ * Compare latest data from the server with the current QuestionnaireResponse and decide items to re-populate.
  *
  * @author Sean Fong
  */
@@ -88,12 +88,23 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
   const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
   const tabs = useQuestionnaireStore.getState().tabs;
   const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
+  const enableWhenIsActivated = useQuestionnaireStore.getState().enableWhenIsActivated;
+  const enableWhenItems = useQuestionnaireStore.getState().enableWhenItems;
+  const enableWhenExpressions = useQuestionnaireStore.getState().enableWhenExpressions;
 
-  return getItemsToRepopulate(sourceQuestionnaire, tabs, populatedResponse, updatableResponse);
+  return getItemsToRepopulate({
+    sourceQuestionnaire,
+    tabs,
+    populatedResponse,
+    updatableResponse,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  });
 }
 
 /**
- * Re-populate stuff
+ * Re-populate checked items in the re-population dialog into the current QuestionnaireResponse.
  *
  * @author Sean Fong
  */

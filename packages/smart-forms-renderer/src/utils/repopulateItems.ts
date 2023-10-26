@@ -26,7 +26,8 @@ import _isEqual from 'lodash/isEqual';
 import { containsTabs, isTabContainer } from './tabs';
 import { getShortText, isSpecificItemControl } from './itemControl';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import cloneDeep from 'lodash.clonedeep';
+import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import { isHidden } from './qItem';
 
 export interface ItemToRepopulate {
   qItem: QuestionnaireItem | null;
@@ -41,12 +42,29 @@ export interface ItemToRepopulate {
   oldQRItems?: QuestionnaireResponseItem[];
 }
 
+interface getItemsToRepopulateParams {
+  sourceQuestionnaire: Questionnaire;
+  tabs: Tabs;
+  populatedResponse: QuestionnaireResponse;
+  updatableResponse: QuestionnaireResponse;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
+
 export function getItemsToRepopulate(
-  sourceQuestionnaire: Questionnaire,
-  tabs: Tabs,
-  populatedResponse: QuestionnaireResponse,
-  updatableResponse: QuestionnaireResponse
+  params: getItemsToRepopulateParams
 ): Record<string, ItemToRepopulate> {
+  const {
+    sourceQuestionnaire,
+    tabs,
+    populatedResponse,
+    updatableResponse,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  } = params;
+
   if (
     !sourceQuestionnaire.item ||
     sourceQuestionnaire.item.length === 0 ||
@@ -78,14 +96,17 @@ export function getItemsToRepopulate(
     const heading = topLevelQItem.text ?? null;
     const hasTabs = isTabContainer(topLevelQItem) || containsTabs(topLevelQItem);
 
-    getItemsToRepopulateRecursive(
-      topLevelQItem,
-      populatedQrItemOrItems,
+    getItemsToRepopulateRecursive({
+      qItem: topLevelQItem,
+      qrItemOrItems: populatedQrItemOrItems,
       heading,
       tabs,
       hasTabs,
-      itemsToRepopulate
-    );
+      itemsToRepopulate,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    });
   }
 
   const oldTopLevelQRItemsByIndex = getQrItemsIndex(
@@ -105,21 +126,50 @@ export function getItemsToRepopulate(
   return itemsToRepopulate;
 }
 
+interface getItemsToRepopulateRecursiveParams {
+  qItem: QuestionnaireItem;
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[];
+  heading: string | null;
+  tabs: Tabs;
+  hasTabs: boolean;
+  itemsToRepopulate: Record<string, ItemToRepopulate>;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
+
 // 1. Get items to repopulate (only new items)
 // 2. Get corresponding old items from updatableResponse (if they are different)
 // 3. Compare old and new items in dialog - if there are none, show a dialog saying there is no new data
 // 4. Have checkboxes in dialog to update response
 // 5. Replace old answers with new answers
-function getItemsToRepopulateRecursive(
-  qItem: QuestionnaireItem,
-  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[],
-  heading: string | null,
-  tabs: Tabs,
-  hasTabs: boolean,
-  itemsToRepopulate: Record<string, ItemToRepopulate>
-) {
+function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursiveParams) {
+  const {
+    qItem,
+    qrItemOrItems,
+    tabs,
+    hasTabs,
+    itemsToRepopulate,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  } = params;
+  let { heading } = params;
+
   if (!qrItemOrItems) {
     return;
+  }
+
+  // Return nothing if corresponding qItem is hidden
+  if (
+    isHidden({
+      questionnaireItem: qItem,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    })
+  ) {
+    return null;
   }
 
   // For repeat groups
@@ -146,13 +196,16 @@ function getItemsToRepopulateRecursive(
     // For grid groups
     const itemIsGrid = isSpecificItemControl(qItem, 'grid');
     if (itemIsGrid) {
-      getGridTableToRepopulate(
+      getGridTableToRepopulate({
         qItem,
-        childQItems,
-        populatedQRItemsByIndex,
+        gridChildQItems: childQItems,
+        gridChildQRItemsByIndex: populatedQRItemsByIndex,
         heading,
-        itemsToRepopulate
-      );
+        itemsToRepopulate,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions
+      });
       return;
     }
 
@@ -163,14 +216,17 @@ function getItemsToRepopulateRecursive(
         continue;
       }
 
-      getItemsToRepopulateRecursive(
-        childQItem,
-        childQrItemOrItems,
+      getItemsToRepopulateRecursive({
+        qItem: childQItem,
+        qrItemOrItems: childQrItemOrItems,
         heading,
         tabs,
         hasTabs,
-        itemsToRepopulate
-      );
+        itemsToRepopulate,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions
+      });
     }
 
     const hasSingleAnswer = !Array.isArray(qrItemOrItems);
@@ -214,19 +270,46 @@ function getRepeatGroupToRepopulate(
   };
 }
 
-function getGridTableToRepopulate(
-  qItem: QuestionnaireItem,
-  gridChildQItems: QuestionnaireItem[],
-  gridChildQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[],
-  heading: string | null,
-  itemsToRepopulate: Record<string, ItemToRepopulate>
-) {
+interface getGridTableToRepopulateParams {
+  qItem: QuestionnaireItem;
+  gridChildQItems: QuestionnaireItem[];
+  gridChildQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[];
+  heading: string | null;
+  itemsToRepopulate: Record<string, ItemToRepopulate>;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+}
+
+function getGridTableToRepopulate(params: getGridTableToRepopulateParams) {
+  const {
+    qItem,
+    gridChildQItems,
+    gridChildQRItemsByIndex,
+    heading,
+    itemsToRepopulate,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  } = params;
+
   if (gridChildQItems.length === 0) {
     return;
   }
 
   const gridChildQRItemsToRepopulate = gridChildQItems
-    .map((_, index) => {
+    .map((qItem, index) => {
+      if (
+        isHidden({
+          questionnaireItem: qItem,
+          enableWhenIsActivated,
+          enableWhenItems,
+          enableWhenExpressions
+        })
+      ) {
+        return null;
+      }
+
       const gridChildQrItemOrItems = gridChildQRItemsByIndex?.[index];
       if (gridChildQrItemOrItems && !Array.isArray(gridChildQrItemOrItems)) {
         return gridChildQrItemOrItems;
@@ -284,10 +367,6 @@ function checkCorrespondingOldItemsRecursive(
       checkCorrespondingOldItemsRecursive(childQItem, oldChildQrItemOrItems, itemsToRepopulate);
     }
 
-    if (qItem.linkId === '0a3c9c93-5836-4a5b-93e5-d7de559e053a') {
-      console.log(qItem.linkId, 'heretwo');
-      console.log(cloneDeep(itemsToRepopulate));
-    }
     const hasSingleAnswer = !Array.isArray(oldQrItemOrItems);
     if (hasSingleAnswer && oldQrItemOrItems.answer) {
       retrieveSingleOldQRItem(qItem, oldQrItemOrItems, itemsToRepopulate);
@@ -305,10 +384,6 @@ function retrieveSingleOldQRItem(
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
   const newQRItem = itemsToRepopulate[qItem.linkId]?.newQRItem;
-
-  if (qItem.linkId === '0a3c9c93-5836-4a5b-93e5-d7de559e053a') {
-    console.log(qItem.linkId, 'hereinner');
-  }
 
   if (!newQRItem) {
     return;

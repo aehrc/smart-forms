@@ -74,8 +74,7 @@ export async function constructResponse(
       qItem,
       qrItem: {
         linkId: qItem.linkId,
-        text: qItem.text,
-        item: []
+        text: qItem.text
       },
       qContainedResources: containedResources,
       initialExpressions,
@@ -98,8 +97,7 @@ export async function constructResponse(
 
     topLevelQRItems.push({
       linkId: qItem.linkId,
-      text: qItem.text,
-      item: []
+      text: qItem.text
     });
   }
 
@@ -247,15 +245,24 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
     }
   }
 
-  return qrItems.length > 0 || populatedAnswers
-    ? {
-        linkId: qItem.linkId,
-        text: qItem.text,
-        item: qrItems,
-        ...(qrItems.length > 0 ? { item: qrItems } : {}),
-        ...(populatedAnswers ? { answer: populatedAnswers } : {})
-      }
-    : null;
+  if (qrItems.length > 0) {
+    return {
+      linkId: qItem.linkId,
+      text: qItem.text,
+      item: qrItems,
+      ...(populatedAnswers ? { answer: populatedAnswers } : {})
+    };
+  }
+
+  if (populatedAnswers) {
+    return {
+      linkId: qItem.linkId,
+      text: qItem.text,
+      answer: populatedAnswers
+    };
+  }
+
+  return null;
 }
 
 interface ConstructSingleItemParams {
@@ -298,8 +305,8 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
 
       return {
         linkId: qItem.linkId,
-        text: qItem.text,
-        answer: newValues
+        answer: newValues,
+        ...(qItem.text ? { text: qItem.text } : {})
       };
     }
   }
@@ -509,8 +516,8 @@ function constructRepeatGroupInstances(
         if (answerOfSpecificParent && qItemChild) {
           const qrItemChild: QuestionnaireResponseItem = {
             linkId: qItemChild.linkId,
-            text: qItemChild.text,
-            answer: [answerOfSpecificParent]
+            answer: [answerOfSpecificParent],
+            ...(qItemChild.text ? { text: qItemChild.text } : {})
           };
           childItemsWithAnswers.push(qrItemChild);
         }
@@ -519,8 +526,8 @@ function constructRepeatGroupInstances(
 
     const qItemParent = {
       linkId: qRepeatGroupParent.linkId,
-      text: qRepeatGroupParent.text,
-      item: childItemsWithAnswers
+      item: childItemsWithAnswers,
+      ...(qRepeatGroupParent.text ? { text: qRepeatGroupParent.text } : {})
     };
 
     qrRepeatGroupInstances.push(qItemParent);

@@ -18,8 +18,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import cloneDeep from 'lodash.clonedeep';
-import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
+import { saveProgress } from '../../../../api/saveQr.ts';
 import {
   Button,
   Dialog,
@@ -29,11 +28,7 @@ import {
   DialogTitle
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import {
-  removeHiddenAnswersFromResponse,
-  useQuestionnaireResponseStore,
-  useQuestionnaireStore
-} from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 
@@ -64,34 +59,40 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
     closeDialog();
   }
 
-  function handleSave() {
+  async function handleSaveAsFinal() {
     closeSnackbar();
-    if (!(smartClient && patient && user)) return;
+    if (!(smartClient && patient && user)) {
+      return;
+    }
 
     setIsSaving(true);
-    const responseToSave = removeHiddenAnswersFromResponse(
+
+    const savedResponse = await saveProgress(
+      smartClient,
+      patient,
+      user,
       sourceQuestionnaire,
-      cloneDeep(updatableResponse)
+      updatableResponse,
+      'completed'
     );
 
-    responseToSave.status = 'completed';
-    saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
-      .then((savedResponse) => {
-        setUpdatableResponseAsSaved(savedResponse);
-        enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success' });
-
-        // Wait until renderer.hasChanges is set to false before navigating away
-        setTimeout(() => {
-          navigate(launchQuestionnaire ? '/dashboard/existing' : '/dashboard/responses');
-          setIsSaving(false);
-          handleClose();
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error(error);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error' });
-        handleClose();
+    if (!savedResponse) {
+      enqueueSnackbar(saveErrorMessage, {
+        variant: 'error'
       });
+      handleClose();
+      return;
+    }
+
+    setUpdatableResponseAsSaved(savedResponse);
+    enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success' });
+
+    // Wait until renderer.hasChanges is set to false before navigating away
+    setTimeout(() => {
+      navigate(launchQuestionnaire ? '/dashboard/existing' : '/dashboard/responses');
+      setIsSaving(false);
+      handleClose();
+    }, 1000);
   }
 
   return (
@@ -104,7 +105,7 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton loading={isSaving} onClick={handleSave}>
+        <LoadingButton loading={isSaving} onClick={handleSaveAsFinal}>
           Save as final
         </LoadingButton>
       </DialogActions>
