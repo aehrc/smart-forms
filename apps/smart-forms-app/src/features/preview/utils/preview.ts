@@ -135,8 +135,8 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
   });
 
   const qrItemRender = `<div style="flex:40%;" data-test="response-item-text">${item.text}</div>
-                        <div style="flex: 10%;"></div>
-                        <div style="flex: 50%;" >${qrItemAnswer}</div>`;
+                        <div style="flex: 10%;"></div> 
+                        <div style="flex: 50%;">${qrItemAnswer}</div>`;
 
   return `<div style="margin-top: ${
     nestedLevel === 0 ? '20px' : '10px'
