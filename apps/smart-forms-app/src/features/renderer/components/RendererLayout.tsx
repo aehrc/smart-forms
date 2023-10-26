@@ -35,6 +35,7 @@ import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../types/rendererSpinner.ts';
+import RepopulateBackdrop from '../../repopulate/components/RepopulateBackdrop.tsx';
 
 function RendererLayout() {
   const { smartClient, patient, user } = useSmartClient();
@@ -115,8 +116,16 @@ function RendererLayout() {
           </Fab>
         </BackToTopButton>
       ) : (
-        <RendererEmbeddedSpeedDial isPopulating={spinner.isSpinning} />
+        <RendererEmbeddedSpeedDial
+          spinner={spinner}
+          onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
+        />
       )}
+
+      <RepopulateBackdrop
+        spinner={spinner}
+        onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
+      />
     </StyledRoot>
   );
 }

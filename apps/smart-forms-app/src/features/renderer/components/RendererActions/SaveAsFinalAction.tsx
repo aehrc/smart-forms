@@ -21,7 +21,7 @@ import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
-import RendererSaveAsFinalDialog from '../RendererNav/SaveAsFinal/RendererSaveAsFinalDialog.tsx';
+import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
 import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {

@@ -19,7 +19,6 @@ import type { SpeedDialActionProps } from '@mui/material';
 import { SpeedDialAction } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import HomeIcon from '@mui/icons-material/Home';
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -42,7 +41,7 @@ function BackToQuestionnairesAction(props: BackToQuestionnairesActionProps) {
   if (isSpeedDial) {
     return (
       <SpeedDialAction
-        icon={<HomeIcon />}
+        icon={<ArrowBackIcon />}
         tooltipTitle="Back to Questionnaires"
         tooltipOpen
         onClick={handleBackToQuestionnaires}

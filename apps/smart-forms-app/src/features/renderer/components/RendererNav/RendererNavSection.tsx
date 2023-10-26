@@ -17,9 +17,9 @@
 
 import { Box, List } from '@mui/material';
 import { NavSectionHeading } from '../../../../components/Nav/Nav.styles.ts';
-import BackToQuestionnairesAction from '../RendererSpeedDial/BackToQuestionnairesAction.tsx';
+import BackToQuestionnairesAction from '../RendererActions/BackToQuestionnairesAction.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import ViewExistingResponsesAction from '../RendererSpeedDial/ViewExistingResponsesAction.tsx';
+import ViewExistingResponsesAction from '../RendererActions/ViewExistingResponsesAction.tsx';
 
 function RendererNavSection() {
   const { launchQuestionnaire } = useSmartClient();
