@@ -34,12 +34,12 @@ import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSe
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceSelectAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSetItemProps) {

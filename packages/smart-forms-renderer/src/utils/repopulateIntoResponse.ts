@@ -60,7 +60,7 @@ export function repopulateItemsIntoResponse(
 
 function repopulateItemRecursive(
   qItem: QuestionnaireItem,
-  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[],
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   checkedItemsToRepopulate: Record<string, ItemToRepopulate>
 ): QuestionnaireResponseItem[] | QuestionnaireResponseItem | null {
   // For repeat groups
@@ -79,7 +79,6 @@ function repopulateItemRecursive(
     // For grid groups
     const itemIsGrid = isSpecificItemControl(qItem, 'grid');
     if (itemIsGrid) {
-      // console.log(qItem, qrItemOrItems, checkedItemsToRepopulate, childQItems, childQrItems);
       return constructGridGroup(qItem, qrItemOrItems, checkedItemsToRepopulate);
     }
 
@@ -90,7 +89,7 @@ function repopulateItemRecursive(
 
       const updatedChildQRItemOrItems = repopulateItemRecursive(
         childQItem,
-        childQRItemOrItems,
+        childQRItemOrItems ?? null,
         checkedItemsToRepopulate
       );
 
@@ -114,7 +113,7 @@ function repopulateItemRecursive(
 
 function constructGroupItem(
   qItem: QuestionnaireItem,
-  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[],
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   childQrItems: QuestionnaireResponseItem[],
   checkedItemsToRepopulate: Record<string, ItemToRepopulate>
 ): QuestionnaireResponseItem | null {
@@ -156,7 +155,7 @@ function constructGroupItem(
 
 function constructSingleItem(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem | undefined,
+  qrItem: QuestionnaireResponseItem | null,
   checkedItemsToRepopulate: Record<string, ItemToRepopulate>
 ): QuestionnaireResponseItem | null {
   const itemToRepopulate = checkedItemsToRepopulate[qItem.linkId];
@@ -181,7 +180,7 @@ function constructSingleItem(
 
 function constructGridGroup(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem,
+  qrItem: QuestionnaireResponseItem | null,
   checkedItemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
   const itemToRepopulate = checkedItemsToRepopulate[qItem.linkId];

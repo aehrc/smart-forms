@@ -38,12 +38,12 @@ import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceAutocompleteItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {

@@ -41,13 +41,13 @@ import SliderItem from '../SliderItem/SliderItem';
 import IntegerItem from '../IntegerItem/IntegerItem';
 
 interface SingleItemSwitcherProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function SingleItemSwitcher(props: SingleItemSwitcherProps) {

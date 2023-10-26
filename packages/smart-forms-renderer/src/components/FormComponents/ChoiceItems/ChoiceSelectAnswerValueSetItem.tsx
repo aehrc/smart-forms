@@ -35,12 +35,12 @@ import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceSelectAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemProps) {

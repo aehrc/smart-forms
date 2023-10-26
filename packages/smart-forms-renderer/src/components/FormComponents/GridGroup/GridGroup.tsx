@@ -22,7 +22,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
 import { QGroupContainerBox } from '../../Box.styles';
 import Divider from '@mui/material/Divider';
@@ -35,11 +35,11 @@ import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface GridGroupProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
 }
 
@@ -48,7 +48,7 @@ function GridGroup(props: GridGroupProps) {
     props;
 
   const qRowItems = qItem.item;
-  const qrGroup = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
+  const qrGroup = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
   const qrRowItems = qrGroup.item;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);

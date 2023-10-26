@@ -17,7 +17,7 @@
 
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import { StandardTableCell } from './Table.styles';
@@ -26,11 +26,9 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 
-interface Props
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithParentIsReadOnlyAttribute {
+interface Props extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   qItemsIndexMap: Record<string, number>;
 }
 
@@ -38,7 +36,7 @@ function GroupTableRow(props: Props) {
   const { qItem, qrItem, qItemsIndexMap, parentIsReadOnly, onQrItemChange } = props;
 
   const rowItems = qItem.item;
-  const row = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
+  const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
   const rowQrItems = row.item;
 
   if (!rowItems || !rowQrItems) {
@@ -67,7 +65,7 @@ function GroupTableRow(props: Props) {
             <SingleItem
               key={qItem.linkId}
               qItem={rowItem}
-              qrItem={qrItem}
+              qrItem={qrItem ?? null}
               isRepeated={true}
               isTabled={true}
               showMinimalView={true}

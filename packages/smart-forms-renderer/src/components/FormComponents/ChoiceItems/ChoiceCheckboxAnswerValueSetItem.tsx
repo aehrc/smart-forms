@@ -36,12 +36,12 @@ import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFi
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface ChoiceCheckboxAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   orientation: ChoiceItemOrientation;
   showText?: boolean;
 }

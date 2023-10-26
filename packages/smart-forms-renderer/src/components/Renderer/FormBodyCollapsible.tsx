@@ -19,14 +19,14 @@ import React, { useMemo } from 'react';
 import Stack from '@mui/material/Stack';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
-import { updateQrItemsInGroup } from '../../utils/qrItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 import FormBodySingleCollapsibleWrapper from './FormBodySingleCollapsibleWrapper';
 
-interface FormBodyCollapsibleProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface FormBodyCollapsibleProps extends PropsWithQrItemChangeHandler {
   topLevelQItem: QuestionnaireItem;
-  topLevelQRItem: QuestionnaireResponseItem;
+  topLevelQRItem: QuestionnaireResponseItem | null;
 }
 
 function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
@@ -42,12 +42,14 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
     [topLevelQItem]
   );
 
+  const nonNullTopLevelQRItem = topLevelQRItem ?? createEmptyQrGroup(topLevelQItem);
+
   const qItems = topLevelQItem.item;
-  const qrItems = topLevelQRItem.item;
+  const qrItems = nonNullTopLevelQRItem.item;
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    updateQrItemsInGroup(qrItem, null, topLevelQRItem, indexMap);
-    onQrItemChange(topLevelQRItem);
+    updateQrItemsInGroup(qrItem, null, nonNullTopLevelQRItem, indexMap);
+    onQrItemChange(nonNullTopLevelQRItem);
   }
 
   if (!qItems || !qrItems) {
@@ -81,7 +83,7 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
           <FormBodySingleCollapsibleWrapper
             key={qItem.linkId}
             qItem={qItem}
-            qrItem={qrItem}
+            qrItem={qrItem ?? null}
             index={i}
             selectedIndex={currentTab}
             onToggleExpand={handleToggleExpand}

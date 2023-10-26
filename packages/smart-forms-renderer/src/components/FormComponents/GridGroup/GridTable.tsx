@@ -32,7 +32,7 @@ import type {
 import { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 
 interface GridTableProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItems: QuestionnaireItem[];
@@ -52,8 +52,7 @@ function GridTable(props: GridTableProps) {
     onQrItemChange
   } = props;
 
-  const qrItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[] =
-    getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
+  const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
   const numOfColumns = columnLabels.length;
 
@@ -80,7 +79,7 @@ function GridTable(props: GridTableProps) {
             return null;
           }
 
-          // In minimal view, dont display items with no answers
+          // In minimal view, don't display items with no answers
           if (showMinimalView && !qrItem) {
             return null;
           }
@@ -89,7 +88,7 @@ function GridTable(props: GridTableProps) {
             <TableRow key={qItem.linkId}>
               <GridRow
                 qItem={qItem}
-                qrItem={qrItem}
+                qrItem={qrItem ?? null}
                 columnLabels={columnLabels}
                 numOfColumns={numOfColumns}
                 parentIsReadOnly={parentIsReadOnly}

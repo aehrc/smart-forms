@@ -33,12 +33,12 @@ import dayjs from 'dayjs';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface DateTimeItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function DateTimeItem(props: DateTimeItemProps) {

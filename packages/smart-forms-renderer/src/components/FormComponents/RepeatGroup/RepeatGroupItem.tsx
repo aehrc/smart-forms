@@ -29,7 +29,7 @@ import DeleteItemButton from './DeleteItemButton';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatGroupItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;

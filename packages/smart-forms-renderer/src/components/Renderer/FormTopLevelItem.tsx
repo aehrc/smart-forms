@@ -33,10 +33,10 @@ import useReadOnly from '../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
 
 interface FormTopLevelItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithQrRepeatGroupChangeHandler {
   topLevelQItem: QuestionnaireItem;
-  topLevelQRItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[];
+  topLevelQRItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
 }
 
 function FormTopLevelItem(props: FormTopLevelItemProps) {

@@ -32,12 +32,12 @@ import Box from '@mui/material/Box';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface BooleanItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function BooleanItem(props: BooleanItemProps) {

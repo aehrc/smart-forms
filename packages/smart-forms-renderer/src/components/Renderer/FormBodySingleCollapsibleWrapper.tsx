@@ -22,10 +22,9 @@ import FormBodySingleCollapsible from './FormBodySingleCollapsible';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
 import useHidden from '../../hooks/useHidden';
 
-interface FormBodySingleCollapsibleProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface FormBodySingleCollapsibleProps extends PropsWithQrItemChangeHandler {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   index: number;
   selectedIndex: number;
   onToggleExpand: (index: number) => void;

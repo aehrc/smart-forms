@@ -18,7 +18,7 @@
 import React, { useMemo } from 'react';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -35,11 +35,11 @@ import GroupItemSwitcher from './GroupItemSwitcher';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface GroupItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
   tabs?: Tabs;
@@ -68,7 +68,7 @@ function GroupItem(props: GroupItemProps) {
   }
 
   const qItems = qItem.item;
-  const qrGroup = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
+  const qrGroup = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
   const qrItems = qrGroup.item;
 
   // Event Handlers
@@ -89,8 +89,7 @@ function GroupItem(props: GroupItemProps) {
   }
 
   // If an item has multiple answers, it is a repeat group
-  const qrItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[] =
-    getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
+  const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
   return (
     <QGroupContainerBox

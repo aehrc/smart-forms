@@ -42,12 +42,12 @@ import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOpti
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   orientation: ChoiceItemOrientation;
 }
 

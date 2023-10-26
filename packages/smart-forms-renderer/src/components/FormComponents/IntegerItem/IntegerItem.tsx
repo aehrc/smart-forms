@@ -37,12 +37,12 @@ import useNumberInput from '../../../hooks/useNumberInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface IntegerItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function IntegerItem(props: IntegerItemProps) {
