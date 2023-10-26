@@ -19,6 +19,8 @@ import React from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Slider from '@mui/material/Slider';
 import { getSliderMarks } from '../../../utils/slider';
+import Stack from '@mui/material/Stack';
+import SliderLabels from './SliderLabels';
 
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -48,27 +50,32 @@ function SliderField(props: SliderFieldProps) {
 
   const sliderMarks = getSliderMarks(minValue, maxValue, minLabel, maxLabel, stepValue);
 
+  const sliderSx = {
+    maxWidth: !isTabled ? 280 : 3000,
+    minWidth: 160
+  };
+
   return (
-    <Slider
-      id={linkId}
-      value={value}
-      min={minValue}
-      max={maxValue}
-      step={stepValue}
-      marks={sliderMarks}
-      sx={{
-        maxWidth: !isTabled ? 280 : 3000,
-        minWidth: 160
-      }}
-      onChange={(_, newValue) => {
-        if (typeof newValue === 'number') {
-          onValueChange(newValue);
-        }
-      }}
-      disabled={readOnly}
-      valueLabelDisplay="auto"
-      data-test="q-item-slider-field"
-    />
+    <Stack sx={{ ...sliderSx }}>
+      <SliderLabels minLabel={minLabel} maxLabel={maxLabel} />
+      <Slider
+        id={linkId}
+        value={value}
+        min={minValue}
+        max={maxValue}
+        step={stepValue}
+        marks={sliderMarks}
+        sx={{ ...sliderSx }}
+        onChange={(_, newValue) => {
+          if (typeof newValue === 'number') {
+            onValueChange(newValue);
+          }
+        }}
+        disabled={readOnly}
+        valueLabelDisplay="auto"
+        data-test="q-item-slider-field"
+      />
+    </Stack>
   );
 }
 

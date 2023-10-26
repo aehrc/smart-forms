@@ -61,7 +61,6 @@ function SliderItem(props: SliderItemProps) {
 
   // Event handlers
   function handleValueChange(newValue: number) {
-    console.log(newValue);
     onQrItemChange({
       ...createEmptyQrItem(qItem),
       answer: [{ valueInteger: newValue }]

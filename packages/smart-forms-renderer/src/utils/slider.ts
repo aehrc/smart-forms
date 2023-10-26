@@ -94,35 +94,19 @@ export function getSliderMarks(
     return [
       {
         value: minValue,
-        label: minLabel
+        label: minLabel !== '' ? minLabel : minValue.toString()
       },
       {
         value: maxValue,
-        label: maxLabel
+        label: maxLabel !== '' ? maxLabel : maxValue.toString()
       }
     ];
   }
 
   return Array.from({ length: numOfSteps + 1 }, (_, i) => minValue + i * stepValue).map(
-    (value, index) => {
-      if (index === 0) {
-        return {
-          value: minValue,
-          label: minLabel
-        };
-      }
-
-      if (index === numOfSteps) {
-        return {
-          value: maxValue,
-          label: maxLabel
-        };
-      }
-
-      return {
-        value: value,
-        label: ''
-      };
-    }
+    (value) => ({
+      value: value,
+      label: value
+    })
   );
 }
