@@ -106,16 +106,12 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
   const buttonIsDisabled = !smartClient || formChangesHistory.length === 0;
 
   return (
-    <Tooltip title="No progress to be saved" disableHoverListener={!buttonIsDisabled}>
-      <span>
-        <RendererOperationItem
-          title={'Save Progress'}
-          icon={<SaveIcon />}
-          disabled={buttonIsDisabled}
-          onClick={handleSaveProgress}
-        />
-      </span>
-    </Tooltip>
+    <RendererOperationItem
+      title={'Save Progress'}
+      icon={<SaveIcon />}
+      disabled={buttonIsDisabled}
+      onClick={handleSaveProgress}
+    />
   );
 }
 
