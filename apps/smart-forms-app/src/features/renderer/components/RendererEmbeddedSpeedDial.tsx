@@ -23,17 +23,25 @@ import BackToQuestionnairesAction from './RendererSpeedDial/BackToQuestionnaires
 import PreviewAction from './RendererSpeedDial/PreviewAction.tsx';
 import SaveProgressAction from './RendererSpeedDial/SaveProgressAction.tsx';
 import SaveAsFinalAction from './RendererSpeedDial/SaveAsFinalAction.tsx';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import RepopulateAction from './RendererNav/Repopulate/RepopulateAction.tsx';
+import { RendererSpinner } from '../types/rendererSpinner.ts';
 
 interface RendererEmbeddedSpeedDialProps {
-  isPopulating: boolean;
+  spinner: RendererSpinner;
+  onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
-  const { isPopulating } = props;
+  const { spinner, onSpinnerChange } = props;
 
-  const { launchQuestionnaire } = useSmartClient();
+  const { smartClient, launchQuestionnaire } = useSmartClient();
 
-  if (isPopulating) {
+  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+
+  const showSaveAndRepopulateActions = smartClient && sourceQuestionnaire.item;
+
+  if (spinner.isSpinning) {
     return null;
   }
 
@@ -53,8 +61,12 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
         <BackToQuestionnairesAction isSpeedDial={true} />
       )}
       <PreviewAction isSpeedDial={true} />
-      <SaveProgressAction isSpeedDial={true} />
-      <SaveAsFinalAction isSpeedDial={true} />
+
+      {showSaveAndRepopulateActions ? <SaveProgressAction isSpeedDial={true} /> : null}
+      {showSaveAndRepopulateActions ? <SaveAsFinalAction isSpeedDial={true} /> : null}
+      {showSaveAndRepopulateActions ? (
+        <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} isSpeedDial={true} />
+      ) : null}
     </SpeedDial>
   );
 }

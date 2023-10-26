@@ -20,43 +20,34 @@ import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import { useSnackbar } from 'notistack';
 import { populateQuestionnaire } from '../../../../prepopulate/utils/populate.ts';
 import CloseSnackbar from '../../../../../components/Snackbar/CloseSnackbar.tsx';
-import { Backdrop, Tooltip } from '@mui/material';
+import { SpeedDialAction, SpeedDialActionProps, Tooltip } from '@mui/material';
 import type { RendererSpinner } from '../../../types/rendererSpinner.ts';
 import useSmartClient from '../../../../../hooks/useSmartClient.ts';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
-import {
-  generateItemsToRepopulate,
-  useQuestionnaireResponseStore,
-  useQuestionnaireStore
-} from '@aehrc/smart-forms-renderer';
-import { alpha } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
-import PopulationProgressSpinner from '../../../../../components/Spinners/PopulationProgressSpinner.tsx';
+import { generateItemsToRepopulate, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import RepopulateDialog from '../../../../repopulate/components/RepopulateDialog.tsx';
 import { useState } from 'react';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { useMutation } from '@tanstack/react-query';
 
-interface RepopulateProps {
+interface RepopulateActionProps extends SpeedDialActionProps {
   spinner: RendererSpinner;
+  isSpeedDial?: boolean;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
-function Repopulate(props: RepopulateProps) {
-  const { spinner, onSpinnerChange } = props;
+function RepopulateAction(props: RepopulateActionProps) {
+  const { spinner, isSpeedDial, onSpinnerChange, ...speedDialActionProps } = props;
 
   const { smartClient, patient, user, encounter } = useSmartClient();
 
   const [itemsToRepopulate, setItemsToRepopulate] = useState<Record<string, ItemToRepopulate>>({});
 
   const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
-
   const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const isRepopulateFetching = spinner.isSpinning && spinner.status === 'repopulate-fetch';
   const repopulateFetchEnded = !spinner.isSpinning && spinner.status === 'repopulate-fetch';
 
   /*
@@ -70,7 +61,7 @@ function Repopulate(props: RepopulateProps) {
     !!user &&
     !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension);
 
-  const { mutate: handleRepopulate } = useMutation({
+  const { mutate: repopulateMutation } = useMutation({
     mutationFn: (params: { newPatient: Patient; newUser: Practitioner }) => {
       const { newPatient, newUser } = params;
 
@@ -121,7 +112,7 @@ function Repopulate(props: RepopulateProps) {
     }
   });
 
-  async function handleClick() {
+  async function handleRepopulate() {
     closeSnackbar();
     if (!shouldRepopulate) {
       return;
@@ -135,34 +126,36 @@ function Repopulate(props: RepopulateProps) {
     const newPatient = await smartClient.patient.read();
     const newUser = (await smartClient.user.read()) as Practitioner;
 
-    handleRepopulate({ newPatient, newUser });
+    repopulateMutation({ newPatient, newUser });
   }
 
   return (
     <>
-      <Tooltip title="Form does not support pre-population" disableHoverListener={shouldRepopulate}>
-        <span>
-          <RendererOperationItem
-            title="Repopulate Form"
+      {isSpeedDial ? (
+        shouldRepopulate ? (
+          <SpeedDialAction
             icon={<CloudSyncIcon />}
-            disabled={!shouldRepopulate || spinner.isSpinning}
-            onClick={handleClick}
+            tooltipTitle="Repopulate Form"
+            tooltipOpen
+            onClick={handleRepopulate}
+            {...speedDialActionProps}
           />
-        </span>
-      </Tooltip>
+        ) : null
+      ) : (
+        <Tooltip
+          title="Form does not support pre-population"
+          disableHoverListener={shouldRepopulate}>
+          <span>
+            <RendererOperationItem
+              title="Repopulate Form"
+              icon={<CloudSyncIcon />}
+              disabled={!shouldRepopulate || spinner.isSpinning}
+              onClick={handleRepopulate}
+            />
+          </span>
+        </Tooltip>
+      )}
 
-      <Backdrop
-        sx={{
-          backgroundColor: alpha(grey[200], 0.33),
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          backdropFilter: 'blur(1.5px)'
-        }}
-        open={isRepopulateFetching}
-        onClick={() =>
-          onSpinnerChange({ isSpinning: false, status: 'repopulate-cancel', message: '' })
-        }>
-        <PopulationProgressSpinner message={spinner.message} />
-      </Backdrop>
       <RepopulateDialog
         repopulateFetchingEnded={repopulateFetchEnded}
         itemsToRepopulate={itemsToRepopulate}
@@ -173,4 +166,4 @@ function Repopulate(props: RepopulateProps) {
   );
 }
 
-export default Repopulate;
+export default RepopulateAction;

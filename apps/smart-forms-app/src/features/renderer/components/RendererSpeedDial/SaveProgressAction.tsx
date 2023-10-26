@@ -95,7 +95,7 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
     return (
       <SpeedDialAction
         icon={<SaveIcon />}
-        tooltipTitle={'Save Progress'}
+        tooltipTitle="Save Progress"
         tooltipOpen
         onClick={handleSaveProgress}
         {...speedDialActionProps}
@@ -107,7 +107,7 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
 
   return (
     <RendererOperationItem
-      title={'Save Progress'}
+      title="Save Progress"
       icon={<SaveIcon />}
       disabled={buttonIsDisabled}
       onClick={handleSaveProgress}

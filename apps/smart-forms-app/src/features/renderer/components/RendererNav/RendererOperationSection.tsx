@@ -24,7 +24,7 @@ import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import SaveProgressAction from '../RendererSpeedDial/SaveProgressAction.tsx';
 import SaveAsFinalAction from '../RendererSpeedDial/SaveAsFinalAction.tsx';
 import PreviewAction from '../RendererSpeedDial/PreviewAction.tsx';
-import Repopulate from './Repopulate/Repopulate.tsx';
+import RepopulateAction from './Repopulate/RepopulateAction.tsx';
 
 interface RendererOperationSectionProps {
   spinner: RendererSpinner;
@@ -49,7 +49,7 @@ function RendererOperationSection(props: RendererOperationSectionProps) {
           <>
             <SaveProgressAction />
             <SaveAsFinalAction />
-            <Repopulate spinner={spinner} onSpinnerChange={onSpinnerChange} />
+            <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} />
           </>
         ) : null}
       </List>
