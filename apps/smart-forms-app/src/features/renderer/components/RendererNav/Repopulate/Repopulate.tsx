@@ -68,8 +68,7 @@ function Repopulate(props: RepopulateProps) {
     !!smartClient &&
     !!patient &&
     !!user &&
-    !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension) &&
-    !sourceResponse.id;
+    !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension);
 
   const { mutate: handleRepopulate } = useMutation({
     mutationFn: (params: { newPatient: Patient; newUser: Practitioner }) => {
