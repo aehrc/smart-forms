@@ -20,7 +20,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';

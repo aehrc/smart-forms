@@ -77,7 +77,6 @@ function IntegerItem(props: IntegerItemProps) {
   const { calcExpUpdated } = useIntegerCalculatedExpression({
     qItem: qItem,
     inputValue: value,
-    displayUnit: displayUnit,
     setInputValue: (newValue) => {
       setValue(newValue);
     },

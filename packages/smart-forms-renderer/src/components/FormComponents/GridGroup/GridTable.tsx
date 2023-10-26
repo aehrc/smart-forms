@@ -29,7 +29,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,

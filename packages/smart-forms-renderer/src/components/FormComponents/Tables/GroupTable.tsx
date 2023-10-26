@@ -35,7 +35,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 import useInitialiseGroupTable from '../../../hooks/useInitialiseGroupTable';
 import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../utils/qrItem';

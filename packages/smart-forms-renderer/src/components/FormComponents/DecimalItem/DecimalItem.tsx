@@ -86,7 +86,6 @@ function DecimalItem(props: DecimalItemProps) {
   const { calcExpUpdated } = useDecimalCalculatedExpression({
     qItem: qItem,
     inputValue: input,
-    displayUnit: displayUnit,
     precision: precision,
     setInputValue: (newInput) => {
       setInput(newInput);

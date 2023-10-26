@@ -27,7 +27,6 @@ interface UseIntegerCalculatedExpression {
 interface useIntegerCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   inputValue: number;
-  displayUnit: string;
   setInputValue: (value: number) => void;
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
 }
@@ -35,7 +34,7 @@ interface useIntegerCalculatedExpressionProps {
 function useIntegerCalculatedExpression(
   props: useIntegerCalculatedExpressionProps
 ): UseIntegerCalculatedExpression {
-  const { qItem, inputValue, displayUnit, setInputValue, onQrItemChange } = props;
+  const { qItem, inputValue, setInputValue, onQrItemChange } = props;
 
   const calculatedExpressions = useQuestionnaireStore((state) => state.calculatedExpressions);
 
