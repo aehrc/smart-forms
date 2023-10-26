@@ -23,9 +23,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import { saveProgress } from '../../utils/save.ts';
 import { saveErrorMessage, saveSuccessMessage } from '../../../../utils/snackbar.ts';
 import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
+import { saveProgress } from '../../../../api/saveQr.ts';
 
 interface SaveProgressSpeedDialActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -73,7 +73,8 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
       patient,
       user,
       sourceQuestionnaire,
-      updatableResponse
+      updatableResponse,
+      'in-progress'
     );
 
     if (!savedResponse) {

@@ -100,8 +100,9 @@ function readQuestionnaireResponseItemRecursive(
         enableWhenItems,
         enableWhenExpressions
       })
-    )
+    ) {
       return null;
+    }
 
     if (qrItems && qrItems.length > 0) {
       const newQrItems: QuestionnaireResponseItem[] = [];

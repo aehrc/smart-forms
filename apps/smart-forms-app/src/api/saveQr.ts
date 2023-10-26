@@ -23,6 +23,7 @@ import { qrToHTML } from '../features/preview/utils/preview.ts';
 import { fetchQuestionnaireById } from './client.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { HEADERS } from './headers.ts';
+import { removeHiddenAnswersFromResponse } from '@aehrc/smart-forms-renderer';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
@@ -44,6 +45,35 @@ export function postQuestionnaireToSMARTHealthIT(client: Client, questionnaire: 
         console.warn('Error: Failed to POST questionnaire to SMART Health IT');
       });
   });
+}
+
+export async function saveProgress(
+  smartClient: Client,
+  patient: Patient,
+  user: Practitioner,
+  questionnaire: Questionnaire,
+  questionnaireResponse: QuestionnaireResponse,
+  saveStatus: 'in-progress' | 'completed'
+) {
+  const responseToSave = removeHiddenAnswersFromResponse(
+    questionnaire,
+    cloneDeep(questionnaireResponse)
+  );
+
+  responseToSave.status = saveStatus;
+
+  try {
+    return await saveQuestionnaireResponse(
+      smartClient,
+      patient,
+      user,
+      questionnaire,
+      responseToSave
+    );
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 /**

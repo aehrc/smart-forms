@@ -33,7 +33,7 @@ function useFetchQuestionnaires(
   debouncedInput: string,
   minLengthToQuery?: number
 ): useFetchQuestionnairesReturnParams {
-  const numOfSearchEntries = 200;
+  const numOfSearchEntries = 100;
 
   let queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&_sort=-date&`;
   if (debouncedInput) {

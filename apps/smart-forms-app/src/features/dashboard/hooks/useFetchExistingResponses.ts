@@ -31,7 +31,7 @@ interface useFetchExistingResponsesReturnParams {
 function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
   const { selectedQuestionnaire } = useSelectedQuestionnaire();
 
-  const numOfSearchEntries = 200;
+  const numOfSearchEntries = 100;
 
   const { smartClient, patient, launchQuestionnaire } = useSmartClient();
   const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;
