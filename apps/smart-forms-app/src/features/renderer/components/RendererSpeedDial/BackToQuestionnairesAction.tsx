@@ -28,7 +28,7 @@ interface BackToQuestionnairesActionProps extends SpeedDialActionProps {
 }
 
 function BackToQuestionnairesAction(props: BackToQuestionnairesActionProps) {
-  const { isSpeedDial } = props;
+  const { isSpeedDial, ...speedDialActionProps } = props;
 
   const { closeSnackbar } = useSnackbar();
 
@@ -46,7 +46,7 @@ function BackToQuestionnairesAction(props: BackToQuestionnairesActionProps) {
         tooltipTitle="Back to Questionnaires"
         tooltipOpen
         onClick={handleBackToQuestionnaires}
-        {...props}
+        {...speedDialActionProps}
       />
     );
   }

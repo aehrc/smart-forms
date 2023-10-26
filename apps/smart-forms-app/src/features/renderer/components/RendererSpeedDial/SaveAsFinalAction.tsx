@@ -29,7 +29,7 @@ interface SaveAsFinalActionProps extends SpeedDialActionProps {
 }
 
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
-  const { isSpeedDial } = props;
+  const { isSpeedDial, ...speedDialActionProps } = props;
 
   const { smartClient } = useSmartClient();
 
@@ -55,7 +55,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           tooltipTitle="Save as Final"
           tooltipOpen
           onClick={handleOpenDialog}
-          {...props}
+          {...speedDialActionProps}
         />
       ) : (
         <Tooltip title="No progress to be saved" disableHoverListener={!buttonIsDisabled}>

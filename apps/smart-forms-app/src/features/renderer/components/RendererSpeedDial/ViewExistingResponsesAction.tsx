@@ -32,7 +32,7 @@ interface ViewExistingResponsesActionProps extends SpeedDialActionProps {
 }
 
 function ViewExistingResponsesAction(props: ViewExistingResponsesActionProps) {
-  const { isSpeedDial } = props;
+  const { isSpeedDial, ...speedDialActionProps } = props;
 
   const { launchQuestionnaire } = useSmartClient();
 
@@ -62,7 +62,7 @@ function ViewExistingResponsesAction(props: ViewExistingResponsesActionProps) {
         tooltipTitle="View Existing Responses"
         tooltipOpen
         onClick={handleViewExistingResponses}
-        {...props}
+        {...speedDialActionProps}
       />
     );
   }

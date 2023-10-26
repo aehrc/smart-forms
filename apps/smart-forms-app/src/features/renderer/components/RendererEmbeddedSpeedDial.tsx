@@ -47,8 +47,12 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
         '& .MuiFab-primary': { width: 46, height: 46 }
       }}
       icon={<BuildIcon />}>
-      {launchQuestionnaire ? <ViewExistingResponsesAction /> : <BackToQuestionnairesAction />}
-      <PreviewAction />
+      {launchQuestionnaire ? (
+        <ViewExistingResponsesAction isSpeedDial={true} />
+      ) : (
+        <BackToQuestionnairesAction isSpeedDial={true} />
+      )}
+      <PreviewAction isSpeedDial={true} />
       <SaveProgressAction isSpeedDial={true} />
       <SaveAsFinalAction isSpeedDial={true} />
     </SpeedDial>
