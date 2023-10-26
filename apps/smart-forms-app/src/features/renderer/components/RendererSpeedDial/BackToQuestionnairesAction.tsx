@@ -19,41 +19,45 @@ import type { SpeedDialActionProps } from '@mui/material';
 import { SpeedDialAction } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import HomeIcon from '@mui/icons-material/Home';
+import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-function PreviewSpeedDialAction(props: SpeedDialActionProps) {
+interface BackToQuestionnairesActionProps extends SpeedDialActionProps {
+  isSpeedDial?: boolean;
+}
+
+function BackToQuestionnairesAction(props: BackToQuestionnairesActionProps) {
+  const { isSpeedDial } = props;
+
   const { closeSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
 
-  if (location.pathname === '/renderer/preview') {
+  function handleBackToQuestionnaires() {
+    closeSnackbar();
+    navigate('/dashboard/questionnaires');
+  }
+
+  if (isSpeedDial) {
     return (
       <SpeedDialAction
-        icon={<EditIcon />}
-        tooltipTitle="Editor"
+        icon={<HomeIcon />}
+        tooltipTitle="Back to Questionnaires"
         tooltipOpen
-        onClick={() => {
-          closeSnackbar();
-          navigate('/renderer');
-        }}
+        onClick={handleBackToQuestionnaires}
         {...props}
       />
     );
   }
 
   return (
-    <SpeedDialAction
-      icon={<VisibilityIcon />}
-      tooltipTitle="Preview"
-      tooltipOpen
-      onClick={() => {
-        closeSnackbar();
-        navigate('/renderer/preview');
-      }}
-      {...props}
+    <RendererOperationItem
+      title="Back to Questionnaires"
+      icon={<ArrowBackIcon />}
+      onClick={handleBackToQuestionnaires}
     />
   );
 }
 
-export default PreviewSpeedDialAction;
+export default BackToQuestionnairesAction;

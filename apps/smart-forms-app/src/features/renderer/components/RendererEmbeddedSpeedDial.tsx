@@ -18,11 +18,11 @@
 import { SpeedDial } from '@mui/material';
 import BuildIcon from '@mui/icons-material/Build';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import ViewExistingResponsesSpeedDialAction from './RendererSpeedDial/ViewExistingResponsesSpeedDialAction.tsx';
-import BackToQuestionnairesSpeedDialAction from './RendererSpeedDial/BackToQuestionnairesSpeedDialAction.tsx';
-import PreviewSpeedDialAction from './RendererSpeedDial/PreviewSpeedDialAction.tsx';
-import SaveProgressSpeedDialAction from './RendererSpeedDial/SaveProgressSpeedDialAction.tsx';
-import SaveAsFinalSpeedDialAction from './RendererSpeedDial/SaveAsFinalSpeedDialAction.tsx';
+import ViewExistingResponsesAction from './RendererSpeedDial/ViewExistingResponsesAction.tsx';
+import BackToQuestionnairesAction from './RendererSpeedDial/BackToQuestionnairesAction.tsx';
+import PreviewAction from './RendererSpeedDial/PreviewAction.tsx';
+import SaveProgressAction from './RendererSpeedDial/SaveProgressAction.tsx';
+import SaveAsFinalAction from './RendererSpeedDial/SaveAsFinalAction.tsx';
 
 interface RendererEmbeddedSpeedDialProps {
   isPopulating: boolean;
@@ -47,14 +47,10 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
         '& .MuiFab-primary': { width: 46, height: 46 }
       }}
       icon={<BuildIcon />}>
-      {launchQuestionnaire ? (
-        <ViewExistingResponsesSpeedDialAction />
-      ) : (
-        <BackToQuestionnairesSpeedDialAction />
-      )}
-      <PreviewSpeedDialAction />
-      <SaveProgressSpeedDialAction />
-      <SaveAsFinalSpeedDialAction />
+      {launchQuestionnaire ? <ViewExistingResponsesAction /> : <BackToQuestionnairesAction />}
+      <PreviewAction />
+      <SaveProgressAction isSpeedDial={true} />
+      <SaveAsFinalAction isSpeedDial={true} />
     </SpeedDial>
   );
 }
