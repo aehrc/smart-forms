@@ -21,8 +21,8 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import dayjs from 'dayjs';
-import moment from 'moment';
+import he from 'he';
+import { parseFhirDateToDisplayDate } from '@aehrc/smart-forms-renderer';
 
 export function qrToHTML(
   questionnaire: Questionnaire,
@@ -123,7 +123,7 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
   let qrItemAnswer = '';
 
   item.answer.forEach((answer) => {
-    const answerValueInString = qrItemAnswerValueTypeSwitcher(answer);
+    const answerValueInString = he.encode(qrItemAnswerValueTypeSwitcher(answer));
     if (answerValueInString === '') {
       qrItemAnswer +=
         '<div style="color: red;" data-test="response-item-answer">Undefined answer</div>';
@@ -144,9 +144,10 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
 }
 
 function renderGroupHeadingDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
-  return `<div style="font-size: ${
-    nestedLevel === 0 ? '18px' : '15px'
-  }; font-weight: bold; margin-top: 15px" data-test="response-group-heading">${item.text}</div>`;
+  const fontSize = nestedLevel === 0 ? '18px' : '15px';
+  const headingText = he.encode(item.text ?? '');
+
+  return `<div style="font-size: ${fontSize}; font-weight: bold; margin-top: 15px" data-test="response-group-heading">${headingText}</div>`;
 }
 
 function renderRepeatGroupItemHeadingDiv() {
@@ -154,21 +155,48 @@ function renderRepeatGroupItemHeadingDiv() {
 }
 
 function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer): string {
-  if (answer.valueBoolean !== undefined) return `${answer.valueBoolean}`;
-  else if (answer.valueDecimal !== undefined) return `${answer.valueDecimal}`;
-  else if (answer.valueInteger !== undefined) return `${answer.valueInteger}`;
-  else if (answer.valueDate)
-    return answer.valueDate ? dayjs(answer.valueDate).format('DD/MM/YYYY') : '';
-  else if (answer.valueDateTime)
-    return answer.valueDateTime
-      ? moment(answer.valueDateTime, 'YYYY-MM-DDTHH:mm:ssZ').format('MMMM D, YYYY h:mm A')
-      : '';
-  else if (answer.valueTime) return `${answer.valueTime}`;
-  else if (answer.valueString) return `${answer.valueString}`;
-  else if (answer.valueCoding?.code) {
-    const display = answer.valueCoding?.display;
-    return display ? `${display}` : `${answer.valueCoding?.code}`;
-  } else if (answer.valueQuantity) return `${answer.valueQuantity}`;
+  if (answer.valueBoolean !== undefined) {
+    return `${answer.valueBoolean}`;
+  }
+
+  if (answer.valueDecimal !== undefined) {
+    return `${answer.valueDecimal}`;
+  }
+
+  if (answer.valueInteger !== undefined) {
+    return `${answer.valueInteger}`;
+  }
+
+  if (answer.valueDate) {
+    const { displayDate, parseFail } = parseFhirDateToDisplayDate(answer.valueDate);
+    if (!parseFail) {
+      return `${displayDate}`;
+    }
+
+    return `${answer.valueDate}`;
+  }
+
+  if (answer.valueDateTime) {
+    // TODO date time item
+    return `${answer.valueDateTime}`;
+  }
+
+  if (answer.valueTime) {
+    return `${answer.valueTime}`;
+  }
+
+  if (answer.valueString) {
+    return `${answer.valueString}`;
+  }
+
+  if (answer.valueCoding?.code) {
+    return answer.valueCoding?.display ?? `${answer.valueCoding?.code}`;
+  }
+
+  if (answer.valueQuantity) {
+    return `${answer.valueQuantity}`;
+  }
+
   return '';
 }
 
@@ -187,9 +215,13 @@ function renderGeneralBottomMargin(
   const smallMarginDiv = `<div style="margin: 20px 0 20px;"></div>`;
   const largeMarginDiv = `<div style="margin: 55px 0 20px;"></div>`;
 
-  if (nestedLevel !== 0) return '';
+  if (nestedLevel !== 0) {
+    return '';
+  }
 
-  if (!nextItem) return smallMarginDiv;
+  if (!nextItem) {
+    return smallMarginDiv;
+  }
 
   const items = nextItem.item;
   return items && items.length > 0 ? largeMarginDiv : smallMarginDiv;
