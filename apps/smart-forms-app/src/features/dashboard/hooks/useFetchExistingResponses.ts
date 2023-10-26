@@ -31,6 +31,8 @@ interface useFetchExistingResponsesReturnParams {
 function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
   const { selectedQuestionnaire } = useSelectedQuestionnaire();
 
+  const numOfSearchEntries = 200;
+
   const { smartClient, patient, launchQuestionnaire } = useSmartClient();
   const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;
 
@@ -51,7 +53,10 @@ function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
   }
 
   const patientIdParam = patient?.id ? `patient=${patient?.id}&` : '';
-  const queryUrl = '/QuestionnaireResponse?' + questionnaireRefParam + patientIdParam;
+  const queryUrl =
+    `/QuestionnaireResponse?_count=${numOfSearchEntries}&_sort=-authored&` +
+    questionnaireRefParam +
+    patientIdParam;
 
   const { data, isFetching, error } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
