@@ -22,7 +22,7 @@ import { useMemo } from 'react';
 
 function useInitialiseRepeatAnswers(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem
+  qrItem: QuestionnaireResponseItem | null
 ): RepeatAnswer[] {
   return useMemo(
     () => {

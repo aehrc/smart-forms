@@ -37,12 +37,12 @@ import useDateValidation from '../../../hooks/useDateValidation';
 import CustomDateField from './customDateTimePicker/CustomDateField';
 
 interface CustomDateItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function CustomDateItem(props: CustomDateItemProps) {

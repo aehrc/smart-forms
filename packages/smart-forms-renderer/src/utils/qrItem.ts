@@ -94,7 +94,7 @@ export function removeNoAnswerQrItem(
  *
  * @author Sean Fong
  */
-export function createQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+export function createEmptyQrGroup(qItem: QuestionnaireItem): QuestionnaireResponseItem {
   return {
     linkId: qItem.linkId,
     text: qItem.text,

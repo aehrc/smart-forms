@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import Client from 'fhirclient/lib/Client';
-import { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type Client from 'fhirclient/lib/Client';
+import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { removeHiddenAnswersFromResponse } from '@aehrc/smart-forms-renderer';
 import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';

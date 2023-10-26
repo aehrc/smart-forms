@@ -36,11 +36,11 @@ import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFiel
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface OpenChoiceRadioAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   orientation: ChoiceItemOrientation;
 }
 

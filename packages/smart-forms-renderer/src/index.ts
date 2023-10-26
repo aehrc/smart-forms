@@ -86,17 +86,10 @@ export function removeHiddenAnswersFromResponse(
  */
 export function generateItemsToRepopulate(populatedResponse: QuestionnaireResponse) {
   const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
-  const itemTypes = useQuestionnaireStore.getState().itemTypes;
   const tabs = useQuestionnaireStore.getState().tabs;
   const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
 
-  return getItemsToRepopulate(
-    sourceQuestionnaire,
-    itemTypes,
-    tabs,
-    populatedResponse,
-    updatableResponse
-  );
+  return getItemsToRepopulate(sourceQuestionnaire, tabs, populatedResponse, updatableResponse);
 }
 
 /**

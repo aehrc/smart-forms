@@ -21,18 +21,16 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { createQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
 import useHidden from '../../../hooks/useHidden';
 
-interface GridRowProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
-    PropsWithParentIsReadOnlyAttribute {
+interface GridRowProps extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   columnLabels: string[];
   numOfColumns: number;
 }
@@ -41,7 +39,7 @@ function GridRow(props: GridRowProps) {
   const { qItem, qrItem, columnLabels, numOfColumns, parentIsReadOnly, onQrItemChange } = props;
 
   const rowQItems = qItem.item;
-  const row = qrItem && qrItem.item ? qrItem : createQrGroup(qItem);
+  const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
   const rowQrItems = row.item;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
@@ -84,7 +82,7 @@ function GridRow(props: GridRowProps) {
           <GridAnswerTableCell key={index} numOfColumns={numOfColumns}>
             <SingleItem
               qItem={cellQItem}
-              qrItem={cellQrItem}
+              qrItem={cellQrItem ?? null}
               isRepeated={true}
               isTabled={true}
               showMinimalView={true}

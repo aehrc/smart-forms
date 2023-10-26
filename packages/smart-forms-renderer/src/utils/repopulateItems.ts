@@ -26,6 +26,7 @@ import _isEqual from 'lodash/isEqual';
 import { containsTabs, isTabContainer } from './tabs';
 import { getShortText, isSpecificItemControl } from './itemControl';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
+import cloneDeep from 'lodash.clonedeep';
 
 export interface ItemToRepopulate {
   qItem: QuestionnaireItem | null;
@@ -42,7 +43,6 @@ export interface ItemToRepopulate {
 
 export function getItemsToRepopulate(
   sourceQuestionnaire: Questionnaire,
-  itemTypes: Record<string, string>,
   tabs: Tabs,
   populatedResponse: QuestionnaireResponse,
   updatableResponse: QuestionnaireResponse
@@ -217,7 +217,7 @@ function getRepeatGroupToRepopulate(
 function getGridTableToRepopulate(
   qItem: QuestionnaireItem,
   gridChildQItems: QuestionnaireItem[],
-  gridChildQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[],
+  gridChildQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[],
   heading: string | null,
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
@@ -227,7 +227,7 @@ function getGridTableToRepopulate(
 
   const gridChildQRItemsToRepopulate = gridChildQItems
     .map((_, index) => {
-      const gridChildQrItemOrItems = gridChildQRItemsByIndex[index];
+      const gridChildQrItemOrItems = gridChildQRItemsByIndex?.[index];
       if (gridChildQrItemOrItems && !Array.isArray(gridChildQrItemOrItems)) {
         return gridChildQrItemOrItems;
       }
@@ -284,6 +284,10 @@ function checkCorrespondingOldItemsRecursive(
       checkCorrespondingOldItemsRecursive(childQItem, oldChildQrItemOrItems, itemsToRepopulate);
     }
 
+    if (qItem.linkId === '0a3c9c93-5836-4a5b-93e5-d7de559e053a') {
+      console.log(qItem.linkId, 'heretwo');
+      console.log(cloneDeep(itemsToRepopulate));
+    }
     const hasSingleAnswer = !Array.isArray(oldQrItemOrItems);
     if (hasSingleAnswer && oldQrItemOrItems.answer) {
       retrieveSingleOldQRItem(qItem, oldQrItemOrItems, itemsToRepopulate);
@@ -301,6 +305,10 @@ function retrieveSingleOldQRItem(
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
   const newQRItem = itemsToRepopulate[qItem.linkId]?.newQRItem;
+
+  if (qItem.linkId === '0a3c9c93-5836-4a5b-93e5-d7de559e053a') {
+    console.log(qItem.linkId, 'hereinner');
+  }
 
   if (!newQRItem) {
     return;
@@ -339,7 +347,7 @@ function retrieveRepeatGroupOldQRItems(
 function retrieveGridGroupOldQRItems(
   qItem: QuestionnaireItem,
   gridChildQItems: QuestionnaireItem[],
-  oldGridQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[])[],
+  oldGridQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[],
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
   if (gridChildQItems.length === 0) {

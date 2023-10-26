@@ -32,7 +32,7 @@ interface SaveProgressSpeedDialActionProps extends SpeedDialActionProps {
 }
 
 function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
-  const { isSpeedDial } = props;
+  const { isSpeedDial, ...speedDialActionProps } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
@@ -98,7 +98,7 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
         tooltipTitle={'Save Progress'}
         tooltipOpen
         onClick={handleSaveProgress}
-        {...props}
+        {...speedDialActionProps}
       />
     );
   }
@@ -106,16 +106,12 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
   const buttonIsDisabled = !smartClient || formChangesHistory.length === 0;
 
   return (
-    <Tooltip title="No progress to be saved" disableHoverListener={!buttonIsDisabled}>
-      <span>
-        <RendererOperationItem
-          title={'Save Progress'}
-          icon={<SaveIcon />}
-          disabled={buttonIsDisabled}
-          onClick={handleSaveProgress}
-        />
-      </span>
-    </Tooltip>
+    <RendererOperationItem
+      title={'Save Progress'}
+      icon={<SaveIcon />}
+      disabled={buttonIsDisabled}
+      onClick={handleSaveProgress}
+    />
   );
 }
 

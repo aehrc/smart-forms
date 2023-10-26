@@ -22,14 +22,14 @@ import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
-import { updateQrItemsInGroup } from '../../utils/qrItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
 import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
 
-interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler {
   topLevelQItem: QuestionnaireItem;
-  topLevelQRItem: QuestionnaireResponseItem;
+  topLevelQRItem: QuestionnaireResponseItem | null;
 }
 
 function FormBodyTabbed(props: FormBodyTabbedProps) {
@@ -43,12 +43,14 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
     [topLevelQItem]
   );
 
+  const nonNullTopLevelQRItem = topLevelQRItem ?? createEmptyQrGroup(topLevelQItem);
+
   const qItems = topLevelQItem.item;
-  const qrItems = topLevelQRItem.item;
+  const qrItems = nonNullTopLevelQRItem.item;
 
   function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
-    updateQrItemsInGroup(qrItem, null, topLevelQRItem, indexMap);
-    onQrItemChange(topLevelQRItem);
+    updateQrItemsInGroup(qrItem, null, nonNullTopLevelQRItem, indexMap);
+    onQrItemChange(nonNullTopLevelQRItem);
   }
 
   if (!qItems || !qrItems) {
@@ -87,7 +89,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                 data-test="renderer-tab-panel">
                 <GroupItem
                   qItem={qItem}
-                  qrItem={qrItem}
+                  qrItem={qrItem ?? null}
                   isRepeated={isRepeated}
                   groupCardElevation={1}
                   tabIsMarkedAsComplete={tabIsMarkedAsComplete}

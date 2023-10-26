@@ -34,13 +34,13 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 
 interface OpenChoiceItemSwitcherProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {

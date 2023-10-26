@@ -79,7 +79,7 @@ function BaseRenderer() {
             <FormTopLevelItem
               key={qItem.linkId}
               topLevelQItem={qItem}
-              topLevelQRItemOrItems={qrItemOrItems}
+              topLevelQRItemOrItems={qrItemOrItems ?? null}
               onQrItemChange={(newTopLevelQRItem) =>
                 handleTopLevelQRItemSingleChange(newTopLevelQRItem)
               }

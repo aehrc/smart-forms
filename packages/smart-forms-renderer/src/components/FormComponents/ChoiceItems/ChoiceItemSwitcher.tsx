@@ -35,13 +35,13 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 
 interface ChoiceItemSwitcherProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {

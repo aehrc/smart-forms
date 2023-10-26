@@ -16,8 +16,9 @@
  */
 
 import type { QrRepeatGroup } from './repeatGroup.interface';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 
-export interface PropsWithQrItemChangeHandler<QuestionnaireResponseItem> {
+export interface PropsWithQrItemChangeHandler {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
 }
 

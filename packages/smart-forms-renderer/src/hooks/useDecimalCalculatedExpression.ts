@@ -27,7 +27,6 @@ interface UseDecimalCalculatedExpression {
 interface useDecimalCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   inputValue: string;
-  displayUnit: string;
   precision: number | null;
   setInputValue: (value: string) => void;
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
@@ -36,7 +35,7 @@ interface useDecimalCalculatedExpressionProps {
 function useDecimalCalculatedExpression(
   props: useDecimalCalculatedExpressionProps
 ): UseDecimalCalculatedExpression {
-  const { qItem, inputValue, displayUnit, precision, setInputValue, onQrItemChange } = props;
+  const { qItem, inputValue, precision, setInputValue, onQrItemChange } = props;
 
   const calculatedExpressions = useQuestionnaireStore((state) => state.calculatedExpressions);
 

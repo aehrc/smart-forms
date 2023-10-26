@@ -33,11 +33,11 @@ import DeleteItemButton from './DeleteItemButton';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatFieldProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
   answer: QuestionnaireResponseItemAnswer | null;
   numOfRepeatAnswers: number;
   onDeleteAnswer: () => void;

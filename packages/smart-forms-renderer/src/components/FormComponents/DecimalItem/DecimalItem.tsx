@@ -41,12 +41,12 @@ import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface DecimalItemProps
-  extends PropsWithQrItemChangeHandler<QuestionnaireResponseItem>,
+  extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem;
+  qrItem: QuestionnaireResponseItem | null;
 }
 
 function DecimalItem(props: DecimalItemProps) {
@@ -86,7 +86,6 @@ function DecimalItem(props: DecimalItemProps) {
   const { calcExpUpdated } = useDecimalCalculatedExpression({
     qItem: qItem,
     inputValue: input,
-    displayUnit: displayUnit,
     precision: precision,
     setInputValue: (newInput) => {
       setInput(newInput);

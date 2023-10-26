@@ -30,7 +30,7 @@ export function getQrItemsIndex(
   qItems: QuestionnaireItem[],
   qrItems: QuestionnaireResponseItem[],
   qItemsIndexMap: Record<string, number>
-): (QuestionnaireResponseItem | QuestionnaireResponseItem[])[] {
+): (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[] {
   // Generate a <linkId, QrItem OR QrItems> dictionary
   const qrItemsCollected: Record<string, QuestionnaireResponseItem | QuestionnaireResponseItem[]> =
     {};
@@ -69,10 +69,7 @@ export function getQrItemsIndex(
       if (isRepeatItemAndNotCheckbox(qItem) && qItem.type === 'group') {
         mapping[i] = qrItemOrItems ? qrItemsCollected[qItem.linkId] : [];
       } else {
-        mapping[i] = qrItemsCollected[qItem.linkId] ?? {
-          linkId: qItem.linkId,
-          text: qItem.text
-        };
+        mapping[i] = qrItemsCollected[qItem.linkId];
       }
       return mapping;
     },

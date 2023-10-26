@@ -16,7 +16,7 @@
  */
 
 import type { SpeedDialActionProps } from '@mui/material';
-import { SpeedDialAction, Tooltip } from '@mui/material';
+import { SpeedDialAction } from '@mui/material';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
@@ -29,7 +29,7 @@ interface SaveAsFinalActionProps extends SpeedDialActionProps {
 }
 
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
-  const { isSpeedDial } = props;
+  const { isSpeedDial, ...speedDialActionProps } = props;
 
   const { smartClient } = useSmartClient();
 
@@ -55,19 +55,15 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           tooltipTitle="Save as Final"
           tooltipOpen
           onClick={handleOpenDialog}
-          {...props}
+          {...speedDialActionProps}
         />
       ) : (
-        <Tooltip title="No progress to be saved" disableHoverListener={!buttonIsDisabled}>
-          <span>
-            <RendererOperationItem
-              title="Save as Final"
-              icon={<TaskAltIcon />}
-              disabled={buttonIsDisabled}
-              onClick={handleOpenDialog}
-            />
-          </span>
-        </Tooltip>
+        <RendererOperationItem
+          title="Save as Final"
+          icon={<TaskAltIcon />}
+          disabled={buttonIsDisabled}
+          onClick={handleOpenDialog}
+        />
       )}
       <RendererSaveAsFinalDialog
         open={saveAsFinalDialogOpen}

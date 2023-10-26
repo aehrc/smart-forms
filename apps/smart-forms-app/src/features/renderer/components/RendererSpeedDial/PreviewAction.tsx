@@ -28,7 +28,7 @@ interface PreviewSpeedDiaActionProps extends SpeedDialActionProps {
 }
 
 function PreviewAction(props: PreviewSpeedDiaActionProps) {
-  const { isSpeedDial } = props;
+  const { isSpeedDial, ...speedDialActionProps } = props;
 
   const { closeSnackbar } = useSnackbar();
 
@@ -52,22 +52,20 @@ function PreviewAction(props: PreviewSpeedDiaActionProps) {
           tooltipTitle="Preview"
           tooltipOpen
           onClick={handleNavigatePreview}
-          {...props}
+          {...speedDialActionProps}
         />
       );
     }
 
-    if (location.pathname === '/renderer/preview') {
-      return (
-        <SpeedDialAction
-          icon={<EditIcon />}
-          tooltipTitle="Editor"
-          tooltipOpen
-          onClick={handleNavigateRenderer}
-          {...props}
-        />
-      );
-    }
+    return (
+      <SpeedDialAction
+        icon={<EditIcon />}
+        tooltipTitle="Editor"
+        tooltipOpen
+        onClick={handleNavigateRenderer}
+        {...speedDialActionProps}
+      />
+    );
   }
 
   if (location.pathname === '/renderer') {
