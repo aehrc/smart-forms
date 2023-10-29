@@ -87,9 +87,9 @@ function SliderItem(props: SliderItemProps) {
   }
 
   return (
-    <Box px={4}>
-      <FullWidthFormComponentBox data-test="q-item-slider-box">
-        <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+    <FullWidthFormComponentBox data-test="q-item-slider-box">
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+        <Box px={4}>
           <SliderField
             linkId={qItem.linkId}
             value={valueInteger}
@@ -102,9 +102,9 @@ function SliderItem(props: SliderItemProps) {
             isTabled={isTabled}
             onValueChange={handleValueChange}
           />
-        </ItemFieldGrid>
-      </FullWidthFormComponentBox>
-    </Box>
+        </Box>
+      </ItemFieldGrid>
+    </FullWidthFormComponentBox>
   );
 }
 
