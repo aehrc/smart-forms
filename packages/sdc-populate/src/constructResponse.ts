@@ -409,7 +409,7 @@ function parseValueToAnswer(qItem: QuestionnaireItem, value: any): Questionnaire
 
   // Value is string at this point
   if (qItem.type === 'date' && checkIsDateTime(value)) {
-    return { valueDate: value };
+    return { valueDate: convertDateTimeToDate(value) };
   }
 
   if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
@@ -432,6 +432,18 @@ export function checkIsDateTime(value: string): boolean {
   const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
   const formattedDate = dayjs(value).format();
   return moment(formattedDate, acceptedFormats, true).isValid();
+}
+
+export function convertDateTimeToDate(value: string): string {
+  const acceptedFormats = ['YYYY-MM-DDTHH:mm:ssZ'];
+  const formattedDate = dayjs(value).format();
+  const isDateTime = moment(formattedDate, acceptedFormats, true).isValid();
+
+  if (isDateTime) {
+    return moment(formattedDate).format('YYYY-MM-DD');
+  }
+
+  return value;
 }
 
 /**

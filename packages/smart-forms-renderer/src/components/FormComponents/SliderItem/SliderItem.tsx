@@ -48,6 +48,8 @@ function SliderItem(props: SliderItemProps) {
   const { displayInstructions } = useRenderingExtensions(qItem);
   const { minValue, maxValue, stepValue, minLabel, maxLabel } = useSliderExtensions(qItem);
 
+  const isInteracted = !!qrItem?.answer;
+
   // Init input value
   let valueInteger = 0;
   if (qrItem?.answer) {
@@ -78,6 +80,7 @@ function SliderItem(props: SliderItemProps) {
           stepValue={stepValue}
           minLabel={minLabel}
           maxLabel={maxLabel}
+          isInteracted={isInteracted}
           readOnly={readOnly}
           isTabled={isTabled}
           onValueChange={handleValueChange}
@@ -87,9 +90,9 @@ function SliderItem(props: SliderItemProps) {
   }
 
   return (
-    <Box px={4}>
-      <FullWidthFormComponentBox data-test="q-item-slider-box">
-        <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+    <FullWidthFormComponentBox data-test="q-item-slider-box">
+      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+        <Box px={4}>
           <SliderField
             linkId={qItem.linkId}
             value={valueInteger}
@@ -98,13 +101,14 @@ function SliderItem(props: SliderItemProps) {
             stepValue={stepValue}
             minLabel={minLabel}
             maxLabel={maxLabel}
+            isInteracted={isInteracted}
             readOnly={readOnly}
             isTabled={isTabled}
             onValueChange={handleValueChange}
           />
-        </ItemFieldGrid>
-      </FullWidthFormComponentBox>
-    </Box>
+        </Box>
+      </ItemFieldGrid>
+    </FullWidthFormComponentBox>
   );
 }
 

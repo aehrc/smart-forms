@@ -21,6 +21,7 @@ import Slider from '@mui/material/Slider';
 import { getSliderMarks } from '../../../utils/slider';
 import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
+import SliderDisplayValue from './SliderDisplayValue';
 
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -30,6 +31,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
   maxValue: number;
   maxLabel: string;
   stepValue: number;
+  isInteracted: boolean;
   readOnly: boolean;
   onValueChange: (newValue: number) => void;
 }
@@ -43,6 +45,7 @@ function SliderField(props: SliderFieldProps) {
     stepValue,
     minLabel,
     maxLabel,
+    isInteracted,
     readOnly,
     isTabled,
     onValueChange
@@ -55,9 +58,12 @@ function SliderField(props: SliderFieldProps) {
     minWidth: 160
   };
 
+  const hasLabels = !!(minLabel || maxLabel);
+
   return (
     <Stack sx={{ ...sliderSx }}>
-      <SliderLabels minLabel={minLabel} maxLabel={maxLabel} />
+      <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
+      {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
       <Slider
         id={linkId}
         value={value}
