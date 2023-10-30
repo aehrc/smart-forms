@@ -30,7 +30,7 @@
     "deep-diff": "^1.0.2",
     "fhirclient": "^2.5.2",
     "fhirpath": "^3.7.1",
-    "html-react-parser": "^4.2.0",
+    "html-react-parser": "^5.0.2",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "nanoid": "^5.0.1",
