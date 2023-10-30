@@ -48,6 +48,8 @@ function SliderItem(props: SliderItemProps) {
   const { displayInstructions } = useRenderingExtensions(qItem);
   const { minValue, maxValue, stepValue, minLabel, maxLabel } = useSliderExtensions(qItem);
 
+  const isInteracted = !!qrItem?.answer;
+
   // Init input value
   let valueInteger = 0;
   if (qrItem?.answer) {
@@ -78,6 +80,7 @@ function SliderItem(props: SliderItemProps) {
           stepValue={stepValue}
           minLabel={minLabel}
           maxLabel={maxLabel}
+          isInteracted={isInteracted}
           readOnly={readOnly}
           isTabled={isTabled}
           onValueChange={handleValueChange}
@@ -98,6 +101,7 @@ function SliderItem(props: SliderItemProps) {
             stepValue={stepValue}
             minLabel={minLabel}
             maxLabel={maxLabel}
+            isInteracted={isInteracted}
             readOnly={readOnly}
             isTabled={isTabled}
             onValueChange={handleValueChange}
