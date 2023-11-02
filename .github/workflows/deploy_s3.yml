@@ -33,4 +33,4 @@ jobs:
         run: npm run build -w apps/smart-forms-app
 
       - name: Upload benchmark file to S3
-        run: aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/${{ github.ref }}/${{ github.run_id }}/${{ steps.timestamp.outputs.timestamp }}/
+        run: aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/
