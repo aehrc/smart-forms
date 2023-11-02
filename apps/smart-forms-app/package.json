@@ -52,7 +52,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.filter": "^4.6.0",
     "lodash.isequal": "^4.5.0",
-    "material-ui-popup-state": "^5.0.9",
+    "material-ui-popup-state": "^5.0.10",
     "moment": "^2.29.4",
     "monaco-editor": "^0.43.0",
     "nanoid": "^5.0.1",
