@@ -25,7 +25,7 @@
   "dependencies": {
     "@aehrc/sdc-assemble": "^1.0.2",
     "@iconify/react": "^4.1.1",
-    "@types/fhir": "^0.0.37",
+    "@types/fhir": "^0.0.38",
     "dayjs": "^1.11.10",
     "deep-diff": "^1.0.2",
     "fhirclient": "^2.5.2",
