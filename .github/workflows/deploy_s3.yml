@@ -23,7 +23,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeploymentRole
+          role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeployment
           aws-region: ap-southeast-2
 
       - name: Install dependencies
