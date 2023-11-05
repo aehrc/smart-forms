@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.5",
+    "@types/jest": "^29.5.7",
     "@types/node": "^20.5.0",
     "aws-cdk-lib": "^2.103.1",
     "constructs": "^10.2.70",
