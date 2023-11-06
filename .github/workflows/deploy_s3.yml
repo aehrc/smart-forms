@@ -30,16 +30,16 @@ jobs:
         run: npm ci
 
       - name: Build application
-        run: |
-          export REACT_APP_SENTRY_RELEASE=`git rev-parse --short HEAD`
+        run:
           npm run build -w apps/smart-forms-app
+#          export REACT_APP_SENTRY_RELEASE=`git rev-parse --short HEAD`
 
-      - name: Create Sentry release
-        run: |
-          export VERSION=`git rev-parse --short HEAD` && \
-          npx sentry-cli releases new $VERSION && \
-          npx sentry-cli releases set-commits $VERSION --local --ignore-empty --ignore-missing && \
-          npx sentry-cli releases files $VERSION upload-sourcemaps build
+#      - name: Create Sentry release
+#        run: |
+#          export VERSION=`git rev-parse --short HEAD` && \
+#          npx sentry-cli releases new $VERSION && \
+#          npx sentry-cli releases set-commits $VERSION --local --ignore-empty --ignore-missing && \
+#          npx sentry-cli releases files $VERSION upload-sourcemaps build
 
       - name: Upload benchmark file to S3
         run: aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/
