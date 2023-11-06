@@ -22,11 +22,7 @@ import type {
   Questionnaire,
   QuestionnaireResponse
 } from 'fhir/r4';
-import {
-  getLaunchContexts,
-  getQuestionnaireLevelXFhirQueryVariables,
-  getSourceQueries
-} from './getExtensions.ts';
+import { getLaunchContexts, getSourceQueries, getXFhirQueryVariables } from './getExtensions.ts';
 import type { IssuesParameter, ResponseParameter } from '@aehrc/sdc-populate';
 import { isInputParameters } from '@aehrc/sdc-populate';
 import type Client from 'fhirclient/lib/Client';
@@ -56,7 +52,7 @@ export async function populateQuestionnaire(
   // Get launch contexts, source queries and questionnaire-level variables
   const launchContexts = getLaunchContexts(questionnaire);
   const sourceQueries = getSourceQueries(questionnaire);
-  const questionnaireLevelVariables = getQuestionnaireLevelXFhirQueryVariables(questionnaire);
+  const questionnaireLevelVariables = getXFhirQueryVariables(questionnaire);
 
   if (
     launchContexts.length === 0 &&
