@@ -83,7 +83,7 @@ export default function Router() {
     },
     {
       path: '*',
-      element: <Navigate to="/notfound" replace />
+      element: <Navigate to="/notfound" />
     }
   ]);
 

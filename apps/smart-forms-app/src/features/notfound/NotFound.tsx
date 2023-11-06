@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import CenteredWrapper from '../../components/Wrapper/CenteredWrapper.tsx';
-import { Stack, Typography } from '@mui/material';
-import UnlaunchedButton from '../../components/Button/UnlaunchedButton.tsx';
-import ReauthenticateButton from '../../components/Button/ReauthenticateButton.tsx';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import useSmartClient from '../../hooks/useSmartClient.ts';
+import Logo from '../../components/Logos/Logo.tsx';
+import csiroLogo from '../../data/images/csiro-logo.png';
+import NotFoundSelections from './NotFoundSelections.tsx';
 
 function NotFound() {
   const { smartClient } = useSmartClient();
@@ -29,17 +29,25 @@ function NotFound() {
   const authSessionFound = isNotLaunched && sessionStorage.getItem('authorised') === 'true';
 
   return (
-    <CenteredWrapper>
-      <Stack rowGap={2}>
-        <Typography variant="h3">Error 404</Typography>
-        <Typography fontSize={13}>
-          {authSessionFound
-            ? "We couldn't find the page you were looking for, but we detected a recent auth session. You would need to be re-authenticated. Do you want to try re-authenticating?"
-            : "We couldn't find the page you were looking for. Do you want to go back to the home page?"}
-        </Typography>
+    <>
+      <Box display="flex" px={2.5} pt={2}>
+        <Logo />
+        <Box flexGrow={1} />
+        <Box display="flex" alignItems="center" columnGap={1}>
+          <Typography sx={{ color: 'text.secondary' }}>By</Typography>
+          <Box component="img" maxHeight={35} maxWidth={35} src={csiroLogo} />
+        </Box>
+      </Box>
+
+      <Stack justifyContent="center" alignItems="center" sx={{ height: 'calc(100% - 72px)' }}>
+        <Container>
+          <Typography variant="h2" mb={2.5}>
+            Error 404
+          </Typography>
+          <NotFoundSelections authSessionFound={authSessionFound} />
+        </Container>
       </Stack>
-      {authSessionFound ? <ReauthenticateButton /> : <UnlaunchedButton />}
-    </CenteredWrapper>
+    </>
   );
 }
 

@@ -20,7 +20,7 @@ import { Box } from '@mui/material';
 
 export const LogoWrapper = styled(Box)({ padding: '8px', display: 'inline-flex' });
 export const NavLogoWrapper = styled(Box)({
-  padding: '24px 20px 24px 20px',
+  padding: '16px 20px 24px 20px',
   display: 'inline-flex'
 });
 

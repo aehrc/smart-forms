@@ -1,0 +1,45 @@
+name: Smart Forms Workflow
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Deploy to S3
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeployment
+          aws-region: ap-southeast-2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: |
+          export REACT_APP_SENTRY_RELEASE=$(git rev-parse --short HEAD)
+          npm run build -w apps/smart-forms-app
+
+      - name: Create Sentry release
+        run: |
+          export VERSION=$(git rev-parse --short HEAD)
+          npx sentry-cli releases new $VERSION
+          npx sentry-cli releases set-commits $VERSION --local --ignore-empty --ignore-missing
+          npx sentry-cli releases files $VERSION upload-sourcemaps build
+
+      - name: Upload benchmark file to S3
+        run: aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/
