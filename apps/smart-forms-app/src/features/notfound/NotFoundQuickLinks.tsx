@@ -48,7 +48,7 @@ const quickLinkCards: QuickLinkCardProps[] = [
   {
     title: 'Forms Server FHIR API',
     description: 'A Questionnaire-hosting FHIR API which supports the $assemble operation.',
-    link: 'https://smartforms.csiro.au/fhir',
+    link: 'https://smartforms.csiro.au/api/fhir/Questionnaire',
     icon: <StorageIcon fontSize="large" color="primary" />
   },
   {
