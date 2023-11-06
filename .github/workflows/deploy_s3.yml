@@ -31,14 +31,14 @@ jobs:
 
       - name: Build application
         run: |
-          export REACT_APP_SENTRY_RELEASE=$(git rev-parse --short HEAD)
+          export REACT_APP_SENTRY_RELEASE=`git rev-parse --short HEAD`
           npm run build -w apps/smart-forms-app
 
       - name: Create Sentry release
         run: |
-          export VERSION=$(git rev-parse --short HEAD)
-          npx sentry-cli releases new $VERSION
-          npx sentry-cli releases set-commits $VERSION --local --ignore-empty --ignore-missing
+          export VERSION=`git rev-parse --short HEAD` && \
+          npx sentry-cli releases new $VERSION && \
+          npx sentry-cli releases set-commits $VERSION --local --ignore-empty --ignore-missing && \
           npx sentry-cli releases files $VERSION upload-sourcemaps build
 
       - name: Upload benchmark file to S3
