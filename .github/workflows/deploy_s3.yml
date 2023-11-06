@@ -2,7 +2,7 @@ name: Smart Forms Workflow
 
 on:
   push:
-    branches: [ "test-deploy" ]
+    branches: [ "main" ]
 
 jobs:
   build:
