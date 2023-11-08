@@ -149,6 +149,14 @@ export function propagateProperties(
   // Add [version]-assembled attribute
   parentQuestionnaire.version = `${parentQuestionnaire.version}-assembled`;
 
+  // Remove questionnaire-modular profile from meta
+  if (parentQuestionnaire.meta?.profile) {
+    parentQuestionnaire.meta.profile = parentQuestionnaire.meta?.profile?.filter(
+      (profile) =>
+        profile !== 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular'
+    );
+  }
+
   return parentQuestionnaire;
 }
 

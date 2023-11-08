@@ -241,14 +241,21 @@ export function getExtensions(
       ...Object.values(variables)
     ];
 
-    if (itemPopulationContext) currentItemLevelExtensions.push(itemPopulationContext);
-    if (itemExtractionContext) currentItemLevelExtensions.push(itemExtractionContext);
+    if (itemPopulationContext) {
+      currentItemLevelExtensions.push(itemPopulationContext);
+    }
+
+    if (itemExtractionContext) {
+      currentItemLevelExtensions.push(itemExtractionContext);
+    }
 
     itemLevelExtensions.push(currentItemLevelExtensions);
   }
 
   // Aggregate cqfLibrary and all launchContexts to root level extensions array
-  if (cqfLibrary) rootLevelExtensions.push(cqfLibrary);
+  if (cqfLibrary) {
+    rootLevelExtensions.push(cqfLibrary);
+  }
   rootLevelExtensions.push(...Object.values(launchContexts));
 
   return {

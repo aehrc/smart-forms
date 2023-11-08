@@ -79,15 +79,15 @@ export async function assemble(
   if (result.resourceType === 'OperationOutcome') {
     // return result as an OperationOutcome
     return result;
-  } else {
-    if (issues.length > 0) {
-      // return result as OutputParameters
-      return createOutputParameters(result, issues);
-    } else {
-      // return assembled Questionnaire resource
-      return result;
-    }
   }
+
+  if (issues.length > 0) {
+    // return result as OutputParameters
+    return createOutputParameters(result, issues);
+  }
+
+  // return assembled Questionnaire resource
+  return result;
 }
 
 /**
