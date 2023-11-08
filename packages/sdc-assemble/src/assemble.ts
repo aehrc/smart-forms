@@ -34,8 +34,7 @@ import {
   getExtensions,
   getItems,
   getUrls,
-  isValidExtensions,
-  mergeExtensionsIntoItems
+  isValidExtensions
 } from './getProperties';
 import { propagateProperties } from './propagate';
 import cloneDeep from 'lodash.clonedeep';
@@ -184,18 +183,13 @@ async function assembleQuestionnaire(
 
   const { rootLevelExtensions, itemLevelExtensions } = extensions;
 
-  // Merge item-level extensions into items
-  const itemsWithExtensions: (QuestionnaireItem[] | null)[] = mergeExtensionsIntoItems(
-    items,
-    itemLevelExtensions
-  );
-
   // propagate items, contained resources and extensions into parent questionnaire
   return propagateProperties(
     parentQuestionnaire,
     urls,
-    itemsWithExtensions,
+    items,
     containedResources,
-    rootLevelExtensions
+    rootLevelExtensions,
+    itemLevelExtensions
   );
 }
