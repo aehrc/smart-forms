@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "@aehrc/sdc-assemble": "^1.0.2",
+    "@aehrc/sdc-assemble": "^1.0.3",
     "cors": "^2.8.5"
   },
   "devDependencies": {
