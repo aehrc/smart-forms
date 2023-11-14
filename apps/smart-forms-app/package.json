@@ -36,7 +36,7 @@
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.14.3",
     "@mui/lab": "^5.0.0-alpha.151",
-    "@mui/material": "^5.14.11",
+    "@mui/material": "^5.14.17",
     "@mui/x-date-pickers": "^6.10.1",
     "@sentry/react": "^7.73.0",
     "@sentry/tracing": "^7.61.1",
