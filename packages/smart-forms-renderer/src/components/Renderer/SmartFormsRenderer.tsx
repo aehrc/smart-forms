@@ -18,6 +18,7 @@
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import useInitialiseRenderer from '../../hooks/useInitialiseRenderer';
+import ThemeProvider from '../../theme/Theme';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -25,7 +26,6 @@ import Typography from '@mui/material/Typography';
 import { QueryClientProvider } from '@tanstack/react-query';
 import useQueryClient from '../../hooks/useQueryClient';
 import BaseRenderer from './BaseRenderer';
-import ThemeProvider from '../../theme/Theme';
 import type Client from 'fhirclient/lib/Client';
 
 interface SmartFormsRendererProps {
