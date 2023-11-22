@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Assemble } from 'assemble';
+import { Assemble } from 'deployment/forms-server/assemble';
 import * as cdk from 'aws-cdk-lib';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Cluster } from 'aws-cdk-lib/aws-ecs';
