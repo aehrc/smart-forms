@@ -3,7 +3,7 @@
 <h4>
 Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to easily integrate forms into your existing healthcare system.
 </h4>
-<h3><a href="https://www.smartforms.io">Show me the app ➡️</a></h3>
+<h3><a href="https://smartforms.csiro.au">Show me the app ➡️</a></h3>
 
 ---
 Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web application currently ongoing development by [CSIRO's Australian e-Health Research Centre](https://aehrc.csiro.au/) as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
@@ -14,7 +14,6 @@ This project was bootstrapped with [Vite](https://vitejs.dev/).
 <br/>
 
 **If you are interested in using the rendering engine in your projects, a standalone package is published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).**
-**Try out the standalone package here: https://www.smartforms.io/standalone**
 
 
 ## Functionalities
@@ -43,12 +42,11 @@ NOTE: The patients featured in the screenshots are synthetic and do not represen
 
 ## Contents
 
-1. The Smart Forms web app. Try it out here: https://www.smartforms.io/
+1. The Smart Forms web app. Try it out here: smartforms.csiro.au
 2. Implemented operations from the [Structured Data Capture (SDC)](http://hl7.org/fhir/uv/sdc/) specification:
  - [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
  - [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
-
-3. A Questionnaire-hosting Forms Server API which supports the $assemble operation. This API is It is built on the [HAPI-FHIR Starter Project](https://github.com/hapifhir/hapi-fhir-jpaserver-starter). The API is publicly available at https://api.smartforms.io/fhir.
+3. A standalone component of the questionnaire-rendering engine published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).
 
 ## Conformance
 
@@ -61,23 +59,19 @@ https://github.com/aehrc/smart-forms/blob/main/Conformance.md
 ### Running on a SMART CMS client (the preferred way)
 
 1. Open https://launch.smarthealthit.org/ (or your own SMART on FHIR enabled CMS) in a browser.
-2. Set the **App Launch URL** at the bottom of the page as `https://www.smartforms.io/launch` and launch app.
+2. Set the **App Launch URL** at the bottom of the page as `https://smartforms.csiro.au/launch` and launch app.
+   
+![image](https://github.com/aehrc/smart-forms/assets/52597778/daa3b1be-e245-4d75-a766-a095dc81d8fc)
 
-![image](https://user-images.githubusercontent.com/52597778/223016492-882abdaf-33e9-4039-8c32-301c4cf58e91.png)
 
 ### Running in an unlaunched state
 
 This method of running the app does not allow you to save responses as it is not connected to a CMS client.
 
-1. Open https://www.smartforms.io/ in a browser.
+1. Open https://smartforms.csiro.au in a browser.
 2. You would have access to some pre-defined local questionnaires
 
 NOTE: The app will not be able to view or save responses as it is not connected to a CMS client.
-
-### Adding my own questionnaires
-
-1. Use Postman (or any other API platform) to POST your questionnaire(s) to https://api.smartforms.io/fhir.
-2. Your questionnaire should show up on the Questionnaire page within the app. In case it does not, try using the search to filter down the results.
 
 ## Configuration
 
@@ -90,7 +84,7 @@ The default configuration is set to:
 VITE_ONTOSERVER_URL=https://r4.ontoserver.csiro.au/fhir
 
 # Questionnaire-hosting FHIR server
-VITE_FORMS_SERVER_URL=https://api.smartforms.io/fhir
+VITE_FORMS_SERVER_URL=https://smartforms.csiro.au/api/fhir
 
 # Debug mode - set to true in dev mode
 VITE_SHOW_DEBUG_MODE=false
@@ -128,7 +122,7 @@ cd apps/smart-forms-app
 npm start
 ```
 
-5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://www.smartforms.io/launch with http://localhost:5173/launch
+5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://smartforms.csiro.au/launch with http://localhost:5173/launch
 
 ## I found a bug/the app crashed, now what? 
 
