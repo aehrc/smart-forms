@@ -8,7 +8,7 @@
     "apps/*",
     "packages/*",
     "services/*",
-    "deployment/*"
+    "deployment/forms-server/*"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.7.4",
