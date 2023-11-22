@@ -21,7 +21,7 @@ import * as FHIR from 'fhirclient';
 import { HEADERS } from '../api/headers.ts';
 import { getFormsServerAssembledBundlePromise } from '../features/dashboard/utils/dashboard.ts';
 
-const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
 
 export function assemblyIsRequired(questionnaire: Questionnaire): boolean {
   return !!questionnaire.extension?.find(

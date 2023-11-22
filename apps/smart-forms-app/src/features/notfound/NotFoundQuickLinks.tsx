@@ -23,7 +23,6 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import StorageIcon from '@mui/icons-material/Storage';
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 interface QuickLinkCardProps {
   title: string;
@@ -92,28 +91,6 @@ function NotFoundQuickLinks() {
           </Card>
         </Grid>
       ))}
-      <Grid item xs={12} sm={6} md={4}>
-        <Card sx={{ p: 3, pb: 2.5, height: '100%' }}>
-          <Stack justifyContent="space-between" height="inherit">
-            <Grid container spacing={1}>
-              <Grid item xs={2}>
-                <MenuBookIcon fontSize="large" color="primary" />
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" mb={1}>
-                  Developer Documentation
-                </Typography>
-                <Typography color="text.disabled">Coming soon!</Typography>
-              </Grid>
-            </Grid>
-            <Box display="flex" flexDirection="row-reverse">
-              <IconButton color="primary" disabled>
-                <ArrowForwardIcon />
-              </IconButton>
-            </Box>
-          </Stack>
-        </Card>
-      </Grid>
     </Grid>
   );
 }
