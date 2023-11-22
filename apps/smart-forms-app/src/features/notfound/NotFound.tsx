@@ -20,9 +20,12 @@ import useSmartClient from '../../hooks/useSmartClient.ts';
 import Logo from '../../components/Logos/Logo.tsx';
 import csiroLogo from '../../data/images/csiro-logo.png';
 import NotFoundSelections from './NotFoundSelections.tsx';
+import useResponsive from '../../hooks/useResponsive.ts';
 
 function NotFound() {
   const { smartClient } = useSmartClient();
+
+  const isDesktop = useResponsive('up', 'lg');
 
   const isNotLaunched = !smartClient;
 
@@ -39,7 +42,9 @@ function NotFound() {
         </Box>
       </Box>
 
-      <Stack justifyContent="center" alignItems="center" sx={{ height: 'calc(100% - 72px)' }}>
+      <Box mb={isDesktop ? 10 : 5} />
+
+      <Stack justifyContent="center" alignItems="center">
         <Container>
           <Typography variant="h2" mb={2.5}>
             Error 404
