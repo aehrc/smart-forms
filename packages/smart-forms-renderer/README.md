@@ -1,7 +1,7 @@
 # Smart Forms Renderer
 This React-based package acts as the rendering engine for the [Smart Forms app](https://github.com/aehrc/smart-forms).
 
-Try out a minimal demo here: https://www.smartforms.io/standalone.
+Try out a minimal demo here: https://smartforms.csiro.au/standalone.
 
 ## Installation
 ```bash

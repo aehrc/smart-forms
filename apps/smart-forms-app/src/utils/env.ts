@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 export const FORMS_SERVER_ENDPOINT =
-  import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
-export const ONTOSERVER_ENDPOINT =
-  import.meta.env.VITE_ONTOSERVER_URL ?? 'https://tx.ontoserver.csiro.au/fhir/';
-
-export const SHOW_DEBUG_MODE = import.meta.env.VITE_SHOW_DEBUG_MODE ?? 'false';
+  import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
 
 export const IS_IN_APP_POPULATE = import.meta.env.VITE_IN_APP_POPULATE ?? true;
