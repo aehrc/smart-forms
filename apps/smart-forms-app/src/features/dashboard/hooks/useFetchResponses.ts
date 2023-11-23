@@ -27,6 +27,7 @@ interface useFetchResponsesReturnParams {
   fetchStatus: 'error' | 'success' | 'loading';
   fetchError: unknown;
   isFetching: boolean;
+  refetchResponses: () => void;
 }
 
 function useFetchResponses(
@@ -56,7 +57,8 @@ function useFetchResponses(
     data: bundle,
     status,
     error,
-    isFetching
+    isFetching,
+    refetch
   } = useQuery<Bundle>(
     ['response', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -78,7 +80,13 @@ function useFetchResponses(
     [bundle, existingResponseBundle, existingResponses.length]
   );
 
-  return { responses, fetchStatus: status, fetchError: error, isFetching };
+  return {
+    responses,
+    fetchStatus: status,
+    fetchError: error,
+    isFetching,
+    refetchResponses: refetch
+  };
 }
 
 export default useFetchResponses;

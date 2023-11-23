@@ -31,7 +31,8 @@ import ExistingResponsesTableView from './ExistingResponsesTableView.tsx';
 function ExistingResponsesTable() {
   const [selectedResponse, setSelectedResponse] = useState<QuestionnaireResponse | null>(null);
 
-  const { existingResponses, fetchError, isFetching } = useFetchExistingResponses();
+  const { existingResponses, fetchError, isFetching, refetchResponses } =
+    useFetchExistingResponses();
 
   const columns = useMemo(() => createResponseTableColumns(), []);
 
@@ -69,6 +70,7 @@ function ExistingResponsesTable() {
       selectedResponse={selectedResponse}
       onRowClick={handleRowClick}
       onSelectResponse={setSelectedResponse}
+      refetchResponses={refetchResponses}
     />
   );
 }

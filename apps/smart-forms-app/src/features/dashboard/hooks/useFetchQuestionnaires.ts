@@ -26,6 +26,7 @@ interface useFetchQuestionnairesReturnParams {
   fetchError: unknown;
   isInitialLoading: boolean;
   isFetching: boolean;
+  refetchQuestionnaires: () => void;
 }
 
 function useFetchQuestionnaires(
@@ -47,7 +48,8 @@ function useFetchQuestionnaires(
     status,
     isInitialLoading,
     error,
-    isFetching
+    isFetching,
+    refetch
   } = useQuery<Bundle>(
     ['questionnaires' + numOfSearchEntries.toString(), queryUrl],
     () => getFormsServerBundlePromise(queryUrl),
@@ -63,7 +65,8 @@ function useFetchQuestionnaires(
     fetchStatus: status,
     fetchError: error,
     isInitialLoading,
-    isFetching
+    isFetching,
+    refetchQuestionnaires: refetch
   };
 }
 
