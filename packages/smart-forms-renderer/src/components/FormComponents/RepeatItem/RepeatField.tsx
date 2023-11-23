@@ -29,7 +29,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import DeleteItemButton from './DeleteItemButton';
+import RemoveItemButton from './RemoveItemButton';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatFieldProps
@@ -71,7 +71,7 @@ function RepeatField(props: RepeatFieldProps) {
         />
       </Box>
       {showMinimalView ? null : (
-        <DeleteItemButton
+        <RemoveItemButton
           answer={answer}
           numOfRepeatAnswers={numOfRepeatAnswers}
           readOnly={readOnly}

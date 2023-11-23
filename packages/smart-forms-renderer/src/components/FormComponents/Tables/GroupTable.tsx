@@ -33,13 +33,13 @@ import { QGroupContainerBox } from '../../Box.styles';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import type {
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrRepeatGroupChangeHandler
+  PropsWithQrRepeatGroupChangeHandler,
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 import useInitialiseGroupTable from '../../../hooks/useInitialiseGroupTable';
 import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import DeleteRowButton from './DeleteRowButton';
+import RemoveRowButton from './RemoveRowButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
 import AddRowButton from './AddRowButton';
@@ -212,7 +212,7 @@ function GroupTable(props: GroupTableProps) {
                     parentIsReadOnly={parentIsReadOnly}
                     onQrItemChange={(newQrGroup) => handleRowChange(newQrGroup, index)}
                   />
-                  <DeleteRowButton
+                  <RemoveRowButton
                     nullableQrItem={nullableQrItem}
                     numOfRows={tableRows.length}
                     readOnly={readOnly}
