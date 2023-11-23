@@ -16,9 +16,9 @@
  */
 
 import React from 'react';
+import ThemeProvider from '../../theme/Theme';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import useInitialiseRenderer from '../../hooks/useInitialiseRenderer';
-import ThemeProvider from '../../theme/Theme';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';

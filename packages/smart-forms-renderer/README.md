@@ -27,8 +27,10 @@ export default function App () {
     </div>  
   )
 }
-
 ```
+Note: The SmartFormsRenderer component is extremely basic and experimental, do not use it in production!
+
+
 ### SmartFormsRenderer Props 
 
 
