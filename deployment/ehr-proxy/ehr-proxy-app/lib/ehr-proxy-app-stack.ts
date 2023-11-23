@@ -15,8 +15,6 @@ import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { HapiEndpoint } from 'ehr-proxy-hapi-endpoint';
 import { SmartProxy } from 'ehr-proxy-smart-proxy';
 
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
-
 export class EhrProxyAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);

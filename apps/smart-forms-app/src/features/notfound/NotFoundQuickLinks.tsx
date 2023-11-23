@@ -53,7 +53,7 @@ const quickLinkCards: QuickLinkCardProps[] = [
   {
     title: 'EHR Launch Simulator',
     description: 'A minimal EHR testbed (SMART Launcher fork) for launching SMART apps.',
-    link: 'https://smartforms.csiro.au/ehr',
+    link: 'https://ehr.smartforms.io',
     icon: <DataSaverOnIcon fontSize="large" color="primary" />
   },
   {
