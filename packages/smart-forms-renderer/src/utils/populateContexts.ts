@@ -15,22 +15,8 @@
  * limitations under the License.
  */
 
-import type { Extension, Questionnaire } from 'fhir/r4';
-import type {
-  LaunchContext,
-  QuestionnaireLevelXFhirQueryVariable,
-  SourceQuery
-} from '../interfaces/populate.interface';
-
-export function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isLaunchContext(extension)
-    ) as LaunchContext[];
-  }
-
-  return [];
-}
+import type { Extension } from 'fhir/r4';
+import type { LaunchContext } from '../interfaces/populate.interface';
 
 export function isLaunchContext(extension: Extension): extension is LaunchContext {
   const hasLaunchContextName =
@@ -63,50 +49,5 @@ export function isLaunchContext(extension: Extension): extension is LaunchContex
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
     hasLaunchContextName &&
     hasLaunchContextType
-  );
-}
-
-// get source query references
-export function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) => isSourceQuery(extension)) as SourceQuery[];
-  }
-
-  return [];
-}
-
-export function isSourceQuery(extension: Extension): extension is SourceQuery {
-  return (
-    extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries' &&
-    !!extension.valueReference
-  );
-}
-
-/**
- * Filter x-fhir-query variables from questionnaire's extensions needed for population
- *
- * @author Sean Fong
- */
-export function getQuestionnaireLevelXFhirQueryVariables(
-  questionnaire: Questionnaire
-): QuestionnaireLevelXFhirQueryVariable[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isXFhirQueryVariable(extension)
-    ) as QuestionnaireLevelXFhirQueryVariable[];
-  }
-
-  return [];
-}
-
-export function isXFhirQueryVariable(
-  extension: Extension
-): extension is QuestionnaireLevelXFhirQueryVariable {
-  return (
-    extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
-    !!extension.valueExpression?.name &&
-    extension.valueExpression?.language === 'application/x-fhir-query' &&
-    !!extension.valueExpression?.expression
   );
 }

@@ -39,7 +39,8 @@ export default function CustomGlobalStyles() {
         },
         '#root': {
           width: '100%',
-          height: '100%'
+          height: '100%',
+          textAlign: 'left'
         },
         input: {
           '&[type=number]': {

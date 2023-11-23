@@ -37,7 +37,7 @@ export function responsiveFontSizes(props: { sm: number; md: number; lg: number 
 // ----------------------------------------------------------------------
 
 const typography = {
-  fontFamily: ['Inter', 'sans-serif', 'Roboto', 'Arial', '"Helvetica Neue"', 'Helvetica'].join(','),
+  fontFamily: ['Inter', 'sans-serif', 'Helvetica', 'Arial', 'Roboto', '"Helvetica Neue"'].join(','),
   fontWeightRegular: 500,
   h1: {
     fontWeight: 800,
@@ -72,40 +72,40 @@ const typography = {
   h6: {
     fontWeight: 700,
     lineHeight: 28 / 18,
-    fontSize: pxToRem(13),
+    fontSize: pxToRem(13.5),
     ...responsiveFontSizes({ sm: 14, md: 14, lg: 14 })
   },
   subtitle1: {
     fontWeight: 600,
     lineHeight: 1.5,
-    fontSize: pxToRem(13)
+    fontSize: pxToRem(13.5)
   },
   subtitle2: {
     fontWeight: 600,
     lineHeight: 22 / 14,
-    fontSize: pxToRem(11.5)
+    fontSize: pxToRem(12)
   },
   body1: {
     lineHeight: 1.5,
-    fontSize: pxToRem(12.25)
+    fontSize: pxToRem(13)
   },
   body2: {
     lineHeight: 22 / 14,
-    fontSize: pxToRem(11)
+    fontSize: pxToRem(11.5)
   },
   caption: {
     lineHeight: 1.5,
-    fontSize: pxToRem(10)
+    fontSize: pxToRem(10.5)
   },
   overline: {
     fontWeight: 700,
     lineHeight: 1.5,
-    fontSize: pxToRem(10)
+    fontSize: pxToRem(10.5)
   },
   button: {
     fontWeight: 700,
     lineHeight: 24 / 14,
-    fontSize: pxToRem(12)
+    fontSize: pxToRem(12.5)
   }
 };
 
