@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import type { Questionnaire } from 'fhir/r4';
-import type { Extension } from 'fhir/r4';
+import type { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type {
   LaunchContext,
   QuestionnaireLevelXFhirQueryVariable,
@@ -100,14 +99,43 @@ export function isXFhirQueryVariable(
  *
  * @author Sean Fong
  */
-export function getQuestionnaireLevelXFhirQueryVariables(
+export function getXFhirQueryVariables(
   questionnaire: Questionnaire
 ): QuestionnaireLevelXFhirQueryVariable[] {
+  const xFhirQueryVariables: QuestionnaireLevelXFhirQueryVariable[] = [];
   if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isXFhirQueryVariable(extension)
-    ) as QuestionnaireLevelXFhirQueryVariable[];
+    xFhirQueryVariables.push(
+      ...(questionnaire.extension.filter((extension) =>
+        isXFhirQueryVariable(extension)
+      ) as QuestionnaireLevelXFhirQueryVariable[])
+    );
   }
 
-  return [];
+  if (questionnaire.item && questionnaire.item.length > 0) {
+    for (const qItem of questionnaire.item) {
+      xFhirQueryVariables.push(
+        ...(getXFhirQueryVariablesRecursive(qItem) as QuestionnaireLevelXFhirQueryVariable[])
+      );
+    }
+  }
+
+  return xFhirQueryVariables;
+}
+
+function getXFhirQueryVariablesRecursive(qItem: QuestionnaireItem) {
+  let xFhirQueryVariables: Extension[] = [];
+
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      xFhirQueryVariables = xFhirQueryVariables.concat(getXFhirQueryVariablesRecursive(childItem));
+    }
+  }
+
+  if (qItem.extension) {
+    xFhirQueryVariables.push(
+      ...qItem.extension.filter((extension) => isXFhirQueryVariable(extension))
+    );
+  }
+
+  return xFhirQueryVariables;
 }

@@ -36,8 +36,14 @@ function QuestionnaireTable() {
   const [searchInput, setSearchInput] = useState('');
   const debouncedInput = useDebounce(searchInput, 300);
 
-  const { questionnaires, fetchStatus, fetchError, isInitialLoading, isFetching } =
-    useFetchQuestionnaires(searchInput, debouncedInput);
+  const {
+    questionnaires,
+    fetchStatus,
+    fetchError,
+    isInitialLoading,
+    isFetching,
+    refetchQuestionnaires
+  } = useFetchQuestionnaires(searchInput, debouncedInput);
 
   const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 
@@ -83,6 +89,7 @@ function QuestionnaireTable() {
       }}
       onRowClick={handleRowClick}
       onSelectQuestionnaire={setSelectedQuestionnaire}
+      refetchQuestionnaires={refetchQuestionnaires}
     />
   );
 }

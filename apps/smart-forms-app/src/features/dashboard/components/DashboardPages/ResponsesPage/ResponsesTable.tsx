@@ -32,7 +32,7 @@ function ResponsesTable() {
   const [selectedResponse, setSelectedResponse] = useState<QuestionnaireResponse | null>(null);
   const [searchedQuestionnaire, setSearchedQuestionnaire] = useState<Questionnaire | null>(null);
 
-  const { responses, fetchStatus, fetchError, isFetching } =
+  const { responses, fetchStatus, fetchError, isFetching, refetchResponses } =
     useFetchResponses(searchedQuestionnaire);
 
   const columns = useMemo(() => createResponseTableColumns(), []);
@@ -81,6 +81,7 @@ function ResponsesTable() {
       }}
       onRowClick={handleRowClick}
       onSelectResponse={setSelectedResponse}
+      refetchResponses={refetchResponses}
     />
   );
 }

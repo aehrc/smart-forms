@@ -26,6 +26,7 @@ interface useFetchExistingResponsesReturnParams {
   existingResponses: QuestionnaireResponse[];
   fetchError: unknown;
   isFetching: boolean;
+  refetchResponses: () => void;
 }
 
 function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
@@ -58,7 +59,7 @@ function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
     questionnaireRefParam +
     patientIdParam;
 
-  const { data, isFetching, error } = useQuery<Bundle>(
+  const { data, isFetching, error, refetch } = useQuery<Bundle>(
     ['existingResponses', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => getClientBundlePromise(smartClient!, queryUrl),
@@ -72,7 +73,7 @@ function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
     () => getResponsesFromBundle(data),
     [data]
   );
-  return { existingResponses, fetchError: error, isFetching };
+  return { existingResponses, fetchError: error, isFetching, refetchResponses: refetch };
 }
 
 export default useFetchExistingResponses;

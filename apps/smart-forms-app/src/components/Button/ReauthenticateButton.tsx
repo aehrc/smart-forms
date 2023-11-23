@@ -7,7 +7,6 @@ function ReauthenticateButton() {
   return (
     <Button
       variant="contained"
-      sx={{ mt: 4 }}
       onClick={() => {
         navigate('/');
       }}

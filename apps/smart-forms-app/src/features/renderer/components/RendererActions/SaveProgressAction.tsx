@@ -24,15 +24,16 @@ import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/sma
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { saveErrorMessage, saveSuccessMessage } from '../../../../utils/snackbar.ts';
-import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
+import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import { saveProgress } from '../../../../api/saveQr.ts';
 
 interface SaveProgressSpeedDialActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
+  refetchResponses?: () => void;
 }
 
 function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
-  const { isSpeedDial, ...speedDialActionProps } = props;
+  const { refetchResponses, isSpeedDial, ...speedDialActionProps } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
@@ -85,6 +86,12 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
     }
 
     setUpdatableResponseAsSaved(savedResponse);
+
+    // Refetch existing responses if prop is provided
+    if (refetchResponses) {
+      refetchResponses();
+    }
+
     enqueueSnackbar(saveSuccessMessage, {
       variant: 'success',
       action: ViewResponsesSnackbarAction

@@ -29,7 +29,7 @@ import type { fhirclient } from 'fhirclient/lib/types';
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../../../api/headers.ts';
 
-const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
 
 export async function readCommonLaunchContexts(
   client: Client

@@ -18,7 +18,7 @@
 import axios from 'axios';
 import type { FetchQuestionnaireCallback } from '@aehrc/sdc-assemble';
 
-const FORMS_SERVER_ENDPOINT = 'https://api.smartforms.io/fhir';
+const FORMS_SERVER_ENDPOINT = 'https://smartforms.csiro.au/api/fhir';
 
 export const fetchQuestionnaireCallback: FetchQuestionnaireCallback = (canonicalUrl: string) => {
   return axios.get(`${FORMS_SERVER_ENDPOINT}/Questionnaire?url=${canonicalUrl}`, {

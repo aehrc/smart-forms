@@ -31,7 +31,7 @@ import type { QuestionnaireListItem, ResponseListItem } from '../types/list.inte
 import { HEADERS } from '../../../api/headers.ts';
 import { nanoid } from 'nanoid';
 
-const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://api.smartforms.io/fhir';
+const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
 
 export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
   queryUrl = queryUrl.replace('|', '&version=');
