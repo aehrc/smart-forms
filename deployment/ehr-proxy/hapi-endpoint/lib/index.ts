@@ -43,7 +43,8 @@ export class HapiEndpoint extends Construct {
         logRetention: RetentionDays.ONE_MONTH
       }),
       environment: {
-        use_apache_address_strategy: 'true'
+        use_apache_address_strategy: 'true',
+        'hapi.fhir.openapi_enabled': 'false'
       }
     });
 
