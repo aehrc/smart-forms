@@ -17,15 +17,10 @@
 
 import { SpeedDial } from '@mui/material';
 import BuildIcon from '@mui/icons-material/Build';
-import useSmartClient from '../../../hooks/useSmartClient.ts';
-import ViewExistingResponsesAction from './RendererActions/ViewExistingResponsesAction.tsx';
-import BackToQuestionnairesAction from './RendererActions/BackToQuestionnairesAction.tsx';
-import PreviewAction from './RendererActions/PreviewAction.tsx';
-import SaveProgressAction from './RendererActions/SaveProgressAction.tsx';
-import SaveAsFinalAction from './RendererActions/SaveAsFinalAction.tsx';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-import RepopulateAction from './RendererActions/RepopulateAction.tsx';
-import type { RendererSpinner } from '../types/rendererSpinner.ts';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import type { RendererSpinner } from '../../types/rendererSpinner.ts';
+import RendererEmbeddedStandardActions from './RendererEmbeddedStandardActions.tsx';
+import RendererEmbeddedLaunchQuestionnaireActions from './RendererEmbeddedLaunchQuestionnaireActions.tsx';
 
 interface RendererEmbeddedSpeedDialProps {
   spinner: RendererSpinner;
@@ -35,11 +30,7 @@ interface RendererEmbeddedSpeedDialProps {
 function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   const { spinner, onSpinnerChange } = props;
 
-  const { smartClient, launchQuestionnaire } = useSmartClient();
-
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-
-  const showSaveAndRepopulateActions = smartClient && sourceQuestionnaire.item;
+  const { launchQuestionnaire } = useSmartClient();
 
   if (spinner.isSpinning) {
     return null;
@@ -56,17 +47,13 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
       }}
       icon={<BuildIcon />}>
       {launchQuestionnaire ? (
-        <ViewExistingResponsesAction isSpeedDial={true} />
+        <RendererEmbeddedLaunchQuestionnaireActions
+          spinner={spinner}
+          onSpinnerChange={onSpinnerChange}
+        />
       ) : (
-        <BackToQuestionnairesAction isSpeedDial={true} />
+        <RendererEmbeddedStandardActions spinner={spinner} onSpinnerChange={onSpinnerChange} />
       )}
-      <PreviewAction isSpeedDial={true} />
-
-      {showSaveAndRepopulateActions ? <SaveProgressAction isSpeedDial={true} /> : null}
-      {showSaveAndRepopulateActions ? <SaveAsFinalAction isSpeedDial={true} /> : null}
-      {showSaveAndRepopulateActions ? (
-        <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} isSpeedDial={true} />
-      ) : null}
     </SpeedDial>
   );
 }

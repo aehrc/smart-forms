@@ -29,7 +29,7 @@ import NavExpandButton from './NavCollapseButton.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
-import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial.tsx';
+import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial/RendererEmbeddedSpeedDial.tsx';
 import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';

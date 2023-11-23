@@ -18,15 +18,16 @@
 import { NavLogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
-import RendererOperationSection from './RendererOperationSection.tsx';
 import { Box, Grid, IconButton, Tooltip } from '@mui/material';
 import { NavErrorAlertWrapper } from '../../../../components/Nav/Nav.styles.ts';
 import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
-import RendererNavSection from './RendererNavSection.tsx';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
+import RendererNavStandardActions from './RendererNavStandardActions.tsx';
+import RendererNavLaunchQuestionnaireActions from './RendererNavLaunchQuestionnaireActions.tsx';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
 
 interface RendererNavProps {
   isNotLaunched: boolean;
@@ -38,6 +39,8 @@ interface RendererNavProps {
 
 function RendererNav(props: RendererNavProps) {
   const { isNotLaunched, navIsShown, onCollapseNav, spinner, onSpinnerChange } = props;
+
+  const { launchQuestionnaire } = useSmartClient();
 
   return (
     <Scrollbar
@@ -51,8 +54,14 @@ function RendererNav(props: RendererNavProps) {
 
       <NavPatientDetails />
 
-      <RendererNavSection />
-      <RendererOperationSection spinner={spinner} onSpinnerChange={onSpinnerChange} />
+      {launchQuestionnaire ? (
+        <RendererNavLaunchQuestionnaireActions
+          spinner={spinner}
+          onSpinnerChange={onSpinnerChange}
+        />
+      ) : (
+        <RendererNavStandardActions spinner={spinner} onSpinnerChange={onSpinnerChange} />
+      )}
 
       <Box flexGrow={1} />
 
