@@ -16,7 +16,7 @@
  */
 
 import ResponseListToolbar from './TableComponents/ResponseListToolbar.tsx';
-import { Fade, Table as MuiTable, TableBody, TableContainer, Typography } from '@mui/material';
+import { Table as MuiTable, TableBody, TableContainer } from '@mui/material';
 import DashboardTableHead from '../DashboardTableHead.tsx';
 import ResponseTableRow from './TableComponents/ResponseTableRow.tsx';
 import ResponseListFeedback from './TableComponents/ResponseListFeedback.tsx';
@@ -24,6 +24,7 @@ import DashboardTablePagination from '../DashboardTablePagination.tsx';
 import type { Table } from '@tanstack/react-table';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { createResponseListItem } from '../../../utils/dashboard.ts';
+import RefetchButton from '../../../../../components/Button/RefetchButton.tsx';
 
 interface ResponsesTableViewProps {
   table: Table<QuestionnaireResponse>;
@@ -35,6 +36,7 @@ interface ResponsesTableViewProps {
   onChangeSearchedQuestionnaire: (searched: Questionnaire | null) => void;
   onRowClick: (id: string) => void;
   onSelectResponse: (selected: QuestionnaireResponse | null) => void;
+  refetchResponses: () => void;
 }
 
 function ResponsesTableView(props: ResponsesTableViewProps) {
@@ -47,7 +49,8 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
     selectedResponse,
     onChangeSearchedQuestionnaire,
     onRowClick,
-    onSelectResponse
+    onSelectResponse,
+    refetchResponses
   } = props;
 
   const headers = table.getHeaderGroups()[0].headers;
@@ -97,11 +100,7 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
       </TableContainer>
 
       <DashboardTablePagination table={table}>
-        <Fade in={isFetching}>
-          <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
-            Updating...
-          </Typography>
-        </Fade>
+        <RefetchButton isFetching={isFetching} refetchResources={refetchResponses} />
       </DashboardTablePagination>
     </>
   );

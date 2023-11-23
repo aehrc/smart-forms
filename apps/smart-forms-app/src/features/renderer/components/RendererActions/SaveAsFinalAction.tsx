@@ -22,7 +22,7 @@ import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
-import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
+import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;

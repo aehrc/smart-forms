@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
+import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import { useSnackbar } from 'notistack';
 import { populateQuestionnaire } from '../../../prepopulate/utils/populate.ts';

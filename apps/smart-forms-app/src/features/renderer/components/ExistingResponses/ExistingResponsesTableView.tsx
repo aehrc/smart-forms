@@ -1,4 +1,4 @@
-import { Fade, Table as MuiTable, TableBody, TableContainer, Typography } from '@mui/material';
+import { Table as MuiTable, TableBody, TableContainer } from '@mui/material';
 import DashboardTableHead from '../../../dashboard/components/DashboardPages/DashboardTableHead.tsx';
 import { createResponseListItem } from '../../../dashboard/utils/dashboard.ts';
 import ResponseTableRow from '../../../dashboard/components/DashboardPages/ResponsesPage/TableComponents/ResponseTableRow.tsx';
@@ -7,6 +7,7 @@ import type { QuestionnaireResponse } from 'fhir/r4';
 import type { Table } from '@tanstack/react-table';
 import ExistingResponseTableToolbar from './ExistingResponseTableToolbar.tsx';
 import ExistingResponsesTableFeedback from './ExistingResponsesTableFeedback.tsx';
+import RefetchButton from '../../../../components/Button/RefetchButton.tsx';
 
 interface ExistingResponsesTableViewProps {
   table: Table<QuestionnaireResponse>;
@@ -15,10 +16,19 @@ interface ExistingResponsesTableViewProps {
   selectedResponse: QuestionnaireResponse | null;
   onRowClick: (id: string) => void;
   onSelectResponse: (selected: QuestionnaireResponse | null) => void;
+  refetchResponses: () => void;
 }
 
 function ExistingResponsesTableView(props: ExistingResponsesTableViewProps) {
-  const { table, isFetching, fetchError, selectedResponse, onRowClick, onSelectResponse } = props;
+  const {
+    table,
+    isFetching,
+    fetchError,
+    selectedResponse,
+    onRowClick,
+    onSelectResponse,
+    refetchResponses
+  } = props;
 
   const headers = table.getHeaderGroups()[0].headers;
 
@@ -63,11 +73,7 @@ function ExistingResponsesTableView(props: ExistingResponsesTableViewProps) {
       </TableContainer>
 
       <DashboardTablePagination table={table}>
-        <Fade in={isFetching}>
-          <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
-            Updating...
-          </Typography>
-        </Fade>
+        <RefetchButton isFetching={isFetching} refetchResources={refetchResponses} />
       </DashboardTablePagination>
     </>
   );

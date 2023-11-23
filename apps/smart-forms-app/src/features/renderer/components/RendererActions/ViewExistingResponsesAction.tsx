@@ -17,26 +17,25 @@
 
 import type { SpeedDialActionProps } from '@mui/material';
 import { SpeedDialAction } from '@mui/material';
-import GradingIcon from '@mui/icons-material/Grading';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
+import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import ExistingResponsesBadgeIcon from '../RendererNav/ExistingResponsesBadgeIcon.tsx';
-import useFetchExistingResponses from '../../../dashboard/hooks/useFetchExistingResponses.ts';
 import { useMemo } from 'react';
 import useSelectedQuestionnaire from '../../../dashboard/hooks/useSelectedQuestionnaire.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 interface ViewExistingResponsesActionProps extends SpeedDialActionProps {
+  existingResponses: QuestionnaireResponse[];
+  fetchResponsesError: unknown;
   isSpeedDial?: boolean;
 }
 
 function ViewExistingResponsesAction(props: ViewExistingResponsesActionProps) {
-  const { isSpeedDial, ...speedDialActionProps } = props;
+  const { existingResponses, fetchResponsesError, isSpeedDial, ...speedDialActionProps } = props;
 
   const { launchQuestionnaire } = useSmartClient();
-
-  const { existingResponses, fetchError } = useFetchExistingResponses();
 
   const draftExistingResponses = useMemo(
     () => existingResponses.map((response) => response.status === 'in-progress'),
@@ -58,7 +57,12 @@ function ViewExistingResponsesAction(props: ViewExistingResponsesActionProps) {
   if (isSpeedDial) {
     return (
       <SpeedDialAction
-        icon={<GradingIcon />}
+        icon={
+          <ExistingResponsesBadgeIcon
+            numOfDraftResponses={draftExistingResponses.length}
+            fetchError={fetchResponsesError}
+          />
+        }
         tooltipTitle="View Existing Responses"
         tooltipOpen
         onClick={handleViewExistingResponses}
@@ -73,7 +77,7 @@ function ViewExistingResponsesAction(props: ViewExistingResponsesActionProps) {
       icon={
         <ExistingResponsesBadgeIcon
           numOfDraftResponses={draftExistingResponses.length}
-          fetchError={fetchError}
+          fetchError={fetchResponsesError}
         />
       }
       onClick={handleViewExistingResponses}
