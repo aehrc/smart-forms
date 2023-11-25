@@ -15,20 +15,23 @@
  * limitations under the License.
  */
 
-import { create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
+import { createSelectors } from './selector';
 
 const ONTOSERVER_R4 = 'https://r4.ontoserver.csiro.au/fhir';
 
-export interface UseTerminologyServerStoreType {
+export interface TerminologyServerStoreType {
   url: string;
   setUrl: (newUrl: string) => void;
   resetUrl: () => void;
 }
 
-const useTerminologyServerStore = create<UseTerminologyServerStoreType>()((set) => ({
+const terminologyServerStore = createStore<TerminologyServerStoreType>()((set) => ({
   url: ONTOSERVER_R4,
   setUrl: (newUrl: string) => set(() => ({ url: newUrl })),
   resetUrl: () => set(() => ({ url: ONTOSERVER_R4 }))
 }));
+
+const useTerminologyServerStore = createSelectors(terminologyServerStore);
 
 export default useTerminologyServerStore;

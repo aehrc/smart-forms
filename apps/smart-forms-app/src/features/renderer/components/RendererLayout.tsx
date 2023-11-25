@@ -40,7 +40,7 @@ import RepopulateBackdrop from '../../repopulate/components/RepopulateBackdrop.t
 function RendererLayout() {
   const { smartClient, patient, user } = useSmartClient();
 
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [desktopNavCollapsed, setDesktopNavCollapsed] = useState(false);

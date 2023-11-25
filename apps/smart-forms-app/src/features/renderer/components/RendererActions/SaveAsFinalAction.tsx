@@ -35,8 +35,8 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
 
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   function handleOpenDialog() {
     if (smartClient) {

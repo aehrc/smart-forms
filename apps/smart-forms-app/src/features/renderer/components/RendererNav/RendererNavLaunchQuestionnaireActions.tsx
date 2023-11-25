@@ -37,7 +37,7 @@ function RendererNavLaunchQuestionnaireActions(props: RendererNavLaunchQuestionn
 
   const { smartClient } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
   const { existingResponses, fetchError, refetchResponses } = useFetchExistingResponses();
 

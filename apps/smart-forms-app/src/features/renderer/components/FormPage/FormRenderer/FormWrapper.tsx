@@ -26,8 +26,8 @@ import {
 import useDebugMode from '../../../../../hooks/useDebugMode.ts';
 
 function FormWrapper() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
   const { debugModeEnabled } = useDebugMode();
 

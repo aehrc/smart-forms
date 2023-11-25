@@ -21,7 +21,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
-import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
+import useQuestionnaireStore from '../../stores/questionnaireStore';
 import FormBodySingleCollapsibleWrapper from './FormBodySingleCollapsibleWrapper';
 
 interface FormBodyCollapsibleProps extends PropsWithQrItemChangeHandler {
@@ -32,10 +32,9 @@ interface FormBodyCollapsibleProps extends PropsWithQrItemChangeHandler {
 function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
   const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
 
-  const currentTab = useQuestionnaireStore((state) => state.currentTabIndex);
-  const tabs = useQuestionnaireStore((state) => state.tabs);
-
-  const switchTab = useQuestionnaireStore((state) => state.switchTab);
+  const tabs = useQuestionnaireStore.use.tabs();
+  const currentTab = useQuestionnaireStore.use.currentTabIndex();
+  const switchTab = useQuestionnaireStore.use.switchTab();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),

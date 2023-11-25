@@ -19,7 +19,7 @@ import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../utils/tabs';
 import type { Tabs } from '../../../interfaces/tab.interface';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore';
+import useQuestionnaireStore from '../../../stores/questionnaireStore';
 import NextTabButton from './NextTabButton';
 
 interface NextTabButtonWrapperProps {
@@ -30,10 +30,10 @@ interface NextTabButtonWrapperProps {
 const NextTabButtonWrapper = memo(function NextTabWrapper(props: NextTabButtonWrapperProps) {
   const { currentTabIndex, tabs } = props;
 
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
-  const switchTab = useQuestionnaireStore((state) => state.switchTab);
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
+  const switchTab = useQuestionnaireStore.use.switchTab();
 
   const tabsNotDefined = currentTabIndex === undefined || tabs === undefined;
 

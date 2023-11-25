@@ -26,22 +26,20 @@ import {
 import { getAnswerExpression } from '../utils/itemControl';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import useSmartConfigStore from '../stores/useSmartConfigStore';
-import useQuestionnaireStore from '../stores/useQuestionnaireStore';
-import useTerminologyServerStore from '../stores/useTerminologyServerStore';
+import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 
 function useValueSetCodings(qItem: QuestionnaireItem) {
-  const patient = useSmartConfigStore((state) => state.patient);
-  const user = useSmartConfigStore((state) => state.user);
-  const encounter = useSmartConfigStore((state) => state.encounter);
+  const patient = useSmartConfigStore.use.patient();
+  const user = useSmartConfigStore.use.user();
+  const encounter = useSmartConfigStore.use.encounter();
 
-  const launchContexts = useQuestionnaireStore((state) => state.launchContexts);
-  const processedValueSetCodings = useQuestionnaireStore((state) => state.processedValueSetCodings);
-  const cachedValueSetCodings = useQuestionnaireStore((state) => state.cachedValueSetCodings);
-  const addCodingToCache = useQuestionnaireStore((state) => state.addCodingToCache);
-  const { xFhirQueryVariables } = useQuestionnaireStore((state) => state.variables);
+  const launchContexts = useQuestionnaireStore.use.launchContexts();
+  const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
+  const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
+  const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
+  const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
 
-  const defaultTerminologyServerUrl = useTerminologyServerStore((state) => state.url);
+  const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   const valueSetUrl = qItem.answerValueSet;
   let initialCodings = useMemo(() => {

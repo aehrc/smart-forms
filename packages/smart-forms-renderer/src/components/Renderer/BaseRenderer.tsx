@@ -20,18 +20,18 @@ import Container from '@mui/material/Container';
 import Fade from '@mui/material/Fade';
 import FormTopLevelItem from './FormTopLevelItem';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
-import useQuestionnaireResponseStore from '../../stores/useQuestionnaireResponseStore';
+import useQuestionnaireStore from '../../stores/questionnaireStore';
+import useQuestionnaireResponseStore from '../../stores/questionnaireResponseStore';
 import cloneDeep from 'lodash.clonedeep';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 
 function BaseRenderer() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updateExpressions = useQuestionnaireStore((state) => state.updateExpressions);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const updateResponse = useQuestionnaireResponseStore((state) => state.updateResponse);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updateExpressions = useQuestionnaireStore.use.updateExpressions();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 

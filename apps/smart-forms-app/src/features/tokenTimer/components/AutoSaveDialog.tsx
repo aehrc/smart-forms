@@ -37,11 +37,10 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
 
   const { smartClient, patient, user } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsSaved
-  );
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const setUpdatableResponseAsSaved =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 

@@ -18,7 +18,7 @@
 import { useEffect, useState } from 'react';
 import { createEmptyQrItem } from '../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useQuestionnaireStore from '../stores/useQuestionnaireStore';
+import useQuestionnaireStore from '../stores/questionnaireStore';
 
 interface UseDecimalCalculatedExpression {
   calcExpUpdated: boolean;
@@ -37,7 +37,7 @@ function useDecimalCalculatedExpression(
 ): UseDecimalCalculatedExpression {
   const { qItem, inputValue, precision, setInputValue, onQrItemChange } = props;
 
-  const calculatedExpressions = useQuestionnaireStore((state) => state.calculatedExpressions);
+  const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
   const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 

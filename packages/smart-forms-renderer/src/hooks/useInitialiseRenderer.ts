@@ -18,12 +18,14 @@
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useLayoutEffect, useState } from 'react';
 import { createEmptyQuestionnaireResponse } from '../utils/qrItem';
-import useQuestionnaireStore from '../stores/useQuestionnaireStore';
-import useQuestionnaireResponseStore from '../stores/useQuestionnaireResponseStore';
 import type Client from 'fhirclient/lib/Client';
-import useSmartConfigStore from '../stores/useSmartConfigStore';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
-import useTerminologyServerStore from '../stores/useTerminologyServerStore';
+import {
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore,
+  useSmartConfigStore,
+  useTerminologyServerStore
+} from '../stores';
 
 function useInitialiseRenderer(
   questionnaire: Questionnaire,
@@ -32,21 +34,18 @@ function useInitialiseRenderer(
   terminologyServerUrl?: string,
   fhirClient?: Client
 ): boolean {
-  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
-  const updatePopulatedProperties = useQuestionnaireStore(
-    (state) => state.updatePopulatedProperties
-  );
-  const buildSourceResponse = useQuestionnaireResponseStore((state) => state.buildSourceResponse);
-  const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsPopulated
-  );
+  const buildSourceQuestionnaire = useQuestionnaireStore.use.buildSourceQuestionnaire();
+  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
+  const buildSourceResponse = useQuestionnaireResponseStore.use.buildSourceResponse();
+  const setUpdatableResponseAsPopulated =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
 
-  const setTerminologyServerUrl = useTerminologyServerStore((state) => state.setUrl);
-  const resetTerminologyServerUrl = useTerminologyServerStore((state) => state.resetUrl);
-  const setSmartClient = useSmartConfigStore((state) => state.setClient);
-  const setPatient = useSmartConfigStore((state) => state.setPatient);
-  const setUser = useSmartConfigStore((state) => state.setUser);
-  const setEncounter = useSmartConfigStore((state) => state.setEncounter);
+  const setTerminologyServerUrl = useTerminologyServerStore.use.setUrl();
+  const resetTerminologyServerUrl = useTerminologyServerStore.use.resetUrl();
+  const setSmartClient = useSmartConfigStore.use.setClient();
+  const setPatient = useSmartConfigStore.use.setPatient();
+  const setUser = useSmartConfigStore.use.setUser();
+  const setEncounter = useSmartConfigStore.use.setEncounter();
 
   const [loading, setLoading] = useState(true);
 

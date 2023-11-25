@@ -1,7 +1,7 @@
-import useQuestionnaireStore from './stores/useQuestionnaireStore';
+import questionnaireStore from './stores/questionnaireStore';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { createEmptyQuestionnaireResponse } from './utils/qrItem';
-import useQuestionnaireResponseStore from './stores/useQuestionnaireResponseStore';
+import questionnaireResponseStore from './stores/questionnaireResponseStore';
 import { removeHiddenAnswers } from './utils/removeHidden';
 import type { ItemToRepopulate } from './utils/repopulateItems';
 import { getItemsToRepopulate } from './utils/repopulateItems';
@@ -23,17 +23,17 @@ export async function buildForm(
   questionnaire: Questionnaire,
   questionnaireResponse?: QuestionnaireResponse
 ): Promise<void> {
-  await useQuestionnaireStore.getState().buildSourceQuestionnaire(questionnaire);
+  await questionnaireStore.getState().buildSourceQuestionnaire(questionnaire);
 
   if (!questionnaireResponse) {
-    useQuestionnaireResponseStore
+    questionnaireResponseStore
       .getState()
       .buildSourceResponse(createEmptyQuestionnaireResponse(questionnaire));
     return;
   }
 
-  useQuestionnaireResponseStore.getState().buildSourceResponse(questionnaireResponse);
-  useQuestionnaireStore.getState().updatePopulatedProperties(questionnaireResponse);
+  questionnaireResponseStore.getState().buildSourceResponse(questionnaireResponse);
+  questionnaireStore.getState().updatePopulatedProperties(questionnaireResponse);
 }
 
 /**
@@ -42,8 +42,8 @@ export async function buildForm(
  * @author Sean Fong
  */
 export function destroyForm(): void {
-  useQuestionnaireStore.getState().destroySourceQuestionnaire();
-  useQuestionnaireResponseStore.getState().destroySourceResponse();
+  questionnaireStore.getState().destroySourceQuestionnaire();
+  questionnaireResponseStore.getState().destroySourceResponse();
 }
 
 /**
@@ -53,7 +53,7 @@ export function destroyForm(): void {
  * @author Sean Fong
  */
 export function getResponse(): QuestionnaireResponse {
-  return useQuestionnaireResponseStore.getState().updatableResponse;
+  return questionnaireResponseStore.getState().updatableResponse;
 }
 
 /**
@@ -66,9 +66,9 @@ export function removeHiddenAnswersFromResponse(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ): QuestionnaireResponse {
-  const enableWhenIsActivated = useQuestionnaireStore.getState().enableWhenIsActivated;
-  const enableWhenItems = useQuestionnaireStore.getState().enableWhenItems;
-  const enableWhenExpressions = useQuestionnaireStore.getState().enableWhenExpressions;
+  const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
+  const enableWhenItems = questionnaireStore.getState().enableWhenItems;
+  const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
 
   return removeHiddenAnswers({
     questionnaire,
@@ -85,12 +85,12 @@ export function removeHiddenAnswersFromResponse(
  * @author Sean Fong
  */
 export function generateItemsToRepopulate(populatedResponse: QuestionnaireResponse) {
-  const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
-  const tabs = useQuestionnaireStore.getState().tabs;
-  const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
-  const enableWhenIsActivated = useQuestionnaireStore.getState().enableWhenIsActivated;
-  const enableWhenItems = useQuestionnaireStore.getState().enableWhenItems;
-  const enableWhenExpressions = useQuestionnaireStore.getState().enableWhenExpressions;
+  const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
+  const tabs = questionnaireStore.getState().tabs;
+  const updatableResponse = questionnaireResponseStore.getState().updatableResponse;
+  const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
+  const enableWhenItems = questionnaireStore.getState().enableWhenItems;
+  const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
 
   return getItemsToRepopulate({
     sourceQuestionnaire,
@@ -109,8 +109,8 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
  * @author Sean Fong
  */
 export function repopulateResponse(checkedItemsToRepopulate: Record<string, ItemToRepopulate>) {
-  const sourceQuestionnaire = useQuestionnaireStore.getState().sourceQuestionnaire;
-  const updatableResponse = useQuestionnaireResponseStore.getState().updatableResponse;
+  const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
+  const updatableResponse = questionnaireResponseStore.getState().updatableResponse;
 
   return repopulateItemsIntoResponse(
     sourceQuestionnaire,
