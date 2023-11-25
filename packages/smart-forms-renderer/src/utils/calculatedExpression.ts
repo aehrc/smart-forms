@@ -34,7 +34,6 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
-import moment from 'moment';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -354,7 +353,7 @@ function parseValueToAnswer(qItem: QuestionnaireItem, value: any): Questionnaire
 export function checkIsDateTime(value: string): boolean {
   const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
   const formattedDate = dayjs(value).format();
-  return moment(formattedDate, acceptedFormats, true).isValid();
+  return dayjs(formattedDate, acceptedFormats, true).isValid();
 }
 
 /**
