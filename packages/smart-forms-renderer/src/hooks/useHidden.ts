@@ -17,7 +17,7 @@
 
 import type { QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension } from '../utils/itemControl';
-import useQuestionnaireStore from '../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../stores';
 import { isHiddenByEnableWhens } from '../utils/qItem';
 
 function useHidden(qItem: QuestionnaireItem): boolean {

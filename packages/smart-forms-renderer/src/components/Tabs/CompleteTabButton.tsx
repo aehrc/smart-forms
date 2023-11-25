@@ -19,7 +19,7 @@ import React, { memo } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import useQuestionnaireStore from '../../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 
 interface CompleteTabButtonProps {
   tabLinkId: string;

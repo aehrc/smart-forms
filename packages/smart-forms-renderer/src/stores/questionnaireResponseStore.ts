@@ -23,7 +23,7 @@ import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
 
-export interface QuestionnaireResponseStoreType {
+interface QuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
   formChangesHistory: (Diff<QuestionnaireResponse, QuestionnaireResponse>[] | null)[];
@@ -35,49 +35,49 @@ export interface QuestionnaireResponseStoreType {
   destroySourceResponse: () => void;
 }
 
-const questionnaireResponseStore = createStore<QuestionnaireResponseStoreType>()((set, get) => ({
-  sourceResponse: cloneDeep(emptyResponse),
-  updatableResponse: cloneDeep(emptyResponse),
-  formChangesHistory: [],
-  buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
-    set(() => ({
-      sourceResponse: questionnaireResponse,
-      updatableResponse: questionnaireResponse
-    }));
-  },
-  setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
-    const formChanges = diff(get().updatableResponse, populatedResponse) ?? null;
-    set(() => ({
-      updatableResponse: populatedResponse,
-      formChangesHistory: [...get().formChangesHistory, formChanges]
-    }));
-  },
-  updateResponse: (updatedResponse: QuestionnaireResponse) => {
-    const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
-    set(() => ({
-      updatableResponse: updatedResponse,
-      formChangesHistory: [...get().formChangesHistory, formChanges]
-    }));
-  },
-  setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) =>
-    set(() => ({
-      sourceResponse: savedResponse,
-      updatableResponse: savedResponse,
-      formChangesHistory: []
-    })),
-  setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) =>
-    set(() => ({
-      updatableResponse: clearedResponse,
-      formChangesHistory: []
-    })),
-  destroySourceResponse: () =>
-    set(() => ({
-      sourceResponse: cloneDeep(emptyResponse),
-      updatableResponse: cloneDeep(emptyResponse),
-      formChangesHistory: []
-    }))
-}));
+export const questionnaireResponseStore = createStore<QuestionnaireResponseStoreType>()(
+  (set, get) => ({
+    sourceResponse: cloneDeep(emptyResponse),
+    updatableResponse: cloneDeep(emptyResponse),
+    formChangesHistory: [],
+    buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
+      set(() => ({
+        sourceResponse: questionnaireResponse,
+        updatableResponse: questionnaireResponse
+      }));
+    },
+    setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
+      const formChanges = diff(get().updatableResponse, populatedResponse) ?? null;
+      set(() => ({
+        updatableResponse: populatedResponse,
+        formChangesHistory: [...get().formChangesHistory, formChanges]
+      }));
+    },
+    updateResponse: (updatedResponse: QuestionnaireResponse) => {
+      const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
+      set(() => ({
+        updatableResponse: updatedResponse,
+        formChangesHistory: [...get().formChangesHistory, formChanges]
+      }));
+    },
+    setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) =>
+      set(() => ({
+        sourceResponse: savedResponse,
+        updatableResponse: savedResponse,
+        formChangesHistory: []
+      })),
+    setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) =>
+      set(() => ({
+        updatableResponse: clearedResponse,
+        formChangesHistory: []
+      })),
+    destroySourceResponse: () =>
+      set(() => ({
+        sourceResponse: cloneDeep(emptyResponse),
+        updatableResponse: cloneDeep(emptyResponse),
+        formChangesHistory: []
+      }))
+  })
+);
 
-const useQuestionnaireResponseStore = createSelectors(questionnaireResponseStore);
-
-export default useQuestionnaireResponseStore;
+export const useQuestionnaireResponseStore = createSelectors(questionnaireResponseStore);

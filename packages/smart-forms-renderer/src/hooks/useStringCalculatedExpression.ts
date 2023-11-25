@@ -18,7 +18,7 @@
 import { useEffect, useState } from 'react';
 import { createEmptyQrItem } from '../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useQuestionnaireStore from '../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../stores/questionnaireStore';
 
 interface UseStringCalculatedExpression {
   calcExpUpdated: boolean;

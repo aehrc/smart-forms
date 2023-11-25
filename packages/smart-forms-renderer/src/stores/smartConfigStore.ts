@@ -31,7 +31,7 @@ export interface SmartConfigStoreType {
   setEncounter: (encounter: Encounter) => void;
 }
 
-const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
+export const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
   client: null,
   patient: null,
   user: null,
@@ -42,6 +42,4 @@ const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
   setEncounter: (encounter: Encounter) => set(() => ({ encounter: encounter }))
 }));
 
-const useSmartConfigStore = createSelectors(smartConfigStore);
-
-export default useSmartConfigStore;
+export const useSmartConfigStore = createSelectors(smartConfigStore);

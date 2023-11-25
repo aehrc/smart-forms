@@ -24,7 +24,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import useQuestionnaireStore from '../../../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../../../stores';
 import SingleItemSwitcher from './SingleItemSwitcher';
 import useHidden from '../../../hooks/useHidden';
 import useReadOnly from '../../../hooks/useReadOnly';

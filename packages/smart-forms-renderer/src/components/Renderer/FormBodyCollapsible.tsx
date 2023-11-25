@@ -21,7 +21,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
-import useQuestionnaireStore from '../../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 import FormBodySingleCollapsibleWrapper from './FormBodySingleCollapsibleWrapper';
 
 interface FormBodyCollapsibleProps extends PropsWithQrItemChangeHandler {

@@ -19,7 +19,7 @@ import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../utils/tabs';
 import type { Tabs } from '../../../interfaces/tab.interface';
-import useQuestionnaireStore from '../../../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../../../stores';
 import NextTabButton from './NextTabButton';
 
 interface NextTabButtonWrapperProps {

@@ -22,7 +22,7 @@ import { getShortText } from '../../utils/itemControl';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
-import useQuestionnaireStore from '../../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 import { isTabHidden } from '../../utils/tabs';
 
 interface FormBodyTabListProps {

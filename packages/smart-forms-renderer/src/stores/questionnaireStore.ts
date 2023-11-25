@@ -38,10 +38,10 @@ import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/creat
 import { initialiseFormFromResponse } from '../utils/initialiseForm';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
-import terminologyServerStore from './terminologyServerStore';
+import { terminologyServerStore } from './terminologyServerStore';
 import { createSelectors } from './selector';
 
-export interface QuestionnaireStoreType {
+interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
   itemTypes: Record<string, string>;
   tabs: Tabs;
@@ -77,7 +77,7 @@ export interface QuestionnaireStoreType {
   ) => QuestionnaireResponse;
 }
 
-const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
+export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
   sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
   itemTypes: {},
   tabs: {},
@@ -267,6 +267,4 @@ const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => (
   }
 }));
 
-const useQuestionnaireStore = createSelectors(questionnaireStore);
-
-export default useQuestionnaireStore;
+export const useQuestionnaireStore = createSelectors(questionnaireStore);

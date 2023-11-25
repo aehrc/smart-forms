@@ -25,7 +25,7 @@ import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
-import useQuestionnaireStore from '../../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 
 interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler {
   topLevelQItem: QuestionnaireItem;

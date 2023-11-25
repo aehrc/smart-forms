@@ -1,7 +1,6 @@
-import questionnaireStore from './stores/questionnaireStore';
+import { questionnaireResponseStore, questionnaireStore } from './stores';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { createEmptyQuestionnaireResponse } from './utils/qrItem';
-import questionnaireResponseStore from './stores/questionnaireResponseStore';
 import { removeHiddenAnswers } from './utils/removeHidden';
 import type { ItemToRepopulate } from './utils/repopulateItems';
 import { getItemsToRepopulate } from './utils/repopulateItems';

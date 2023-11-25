@@ -20,18 +20,16 @@ import { createSelectors } from './selector';
 
 const ONTOSERVER_R4 = 'https://r4.ontoserver.csiro.au/fhir';
 
-export interface TerminologyServerStoreType {
+interface TerminologyServerStoreType {
   url: string;
   setUrl: (newUrl: string) => void;
   resetUrl: () => void;
 }
 
-const terminologyServerStore = createStore<TerminologyServerStoreType>()((set) => ({
+export const terminologyServerStore = createStore<TerminologyServerStoreType>()((set) => ({
   url: ONTOSERVER_R4,
   setUrl: (newUrl: string) => set(() => ({ url: newUrl })),
   resetUrl: () => set(() => ({ url: ONTOSERVER_R4 }))
 }));
 
-const useTerminologyServerStore = createSelectors(terminologyServerStore);
-
-export default useTerminologyServerStore;
+export const useTerminologyServerStore = createSelectors(terminologyServerStore);
