@@ -15,11 +15,15 @@
  * limitations under the License.
  */
 
+import ThemeProvider from '../theme/Theme';
 import type { Meta, StoryObj } from '@storybook/react';
 import { GroupTable } from '../components';
-import GTableMedicalHistoryJson from './assets/GTableMedicalHistory.json';
-import { QuestionnaireItem } from 'fhir/r4';
+import GTableMedicalHistoryItemJson from './assets/QItems-and-QRItems/Q_GTableMedicalHistory.json';
+import GTableMedicalHistoryAnswersJson from './assets/QItems-and-QRItems/QR_GTableMedicalHistory.json';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -28,11 +32,18 @@ const meta = {
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: [],
   decorators: [
-    (Story) => <QueryClientProvider client={new QueryClient()}>{Story()}</QueryClientProvider>
+    (Story) => (
+      <ThemeProvider>
+        <QueryClientProvider client={new QueryClient()}>
+          <DndProvider backend={HTML5Backend}>{Story()}</DndProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    )
   ]
 } satisfies Meta<typeof GroupTable>;
 
-const GTableMedicalHistory = GTableMedicalHistoryJson as QuestionnaireItem;
+const GTableMedicalHistoryItem = GTableMedicalHistoryItemJson as QuestionnaireItem;
+const GTableMedicalHistoryAnswers = GTableMedicalHistoryAnswersJson as QuestionnaireResponseItem[];
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -41,8 +52,8 @@ type Story = StoryObj<typeof meta>;
 
 export const MedicalHistoryTable: Story = {
   args: {
-    qItem: GTableMedicalHistory,
-    qrItems: [],
+    qItem: GTableMedicalHistoryItem,
+    qrItems: GTableMedicalHistoryAnswers,
     groupCardElevation: 1,
     parentIsReadOnly: false,
     onQrRepeatGroupChange: () => {}

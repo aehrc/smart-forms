@@ -18,18 +18,6 @@
 import React, { useMemo, useState } from 'react';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import GroupTableRow from './GroupTableRow';
-import { HeaderTableCell } from './Table.styles';
-import { QGroupContainerBox } from '../../Box.styles';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import type {
   PropsWithParentIsReadOnlyAttribute,
@@ -38,12 +26,10 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import useInitialiseGroupTable from '../../../hooks/useInitialiseGroupTable';
 import { nanoid } from 'nanoid';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import RemoveRowButton from './RemoveRowButton';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
-import cloneDeep from 'lodash.clonedeep';
-import AddRowButton from './AddRowButton';
 import useReadOnly from '../../../hooks/useReadOnly';
+import GroupTableView from './GroupTableView';
+import { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
+import { getGroupTableItemsToUpdate } from '../../../utils/groupTable';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -64,11 +50,16 @@ function GroupTable(props: GroupTableProps) {
     onQrRepeatGroupChange
   } = props;
 
+  // TODO come back to fix stuttering on dnd update
+
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const initialisedGroupTables = useInitialiseGroupTable(qrItems);
 
   const [tableRows, setTableRows] = useState(initialisedGroupTables);
+  const [selectedIds, setSelectedIds] = useState<string[]>(
+    initialisedGroupTables.map((row) => row.nanoId)
+  );
 
   // Generate item labels as table headers
   const qItems = qItem.item;
@@ -99,13 +90,11 @@ function GroupTable(props: GroupTableProps) {
     setTableRows(updatedTableRows);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
-      qrItems: updatedTableRows.flatMap((singleRow) =>
-        singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []
-      )
+      qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
     });
   }
 
-  function handleDeleteRow(index: number) {
+  function handleRemoveRow(index: number) {
     const updatedTableRows = [...tableRows];
 
     updatedTableRows.splice(index, 1);
@@ -113,118 +102,76 @@ function GroupTable(props: GroupTableProps) {
     setTableRows(updatedTableRows);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
-      qrItems: updatedTableRows.flatMap((singleRow) =>
-        singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []
-      )
+      qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
     });
   }
 
   function handleAddRow() {
+    const newRowNanoId = nanoid();
     setTableRows([
       ...tableRows,
       {
-        nanoId: nanoid(),
+        nanoId: newRowNanoId,
         qrItem: null
       }
     ]);
+    setSelectedIds([...selectedIds, newRowNanoId]);
   }
 
-  if (showMinimalView) {
-    return (
-      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
-        <TableContainer component={Paper} elevation={groupCardElevation}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                {itemLabels.map((itemLabel) => (
-                  <HeaderTableCell key={itemLabel} size="medium">
-                    {itemLabel}
-                  </HeaderTableCell>
-                ))}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tableRows.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-                const answeredQrItem = createEmptyQrItem(qItem);
-                if (nullableQrItem) {
-                  answeredQrItem.item = nullableQrItem.item;
-                }
+  function handleSelectAll() {
+    // deselect all if all are selected, otherwise select all
+    const updatedTableIds =
+      selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.nanoId);
+    setSelectedIds(updatedTableIds);
+    onQrRepeatGroupChange({
+      linkId: qItem.linkId,
+      qrItems: getGroupTableItemsToUpdate(tableRows, updatedTableIds)
+    });
+  }
 
-                return (
-                  <TableRow key={nanoId}>
-                    <GroupTableRow
-                      qItem={qItem}
-                      qrItem={answeredQrItem}
-                      qItemsIndexMap={qItemsIndexMap}
-                      parentIsReadOnly={parentIsReadOnly}
-                      onQrItemChange={(newQrGroup) => handleRowChange(newQrGroup, index)}
-                    />
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </QGroupContainerBox>
-    );
+  function handleSelectRow(nanoId: string) {
+    const updatedSelectedIds = [...selectedIds];
+
+    const index = updatedSelectedIds.indexOf(nanoId);
+    if (index === -1) {
+      updatedSelectedIds.push(nanoId);
+    } else {
+      updatedSelectedIds.splice(index, 1);
+    }
+
+    setSelectedIds(updatedSelectedIds);
+    onQrRepeatGroupChange({
+      linkId: qItem.linkId,
+      qrItems: getGroupTableItemsToUpdate(tableRows, updatedSelectedIds)
+    });
+  }
+
+  function handleReorderRows(newTableRows: GroupTableRowModel[]) {
+    setTableRows(newTableRows);
+    onQrRepeatGroupChange({
+      linkId: qItem.linkId,
+      qrItems: getGroupTableItemsToUpdate(newTableRows, selectedIds)
+    });
   }
 
   return (
-    <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
-      {groupCardElevation !== 1 ? (
-        <>
-          <Typography
-            fontSize={13}
-            variant="h6"
-            color={readOnly ? 'text.secondary' : 'text.primary'}>
-            <LabelWrapper qItem={qItem} readOnly={readOnly} />
-          </Typography>
-          <Divider sx={{ my: 1 }} light />
-        </>
-      ) : null}
-      <TableContainer component={Paper} elevation={groupCardElevation}>
-        <Table>
-          <caption>
-            <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={handleAddRow} />
-          </caption>
-          <TableHead>
-            <TableRow>
-              {itemLabels.map((itemLabel) => (
-                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
-              ))}
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tableRows.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-              const answeredQrItem = createEmptyQrItem(qItem);
-              if (nullableQrItem) {
-                answeredQrItem.item = nullableQrItem.item;
-              }
-
-              return (
-                <TableRow key={nanoId}>
-                  <GroupTableRow
-                    qItem={qItem}
-                    qrItem={answeredQrItem}
-                    qItemsIndexMap={qItemsIndexMap}
-                    parentIsReadOnly={parentIsReadOnly}
-                    onQrItemChange={(newQrGroup) => handleRowChange(newQrGroup, index)}
-                  />
-                  <RemoveRowButton
-                    nullableQrItem={nullableQrItem}
-                    numOfRows={tableRows.length}
-                    readOnly={readOnly}
-                    onDeleteItem={() => handleDeleteRow(index)}
-                  />
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </QGroupContainerBox>
+    <GroupTableView
+      qItem={qItem}
+      qItemsIndexMap={qItemsIndexMap}
+      groupCardElevation={groupCardElevation}
+      readOnly={readOnly}
+      tableRows={tableRows}
+      selectedIds={selectedIds}
+      itemLabels={itemLabels}
+      showMinimalView={showMinimalView}
+      parentIsReadOnly={parentIsReadOnly}
+      onAddRow={handleAddRow}
+      onRowChange={handleRowChange}
+      onRemoveRow={handleRemoveRow}
+      onSelectRow={handleSelectRow}
+      onSelectAll={handleSelectAll}
+      onReorderRows={handleReorderRows}
+    />
   );
 }
 

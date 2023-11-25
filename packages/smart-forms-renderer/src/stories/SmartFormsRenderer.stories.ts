@@ -18,11 +18,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SmartFormsRenderer } from '../components';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import Q715Json from './assets/Q715.json';
-import R715Json from './assets/R715.json';
-import QTestGridJson from './assets/QTestGrid.json';
-import RTestGridJson from './assets/RTestGrid.json';
-import QDev715Json from './assets/QDev715.json';
+import Q715Json from './assets/Qs-and-QRs/Q715.json';
+import R715Json from './assets/Qs-and-QRs/R715.json';
+import QTestGridJson from './assets/Qs-and-QRs/QTestGrid.json';
+import RTestGridJson from './assets/Qs-and-QRs/RTestGrid.json';
+import QDev715Json from './assets/Qs-and-QRs/QDev715.json';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {

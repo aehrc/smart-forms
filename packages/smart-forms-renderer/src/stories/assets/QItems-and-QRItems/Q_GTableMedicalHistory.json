@@ -49,7 +49,7 @@
       "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
       "text": "Condition",
       "type": "open-choice",
-      "answerValueSet": "#MedicalHistory"
+      "answerValueSet": "https://smartforms.csiro.au/ig/ValueSet/MedicalHistory"
     },
     {
       "extension": [

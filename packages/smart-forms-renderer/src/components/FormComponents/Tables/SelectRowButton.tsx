@@ -15,9 +15,23 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponseItem } from 'fhir/r4';
+import React from 'react';
+import Checkbox from '@mui/material/Checkbox';
+import TableCell from '@mui/material/TableCell';
 
-export interface GroupTableRowModel {
-  nanoId: string;
-  qrItem: QuestionnaireResponseItem | null;
+interface SelectRowButtonProps {
+  isSelected: boolean;
+  onSelectItem: () => void;
 }
+
+function SelectRowButton(props: SelectRowButtonProps) {
+  const { isSelected, onSelectItem } = props;
+
+  return (
+    <TableCell padding="checkbox">
+      <Checkbox color="primary" size="small" checked={isSelected} onChange={onSelectItem} />
+    </TableCell>
+  );
+}
+
+export default SelectRowButton;

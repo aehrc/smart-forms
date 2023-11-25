@@ -15,9 +15,23 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponseItem } from 'fhir/r4';
+import { GroupTableRowModel } from '../interfaces/groupTable.interface';
+import cloneDeep from 'lodash.clonedeep';
 
-export interface GroupTableRowModel {
-  nanoId: string;
-  qrItem: QuestionnaireResponseItem | null;
+export function reorderRows(
+  rows: GroupTableRowModel[],
+  sourceIndex: number,
+  destinationIndex: number
+) {
+  const result = Array.from(rows);
+  const [removed] = result.splice(sourceIndex, 1);
+  result.splice(destinationIndex, 0, removed);
+
+  return result;
+}
+
+export function getGroupTableItemsToUpdate(tableRows: GroupTableRowModel[], selectedIds: string[]) {
+  return tableRows
+    .filter((row) => selectedIds.includes(row.nanoId))
+    .flatMap((singleRow) => (singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []));
 }

@@ -27,18 +27,18 @@ interface RemoveRowButtonProps {
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRows: number;
   readOnly: boolean;
-  onDeleteItem: () => void;
+  onRemoveItem: () => void;
 }
 
 function RemoveRowButton(props: RemoveRowButtonProps) {
-  const { nullableQrItem, numOfRows, readOnly, onDeleteItem } = props;
+  const { nullableQrItem, numOfRows, readOnly, onRemoveItem } = props;
 
   const isDisabled = nullableQrItem === null || numOfRows === 1 || readOnly;
   return (
     <DeleteButtonTableCell>
       <Tooltip title="Remove item">
         <span>
-          <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteItem}>
+          <IconButton size="small" color="error" disabled={isDisabled} onClick={onRemoveItem}>
             <RemoveCircleOutlineIcon fontSize="small" />
           </IconButton>
         </span>
