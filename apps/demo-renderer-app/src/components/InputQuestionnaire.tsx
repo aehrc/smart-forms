@@ -15,24 +15,37 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import LaunchButton from './LaunchButton.tsx';
+import { useLocalStorage } from 'usehooks-ts';
 
-function InputPage() {
-  const [input, setInput] = useState('');
+interface InputPageProps {
+  bearerToken: string | null;
+}
 
-  const sample =
+function InputQuestionnaire(props: InputPageProps) {
+  const { bearerToken } = props;
+
+  const [input, setInput] = useLocalStorage('inputQuestionnaire', '');
+
+  const sampleQuestionnaire =
     window.location.origin + '?url=https://smartforms.csiro.au/api/fhir/Questionnaire/Dev715';
 
   const inputUrl = window.location.origin + '?url=' + input;
 
   return (
     <>
+      <p>If you are planning to perform pre-population, get a bearer token first.</p>
+      <div style={{ fontSize: '0.875em' }}>
+        Bearer Token: {bearerToken ?? 'null'}
+        <LaunchButton />
+      </div>
+      <hr />
       <p>
         Append a <b>{'?url={url_of_questionnaire_resource}'}</b> to the base url when you access
         this site.
       </p>
       <p>
-        For example: <a href={sample}>{sample}</a>
+        For example: <a href={sampleQuestionnaire}>{sampleQuestionnaire}</a>
       </p>
       <p>Alternatively, enter questionnaire url:</p>
       <textarea
@@ -41,10 +54,10 @@ function InputPage() {
         onChange={(e) => setInput(e.target.value)}></textarea>
       <br />
       <a href={inputUrl}>
-        <button>Go to {inputUrl}</button>
+        <button className="increase-button-hitbox">Go to {inputUrl}</button>
       </a>
     </>
   );
 }
 
-export default InputPage;
+export default InputQuestionnaire;

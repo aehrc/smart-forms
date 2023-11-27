@@ -26,7 +26,7 @@ import type {
   Reference,
   ValueSet
 } from 'fhir/r4';
-import type { InitialExpression, ValueSetPromise } from './interfaces/expressions.interface';
+import type { InitialExpression, ValueSetPromise } from '../interfaces/expressions.interface';
 import {
   filterValueSetAnswersRecursive,
   getValueSetPromise,

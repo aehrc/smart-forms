@@ -15,29 +15,30 @@
  * limitations under the License.
  */
 
-import { SmartFormsRenderer, useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
-import { Questionnaire } from 'fhir/r4';
+import { oauth2 } from 'fhirclient';
+import '../styles.css';
+import { CLIENT_ID, ISS, SCOPES } from '../utils/apiConstants.ts';
 
-interface RendererPageProps {
-  questionnaire: Questionnaire;
-}
-
-function RendererPage(props: RendererPageProps) {
-  const { questionnaire } = props;
-
-  const questionnaireResponse = useQuestionnaireResponseStore.getState().updatableResponse;
-
-  // console.log('---state hook---');
-  // console.log(questionnaireResponse);
-  // console.log('---usestate---');
-  console.log(useQuestionnaireResponseStore.getState().updatableResponse);
+function LaunchButton() {
+  function launch() {
+    oauth2
+      .authorize({
+        iss: ISS,
+        clientId: CLIENT_ID,
+        scope: SCOPES
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 
   return (
-    <>
-      <p>hey</p>
-      <SmartFormsRenderer questionnaire={questionnaire} />
-    </>
+    <div>
+      <button className="increase-button-hitbox" onClick={() => launch()}>
+        Get new bearer token from demo server {ISS}
+      </button>
+    </div>
   );
 }
 
-export default RendererPage;
+export default LaunchButton;

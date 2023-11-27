@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
-// Type Predicates
-export * from './interfaces';
-export * from './utils';
+export {
+  isInputParameters,
+  isCanonicalParameter,
+  isContextParameter,
+  isSubjectParameter,
+  isOutputParameters
+} from './typePredicates';
+export { populate } from './populate';

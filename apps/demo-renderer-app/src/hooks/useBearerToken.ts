@@ -15,6 +15,19 @@
  * limitations under the License.
  */
 
-// Type Predicates
-export * from './interfaces';
-export * from './utils';
+import { useEffect, useState } from 'react';
+import { oauth2 } from 'fhirclient';
+
+function useBearerToken() {
+  const [bearerToken, setBearerToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    oauth2.ready().then((client) => {
+      setBearerToken(client.state.tokenResponse?.access_token ?? null);
+    });
+  }, []);
+
+  return bearerToken;
+}
+
+export default useBearerToken;

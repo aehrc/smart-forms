@@ -15,6 +15,26 @@
  * limitations under the License.
  */
 
-// Type Predicates
-export * from './interfaces';
-export * from './utils';
+.margin-y {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.increase-button-hitbox {
+    margin: 0 0 8px;
+    cursor: pointer;
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out 5s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

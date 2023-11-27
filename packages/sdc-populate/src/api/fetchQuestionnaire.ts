@@ -19,11 +19,11 @@ import type {
   IdentifierParameter,
   InputParameters,
   QuestionnaireRefParameter
-} from './interfaces/inputParameters.interface';
-import { isCanonicalParameter } from './typePredicates';
+} from '../interfaces/inputParameters.interface';
+import { isCanonicalParameter } from '../utils/typePredicates';
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
-import type { FetchResourceCallback } from './interfaces/callback.interface';
-import { createErrorOutcome } from './operationOutcome';
+import type { FetchResourceCallback } from '../interfaces/callback.interface';
+import { createErrorOutcome } from '../utils/operationOutcome';
 
 export async function fetchQuestionnaire(
   parameters: InputParameters,

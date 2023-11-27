@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
-// Type Predicates
-export * from './interfaces';
-export * from './utils';
+export { FetchResourceCallback } from './callback.interface';
+export { IdentifierParameter, QuestionnaireRefParameter } from './inputParameters.interface';
+export { IssuesParameter, ResponseParameter, OutputParameters } from './outputParameters.interface';
+export { InputParameters } from './inputParameters.interface';

@@ -15,6 +15,14 @@
  * limitations under the License.
  */
 
-// Type Predicates
-export * from './interfaces';
-export * from './utils';
+// Launch properties
+export const ISS = 'https://gw.interop.community/AuConNov23/data';
+export const CLIENT_ID = '320392f1-ef47-4470-8cfa-f31389057531';
+export const SCOPES =
+  'patient/Observation.rs patient/Patient.rs online_access openid profile patient/QuestionnaireResponse.cruds launch fhirUser patient/Encounter.rs patient/Condition.rs';
+
+// Patient and practitioner launch context queries
+export const PATIENT_QUERY =
+  'https://gw.interop.community/AuConNov23/data/Patient?_count=10&_sort=-_lastUpdated';
+export const PRACTITIONER_QUERY =
+  'https://gw.interop.community/AuConNov23/data/Practitioner?_count=10&_sort=-_lastUpdated';

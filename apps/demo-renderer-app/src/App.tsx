@@ -1,16 +1,17 @@
-import HomePage from './HomePage.tsx';
-import InputPage from './InputPage.tsx';
+import Home from './components/Home.tsx';
+import InputQuestionnaire from './components/InputQuestionnaire.tsx';
+import useBearerToken from './hooks/useBearerToken.ts';
+import useQuestionnaireUrl from './hooks/useQuestionnaireUrl.ts';
 
 function App() {
-  // get query url from url params
-  const urlParams = new URLSearchParams(window.location.search);
-  const questionnaireUrl = urlParams.get('url') ?? '';
+  const questionnaireUrl = useQuestionnaireUrl();
+  const bearerToken = useBearerToken();
 
-  if (questionnaireUrl === '') {
-    return <InputPage />;
+  if (questionnaireUrl === '' || questionnaireUrl === null) {
+    return <InputQuestionnaire bearerToken={bearerToken} />;
   }
 
-  return <HomePage />;
+  return <Home questionnaireUrl={questionnaireUrl} bearerToken={bearerToken} />;
 }
 
 export default App;

@@ -16,7 +16,7 @@
  */
 
 import type { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import type { PopulationExpressions } from './interfaces/expressions.interface';
+import type { PopulationExpressions } from '../interfaces/expressions.interface';
 
 /**
  * Recursively read the items within a questionnaire item and store their initial expressions in a <string, InitialExpression> key-value map

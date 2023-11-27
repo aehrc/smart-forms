@@ -17,19 +17,19 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { Questionnaire } from 'fhir/r4';
-import { fetchQuestionnaire, questionnaireIsValid } from './fetchQuestionnaire.ts';
-import RendererPage from './RendererPage.tsx';
+import { fetchResource, questionnaireIsValid } from '../utils/fetchResource.ts';
+import Renderer from './Renderer.tsx';
 
-function HomePage() {
-  // get query url from url params
-  const urlParams = new URLSearchParams(window.location.search);
-  const questionnaireUrl = urlParams.get('url') ?? '';
-
-  // console.log(questionnaireUrl);
+interface HomeProps {
+  questionnaireUrl: string;
+  bearerToken: string | null;
+}
+function Home(props: HomeProps) {
+  const { questionnaireUrl, bearerToken } = props;
 
   const { data: questionnaire, isFetching } = useQuery<Questionnaire>(
     ['questionnaire', questionnaireUrl],
-    () => fetchQuestionnaire(questionnaireUrl)
+    () => fetchResource(questionnaireUrl, bearerToken)
   );
 
   if (isFetching) {
@@ -41,7 +41,7 @@ function HomePage() {
       <>
         <h2>Questionnaire not found. </h2>
         <a href={window.location.origin}>
-          <button>Go to {window.location.origin}</button>
+          <button className="increase-button-hitbox">Go to {window.location.origin}</button>
         </a>
       </>
     );
@@ -52,13 +52,17 @@ function HomePage() {
       <>
         <h2>Questionnaire is not valid.</h2>
         <a href={window.location.origin}>
-          <button>Go to {window.location.origin}</button>
+          <button className="increase-button-hitbox">Go to {window.location.origin}</button>
         </a>
       </>
     );
   }
 
-  return <RendererPage questionnaire={questionnaire} />;
+  return (
+    <div style={{ padding: '8px' }}>
+      <Renderer questionnaire={questionnaire} bearerToken={bearerToken} />
+    </div>
+  );
 }
 
-export default HomePage;
+export default Home;

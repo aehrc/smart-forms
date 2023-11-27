@@ -15,6 +15,20 @@
  * limitations under the License.
  */
 
-// Type Predicates
-export * from './interfaces';
-export * from './utils';
+import { useEffect, useState } from 'react';
+
+function useQuestionnaireUrl() {
+  const [questionnaireUrl, setQuestionnaireUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // get query url from url params
+    const urlParams = new URLSearchParams(window.location.search);
+    const url = urlParams.get('url') ?? '';
+
+    setQuestionnaireUrl(url);
+  }, []);
+
+  return questionnaireUrl;
+}
+
+export default useQuestionnaireUrl;

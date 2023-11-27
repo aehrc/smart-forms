@@ -16,7 +16,7 @@
  */
 
 import type { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
-import type { OutputParameters, ResponseParameter } from './interfaces/outputParameters.interface';
+import type { OutputParameters, ResponseParameter } from '../interfaces/outputParameters.interface';
 
 /**
  * Create output parameters as a response to be returned to the renderer. If they are issues, return with an issues parameter.

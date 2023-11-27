@@ -15,10 +15,15 @@
  * limitations under the License.
  */
 
-import type { Questionnaire } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 
-export async function fetchQuestionnaire(questionnaireUrl: string) {
-  const response = await fetch(questionnaireUrl); // Replace with your API endpoint
+export async function fetchResource(endpointUrl: string, bearerToken: string | null) {
+  const headers = {};
+  if (bearerToken) {
+    headers['Authorization'] = `Bearer ${bearerToken}`;
+  }
+
+  const response = await fetch(endpointUrl, { headers });
 
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -29,4 +34,12 @@ export async function fetchQuestionnaire(questionnaireUrl: string) {
 
 export function questionnaireIsValid(questionnaire: any): questionnaire is Questionnaire {
   return questionnaire.resourceType === 'Questionnaire' && questionnaire.item;
+}
+
+export function patientIsValid(patient: any): patient is Patient {
+  return patient.resourceType === 'Patient' && patient.id && patient.name;
+}
+
+export function practitionerIsValid(practitioner: any): practitioner is Practitioner {
+  return practitioner.resourceType === 'Practitioner' && practitioner.id && practitioner.name;
 }
