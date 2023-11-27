@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { InitialExpression } from './interfaces/expressions.interface';
+import type { InitialExpression } from '../interfaces/expressions.interface';
 import type { Bundle } from 'fhir/r4';
 
 export function constructVariableMap(bundle: Bundle): Record<string, Bundle> {

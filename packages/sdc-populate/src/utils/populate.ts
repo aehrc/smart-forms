@@ -15,18 +15,16 @@
  * limitations under the License.
  */
 
-import type { InputParameters } from './interfaces/inputParameters.interface';
-import type { OutputParameters } from './interfaces/outputParameters.interface';
+import type { FetchResourceCallback, InputParameters, OutputParameters } from '../interfaces';
 import type { OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
-import { fetchQuestionnaire } from './fetchQuestionnaire';
-import { isSubjectParameter } from './typePredicates';
+import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
+import { isSubjectParameter } from './index';
 import { createFhirPathContext } from './createFhirPathContext';
 import { readPopulationExpressions } from './readPopulationExpressions';
 import { evaluateExpressions, evaluateItemPopulationContexts } from './evaluateExpressions';
 import { sortResourceArrays } from './sortResourceArrays';
 import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
-import type { FetchResourceCallback } from './interfaces/callback.interface';
 
 /**
  * Main function of this populate module.

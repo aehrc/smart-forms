@@ -22,8 +22,8 @@ import type {
   InputParameters,
   QuestionnaireDataParameter,
   SubjectParameter
-} from './interfaces/inputParameters.interface';
-import type { OutputParameters, ResponseParameter } from './interfaces/outputParameters.interface';
+} from '../interfaces/inputParameters.interface';
+import type { OutputParameters, ResponseParameter } from '../interfaces';
 
 /**
  * Checks if the parameters passed satisfies the conditions of populateInputParameters.
@@ -38,7 +38,7 @@ export function isInputParameters(parameters: Parameters): parameters is InputPa
   return questionnairePresent && subjectPresent;
 }
 
-export function isQuestionnaireDataParameter(
+function isQuestionnaireDataParameter(
   parameter: ParametersParameter
 ): parameter is QuestionnaireDataParameter {
   return (
