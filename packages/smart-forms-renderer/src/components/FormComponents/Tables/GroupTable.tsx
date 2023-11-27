@@ -91,13 +91,17 @@ function GroupTable(props: GroupTableProps) {
   function handleRemoveRow(index: number) {
     const updatedTableRows = [...tableRows];
 
+    const rowToRemove = updatedTableRows[index];
+    const updatedSelectedIds = selectedIds.filter((id) => id !== rowToRemove.nanoId);
+
     updatedTableRows.splice(index, 1);
 
     setTableRows(updatedTableRows);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
-      qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
+      qrItems: getGroupTableItemsToUpdate(updatedTableRows, updatedSelectedIds)
     });
+    setSelectedIds(updatedSelectedIds);
   }
 
   function handleAddRow() {

@@ -22,8 +22,6 @@ import GTableMedicalHistoryItemJson from './assets/QItems-and-QRItems/Q_GTableMe
 import GTableMedicalHistoryAnswersJson from './assets/QItems-and-QRItems/QR_GTableMedicalHistory.json';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { DndProvider } from 'react-dnd';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -34,9 +32,7 @@ const meta = {
   decorators: [
     (Story) => (
       <ThemeProvider>
-        <QueryClientProvider client={new QueryClient()}>
-          <DndProvider backend={HTML5Backend}>{Story()}</DndProvider>
-        </QueryClientProvider>
+        <QueryClientProvider client={new QueryClient()}>{Story()}</QueryClientProvider>
       </ThemeProvider>
     )
   ]
