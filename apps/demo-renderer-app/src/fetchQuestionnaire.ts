@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
 export async function fetchQuestionnaire(questionnaireUrl: string) {
   const response = await fetch(questionnaireUrl); // Replace with your API endpoint

@@ -29,12 +29,12 @@ import Typography from '@mui/material/Typography';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import Divider from '@mui/material/Divider';
 import AddRowButton from './AddRowButton';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import {
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
+import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
 import Checkbox from '@mui/material/Checkbox';
 

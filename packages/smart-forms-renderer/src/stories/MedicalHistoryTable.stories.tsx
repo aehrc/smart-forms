@@ -20,7 +20,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { GroupTable } from '../components';
 import GTableMedicalHistoryItemJson from './assets/QItems-and-QRItems/Q_GTableMedicalHistory.json';
 import GTableMedicalHistoryAnswersJson from './assets/QItems-and-QRItems/QR_GTableMedicalHistory.json';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';

@@ -16,7 +16,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 import { fetchQuestionnaire, questionnaireIsValid } from './fetchQuestionnaire.ts';
 import RendererPage from './RendererPage.tsx';
 

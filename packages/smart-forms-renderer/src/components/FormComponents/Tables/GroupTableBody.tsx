@@ -17,14 +17,15 @@
 
 import React from 'react';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
-import {
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
+import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import GroupTableRow from './GroupTableRow';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import type { DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
 

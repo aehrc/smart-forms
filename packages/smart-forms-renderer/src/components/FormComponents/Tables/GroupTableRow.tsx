@@ -21,11 +21,11 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import { TableRowProps } from '@mui/material/TableRow';
+import type { TableRowProps } from '@mui/material/TableRow';
 import SelectRowButton from './SelectRowButton';
 import GroupTableRowCells from './GroupTableRowCells';
 import RemoveRowButton from './RemoveRowButton';
-import { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
+import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import DragIndicator from '@mui/icons-material/DragIndicator';
 import TableCell from '@mui/material/TableCell';
 import Box from '@mui/material/Box';

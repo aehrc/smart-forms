@@ -27,7 +27,7 @@ import type {
 import { nanoid } from 'nanoid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import GroupTableView from './GroupTableView';
-import { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
+import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import { getGroupTableItemsToUpdate } from '../../../utils/groupTable';
 import useGroupTableRows from '../../../hooks/useGroupTableRows';
 import { flushSync } from 'react-dom';

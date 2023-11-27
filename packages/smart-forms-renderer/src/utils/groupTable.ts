@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { GroupTableRowModel } from '../interfaces/groupTable.interface';
+import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
 import cloneDeep from 'lodash.clonedeep';
 
 export function reorderRows(

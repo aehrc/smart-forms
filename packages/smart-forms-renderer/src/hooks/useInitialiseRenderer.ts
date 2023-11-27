@@ -101,7 +101,8 @@ function useInitialiseRenderer(
     setUser,
     setEncounter,
     terminologyServerUrl,
-    setTerminologyServerUrl
+    setTerminologyServerUrl,
+    resetTerminologyServerUrl
   ]);
 
   return loading;

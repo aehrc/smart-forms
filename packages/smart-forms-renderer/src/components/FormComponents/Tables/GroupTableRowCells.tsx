@@ -25,20 +25,17 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { TableRowProps } from '@mui/material/TableRow';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithParentIsReadOnlyAttribute,
-    TableRowProps {
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   qItemsIndexMap: Record<string, number>;
 }
 
 function GroupTableRowCells(props: GroupTableRowCellsProps) {
-  const { qItem, qrItem, qItemsIndexMap, parentIsReadOnly, onQrItemChange, ...tableRowProps } =
-    props;
+  const { qItem, qrItem, qItemsIndexMap, parentIsReadOnly, onQrItemChange } = props;
 
   const rowItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
