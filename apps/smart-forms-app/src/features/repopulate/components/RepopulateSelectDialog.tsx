@@ -83,6 +83,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       checkedLinkIds
     );
 
+    // Prevent state batching for this spinner https://react.dev/reference/react-dom/flushSync
     flushSync(() => {
       onSpinnerChange({
         isSpinning: true,

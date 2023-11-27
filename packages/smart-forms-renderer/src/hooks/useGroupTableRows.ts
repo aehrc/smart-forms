@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-import { Box, styled } from '@mui/material';
-import {
-  HEADER_DESKTOP_HEIGHT,
-  HEADER_MOBILE_HEIGHT
-} from '../../../components/Header/Header.styles.ts';
+import { useState } from 'react';
+import useInitialiseGroupTable from './useInitialiseGroupTable';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 
-export const Main = styled(Box)(({ theme }) => ({
-  flexGrow: 1,
-  minHeight: '100%',
-  paddingTop: HEADER_MOBILE_HEIGHT + 16,
-  paddingBottom: theme.spacing(4),
-  [theme.breakpoints.up('sm')]: {
-    paddingTop: HEADER_DESKTOP_HEIGHT + 16
-  }
-}));
+function useGroupTableRows(qrItems: QuestionnaireResponseItem[]) {
+  const initialisedGroupTableRows = useInitialiseGroupTable(qrItems);
+
+  const [tableRows, setTableRows] = useState(initialisedGroupTableRows);
+  const [selectedIds, setSelectedIds] = useState<string[]>(
+    initialisedGroupTableRows.map((row) => row.nanoId)
+  );
+
+  return { tableRows, selectedIds, setTableRows, setSelectedIds };
+}
+
+export default useGroupTableRows;

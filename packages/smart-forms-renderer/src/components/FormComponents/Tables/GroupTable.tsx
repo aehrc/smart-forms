@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { mapQItemsIndex } from '../../../utils/mapItem';
@@ -24,12 +24,13 @@ import type {
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import useInitialiseGroupTable from '../../../hooks/useInitialiseGroupTable';
 import { nanoid } from 'nanoid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import GroupTableView from './GroupTableView';
 import { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import { getGroupTableItemsToUpdate } from '../../../utils/groupTable';
+import useGroupTableRows from '../../../hooks/useGroupTableRows';
+import { flushSync } from 'react-dom';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -50,16 +51,9 @@ function GroupTable(props: GroupTableProps) {
     onQrRepeatGroupChange
   } = props;
 
-  // TODO come back to fix stuttering on dnd update
-
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const initialisedGroupTables = useInitialiseGroupTable(qrItems);
-
-  const [tableRows, setTableRows] = useState(initialisedGroupTables);
-  const [selectedIds, setSelectedIds] = useState<string[]>(
-    initialisedGroupTables.map((row) => row.nanoId)
-  );
+  const { tableRows, selectedIds, setTableRows, setSelectedIds } = useGroupTableRows(qrItems);
 
   // Generate item labels as table headers
   const qItems = qItem.item;
@@ -146,8 +140,11 @@ function GroupTable(props: GroupTableProps) {
     });
   }
 
-  function handleReorderRows(newTableRows: GroupTableRowModel[]) {
-    setTableRows(newTableRows);
+  async function handleReorderRows(newTableRows: GroupTableRowModel[]) {
+    // Prevent state batching when reordering to prevent view stuttering https://react.dev/reference/react-dom/flushSync
+    flushSync(() => {
+      setTableRows(newTableRows);
+    });
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(newTableRows, selectedIds)
