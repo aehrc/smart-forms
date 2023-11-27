@@ -71,7 +71,7 @@ describe('save response', () => {
       cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
       cy.initAgeValue(60);
 
-      cy.getByData('list-button-renderer-operation');
+      cy.getByData('renderer-operation-item');
       cy.contains('Save as Final').click();
       cy.get('.MuiButtonBase-root').contains('Save as final').click();
 

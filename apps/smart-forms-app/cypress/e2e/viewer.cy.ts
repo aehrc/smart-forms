@@ -93,7 +93,7 @@ describe('response viewer', () => {
     });
 
     it('print preview', () => {
-      cy.getByData('list-button-viewer-operation');
+      cy.getByData('renderer-operation-item');
       cy.contains('Print Preview').should('be.visible');
     });
   });
