@@ -36,7 +36,7 @@ interface RendererHeaderProps {
 const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) {
   const { desktopNavCollapsed, onOpenMobileNav } = props;
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
   const theme = useTheme();
   const isDesktop = useResponsive('up', 'lg');

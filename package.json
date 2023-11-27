@@ -5,7 +5,7 @@
     "check-formatting": "prettier --check ."
   },
   "workspaces": [
-    "apps/*",
+    "apps/smart-forms-app",
     "packages/*",
     "services/*",
     "deployment/forms-server/*",

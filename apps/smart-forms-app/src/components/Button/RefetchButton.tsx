@@ -27,7 +27,7 @@ function RefetchButton(props: RefetchButtonProps) {
   const { isFetching, refetchResources } = props;
 
   return (
-    <Box display="flex" alignItems="center" sx={{ px: 1.5, py: 0.5 }} columnGap={1.5}>
+    <Box display="flex" alignItems="center" sx={{ px: 1.5 }} columnGap={1}>
       <Tooltip title="Sync">
         <span>
           <IconButton onClick={refetchResources} disabled={isFetching}>

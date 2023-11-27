@@ -31,14 +31,13 @@ const clearTopLevelQRItem: QuestionnaireResponseItem = {
 function RendererDebugFooter() {
   const [isHidden, setIsHidden] = useState(true);
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
-  const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
+  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
 
-  const setUpdatableResponseAsEmpty = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsEmpty
-  );
+  const setUpdatableResponseAsEmpty =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsEmpty();
 
   function handleClearExistingResponse() {
     if (!updatableResponse.item || updatableResponse.item.length === 0) {

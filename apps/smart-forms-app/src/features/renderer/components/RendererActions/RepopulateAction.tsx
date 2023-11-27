@@ -44,8 +44,8 @@ function RepopulateAction(props: RepopulateActionProps) {
 
   const [itemsToRepopulate, setItemsToRepopulate] = useState<Record<string, ItemToRepopulate>>({});
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 

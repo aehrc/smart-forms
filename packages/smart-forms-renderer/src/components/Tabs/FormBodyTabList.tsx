@@ -22,7 +22,7 @@ import { getShortText } from '../../utils/itemControl';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
-import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 import { isTabHidden } from '../../utils/tabs';
 
 interface FormBodyTabListProps {
@@ -37,9 +37,9 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
   const { topLevelItems, currentTabIndex, tabs, completedTabsCollapsed, allContextDisplayItems } =
     props;
 
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
 
   return (
     <TransitionGroup>

@@ -32,7 +32,7 @@ import {
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function ViewerOperationSection() {
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
   const navigate = useNavigate();
 

@@ -35,7 +35,7 @@ function RendererEmbeddedStandardActions(props: RendererEmbeddedStandardActionsP
 
   const { smartClient } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
   const showSaveAndRepopulateActions = smartClient && sourceQuestionnaire.item;
 

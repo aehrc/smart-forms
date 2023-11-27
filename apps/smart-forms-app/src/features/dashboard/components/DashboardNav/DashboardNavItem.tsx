@@ -41,7 +41,7 @@ function DashboardNavItem(props: DashboardNavItemProps) {
       to={path}
       disableGutters
       disabled={disabled}
-      data-test="list-button-dashboard-nav-page"
+      data-test="renderer-operation-item"
       onClick={() => {
         setSelectedQuestionnaire(null);
         onCloseNav();

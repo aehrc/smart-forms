@@ -32,28 +32,28 @@ Cypress.Commands.add('getByData', (selector, ...args) => {
 });
 
 Cypress.Commands.add('previewForm', () => {
-  cy.getByData('list-button-renderer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains('Preview').click();
   cy.location('pathname').should('eq', '/renderer/preview');
 });
 
 Cypress.Commands.add('clickOnNavPage', (operationName: string) => {
-  cy.getByData('list-button-renderer-nav-page');
+  cy.getByData('renderer-operation-item');
   cy.contains(operationName).click();
 });
 
 Cypress.Commands.add('clickOnRendererOperation', (operationName: string) => {
-  cy.getByData('list-button-renderer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains(operationName).click();
 });
 
 Cypress.Commands.add('clickOnViewerOperation', (operationName: string) => {
-  cy.getByData('list-button-viewer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains(operationName).click();
 });
 
 Cypress.Commands.add('editForm', () => {
-  cy.getByData('list-button-renderer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains('Editor').click();
   cy.location('pathname').should('eq', '/renderer');
 });
@@ -102,7 +102,7 @@ Cypress.Commands.add('launchFromSMARTHealthIT', () => {
 });
 
 Cypress.Commands.add('goToResponsesPage', () => {
-  cy.getByData('list-button-dashboard-nav-page');
+  cy.getByData('renderer-operation-item');
   cy.contains('Responses').click();
 });
 

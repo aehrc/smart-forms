@@ -21,7 +21,7 @@ import { unstable_useBlocker as useBlocker } from 'react-router';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function useLeavePageBlocker(): Blocker {
-  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
+  const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   const isBlocked = formChangesHistory.length > 0;
   const blocker = useBlocker(isBlocked);

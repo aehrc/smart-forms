@@ -17,6 +17,8 @@
 
 import { styled } from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
+import TableRow from '@mui/material/TableRow';
+import { grey } from '@mui/material/colors';
 
 export const HeaderTableCell = styled(TableCell)(() => ({
   fontSize: 13,
@@ -50,3 +52,26 @@ export const GridAnswerTableCell = styled(TableCell, {
   paddingLeft: 5,
   paddingRight: 5
 }));
+
+export const StyledGroupTableRow = styled(TableRow, {
+  shouldForwardProp: (prop) =>
+    prop !== 'itemIsDragged' && prop !== 'itemIsSelected' && prop !== 'hoverDisabled'
+})<{ itemIsDragged: boolean; itemIsSelected: boolean; hoverDisabled: boolean }>(
+  ({ theme, itemIsDragged, itemIsSelected, hoverDisabled }) => ({
+    backgroundColor: itemIsSelected ? '#f4f8ff' : '#fff',
+    ...(hoverDisabled
+      ? {}
+      : {
+          '&.MuiTableRow-root:hover': {
+            backgroundColor: itemIsSelected ? '#e9f1ff' : grey['50']
+          }
+        }),
+    ...(itemIsDragged
+      ? {
+          boxShadow: theme.customShadows.z8,
+          opacity: 1,
+          backgroundColor: itemIsSelected ? '#edf4ff' : '#fafafa'
+        }
+      : {})
+  })
+);

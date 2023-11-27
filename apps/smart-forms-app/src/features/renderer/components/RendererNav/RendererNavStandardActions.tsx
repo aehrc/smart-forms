@@ -36,7 +36,7 @@ function RendererNavStandardActions(props: RendererNavStandardActionsProps) {
 
   const { smartClient } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
   return (
     <Box>

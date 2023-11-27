@@ -24,10 +24,10 @@ import type Client from 'fhirclient/lib/Client';
 function useSmartClient() {
   const { state, dispatch } = useContext(SmartClientContext);
 
-  const setClient = useSmartConfigStore((state) => state.setClient);
-  const setPatient = useSmartConfigStore((state) => state.setPatient);
-  const setUser = useSmartConfigStore((state) => state.setUser);
-  const setEncounter = useSmartConfigStore((state) => state.setEncounter);
+  const setClient = useSmartConfigStore.use.setClient();
+  const setPatient = useSmartConfigStore.use.setPatient();
+  const setUser = useSmartConfigStore.use.setUser();
+  const setEncounter = useSmartConfigStore.use.setEncounter();
 
   function setSmartClient(client: Client) {
     dispatch({

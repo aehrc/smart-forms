@@ -17,13 +17,13 @@
 
 import type { QuestionnaireItem } from 'fhir/r4';
 import { hasHiddenExtension } from '../utils/itemControl';
-import useQuestionnaireStore from '../stores/useQuestionnaireStore';
+import { useQuestionnaireStore } from '../stores';
 import { isHiddenByEnableWhens } from '../utils/qItem';
 
 function useHidden(qItem: QuestionnaireItem): boolean {
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const enableWhenItems = useQuestionnaireStore((state) => state.enableWhenItems);
-  const enableWhenExpressions = useQuestionnaireStore((state) => state.enableWhenExpressions);
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
 
   if (hasHiddenExtension(qItem)) {
     return true;

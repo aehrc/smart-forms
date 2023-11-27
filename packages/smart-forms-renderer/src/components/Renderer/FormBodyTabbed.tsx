@@ -25,7 +25,7 @@ import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
 import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
-import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 
 interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler {
   topLevelQItem: QuestionnaireItem;
@@ -35,8 +35,8 @@ interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler {
 function FormBodyTabbed(props: FormBodyTabbedProps) {
   const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
 
-  const tabs = useQuestionnaireStore((state) => state.tabs);
-  const currentTab = useQuestionnaireStore((state) => state.currentTabIndex);
+  const tabs = useQuestionnaireStore.use.tabs();
+  const currentTab = useQuestionnaireStore.use.currentTabIndex();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),

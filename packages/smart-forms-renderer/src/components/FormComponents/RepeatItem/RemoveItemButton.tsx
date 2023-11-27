@@ -21,20 +21,20 @@ import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-interface DeleteItemButtonProps {
+interface RemoveItemButtonProps {
   answer: QuestionnaireResponseItemAnswer | null;
   numOfRepeatAnswers: number;
   readOnly: boolean;
   onDeleteAnswer: () => void;
 }
 
-function DeleteItemButton(props: DeleteItemButtonProps) {
+function RemoveItemButton(props: RemoveItemButtonProps) {
   const { answer, numOfRepeatAnswers, readOnly, onDeleteAnswer } = props;
 
   const isDisabled = answer === null || numOfRepeatAnswers === 1 || readOnly;
 
   return (
-    <RepeatDeleteTooltip className="repeat-item-delete" title="Delete item">
+    <RepeatDeleteTooltip className="repeat-item-delete" title="Remove item">
       <span>
         <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteAnswer}>
           <RemoveCircleOutlineIcon fontSize="small" />
@@ -44,4 +44,4 @@ function DeleteItemButton(props: DeleteItemButtonProps) {
   );
 }
 
-export default DeleteItemButton;
+export default RemoveItemButton;

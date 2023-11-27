@@ -26,10 +26,8 @@ interface RendererDebugBarProps {
 function RendererDebugBar(props: RendererDebugBarProps) {
   const { isHidden, toggleIsHidden } = props;
 
-  const enableWhenIsActivated = useQuestionnaireStore((state) => state.enableWhenIsActivated);
-  const toggleEnableWhenActivation = useQuestionnaireStore(
-    (state) => state.toggleEnableWhenActivation
-  );
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const toggleEnableWhenActivation = useQuestionnaireStore.use.toggleEnableWhenActivation();
 
   return (
     <Box display="flex" flexDirection="row-reverse">

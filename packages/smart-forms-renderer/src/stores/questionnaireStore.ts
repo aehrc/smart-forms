@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { create } from 'zustand';
+import { createStore } from 'zustand/vanilla';
 import type {
   Coding,
   Questionnaire,
@@ -38,9 +38,10 @@ import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/creat
 import { initialiseFormFromResponse } from '../utils/initialiseForm';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
-import useTerminologyServerStore from './useTerminologyServerStore';
+import { terminologyServerStore } from './terminologyServerStore';
+import { createSelectors } from './selector';
 
-export interface UseQuestionnaireStoreType {
+interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
   itemTypes: Record<string, string>;
   tabs: Tabs;
@@ -76,7 +77,7 @@ export interface UseQuestionnaireStoreType {
   ) => QuestionnaireResponse;
 }
 
-const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => ({
+export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
   sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
   itemTypes: {},
   tabs: {},
@@ -97,7 +98,7 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
     questionnaire,
     questionnaireResponse = cloneDeep(emptyResponse),
     additionalVariables = {},
-    terminologyServerUrl = useTerminologyServerStore.getState().url
+    terminologyServerUrl = terminologyServerStore.getState().url
   ) => {
     const questionnaireModel = await createQuestionnaireModel(
       questionnaire,
@@ -266,4 +267,4 @@ const useQuestionnaireStore = create<UseQuestionnaireStoreType>()((set, get) => 
   }
 }));
 
-export default useQuestionnaireStore;
+export const useQuestionnaireStore = createSelectors(questionnaireStore);

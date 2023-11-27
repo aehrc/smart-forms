@@ -17,7 +17,7 @@
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 
-export interface GroupTableRow {
+export interface GroupTableRowModel {
   nanoId: string;
   qrItem: QuestionnaireResponseItem | null;
 }

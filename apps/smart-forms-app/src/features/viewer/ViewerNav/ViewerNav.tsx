@@ -41,8 +41,8 @@ function ViewerNav(props: Props) {
 
   const { smartClient, launchQuestionnaire } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
   const isDesktop = useResponsive('up', 'lg');
 

@@ -37,12 +37,11 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
-  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsSaved
-  );
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
+  const setUpdatableResponseAsSaved =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 

@@ -42,8 +42,8 @@ function ResponsePreview() {
     []
   );
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
   if (!sourceQuestionnaire.item || !sourceResponse.item) {
     return <ViewerInvalid questionnaire={sourceQuestionnaire} />;

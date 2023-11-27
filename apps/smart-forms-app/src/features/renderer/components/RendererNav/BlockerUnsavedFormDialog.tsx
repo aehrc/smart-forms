@@ -49,11 +49,10 @@ function BlockerUnsavedFormDialog(props: Props) {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsSaved
-  );
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const setUpdatableResponseAsSaved =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
   const navigate = useNavigate();
 
   const isLaunched = !!(smartClient && patient && user);
