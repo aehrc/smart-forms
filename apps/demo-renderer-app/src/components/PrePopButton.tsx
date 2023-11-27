@@ -19,16 +19,19 @@ import '../styles.css';
 import { populateQuestionnaire } from '../utils/populate.ts';
 import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useState } from 'react';
+import { ISS } from '../utils/apiConstants.ts';
 
 interface PrePopButtonProps {
   questionnaire: Questionnaire;
   patient: Patient | null;
   practitioner: Practitioner | null;
+  bearerToken: string | null;
   onQuestionnaireResponseChange: (newQuestionnaireResponse: QuestionnaireResponse | null) => void;
 }
 
 function PrePopButton(props: PrePopButtonProps) {
-  const { questionnaire, patient, practitioner, onQuestionnaireResponseChange } = props;
+  const { questionnaire, patient, practitioner, bearerToken, onQuestionnaireResponseChange } =
+    props;
 
   const [isPopulating, setIsPopulating] = useState(false);
 
@@ -38,7 +41,10 @@ function PrePopButton(props: PrePopButtonProps) {
     }
     setIsPopulating(true);
 
-    const { populateResult } = await populateQuestionnaire(questionnaire, patient, practitioner);
+    const { populateResult } = await populateQuestionnaire(questionnaire, patient, practitioner, {
+      clientEndpoint: ISS,
+      authToken: bearerToken
+    });
 
     if (populateResult) {
       onQuestionnaireResponseChange(populateResult?.populated);

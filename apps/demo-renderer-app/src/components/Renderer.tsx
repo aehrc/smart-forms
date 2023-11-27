@@ -56,6 +56,7 @@ function Renderer(props: RendererPageProps) {
         questionnaire={questionnaire}
         patient={patient}
         practitioner={practitioner}
+        bearerToken={bearerToken}
         onQuestionnaireResponseChange={(newQuestionnaireResponse) =>
           setQuestionnaireResponse(newQuestionnaireResponse)
         }

@@ -27,7 +27,7 @@ function InputQuestionnaire(props: InputPageProps) {
 
   const [input, setInput] = useLocalStorage('inputQuestionnaire', '');
 
-  const sample =
+  const sampleQuestionnaire =
     window.location.origin + '?url=https://smartforms.csiro.au/api/fhir/Questionnaire/Dev715';
 
   const inputUrl = window.location.origin + '?url=' + input;
@@ -45,7 +45,7 @@ function InputQuestionnaire(props: InputPageProps) {
         this site.
       </p>
       <p>
-        For example: <a href={sample}>{sample}</a>
+        For example: <a href={sampleQuestionnaire}>{sampleQuestionnaire}</a>
       </p>
       <p>Alternatively, enter questionnaire url:</p>
       <textarea

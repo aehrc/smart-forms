@@ -18,12 +18,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Bundle } from 'fhir/r4';
 import { fetchResource } from '../utils/fetchResource.ts';
-
-// Hardcoded for demo purposes
-const PATIENT_QUERY =
-  'https://gw.interop.community/AuConNov23/data/Patient?_count=10&_sort=-_lastUpdated';
-const PRACTITIONER_QUERY =
-  'https://gw.interop.community/AuConNov23/data/Practitioner?_count=10&_sort=-_lastUpdated';
+import { PATIENT_QUERY, PRACTITIONER_QUERY } from '../utils/apiConstants.ts';
 
 function useLaunchContext(bearerToken: string | null) {
   const { data: patientBundle, isFetching: isFetchingPatient } = useQuery<Bundle>(

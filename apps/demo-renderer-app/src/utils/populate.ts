@@ -50,7 +50,8 @@ export interface PopulateResult {
 export async function populateQuestionnaire(
   questionnaire: Questionnaire,
   patient: Patient,
-  user: Practitioner
+  user: Practitioner,
+  requestConfig: RequestConfig
 ): Promise<{
   populateSuccess: boolean;
   populateResult: PopulateResult | null;
@@ -99,8 +100,7 @@ export async function populateQuestionnaire(
   }
 
   // Perform population if parameters satisfies input parameters
-
-  const outputParameters = await requestPopulate(inputParameters);
+  const outputParameters = await requestPopulate(inputParameters, requestConfig);
 
   if (outputParameters.resourceType === 'OperationOutcome') {
     return {
@@ -141,9 +141,10 @@ export async function populateQuestionnaire(
 }
 
 export async function requestPopulate(
-  inputParameters: InputParameters
+  inputParameters: InputParameters,
+  requestConfig: RequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
-  const populatePromise = populate(inputParameters, fetchResourceCallback, REQUEST_CONFIG);
+  const populatePromise = populate(inputParameters, fetchResourceCallback, requestConfig);
 
   try {
     const promiseResult = await addTimeoutToPromise(populatePromise, 10000);

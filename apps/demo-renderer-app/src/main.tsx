@@ -14,9 +14,7 @@ const DEFAULT_QUERY_OPTIONS: DefaultOptions = {
 const queryClient = new QueryClient({ defaultOptions: DEFAULT_QUERY_OPTIONS });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <App />
+  </QueryClientProvider>
 );

@@ -22,7 +22,7 @@ const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
 export interface RequestConfig {
   clientEndpoint: string;
-  authToken: string;
+  authToken: string | null;
 }
 
 export const fetchResourceCallback: FetchResourceCallback = (
@@ -33,9 +33,12 @@ export const fetchResourceCallback: FetchResourceCallback = (
   const { authToken } = requestConfig;
 
   const headers = {
-    Accept: 'application/json;charset=utf-8',
-    Authorization: `Bearer ${authToken}`
+    Accept: 'application/json;charset=utf-8'
   };
+
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
+  }
 
   if (!clientEndpoint.endsWith('/')) {
     clientEndpoint += '/';
