@@ -4,15 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5555",
-    "start": "vite --port 5555",
+    "dev": "vite",
+    "start": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@aehrc/sdc-populate": "^1.1.0",
-    "@aehrc/smart-forms-renderer": "^0.10.0",
+    "@aehrc/smart-forms-renderer": "^0.10.1",
     "@tanstack/react-query": "^4.36.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
