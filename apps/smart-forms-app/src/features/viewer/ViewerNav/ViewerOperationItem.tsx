@@ -10,7 +10,7 @@ function ViewerOperationItem(props: OperationItem) {
       disableGutters
       onClick={onClick}
       disabled={disabled}
-      data-test="list-button-viewer-operation">
+      data-test="renderer-operation-item">
       <StyledNavItemIcon>{icon}</StyledNavItemIcon>
 
       <ListItemText disableTypography primary={title} />

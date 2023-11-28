@@ -34,7 +34,7 @@ describe('navigate questionnaires page', () => {
 
 describe('navigate responses page', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const formsServerUrl = 'https://api.smartforms.io/fhir';
+  const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
 
   beforeEach(() => {
     cy.launchFromSMARTHealthIT();

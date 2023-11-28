@@ -22,7 +22,7 @@ import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
-import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
+import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -35,8 +35,8 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
 
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   function handleOpenDialog() {
     if (smartClient) {

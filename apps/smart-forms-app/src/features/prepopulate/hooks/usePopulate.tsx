@@ -28,19 +28,16 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
 
   const { smartClient, patient, user, encounter } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const sourceResponse = useQuestionnaireResponseStore((state) => state.sourceResponse);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
-  const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
+  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
 
-  const updatePopulatedProperties = useQuestionnaireStore(
-    (state) => state.updatePopulatedProperties
-  );
+  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
 
-  const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsPopulated
-  );
-  const formChangesHistory = useQuestionnaireResponseStore((state) => state.formChangesHistory);
+  const setUpdatableResponseAsPopulated =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
+  const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   const [isPopulated, setIsPopulated] = useState(false);
 

@@ -21,7 +21,7 @@ import useResponsive from '../../../../hooks/useResponsive.ts';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function UpdatingIndicator() {
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
   const [isUpdating, setIsUpdating] = useState(false);
 

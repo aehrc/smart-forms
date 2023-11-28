@@ -16,7 +16,7 @@
  */
 
 describe('save response', () => {
-  const formsServerUrl = 'https://api.smartforms.io/fhir';
+  const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
 
   const launchUrlWithoutQuestionnaire =
     'http://localhost:5173/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
@@ -71,7 +71,7 @@ describe('save response', () => {
       cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
       cy.initAgeValue(60);
 
-      cy.getByData('list-button-renderer-operation');
+      cy.getByData('renderer-operation-item');
       cy.contains('Save as Final').click();
       cy.get('.MuiButtonBase-root').contains('Save as final').click();
 

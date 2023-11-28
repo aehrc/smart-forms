@@ -27,7 +27,7 @@ function RendererOperationItem(props: OperationItem) {
       disableGutters
       onClick={onClick}
       disabled={disabled}
-      data-test="list-button-renderer-nav-page">
+      data-test="renderer-operation-item">
       <StyledNavItemIcon>{icon}</StyledNavItemIcon>
 
       <ListItemText disableTypography primary={title} />

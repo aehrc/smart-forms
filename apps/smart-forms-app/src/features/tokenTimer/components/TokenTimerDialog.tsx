@@ -50,11 +50,10 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
-  const setUpdatableResponseAsSaved = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsSaved
-  );
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const setUpdatableResponseAsSaved =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
 
   const [isSaving, setIsSaving] = useState(false);
 

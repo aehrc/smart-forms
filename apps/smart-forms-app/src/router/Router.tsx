@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import DashboardLayout from '../features/dashboard/layout/DashboardLayout.tsx';
 import Launch from '../features/smartAppLaunch/components/Launch.tsx';
 import QuestionnairesPage from '../features/dashboard/components/DashboardPages/QuestionnairePage/QuestionnairesPage.tsx';
@@ -78,12 +78,8 @@ export default function Router() {
       element: <Launch />
     },
     {
-      path: '/notfound',
-      element: <NotFound />
-    },
-    {
       path: '*',
-      element: <Navigate to="/notfound" />
+      element: <NotFound />
     }
   ]);
 

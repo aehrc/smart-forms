@@ -20,8 +20,7 @@ import Box from '@mui/material/Box';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-
-import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
 
@@ -35,7 +34,7 @@ interface FormBodySingleTabProps {
 const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleTabProps) {
   const { contextDisplayItems, selected, tabLabel, listIndex } = props;
 
-  const switchTab = useQuestionnaireStore((state) => state.switchTab);
+  const switchTab = useQuestionnaireStore.use.switchTab();
 
   function handleTabClick() {
     switchTab(listIndex);

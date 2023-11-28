@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Stack, Typography } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Stack, Typography } from '@mui/material';
 import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
 import type { AuthState } from '../types/authorisation.interface.ts';
 import CenteredWrapper from '../../../components/Wrapper/CenteredWrapper.tsx';
 import UnlaunchedButton from '../../../components/Button/UnlaunchedButton.tsx';
+import useSmartClient from '../../../hooks/useSmartClient.ts';
+import AuthDebugLaunchContexts from './AuthDebugLaunchContexts.tsx';
+import AuthDebugFhirClient from './AuthDebugFhirClient.tsx';
+import AuthDebugErrorMessage from './AuthDebugErrorMessage.tsx';
 
 interface RenderAuthStatusProps {
   authState: AuthState;
@@ -30,32 +32,37 @@ interface RenderAuthStatusProps {
 function RenderAuthStatus(props: RenderAuthStatusProps) {
   const { authState } = props;
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { smartClient, patient, user, encounter, launchQuestionnaire } = useSmartClient();
 
   const launchFailed =
     authState.hasClient === false || authState.hasUser === false || authState.hasPatient === false;
 
+  const launchContexts = [
+    { contextName: 'Patient (required)', contextResource: patient },
+    { contextName: 'User (required)', contextResource: user },
+    { contextName: 'Encounter (optional)', contextResource: encounter },
+    { contextName: 'Questionnaire (optional)', contextResource: launchQuestionnaire }
+  ];
+
   if (launchFailed) {
     return (
       <CenteredWrapper>
-        <Stack rowGap={2}>
+        <Stack mt={2} rowGap={2}>
           <Typography variant="h3">An error occurred while authorising the launch.</Typography>
           <Typography fontSize={13}>
             {'Try relaunching the app or contact your administrator for assistance.'}
           </Typography>
         </Stack>
-
-        {authState.errorMessage ? (
-          <Accordion expanded={isExpanded} onChange={(_, expanded) => setIsExpanded(expanded)}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography fontWeight={600}>Error details:</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>{authState.errorMessage}</Typography>
-            </AccordionDetails>
-          </Accordion>
-        ) : null}
         <UnlaunchedButton />
+        <Stack my={4} rowGap={1}>
+          <Typography variant="subtitle2">Debug section:</Typography>
+          <AuthDebugLaunchContexts launchContexts={launchContexts} />
+          <AuthDebugFhirClient smartClient={smartClient} />
+
+          {authState.errorMessage ? (
+            <AuthDebugErrorMessage errorMessage={authState.errorMessage} />
+          ) : null}
+        </Stack>
       </CenteredWrapper>
     );
   }

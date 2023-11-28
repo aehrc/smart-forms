@@ -1,3 +1,7 @@
-export { default as useQuestionnaireStore } from './useQuestionnaireStore';
-export { default as useQuestionnaireResponseStore } from './useQuestionnaireResponseStore';
-export { default as useSmartConfigStore } from './useSmartConfigStore';
+export { questionnaireStore, useQuestionnaireStore } from './questionnaireStore';
+export {
+  questionnaireResponseStore,
+  useQuestionnaireResponseStore
+} from './questionnaireResponseStore';
+export { smartConfigStore, useSmartConfigStore } from './smartConfigStore';
+export { terminologyServerStore, useTerminologyServerStore } from './terminologyServerStore';

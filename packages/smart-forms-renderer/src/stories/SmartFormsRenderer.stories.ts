@@ -18,23 +18,27 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SmartFormsRenderer } from '../components';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import Q715Json from './assets/Q715.json';
-import R715Json from './assets/R715.json';
-import QTestGridJson from './assets/QTestGrid.json';
-import RTestGridJson from './assets/RTestGrid.json';
+import Q715Json from './assets/Qs-and-QRs/Q715.json';
+import R715Json from './assets/Qs-and-QRs/R715.json';
+import QTestGridJson from './assets/Qs-and-QRs/QTestGrid.json';
+import RTestGridJson from './assets/Qs-and-QRs/RTestGrid.json';
+import QDev715Json from './assets/Qs-and-QRs/QDev715.json';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'Component/SmartFormsRenderer',
   component: SmartFormsRenderer,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
-  tags: ['autodocs']
+  tags: []
 } satisfies Meta<typeof SmartFormsRenderer>;
 
 const Q715 = Q715Json as Questionnaire;
 const R715 = R715Json as QuestionnaireResponse;
+
 const QTestGrid = QTestGridJson as Questionnaire;
 const RTestGrid = RTestGridJson as QuestionnaireResponse;
+
+const QDev715 = QDev715Json as Questionnaire;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -51,6 +55,12 @@ export const Form715WithResponse: Story = {
   args: {
     questionnaire: Q715,
     questionnaireResponse: R715
+  }
+};
+
+export const FormDev715: Story = {
+  args: {
+    questionnaire: QDev715
   }
 };
 

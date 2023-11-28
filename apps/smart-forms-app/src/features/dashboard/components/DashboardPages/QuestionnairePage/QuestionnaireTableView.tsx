@@ -16,7 +16,7 @@
  */
 
 import QuestionnaireListToolbar from './TableComponents/QuestionnaireListToolbar.tsx';
-import { Fade, Table as MuiTable, TableBody, TableContainer, Typography } from '@mui/material';
+import { Table as MuiTable, TableBody, TableContainer } from '@mui/material';
 import DashboardTableHead from '../DashboardTableHead.tsx';
 import QuestionnaireTableRow from './TableComponents/QuestionnaireTableRow.tsx';
 import QuestionnaireListFeedback from './TableComponents/QuestionnaireListFeedback.tsx';
@@ -24,6 +24,7 @@ import DashboardTablePagination from '../DashboardTablePagination.tsx';
 import type { Table } from '@tanstack/react-table';
 import type { Questionnaire } from 'fhir/r4';
 import { createQuestionnaireListItem } from '../../../utils/dashboard.ts';
+import RefetchButton from '../../../../../components/Button/RefetchButton.tsx';
 
 interface QuestionnaireTableViewProps {
   table: Table<Questionnaire>;
@@ -37,6 +38,7 @@ interface QuestionnaireTableViewProps {
   onSearch: (input: string) => void;
   onRowClick: (id: string) => void;
   onSelectQuestionnaire: (selected: Questionnaire | null) => void;
+  refetchQuestionnaires: () => void;
 }
 
 function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
@@ -51,7 +53,8 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
     selectedQuestionnaire,
     onSearch,
     onRowClick,
-    onSelectQuestionnaire
+    onSelectQuestionnaire,
+    refetchQuestionnaires
   } = props;
 
   const headers = table.getHeaderGroups()[0].headers;
@@ -101,11 +104,7 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
       </TableContainer>
 
       <DashboardTablePagination table={table}>
-        <Fade in={isFetching}>
-          <Typography variant="subtitle2" color="text.secondary" sx={{ p: 2 }}>
-            Updating...
-          </Typography>
-        </Fade>
+        <RefetchButton isFetching={isFetching} refetchResources={refetchQuestionnaires} />
       </DashboardTablePagination>
     </>
   );

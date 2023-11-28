@@ -20,8 +20,7 @@ import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
 import type { AlertColor } from '@mui/material/Alert';
-import useQuestionnaireStore from '../stores/useQuestionnaireStore';
-import useTerminologyServerStore from '../stores/useTerminologyServerStore';
+import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 
 function useTerminologyServerQuery(
   qItem: QuestionnaireItem,
@@ -29,8 +28,8 @@ function useTerminologyServerQuery(
   input: string,
   searchTerm: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
-  const processedValueSetUrls = useQuestionnaireStore((state) => state.processedValueSetUrls);
-  const defaultTerminologyServerUrl = useTerminologyServerStore((state) => state.url);
+  const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
+  const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   let fullUrl = '';
   let options: Coding[] = [];

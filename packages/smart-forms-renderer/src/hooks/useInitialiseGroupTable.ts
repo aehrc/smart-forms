@@ -17,10 +17,10 @@
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
-import type { GroupTableRow } from '../interfaces/groupTable.interface';
+import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
 
-function useInitialiseGroupTable(qrItems: QuestionnaireResponseItem[]): GroupTableRow[] {
-  let initialGroupTableRows: GroupTableRow[] = [
+function useInitialiseGroupTable(qrItems: QuestionnaireResponseItem[]): GroupTableRowModel[] {
+  let initialGroupTableRows: GroupTableRowModel[] = [
     {
       nanoId: nanoid(),
       qrItem: null

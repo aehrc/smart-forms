@@ -1,6 +1,6 @@
 describe('pre-test setup', () => {
   const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const formsServerUrl = 'https://api.smartforms.io/fhir';
+  const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
 
   beforeEach(() => {
     cy.launchFromSMARTHealthIT();

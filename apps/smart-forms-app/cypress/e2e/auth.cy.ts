@@ -16,7 +16,7 @@
  */
 
 describe('launch app in SMART Launcher', () => {
-  const formsServerUrl = 'https://api.smartforms.io/fhir';
+  const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
 
   context('launch without authorisation', () => {
     const launchPage = 'http://localhost:5173/launch';

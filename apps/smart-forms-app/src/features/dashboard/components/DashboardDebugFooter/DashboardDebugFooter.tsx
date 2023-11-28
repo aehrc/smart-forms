@@ -32,7 +32,8 @@ function DashboardDebugFooter() {
           </Typography>
           <Typography variant="overline">
             {`Forms server: ${
-              FORMS_SERVER_ENDPOINT ?? 'Undefined. Defaulting to https://api.smartforms.io/fhir'
+              FORMS_SERVER_ENDPOINT ??
+              'Undefined. Defaulting to https://smartforms.csiro.au/api/fhir'
             }`}
           </Typography>
         </Box>

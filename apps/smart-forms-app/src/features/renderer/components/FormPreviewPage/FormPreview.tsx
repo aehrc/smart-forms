@@ -28,8 +28,8 @@ import {
 } from '@aehrc/smart-forms-renderer';
 
 function FormPreview() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const updatableResponse = useQuestionnaireResponseStore((state) => state.updatableResponse);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
   if (!sourceQuestionnaire.item || !updatableResponse.item) {
     return <FormInvalid />;

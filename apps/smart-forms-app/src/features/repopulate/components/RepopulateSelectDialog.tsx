@@ -50,13 +50,10 @@ interface RepopulateSelectDialogProps {
 function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
   const { itemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
 
-  const updatePopulatedProperties = useQuestionnaireStore(
-    (state) => state.updatePopulatedProperties
-  );
+  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
 
-  const setUpdatableResponseAsPopulated = useQuestionnaireResponseStore(
-    (state) => state.setUpdatableResponseAsPopulated
-  );
+  const setUpdatableResponseAsPopulated =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
 
   const { linkIds, itemsToRepopulateTuplesByHeadings } = useMemo(
     () => getRepopulatedItemTuplesByHeadings(itemsToRepopulate),
@@ -86,6 +83,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       checkedLinkIds
     );
 
+    // Prevent state batching for this spinner https://react.dev/reference/react-dom/flushSync
     flushSync(() => {
       onSpinnerChange({
         isSpinning: true,

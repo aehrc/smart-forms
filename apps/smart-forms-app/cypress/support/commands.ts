@@ -32,28 +32,28 @@ Cypress.Commands.add('getByData', (selector, ...args) => {
 });
 
 Cypress.Commands.add('previewForm', () => {
-  cy.getByData('list-button-renderer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains('Preview').click();
   cy.location('pathname').should('eq', '/renderer/preview');
 });
 
 Cypress.Commands.add('clickOnNavPage', (operationName: string) => {
-  cy.getByData('list-button-renderer-nav-page');
+  cy.getByData('renderer-operation-item');
   cy.contains(operationName).click();
 });
 
 Cypress.Commands.add('clickOnRendererOperation', (operationName: string) => {
-  cy.getByData('list-button-renderer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains(operationName).click();
 });
 
 Cypress.Commands.add('clickOnViewerOperation', (operationName: string) => {
-  cy.getByData('list-button-viewer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains(operationName).click();
 });
 
 Cypress.Commands.add('editForm', () => {
-  cy.getByData('list-button-renderer-operation');
+  cy.getByData('renderer-operation-item');
   cy.contains('Editor').click();
   cy.location('pathname').should('eq', '/renderer');
 });
@@ -102,7 +102,7 @@ Cypress.Commands.add('launchFromSMARTHealthIT', () => {
 });
 
 Cypress.Commands.add('goToResponsesPage', () => {
-  cy.getByData('list-button-dashboard-nav-page');
+  cy.getByData('renderer-operation-item');
   cy.contains('Responses').click();
 });
 
@@ -118,7 +118,7 @@ Cypress.Commands.add('waitForExistingResponses', () => {
 });
 
 Cypress.Commands.add('createDraftResponse', () => {
-  const formsServerUrl = 'https://api.smartforms.io/fhir';
+  const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
   const launchUrlWithoutQuestionnaire =
     'http://localhost:5173/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
 

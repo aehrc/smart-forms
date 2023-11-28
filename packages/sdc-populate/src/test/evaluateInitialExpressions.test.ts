@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { evaluateExpressions } from '../evaluateExpressions';
+import { evaluateExpressions } from '../utils/evaluateExpressions';
 import initialExpressionsSample from './resources/initial-expressions-sample.json';
 import contextSample from './resources/context-sample.json';
 import type { InitialExpression } from '../interfaces/expressions.interface';

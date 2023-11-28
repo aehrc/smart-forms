@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import Editor from '@monaco-editor/react';
+import Editor, { useMonaco } from '@monaco-editor/react';
 import { useState } from 'react';
 import type { editor } from 'monaco-editor';
 import { Box, Button, Divider, Stack } from '@mui/material';
@@ -46,6 +46,8 @@ function JsonEditor(props: Props) {
     }
   }
 
+  const monaco = useMonaco();
+
   return (
     <Box height="100%">
       <Stack direction="row" gap={2} sx={{ py: 0.75, px: 1.5 }}>
@@ -57,9 +59,24 @@ function JsonEditor(props: Props) {
         </Button>
 
         {buildingState !== 'idle' ? (
-          <Button color="error" startIcon={<Iconify icon="mdi:nuke" />} onClick={onDestroyForm}>
-            Destroy Form
-          </Button>
+          <>
+            <Button color="error" startIcon={<Iconify icon="mdi:nuke" />} onClick={onDestroyForm}>
+              Destroy Form
+            </Button>
+            <Box flexGrow={1} />
+            <Button
+              startIcon={<Iconify icon="gg:format-left" />}
+              disabled={errorMessages.length > 0 || jsonString === ''}
+              onClick={() => {
+                if (monaco) {
+                  const formattedJson = JSON.stringify(JSON.parse(jsonString), null, 2);
+                  const editor = monaco.editor.getModels()[0];
+                  editor.setValue(formattedJson);
+                }
+              }}>
+              Format JSON
+            </Button>
+          </>
         ) : null}
       </Stack>
       <Divider />

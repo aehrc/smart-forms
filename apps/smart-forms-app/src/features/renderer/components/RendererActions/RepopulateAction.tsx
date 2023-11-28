@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { RendererOperationItem } from '../RendererNav/RendererOperationSection.tsx';
+import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import { useSnackbar } from 'notistack';
 import { populateQuestionnaire } from '../../../prepopulate/utils/populate.ts';
@@ -44,8 +44,8 @@ function RepopulateAction(props: RepopulateActionProps) {
 
   const [itemsToRepopulate, setItemsToRepopulate] = useState<Record<string, ItemToRepopulate>>({});
 
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
-  const fhirPathContext = useQuestionnaireStore((state) => state.fhirPathContext);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 

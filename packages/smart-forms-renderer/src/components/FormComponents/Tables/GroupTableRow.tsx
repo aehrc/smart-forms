@@ -17,65 +17,105 @@
 
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
-import SingleItem from '../SingleItem/SingleItem';
-import { getQrItemsIndex } from '../../../utils/mapItem';
-import { StandardTableCell } from './Table.styles';
 import type {
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
+import type { TableRowProps } from '@mui/material/TableRow';
+import SelectRowButton from './SelectRowButton';
+import GroupTableRowCells from './GroupTableRowCells';
+import RemoveRowButton from './RemoveRowButton';
+import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
+import DragIndicator from '@mui/icons-material/DragIndicator';
+import TableCell from '@mui/material/TableCell';
+import Box from '@mui/material/Box';
+import { Draggable } from 'react-beautiful-dnd';
+import { StyledGroupTableRow } from './Table.styles';
 
-interface Props extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
+interface GroupTableRowProps
+  extends PropsWithShowMinimalViewAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    TableRowProps {
+  nanoId: string;
+  index: number;
+  tableQItem: QuestionnaireItem;
+  answeredQrItem: QuestionnaireResponseItem;
+  nullableQrItem: QuestionnaireResponseItem | null;
+  readOnly: boolean;
+  hoverDisabled: boolean;
+  tableRows: GroupTableRowModel[];
+  itemIsSelected: boolean;
+  selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
+  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
+  onRemoveRow: (index: number) => void;
+  onSelectRow: (nanoId: string) => void;
 }
 
-function GroupTableRow(props: Props) {
-  const { qItem, qrItem, qItemsIndexMap, parentIsReadOnly, onQrItemChange } = props;
-
-  const rowItems = qItem.item;
-  const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
-  const rowQrItems = row.item;
-
-  if (!rowItems || !rowQrItems) {
-    return null;
-  }
-
-  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
-    const qrRow: QuestionnaireResponseItem = { ...row };
-    updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow);
-  }
-
-  const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
+function GroupTableRow(props: GroupTableRowProps) {
+  const {
+    nanoId,
+    index,
+    tableQItem,
+    answeredQrItem,
+    nullableQrItem,
+    readOnly,
+    hoverDisabled,
+    tableRows,
+    itemIsSelected,
+    qItemsIndexMap,
+    showMinimalView,
+    parentIsReadOnly,
+    onRowChange,
+    onRemoveRow,
+    onSelectRow
+  } = props;
 
   return (
-    <>
-      {rowItems.map((rowItem, index) => {
-        const qrItem = qrItemsByIndex[index];
-
-        if (Array.isArray(qrItem)) {
-          return null;
-        }
-
-        return (
-          <StandardTableCell key={index} numOfColumns={rowItems.length} isFirst={index === 0}>
-            <SingleItem
-              key={qItem.linkId}
-              qItem={rowItem}
-              qrItem={qrItem ?? null}
-              isRepeated={true}
-              isTabled={true}
-              showMinimalView={true}
-              parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={handleQrRowItemChange}
+    <Draggable draggableId={nanoId} index={index}>
+      {(draggableProvided, snapshot) => (
+        <StyledGroupTableRow
+          itemIsDragged={snapshot.isDragging}
+          itemIsSelected={itemIsSelected}
+          hoverDisabled={hoverDisabled}
+          hover={!hoverDisabled}
+          ref={draggableProvided.innerRef}
+          {...draggableProvided.draggableProps}>
+          {showMinimalView ? null : (
+            <>
+              <TableCell padding="checkbox">
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  {...draggableProvided.dragHandleProps}>
+                  <DragIndicator fontSize="small" />
+                </Box>
+              </TableCell>
+              <SelectRowButton
+                isSelected={itemIsSelected}
+                onSelectItem={() => onSelectRow(nanoId)}
+              />
+            </>
+          )}
+          <GroupTableRowCells
+            qItem={tableQItem}
+            qrItem={answeredQrItem}
+            qItemsIndexMap={qItemsIndexMap}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
+          />
+          {showMinimalView ? null : (
+            <RemoveRowButton
+              nullableQrItem={nullableQrItem}
+              numOfRows={tableRows.length}
+              readOnly={readOnly}
+              onRemoveItem={() => onRemoveRow(index)}
             />
-          </StandardTableCell>
-        );
-      })}
-    </>
+          )}
+        </StyledGroupTableRow>
+      )}
+    </Draggable>
   );
 }
 

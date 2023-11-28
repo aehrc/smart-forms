@@ -23,7 +23,8 @@ export default function Table(theme: Theme) {
       styleOverrides: {
         head: {
           color: theme.palette.text.secondary,
-          backgroundColor: theme.palette.customBackground.neutral
+          backgroundColor: theme.palette.customBackground.neutral,
+          borderBottom: '1px solid #e5e7eb'
         }
       }
     }

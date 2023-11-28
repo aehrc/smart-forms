@@ -19,7 +19,7 @@ import React, { memo } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import useQuestionnaireStore from '../../stores/useQuestionnaireStore';
+import { useQuestionnaireStore } from '../../stores';
 
 interface CompleteTabButtonProps {
   tabLinkId: string;
@@ -29,7 +29,7 @@ interface CompleteTabButtonProps {
 const CompleteTabButton = memo(function CompleteTabButton(props: CompleteTabButtonProps) {
   const { tabLinkId, tabIsMarkedAsComplete } = props;
 
-  const markTabAsComplete = useQuestionnaireStore((state) => state.markTabAsComplete);
+  const markTabAsComplete = useQuestionnaireStore.use.markTabAsComplete();
 
   return (
     <Tooltip title={tabIsMarkedAsComplete ? 'Mark as incomplete' : 'Complete tab'}>

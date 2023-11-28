@@ -72,7 +72,7 @@ function Authorisation() {
   const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext } =
     useSmartClient();
 
-  const buildSourceQuestionnaire = useQuestionnaireStore((state) => state.buildSourceQuestionnaire);
+  const buildSourceQuestionnaire = useQuestionnaireStore.use.buildSourceQuestionnaire();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();

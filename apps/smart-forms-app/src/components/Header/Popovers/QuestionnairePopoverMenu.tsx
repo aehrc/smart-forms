@@ -20,7 +20,7 @@ import { PopoverMenuWrapper } from './Popover.styles.ts';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 function QuestionnairePopoverMenu() {
-  const sourceQuestionnaire = useQuestionnaireStore((state) => state.sourceQuestionnaire);
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
   return (
     <PopoverMenuWrapper>

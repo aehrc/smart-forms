@@ -36,7 +36,7 @@ Both of these interfaces are required to be implement as arguments to the ```ass
 
 
 ## Sample implementation
-We have used this module as a microservice in our forms server https://api.smartforms.io. 
+We have used this module as a microservice in our forms server https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble. 
 
 A sample implementation can be found [here](https://github.com/aehrc/smart-forms/blob/main/services/assemble-express/src/index.ts#LL43C4-L46C2)
 

@@ -24,7 +24,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import useQuestionnaireStore from '../../../stores/useQuestionnaireStore';
+import { useQuestionnaireStore } from '../../../stores';
 import SingleItemSwitcher from './SingleItemSwitcher';
 import useHidden from '../../../hooks/useHidden';
 import useReadOnly from '../../../hooks/useReadOnly';
@@ -43,7 +43,7 @@ function SingleItem(props: SingleItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
-  const updateEnableWhenItem = useQuestionnaireStore((state) => state.updateEnableWhenItem);
+  const updateEnableWhenItem = useQuestionnaireStore.use.updateEnableWhenItem();
 
   const handleQrItemChange = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
