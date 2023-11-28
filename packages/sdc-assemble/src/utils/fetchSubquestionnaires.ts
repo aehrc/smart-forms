@@ -18,7 +18,7 @@
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
 import axios from 'axios';
 import { createErrorOutcome } from './operationOutcome';
-import type { FetchQuestionnaireCallback } from './interfaces/callback.interface';
+import type { FetchQuestionnaireCallback } from '../interfaces';
 
 /**
  * Fetches subquestionnaires from a FHIR server via a callback function defined by the implementer

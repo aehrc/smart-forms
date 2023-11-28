@@ -6,7 +6,6 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
-    "useUnknownInCatchVariables": false,
     "strict": true,
     "skipLibCheck": true,
     "jsx": "react",

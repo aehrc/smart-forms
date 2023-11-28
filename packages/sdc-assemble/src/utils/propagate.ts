@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
-import type { Extension, FhirResource, Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type {
+  Extension,
+  FhirResource,
+  OperationOutcome,
+  Questionnaire,
+  QuestionnaireItem
+} from 'fhir/r4';
+import { createErrorOutcome } from './operationOutcome';
 
 /**
  * Propagate (assemble) collected properties from subquestionnaires to the parent questionnaire.
@@ -25,6 +32,7 @@ import type { Extension, FhirResource, Questionnaire, QuestionnaireItem } from '
  * @param itemsFromSubquestionnaires - The items from the subquestionnaires
  * @param containedResourcesFromSubquestionnaires - The contained resources from the subquestionnaires
  * @param rootLevelExtensions - The root level extensions collected from the subquestionnaires
+ * @param itemLevelExtensions - The item level extensions collected from the subquestionnaires
  * @returns The complete assembled Questionnaire resource
  *
  * @author Sean Fong
@@ -34,8 +42,9 @@ export function propagateProperties(
   urlsFromSubquestionnaires: string[],
   itemsFromSubquestionnaires: (QuestionnaireItem[] | null)[],
   containedResourcesFromSubquestionnaires: Record<string, FhirResource>,
-  rootLevelExtensions: Extension[]
-): Questionnaire {
+  rootLevelExtensions: Extension[],
+  itemLevelExtensions: (Extension[] | null)[]
+): Questionnaire | OperationOutcome {
   if (!parentQuestionnaire.item || parentQuestionnaire.item.length === 0) {
     return parentQuestionnaire;
   }
@@ -59,7 +68,27 @@ export function propagateProperties(
       questionnaireItems.push(itemFromParent);
     }
   }
+
   parentQuestionnaireForm.item = questionnaireItems;
+
+  // Propagate item-level extensions into top-level item
+  // Also check for duplicate variables
+  const flattenedItemLevelExtensions = itemLevelExtensions.flatMap(
+    (extensions) => extensions
+  ) as Extension[];
+
+  const combinedTopLevelItemExtensions = [
+    ...(parentQuestionnaireForm.extension ?? []),
+    ...flattenedItemLevelExtensions
+  ];
+
+  const checkResult = checkDuplicatesInTopLevelItemVariables(combinedTopLevelItemExtensions);
+  if (checkResult !== null) {
+    return checkResult;
+  }
+
+  parentQuestionnaireForm.extension = combinedTopLevelItemExtensions;
+
   parentQuestionnaire.item[0] = parentQuestionnaireForm;
 
   // Propagate contained resources
@@ -149,6 +178,19 @@ export function propagateProperties(
   // Add [version]-assembled attribute
   parentQuestionnaire.version = `${parentQuestionnaire.version}-assembled`;
 
+  // Remove questionnaire-modular profile from meta
+  if (parentQuestionnaire.meta?.profile) {
+    parentQuestionnaire.meta.profile = parentQuestionnaire.meta?.profile?.filter(
+      (profile) =>
+        profile !== 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular'
+    );
+  }
+
+  // Remove text element
+  if (parentQuestionnaire.text) {
+    delete parentQuestionnaire.text;
+  }
+
   return parentQuestionnaire;
 }
 
@@ -186,4 +228,24 @@ function getLaunchContextExtensions(
     }
   }
   return mergedLaunchContexts;
+}
+
+function checkDuplicatesInTopLevelItemVariables(topLevelItemExtensions: Extension[]) {
+  const extensionNames = new Set();
+
+  for (const extension of topLevelItemExtensions) {
+    const isVariable = extension.url === 'http://hl7.org/fhir/StructureDefinition/variable';
+    const variableName = extension.valueExpression?.name;
+    if (isVariable && variableName) {
+      if (extensionNames.has(variableName)) {
+        return createErrorOutcome(
+          `The variable ${variableName} is duplicated, which is prohibited.`
+        );
+      }
+
+      extensionNames.add(variableName);
+    }
+  }
+
+  return null;
 }

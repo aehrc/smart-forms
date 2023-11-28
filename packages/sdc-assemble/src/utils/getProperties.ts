@@ -241,14 +241,21 @@ export function getExtensions(
       ...Object.values(variables)
     ];
 
-    if (itemPopulationContext) currentItemLevelExtensions.push(itemPopulationContext);
-    if (itemExtractionContext) currentItemLevelExtensions.push(itemExtractionContext);
+    if (itemPopulationContext) {
+      currentItemLevelExtensions.push(itemPopulationContext);
+    }
+
+    if (itemExtractionContext) {
+      currentItemLevelExtensions.push(itemExtractionContext);
+    }
 
     itemLevelExtensions.push(currentItemLevelExtensions);
   }
 
   // Aggregate cqfLibrary and all launchContexts to root level extensions array
-  if (cqfLibrary) rootLevelExtensions.push(cqfLibrary);
+  if (cqfLibrary) {
+    rootLevelExtensions.push(cqfLibrary);
+  }
   rootLevelExtensions.push(...Object.values(launchContexts));
 
   return {
@@ -346,41 +353,4 @@ export function getItems(subquestionnaires: Questionnaire[]): (QuestionnaireItem
     items.push(subquestionnaireItems);
   }
   return items;
-}
-
-/**
- * Merges item-level extensions into subquestionnaire items
- *
- * @param items - An array of subquestionnaire items to merge extensions into
- * @param itemLevelExtensions - An array of item-level extensions to merge into subquestionnaire items
- * @returns An array of subquestionnaire items with extensions merged
- *
- * @author Sean Fong
- */
-export function mergeExtensionsIntoItems(
-  items: (QuestionnaireItem[] | null)[],
-  itemLevelExtensions: (Extension[] | null)[]
-): (QuestionnaireItem[] | null)[] {
-  const newItems: (QuestionnaireItem[] | null)[] = [];
-  for (let i = 0; i < items.length; i++) {
-    const subquestionnaireItems = items[i];
-    if (!subquestionnaireItems) {
-      newItems.push(null);
-      continue;
-    }
-
-    const newSubquestionnaireItems: QuestionnaireItem[] = [];
-    for (const qItem of subquestionnaireItems) {
-      const extensions = itemLevelExtensions[i];
-      if (extensions) {
-        const qItemExtensions: Extension[] = qItem.extension ? qItem.extension : [];
-        qItemExtensions.push(...extensions);
-        qItem.extension = qItemExtensions;
-      }
-
-      newSubquestionnaireItems.push(qItem);
-    }
-    newItems.push(newSubquestionnaireItems);
-  }
-  return newItems;
 }

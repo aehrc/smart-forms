@@ -34,6 +34,29 @@ function fetchQuestionnaireCallback (canonicalUrl: string, requestConfig: any) {
 
 Both of these interfaces are required to be implement as arguments to the ```assemble()``` function.
 
+### Note for Vite users (or if you facing CommonJS/ESM issues)
+If you are using Vite, you might need to add the following to your ```vite.config.ts``` file:
+This package is a CommonJS module for backwards compatibility with Node.js, so this configuration is required so that Vite can correctly bundle the module.
+```ts
+export default defineConfig({
+  // ...
+  optimizeDeps: {
+    include: [
+      '@aehrc/sdc-assemble',
+      // other modules as required...
+    ],
+  },
+  build: {
+    commonjsOptions: {
+      include: [
+        /node_modules/, 
+        '@aehrc/sdc-assemble',
+        // other modules as required...
+      ]
+    }
+  }
+});
+```
 
 ## Sample implementation
 We have used this module as a microservice in our forms server https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble. 

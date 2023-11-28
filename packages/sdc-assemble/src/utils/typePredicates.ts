@@ -16,7 +16,7 @@
  */
 
 import type { Parameters, ParametersParameter } from 'fhir/r4';
-import type { InputParameters } from './interfaces/parameters.interface';
+import type { InputParameters } from '../interfaces';
 
 /**
  * Check if the given parameters is a valid InputParameters for $assemble

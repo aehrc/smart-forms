@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/sdc-assemble",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "description": "Performs the $assemble operation for modular forms from the HL7 FHIR SDC (Structured Data Capture) specification: http://hl7.org/fhir/uv/sdc/modular.html",
   "main": "lib/index.js",
   "scripts": {
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/fhir": "^0.0.38",
-    "@types/lodash.clonedeep": "^4.5.7"
+    "@types/lodash.clonedeep": "^4.5.7",
+    "jest": "^29.7.0"
   }
 }
