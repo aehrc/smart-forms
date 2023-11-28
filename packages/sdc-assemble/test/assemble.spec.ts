@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { assemble } from '../src/assemble';
 import type { InputParameters } from '../src';
+import { assemble } from '../src';
 import assembleInputParams from './resources/assemble-input-params.json';
 import assembledExpectation from './resources/assembled.json';
 import axios from 'axios';

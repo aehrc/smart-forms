@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 
-export * from './interfaces';
-export * from './utils';
+export { InputParameters, OutputParameters } from './parameters.interface';
+export { FetchQuestionnaireCallback } from './callback.interface';

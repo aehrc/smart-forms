@@ -186,6 +186,11 @@ export function propagateProperties(
     );
   }
 
+  // Remove text element
+  if (parentQuestionnaire.text) {
+    delete parentQuestionnaire.text;
+  }
+
   return parentQuestionnaire;
 }
 

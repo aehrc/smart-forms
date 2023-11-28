@@ -16,7 +16,7 @@
  */
 
 import type { OperationOutcomeIssue, Questionnaire } from 'fhir/r4';
-import type { OutputParameters } from './interfaces/parameters.interface';
+import type { OutputParameters } from '../interfaces';
 
 /**
  * Create output parameters with 'return' and 'outcome' field which holds the assembled questionnaire and issues/warnings respectively

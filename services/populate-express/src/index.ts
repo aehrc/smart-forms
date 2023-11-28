@@ -16,8 +16,9 @@
  */
 
 import express from 'express';
-import populate, { isPopulateInputParameters } from '@aehrc/sdc-populate';
+import { isInputParameters, populate } from '@aehrc/sdc-populate';
 import type { OperationOutcome } from 'fhir/r4';
+import { fetchResourceCallback } from './callback';
 
 const app = express();
 const port = 3001;
@@ -29,9 +30,9 @@ app.post('/api', (req, res) => {
   const parameters = req.body;
   const operationOutcome: OperationOutcome = { issue: [], resourceType: 'OperationOutcome' };
 
-  if (isPopulateInputParameters(parameters)) {
+  if (isInputParameters(parameters)) {
     try {
-      const outputPopParams = populate(parameters);
+      const outputPopParams = populate(parameters, fetchResourceCallback, requestConfig);
       res.json(outputPopParams);
     } catch (err: unknown) {
       if (err instanceof Error) {

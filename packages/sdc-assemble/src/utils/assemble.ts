@@ -22,8 +22,7 @@ import type {
   Questionnaire,
   QuestionnaireItem
 } from 'fhir/r4';
-import type { InputParameters, OutputParameters } from './interfaces/parameters.interface';
-import type { FetchQuestionnaireCallback } from './interfaces/callback.interface';
+import type { FetchQuestionnaireCallback, InputParameters, OutputParameters } from '../interfaces';
 import { createOutputParameters } from './parameters';
 import { fetchSubquestionnaires } from './fetchSubquestionnaires';
 import type { PropagatedExtensions } from './getProperties';

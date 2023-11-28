@@ -12,8 +12,10 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "lib",
-    "resolveJsonModule": true,
     "declaration": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
+
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
@@ -21,9 +23,8 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
-    "noUnusedParameters": true,
-    "checkJs": true
+    "noUnusedParameters": true
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.ts"]
+  "exclude": ["src/**/*.test.ts", "lib"]
 }

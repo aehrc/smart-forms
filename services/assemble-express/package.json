@@ -1,8 +1,8 @@
 {
   "name": "assemble-express",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
   "scripts": {
     "compile": "tsc",
     "start": "node lib/index.js",
@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "@aehrc/sdc-assemble": "^1.0.3",
+    "@aehrc/sdc-assemble": "^1.2.0",
     "cors": "^2.8.5"
   },
   "devDependencies": {

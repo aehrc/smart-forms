@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 
-export * from './interfaces';
-export * from './utils';
+export { isInputParameters } from './typePredicates';
+export { assemble } from './assemble';

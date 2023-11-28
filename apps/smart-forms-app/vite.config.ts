@@ -4,5 +4,13 @@ import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), svgr()]
+  plugins: [react(), svgr()],
+  optimizeDeps: {
+    include: ['@aehrc/sdc-assemble', '@aehrc/sdc-populate']
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/, '@aehrc/sdc-assemble', '@aehrc/sdc-populate']
+    }
+  }
 });
