@@ -17,7 +17,7 @@
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useLayoutEffect, useState } from 'react';
-import { createEmptyQuestionnaireResponse } from '../utils/qrItem';
+import { initialiseQuestionnaireResponse } from '../utils/qrItem';
 import type Client from 'fhirclient/lib/Client';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import {
@@ -79,7 +79,7 @@ function useInitialiseRenderer(
       additionalVariables,
       terminologyServerUrl
     ).then(() => {
-      buildSourceResponse(createEmptyQuestionnaireResponse(questionnaire));
+      buildSourceResponse(initialiseQuestionnaireResponse(questionnaire));
 
       if (questionnaireResponse) {
         const updatedResponse = updatePopulatedProperties(questionnaireResponse);

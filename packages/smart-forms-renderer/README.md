@@ -28,7 +28,7 @@ export default function App () {
   )
 }
 ```
-Note: The SmartFormsRenderer component is extremely basic and experimental, do not use it in production!
+Note: The SmartFormsRenderer component trades customisability for simplicity. If you need more control over the rendering engine, refer to the Advanced Usage section.
 
 
 ### SmartFormsRenderer Props 

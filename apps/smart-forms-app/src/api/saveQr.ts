@@ -137,17 +137,15 @@ function addQuestionnaireReference(
   questionnaireResponseToSave: QuestionnaireResponse,
   endpointUrl: string
 ): QuestionnaireResponse {
-  let questionnaireReference: string;
   if (endpointUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
-    // Plugging questionnaire.id in because SMART Health IT has these weird requirements for canonicals
-    questionnaireReference = questionnaire.id ? `Questionnaire/${questionnaire.id}` : '';
-  } else {
-    questionnaireReference = questionnaire.url ?? '';
+    // Plugging questionnaire.id in because SMART Health IT requires QRs to have Questionnaire/{id} as reference
+    questionnaireResponseToSave.questionnaire = questionnaire.id
+      ? `Questionnaire/${questionnaire.id}`
+      : '';
   }
 
   // Add questionnaire reference if it is not an empty string
-  if (questionnaireReference) {
-    questionnaireResponseToSave.questionnaire = questionnaireReference;
+  if (questionnaireResponseToSave.questionnaire) {
     questionnaireResponseToSave._questionnaire = {
       extension: [
         {

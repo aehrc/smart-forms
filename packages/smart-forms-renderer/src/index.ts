@@ -1,6 +1,6 @@
 import { questionnaireResponseStore, questionnaireStore } from './stores';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { createEmptyQuestionnaireResponse } from './utils/qrItem';
+import { initialiseQuestionnaireResponse } from './utils/qrItem';
 import { removeHiddenAnswers } from './utils/removeHidden';
 import type { ItemToRepopulate } from './utils/repopulateItems';
 import { getItemsToRepopulate } from './utils/repopulateItems';
@@ -25,13 +25,16 @@ export async function buildForm(
   await questionnaireStore.getState().buildSourceQuestionnaire(questionnaire);
 
   if (!questionnaireResponse) {
-    questionnaireResponseStore
-      .getState()
-      .buildSourceResponse(createEmptyQuestionnaireResponse(questionnaire));
+    const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(questionnaire);
+    questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
     return;
   }
 
-  questionnaireResponseStore.getState().buildSourceResponse(questionnaireResponse);
+  const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(
+    questionnaire,
+    questionnaireResponse
+  );
+  questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
   questionnaireStore.getState().updatePopulatedProperties(questionnaireResponse);
 }
 
