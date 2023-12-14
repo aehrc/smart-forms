@@ -99,7 +99,7 @@ function RepopulateAction(props: RepopulateActionProps) {
       if (hasWarnings) {
         enqueueSnackbar(
           'There might be issues while retrieving the latest information, data is partially retrieved. View console for details.',
-          { action: <CloseSnackbar />, variant: 'warning' }
+          { action: <CloseSnackbar /> }
         );
         return;
       }
