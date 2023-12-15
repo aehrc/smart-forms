@@ -39,7 +39,7 @@
     "@mui/material": "^5.14.17",
     "@mui/x-date-pickers": "^6.10.1",
     "@sentry/react": "^7.73.0",
-    "@sentry/tracing": "^7.61.1",
+    "@sentry/tracing": "^7.88.0",
     "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-table": "^8.10.7",
     "allotment": "^1.19.2",
