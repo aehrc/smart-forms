@@ -12,5 +12,6 @@ export default defineConfig({
     commonjsOptions: {
       include: [/node_modules/, '@aehrc/sdc-assemble', '@aehrc/sdc-populate']
     }
-  }
+  },
+  resolve: { preserveSymlinks: true }
 });
