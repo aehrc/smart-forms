@@ -45,14 +45,20 @@ const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <PrimarySelectableList dense disablePadding sx={{ mb: 1 }} data-test="renderer-tab-list">
+        <PrimarySelectableList
+          dense
+          disablePadding
+          sx={{ mb: 0.5, mt: completedDisplayItemExists ? 0 : 0.5 }}
+          data-test="renderer-tab-list">
           {completedDisplayItemExists ? (
-            <ShowCompletedTabsSection
-              completedTabsExpanded={completedTabsExpanded}
-              setCompletedTabsExpanded={setCompletedTabsExpanded}
-            />
+            <>
+              <ShowCompletedTabsSection
+                completedTabsExpanded={completedTabsExpanded}
+                setCompletedTabsExpanded={setCompletedTabsExpanded}
+              />
+              <Divider sx={{ mx: 1 }} light />
+            </>
           ) : null}
-          <Divider sx={{ mx: 1 }} light />
           <FormBodyTabList
             topLevelItems={topLevelItems}
             currentTabIndex={currentTabIndex}
