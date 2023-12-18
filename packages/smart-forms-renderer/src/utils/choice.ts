@@ -109,7 +109,7 @@ export function getQrChoiceValue(
   qrChoice: QuestionnaireResponseItem,
   returnNull?: boolean
 ): string | null {
-  if (qrChoice['answer']) {
+  if (qrChoice.answer && qrChoice.answer.length > 0) {
     const answer = qrChoice['answer'][0];
     if (answer['valueCoding']) {
       return answer.valueCoding.code ? answer.valueCoding.code : '';
@@ -119,6 +119,7 @@ export function getQrChoiceValue(
       return answer.valueInteger.toString();
     }
   }
+
   return returnNull ? null : '';
 }
 

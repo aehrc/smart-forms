@@ -52,7 +52,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
   let valueSelect = getQrChoiceValue(qrChoiceSelect);
-  if (valueSelect === null) {
+  if (!valueSelect) {
     valueSelect = '';
   }
 
