@@ -36,6 +36,9 @@ function DashboardDebugFooter() {
               'Undefined. Defaulting to https://smartforms.csiro.au/api/fhir'
             }`}
           </Typography>
+          <Typography variant="overline">
+            {`Client ID: ${import.meta.env.VITE_LAUNCH_CLIENT_ID}`}
+          </Typography>
         </Box>
       </StyledRoot>
     </>
