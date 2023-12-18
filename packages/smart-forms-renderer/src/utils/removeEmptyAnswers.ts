@@ -24,7 +24,7 @@ import type {
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHidden } from './qItem';
 
-interface removeHiddenAnswersParams {
+interface removeEmptyAnswersParams {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
   enableWhenIsActivated: boolean;
@@ -33,11 +33,11 @@ interface removeHiddenAnswersParams {
 }
 
 /**
- * Recursively go through the questionnaireResponse and remove qrItems whose qItems are hidden in the form
+ * Recursively go through the questionnaireResponse and remove qrItems whose qItems are empty in the form
  *
  * @author Sean Fong
  */
-export function removeHiddenAnswers(params: removeHiddenAnswersParams): QuestionnaireResponse {
+export function removeEmptyAnswers(params: removeEmptyAnswersParams): QuestionnaireResponse {
   const {
     questionnaire,
     questionnaireResponse,
@@ -59,7 +59,7 @@ export function removeHiddenAnswers(params: removeHiddenAnswersParams): Question
 
   topLevelQRItems.forEach((qrItem, i) => {
     const qItem = topLevelQItems[i];
-    const newTopLevelQRItem = readQuestionnaireResponseItemRecursive({
+    const newTopLevelQRItem = removeEmptyAnswersFromItemRecursive({
       qItem,
       qrItem,
       enableWhenIsActivated,
@@ -74,7 +74,7 @@ export function removeHiddenAnswers(params: removeHiddenAnswersParams): Question
   return questionnaireResponse;
 }
 
-interface readQuestionnaireResponseItemRecursiveParams {
+interface removeEmptyAnswersFromItemRecursiveParams {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   enableWhenIsActivated: boolean;
@@ -82,8 +82,8 @@ interface readQuestionnaireResponseItemRecursiveParams {
   enableWhenExpressions: Record<string, EnableWhenExpression>;
 }
 
-function readQuestionnaireResponseItemRecursive(
-  params: readQuestionnaireResponseItemRecursiveParams
+function removeEmptyAnswersFromItemRecursive(
+  params: removeEmptyAnswersFromItemRecursiveParams
 ): QuestionnaireResponseItem | null {
   const { qItem, qrItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
 
@@ -116,7 +116,7 @@ function readQuestionnaireResponseItemRecursive(
       ) {
         // Save qrItem if linkIds of current qItem and qrItem are the same
         if (qrItems[qrItemIndex] && qItems[qItemIndex].linkId === qrItems[qrItemIndex].linkId) {
-          const newQrItem = readQuestionnaireResponseItemRecursive({
+          const newQrItem = removeEmptyAnswersFromItemRecursive({
             qItem: qItems[qItemIndex],
             qrItem: qrItems[qrItemIndex],
             enableWhenIsActivated,
@@ -144,17 +144,49 @@ function readQuestionnaireResponseItemRecursive(
       return { ...qrItem, item: newQrItems };
     }
 
-    // Also perform checking if answer exists
-    return qrItem['answer'] ? qrItem : null;
+    // Also perform checks if answer exists
+    return answerIsEmpty(
+      qItem,
+      qrItem,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    )
+      ? null
+      : qrItem;
   }
 
   // Process non-group items
-  return isHidden({
-    questionnaireItem: qItem,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  })
+  return answerIsEmpty(qItem, qrItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions)
     ? null
     : { ...qrItem };
+}
+
+function answerIsEmpty(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem,
+  enableWhenIsActivated: boolean,
+  enableWhenItems: EnableWhenItems,
+  enableWhenExpressions: Record<string, EnableWhenExpression>
+) {
+  if (
+    isHidden({
+      questionnaireItem: qItem,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    })
+  ) {
+    return true;
+  }
+
+  if (!qrItem.answer) {
+    return true;
+  }
+
+  if (qrItem.answer[0]?.valueString === '') {
+    return true;
+  }
+
+  return false;
 }

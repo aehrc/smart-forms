@@ -31,7 +31,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import {
-  removeHiddenAnswersFromResponse,
+  removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -75,7 +75,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
     }
 
     setIsSaving(true);
-    const responseToSave = removeHiddenAnswersFromResponse(
+    const responseToSave = removeEmptyAnswersFromResponse(
       sourceQuestionnaire,
       cloneDeep(updatableResponse)
     );

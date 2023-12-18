@@ -24,7 +24,7 @@ import { qrToHTML } from '../preview/utils/preview.ts';
 import { Helmet } from 'react-helmet';
 import PageHeading from '../dashboard/components/DashboardPages/PageHeading.tsx';
 import {
-  removeHiddenAnswersFromResponse,
+  removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -49,7 +49,7 @@ function ResponsePreview() {
     return <ViewerInvalid questionnaire={sourceQuestionnaire} />;
   }
 
-  const responseCleaned = removeHiddenAnswersFromResponse(sourceQuestionnaire, sourceResponse);
+  const responseCleaned = removeEmptyAnswersFromResponse(sourceQuestionnaire, sourceResponse);
   const parsedHTML = parse(qrToHTML(sourceQuestionnaire, responseCleaned));
 
   return (

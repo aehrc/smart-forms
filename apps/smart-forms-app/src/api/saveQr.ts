@@ -23,7 +23,7 @@ import { qrToHTML } from '../features/preview/utils/preview.ts';
 import { fetchQuestionnaireById } from './client.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { HEADERS } from './headers.ts';
-import { removeHiddenAnswersFromResponse } from '@aehrc/smart-forms-renderer';
+import { removeEmptyAnswersFromResponse } from '@aehrc/smart-forms-renderer';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
@@ -55,7 +55,7 @@ export async function saveProgress(
   questionnaireResponse: QuestionnaireResponse,
   saveStatus: 'in-progress' | 'completed'
 ) {
-  const responseToSave = removeHiddenAnswersFromResponse(
+  const responseToSave = removeEmptyAnswersFromResponse(
     questionnaire,
     cloneDeep(questionnaireResponse)
   );
@@ -87,7 +87,7 @@ export async function saveQuestionnaireResponse(
   user: Practitioner,
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
-): Promise<QuestionnaireResponse> {
+) {
   let requestUrl = 'QuestionnaireResponse';
   let method = 'POST';
   let questionnaireResponseToSave: QuestionnaireResponse = cloneDeep(questionnaireResponse);
@@ -111,6 +111,7 @@ export async function saveQuestionnaireResponse(
     authored: dayjs().format()
   };
 
+  // TODO pre-pop should filter out all empty strings really
   // Add additional attributes depending on whether questionnaire has been saved before
   if (questionnaireResponseToSave.id) {
     requestUrl += '/' + questionnaireResponseToSave.id;
@@ -124,11 +125,13 @@ export async function saveQuestionnaireResponse(
     );
   }
 
+  const modifiedHeaders = { ...HEADERS, prefer: 'return=representation' };
+
   return client.request({
     url: requestUrl,
     method: method,
     body: JSON.stringify(questionnaireResponseToSave),
-    headers: HEADERS
+    headers: modifiedHeaders
   });
 }
 
