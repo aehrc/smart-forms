@@ -30,7 +30,7 @@ export function qrToHTML(
 ): string {
   if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) return '';
 
-  let QrHtml = `<div style="font-size:20px; font-weight: bold" data-test="response-questionnaire-title">${questionnaire.title}</div><hr />`;
+  let QrHtml = `<div style="font-size:20px; font-weight: bold">${questionnaire.title}</div><hr/>`;
 
   for (const topLevelQRItem of questionnaireResponse.item) {
     const topLevelQRItemHTML = qrItemToHTML(topLevelQRItem);
@@ -38,8 +38,7 @@ export function qrToHTML(
       QrHtml += topLevelQRItemHTML;
     }
   }
-
-  return `<div>${QrHtml}</div>`;
+  return `<div xmlns="http://www.w3.org/1999/xhtml">${QrHtml}</div>`;
 }
 
 export function qrItemToHTML(topLevelQRItem: QuestionnaireResponseItem) {
@@ -125,29 +124,26 @@ function renderItemDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
   item.answer.forEach((answer) => {
     const answerValueInString = he.encode(qrItemAnswerValueTypeSwitcher(answer));
     if (answerValueInString === '') {
-      qrItemAnswer +=
-        '<div style="color: red;" data-test="response-item-answer">Undefined answer</div>';
+      qrItemAnswer += '<div style="color: red">Undefined answer</div>';
     } else {
-      qrItemAnswer += `<div data-test="response-item-answer">${
+      qrItemAnswer += `<div>${
         answerValueInString[0].toUpperCase() + answerValueInString.slice(1)
       }</div>`;
     }
   });
 
-  const qrItemRender = `<div style="flex:40%;" data-test="response-item-text">${item.text}</div>
-                        <div style="flex: 10%;"></div> 
-                        <div style="flex: 50%;">${qrItemAnswer}</div>`;
+  const qrItemRender = `<div style="flex:40%">${item.text}</div><div style="flex: 10%"></div><div style="flex: 50%">${qrItemAnswer}</div>`;
 
   return `<div style="margin-top: ${
     nestedLevel === 0 ? '20px' : '10px'
-  }; display: flex; flex-wrap: wrap;">${qrItemRender}</div>`;
+  }; display: flex; flex-wrap: wrap">${qrItemRender}</div>`;
 }
 
 function renderGroupHeadingDiv(item: QuestionnaireResponseItem, nestedLevel: number) {
   const fontSize = nestedLevel === 0 ? '18px' : '15px';
   const headingText = he.encode(item.text ?? '');
 
-  return `<div style="font-size: ${fontSize}; font-weight: bold; margin-top: 15px" data-test="response-group-heading">${headingText}</div>`;
+  return `<div style="font-size: ${fontSize}; font-weight: bold; margin-top: 15px">${headingText}</div>`;
 }
 
 function renderRepeatGroupItemHeadingDiv() {
@@ -202,7 +198,7 @@ function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer):
 
 function renderGroupBottomMargin(repeatGroupItemStatus: RepeatGroupItemStatus) {
   if (repeatGroupItemStatus === 'first' || repeatGroupItemStatus === 'middle') {
-    return `<div style="height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px;"></div>`;
+    return `<div style="height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px"></div>`;
   } else {
     return `<div style="margin-bottom: 30px;"></div>`;
   }
@@ -212,8 +208,8 @@ function renderGeneralBottomMargin(
   nestedLevel: number,
   nextItem: QuestionnaireResponseItem | undefined
 ) {
-  const smallMarginDiv = `<div style="margin: 20px 0 20px;"></div>`;
-  const largeMarginDiv = `<div style="margin: 55px 0 20px;"></div>`;
+  const smallMarginDiv = `<div style="margin: 20px 0 20px"></div>`;
+  const largeMarginDiv = `<div style="margin: 55px 0 20px"></div>`;
 
   if (nestedLevel !== 0) {
     return '';

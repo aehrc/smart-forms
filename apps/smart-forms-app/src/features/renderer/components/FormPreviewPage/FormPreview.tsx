@@ -22,7 +22,7 @@ import { qrToHTML } from '../../../preview/utils/preview.ts';
 import { Helmet } from 'react-helmet';
 import PageHeading from '../../../dashboard/components/DashboardPages/PageHeading.tsx';
 import {
-  removeHiddenAnswersFromResponse,
+  removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -39,7 +39,7 @@ function FormPreview() {
     return <FormInvalid />;
   }
 
-  const cleanResponse = removeHiddenAnswersFromResponse(sourceQuestionnaire, updatableResponse);
+  const cleanResponse = removeEmptyAnswersFromResponse(sourceQuestionnaire, updatableResponse);
   const parsedHTML = parse(qrToHTML(sourceQuestionnaire, cleanResponse));
 
   return (

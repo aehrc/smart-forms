@@ -30,7 +30,7 @@ import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
 import cloneDeep from 'lodash.clonedeep';
 import { LoadingButton } from '@mui/lab';
 import {
-  removeHiddenAnswersFromResponse,
+  removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -79,7 +79,7 @@ function BlockerUnsavedFormDialog(props: Props) {
     setIsSaving(true);
 
     let responseToSave = cloneDeep(updatableResponse);
-    responseToSave = removeHiddenAnswersFromResponse(sourceQuestionnaire, responseToSave);
+    responseToSave = removeEmptyAnswersFromResponse(sourceQuestionnaire, responseToSave);
 
     setIsSaving(true);
     responseToSave.status = 'in-progress';

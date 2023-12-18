@@ -18,7 +18,7 @@
 import { useEffect } from 'react';
 import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import {
-  removeHiddenAnswersFromResponse,
+  removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -54,7 +54,7 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
       return;
     }
 
-    const responseToSave = removeHiddenAnswersFromResponse(
+    const responseToSave = removeEmptyAnswersFromResponse(
       sourceQuestionnaire,
       cloneDeep(updatableResponse)
     );

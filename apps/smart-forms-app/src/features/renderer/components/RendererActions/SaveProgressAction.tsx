@@ -77,14 +77,20 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
       'in-progress'
     );
 
-    if (!savedResponse) {
+    // If the response is null or undefined, then the save has failed
+    if (savedResponse === null || savedResponse === undefined) {
       enqueueSnackbar(saveErrorMessage, {
         variant: 'error'
       });
       return;
     }
 
-    setUpdatableResponseAsSaved(savedResponse);
+    // Use saved validated response as the new updatable response
+    if (savedResponse && savedResponse.resourceType === 'QuestionnaireResponse') {
+      setUpdatableResponseAsSaved(savedResponse);
+    } else {
+      setUpdatableResponseAsSaved(updatableResponse);
+    }
 
     // Refetch existing responses if prop is provided
     if (refetchResponses) {
