@@ -1,7 +1,7 @@
 import { questionnaireResponseStore, questionnaireStore } from './stores';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { initialiseQuestionnaireResponse } from './utils/qrItem';
-import { removeHiddenAnswers } from './utils/removeHidden';
+import { removeEmptyAnswers } from './utils/removeEmptyAnswers';
 import type { ItemToRepopulate } from './utils/repopulateItems';
 import { getItemsToRepopulate } from './utils/repopulateItems';
 import { repopulateItemsIntoResponse } from './utils/repopulateIntoResponse';
@@ -64,7 +64,7 @@ export function getResponse(): QuestionnaireResponse {
  *
  * @author Sean Fong
  */
-export function removeHiddenAnswersFromResponse(
+export function removeEmptyAnswersFromResponse(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ): QuestionnaireResponse {
@@ -72,7 +72,7 @@ export function removeHiddenAnswersFromResponse(
   const enableWhenItems = questionnaireStore.getState().enableWhenItems;
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
 
-  return removeHiddenAnswers({
+  return removeEmptyAnswers({
     questionnaire,
     questionnaireResponse,
     enableWhenIsActivated,
