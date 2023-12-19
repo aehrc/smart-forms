@@ -25,7 +25,7 @@ import fhirpath from 'fhirpath';
 import type { Bundle, FhirResource, OperationOutcomeIssue, Questionnaire } from 'fhir/r4';
 import axios from 'axios';
 import { createWarningIssue } from './operationOutcome';
-import type { FetchResourceCallback } from '../interfaces/callback.interface';
+import type { FetchResourceCallback } from '../interfaces';
 
 export async function createFhirPathContext(
   parameters: InputParameters,
