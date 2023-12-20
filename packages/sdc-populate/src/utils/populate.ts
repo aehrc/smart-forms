@@ -21,7 +21,7 @@ import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
 import { isSubjectParameter } from './index';
 import { createFhirPathContext } from './createFhirPathContext';
 import { readPopulationExpressions } from './readPopulationExpressions';
-import { evaluateExpressions, evaluateItemPopulationContexts } from './evaluateExpressions';
+import { evaluateItemPopulationContexts, generateExpressionValues } from './evaluateExpressions';
 import { sortResourceArrays } from './sortResourceArrays';
 import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
@@ -68,19 +68,18 @@ export async function populate(
   );
   fhirPathContext = sortResourceArrays(fhirPathContext);
 
-  // Evaluate initialExpressions
-  const evaluatedInitialExpressions = evaluateExpressions(
-    populationExpressions.initialExpressions,
+  // Get values for expressions
+  const { evaluatedInitialExpressions, evaluatedItemPopulationContexts } = generateExpressionValues(
+    populationExpressions,
     fhirPathContext,
     issues
   );
 
   // Construct response from initialExpressions
-  const questionnaireResponse = await constructResponse(
-    questionnaire,
-    subjectReference,
-    evaluatedInitialExpressions
-  );
+  const questionnaireResponse = await constructResponse(questionnaire, subjectReference, {
+    initialExpressions: evaluatedInitialExpressions,
+    itemPopulationContexts: evaluatedItemPopulationContexts
+  });
 
   return createOutputParameters(questionnaireResponse, issues);
 }

@@ -59,7 +59,8 @@ function readQuestionnaireItemRecursive(
       populationExpressions.itemPopulationContexts[item.linkId] = {
         linkId: item.linkId,
         name: itemPopulationContext.name,
-        expression: itemPopulationContext.expression
+        expression: itemPopulationContext.expression,
+        value: undefined
       };
     }
 

@@ -27,6 +27,7 @@ export interface ItemPopulationContext {
   linkId: string;
   name: string;
   expression: string;
+  value: any[] | undefined;
 }
 
 export interface PopulationExpressions {

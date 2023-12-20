@@ -27,9 +27,9 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import type {
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,

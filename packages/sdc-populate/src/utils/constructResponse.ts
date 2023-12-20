@@ -26,7 +26,7 @@ import type {
   Reference,
   ValueSet
 } from 'fhir/r4';
-import type { InitialExpression, ValueSetPromise } from '../interfaces/expressions.interface';
+import type { PopulationExpressions, ValueSetPromise } from '../interfaces/expressions.interface';
 import {
   filterValueSetAnswersRecursive,
   getValueSetPromise,
@@ -34,13 +34,15 @@ import {
 } from './processValueSets';
 import moment from 'moment';
 import dayjs from 'dayjs';
+import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
  *
  * @param questionnaire - The questionnaire resource to construct a response from
  * @param subject - A subject reference to form the subject within the response
- * @param initialExpressions - A key-value pair of <linkId, initialExpressions> to be used for population
+ * @param populationExpressions - expressions used for pre-population i.e. initialExpressions, itemPopulationContexts
  * @returns A populated questionnaire response wrapped within a Promise
  *
  * @author Sean Fong
@@ -48,7 +50,7 @@ import dayjs from 'dayjs';
 export async function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
-  initialExpressions: Record<string, InitialExpression>
+  populationExpressions: PopulationExpressions
 ): Promise<QuestionnaireResponse> {
   const questionnaireResponse: QuestionnaireResponse = {
     resourceType: 'QuestionnaireResponse',
@@ -65,6 +67,8 @@ export async function constructResponse(
 
   const containedResources = questionnaire.contained ?? [];
 
+  // console.log(initialExpressions);
+
   // Populate questionnaire response as a two-step process
   // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
@@ -77,7 +81,7 @@ export async function constructResponse(
         text: qItem.text
       },
       qContainedResources: containedResources,
-      initialExpressions,
+      populationExpressions,
       valueSetPromises,
       answerOptions,
       containedValueSets
@@ -120,7 +124,7 @@ interface ConstructResponseItemRecursiveParams {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
   qContainedResources: FhirResource[];
-  initialExpressions: Record<string, InitialExpression>;
+  populationExpressions: PopulationExpressions;
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
@@ -138,7 +142,7 @@ function constructResponseItemRecursive(
     qItem,
     qrItem,
     qContainedResources,
-    initialExpressions,
+    populationExpressions,
     valueSetPromises,
     answerOptions,
     containedValueSets
@@ -156,7 +160,7 @@ function constructResponseItemRecursive(
       return constructRepeatGroupInstances(
         qItem,
         qContainedResources,
-        initialExpressions,
+        populationExpressions,
         valueSetPromises,
         answerOptions,
         containedValueSets
@@ -169,7 +173,7 @@ function constructResponseItemRecursive(
         qItem: item,
         qrItem,
         qContainedResources,
-        initialExpressions,
+        populationExpressions,
         valueSetPromises,
         answerOptions,
         containedValueSets
@@ -188,7 +192,7 @@ function constructResponseItemRecursive(
       qItem,
       qrItems,
       qContainedResources,
-      initialExpressions,
+      populationExpressions,
       valueSetPromises,
       answerOptions,
       containedValueSets
@@ -198,7 +202,7 @@ function constructResponseItemRecursive(
   return constructSingleItem({
     qItem,
     qContainedResources,
-    initialExpressions,
+    populationExpressions,
     valueSetPromises,
     answerOptions,
     containedValueSets
@@ -209,7 +213,7 @@ interface ConstructGroupItemParams {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   qContainedResources: FhirResource[];
-  initialExpressions: Record<string, InitialExpression>;
+  populationExpressions: PopulationExpressions;
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
@@ -220,11 +224,13 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
     qItem,
     qrItems,
     qContainedResources,
-    initialExpressions,
+    populationExpressions,
     valueSetPromises,
     answerOptions,
     containedValueSets
   } = params;
+
+  const { initialExpressions } = populationExpressions;
 
   // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
@@ -268,7 +274,7 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
 interface ConstructSingleItemParams {
   qItem: QuestionnaireItem;
   qContainedResources: FhirResource[];
-  initialExpressions: Record<string, InitialExpression>;
+  populationExpressions: PopulationExpressions;
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
@@ -278,11 +284,13 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
   const {
     qItem,
     qContainedResources,
-    initialExpressions,
+    populationExpressions,
     valueSetPromises,
     answerOptions,
     containedValueSets
   } = params;
+
+  const { initialExpressions } = populationExpressions;
 
   if (itemIsHidden(qItem)) {
     return null;
@@ -367,6 +375,11 @@ function getAnswerValues(
 
     return parsedAnswer;
   });
+
+  if (qItem.linkId === 'medicalhistory-condition-abatementdate') {
+    console.log(initialValues);
+    console.log(newValues);
+  }
 
   return { newValues, expandRequired };
 }
@@ -467,82 +480,73 @@ export function checkIsTime(value: string): boolean {
 function constructRepeatGroupInstances(
   qRepeatGroupParent: QuestionnaireItem,
   qContainedResources: FhirResource[],
-  initialExpressions: Record<string, InitialExpression>,
+  populationExpressions: PopulationExpressions,
   valueSetPromises: Record<string, ValueSetPromise>,
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   containedValueSets: Record<string, ValueSet>
 ): QuestionnaireResponseItem[] {
-  if (!qRepeatGroupParent.item) return [];
-
-  const childItemAnswers: QuestionnaireResponseItemAnswer[][] = [];
-  for (const [i, childItem] of qRepeatGroupParent.item.entries()) {
-    const initialExpression = initialExpressions[childItem.linkId];
-    if (!initialExpression) {
-      childItemAnswers[i] = [];
-      continue;
-    }
-
-    if (itemIsHidden(childItem)) {
-      childItemAnswers[i] = [];
-      continue;
-    }
-
-    const initialValues = initialExpression.value;
-    if (initialValues && initialValues.length > 0 && initialValues[0] !== '') {
-      const { newValues, expandRequired } = getAnswerValues(initialValues, childItem);
-
-      if (expandRequired) {
-        recordAnswerValueSet(childItem, valueSetPromises);
-      }
-
-      recordAnswerOption(childItem, answerOptions);
-      recordContainedValueSet(childItem, qContainedResources, containedValueSets);
-
-      childItemAnswers[i] = newValues;
-      continue;
-    }
-
-    childItemAnswers[i] = [];
+  if (!qRepeatGroupParent.item) {
+    return [];
   }
 
-  // calculate number of instances to be created by getting the length of the longest answer array
-  let numOfInstancesToBeCreated = 0;
-  for (const answers of childItemAnswers) {
-    if (answers.length > numOfInstancesToBeCreated) {
-      numOfInstancesToBeCreated = answers.length;
-    }
+  // get from itemPopulationContexts
+  const { initialExpressions, itemPopulationContexts } = populationExpressions;
+
+  const itemPopulationContext = itemPopulationContexts[qRepeatGroupParent.linkId];
+  if (!itemPopulationContext || !itemPopulationContext.value) {
+    return [];
   }
 
-  // return empty array early if no repeat group instances to be created
-  if (numOfInstancesToBeCreated === 0) return [];
+  const itemPopulationContextValues = itemPopulationContext.value;
 
   const qrRepeatGroupInstances: QuestionnaireResponseItem[] = [];
-  for (let i = 0; i < numOfInstancesToBeCreated; i++) {
-    const childItemsWithAnswers: QuestionnaireResponseItem[] = [];
+  for (const itemPopulationContextValue of itemPopulationContextValues) {
+    const qrRepeatGroupInstance: QuestionnaireResponseItem = {
+      linkId: qRepeatGroupParent.linkId,
+      ...(qRepeatGroupParent.text ? { text: qRepeatGroupParent.text } : {}),
+      item: []
+    };
 
-    for (let j = 0; j < childItemAnswers.length; j++) {
-      const answerArray = childItemAnswers[j];
-      if (answerArray) {
-        const answerOfSpecificParent = answerArray[i];
-        const qItemChild = qRepeatGroupParent.item[j];
-        if (answerOfSpecificParent && qItemChild) {
-          const qrItemChild: QuestionnaireResponseItem = {
-            linkId: qItemChild.linkId,
-            answer: [answerOfSpecificParent],
-            ...(qItemChild.text ? { text: qItemChild.text } : {})
-          };
-          childItemsWithAnswers.push(qrItemChild);
+    for (const childItem of qRepeatGroupParent.item) {
+      const initialExpression = initialExpressions[childItem.linkId];
+      if (!initialExpression || itemIsHidden(childItem)) {
+        continue;
+      }
+
+      try {
+        const initialValues = fhirpath.evaluate(
+          {},
+          initialExpression.expression,
+          { [itemPopulationContext.name]: [itemPopulationContextValue] },
+          fhirpath_r4_model
+        );
+
+        if (initialValues && initialValues.length > 0 && initialValues[0] !== '') {
+          const { newValues, expandRequired } = getAnswerValues(initialValues, childItem);
+
+          if (expandRequired) {
+            recordAnswerValueSet(childItem, valueSetPromises);
+          }
+
+          recordAnswerOption(childItem, answerOptions);
+          recordContainedValueSet(childItem, qContainedResources, containedValueSets);
+
+          qrRepeatGroupInstance.item?.push({
+            linkId: childItem.linkId,
+            answer: newValues,
+            ...(childItem.text ? { text: childItem.text } : {})
+          });
+        }
+      } catch (e) {
+        if (e instanceof Error) {
+          console.warn(
+            'Error: fhirpath evaluation for ItemPopulationContext child failed. Details below:' + e
+          );
         }
       }
     }
 
-    const qItemParent = {
-      linkId: qRepeatGroupParent.linkId,
-      item: childItemsWithAnswers,
-      ...(qRepeatGroupParent.text ? { text: qRepeatGroupParent.text } : {})
-    };
-
-    qrRepeatGroupInstances.push(qItemParent);
+    qrRepeatGroupInstances.push(qrRepeatGroupInstance);
   }
 
   return qrRepeatGroupInstances;
