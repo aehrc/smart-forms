@@ -16,11 +16,11 @@
  */
 
 import type { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { hasHiddenExtension } from './itemControl';
 import { getChoiceControlType } from './choice';
 import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { getOpenChoiceControlType } from './openChoice';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 interface isHiddenParams {
   questionnaireItem: QuestionnaireItem;
@@ -39,7 +39,7 @@ interface isHiddenParams {
 export function isHidden(params: isHiddenParams): boolean {
   const { questionnaireItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } =
     params;
-  if (hasHiddenExtension(questionnaireItem)) {
+  if (structuredDataCapture.getHidden(questionnaireItem)) {
     return true;
   }
 

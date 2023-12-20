@@ -88,25 +88,6 @@ export function getShortText(qItem: QuestionnaireItem): string | null {
 }
 
 /**
- * Check if the extension has url for hidden questions
- *
- * @author Sean Fong
- */
-export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
-  );
-
-  if (itemControl) {
-    if (itemControl.valueBoolean) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
  * Check if an answerExpression extension is present
  *
  * @author Sean Fong

@@ -18,8 +18,9 @@
 import type { Tabs } from '../interfaces/tab.interface';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
-import { hasHiddenExtension, isSpecificItemControl } from './itemControl';
+import { isSpecificItemControl } from './itemControl';
 import { isHidden, isHiddenByEnableWhens } from './qItem';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 export function getFirstVisibleTab(
   tabs: Tabs,
@@ -134,7 +135,7 @@ export function constructTabsWithProperties(
     tabs[qItem.linkId] = {
       tabIndex: i,
       isComplete: false,
-      isHidden: hasHiddenExtension(qItem)
+      isHidden: structuredDataCapture.getHidden(qItem) ?? false
     };
   }
   return tabs;
@@ -200,26 +201,6 @@ export function getNextVisibleTabIndex(params: getNextVisibleTabIndexParams): nu
   }
 
   return nextTabIndex;
-}
-/**
- *
- * Get index of first visible tab
- *
- * @author Sean Fong
- */
-export function getFirstVisibleTabIndex(
-  tabs: Tabs,
-  enableWhenIsActivated: boolean,
-  enableWhenItems: EnableWhenItems,
-  enableWhenExpressions: Record<string, EnableWhenExpression>
-): number | undefined {
-  const tabsWithVisibility = constructTabsWithVisibility({
-    tabs,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  });
-  return tabsWithVisibility.findIndex((tab) => tab.isVisible);
 }
 
 /**
