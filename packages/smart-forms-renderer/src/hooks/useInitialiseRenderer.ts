@@ -17,7 +17,7 @@
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useLayoutEffect, useState } from 'react';
-import { initialiseQuestionnaireResponse } from '../utils/qrItem';
+import { initialiseQuestionnaireResponse } from '../utils/initialise';
 import type Client from 'fhirclient/lib/Client';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import {

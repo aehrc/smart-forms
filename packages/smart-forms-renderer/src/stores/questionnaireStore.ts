@@ -35,7 +35,7 @@ import {
   initialiseCalculatedExpressionValues
 } from '../utils/calculatedExpression';
 import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
-import { initialiseFormFromResponse } from '../utils/initialiseForm';
+import { initialiseFormFromResponse } from '../utils/initialise';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
 import { terminologyServerStore } from './terminologyServerStore';
