@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "@aehrc/fhir-questionnaire-helpers": "^0.1.0",
+    "@aehrc/fhir-questionnaire-helpers": "^0.1.1",
     "@iconify/react": "^4.1.1",
     "@types/fhir": "^0.0.38",
     "dayjs": "^1.11.10",

@@ -23,7 +23,7 @@ import {
   resolvePromises
 } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+import type { ValueSetPromise } from '@aehrc/fhir-questionnaire-helpers';
 
 export async function resolveValueSets(
   variables: Variables,

@@ -26,8 +26,8 @@
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "@aehrc/sdc-assemble": "^1.2.0",
-    "@aehrc/sdc-populate": "^1.4.1",
-    "@aehrc/fhir-questionnaire-helpers": "^0.1.0",
+    "@aehrc/sdc-populate": "^1.4.2",
+    "@aehrc/fhir-questionnaire-helpers": "^0.1.1",
     "@aehrc/smart-forms-renderer": "^0.10.6",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.10.8",

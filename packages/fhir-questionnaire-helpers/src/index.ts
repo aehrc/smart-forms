@@ -16,3 +16,4 @@
  */
 
 export { findInAnswerOptions } from './answerOption';
+export { ValueSetPromise } from './valueset.interface';

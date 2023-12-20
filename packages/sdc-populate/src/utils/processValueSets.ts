@@ -23,7 +23,7 @@ import type {
   QuestionnaireResponseItemAnswer,
   ValueSet
 } from 'fhir/r4';
-import type { ValueSetPromise } from '../interfaces/expressions.interface';
+import type { ValueSetPromise } from '@aehrc/fhir-questionnaire-helpers';
 import * as FHIR from 'fhirclient';
 
 const ONTOSERVER_ENDPOINT = 'https://r4.ontoserver.csiro.au/fhir/';
