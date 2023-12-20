@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Patient, Practitioner } from 'fhir/r4';
+import type { Patient, Practitioner } from 'fhir/r4';
 import '../styles.css';
 import { getDisplayName } from '../utils/humanName.ts';
 

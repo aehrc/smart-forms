@@ -33,7 +33,8 @@ import type {
   ResponseParameter
 } from '@aehrc/sdc-populate';
 import { isInputParameters, isOutputParameters, populate } from '@aehrc/sdc-populate';
-import { fetchResourceCallback, RequestConfig } from './populateCallback';
+import type { RequestConfig } from './populateCallback';
+import { fetchResourceCallback } from './populateCallback';
 import { createPopulateInputParameters } from './populateInputParams';
 
 export const REQUEST_CONFIG: RequestConfig = {

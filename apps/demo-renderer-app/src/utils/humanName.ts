@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { HumanName } from 'fhir/r4';
+import type { HumanName } from 'fhir/r4';
 
 export function getDisplayName(name: HumanName[] | undefined): string {
   if (name?.[0]['text']) {

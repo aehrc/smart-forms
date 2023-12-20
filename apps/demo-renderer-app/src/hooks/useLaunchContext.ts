@@ -16,7 +16,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { Bundle } from 'fhir/r4';
+import type { Bundle } from 'fhir/r4';
 import { fetchResource } from '../utils/fetchResource.ts';
 import { PATIENT_QUERY, PRACTITIONER_QUERY } from '../utils/apiConstants.ts';
 
