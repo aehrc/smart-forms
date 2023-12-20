@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 
-export { findInAnswerOptions } from './answerOption';
-export { ValueSetPromise } from './valueset.interface';
+export * from './answerOption';
+export * from './valueset.interface';
