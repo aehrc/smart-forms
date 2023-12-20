@@ -36,6 +36,7 @@ import moment from 'moment';
 import dayjs from 'dayjs';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import { findInAnswerOptions } from '@aehrc/fhir-questionnaire-helpers';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -389,14 +390,10 @@ function itemIsHidden(item: QuestionnaireItem): boolean {
 
 function parseValueToAnswer(qItem: QuestionnaireItem, value: any): QuestionnaireResponseItemAnswer {
   if (qItem.answerOption) {
-    const answerOption = qItem.answerOption.find(
-      (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
-    );
+    const answerOption = findInAnswerOptions(qItem.answerOption, value);
 
     if (answerOption) {
-      return {
-        valueCoding: answerOption.valueCoding
-      };
+      return answerOption;
     }
   }
 

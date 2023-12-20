@@ -6,11 +6,16 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   plugins: [react(), svgr()],
   optimizeDeps: {
-    include: ['@aehrc/sdc-assemble', '@aehrc/sdc-populate']
+    include: ['@aehrc/sdc-assemble', '@aehrc/sdc-populate', '@aehrc/fhir-questionnaire-helpers']
   },
   build: {
     commonjsOptions: {
-      include: [/node_modules/, '@aehrc/sdc-assemble', '@aehrc/sdc-populate']
+      include: [
+        /node_modules/,
+        '@aehrc/sdc-assemble',
+        '@aehrc/sdc-populate',
+        '@aehrc/fhir-questionnaire-helpers'
+      ]
     }
   },
   resolve: { preserveSymlinks: true }

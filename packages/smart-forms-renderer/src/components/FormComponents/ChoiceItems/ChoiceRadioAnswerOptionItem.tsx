@@ -19,7 +19,7 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
+import { getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
@@ -32,6 +32,7 @@ import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { findInAnswerOptions } from '@aehrc/fhir-questionnaire-helpers';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,

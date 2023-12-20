@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/sdc-populate",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "description": "Performs the $populate operation from the HL7 FHIR SDC (Structured Data Capture) specification: http://hl7.org/fhir/uv/sdc",
   "main": "lib/index.js",
   "scripts": {
@@ -20,10 +20,12 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
+    "@aehrc/fhir-questionnaire-helpers": "^0.1.0",
     "dayjs": "^1.11.10",
-    "moment": "^2.29.4",
+    "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.5.2",
-    "fhirpath": "^3.7.1"
+    "fhirpath": "^3.7.1",
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",

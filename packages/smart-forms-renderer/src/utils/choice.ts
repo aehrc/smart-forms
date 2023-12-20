@@ -25,6 +25,7 @@ import type {
 } from 'fhir/r4';
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
+import { findInAnswerOptions } from '@aehrc/fhir-questionnaire-helpers';
 
 /**
  * Get choice control type based on certain criteria in choice items
@@ -55,38 +56,6 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
       : ChoiceItemControl.Select;
   } else {
     return ChoiceItemControl.Select;
-  }
-}
-
-/**
- * Find and return corresponding answerOption based on selected answer in form
- *
- * @author Sean Fong
- */
-export function findInAnswerOptions(
-  answerOptions: QuestionnaireItemAnswerOption[],
-  selected: string
-): QuestionnaireResponseItemAnswer | undefined {
-  for (const option of answerOptions) {
-    if (option['valueCoding']) {
-      if (selected === option.valueCoding.code) {
-        return {
-          valueCoding: option.valueCoding
-        };
-      }
-    } else if (option['valueString']) {
-      if (selected === option.valueString) {
-        return {
-          valueString: option.valueString
-        };
-      }
-    } else if (option['valueInteger']) {
-      if (selected === option.valueInteger.toString()) {
-        return {
-          valueInteger: option.valueInteger
-        };
-      }
-    }
   }
 }
 
