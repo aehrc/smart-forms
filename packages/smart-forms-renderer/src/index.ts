@@ -60,7 +60,7 @@ export function getResponse(): QuestionnaireResponse {
 
 /**
  * Remove all hidden answers from the filled QuestionnaireResponse.
- * This takes into account the questionnaire-hidden extension, enableWhens and enableWhenExpressions.
+ * This takes into account the questionnaire-hidden extension, enableWhens, enableWhenExpressions and empty strings.
  *
  * @author Sean Fong
  */

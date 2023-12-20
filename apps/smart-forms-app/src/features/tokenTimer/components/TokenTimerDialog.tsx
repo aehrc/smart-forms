@@ -39,6 +39,7 @@ import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 export interface TokenTimerDialogProps {
   open: boolean;
@@ -111,7 +112,8 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
       .catch((error) => {
         console.error(error);
         enqueueSnackbar(saveErrorMessage, {
-          variant: 'error'
+          variant: 'error',
+          action: <CloseSnackbar />
         });
       });
   }

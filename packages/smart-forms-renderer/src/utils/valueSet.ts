@@ -28,8 +28,8 @@ import type {
 } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import type { FhirResourceString } from '../interfaces/populate.interface';
-import type { ValueSetPromise } from '../interfaces/valueSet.interface';
 import type { VariableXFhirQuery } from '../interfaces/variables.interface';
+import type { ValueSetPromise } from '@aehrc/fhir-questionnaire-helpers';
 
 const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;

@@ -16,16 +16,16 @@
  */
 
 import type { QuestionnaireItem } from 'fhir/r4';
-import { hasHiddenExtension } from '../utils/itemControl';
 import { useQuestionnaireStore } from '../stores';
 import { isHiddenByEnableWhens } from '../utils/qItem';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 function useHidden(qItem: QuestionnaireItem): boolean {
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
 
-  if (hasHiddenExtension(qItem)) {
+  if (structuredDataCapture.getHidden(qItem)) {
     return true;
   }
 

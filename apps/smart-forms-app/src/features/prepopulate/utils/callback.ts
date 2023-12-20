@@ -41,13 +41,9 @@ export const fetchResourceCallback: FetchResourceCallback = (
     clientEndpoint += '/';
   }
 
-  if (ABSOLUTE_URL_REGEX.test(query)) {
-    return axios.get(query, {
-      headers: headers
-    });
-  } else {
-    return axios.get(clientEndpoint + query, {
-      headers: headers
-    });
-  }
+  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : clientEndpoint + query;
+
+  return axios.get(queryUrl, {
+    headers: headers
+  });
 };

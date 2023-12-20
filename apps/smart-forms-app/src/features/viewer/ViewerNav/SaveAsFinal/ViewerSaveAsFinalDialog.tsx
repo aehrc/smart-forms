@@ -32,6 +32,7 @@ import { LoadingButton } from '@mui/lab';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
+import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -79,7 +80,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error' });
+        enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
         handleClose();
       });
   }

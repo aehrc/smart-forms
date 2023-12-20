@@ -23,7 +23,7 @@ import type {
   EnableWhenLinkedItem
 } from '../../interfaces/enableWhen.interface';
 import type { AnswerExpression } from '../../interfaces/answerExpression.interface';
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+import type { ValueSetPromise } from '@aehrc/fhir-questionnaire-helpers';
 import { getAnswerExpression } from '../itemControl';
 import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';

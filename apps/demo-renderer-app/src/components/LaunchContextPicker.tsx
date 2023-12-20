@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { Patient, Practitioner } from 'fhir/r4';
+import type { Patient, Practitioner } from 'fhir/r4';
 import '../styles.css';
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import useLaunchContext from '../hooks/useLaunchContext.ts';
 import { patientIsValid, practitionerIsValid } from '../utils/fetchResource.ts';
 

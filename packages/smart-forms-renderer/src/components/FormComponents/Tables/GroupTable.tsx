@@ -51,6 +51,8 @@ function GroupTable(props: GroupTableProps) {
     onQrRepeatGroupChange
   } = props;
 
+  // console.log(qrItems);
+
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const { tableRows, selectedIds, setTableRows, setSelectedIds } = useGroupTableRows(qrItems);

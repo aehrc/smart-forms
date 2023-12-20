@@ -17,7 +17,10 @@
 
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import type { InitialExpression, ItemPopulationContext } from '../interfaces/expressions.interface';
+import type {
+  ItemPopulationContext,
+  PopulationExpressions
+} from '../interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createWarningIssue } from './operationOutcome';
 
@@ -27,11 +30,13 @@ import { createWarningIssue } from './operationOutcome';
  *
  * @author Sean Fong
  */
-export function evaluateExpressions(
-  initialExpressions: Record<string, InitialExpression>,
+export function generateExpressionValues(
+  populationExpressions: PopulationExpressions,
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[]
-): Record<string, InitialExpression> {
+) {
+  const { initialExpressions, itemPopulationContexts } = populationExpressions;
+
   for (const linkId in initialExpressions) {
     const initialExpression = initialExpressions[linkId];
     if (initialExpression) {
@@ -42,8 +47,9 @@ export function evaluateExpressions(
         initialExpression.value = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model);
       } catch (e) {
         if (e instanceof Error) {
-          console.error('Error: fhirpath evaluation for InitialExpression failed. Details below:');
-          console.error(e);
+          console.warn(
+            'Error: fhirpath evaluation for InitialExpression failed. Details below:' + e
+          );
           issues.push(createWarningIssue(e.message));
         }
         continue;
@@ -53,7 +59,37 @@ export function evaluateExpressions(
     }
   }
 
-  return initialExpressions;
+  for (const linkId in itemPopulationContexts) {
+    const itemPopulationContext = itemPopulationContexts[linkId];
+    if (itemPopulationContext) {
+      const expression = itemPopulationContext.expression;
+
+      try {
+        itemPopulationContext.value = fhirpath.evaluate(
+          {},
+          expression,
+          contextMap,
+          fhirpath_r4_model
+        );
+      } catch (e) {
+        if (e instanceof Error) {
+          console.warn(
+            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
+          );
+          issues.push(createWarningIssue(e.message));
+        }
+        continue;
+      }
+
+      // Save evaluated item population context result into context object
+      itemPopulationContexts[linkId] = itemPopulationContext;
+    }
+  }
+
+  return {
+    evaluatedInitialExpressions: initialExpressions,
+    evaluatedItemPopulationContexts: itemPopulationContexts
+  };
 }
 
 /**
@@ -72,16 +108,16 @@ export function evaluateItemPopulationContexts(
     if (itemPopulationContext) {
       let evaluatedResult: any[];
       const expression = itemPopulationContext.expression;
+      // console.log(itemPopulationContext.expression);
 
       // Evaluate expression by LaunchPatient or PrePopQuery
       try {
         evaluatedResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model);
       } catch (e) {
         if (e instanceof Error) {
-          console.error(
-            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:'
+          console.warn(
+            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
           );
-          console.error(e);
           issues.push(createWarningIssue(e.message));
         }
         continue;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+import type { ValueSetPromise } from '@aehrc/fhir-questionnaire-helpers';
 import { getValueSetCodings, getValueSetPromise } from '../valueSet';
 import type { Coding, Questionnaire, ValueSet } from 'fhir/r4';
 

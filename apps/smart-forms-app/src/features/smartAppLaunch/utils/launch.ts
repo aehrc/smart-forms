@@ -143,10 +143,3 @@ export function responseToQuestionnaireResource(
     console.error(response);
   }
 }
-
-export function getLaunchIntent(client: Client): string | null {
-  const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
-  const launchIntent = tokenResponse.intent;
-
-  return launchIntent ?? null;
-}

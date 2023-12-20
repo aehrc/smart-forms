@@ -16,7 +16,6 @@
  */
 
 import {
-  getEntryFormat,
   getMaxLength,
   getReadOnly,
   getRegexValidation,
@@ -26,6 +25,7 @@ import {
 } from '../utils/itemControl';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 interface RenderingExtensions {
   displayUnit: string;
@@ -43,7 +43,7 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
     displayPrompt: getTextDisplayPrompt(qItem),
     displayInstructions: getTextDisplayInstructions(qItem),
     readOnly: getReadOnly(qItem),
-    entryFormat: getEntryFormat(qItem),
+    entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
     regexValidation: getRegexValidation(qItem),
     maxLength: getMaxLength(qItem)
   };

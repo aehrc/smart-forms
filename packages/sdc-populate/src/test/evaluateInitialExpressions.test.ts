@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { evaluateExpressions } from '../utils/evaluateExpressions';
+import { generateExpressionValues } from '../utils/evaluateExpressions';
 import initialExpressionsSample from './resources/initial-expressions-sample.json';
 import contextSample from './resources/context-sample.json';
 import type { InitialExpression } from '../interfaces/expressions.interface';
@@ -28,7 +28,11 @@ describe('evaluate initial expressions', () => {
   >;
   const context = contextSample;
   const issues: OperationOutcomeIssue[] = [];
-  const evaluatedInitialExpressions = evaluateExpressions(initialExpressions, context, issues);
+  const evaluatedInitialExpressions = generateExpressionValues(
+    { initialExpressions, itemPopulationContexts: {} },
+    context,
+    issues
+  );
 
   test('specifying age as key after evaluation should return 87', () => {
     expect(evaluatedInitialExpressions['age']?.value).toEqual([87]);

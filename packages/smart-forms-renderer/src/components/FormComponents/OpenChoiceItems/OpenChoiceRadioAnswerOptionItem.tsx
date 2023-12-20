@@ -23,7 +23,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { getOpenLabelText } from '../../../utils/itemControl';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
+import { getQrChoiceValue } from '../../../utils/choice';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -34,6 +34,7 @@ import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { findInAnswerOptions } from '@aehrc/fhir-questionnaire-helpers';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
