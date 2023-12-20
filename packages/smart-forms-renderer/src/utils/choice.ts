@@ -70,15 +70,21 @@ export function findInAnswerOptions(
   for (const option of answerOptions) {
     if (option['valueCoding']) {
       if (selected === option.valueCoding.code) {
-        return option;
+        return {
+          valueCoding: option.valueCoding
+        };
       }
     } else if (option['valueString']) {
       if (selected === option.valueString) {
-        return option;
+        return {
+          valueString: option.valueString
+        };
       }
     } else if (option['valueInteger']) {
       if (selected === option.valueInteger.toString()) {
-        return option;
+        return {
+          valueInteger: option.valueInteger
+        };
       }
     }
   }

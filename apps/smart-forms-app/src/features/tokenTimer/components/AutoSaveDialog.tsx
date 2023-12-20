@@ -27,6 +27,7 @@ import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import { useSnackbar } from 'notistack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface AutoSaveDialogProps {
   onAutoSave: () => void;
@@ -70,7 +71,7 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error' });
+        enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
         onAutoSave();
       });
   }

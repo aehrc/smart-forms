@@ -376,11 +376,6 @@ function getAnswerValues(
     return parsedAnswer;
   });
 
-  if (qItem.linkId === 'medicalhistory-condition-abatementdate') {
-    console.log(initialValues);
-    console.log(newValues);
-  }
-
   return { newValues, expandRequired };
 }
 
@@ -399,7 +394,9 @@ function parseValueToAnswer(qItem: QuestionnaireItem, value: any): Questionnaire
     );
 
     if (answerOption) {
-      return answerOption;
+      return {
+        valueCoding: answerOption.valueCoding
+      };
     }
   }
 

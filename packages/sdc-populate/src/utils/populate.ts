@@ -25,6 +25,7 @@ import { evaluateItemPopulationContexts, generateExpressionValues } from './eval
 import { sortResourceArrays } from './sortResourceArrays';
 import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
+import { removeEmptyAnswersFromResponse } from './removeEmptyAnswers';
 
 /**
  * Main function of this populate module.
@@ -81,5 +82,12 @@ export async function populate(
     itemPopulationContexts: evaluatedItemPopulationContexts
   });
 
-  return createOutputParameters(questionnaireResponse, issues);
+  const cleanQuestionnaireResponse = removeEmptyAnswersFromResponse(
+    questionnaire,
+    questionnaireResponse
+  );
+
+  console.log(cleanQuestionnaireResponse);
+
+  return createOutputParameters(cleanQuestionnaireResponse, issues);
 }

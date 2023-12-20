@@ -26,6 +26,7 @@ import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { saveErrorMessage, saveSuccessMessage } from '../../../../utils/snackbar.ts';
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import { saveProgress } from '../../../../api/saveQr.ts';
+import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface SaveProgressSpeedDialActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -80,7 +81,8 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
     // If the response is null or undefined, then the save has failed
     if (savedResponse === null || savedResponse === undefined) {
       enqueueSnackbar(saveErrorMessage, {
-        variant: 'error'
+        variant: 'error',
+        action: <CloseSnackbar />
       });
       return;
     }
