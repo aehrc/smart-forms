@@ -68,7 +68,7 @@
     "@types/deep-diff": "^1.0.4",
     "@types/jest": "^29.5.7",
     "@types/lodash.clonedeep": "^4.5.7",
-    "@types/lodash.debounce": "^4.0.7",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.37",
     "@types/react-beautiful-dnd": "^13.1.7",
     "@types/react-dom": "^18.2.17",
