@@ -24,18 +24,12 @@ export async function buildForm(
 ): Promise<void> {
   await questionnaireStore.getState().buildSourceQuestionnaire(questionnaire);
 
-  if (!questionnaireResponse) {
-    const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(questionnaire);
-    questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
-    return;
-  }
-
   const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(
     questionnaire,
     questionnaireResponse
   );
   questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
-  questionnaireStore.getState().updatePopulatedProperties(questionnaireResponse);
+  questionnaireStore.getState().updatePopulatedProperties(initialisedQuestionnaireResponse);
 }
 
 /**
