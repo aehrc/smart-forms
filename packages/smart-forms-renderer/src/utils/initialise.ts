@@ -127,8 +127,10 @@ function readItemInitialValueRecursive(
 ): QuestionnaireResponseItem[] | QuestionnaireResponseItem | null {
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
+    // TODO No support for multiple rows at the moment
     if (qItem.type === 'group' && qItem.repeats) {
-      return createNewRepeatGroupQuestionnaireResponseItem(qItem, getInitialValueAnswers(qItem));
+      const initialItemsFromRepeatGroup = getInitialValueAnswersFromRepeatGroup(qItem);
+      return createNewRepeatGroupQuestionnaireResponseItem(qItem, initialItemsFromRepeatGroup);
     }
 
     const initialQRItems: QuestionnaireResponseItem[] = [];
@@ -203,6 +205,22 @@ function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponse
   return initialValues
     .map((initialValue) => initialValueSwitcher(initialValue))
     .filter((item): item is QuestionnaireResponseItemAnswer => item !== null);
+}
+
+function getInitialValueAnswersFromRepeatGroup(qItem: QuestionnaireItem) {
+  if (!qItem.item) {
+    return [];
+  }
+
+  return qItem.item
+    .map((childQItem): QuestionnaireResponseItem => {
+      return {
+        linkId: childQItem.linkId,
+        ...(childQItem.text ? { text: childQItem.text } : {}),
+        answer: getInitialValueAnswers(childQItem)
+      };
+    })
+    .filter((childQRItem) => childQRItem.answer && childQRItem.answer.length > 0);
 }
 
 function initialValueSwitcher(
@@ -281,19 +299,17 @@ function createNewQuestionnaireResponseItem(
 
 function createNewRepeatGroupQuestionnaireResponseItem(
   qItem: QuestionnaireItem,
-  initialValueAnswers: QuestionnaireResponseItemAnswer[]
-): QuestionnaireResponseItem[] | null {
-  if (initialValueAnswers.length === 0) {
+  initialValueItems: QuestionnaireResponseItem[]
+): QuestionnaireResponseItem | null {
+  if (initialValueItems.length === 0) {
     return null;
   }
 
-  return initialValueAnswers.map((answer) => {
-    return {
-      linkId: qItem.linkId,
-      text: qItem.text,
-      answer: [answer]
-    };
-  });
+  return {
+    linkId: qItem.linkId,
+    text: qItem.text,
+    item: initialValueItems
+  };
 }
 
 export interface initialFormFromResponseParams {
