@@ -36,7 +36,7 @@ import moment from 'moment';
 import dayjs from 'dayjs';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { findInAnswerOptions } from '@aehrc/fhir-questionnaire-helpers';
+import { findInAnswerOptions } from './answerOption';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions

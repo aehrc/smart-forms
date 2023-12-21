@@ -24,8 +24,7 @@ import type {
 } from 'fhir/r4';
 import { CheckBoxOption, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
-import { findInAnswerValueSetCodings } from './choice';
-import { findInAnswerOptions } from '@aehrc/fhir-questionnaire-helpers';
+import { findInAnswerOptions, findInAnswerValueSetCodings } from './choice';
 
 /**
  * Update open-choice checkbox group answers based on checkbox changes

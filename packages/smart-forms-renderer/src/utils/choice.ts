@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import type {
   Coding,
   Extension,
@@ -25,7 +24,44 @@ import type {
 } from 'fhir/r4';
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
-import { findInAnswerOptions } from '@aehrc/fhir-questionnaire-helpers';
+
+/**
+ * Find and return corresponding answerOption based on selected answer in form
+ *
+ * @author Sean Fong
+ */
+export function findInAnswerOptions(
+  options: QuestionnaireItemAnswerOption[],
+  str: string
+): QuestionnaireResponseItemAnswer | undefined {
+  for (const option of options) {
+    if (option.valueCoding) {
+      if (str === option.valueCoding.code) {
+        return {
+          valueCoding: option.valueCoding
+        };
+      }
+    }
+
+    if (option.valueString) {
+      if (str === option.valueString) {
+        return {
+          valueString: option.valueString
+        };
+      }
+    }
+
+    if (option.valueInteger) {
+      if (str === option.valueInteger.toString()) {
+        return {
+          valueInteger: option.valueInteger
+        };
+      }
+    }
+  }
+
+  return;
+}
 
 /**
  * Get choice control type based on certain criteria in choice items
