@@ -56,13 +56,17 @@ export function initialiseQuestionnaireResponse(
   const firstTopLevelItem = questionnaire?.item?.[0];
   if (firstTopLevelItem && !questionnaireResponse.item) {
     const initialItems = readItemInitialValues(questionnaire);
-    questionnaireResponse.item = initialItems ?? [
-      {
-        linkId: firstTopLevelItem.linkId,
-        text: firstTopLevelItem.text,
-        item: []
-      }
-    ];
+
+    questionnaireResponse.item =
+      initialItems && initialItems.length > 0
+        ? initialItems
+        : [
+            {
+              linkId: firstTopLevelItem.linkId,
+              text: firstTopLevelItem.text,
+              item: []
+            }
+          ];
   }
 
   if (!questionnaireResponse.questionnaire) {
@@ -124,7 +128,7 @@ function readItemInitialValueRecursive(
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
     if (qItem.type === 'group' && qItem.repeats) {
-      createQuestionnaireResponseItemFromRepeatingInitialValues(qItem);
+      return createNewRepeatGroupQuestionnaireResponseItem(qItem, getInitialValueAnswers(qItem));
     }
 
     const initialQRItems: QuestionnaireResponseItem[] = [];
@@ -143,7 +147,7 @@ function readItemInitialValueRecursive(
       }
     }
 
-    let qrItem = createQuestionnaireResponseItemFromInitialValue(qItem);
+    let qrItem = createNewQuestionnaireResponseItem(qItem, getInitialValueAnswers(qItem));
 
     if (initialQRItems.length > 0) {
       if (!qrItem) {
@@ -158,33 +162,47 @@ function readItemInitialValueRecursive(
     return qrItem;
   }
 
-  return createQuestionnaireResponseItemFromInitialValue(qItem);
+  return createNewQuestionnaireResponseItem(qItem, getInitialValueAnswers(qItem));
 }
 
-function createQuestionnaireResponseItemFromInitialValue(qItem: QuestionnaireItem) {
-  const initialValues = qItem.initial;
-  if (!initialValues) {
-    return null;
+function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] {
+  // For answerOption.initialSelected
+  if (qItem.type === 'choice' && qItem.answerOption) {
+    return qItem.answerOption
+      .filter((option) => option.initialSelected)
+      .map((option): QuestionnaireResponseItemAnswer | null => {
+        if (option.valueCoding) {
+          return {
+            valueCoding: option.valueCoding
+          };
+        }
+
+        if (option.valueString) {
+          return {
+            valueString: option.valueString
+          };
+        }
+
+        if (option.valueInteger) {
+          return {
+            valueInteger: option.valueInteger
+          };
+        }
+
+        return null;
+      })
+      .filter((item): item is QuestionnaireResponseItemAnswer => !!item);
   }
 
-  const initialValueAnswers = initialValues
-    .map((initialValue) => initialValueSwitcher(initialValue))
-    .filter((item): item is QuestionnaireResponseItemAnswer => item !== null);
-
-  return createNewQuestionnaireResponseItem(qItem, initialValueAnswers);
-}
-
-function createQuestionnaireResponseItemFromRepeatingInitialValues(qItem: QuestionnaireItem) {
+  // For item.initial
   const initialValues = qItem.initial;
   if (!initialValues) {
-    return null;
+    return [];
   }
 
-  const initialValueAnswers = initialValues
+  return initialValues
     .map((initialValue) => initialValueSwitcher(initialValue))
     .filter((item): item is QuestionnaireResponseItemAnswer => item !== null);
-
-  return createNewRepeatGroupQuestionnaireResponseItem(qItem, initialValueAnswers);
 }
 
 function initialValueSwitcher(
