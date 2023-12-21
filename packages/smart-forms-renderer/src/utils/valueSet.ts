@@ -29,7 +29,7 @@ import type {
 import * as FHIR from 'fhirclient';
 import type { FhirResourceString } from '../interfaces/populate.interface';
 import type { VariableXFhirQuery } from '../interfaces/variables.interface';
-import type { ValueSetPromise } from '@aehrc/fhir-questionnaire-helpers';
+import type { ValueSetPromise } from '../interfaces/valueSet.interface';
 
 const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;

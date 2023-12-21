@@ -60,6 +60,7 @@ function Playground() {
         setBuildingState('idle');
       }
     } catch (error) {
+      console.log(error);
       enqueueSnackbar('JSON string invalid', {
         variant: 'error',
         preventDuplicate: true

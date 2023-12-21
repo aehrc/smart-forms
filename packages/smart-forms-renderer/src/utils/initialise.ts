@@ -1,0 +1,345 @@
+/*
+ * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { evaluateInitialEnableWhenExpressions } from './enableWhenExpression';
+import { getFirstVisibleTab } from './tabs';
+import type {
+  Expression,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireItemInitial,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
+import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { Tabs } from '../interfaces/tab.interface';
+import { assignPopulatedAnswersToEnableWhen } from './enableWhen';
+import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
+import { evaluateInitialCalculatedExpressions } from './calculatedExpression';
+
+/**
+ * Initialise a conformant questionnaireResponse from a given questionnaire
+ * optionally takes in an existing questionnaireResponse to be initialised
+ *
+ * @author Sean Fong
+ */
+export function initialiseQuestionnaireResponse(
+  questionnaire: Questionnaire,
+  questionnaireResponse?: QuestionnaireResponse
+) {
+  if (!questionnaireResponse) {
+    questionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress'
+    };
+  }
+
+  if (!questionnaireResponse.status) {
+    questionnaireResponse.status = 'in-progress';
+  }
+
+  const firstTopLevelItem = questionnaire?.item?.[0];
+  if (firstTopLevelItem && !questionnaireResponse.item) {
+    const initialItems = readItemInitialValues(questionnaire);
+    questionnaireResponse.item = initialItems ?? [
+      {
+        linkId: firstTopLevelItem.linkId,
+        text: firstTopLevelItem.text,
+        item: []
+      }
+    ];
+  }
+
+  if (!questionnaireResponse.questionnaire) {
+    questionnaireResponse.questionnaire = setQuestionnaireReference(questionnaire);
+  }
+
+  return questionnaireResponse;
+}
+
+function setQuestionnaireReference(questionnaire: Questionnaire) {
+  // Use {url}|{version} - the ideal way
+  if (questionnaire.url) {
+    let questionnaireReference = questionnaire.url;
+    if (questionnaire.version) {
+      questionnaireReference += '|' + questionnaire.version;
+    }
+    return questionnaireReference;
+  }
+
+  // If no url exists, use Questionnaire/{id}
+  if (questionnaire.id) {
+    return `Questionnaire/${questionnaire.id}`;
+  }
+
+  return '';
+}
+
+function readItemInitialValues(questionnaire: Questionnaire) {
+  if (!questionnaire.item || questionnaire.item.length === 0) {
+    return null;
+  }
+
+  const topLevelQrItems: QuestionnaireResponseItem[] = [];
+  for (const topLevelQItem of questionnaire.item) {
+    const updatedTopLevelQRItem = readItemInitialValueRecursive(topLevelQItem);
+
+    if (Array.isArray(updatedTopLevelQRItem)) {
+      if (updatedTopLevelQRItem.length > 0) {
+        topLevelQrItems.push(...updatedTopLevelQRItem);
+      }
+      continue;
+    }
+
+    if (updatedTopLevelQRItem) {
+      topLevelQrItems.push(updatedTopLevelQRItem);
+    }
+  }
+
+  if (topLevelQrItems.length === 0) {
+    return null;
+  }
+
+  return topLevelQrItems;
+}
+
+function readItemInitialValueRecursive(
+  qItem: QuestionnaireItem
+): QuestionnaireResponseItem[] | QuestionnaireResponseItem | null {
+  const childQItems = qItem.item;
+  if (childQItems && childQItems.length > 0) {
+    if (qItem.type === 'group' && qItem.repeats) {
+      createQuestionnaireResponseItemFromRepeatingInitialValues(qItem);
+    }
+
+    const initialQRItems: QuestionnaireResponseItem[] = [];
+    for (const childQItem of childQItems) {
+      const initialChildQRItemOrItems = readItemInitialValueRecursive(childQItem);
+
+      if (Array.isArray(initialChildQRItemOrItems)) {
+        if (initialChildQRItemOrItems.length > 0) {
+          initialQRItems.push(...initialChildQRItemOrItems);
+        }
+        continue;
+      }
+
+      if (initialChildQRItemOrItems) {
+        initialQRItems.push(initialChildQRItemOrItems);
+      }
+    }
+
+    let qrItem = createQuestionnaireResponseItemFromInitialValue(qItem);
+
+    if (initialQRItems.length > 0) {
+      if (!qrItem) {
+        qrItem = {
+          linkId: qItem.linkId,
+          text: qItem.text
+        };
+      }
+      qrItem.item = initialQRItems;
+    }
+
+    return qrItem;
+  }
+
+  return createQuestionnaireResponseItemFromInitialValue(qItem);
+}
+
+function createQuestionnaireResponseItemFromInitialValue(qItem: QuestionnaireItem) {
+  const initialValues = qItem.initial;
+  if (!initialValues) {
+    return null;
+  }
+
+  const initialValueAnswers = initialValues
+    .map((initialValue) => initialValueSwitcher(initialValue))
+    .filter((item): item is QuestionnaireResponseItemAnswer => item !== null);
+
+  return createNewQuestionnaireResponseItem(qItem, initialValueAnswers);
+}
+
+function createQuestionnaireResponseItemFromRepeatingInitialValues(qItem: QuestionnaireItem) {
+  const initialValues = qItem.initial;
+  if (!initialValues) {
+    return null;
+  }
+
+  const initialValueAnswers = initialValues
+    .map((initialValue) => initialValueSwitcher(initialValue))
+    .filter((item): item is QuestionnaireResponseItemAnswer => item !== null);
+
+  return createNewRepeatGroupQuestionnaireResponseItem(qItem, initialValueAnswers);
+}
+
+function initialValueSwitcher(
+  initialValue: QuestionnaireItemInitial
+): QuestionnaireResponseItemAnswer | null {
+  if (initialValue.valueBoolean) {
+    return { valueBoolean: initialValue.valueBoolean };
+  }
+
+  if (initialValue.valueDecimal) {
+    return { valueDecimal: initialValue.valueDecimal };
+  }
+
+  if (initialValue.valueInteger) {
+    return { valueInteger: initialValue.valueInteger };
+  }
+
+  if (initialValue.valueDate) {
+    return { valueDate: initialValue.valueDate };
+  }
+
+  if (initialValue.valueDateTime) {
+    return { valueDateTime: initialValue.valueDateTime };
+  }
+
+  if (initialValue.valueTime) {
+    return { valueTime: initialValue.valueTime };
+  }
+
+  if (initialValue.valueString) {
+    return { valueString: initialValue.valueString };
+  }
+
+  if (initialValue.valueUri) {
+    return { valueUri: initialValue.valueUri };
+  }
+
+  if (initialValue.valueAttachment) {
+    return { valueAttachment: initialValue.valueAttachment };
+  }
+
+  if (initialValue.valueCoding) {
+    return { valueCoding: initialValue.valueCoding };
+  }
+
+  if (initialValue.valueQuantity) {
+    return { valueQuantity: initialValue.valueQuantity };
+  }
+
+  if (initialValue.valueReference) {
+    return { valueReference: initialValue.valueReference };
+  }
+
+  return null;
+}
+
+function createNewQuestionnaireResponseItem(
+  qItem: QuestionnaireItem,
+  initialValueAnswers: QuestionnaireResponseItemAnswer[]
+): QuestionnaireResponseItem | null {
+  if (initialValueAnswers.length === 0) {
+    return null;
+  }
+
+  // If item is non-repeating, only take the first initial value
+  if (!qItem.repeats) {
+    initialValueAnswers = [initialValueAnswers[0]];
+  }
+
+  return {
+    linkId: qItem.linkId,
+    text: qItem.text,
+    answer: initialValueAnswers
+  };
+}
+
+function createNewRepeatGroupQuestionnaireResponseItem(
+  qItem: QuestionnaireItem,
+  initialValueAnswers: QuestionnaireResponseItemAnswer[]
+): QuestionnaireResponseItem[] | null {
+  if (initialValueAnswers.length === 0) {
+    return null;
+  }
+
+  return initialValueAnswers.map((answer) => {
+    return {
+      linkId: qItem.linkId,
+      text: qItem.text,
+      answer: [answer]
+    };
+  });
+}
+
+export interface initialFormFromResponseParams {
+  questionnaireResponse: QuestionnaireResponse;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression>;
+  variablesFhirPath: Record<string, Expression[]>;
+  tabs: Tabs;
+  fhirPathContext: Record<string, any>;
+}
+
+export function initialiseFormFromResponse(params: initialFormFromResponseParams): {
+  initialEnableWhenItems: EnableWhenItems;
+  initialEnableWhenLinkedQuestions: Record<string, string[]>;
+  initialEnableWhenExpressions: Record<string, EnableWhenExpression>;
+  initialCalculatedExpressions: Record<string, CalculatedExpression>;
+  firstVisibleTab: number;
+  updatedFhirPathContext: Record<string, any>;
+} {
+  const {
+    questionnaireResponse,
+    enableWhenItems,
+    enableWhenExpressions,
+    calculatedExpressions,
+    variablesFhirPath,
+    tabs
+  } = params;
+  let updatedFhirPathContext = params.fhirPathContext;
+
+  const { initialisedItems, linkedQuestions } = assignPopulatedAnswersToEnableWhen(
+    enableWhenItems,
+    questionnaireResponse
+  );
+
+  const evaluateInitialEnableWhenExpressionsResult = evaluateInitialEnableWhenExpressions({
+    initialResponse: questionnaireResponse,
+    enableWhenExpressions: enableWhenExpressions,
+    variablesFhirPath: variablesFhirPath,
+    existingFhirPathContext: updatedFhirPathContext
+  });
+  const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
+  updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
+
+  const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
+    initialResponse: questionnaireResponse,
+    calculatedExpressions: calculatedExpressions,
+    variablesFhirPath: variablesFhirPath,
+    existingFhirPathContext: updatedFhirPathContext
+  });
+  const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
+  updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
+
+  const firstVisibleTab =
+    Object.keys(tabs).length > 0
+      ? getFirstVisibleTab(tabs, initialisedItems, initialEnableWhenExpressions)
+      : 0;
+
+  return {
+    initialEnableWhenItems: initialisedItems,
+    initialEnableWhenLinkedQuestions: linkedQuestions,
+    initialEnableWhenExpressions,
+    initialCalculatedExpressions,
+    firstVisibleTab,
+    updatedFhirPathContext
+  };
+}

@@ -23,7 +23,6 @@ import type {
 import { isContextParameter } from './typePredicates';
 import fhirpath from 'fhirpath';
 import type { Bundle, FhirResource, OperationOutcomeIssue, Questionnaire } from 'fhir/r4';
-import axios from 'axios';
 import { createWarningIssue } from './operationOutcome';
 import type { FetchResourceCallback } from '../interfaces';
 
@@ -60,7 +59,7 @@ export async function createFhirPathContext(
   // Resolve promises
   try {
     const promises: Promise<any>[] = referenceContextsTuple.map(([, promise]) => promise);
-    const responses = await axios.all(promises);
+    const responses = await Promise.all(promises);
 
     const resources = responses.map((response) => response.data as FhirResource);
     referenceContextsTuple = referenceContextsTuple.map((tuple, i) => {

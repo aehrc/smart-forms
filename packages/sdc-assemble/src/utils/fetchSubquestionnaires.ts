@@ -16,7 +16,6 @@
  */
 
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
-import axios from 'axios';
 import { createErrorOutcome } from './operationOutcome';
 import type { FetchQuestionnaireCallback } from '../interfaces';
 
@@ -40,7 +39,7 @@ export async function fetchSubquestionnaires(
 
   let resources: (Bundle | OperationOutcome)[] = [];
   try {
-    const responses = await axios.all(promises);
+    const responses = await Promise.all(promises);
     resources = responses.map((response) => response.data);
   } catch (e) {
     if (e instanceof Error) {

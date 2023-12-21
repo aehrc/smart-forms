@@ -15,71 +15,9 @@
  * limitations under the License.
  */
 
-import type {
-  Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
 import type { QrRepeatGroup } from '../interfaces/repeatGroup.interface';
-
-/**
- * Initialise a conformant questionnaireResponse from a given questionnaire
- * optionally takes in an existing questionnaireResponse to be initialised
- *
- * @author Sean Fong
- */
-export function initialiseQuestionnaireResponse(
-  questionnaire: Questionnaire,
-  questionnaireResponse?: QuestionnaireResponse
-) {
-  if (!questionnaireResponse) {
-    questionnaireResponse = {
-      resourceType: 'QuestionnaireResponse',
-      status: 'in-progress'
-    };
-  }
-
-  if (!questionnaireResponse.status) {
-    questionnaireResponse.status = 'in-progress';
-  }
-
-  const firstTopLevelItem = questionnaire?.item?.[0];
-  if (firstTopLevelItem && !questionnaireResponse.item) {
-    questionnaireResponse.item = [
-      {
-        linkId: firstTopLevelItem.linkId,
-        text: firstTopLevelItem.text,
-        item: []
-      }
-    ];
-  }
-
-  if (!questionnaireResponse.questionnaire) {
-    questionnaireResponse.questionnaire = setQuestionnaireReference(questionnaire);
-  }
-
-  return questionnaireResponse;
-}
-
-export function setQuestionnaireReference(questionnaire: Questionnaire) {
-  // Use {url}|{version} - the ideal way
-  if (questionnaire.url) {
-    let questionnaireReference = questionnaire.url;
-    if (questionnaire.version) {
-      questionnaireReference += '|' + questionnaire.version;
-    }
-    return questionnaireReference;
-  }
-
-  // If no url exists, use Questionnaire/{id}
-  if (questionnaire.id) {
-    return `Questionnaire/${questionnaire.id}`;
-  }
-
-  return '';
-}
 
 /**
  * Remove items with no answers from a given questionnaireResponse
