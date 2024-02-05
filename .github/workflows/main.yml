@@ -32,7 +32,7 @@ jobs:
         run: npm ci
       - name: Run jest tests
         run: npm run test -w apps/smart-forms-app
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
   cypress-test:
     name: Cypress Tests
     runs-on: ubuntu-latest
