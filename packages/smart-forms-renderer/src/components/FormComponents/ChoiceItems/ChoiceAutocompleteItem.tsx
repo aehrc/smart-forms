@@ -15,25 +15,14 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent, SyntheticEvent } from 'react';
 import React, { useState } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
-import Fade from '@mui/material/Fade';
 import Grid from '@mui/material/Grid';
-import Tooltip from '@mui/material/Tooltip';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { StandardTextField } from '../Textfield.styles';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import SearchIcon from '@mui/icons-material/Search';
 import useDebounce from '../../../hooks/useDebounce';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
-import InfoIcon from '@mui/icons-material/Info';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import DoneIcon from '@mui/icons-material/Done';
-import ErrorIcon from '@mui/icons-material/Error';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -45,6 +34,7 @@ import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import useReadOnly from '../../../hooks/useReadOnly';
+import ChoiceAutocompleteField from './ChoiceAutocompleteField';
 
 interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -66,8 +56,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   }
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayUnit, displayPrompt, displayInstructions, entryFormat } =
-    useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   const maxList = 10;
 
@@ -86,7 +75,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   }
 
   // Event handlers
-  function handleValueChange(_: SyntheticEvent<Element, Event>, newValue: Coding | null) {
+  function handleValueChange(newValue: Coding | null) {
     if (newValue === null) {
       setInput('');
       onQrItemChange(createEmptyQrItem(qItem));
@@ -99,70 +88,20 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
     });
   }
 
-  const choiceAutocomplete = (
-    <>
-      <Autocomplete
-        id={qItem.id}
-        value={valueCoding ?? null}
-        placeholder={entryFormat}
-        options={options}
-        getOptionLabel={(option) => `${option.display}`}
-        isOptionEqualToValue={(option, value) => option.id === value.id}
-        disabled={readOnly}
-        loading={loading}
-        loadingText={'Fetching results...'}
-        clearOnEscape
-        autoHighlight
-        onChange={handleValueChange}
-        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
-        filterOptions={(x) => x}
-        renderInput={(params) => (
-          <StandardTextField
-            {...params}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-            isTabled={isTabled}
-            label={displayPrompt}
-            size="small"
-            InputProps={{
-              ...params.InputProps,
-
-              startAdornment: (
-                <>
-                  {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
-                  {params.InputProps.startAdornment}
-                </>
-              ),
-              endAdornment: (
-                <>
-                  {loading ? (
-                    <CircularProgress color="inherit" size={16} />
-                  ) : feedback ? (
-                    <Fade in={!!feedback} timeout={300}>
-                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
-                        {
-                          {
-                            info: <InfoIcon fontSize="small" color="info" />,
-                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                            success: <DoneIcon fontSize="small" color="success" />,
-                            error: <ErrorIcon fontSize="small" color="error" />
-                          }[feedback.color]
-                        }
-                      </Tooltip>
-                    </Fade>
-                  ) : null}
-                  {params.InputProps.endAdornment}
-                  {displayUnit}
-                </>
-              )
-            }}
-          />
-        )}
-      />
-    </>
-  );
-
   if (isRepeated) {
-    return <>{choiceAutocomplete}</>;
+    return (
+      <ChoiceAutocompleteField
+        qItem={qItem}
+        options={options}
+        valueCoding={valueCoding ?? null}
+        loading={loading}
+        feedback={feedback ?? null}
+        readOnly={readOnly}
+        isTabled={isTabled}
+        onInputChange={setInput}
+        onValueChange={handleValueChange}
+      />
+    );
   }
 
   return (
@@ -172,7 +111,17 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
           <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Grid>
         <Grid item xs={7}>
-          {choiceAutocomplete}
+          <ChoiceAutocompleteField
+            qItem={qItem}
+            options={options}
+            valueCoding={valueCoding ?? null}
+            loading={loading}
+            feedback={feedback ?? null}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            onInputChange={setInput}
+            onValueChange={handleValueChange}
+          />
           <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
         </Grid>
       </Grid>

@@ -81,7 +81,6 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         freeSolo
         autoHighlight
         sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 220, flexGrow: 1 }}
-        placeholder={entryFormat}
         onChange={(_, newValue) => onValueChange(newValue)}
         filterOptions={(x) => x}
         renderInput={(params) => (
@@ -93,6 +92,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
             isTabled={isTabled}
             label={displayPrompt}
             size="small"
+            placeholder={entryFormat}
             InputProps={{
               ...params.InputProps,
               startAdornment: (

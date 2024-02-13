@@ -52,11 +52,11 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
         sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
         size="small"
         disabled={readOnly}
-        placeholder={entryFormat}
         renderInput={(params) => (
           <StandardTextField
             isTabled={isTabled}
             label={displayPrompt}
+            placeholder={entryFormat}
             {...params}
             InputProps={{
               ...params.InputProps,

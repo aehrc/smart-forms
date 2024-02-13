@@ -39,11 +39,11 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
         disabled={readOnly}
         size="small"
-        placeholder={entryFormat}
         renderInput={(params) => (
           <StandardTextField
             isTabled={isTabled}
             label={displayPrompt}
+            placeholder={entryFormat}
             {...params}
             InputProps={{
               ...params.InputProps,
