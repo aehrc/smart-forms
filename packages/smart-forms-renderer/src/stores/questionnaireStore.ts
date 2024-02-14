@@ -58,11 +58,13 @@ interface QuestionnaireStoreType {
   processedValueSetUrls: Record<string, string>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
+  readOnly: boolean;
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
     additionalVariables?: Record<string, object>,
-    terminologyServerUrl?: string
+    terminologyServerUrl?: string,
+    readOnly?: boolean
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
@@ -94,11 +96,13 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   processedValueSetUrls: {},
   cachedValueSetCodings: {},
   fhirPathContext: {},
+  readOnly: false,
   buildSourceQuestionnaire: async (
     questionnaire,
     questionnaireResponse = cloneDeep(emptyResponse),
     additionalVariables = {},
-    terminologyServerUrl = terminologyServerStore.getState().url
+    terminologyServerUrl = terminologyServerStore.getState().url,
+    readOnly = false
   ) => {
     const questionnaireModel = await createQuestionnaireModel(
       questionnaire,
@@ -137,7 +141,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
       processedValueSetUrls: questionnaireModel.processedValueSetUrls,
-      fhirPathContext: updatedFhirPathContext
+      fhirPathContext: updatedFhirPathContext,
+      readOnly: readOnly
     });
   },
   destroySourceQuestionnaire: () =>

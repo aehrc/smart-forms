@@ -19,10 +19,15 @@ import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import FormBodySingleCollapsible from './FormBodySingleCollapsible';
-import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../interfaces/renderProps.interface';
 import useHidden from '../../hooks/useHidden';
 
-interface FormBodySingleCollapsibleProps extends PropsWithQrItemChangeHandler {
+interface FormBodySingleCollapsibleProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   index: number;
@@ -31,7 +36,8 @@ interface FormBodySingleCollapsibleProps extends PropsWithQrItemChangeHandler {
 }
 
 function FormBodySingleCollapsibleWrapper(props: FormBodySingleCollapsibleProps) {
-  const { qItem, qrItem, index, selectedIndex, onToggleExpand, onQrItemChange } = props;
+  const { qItem, qrItem, index, selectedIndex, parentIsReadOnly, onToggleExpand, onQrItemChange } =
+    props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
@@ -50,6 +56,7 @@ function FormBodySingleCollapsibleWrapper(props: FormBodySingleCollapsibleProps)
         qrItem={qrItem}
         isRepeated={true}
         groupCardElevation={1}
+        parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
       />
     </FormBodySingleCollapsible>

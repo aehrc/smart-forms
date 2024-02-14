@@ -32,7 +32,8 @@ function useInitialiseRenderer(
   questionnaireResponse?: QuestionnaireResponse,
   additionalVariables?: Record<string, object>,
   terminologyServerUrl?: string,
-  fhirClient?: Client
+  fhirClient?: Client,
+  readOnly?: boolean
 ): boolean {
   const buildSourceQuestionnaire = useQuestionnaireStore.use.buildSourceQuestionnaire();
   const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
@@ -77,7 +78,8 @@ function useInitialiseRenderer(
       questionnaire,
       questionnaireResponse,
       additionalVariables,
-      terminologyServerUrl
+      terminologyServerUrl,
+      readOnly
     ).then(() => {
       buildSourceResponse(initialiseQuestionnaireResponse(questionnaire));
 
@@ -102,7 +104,8 @@ function useInitialiseRenderer(
     setEncounter,
     terminologyServerUrl,
     setTerminologyServerUrl,
-    resetTerminologyServerUrl
+    resetTerminologyServerUrl,
+    readOnly
   ]);
 
   return loading;

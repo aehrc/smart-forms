@@ -21,15 +21,22 @@ import TableCell from '@mui/material/TableCell';
 
 interface SelectRowButtonProps {
   isSelected: boolean;
+  readOnly: boolean;
   onSelectItem: () => void;
 }
 
 function SelectRowButton(props: SelectRowButtonProps) {
-  const { isSelected, onSelectItem } = props;
+  const { isSelected, readOnly, onSelectItem } = props;
 
   return (
     <TableCell padding="checkbox">
-      <Checkbox color="primary" size="small" checked={isSelected} onChange={onSelectItem} />
+      <Checkbox
+        color="primary"
+        size="small"
+        checked={isSelected}
+        disabled={readOnly}
+        onChange={onSelectItem}
+      />
     </TableCell>
   );
 }

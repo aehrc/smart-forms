@@ -29,6 +29,8 @@ import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 function BaseRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updateExpressions = useQuestionnaireStore.use.updateExpressions();
+  const readOnly = useQuestionnaireStore.use.readOnly();
+
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
 
@@ -79,6 +81,7 @@ function BaseRenderer() {
               key={qItem.linkId}
               topLevelQItem={qItem}
               topLevelQRItemOrItems={qrItemOrItems ?? null}
+              parentIsReadOnly={readOnly}
               onQrItemChange={(newTopLevelQRItem) =>
                 handleTopLevelQRItemSingleChange(newTopLevelQRItem)
               }

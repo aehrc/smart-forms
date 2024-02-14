@@ -24,16 +24,21 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
-import type { PropsWithQrItemChangeHandler } from '../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler
+} from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../stores';
 
-interface FormBodyTabbedProps extends PropsWithQrItemChangeHandler {
+interface FormBodyTabbedProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem | null;
 }
 
 function FormBodyTabbed(props: FormBodyTabbedProps) {
-  const { topLevelQItem, topLevelQRItem, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, parentIsReadOnly, onQrItemChange } = props;
 
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
@@ -95,6 +100,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                   tabIsMarkedAsComplete={tabIsMarkedAsComplete}
                   tabs={tabs}
                   currentTabIndex={currentTab}
+                  parentIsReadOnly={parentIsReadOnly}
                   onQrItemChange={handleQrGroupChange}
                 />
               </TabPanel>

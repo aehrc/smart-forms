@@ -138,6 +138,7 @@ function GroupTableView(props: GroupTableViewProps) {
                   size="small"
                   indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
                   checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                  disabled={readOnly}
                   onChange={onSelectAll}
                 />
               </HeaderTableCell>

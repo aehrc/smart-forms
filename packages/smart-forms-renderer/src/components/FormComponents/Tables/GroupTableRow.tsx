@@ -88,12 +88,16 @@ function GroupTableRow(props: GroupTableRowProps) {
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
-                  {...draggableProvided.dragHandleProps}>
-                  <DragIndicator fontSize="small" />
+                  {...(readOnly ? {} : draggableProvided.dragHandleProps)}>
+                  <DragIndicator
+                    fontSize="small"
+                    sx={{ color: readOnly ? 'text.disabled' : 'inherit' }}
+                  />
                 </Box>
               </TableCell>
               <SelectRowButton
                 isSelected={itemIsSelected}
+                readOnly={readOnly}
                 onSelectItem={() => onSelectRow(nanoId)}
               />
             </>

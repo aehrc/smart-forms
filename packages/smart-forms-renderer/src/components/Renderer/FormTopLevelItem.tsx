@@ -22,6 +22,7 @@ import { containsTabs, isTabContainer } from '../../utils/tabs';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
 import type {
+  PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../interfaces/renderProps.interface';
@@ -34,13 +35,20 @@ import Box from '@mui/material/Box';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithQrRepeatGroupChangeHandler {
+    PropsWithQrRepeatGroupChangeHandler,
+    PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
 }
 
 function FormTopLevelItem(props: FormTopLevelItemProps) {
-  const { topLevelQItem, topLevelQRItemOrItems, onQrItemChange, onQrRepeatGroupChange } = props;
+  const {
+    topLevelQItem,
+    topLevelQRItemOrItems,
+    parentIsReadOnly,
+    onQrItemChange,
+    onQrRepeatGroupChange
+  } = props;
 
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
@@ -49,7 +57,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   const itemIsGroup = topLevelQItem.type === 'group';
 
-  const readOnly = useReadOnly(topLevelQItem, false);
+  const readOnly = useReadOnly(topLevelQItem, parentIsReadOnly);
   const itemIsHidden = useHidden(topLevelQItem);
   if (itemIsHidden) {
     return null;
@@ -81,6 +89,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
           key={topLevelQItem.linkId}
           topLevelQItem={topLevelQItem}
           topLevelQRItem={topLevelQRItem}
+          parentIsReadOnly={readOnly}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -91,6 +100,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
+        parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
       />
     );
