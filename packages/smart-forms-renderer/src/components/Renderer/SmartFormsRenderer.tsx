@@ -34,6 +34,7 @@ interface SmartFormsRendererProps {
   additionalVariables?: Record<string, object>;
   terminologyServerUrl?: string;
   fhirClient?: Client;
+  readOnly?: boolean;
 }
 
 function SmartFormsRenderer(props: SmartFormsRendererProps) {
@@ -42,7 +43,8 @@ function SmartFormsRenderer(props: SmartFormsRendererProps) {
     questionnaireResponse,
     additionalVariables,
     terminologyServerUrl,
-    fhirClient
+    fhirClient,
+    readOnly
   } = props;
 
   const isLoading = useInitialiseRenderer(
@@ -50,7 +52,8 @@ function SmartFormsRenderer(props: SmartFormsRendererProps) {
     questionnaireResponse,
     additionalVariables,
     terminologyServerUrl,
-    fhirClient
+    fhirClient,
+    readOnly
   );
   const queryClient = useQueryClient();
 

@@ -121,3 +121,19 @@ export const QTestGridWithResponseAddXFhirQuery: Story = {
     }
   }
 };
+
+export const QTestGridWithResponseReadOnly: Story = {
+  args: {
+    questionnaire: QTestGrid,
+    questionnaireResponse: RTestGrid,
+    readOnly: true
+  }
+};
+
+export const Form715WithResponseReadOnly: Story = {
+  args: {
+    questionnaire: Q715,
+    questionnaireResponse: R715,
+    readOnly: true
+  }
+};
