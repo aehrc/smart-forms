@@ -131,7 +131,9 @@ If you do have any feedback on the app's behaviour/user experience or anything e
 
 We are also accepting contributions to make the product better! Please read [CONTRIBUTING](CONTRIBUTING.md).
 
-Any other discussions can be raised in the Smart Forms's Zulip stream: https://chat.fhir.org/#narrow/stream/425534-smart-forms.
+Smart Forms-related discussions can be raised in the Smart Forms's Zulip stream: https://chat.fhir.org/#narrow/stream/425534-smart-forms.
+
+Any questionnnaire/SDC-related discussion can be raised in the questionnaire stream: https://chat.fhir.org/#narrow/stream/179255-questionnaire.
 
 ## Licensing and attribution
 
