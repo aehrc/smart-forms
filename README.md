@@ -127,8 +127,10 @@ npm start
 ## I found a bug/the app crashed, now what? 
 
 Report it to us! [Create an issue within the repo](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed as soon as possible.
-If you do have any feedback on the app's behaviour/user experience or anything else, feel free to also create an issue!
+If you do have any feedback on the app's behaviour/user experience or anything else, feel free to also create an issue.
 
+We are also accepting contributions/pull requests to make the product better, so feel free to do so.
+Any other discussions can be raised in the Smart Forms's Zulip stream: https://chat.fhir.org/#narrow/stream/425534-smart-forms.
 
 ## Licensing and attribution
 
