@@ -103,8 +103,8 @@ export function evaluateItemPopulationContexts(
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[]
 ): Record<string, any> {
-  for (const linkId in itemPopulationContexts) {
-    const itemPopulationContext = itemPopulationContexts[linkId];
+  for (const name in itemPopulationContexts) {
+    const itemPopulationContext = itemPopulationContexts[name];
     if (itemPopulationContext) {
       let evaluatedResult: any[];
       const expression = itemPopulationContext.expression;

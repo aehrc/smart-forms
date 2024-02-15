@@ -56,7 +56,7 @@ function readQuestionnaireItemRecursive(
     // Read item population context of group item
     const itemPopulationContext = getItemPopulationContext(item);
     if (itemPopulationContext && itemPopulationContext.expression && itemPopulationContext.name) {
-      populationExpressions.itemPopulationContexts[item.linkId] = {
+      populationExpressions.itemPopulationContexts[itemPopulationContext.name] = {
         linkId: item.linkId,
         name: itemPopulationContext.name,
         expression: itemPopulationContext.expression,

@@ -68,8 +68,6 @@ export async function constructResponse(
 
   const containedResources = questionnaire.contained ?? [];
 
-  // console.log(initialExpressions);
-
   // Populate questionnaire response as a two-step process
   // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
@@ -479,14 +477,26 @@ function constructRepeatGroupInstances(
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   containedValueSets: Record<string, ValueSet>
 ): QuestionnaireResponseItem[] {
-  if (!qRepeatGroupParent.item) {
+  if (!qRepeatGroupParent.item || !qRepeatGroupParent.item[0]) {
     return [];
   }
 
-  // get from itemPopulationContexts
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
 
-  const itemPopulationContext = itemPopulationContexts[qRepeatGroupParent.linkId];
+  // Look in initialExpressions of each of the child items to relate back to the itemPopulationContext its using
+  const itemPopulationContextExpression =
+    initialExpressions[qRepeatGroupParent.item[0].linkId]?.expression;
+
+  if (!itemPopulationContextExpression) {
+    return [];
+  }
+
+  const itemPopulationContextName = itemPopulationContextExpression.substring(
+    itemPopulationContextExpression.indexOf('%') + 1,
+    itemPopulationContextExpression.indexOf('.')
+  );
+
+  const itemPopulationContext = itemPopulationContexts[itemPopulationContextName];
   if (!itemPopulationContext || !itemPopulationContext.value) {
     return [];
   }
