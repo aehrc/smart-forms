@@ -124,14 +124,19 @@ npm start
 
 5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://smartforms.csiro.au/launch with http://localhost:5173/launch
 
-## I found a bug/the app crashed, now what? 
+## Feature requests and bug reports
 
-[Create an issue within the repo](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed as soon as possible.
-If you do have any feedback on the app's behaviour/user experience or anything else, feel free to also create an issue.
+If you find any bugs, feel free to [create an issue](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed.
+
+If you have any feature suggestions, feel free to also create an issue. However, we will try to prioritise more general rather than use-case specific features due to resourcing constraints.
 
 We are also accepting contributions to make the product better! Please read [CONTRIBUTING](CONTRIBUTING.md).
 
-Smart Forms-related discussions can be raised in the Smart Forms's Zulip stream: https://chat.fhir.org/#narrow/stream/425534-smart-forms.
+## Discussions
+
+We encourage having discussions on [chat.fhir.org](chat.fhir.org).
+
+Smart Forms-related discussions can be raised in the Smart Forms's stream: https://chat.fhir.org/#narrow/stream/425534-smart-forms.
 
 Any questionnnaire/SDC-related discussion can be raised in the questionnaire stream: https://chat.fhir.org/#narrow/stream/179255-questionnaire.
 
