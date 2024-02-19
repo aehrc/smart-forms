@@ -15,13 +15,7 @@
  * limitations under the License.
  */
 
-import type {
-  Coding,
-  Expression,
-  Extension,
-  QuestionnaireItem,
-  QuestionnaireResponse
-} from 'fhir/r4';
+import type { Coding, Expression, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 
 /**
@@ -221,28 +215,6 @@ export function getMarkdownString(qItem: QuestionnaireItem): string | null {
 }
 
 /**
- * Get questionnaire name from questionnaireResponse
- * If questionnaireResponse does not have a name, fallback to questionnaireResponse questionnaireId
- *
- * @author Sean Fong
- */
-export function getQuestionnaireNameFromResponse(
-  questionnaireResponse: QuestionnaireResponse
-): string {
-  const itemControl = questionnaireResponse._questionnaire?.extension?.find(
-    (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/display'
-  );
-
-  if (itemControl) {
-    if (itemControl.valueString) {
-      return itemControl.valueString.charAt(0).toUpperCase() + itemControl.valueString.slice(1);
-    }
-  }
-
-  return questionnaireResponse.id ?? 'Unnamed Response';
-}
-
-/**
  * Get text display prompt for items with itemControlCode prompt and has a prompt childItem
  *
  * @author Sean Fong
@@ -338,26 +310,6 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
  *
  * @author Sean Fong
  */
-export function getEntryFormat(qItem: QuestionnaireItem): string {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/entryFormat'
-  );
-
-  if (itemControl) {
-    if (itemControl.valueString) {
-      return itemControl.valueString;
-    }
-  }
-  return '';
-}
-
-/**
- * Get entry format if its extension is present
- * i.e. DD-MM-YYYY for dates, HH:MM for times etc.
- *
- * @author Sean Fong
- */
 export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | null {
   const itemControl = qItem.extension?.find(
     (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/regex'
@@ -384,6 +336,28 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | 
   // Get regex expression from item types if regex extensions not present
   if (qItem.type === 'url') {
     return { expression: new RegExp(/^\S*$/), feedback: 'URLs should not contain any whitespaces' };
+  }
+
+  return null;
+}
+
+/**maxLength
+ * Get minimum length of characters allowed if present
+ *
+ * @author Sean Fong
+ */
+export function getMinLength(qItem: QuestionnaireItem): number | null {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/minLength'
+  );
+
+  // Get minLength from extension
+  if (itemControl) {
+    const minLength = itemControl.valueInteger;
+
+    if (minLength) {
+      return minLength;
+    }
   }
 
   return null;

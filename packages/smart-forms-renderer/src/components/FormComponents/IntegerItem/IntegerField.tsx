@@ -52,6 +52,7 @@ function IntegerField(props: IntegerFieldProps) {
       id={linkId}
       value={value.toString()}
       error={!!feedback}
+      helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly}
       label={displayPrompt}
