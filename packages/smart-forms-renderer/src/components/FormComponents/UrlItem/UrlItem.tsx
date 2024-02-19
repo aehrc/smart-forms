@@ -32,6 +32,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import UrlField from './UrlField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireResponseStore } from '../../../stores';
 
 interface UrlItemProps
   extends PropsWithQrItemChangeHandler,
@@ -44,13 +45,17 @@ interface UrlItemProps
 function UrlItem(props: UrlItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
+  const updateSingleItemValidity = useQuestionnaireResponseStore.use.updateSingleItemValidity();
+
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const {
     displayUnit,
     displayPrompt,
     displayInstructions,
     entryFormat,
+    required,
     regexValidation,
+    minLength,
     maxLength
   } = useRenderingExtensions(qItem);
 
@@ -62,7 +67,12 @@ function UrlItem(props: UrlItemProps) {
   const [input, setInput] = useState(valueUri);
 
   // Perform validation checks
-  const feedback = useValidationError(input, regexValidation, maxLength);
+  const { invalidType, feedback } = useValidationError(
+    input,
+    regexValidation,
+    minLength,
+    maxLength
+  );
 
   // Event handlers
   function handleChange(newInput: string) {
@@ -73,6 +83,7 @@ function UrlItem(props: UrlItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
+      updateSingleItemValidity(qItem.linkId, invalidType);
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
         onQrItemChange({ ...emptyQrItem, answer: [{ valueUri: input }] });
@@ -100,7 +111,11 @@ function UrlItem(props: UrlItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <UrlField
           linkId={qItem.linkId}
           input={input}

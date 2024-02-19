@@ -33,6 +33,7 @@ import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExp
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireResponseStore } from '../../../stores';
 
 interface TextItemProps
   extends PropsWithQrItemChangeHandler,
@@ -45,13 +46,17 @@ interface TextItemProps
 function TextItem(props: TextItemProps) {
   const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
+  const updateSingleItemValidity = useQuestionnaireResponseStore.use.updateSingleItemValidity();
+
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const {
     displayUnit,
     displayPrompt,
     displayInstructions,
     entryFormat,
+    required,
     regexValidation,
+    minLength,
     maxLength
   } = useRenderingExtensions(qItem);
 
@@ -63,7 +68,12 @@ function TextItem(props: TextItemProps) {
   const [input, setInput] = useStringInput(valueText);
 
   // Perform validation checks
-  const feedback = useValidationError(input, regexValidation, maxLength);
+  const { invalidType, feedback } = useValidationError(
+    input,
+    regexValidation,
+    minLength,
+    maxLength
+  );
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -84,6 +94,7 @@ function TextItem(props: TextItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
+      updateSingleItemValidity(qItem.linkId, invalidType);
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
         onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input.trim() }] });
@@ -111,7 +122,11 @@ function TextItem(props: TextItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-text-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <TextField
           linkId={qItem.linkId}
           input={input}

@@ -17,6 +17,7 @@
 
 import {
   getMaxLength,
+  getMinLength,
   getReadOnly,
   getRegexValidation,
   getTextDisplayInstructions,
@@ -33,7 +34,9 @@ interface RenderingExtensions {
   displayInstructions: string;
   readOnly: boolean;
   entryFormat: string;
+  required: boolean;
   regexValidation: RegexValidation | null;
+  minLength: number | null;
   maxLength: number | null;
 }
 
@@ -44,7 +47,9 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
     displayInstructions: getTextDisplayInstructions(qItem),
     readOnly: getReadOnly(qItem),
     entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
+    required: qItem.required ?? false,
     regexValidation: getRegexValidation(qItem),
+    minLength: getMinLength(qItem),
     maxLength: getMaxLength(qItem)
   };
 }

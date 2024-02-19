@@ -39,6 +39,7 @@ import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireResponseStore } from '../../../stores';
 
 interface DecimalItemProps
   extends PropsWithQrItemChangeHandler,
@@ -52,6 +53,8 @@ interface DecimalItemProps
 function DecimalItem(props: DecimalItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
+  const updateSingleItemValidity = useQuestionnaireResponseStore.use.updateSingleItemValidity();
+
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
   const {
@@ -59,7 +62,9 @@ function DecimalItem(props: DecimalItemProps) {
     displayPrompt,
     displayInstructions,
     entryFormat,
+    required,
     regexValidation,
+    minLength,
     maxLength
   } = useRenderingExtensions(qItem);
 
@@ -80,7 +85,12 @@ function DecimalItem(props: DecimalItemProps) {
   const [input, setInput] = useStringInput(initialInput);
 
   // Perform validation checks
-  const feedback = useValidationError(input, regexValidation, maxLength);
+  const { invalidType, feedback } = useValidationError(
+    input,
+    regexValidation,
+    minLength,
+    maxLength
+  );
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
@@ -104,6 +114,7 @@ function DecimalItem(props: DecimalItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
+      updateSingleItemValidity(qItem.linkId, invalidType);
       onQrItemChange({
         ...createEmptyQrItem(qItem),
         answer: precision
@@ -133,7 +144,11 @@ function DecimalItem(props: DecimalItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-decimal-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <DecimalField
           linkId={qItem.linkId}
           input={input}

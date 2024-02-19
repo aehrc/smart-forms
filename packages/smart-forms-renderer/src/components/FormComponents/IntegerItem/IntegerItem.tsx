@@ -35,6 +35,7 @@ import { parseValidInteger } from '../../../utils/parseInputs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useNumberInput from '../../../hooks/useNumberInput';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireResponseStore } from '../../../stores';
 
 interface IntegerItemProps
   extends PropsWithQrItemChangeHandler,
@@ -46,6 +47,8 @@ interface IntegerItemProps
 }
 
 function IntegerItem(props: IntegerItemProps) {
+  const updateSingleItemValidity = useQuestionnaireResponseStore.use.updateSingleItemValidity();
+
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -54,7 +57,9 @@ function IntegerItem(props: IntegerItemProps) {
     displayPrompt,
     displayInstructions,
     entryFormat,
+    required,
     regexValidation,
+    minLength,
     maxLength
   } = useRenderingExtensions(qItem);
 
@@ -71,7 +76,12 @@ function IntegerItem(props: IntegerItemProps) {
   const [value, setValue] = useNumberInput(valueInteger);
 
   // Perform validation checks
-  const feedback = useValidationError(value.toString(), regexValidation, maxLength);
+  const { invalidType, feedback } = useValidationError(
+    value.toString(),
+    regexValidation,
+    minLength,
+    maxLength
+  );
 
   // Process calculated expressions
   const { calcExpUpdated } = useIntegerCalculatedExpression({
@@ -94,6 +104,7 @@ function IntegerItem(props: IntegerItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((newValue: number) => {
+      updateSingleItemValidity(qItem.linkId, invalidType);
       onQrItemChange({
         ...createEmptyQrItem(qItem),
         answer: [{ valueInteger: newValue }]
@@ -121,7 +132,11 @@ function IntegerItem(props: IntegerItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-integer-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}
           value={value}
