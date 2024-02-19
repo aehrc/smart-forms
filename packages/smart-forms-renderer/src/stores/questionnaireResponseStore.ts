@@ -24,7 +24,7 @@ import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
 import type { InvalidType } from '../utils/validateQuestionnaire';
 import { validateQuestionnaire } from '../utils/validateQuestionnaire';
-import { questionnaireStore } from '../../lib';
+import { questionnaireStore } from './questionnaireStore';
 
 interface QuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
