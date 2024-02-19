@@ -35,9 +35,6 @@ function BaseRenderer() {
   const updateRequiredValidity = useQuestionnaireResponseStore.use.validateQuestionnaire();
   const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
 
-  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
-  const responseIsValid = useQuestionnaireResponseStore.use.responseIsValid();
-
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
   function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
@@ -75,9 +72,6 @@ function BaseRenderer() {
 
   // If an item has multiple answers, it is a repeat group
   const topLevelQRItemsByIndex = getQrItemsIndex(topLevelQItems, topLevelQRItems, qItemsIndexMap);
-
-  console.log(invalidItems);
-  console.log(responseIsValid);
 
   return (
     <Fade in={true} timeout={500}>
