@@ -24,7 +24,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useValidationError from '../../../hooks/useValidationError';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -35,7 +35,6 @@ import { parseValidInteger } from '../../../utils/parseInputs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useNumberInput from '../../../hooks/useNumberInput';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireResponseStore } from '../../../stores';
 
 interface IntegerItemProps
   extends PropsWithQrItemChangeHandler,
@@ -47,8 +46,6 @@ interface IntegerItemProps
 }
 
 function IntegerItem(props: IntegerItemProps) {
-  const updateSingleItemValidity = useQuestionnaireResponseStore.use.updateSingleItemValidity();
-
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -76,12 +73,7 @@ function IntegerItem(props: IntegerItemProps) {
   const [value, setValue] = useNumberInput(valueInteger);
 
   // Perform validation checks
-  const { invalidType, feedback } = useValidationError(
-    value.toString(),
-    regexValidation,
-    minLength,
-    maxLength
-  );
+  const feedback = useValidationFeedback(value.toString(), regexValidation, minLength, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useIntegerCalculatedExpression({
@@ -104,7 +96,6 @@ function IntegerItem(props: IntegerItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((newValue: number) => {
-      updateSingleItemValidity(qItem.linkId, invalidType);
       onQrItemChange({
         ...createEmptyQrItem(qItem),
         answer: [{ valueInteger: newValue }]

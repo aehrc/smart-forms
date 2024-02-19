@@ -232,15 +232,6 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
 }
 
 /**
- * Check if item is readonly
- *
- * @author Sean Fong
- */
-export function getReadOnly(qItem: QuestionnaireItem): boolean {
-  return !!qItem.readOnly;
-}
-
-/**
  * Get decimal text display unit for items with itemControlCode unit and has a unit childItem
  *
  * @author Sean Fong
@@ -339,35 +330,4 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | 
   }
 
   return null;
-}
-
-/**maxLength
- * Get minimum length of characters allowed if present
- *
- * @author Sean Fong
- */
-export function getMinLength(qItem: QuestionnaireItem): number | null {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/minLength'
-  );
-
-  // Get minLength from extension
-  if (itemControl) {
-    const minLength = itemControl.valueInteger;
-
-    if (minLength) {
-      return minLength;
-    }
-  }
-
-  return null;
-}
-
-/**
- * Get maximum length of characters allowed if present
- *
- * @author Sean Fong
- */
-export function getMaxLength(qItem: QuestionnaireItem): number | null {
-  return qItem.maxLength ?? null;
 }

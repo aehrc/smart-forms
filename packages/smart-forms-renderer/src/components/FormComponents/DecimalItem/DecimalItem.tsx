@@ -25,7 +25,7 @@ import type {
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValidationError from '../../../hooks/useValidationError';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -39,7 +39,6 @@ import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireResponseStore } from '../../../stores';
 
 interface DecimalItemProps
   extends PropsWithQrItemChangeHandler,
@@ -52,8 +51,6 @@ interface DecimalItemProps
 
 function DecimalItem(props: DecimalItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
-
-  const updateSingleItemValidity = useQuestionnaireResponseStore.use.updateSingleItemValidity();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
@@ -85,12 +82,7 @@ function DecimalItem(props: DecimalItemProps) {
   const [input, setInput] = useStringInput(initialInput);
 
   // Perform validation checks
-  const { invalidType, feedback } = useValidationError(
-    input,
-    regexValidation,
-    minLength,
-    maxLength
-  );
+  const feedback = useValidationFeedback(input, regexValidation, minLength, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
@@ -114,7 +106,6 @@ function DecimalItem(props: DecimalItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
-      updateSingleItemValidity(qItem.linkId, invalidType);
       onQrItemChange({
         ...createEmptyQrItem(qItem),
         answer: precision

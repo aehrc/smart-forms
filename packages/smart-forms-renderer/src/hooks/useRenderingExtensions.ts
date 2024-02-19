@@ -16,9 +16,6 @@
  */
 
 import {
-  getMaxLength,
-  getMinLength,
-  getReadOnly,
   getRegexValidation,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
@@ -27,6 +24,7 @@ import {
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { useMemo } from 'react';
 
 interface RenderingExtensions {
   displayUnit: string;
@@ -41,17 +39,20 @@ interface RenderingExtensions {
 }
 
 function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
-  return {
-    displayUnit: getTextDisplayUnit(qItem),
-    displayPrompt: getTextDisplayPrompt(qItem),
-    displayInstructions: getTextDisplayInstructions(qItem),
-    readOnly: getReadOnly(qItem),
-    entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
-    required: qItem.required ?? false,
-    regexValidation: getRegexValidation(qItem),
-    minLength: getMinLength(qItem),
-    maxLength: getMaxLength(qItem)
-  };
+  return useMemo(
+    () => ({
+      displayUnit: getTextDisplayUnit(qItem),
+      displayPrompt: getTextDisplayPrompt(qItem),
+      displayInstructions: getTextDisplayInstructions(qItem),
+      readOnly: !!qItem.readOnly,
+      entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
+      required: qItem.required ?? false,
+      regexValidation: getRegexValidation(qItem),
+      minLength: structuredDataCapture.getMinLength(qItem) ?? null,
+      maxLength: qItem.maxLength ?? null
+    }),
+    [qItem]
+  );
 }
 
 export default useRenderingExtensions;

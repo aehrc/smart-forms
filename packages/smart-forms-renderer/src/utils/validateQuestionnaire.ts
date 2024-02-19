@@ -15,18 +15,21 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHidden } from './qItem';
+import { getRegexValidation } from './itemControl';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { RegexValidation } from '../interfaces/regex.interface';
 
-export type InvalidType = 'regex' | 'minLength' | 'maxLength' | 'required' | null;
+export type InvalidType = 'regex' | 'minLength' | 'maxLength' | 'required';
 
-interface ValidateQuestionnaireRequiredItemsParams {
+interface ValidateQuestionnaireParams {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
-  invalidRequiredLinkIds: string[];
+  invalidItems: Record<string, InvalidType>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
@@ -39,13 +42,13 @@ interface ValidateQuestionnaireRequiredItemsParams {
  *
  * @author Sean Fong
  */
-export function validateQuestionnaireRequiredItems(
-  params: ValidateQuestionnaireRequiredItemsParams
-): string[] {
+export function validateQuestionnaire(
+  params: ValidateQuestionnaireParams
+): Record<string, InvalidType> {
   const {
     questionnaire,
     questionnaireResponse,
-    invalidRequiredLinkIds,
+    invalidItems,
     enableWhenIsActivated,
     enableWhenItems,
     enableWhenExpressions
@@ -57,7 +60,7 @@ export function validateQuestionnaireRequiredItems(
     !questionnaireResponse.item ||
     questionnaireResponse.item.length === 0
   ) {
-    return [];
+    return invalidItems;
   }
 
   const qItemsIndexMap = mapQItemsIndex(questionnaire);
@@ -81,33 +84,33 @@ export function validateQuestionnaireRequiredItems(
       };
     }
 
-    validateRequiredItemRecursive({
+    validateItemRecursive({
       qItem: topLevelQItem,
       qrItem: topLevelQRItem,
-      invalidRequiredLinkIds,
+      invalidItems: invalidItems,
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions
     });
   }
 
-  return invalidRequiredLinkIds;
+  return invalidItems;
 }
 
-interface ValidateRequiredItemRecursiveParams {
+interface ValidateItemRecursiveParams {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
-  invalidRequiredLinkIds: string[];
+  invalidItems: Record<string, InvalidType>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
 }
 
-function validateRequiredItemRecursive(params: ValidateRequiredItemRecursiveParams) {
+function validateItemRecursive(params: ValidateItemRecursiveParams) {
   const {
     qItem,
     qrItem,
-    invalidRequiredLinkIds,
+    invalidItems,
     enableWhenIsActivated,
     enableWhenItems,
     enableWhenExpressions
@@ -126,7 +129,7 @@ function validateRequiredItemRecursive(params: ValidateRequiredItemRecursivePara
 
   // FIXME repeat groups not working
   if (qItem.type === 'group' && qItem.repeats) {
-    return validateRequiredRepeatGroup(qItem, qrItem, invalidRequiredLinkIds);
+    return validateRepeatGroup(qItem, qrItem, invalidItems);
   }
 
   const childQItems = qItem.item;
@@ -138,7 +141,7 @@ function validateRequiredItemRecursive(params: ValidateRequiredItemRecursivePara
 
     if (qItem.type === 'group' && qItem.required) {
       if (!qrItem || qrItemsByIndex.length === 0) {
-        invalidRequiredLinkIds.push(qItem.linkId);
+        invalidItems[qItem.linkId] = 'required';
       }
     }
 
@@ -156,10 +159,10 @@ function validateRequiredItemRecursive(params: ValidateRequiredItemRecursivePara
         };
       }
 
-      validateRequiredItemRecursive({
+      validateItemRecursive({
         qItem: childQItem,
         qrItem: childQRItem,
-        invalidRequiredLinkIds,
+        invalidItems: invalidItems,
         enableWhenIsActivated,
         enableWhenItems,
         enableWhenExpressions
@@ -167,26 +170,104 @@ function validateRequiredItemRecursive(params: ValidateRequiredItemRecursivePara
     }
   }
 
-  validateRequiredSingleItem(qItem, qrItem, invalidRequiredLinkIds);
+  validateSingleItem(qItem, qrItem, invalidItems);
 }
 
-function validateRequiredSingleItem(
+function validateSingleItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
-  invalidLinkIds: string[]
+  invalidItems: Record<string, InvalidType>
 ) {
-  // Process non-group items
+  // Validate item.required
   if (qItem.type !== 'display') {
     if (qItem.required && !qrItem.answer) {
-      invalidLinkIds.push(qItem.linkId);
+      invalidItems[qItem.linkId] = 'required';
+      return invalidItems;
     }
   }
+
+  // Validate regex, maxLength and minLength
+  if (qrItem.answer) {
+    for (const answer of qrItem.answer) {
+      if (answer.valueString || answer.valueInteger || answer.valueDecimal || answer.valueUri) {
+        const invalidInputType = getInputInvalidType(
+          getInputInString(answer),
+          getRegexValidation(qItem),
+          structuredDataCapture.getMinLength(qItem) ?? null,
+          qItem.maxLength ?? null
+        );
+
+        if (!invalidInputType) {
+          continue;
+        }
+
+        // Assign invalid type and break - stop checking other answers if is a repeat item
+        switch (invalidInputType) {
+          case 'regex':
+            invalidItems[qItem.linkId] = 'regex';
+            break;
+          case 'minLength':
+            invalidItems[qItem.linkId] = 'minLength';
+            break;
+          case 'maxLength':
+            invalidItems[qItem.linkId] = 'maxLength';
+            break;
+        }
+        break;
+      }
+    }
+
+    // Reached the end of the loop and no invalid input type found
+    // If a required item is filled, remove the required invalid type
+    if (qItem.required && invalidItems[qItem.linkId] && invalidItems[qItem.linkId] === 'required') {
+      delete invalidItems[qItem.linkId];
+    }
+  }
+
+  return invalidItems;
 }
 
-function validateRequiredRepeatGroup(
+function validateRepeatGroup(
   qItem: QuestionnaireItem,
   qrItems: QuestionnaireResponseItem,
-  invalidLinkIds: string[]
+  invalidLinkIds: Record<string, InvalidType>
 ) {
   return;
+}
+
+function getInputInString(answer: QuestionnaireResponseItemAnswer) {
+  if (answer.valueString) {
+    return answer.valueString;
+  } else if (answer.valueInteger) {
+    return answer.valueInteger.toString();
+  } else if (answer.valueDecimal) {
+    return answer.valueDecimal.toString();
+  } else if (answer.valueUri) {
+    return answer.valueUri;
+  }
+
+  return '';
+}
+
+export function getInputInvalidType(
+  input: string,
+  regexValidation: RegexValidation | null,
+  minLength: number | null,
+  maxLength: number | null
+): InvalidType | null {
+  if (input) {
+    if (regexValidation && !regexValidation.expression.test(input)) {
+      return 'regex';
+    }
+
+    if (minLength && input.length < minLength) {
+      return 'minLength';
+    }
+
+    if (maxLength && input.length > maxLength) {
+      return 'maxLength';
+    }
+  }
+
+  return null;
 }

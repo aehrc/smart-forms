@@ -22,8 +22,8 @@ import cloneDeep from 'lodash.clonedeep';
 import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
-import type { InvalidType } from '../utils/validateRequired';
-import { validateQuestionnaireRequiredItems } from '../utils/validateRequired';
+import type { InvalidType } from '../utils/validateQuestionnaire';
+import { validateQuestionnaire } from '../utils/validateQuestionnaire';
 import { questionnaireStore } from '../../lib';
 
 interface QuestionnaireResponseStoreType {
@@ -31,11 +31,11 @@ interface QuestionnaireResponseStoreType {
   updatableResponse: QuestionnaireResponse;
   formChangesHistory: (Diff<QuestionnaireResponse, QuestionnaireResponse>[] | null)[];
   invalidItems: Record<string, InvalidType>;
-  updateRequiredValidity: (
+  responseIsValid: boolean;
+  validateQuestionnaire: (
     questionnaire: Questionnaire,
     updatedResponse: QuestionnaireResponse
   ) => void;
-  updateSingleItemValidity: (linkId: string, invalidType: InvalidType) => void;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
   updateResponse: (updatedResponse: QuestionnaireResponse) => void;
@@ -50,7 +50,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     updatableResponse: cloneDeep(emptyResponse),
     formChangesHistory: [],
     invalidItems: {},
-    updateRequiredValidity: (
+    responseIsValid: true,
+    validateQuestionnaire: (
       questionnaire: Questionnaire,
       updatedResponse: QuestionnaireResponse
     ) => {
@@ -59,41 +60,19 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
       const enableWhenItems = questionnaireStore.getState().enableWhenItems;
       const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
-      const invalidRequiredLinkIds: string[] = [];
 
-      // Remove and re-add invalid required items from the invalidItems object
-      for (const linkId in tempInvalidItems) {
-        if (tempInvalidItems[linkId] === 'required') {
-          delete tempInvalidItems[linkId];
-        }
-
-        if (tempInvalidItems[linkId] === null) {
-          delete tempInvalidItems[linkId];
-        }
-      }
-
-      validateQuestionnaireRequiredItems({
+      validateQuestionnaire({
         questionnaire,
         questionnaireResponse: updatedResponse,
-        invalidRequiredLinkIds,
+        invalidItems: tempInvalidItems,
         enableWhenIsActivated,
         enableWhenItems,
         enableWhenExpressions
       });
-      for (const linkId of invalidRequiredLinkIds) {
-        tempInvalidItems[linkId] = 'required';
-      }
 
       set(() => ({
-        invalidItems: tempInvalidItems
-      }));
-    },
-    updateSingleItemValidity: (linkId: string, invalidType: InvalidType) => {
-      set(() => ({
-        invalidItems: {
-          ...get().invalidItems,
-          [linkId]: invalidType
-        }
+        invalidItems: tempInvalidItems,
+        responseIsValid: Object.keys(tempInvalidItems).length === 0
       }));
     },
     buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {

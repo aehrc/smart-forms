@@ -24,7 +24,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useValidationError from '../../../hooks/useValidationError';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -34,7 +34,6 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireResponseStore } from '../../../stores';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -46,8 +45,6 @@ interface StringItemProps
 }
 function StringItem(props: StringItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
-
-  const updateSingleItemValidity = useQuestionnaireResponseStore.use.updateSingleItemValidity();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const {
@@ -69,12 +66,7 @@ function StringItem(props: StringItemProps) {
   const [input, setInput] = useStringInput(valueString);
 
   // Perform validation checks
-  const { invalidType, feedback } = useValidationError(
-    input,
-    regexValidation,
-    minLength,
-    maxLength
-  );
+  const feedback = useValidationFeedback(input, regexValidation, minLength, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -95,7 +87,6 @@ function StringItem(props: StringItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
-      updateSingleItemValidity(qItem.linkId, invalidType);
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
         onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input.trim() }] });
