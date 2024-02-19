@@ -16,7 +16,6 @@
  */
 
 import React, { useState } from 'react';
-import Grid from '@mui/material/Grid';
 
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
@@ -32,10 +31,9 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import useReadOnly from '../../../hooks/useReadOnly';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -50,7 +48,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
 
@@ -135,27 +133,25 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={7}>
-          <OpenChoiceAutocompleteField
-            qItem={qItem}
-            options={options}
-            valueAutocomplete={valueAutocomplete}
-            input={input}
-            loading={loading}
-            feedback={feedback ?? null}
-            readOnly={readOnly}
-            isTabled={isTabled}
-            onInputChange={(newValue) => setInput(newValue)}
-            onValueChange={handleValueChange}
-            onUnfocus={handleUnfocus}
-          />
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-        </Grid>
-      </Grid>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
+        <OpenChoiceAutocompleteField
+          qItem={qItem}
+          options={options}
+          valueAutocomplete={valueAutocomplete}
+          input={input}
+          loading={loading}
+          feedback={feedback ?? null}
+          readOnly={readOnly}
+          isTabled={isTabled}
+          onInputChange={(newValue) => setInput(newValue)}
+          onValueChange={handleValueChange}
+          onUnfocus={handleUnfocus}
+        />
+      </ItemFieldGrid>
     </FullWidthFormComponentBox>
   );
 }

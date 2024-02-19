@@ -49,7 +49,8 @@ function CustomDateItem(props: CustomDateItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, displayInstructions, entryFormat } = useRenderingExtensions(qItem);
+  const { displayPrompt, displayInstructions, entryFormat, required } =
+    useRenderingExtensions(qItem);
 
   const qrDate = qrItem ?? createEmptyQrItem(qItem);
 
@@ -117,7 +118,11 @@ function CustomDateItem(props: CustomDateItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-date-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <CustomDateField
           linkId={qItem.linkId}
           valueDate={displayDate}

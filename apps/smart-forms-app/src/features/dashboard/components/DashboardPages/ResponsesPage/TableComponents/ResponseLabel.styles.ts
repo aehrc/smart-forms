@@ -58,7 +58,6 @@ export const ResponseStyledLabel = styled(Box, {
   minWidth: 22,
   lineHeight: 0,
   borderRadius: 6,
-  cursor: 'default',
   alignItems: 'center',
   whiteSpace: 'nowrap',
   display: 'inline-flex',
