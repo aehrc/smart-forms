@@ -54,7 +54,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   }
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
 
   const maxList = 10;
 
@@ -104,11 +104,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <ChoiceAutocompleteField
           qItem={qItem}
           options={options}

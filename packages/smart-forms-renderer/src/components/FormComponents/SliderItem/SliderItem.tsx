@@ -45,7 +45,7 @@ function SliderItem(props: SliderItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
   const { minValue, maxValue, stepValue, minLabel, maxLabel } = useSliderExtensions(qItem);
 
   const isInteracted = !!qrItem?.answer;
@@ -91,11 +91,7 @@ function SliderItem(props: SliderItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-slider-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <Box px={4}>
           <SliderField
             linkId={qItem.linkId}

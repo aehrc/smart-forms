@@ -17,6 +17,7 @@
 
 import {
   getRegexValidation,
+  getTextDisplayFlyover,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit
@@ -30,6 +31,7 @@ interface RenderingExtensions {
   displayUnit: string;
   displayPrompt: string;
   displayInstructions: string;
+  displayFlyover: string;
   readOnly: boolean;
   entryFormat: string;
   required: boolean;
@@ -44,6 +46,7 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
       displayUnit: getTextDisplayUnit(qItem),
       displayPrompt: getTextDisplayPrompt(qItem),
       displayInstructions: getTextDisplayInstructions(qItem),
+      displayFlyover: getTextDisplayFlyover(qItem),
       readOnly: !!qItem.readOnly,
       entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
       required: qItem.required ?? false,

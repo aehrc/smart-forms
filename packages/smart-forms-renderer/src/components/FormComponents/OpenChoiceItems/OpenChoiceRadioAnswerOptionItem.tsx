@@ -47,7 +47,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const openLabelText = getOpenLabelText(qItem);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
 
   // Init answers
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
@@ -119,11 +119,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
 
   return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-radio-answer-option-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <OpenChoiceRadioAnswerOptionFields
           qItem={qItem}
           valueRadio={valueRadio}

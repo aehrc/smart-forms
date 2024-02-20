@@ -50,7 +50,6 @@ function StringItem(props: StringItemProps) {
   const {
     displayUnit,
     displayPrompt,
-    displayInstructions,
     entryFormat,
     required,
     regexValidation,
@@ -115,11 +114,7 @@ function StringItem(props: StringItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <StringField
           linkId={qItem.linkId}
           input={input}

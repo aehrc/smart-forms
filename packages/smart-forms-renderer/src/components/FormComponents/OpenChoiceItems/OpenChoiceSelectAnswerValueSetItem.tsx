@@ -44,7 +44,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
 
   // Init input value
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
@@ -91,11 +91,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <OpenChoiceSelectAnswerValueSetField
           qItem={qItem}
           options={codings}

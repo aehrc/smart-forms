@@ -296,6 +296,22 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
 }
 
 /**
+ * Get text display flyover for items with itemControlCode flyover and has an flyover childItem
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayFlyover(qItem: QuestionnaireItem): string {
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'flyover')) {
+        return `${childItem.text}`;
+      }
+    }
+  }
+  return '';
+}
+
+/**
  * Get entry format if its extension is present
  * i.e. DD-MM-YYYY for dates, HH:MM for times etc.
  *

@@ -48,7 +48,6 @@ function UrlItem(props: UrlItemProps) {
   const {
     displayUnit,
     displayPrompt,
-    displayInstructions,
     entryFormat,
     required,
     regexValidation,
@@ -102,11 +101,7 @@ function UrlItem(props: UrlItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <UrlField
           linkId={qItem.linkId}
           input={input}

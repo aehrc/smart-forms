@@ -57,7 +57,6 @@ function DecimalItem(props: DecimalItemProps) {
   const {
     displayUnit,
     displayPrompt,
-    displayInstructions,
     entryFormat,
     required,
     regexValidation,
@@ -135,11 +134,7 @@ function DecimalItem(props: DecimalItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-decimal-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <DecimalField
           linkId={qItem.linkId}
           input={input}

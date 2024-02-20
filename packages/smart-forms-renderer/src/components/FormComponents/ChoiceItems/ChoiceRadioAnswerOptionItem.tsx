@@ -48,7 +48,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const valueRadio = getQrChoiceValue(qrChoiceRadio);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: string) {
@@ -74,11 +74,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <ChoiceRadioAnswerOptionFields
           qItem={qItem}
           valueRadio={valueRadio}

@@ -15,28 +15,35 @@
  * limitations under the License.
  */
 
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import React from 'react';
 import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem } from 'fhir/r4';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from './ItemLabelWrapper';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 interface ItemFieldGridProps {
   children: ReactNode;
   qItem: QuestionnaireItem;
-  displayInstructions: string | ReactElement;
   required: boolean;
   readOnly: boolean;
 }
 
 function ItemFieldGrid(props: ItemFieldGridProps) {
-  const { children, qItem, displayInstructions, required, readOnly } = props;
+  const { children, qItem, required, readOnly } = props;
+
+  const { displayInstructions, displayFlyover } = useRenderingExtensions(qItem);
 
   return (
     <Grid container columnSpacing={6}>
       <Grid item xs={5}>
-        <LabelWrapper qItem={qItem} required={required} readOnly={readOnly} />
+        <LabelWrapper
+          qItem={qItem}
+          displayFlyover={displayFlyover}
+          required={required}
+          readOnly={readOnly}
+        />
       </Grid>
       <Grid item xs={7}>
         {children}

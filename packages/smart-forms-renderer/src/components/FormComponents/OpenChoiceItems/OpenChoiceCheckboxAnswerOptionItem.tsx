@@ -158,11 +158,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <OpenChoiceCheckboxAnswerOptionFields
           qItem={qItem}
           answers={answers}

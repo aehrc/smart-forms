@@ -45,7 +45,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
 
   // Init input value
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
@@ -86,11 +86,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
 
   return (
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-value-set-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <ChoiceRadioAnswerValueSetFields
           qItem={qItem}
           codings={codings}

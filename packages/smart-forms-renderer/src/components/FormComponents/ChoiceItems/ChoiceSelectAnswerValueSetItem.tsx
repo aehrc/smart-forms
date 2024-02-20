@@ -45,7 +45,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
 
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
@@ -106,11 +106,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
 
   return (
     <FullWidthFormComponentBox data-test="q-item-choice-dropdown-answer-value-set-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <ChoiceSelectAnswerValueSetFields
           qItem={qItem}
           codings={codings}

@@ -49,7 +49,6 @@ function TextItem(props: TextItemProps) {
   const {
     displayUnit,
     displayPrompt,
-    displayInstructions,
     entryFormat,
     required,
     regexValidation,
@@ -113,11 +112,7 @@ function TextItem(props: TextItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-text-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <TextField
           linkId={qItem.linkId}
           input={input}

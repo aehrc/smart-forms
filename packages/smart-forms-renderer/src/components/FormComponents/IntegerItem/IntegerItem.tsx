@@ -52,7 +52,6 @@ function IntegerItem(props: IntegerItemProps) {
   const {
     displayUnit,
     displayPrompt,
-    displayInstructions,
     entryFormat,
     required,
     regexValidation,
@@ -123,11 +122,7 @@ function IntegerItem(props: IntegerItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-integer-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}
           value={value}

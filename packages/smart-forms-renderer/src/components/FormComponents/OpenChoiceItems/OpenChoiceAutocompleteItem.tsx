@@ -48,7 +48,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { required } = useRenderingExtensions(qItem);
 
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
 
@@ -133,11 +133,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
         <OpenChoiceAutocompleteField
           qItem={qItem}
           options={options}
