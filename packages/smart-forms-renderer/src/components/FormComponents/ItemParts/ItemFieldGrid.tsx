@@ -21,7 +21,6 @@ import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem } from 'fhir/r4';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from './ItemLabelWrapper';
-import ItemExtensionLabels from './ItemExtensionLabels';
 
 interface ItemFieldGridProps {
   children: ReactNode;
@@ -35,18 +34,15 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
   const { children, qItem, displayInstructions, required, readOnly } = props;
 
   return (
-    <>
-      <ItemExtensionLabels required={required} readOnly={readOnly} />
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={7}>
-          {children}
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-        </Grid>
+    <Grid container columnSpacing={6}>
+      <Grid item xs={5}>
+        <LabelWrapper qItem={qItem} required={required} readOnly={readOnly} />
       </Grid>
-    </>
+      <Grid item xs={7}>
+        {children}
+        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+      </Grid>
+    </Grid>
   );
 }
 

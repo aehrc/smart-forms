@@ -16,7 +16,7 @@
  */
 
 import Box from '@mui/material/Box';
-import { alpha, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 export const QGroupContainerBox = styled(Box, {
@@ -36,34 +36,4 @@ export const FormTitleWrapper = styled(Box)(() => ({
 
 export const StyledFormControlLabel = styled(FormControlLabel)(() => ({
   height: 34
-}));
-
-export const RequiredLabel = styled(Box)(({ theme }) => ({
-  height: 12,
-  minWidth: 20,
-  lineHeight: 0,
-  borderRadius: 6,
-  alignItems: 'center',
-  whiteSpace: 'nowrap',
-  justifyContent: 'center',
-  padding: theme.spacing(1),
-  fontSize: theme.typography.caption.fontSize,
-  color: theme.palette.error.dark,
-  backgroundColor: alpha(theme.palette.error.main, 0.16),
-  fontWeight: theme.typography.fontWeightBold
-}));
-
-export const ReadOnlyLabel = styled(Box)(({ theme }) => ({
-  height: 12,
-  minWidth: 20,
-  lineHeight: 0,
-  borderRadius: 6,
-  alignItems: 'center',
-  whiteSpace: 'nowrap',
-  justifyContent: 'center',
-  padding: theme.spacing(1),
-  fontSize: theme.typography.caption.fontSize,
-  color: theme.palette.text.primary,
-  backgroundColor: theme.palette.grey['300'],
-  fontWeight: theme.typography.fontWeightBold
 }));
