@@ -47,16 +47,8 @@ function StringItem(props: StringItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const {
-    displayUnit,
-    displayPrompt,
-    displayInstructions,
-    entryFormat,
-    required,
-    regexValidation,
-    minLength,
-    maxLength
-  } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
+    useRenderingExtensions(qItem);
 
   // Init input value
   let valueString = '';
@@ -115,11 +107,7 @@ function StringItem(props: StringItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <StringField
           linkId={qItem.linkId}
           input={input}

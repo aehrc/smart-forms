@@ -23,7 +23,6 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -45,7 +44,6 @@ function SliderItem(props: SliderItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
   const { minValue, maxValue, stepValue, minLabel, maxLabel } = useSliderExtensions(qItem);
 
   const isInteracted = !!qrItem?.answer;
@@ -91,11 +89,7 @@ function SliderItem(props: SliderItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-slider-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <Box px={4}>
           <SliderField
             linkId={qItem.linkId}

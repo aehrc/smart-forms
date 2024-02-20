@@ -54,16 +54,8 @@ function DecimalItem(props: DecimalItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
-  const {
-    displayUnit,
-    displayPrompt,
-    displayInstructions,
-    entryFormat,
-    required,
-    regexValidation,
-    minLength,
-    maxLength
-  } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
+    useRenderingExtensions(qItem);
 
   // Init input value
   let valueDecimal = 0.0;
@@ -135,11 +127,7 @@ function DecimalItem(props: DecimalItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-decimal-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <DecimalField
           linkId={qItem.linkId}
           input={input}

@@ -46,16 +46,8 @@ function TextItem(props: TextItemProps) {
   const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const {
-    displayUnit,
-    displayPrompt,
-    displayInstructions,
-    entryFormat,
-    required,
-    regexValidation,
-    minLength,
-    maxLength
-  } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
+    useRenderingExtensions(qItem);
 
   // Init input value
   let valueText = '';
@@ -113,11 +105,7 @@ function TextItem(props: TextItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-text-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <TextField
           linkId={qItem.linkId}
           input={input}

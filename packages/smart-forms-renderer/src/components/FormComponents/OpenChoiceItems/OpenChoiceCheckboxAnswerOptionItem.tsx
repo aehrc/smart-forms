@@ -63,7 +63,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const openLabelText = getOpenLabelText(qItem);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Init answers
   const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
@@ -158,11 +158,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
-      <ItemFieldGrid
-        qItem={qItem}
-        displayInstructions={displayInstructions}
-        required={required}
-        readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceCheckboxAnswerOptionFields
           qItem={qItem}
           answers={answers}

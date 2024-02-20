@@ -21,25 +21,49 @@ import ContextDisplayItem from './ContextDisplayItem';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ItemLabelText from './ItemLabelText';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
-  required: boolean;
   readOnly: boolean;
 }
 
 function ItemLabelWrapper(props: LabelWrapperProps) {
-  const { qItem, required, readOnly } = props;
+  const { qItem, readOnly } = props;
 
+  const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Box display="flex" columnGap={0.25}>
-        <ItemLabelText qItem={qItem} readOnly={readOnly} />
-        {required ? <Typography color="red">*</Typography> : null}
-      </Box>
+      <Tooltip
+        title={displayFlyover}
+        placement="top"
+        slotProps={{
+          popper: {
+            modifiers: [
+              {
+                name: 'offset',
+                options: {
+                  offset: [0, -8]
+                }
+              }
+            ]
+          }
+        }}>
+        <span>
+          <Box display="flex" columnGap={0.4} justifyContent="space-between">
+            {required ? (
+              <Typography color="red" sx={{ ml: -1.15 }}>
+                *
+              </Typography>
+            ) : null}
+            <ItemLabelText qItem={qItem} readOnly={readOnly} />
+          </Box>
+        </span>
+      </Tooltip>
 
       <Box display="flex" columnGap={0.5}>
         {contextDisplayItems.map((item) => {
