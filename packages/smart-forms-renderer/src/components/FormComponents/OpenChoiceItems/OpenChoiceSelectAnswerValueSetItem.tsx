@@ -20,7 +20,6 @@ import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -44,7 +43,6 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { required } = useRenderingExtensions(qItem);
 
   // Init input value
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
@@ -91,7 +89,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceSelectAnswerValueSetField
           qItem={qItem}
           options={codings}

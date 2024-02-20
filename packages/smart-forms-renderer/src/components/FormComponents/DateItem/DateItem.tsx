@@ -45,7 +45,7 @@ function DateItem(props: DateItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat, required } = useRenderingExtensions(qItem);
+  const { displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let dateString: string | null = null;
@@ -85,7 +85,7 @@ function DateItem(props: DateItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-date-box">
-      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <DateField
           value={dateDayJs}
           displayPrompt={displayPrompt}

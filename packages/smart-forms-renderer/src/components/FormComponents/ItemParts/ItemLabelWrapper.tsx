@@ -23,17 +23,17 @@ import { getContextDisplays } from '../../../utils/tabs';
 import ItemLabelText from './ItemLabelText';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
-  required: boolean;
-  displayFlyover: string;
   readOnly: boolean;
 }
 
 function ItemLabelWrapper(props: LabelWrapperProps) {
-  const { qItem, required, displayFlyover, readOnly } = props;
+  const { qItem, readOnly } = props;
 
+  const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
 
   return (

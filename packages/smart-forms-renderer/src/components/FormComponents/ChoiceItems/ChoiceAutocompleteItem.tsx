@@ -22,7 +22,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useDebounce from '../../../hooks/useDebounce';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -54,7 +53,6 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   }
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { required } = useRenderingExtensions(qItem);
 
   const maxList = 10;
 
@@ -104,7 +102,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceAutocompleteField
           qItem={qItem}
           options={options}

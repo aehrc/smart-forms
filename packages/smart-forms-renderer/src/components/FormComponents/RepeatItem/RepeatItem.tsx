@@ -23,7 +23,6 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import AddItemButton from './AddItemButton';
@@ -46,7 +45,6 @@ function RepeatItem(props: RepeatItemProps) {
   const { qItem, qrItem, showMinimalView, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { required } = useRenderingExtensions(qItem);
 
   const initialRepeatAnswers = useInitialiseRepeatAnswers(qItem, qrItem);
 
@@ -119,7 +117,7 @@ function RepeatItem(props: RepeatItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-repeat-box">
-      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <TransitionGroup>
           {repeatAnswers.map(({ nanoId, answer }, index) => {
             const repeatAnswerQrItem = createEmptyQrItem(qItem);

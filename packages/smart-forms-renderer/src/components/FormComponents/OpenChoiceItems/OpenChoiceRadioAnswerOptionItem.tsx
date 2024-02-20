@@ -23,7 +23,6 @@ import { getOpenLabelText } from '../../../utils/itemControl';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -47,7 +46,6 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const openLabelText = getOpenLabelText(qItem);
-  const { required } = useRenderingExtensions(qItem);
 
   // Init answers
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
@@ -119,7 +117,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
 
   return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-radio-answer-option-box">
-      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceRadioAnswerOptionFields
           qItem={qItem}
           valueRadio={valueRadio}

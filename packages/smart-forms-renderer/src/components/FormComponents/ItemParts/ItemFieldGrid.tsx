@@ -26,24 +26,18 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 interface ItemFieldGridProps {
   children: ReactNode;
   qItem: QuestionnaireItem;
-  required: boolean;
   readOnly: boolean;
 }
 
 function ItemFieldGrid(props: ItemFieldGridProps) {
-  const { children, qItem, required, readOnly } = props;
+  const { children, qItem, readOnly } = props;
 
-  const { displayInstructions, displayFlyover } = useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   return (
     <Grid container columnSpacing={6}>
       <Grid item xs={5}>
-        <LabelWrapper
-          qItem={qItem}
-          displayFlyover={displayFlyover}
-          required={required}
-          readOnly={readOnly}
-        />
+        <LabelWrapper qItem={qItem} readOnly={readOnly} />
       </Grid>
       <Grid item xs={7}>
         {children}

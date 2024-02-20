@@ -59,7 +59,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions, required } = useRenderingExtensions(qItem);
+  const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {
@@ -96,7 +96,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
 
   return (
     <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
-      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           answers={answers}

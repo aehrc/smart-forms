@@ -49,15 +49,8 @@ function IntegerItem(props: IntegerItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const {
-    displayUnit,
-    displayPrompt,
-    entryFormat,
-    required,
-    regexValidation,
-    minLength,
-    maxLength
-  } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
+    useRenderingExtensions(qItem);
 
   // Init input value
   let valueInteger = 0;
@@ -122,7 +115,7 @@ function IntegerItem(props: IntegerItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-integer-box">
-      <ItemFieldGrid qItem={qItem} required={required} readOnly={readOnly}>
+      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}
           value={value}
