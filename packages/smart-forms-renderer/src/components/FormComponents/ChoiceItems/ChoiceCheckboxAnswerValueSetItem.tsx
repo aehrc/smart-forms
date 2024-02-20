@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
@@ -31,9 +30,9 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 
 interface ChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -62,7 +61,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   // Get codings/options from valueSet
   const { codings, serverError } = useValueSetCodings(qItem);
@@ -102,22 +101,20 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
 
   return (
     <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={7}>
-          <ChoiceCheckboxAnswerValueSetFields
-            codings={codings}
-            answers={answers}
-            orientation={orientation}
-            readOnly={readOnly}
-            serverError={serverError}
-            onCheckedChange={handleCheckedChange}
-          />
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-        </Grid>
-      </Grid>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
+        <ChoiceCheckboxAnswerValueSetFields
+          codings={codings}
+          answers={answers}
+          orientation={orientation}
+          readOnly={readOnly}
+          serverError={serverError}
+          onCheckedChange={handleCheckedChange}
+        />
+      </ItemFieldGrid>
     </FullWidthFormComponentBox>
   );
 }

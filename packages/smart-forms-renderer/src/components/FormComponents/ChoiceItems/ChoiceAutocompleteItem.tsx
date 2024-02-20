@@ -16,7 +16,6 @@
  */
 
 import React, { useState } from 'react';
-import Grid from '@mui/material/Grid';
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -31,10 +30,9 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ChoiceAutocompleteField from './ChoiceAutocompleteField';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 
 interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -56,7 +54,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   }
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   const maxList = 10;
 
@@ -106,25 +104,23 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={7}>
-          <ChoiceAutocompleteField
-            qItem={qItem}
-            options={options}
-            valueCoding={valueCoding ?? null}
-            loading={loading}
-            feedback={feedback ?? null}
-            readOnly={readOnly}
-            isTabled={isTabled}
-            onInputChange={setInput}
-            onValueChange={handleValueChange}
-          />
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-        </Grid>
-      </Grid>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
+        <ChoiceAutocompleteField
+          qItem={qItem}
+          options={options}
+          valueCoding={valueCoding ?? null}
+          loading={loading}
+          feedback={feedback ?? null}
+          readOnly={readOnly}
+          isTabled={isTabled}
+          onInputChange={setInput}
+          onValueChange={handleValueChange}
+        />
+      </ItemFieldGrid>
     </FullWidthFormComponentBox>
   );
 }

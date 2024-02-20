@@ -23,7 +23,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useValidationError from '../../../hooks/useValidationError';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -51,7 +51,9 @@ function TextItem(props: TextItemProps) {
     displayPrompt,
     displayInstructions,
     entryFormat,
+    required,
     regexValidation,
+    minLength,
     maxLength
   } = useRenderingExtensions(qItem);
 
@@ -63,7 +65,7 @@ function TextItem(props: TextItemProps) {
   const [input, setInput] = useStringInput(valueText);
 
   // Perform validation checks
-  const feedback = useValidationError(input, regexValidation, maxLength);
+  const feedback = useValidationFeedback(input, regexValidation, minLength, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -111,7 +113,11 @@ function TextItem(props: TextItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-text-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <TextField
           linkId={qItem.linkId}
           input={input}

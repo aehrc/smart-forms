@@ -16,33 +16,35 @@
  */
 
 import type { RegexValidation } from '../interfaces/regex.interface';
+import { getInputInvalidType } from '../utils/validateQuestionnaire';
 
-function useValidationError(
+function useValidationFeedback(
   input: string,
   regexValidation: RegexValidation | null,
+  minLength: number | null,
   maxLength: number | null
 ): string {
-  let feedback = '';
+  const invalidType = getInputInvalidType(input, regexValidation, minLength, maxLength);
 
-  if (input) {
-    // Test regex
-    if (regexValidation) {
-      if (!regexValidation.expression.test(input)) {
-        feedback =
-          regexValidation.feedback ??
-          `Input should match the specified regex ${regexValidation.expression}`;
-      }
-    }
-
-    // Test max character limit
-    if (maxLength) {
-      if (input.length > maxLength) {
-        feedback = 'Input exceeds maximum character limit.';
-      }
-    }
+  if (!invalidType) {
+    return '';
   }
 
-  return feedback;
+  if (invalidType === 'regex' && regexValidation) {
+    return `Input should match the specified regex ${regexValidation.expression}`;
+  }
+
+  // Test min character limit
+  if (invalidType === 'minLength' && minLength) {
+    return `Enter at least ${minLength} characters.`;
+  }
+
+  // Test max character limit
+  if (invalidType === 'maxLength' && maxLength) {
+    return `Input exceeds maximum character limit of ${maxLength}.`;
+  }
+
+  return '';
 }
 
-export default useValidationError;
+export default useValidationFeedback;

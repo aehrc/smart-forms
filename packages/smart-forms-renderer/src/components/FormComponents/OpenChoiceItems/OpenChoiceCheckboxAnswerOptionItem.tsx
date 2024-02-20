@@ -16,7 +16,6 @@
  */
 
 import React, { useCallback, useMemo, useState } from 'react';
-import Grid from '@mui/material/Grid';
 import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { CheckBoxOption } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -37,9 +36,9 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -64,7 +63,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const openLabelText = getOpenLabelText(qItem);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   // Init answers
   const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
@@ -159,26 +158,24 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   return (
     <FullWidthFormComponentBox data-test="q-item-open-choice-checkbox-answer-option-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={7}>
-          <OpenChoiceCheckboxAnswerOptionFields
-            qItem={qItem}
-            answers={answers}
-            openLabelText={openLabelText}
-            openLabelValue={openLabelValue}
-            openLabelChecked={openLabelChecked}
-            readOnly={readOnly}
-            orientation={orientation}
-            onValueChange={handleValueChange}
-            onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
-            onOpenLabelInputChange={handleOpenLabelInputChange}
-          />
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-        </Grid>
-      </Grid>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
+        <OpenChoiceCheckboxAnswerOptionFields
+          qItem={qItem}
+          answers={answers}
+          openLabelText={openLabelText}
+          openLabelValue={openLabelValue}
+          openLabelChecked={openLabelChecked}
+          readOnly={readOnly}
+          orientation={orientation}
+          onValueChange={handleValueChange}
+          onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+          onOpenLabelInputChange={handleOpenLabelInputChange}
+        />
+      </ItemFieldGrid>
     </FullWidthFormComponentBox>
   );
 }

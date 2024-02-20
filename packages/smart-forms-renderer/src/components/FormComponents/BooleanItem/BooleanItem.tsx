@@ -44,7 +44,7 @@ function BooleanItem(props: BooleanItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   // Init input value
   let checked = false;
@@ -75,7 +75,11 @@ function BooleanItem(props: BooleanItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-boolean-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>

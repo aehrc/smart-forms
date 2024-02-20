@@ -25,7 +25,7 @@ import type {
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValidationError from '../../../hooks/useValidationError';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -59,7 +59,9 @@ function DecimalItem(props: DecimalItemProps) {
     displayPrompt,
     displayInstructions,
     entryFormat,
+    required,
     regexValidation,
+    minLength,
     maxLength
   } = useRenderingExtensions(qItem);
 
@@ -80,7 +82,7 @@ function DecimalItem(props: DecimalItemProps) {
   const [input, setInput] = useStringInput(initialInput);
 
   // Perform validation checks
-  const feedback = useValidationError(input, regexValidation, maxLength);
+  const feedback = useValidationFeedback(input, regexValidation, minLength, maxLength);
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
@@ -133,7 +135,11 @@ function DecimalItem(props: DecimalItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-decimal-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <DecimalField
           linkId={qItem.linkId}
           input={input}

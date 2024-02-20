@@ -54,7 +54,7 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
 
   // parse regular text
   return (
-    <Typography color={readOnly ? 'text.secondary' : 'text.primary'} sx={{ mt: 0.5 }}>
+    <Typography color={readOnly ? 'text.disabled' : 'text.primary'} sx={{ mt: 0.25 }}>
       {qItem.text}
     </Typography>
   );

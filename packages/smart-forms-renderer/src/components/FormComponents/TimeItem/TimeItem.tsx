@@ -45,7 +45,8 @@ function TimeItem(props: TimeItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, displayInstructions, entryFormat } = useRenderingExtensions(qItem);
+  const { displayPrompt, displayInstructions, entryFormat, required } =
+    useRenderingExtensions(qItem);
 
   // Init input value
   let timeString: string | null = null;
@@ -79,7 +80,11 @@ function TimeItem(props: TimeItemProps) {
 
   return (
     <FullWidthFormComponentBox>
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <TimeField
           value={timeDayJs}
           displayPrompt={displayPrompt}

@@ -26,16 +26,17 @@ interface ItemFieldGridProps {
   children: ReactNode;
   qItem: QuestionnaireItem;
   displayInstructions: string | ReactElement;
+  required: boolean;
   readOnly: boolean;
 }
 
 function ItemFieldGrid(props: ItemFieldGridProps) {
-  const { children, qItem, displayInstructions, readOnly } = props;
+  const { children, qItem, displayInstructions, required, readOnly } = props;
 
   return (
     <Grid container columnSpacing={6}>
       <Grid item xs={5}>
-        <LabelWrapper qItem={qItem} readOnly={readOnly} />
+        <LabelWrapper qItem={qItem} required={required} readOnly={readOnly} />
       </Grid>
       <Grid item xs={7}>
         {children}

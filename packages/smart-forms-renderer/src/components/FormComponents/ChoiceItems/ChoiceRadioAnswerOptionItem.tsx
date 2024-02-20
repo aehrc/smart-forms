@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import Grid from '@mui/material/Grid';
 import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
@@ -28,10 +27,9 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -50,7 +48,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const valueRadio = getQrChoiceValue(qrChoiceRadio);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   // Event handlers
   function handleChange(newValue: string) {
@@ -76,21 +74,19 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={7}>
-          <ChoiceRadioAnswerOptionFields
-            qItem={qItem}
-            valueRadio={valueRadio}
-            orientation={orientation}
-            readOnly={readOnly}
-            onCheckedChange={handleChange}
-          />
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-        </Grid>
-      </Grid>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
+        <ChoiceRadioAnswerOptionFields
+          qItem={qItem}
+          valueRadio={valueRadio}
+          orientation={orientation}
+          readOnly={readOnly}
+          onCheckedChange={handleChange}
+        />
+      </ItemFieldGrid>
     </FullWidthFormComponentBox>
   );
 }

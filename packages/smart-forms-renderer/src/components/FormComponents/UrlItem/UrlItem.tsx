@@ -24,7 +24,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useValidationError from '../../../hooks/useValidationError';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -50,7 +50,9 @@ function UrlItem(props: UrlItemProps) {
     displayPrompt,
     displayInstructions,
     entryFormat,
+    required,
     regexValidation,
+    minLength,
     maxLength
   } = useRenderingExtensions(qItem);
 
@@ -62,7 +64,7 @@ function UrlItem(props: UrlItemProps) {
   const [input, setInput] = useState(valueUri);
 
   // Perform validation checks
-  const feedback = useValidationError(input, regexValidation, maxLength);
+  const feedback = useValidationFeedback(input, regexValidation, minLength, maxLength);
 
   // Event handlers
   function handleChange(newInput: string) {
@@ -100,7 +102,11 @@ function UrlItem(props: UrlItemProps) {
   }
   return (
     <FullWidthFormComponentBox data-test="q-item-string-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <UrlField
           linkId={qItem.linkId}
           input={input}

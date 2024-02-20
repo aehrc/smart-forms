@@ -21,20 +21,25 @@ import ContextDisplayItem from './ContextDisplayItem';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ItemLabelText from './ItemLabelText';
+import Typography from '@mui/material/Typography';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
+  required: boolean;
   readOnly: boolean;
 }
 
 function ItemLabelWrapper(props: LabelWrapperProps) {
-  const { qItem, readOnly } = props;
+  const { qItem, required, readOnly } = props;
 
   const contextDisplayItems = getContextDisplays(qItem);
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <ItemLabelText qItem={qItem} readOnly={readOnly} />
+      <Box display="flex" columnGap={0.25}>
+        <ItemLabelText qItem={qItem} readOnly={readOnly} />
+        {required ? <Typography color="red">*</Typography> : null}
+      </Box>
 
       <Box display="flex" columnGap={0.5}>
         {contextDisplayItems.map((item) => {

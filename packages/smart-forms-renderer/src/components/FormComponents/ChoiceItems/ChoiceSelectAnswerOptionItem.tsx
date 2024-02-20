@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import Grid from '@mui/material/Grid';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
@@ -29,10 +28,9 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 
 interface ChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -47,7 +45,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   // Init input value
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
@@ -82,21 +80,19 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
 
   return (
     <FullWidthFormComponentBox data-test="q-item-choice-select-answer-option-box">
-      <Grid container columnSpacing={6}>
-        <Grid item xs={5}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Grid>
-        <Grid item xs={7}>
-          <ChoiceSelectAnswerOptionFields
-            qItem={qItem}
-            valueSelect={valueSelect}
-            readOnly={readOnly}
-            isTabled={isTabled}
-            onSelectChange={handleChange}
-          />
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
-        </Grid>
-      </Grid>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
+        <ChoiceSelectAnswerOptionFields
+          qItem={qItem}
+          valueSelect={valueSelect}
+          readOnly={readOnly}
+          isTabled={isTabled}
+          onSelectChange={handleChange}
+        />
+      </ItemFieldGrid>
     </FullWidthFormComponentBox>
   );
 }

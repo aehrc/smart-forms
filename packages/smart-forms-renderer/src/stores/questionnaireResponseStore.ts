@@ -16,17 +16,26 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
 import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
+import type { InvalidType } from '../utils/validateQuestionnaire';
+import { validateQuestionnaire } from '../utils/validateQuestionnaire';
+import { questionnaireStore } from './questionnaireStore';
 
 interface QuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
   formChangesHistory: (Diff<QuestionnaireResponse, QuestionnaireResponse>[] | null)[];
+  invalidItems: Record<string, InvalidType>;
+  responseIsValid: boolean;
+  validateQuestionnaire: (
+    questionnaire: Questionnaire,
+    updatedResponse: QuestionnaireResponse
+  ) => void;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
   updateResponse: (updatedResponse: QuestionnaireResponse) => void;
@@ -40,6 +49,32 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     sourceResponse: cloneDeep(emptyResponse),
     updatableResponse: cloneDeep(emptyResponse),
     formChangesHistory: [],
+    invalidItems: {},
+    responseIsValid: true,
+    validateQuestionnaire: (
+      questionnaire: Questionnaire,
+      updatedResponse: QuestionnaireResponse
+    ) => {
+      const tempInvalidItems = get().invalidItems;
+
+      const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
+      const enableWhenItems = questionnaireStore.getState().enableWhenItems;
+      const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
+
+      validateQuestionnaire({
+        questionnaire,
+        questionnaireResponse: updatedResponse,
+        invalidItems: tempInvalidItems,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions
+      });
+
+      set(() => ({
+        invalidItems: tempInvalidItems,
+        responseIsValid: Object.keys(tempInvalidItems).length === 0
+      }));
+    },
     buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
       set(() => ({
         sourceResponse: questionnaireResponse,

@@ -32,6 +32,7 @@ function BaseRenderer() {
   const readOnly = useQuestionnaireStore.use.readOnly();
 
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const updateRequiredValidity = useQuestionnaireResponseStore.use.validateQuestionnaire();
   const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
@@ -45,6 +46,7 @@ function BaseRenderer() {
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
     updateExpressions(updatedResponse);
+    updateRequiredValidity(sourceQuestionnaire, updatedResponse);
     updateResponse(updatedResponse);
   }
 
@@ -57,6 +59,7 @@ function BaseRenderer() {
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
     updateExpressions(updatedResponse);
+    updateRequiredValidity(sourceQuestionnaire, updatedResponse);
     updateResponse(updatedResponse);
   }
 

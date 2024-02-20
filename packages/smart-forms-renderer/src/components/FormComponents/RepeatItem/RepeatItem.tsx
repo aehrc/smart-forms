@@ -18,9 +18,9 @@
 import React, { useState } from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithShowMinimalViewAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
@@ -46,7 +46,7 @@ function RepeatItem(props: RepeatItemProps) {
   const { qItem, qrItem, showMinimalView, parentIsReadOnly, onQrItemChange } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions, required } = useRenderingExtensions(qItem);
 
   const initialRepeatAnswers = useInitialiseRepeatAnswers(qItem, qrItem);
 
@@ -119,7 +119,11 @@ function RepeatItem(props: RepeatItemProps) {
 
   return (
     <FullWidthFormComponentBox data-test="q-item-repeat-box">
-      <ItemFieldGrid qItem={qItem} displayInstructions={displayInstructions} readOnly={readOnly}>
+      <ItemFieldGrid
+        qItem={qItem}
+        displayInstructions={displayInstructions}
+        required={required}
+        readOnly={readOnly}>
         <TransitionGroup>
           {repeatAnswers.map(({ nanoId, answer }, index) => {
             const repeatAnswerQrItem = createEmptyQrItem(qItem);
