@@ -48,11 +48,6 @@ function readQuestionnaireItemRecursive(
 ): PopulationExpressions {
   const items = item.item;
   if (items && items.length > 0) {
-    // iterate through items of item recursively
-    items.forEach((item) => {
-      readQuestionnaireItemRecursive(item, populationExpressions);
-    });
-
     // Read item population context of group item
     const itemPopulationContext = getItemPopulationContext(item);
     if (itemPopulationContext && itemPopulationContext.expression && itemPopulationContext.name) {
@@ -64,7 +59,7 @@ function readQuestionnaireItemRecursive(
       };
     }
 
-    // Read initial expression of single item
+    // Read initial expression of group item
     const initialExpression = getInitialExpression(item);
     if (initialExpression && initialExpression.expression) {
       populationExpressions.initialExpressions[item.linkId] = {
@@ -72,6 +67,11 @@ function readQuestionnaireItemRecursive(
         value: undefined
       };
     }
+
+    // iterate through items of item recursively
+    items.forEach((item) => {
+      readQuestionnaireItemRecursive(item, populationExpressions);
+    });
 
     return populationExpressions;
   }
@@ -126,4 +126,11 @@ export function getItemPopulationContext(qItem: QuestionnaireItem): Expression |
     }
   }
   return null;
+}
+
+export function getItemPopulationContextName(itemPopulationContextExpression: string): string {
+  return itemPopulationContextExpression.substring(
+    itemPopulationContextExpression.indexOf('%') + 1,
+    itemPopulationContextExpression.indexOf('.')
+  );
 }
