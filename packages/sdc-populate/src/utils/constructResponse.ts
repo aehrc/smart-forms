@@ -26,7 +26,11 @@ import type {
   Reference,
   ValueSet
 } from 'fhir/r4';
-import type { PopulationExpressions, ValueSetPromise } from '../interfaces/expressions.interface';
+import type {
+  ItemPopulationContext,
+  PopulationExpressions,
+  ValueSetPromise
+} from '../interfaces/expressions.interface';
 import {
   filterValueSetAnswersRecursive,
   getValueSetPromise,
@@ -37,6 +41,7 @@ import dayjs from 'dayjs';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { findInAnswerOptions } from './answerOption';
+import { getItemPopulationContextName } from './readPopulationExpressions';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -484,6 +489,7 @@ function constructRepeatGroupInstances(
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
 
   // Look in initialExpressions of each of the child items to relate back to the itemPopulationContext its using
+  // FIXME eventually need to consider initialExpressions other than the first one
   const itemPopulationContextExpression =
     initialExpressions[qRepeatGroupParent.item[0].linkId]?.expression;
 
@@ -491,14 +497,29 @@ function constructRepeatGroupInstances(
     return [];
   }
 
-  const itemPopulationContextName = itemPopulationContextExpression.substring(
-    itemPopulationContextExpression.indexOf('%') + 1,
-    itemPopulationContextExpression.indexOf('.')
-  );
-
+  const itemPopulationContextName = getItemPopulationContextName(itemPopulationContextExpression);
   const itemPopulationContext = itemPopulationContexts[itemPopulationContextName];
   if (!itemPopulationContext || !itemPopulationContext.value) {
     return [];
+  }
+
+  // Look for itemPopulationContexts which uses the parent itemPopulationContext
+  const associatedItemPopulationContexts: Record<string, ItemPopulationContext> = {};
+  for (const name in itemPopulationContexts) {
+    const lookupItemPopulationContext = itemPopulationContexts[name];
+    if (lookupItemPopulationContext) {
+      const itemPopulationContextName = getItemPopulationContextName(
+        lookupItemPopulationContext.expression
+      );
+
+      if (
+        itemPopulationContextName ===
+        getItemPopulationContextName(lookupItemPopulationContext.expression)
+      ) {
+        associatedItemPopulationContexts[lookupItemPopulationContext.linkId] =
+          lookupItemPopulationContext;
+      }
+    }
   }
 
   const itemPopulationContextValues = itemPopulationContext.value;
@@ -512,40 +533,75 @@ function constructRepeatGroupInstances(
     };
 
     for (const childItem of qRepeatGroupParent.item) {
-      const initialExpression = initialExpressions[childItem.linkId];
-      if (!initialExpression || itemIsHidden(childItem)) {
+      // Skip if item is hidden
+      if (itemIsHidden(childItem)) {
         continue;
       }
 
-      try {
-        const initialValues = fhirpath.evaluate(
-          {},
-          initialExpression.expression,
-          { [itemPopulationContext.name]: [itemPopulationContextValue] },
-          fhirpath_r4_model
-        );
-
-        if (initialValues && initialValues.length > 0 && initialValues[0] !== '') {
-          const { newValues, expandRequired } = getAnswerValues(initialValues, childItem);
-
-          if (expandRequired) {
-            recordAnswerValueSet(childItem, valueSetPromises);
-          }
-
-          recordAnswerOption(childItem, answerOptions);
-          recordContainedValueSet(childItem, qContainedResources, containedValueSets);
-
-          qrRepeatGroupInstance.item?.push({
-            linkId: childItem.linkId,
-            answer: newValues,
-            ...(childItem.text ? { text: childItem.text } : {})
-          });
-        }
-      } catch (e) {
-        if (e instanceof Error) {
-          console.warn(
-            'Error: fhirpath evaluation for ItemPopulationContext child failed. Details below:' + e
+      // Populate answers from initialExpressions
+      const initialExpression = initialExpressions[childItem.linkId];
+      if (initialExpression) {
+        try {
+          const initialValues = fhirpath.evaluate(
+            {},
+            initialExpression.expression,
+            { [itemPopulationContext.name]: [itemPopulationContextValue] },
+            fhirpath_r4_model
           );
+
+          if (initialValues && initialValues.length > 0 && initialValues[0] !== '') {
+            const { newValues, expandRequired } = getAnswerValues(initialValues, childItem);
+
+            if (expandRequired) {
+              recordAnswerValueSet(childItem, valueSetPromises);
+            }
+
+            recordAnswerOption(childItem, answerOptions);
+            recordContainedValueSet(childItem, qContainedResources, containedValueSets);
+
+            qrRepeatGroupInstance.item?.push({
+              linkId: childItem.linkId,
+              answer: newValues,
+              ...(childItem.text ? { text: childItem.text } : {})
+            });
+          }
+        } catch (e) {
+          if (e instanceof Error) {
+            console.warn(
+              'Error: fhirpath evaluation for ItemPopulationContext child failed. Details below:' +
+                e
+            );
+          }
+        }
+      }
+
+      // Populate answers from associated itemPopulationContexts
+      const associatedItemPopulationContext = associatedItemPopulationContexts[childItem.linkId];
+      if (associatedItemPopulationContext) {
+        const newQrItem = constructResponseItemRecursive({
+          qItem: childItem,
+          qrItem: {
+            linkId: childItem.linkId,
+            text: childItem.text
+          },
+          qContainedResources,
+          populationExpressions: {
+            initialExpressions,
+            itemPopulationContexts: {
+              [associatedItemPopulationContext.name]: associatedItemPopulationContext
+            }
+          },
+          valueSetPromises,
+          answerOptions,
+          containedValueSets
+        });
+
+        if (Array.isArray(newQrItem)) {
+          if (newQrItem.length > 0) {
+            qrRepeatGroupInstance.item?.push(...newQrItem);
+          }
+        } else if (newQrItem) {
+          qrRepeatGroupInstance.item?.push(newQrItem);
         }
       }
     }
