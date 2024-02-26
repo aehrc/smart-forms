@@ -108,7 +108,6 @@ export function evaluateItemPopulationContexts(
     if (itemPopulationContext) {
       let evaluatedResult: any[];
       const expression = itemPopulationContext.expression;
-      // console.log(itemPopulationContext.expression);
 
       // Evaluate expression by LaunchPatient or PrePopQuery
       try {
