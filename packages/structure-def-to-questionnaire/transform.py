@@ -1,7 +1,7 @@
 import json
 from datetime import date
 import platform
-from transformDatatypes import (
+from complexItems import (
     create_item,
     create_address_item,
     create_period_item,
@@ -9,7 +9,12 @@ from transformDatatypes import (
     create_contact_point_item,
 )
 
-from bs4 import BeautifulSoup
+from readTableElements import read_table_elements
+from slotItemIntoQuestionnaire import slot_item_into_questionnaire
+from helperFunctions import (
+    get_snapshot_elements_dict,
+    add_launch_context_to_questionnaire,
+)
 
 import requests
 
@@ -103,41 +108,7 @@ def get_item_type(type_code, type_extension=None):
     return "string"
 
 
-def slot_item_into_qitems(element, item, q_items, previous_element):
-    # If id ends with extension, don't append. If the extension item is needed it will be added later when there are child items
-    if element["id"].endswith("extension"):
-        return q_items
-
-    # If the element id is the same as the path, append the item to q_items
-    if element["id"] == element["path"]:
-        q_items.append(item)
-        return q_items
-
-    # Find the parent item in q_items and append the item to it
-    parent_item_id = ""
-    if ":" in element["id"]:
-        parent_item_id = element["id"].split(":")[0]
-    elif "." in element["id"]:
-        parent_item_id = element["id"].split(".")[:-1]
-
-    print(parent_item_id)
-    print()
-    for q_item in q_items:
-        if q_item["linkId"] == parent_item_id:
-            q_item["item"].append(item)
-            return q_items
-
-    # Parent item id does not exist in q_items yet, possibly due to not having a mustSupport element
-    # Create a new parent item and append the item to it
-    parent_item = create_item(previous_element)
-    parent_item["type"] = "group"
-    parent_item["item"] = [item]
-    q_items.append(parent_item)
-
-    return q_items
-
-
-def get_element_name_without_resource(element, root_level=False):
+def get_element_name_without_resource(element, root_level=True):
     if root_level:
         return ".".join(element["id"].split(".")[1:])
 
@@ -145,11 +116,10 @@ def get_element_name_without_resource(element, root_level=False):
         return element["id"]
 
     # if element is not at root level (i.e. it was further obtained via profile resolution), only use the last part of the id
-    print(element["id"])
     return element["id"].split(":")[1]
 
 
-def get_profile_link(profile_links, element_name, root_level=False):
+def get_profile_link(profile_links, root_level=True):
     if root_level:
         return profile_links[0]
 
@@ -159,9 +129,7 @@ def get_profile_link(profile_links, element_name, root_level=False):
         if "extension" in link:
             return link
 
-        #     return "https://build.fhir.org/ig/hl7au/au-fhir-base/e"
         if "StructureDefinition" in link:
-            print(link)
             try:
                 # Split the URL by "StructureDefinition-" and ".html"
                 part = link.split("StructureDefinition-")[1].split(".html")[0]
@@ -210,8 +178,7 @@ def process_item_by_code(item, element):
     if "code" in element["type"][0]:
         code = element["type"][0]["code"]
 
-        if element["id"] == "communication":
-
+        # if element["id"] == "communication":
 
         if code == "Address":
             return create_address_item(element, item)
@@ -228,7 +195,7 @@ def process_item_by_code(item, element):
     return item
 
 
-def process_complex_types(item, element, table_elements, root_level=False):
+def process_complex_types(item, element, table_elements, root_level=True):
     item["item"] = []
 
     if "profile" in element["type"][0]:
@@ -244,18 +211,23 @@ def process_complex_types(item, element, table_elements, root_level=False):
         ]
 
         # Get the first profile link
-        profile_link = get_profile_link(profile_links, element_name)
+        profile_link = get_profile_link(profile_links)
 
         profile_definition = get_profile_definition(profile_link)
         if profile_definition is None:
             return item
 
-        # get profile elements
-        child_table_elements = {}
-        if profile_definition.get("text", {}).get("div") is not None:
-            child_table_elements = get_table_elements(profile_definition["text"]["div"])
+        # get table elements
+        child_table_elements = read_table_elements(profile_definition)
 
-        item["item"] = process_elements(profile_definition, child_table_elements)
+        transformed_elements = transform_elements(
+            profile_definition,
+            child_table_elements,
+            parent_link_id=item["linkId"],
+            root_level=False,
+        )
+
+        item["item"] = transformed_elements
 
         return item
 
@@ -263,78 +235,64 @@ def process_complex_types(item, element, table_elements, root_level=False):
     return process_item_by_code(item, element)
 
 
-def create_item(element):
-    item = {
-        "linkId": element["id"],
-        "text": element["id"],
-        "type": "string",
-        "required": False,
-        "repeats": False,
-    }
-
-    # required
-    if element.get("min", 0) > 0:
-        item["required"] = True
-
-    # repeats
-    if element.get("max", 0) == "*":
-        item["repeats"] = True
-
-    return item
-
-
-def add_initial_expression_with_profile(item, element):
-    if item.get("extension") is None:
-        item["extension"] = []
-
-    initialExpression = {
-        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-        "valueExpression": {
-            "language": "text/fhirpath",
-            "expression": f"%{element.get('path').lower()}",
-        },
-    }
-
-    item["extension"].append(initialExpression)
-
-    return item
-
-
 def add_initial_expression(item, element):
     if item.get("extension") is None:
         item["extension"] = []
 
+    initialExpressionString = ""
     if "profile" in element["type"][0]:
-        initialExpression = {
-            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-            "valueExpression": {
-                "language": "text/fhirpath",
-                "expression": f"%{element['path'].lower()}.where(url='{element['type'][0]['profile'][0]}').value",
-            },
-        }
-        print("initialExpression 1st")
-        print(initialExpression)
-        print()
+        initialExpressionString = f"%{element['path'].lower()}.where(url='{element['type'][0]['profile'][0]}').value"
+    elif "fixedUri" in element:
+        initialExpressionString = (
+            f"%{element['path'].lower()}.where(url='{element['fixedUri']}').value"
+        )
     else:
-        initialExpression = {
+        initialExpressionString = f"%{item['linkId'].lower()}"
+
+    initialExpressionString = initialExpressionString.replace(":", ".")
+
+    if item.get("type") != "group":
+        item["item"] = [
+            {
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
+                        "valueCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/questionnaire-display-category",
+                                    "code": "instructions",
+                                }
+                            ]
+                        },
+                    }
+                ],
+                "linkId": f"{item['linkId']}-display-instructions",
+                "text": initialExpressionString,
+                "type": "display",
+            }
+        ]
+
+    item["extension"].append(
+        {
             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
             "valueExpression": {
                 "language": "text/fhirpath",
-                "expression": f"%{element.get('path').lower()}",
+                "expression": initialExpressionString,
             },
         }
-
-        print("initialExpression 2nd")
-        print(initialExpression)
-        print()
-
-    item["extension"].append(initialExpression)
+    )
 
     return item
 
 
-def process_element(element, table_elements, root_level=False):
-    item = create_item(element)
+def transform_element(
+    element,
+    table_elements,
+    parent_link_id=None,
+    root_level=True,
+):
+    item = create_item(element, parent_link_id)
 
     # multiple types
     if len(element["type"]) > 1:
@@ -350,9 +308,9 @@ def process_element(element, table_elements, root_level=False):
         item["type"] = item_type
 
         # Rename ids ending with value[x]
-        if "value[x]" in element["id"]:
-            modified_id = element["id"].replace(
-                "value[x]", "value" + item_type.capitalize()
+        if "value[x]" in item["linkId"]:
+            modified_id = item["linkId"].replace(
+                "value[x]", "value" + element["type"][0]["code"].capitalize()
             )
             item["linkId"] = modified_id
             item["text"] = modified_id
@@ -377,26 +335,35 @@ def process_element(element, table_elements, root_level=False):
     return item
 
 
-def process_elements(profile_definition, table_elements, root_level=False):
+def transform_elements(
+    structure_definition,
+    table_elements,
+    parent_link_id="",
+    root_level=True,
+):
+    snapshot_elements_dict = get_snapshot_elements_dict(structure_definition)
+
     q_items = []
-    previous_element = None
-    for element in profile_definition["snapshot"]["element"]:
+    for element in structure_definition["differential"]["element"]:
+        element_id = element["id"]
+        element = snapshot_elements_dict[element_id]
 
         # skip elements without an id or type
-        if element.get("id") is None or element.get("type") is None:
-            previous_element = element
+        if id is None or element.get("type") is None:
             continue
 
         # if mustSupportFlag is True, skip non-must have elements
-        if root_level and element.get("mustSupport", False) is False:
-            previous_element = element
+        if root_level == True and element.get("mustSupport", False) is False:
             continue
 
-        item = process_element(element, table_elements, root_level)
+        # transform element into item
+        item = transform_element(element, table_elements, parent_link_id, root_level)
 
-        # determine path to place item
-        q_items = slot_item_into_qitems(element, item, q_items, previous_element)
-        previous_element = element
+        # Slot item into questionnaire if it is the root level
+        if root_level == True:
+            q_items = slot_item_into_questionnaire(element, item, q_items)
+        else:
+            q_items.append(item)
 
     return q_items
 
@@ -406,108 +373,36 @@ def create_questionnaire(structure_definition, table_elements):
     if resource_type != "StructureDefinition":
         return None
 
-    today = date.today().strftime("%Y-%m-%d")
     questionnaire = {
         "resourceType": "Questionnaire",
         "status": "active",
-        "date": today,
+        "date": date.today().strftime("%Y-%m-%d"),
         "item": [],
     }
 
-    questionnaire["item"] = process_elements(
-        structure_definition, table_elements, root_level=True
+    # recursively process elements at the root-level
+    questionnaire["item"] = transform_elements(
+        structure_definition, table_elements, parent_link_id="", root_level=True
     )
 
-    # add LaunchContext
-    profile_resource_type = structure_definition["type"]
-    questionnaire["extension"] = [
-        {
-            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-            "extension": [
-                {
-                    "url": "name",
-                    "valueCoding": {
-                        "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
-                        "code": profile_resource_type.lower(),
-                    },
-                },
-                {"url": "type", "valueCode": profile_resource_type},
-                {
-                    "url": "description",
-                    "valueString": f"The {profile_resource_type.lower()} that is to be used to pre-populate the form",
-                },
-            ],
-        }
-    ]
+    questionnaire = add_launch_context_to_questionnaire(
+        questionnaire, structure_definition["type"]
+    )
 
     return questionnaire
 
 
-def html_string_to_html(html_string):
-    return BeautifulSoup(html_string, "html.parser")
-
-
-def get_table_elements(text_div):
-    # Find all table rows, skipping the header row and final row
-    soup = BeautifulSoup(text_div, "html.parser")
-    rows = soup.find_all("tr")[1:-1]
-
-    # Create a list of dictionaries, each containing the element name and a dictionary of element names and URLs
-    table_elements = {}
-    previous_element = ""
-    for row in rows:
-        # Find all <a> tags within the row
-        a_tags = row.find_all("a")
-
-        # Get element name
-        a_tag_element_name = a_tags[0].text.strip()
-        if a_tag_element_name.startswith("extension") and previous_element != "":
-            a_tag_element_name = previous_element + "." + a_tag_element_name
-
-        # Create a dictionary of element names and URLs
-        a_tags_dict = {
-            a_tag.text.strip(): a_tag.get("href")
-            for a_tag in a_tags
-            if a_tag.text.strip() != "" or a_tag.get("href") is not None
-        }
-
-        # Set the previous element to the current element to recognise the next potential extension's parent
-        if (
-            "extension" not in a_tag_element_name
-            and not a_tag_element_name[0].isupper()
-        ):
-            previous_element = a_tag_element_name
-
-        # Add profile element
-        if not all(key[0].isupper() for key in a_tags_dict.keys()):
-            table_elements[a_tag_element_name] = a_tags_dict
-
-    return table_elements
-
-
 if __name__ == "__main__":
-    # Replace 'your_directory_path' with the path to the directory containing JSON files
-    structure_definition_file = "./input/StructureDefinition-au-core-patient.json"
+    structure_definition_file = (
+        "./input/StructureDefinition-au-core-patient-shortened.json"
+    )
 
     with open(structure_definition_file, "r") as file:
         structure_definition = json.load(file)
 
-        profile_elements = {}
-        if structure_definition.get("text", {}).get("div") is not None:
-            table_elements = get_table_elements(structure_definition["text"]["div"])
-
-        for el in table_elements:
-            print(el, table_elements[el])
-        print("_______________________________")
+        table_elements = read_table_elements(structure_definition)
 
         questionnaire = create_questionnaire(structure_definition, table_elements)
 
         with open("./output/generated_questionnaire.json", "w") as file:
             json.dump(questionnaire, file, indent=2)
-
-    #     questionnaire = create_questionnaire(struc_def_json)
-
-    #     with open("./generated_questionnaire.json", "w") as file:
-    #         json.dump(questionnaire, file, indent=2)
-
-    # resolve_profile("http://hl7.org/fhir/StructureDefinition/patient-birthPlace")

@@ -1,7 +1,12 @@
-def create_item(element):
+def create_item(element, parent_link_id=None):
+    link_id = element["id"]
+
+    if link_id.startswith("Extension"):
+        link_id = parent_link_id + link_id.replace("Extension", "")
+
     item = {
-        "linkId": element["id"],
-        "text": element["id"],
+        "linkId": link_id,
+        "text": link_id,
         "type": "string",
         "required": False,
         "repeats": False,
