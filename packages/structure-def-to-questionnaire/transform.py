@@ -7,6 +7,7 @@ from complexItems import (
     create_period_item,
     create_human_name_item,
     create_contact_point_item,
+    create_identifier_item,
 )
 
 from readTableElements import read_table_elements
@@ -15,6 +16,8 @@ from helperFunctions import (
     get_snapshot_elements_dict,
     add_launch_context_to_questionnaire,
 )
+
+from removeEmptyItems import remove_empty_groups
 
 import requests
 
@@ -126,6 +129,9 @@ def get_profile_link(profile_links, root_level=True):
     # not root level, resolve via appending profie name to end of base url (hardcoded)
     temp_link = None
     for link in profile_links:
+        if "datatype" in link:
+            continue
+
         if "extension" in link:
             return link
 
@@ -168,6 +174,7 @@ def get_profile_definition(profile_link):
 
     except requests.exceptions.HTTPError as e:
         print(f"{ERROR_RED}ERROR: HTTP ERROR THROWN:{END_C}", e, "\n")
+        print(profile_link)
     except Exception as e:
         print(f"{ERROR_RED}ERROR: An error occurred, details:", e, "\n")
 
@@ -192,6 +199,9 @@ def process_item_by_code(item, element):
         if code == "ContactPoint":
             return create_contact_point_item(element, item)
 
+        if code == "Identifier":
+            return create_identifier_item(element, item)
+
     return item
 
 
@@ -211,8 +221,7 @@ def process_complex_types(item, element, table_elements, root_level=True):
         ]
 
         # Get the first profile link
-        profile_link = get_profile_link(profile_links)
-
+        profile_link = get_profile_link(profile_links, root_level)
         profile_definition = get_profile_definition(profile_link)
         if profile_definition is None:
             return item
@@ -368,7 +377,9 @@ def transform_elements(
     return q_items
 
 
-def create_questionnaire(structure_definition, table_elements):
+def create_questionnaire(
+    structure_definition, table_elements, questionnaire_id, questionnaire_title
+):
     resource_type = structure_definition.get("resourceType", None)
     if resource_type != "StructureDefinition":
         return None
@@ -380,29 +391,36 @@ def create_questionnaire(structure_definition, table_elements):
         "item": [],
     }
 
+    questionnaire["id"] = questionnaire_id
+    questionnaire["title"] = questionnaire_title
+    questionnaire = add_launch_context_to_questionnaire(
+        questionnaire, structure_definition["type"]
+    )
+
     # recursively process elements at the root-level
     questionnaire["item"] = transform_elements(
         structure_definition, table_elements, parent_link_id="", root_level=True
     )
 
-    questionnaire = add_launch_context_to_questionnaire(
-        questionnaire, structure_definition["type"]
-    )
+    # recursively remove empty groups
+    questionnaire["item"] = remove_empty_groups(questionnaire["item"])
 
     return questionnaire
 
 
 if __name__ == "__main__":
-    structure_definition_file = (
-        "./input/StructureDefinition-au-core-patient-shortened.json"
-    )
+    structure_definition_file = "./input/StructureDefinition-au-core-patient.json"
+    questionnaire_id = "AuCorePatient"
+    questionnaire_title = "AU Core Patient Test Questionnaire"
 
     with open(structure_definition_file, "r") as file:
         structure_definition = json.load(file)
 
         table_elements = read_table_elements(structure_definition)
 
-        questionnaire = create_questionnaire(structure_definition, table_elements)
+        questionnaire = create_questionnaire(
+            structure_definition, table_elements, questionnaire_id, questionnaire_title
+        )
 
         with open("./output/generated_questionnaire.json", "w") as file:
             json.dump(questionnaire, file, indent=2)

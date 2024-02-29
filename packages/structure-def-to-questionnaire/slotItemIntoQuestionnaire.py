@@ -44,21 +44,11 @@ def create_group_item_and_slot_recursive(
 
     first_segment = target_path_segments[0]
     remaining_target_path = target_path.replace(first_segment, "", 1).lstrip(".:")
-    print(
-        f"{INFO_BLUE}enter recursive function - {first_segment}, {remaining_target_path}{END_C}"
-    )
 
     # if group doesnt exist, create it
     new_item_name = create_new_item_name(parent_link_id, first_segment)
 
-    print()
-    print(
-        f"Checking... {item['linkId']} == {first_segment}, New item name: {new_item_name}, List: {[q_item['linkId'] for q_item in q_items]}"
-    )  # figure out a way to append the previous item linkId to the current linkId
     if new_item_name not in [q_item["linkId"] for q_item in q_items]:
-        print(
-            f"group doesn't exist, append new item {WARNING_YELLOW}{new_item_name}{END_C}"
-        )  # figure out a way to append the previous item linkId to the current linkId
         new_item = {
             "linkId": new_item_name,
             "text": new_item_name,
@@ -74,9 +64,6 @@ def create_group_item_and_slot_recursive(
         return q_items
 
     # Group exists
-    print(
-        f"group exist, look for q_item {INFO_BLUE}{new_item_name}{END_C}"
-    )  # figure out a way to append the previous item linkId to the current linkId
     for q_item in q_items:
         # We are on the correct path, slot in the item
         if q_item["linkId"] == item["linkId"]:
@@ -91,7 +78,6 @@ def create_group_item_and_slot_recursive(
                 q_item["item"] = []
 
             # continue traversing
-            print(f"group exists, traversing {q_item['linkId']}")
             q_item["item"] = create_group_item_and_slot_recursive(
                 element, item, remaining_target_path, q_item["linkId"], q_item["item"]
             )

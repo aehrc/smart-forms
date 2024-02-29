@@ -243,3 +243,88 @@ def create_contact_point_item(element, item):
         ]
 
     return item
+
+
+def create_identifier_item(element, item):
+    if item["type"] == "group":
+
+        codeable_concept_item = {
+            "linkId": f"{element['id']}.type",
+            "text": "Identifier.type",
+            "type": "group",
+            "required": False,
+            "repeats": False,
+        }
+        codeable_concept_item = create_codeable_concept_item(
+            element,
+            codeable_concept_item,
+            "http://hl7.org/fhir/ValueSet/identifier-type|4.0.1",
+        )
+
+        period_item = {
+            "linkId": f"{element['id']}.period",
+            "text": "ContactPoint.period",
+            "type": "group",
+            "required": False,
+            "repeats": False,
+        }
+        period_item = create_period_item(element, period_item)
+
+        item["item"] = [
+            {
+                "linkId": f"{element['id']}.use",
+                "text": "Identifier.use",
+                "type": "choice",
+                "required": False,
+                "repeats": False,
+                "answerValueSet": "http://hl7.org/fhir/ValueSet/identifier-use|4.0.1",
+            },
+            codeable_concept_item,
+            {
+                "linkId": f"{element['id']}.system",
+                "text": "Identifier.system",
+                "type": "uri",
+                "required": False,
+                "repeats": False,
+            },
+            {
+                "linkId": f"{element['id']}.value",
+                "text": "Identifier.value",
+                "type": "string",
+                "required": False,
+                "repeats": False,
+            },
+            period_item,
+            {
+                "linkId": f"{element['id']}.assigner",
+                "text": "Identifier.assigner",
+                "type": "reference",
+                "required": False,
+                "repeats": False,
+            },
+        ]
+
+    return item
+
+
+def create_codeable_concept_item(element, item, value_set_url):
+    if item["type"] == "group":
+        item["item"] = [
+            {
+                "linkId": f"{element['id']}.coding",
+                "text": "CodeableConcept.coding",
+                "type": "choice",
+                "required": False,
+                "repeats": True,
+                "answerValueSet": value_set_url,
+            },
+            {
+                "linkId": f"{element['id']}.text",
+                "text": "CodeableConcept.text",
+                "type": "string",
+                "required": False,
+                "repeats": False,
+            },
+        ]
+
+    return item
