@@ -48,8 +48,6 @@ function StandalonePropsPicker(props: StandalonePropsPickerProps) {
     onShowResources
   } = props;
 
-  console.log(state);
-
   return (
     <Box display="flex" justifyContent="space-between" mx={2}>
       <FormControl>

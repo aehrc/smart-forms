@@ -87,7 +87,5 @@ export async function populate(
     questionnaireResponse
   );
 
-  console.log(cleanQuestionnaireResponse);
-
   return createOutputParameters(cleanQuestionnaireResponse, issues);
 }
