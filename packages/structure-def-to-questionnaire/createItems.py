@@ -1,3 +1,15 @@
+def add_required_and_repeats_attribute(element, item):
+    # required
+    if element.get("min", 0) > 0:
+        item["required"] = True
+
+    # repeats
+    if element.get("max", 0) == "*":
+        item["repeats"] = True
+
+    return item
+
+
 def create_item(element, parent_link_id=None):
     link_id = element["id"]
 
@@ -12,13 +24,7 @@ def create_item(element, parent_link_id=None):
         "repeats": False,
     }
 
-    # required
-    if element.get("min", 0) > 0:
-        item["required"] = True
-
-    # repeats
-    if element.get("max", 0) == "*":
-        item["repeats"] = True
+    item = add_required_and_repeats_attribute(element, item)
 
     return item
 

@@ -1,7 +1,7 @@
 import json
 from datetime import date
 import platform
-from complexItems import (
+from createItems import (
     create_item,
     create_address_item,
     create_period_item,
@@ -15,9 +15,16 @@ from slotItemIntoQuestionnaire import slot_item_into_questionnaire
 from helperFunctions import (
     get_snapshot_elements_dict,
     add_launch_context_to_questionnaire,
+    get_element_name_without_resource,
 )
 
+from resolveProfiles import get_first_profile_link
+
 from removeEmptyItems import remove_empty_groups
+
+from initial import add_item_initial, add_initial_expression
+
+from convertTypes import convert_to_appropriate_type
 
 import requests
 
@@ -41,26 +48,14 @@ else:
 profile_resource_type = None
 
 
-def get_item_type(type_code, type_extension=None):
+def get_item_type(element):
+    type_code = element["type"][0]["code"]
+    type_extension = element["type"][0].get("extension", None)
+
     if (
         type_code == "http://hl7.org/fhirpath/System.String"
-        and type_extension is not None
-    ):
-        type_extension_value_url = type_extension[0]["valueUrl"]
-        return type_extension_value_url
-
-    if (
-        type_code == "http://hl7.org/fhirpath/System.Date"
-        and type_extension is not None
-    ):
-        type_extension_value_url = type_extension[0]["valueUrl"]
-        return type_extension_value_url
-        # add regex
-
-    if (
-        type_code == "http://hl7.org/fhirpath/System.Date"
-        and type_extension is not None
-    ):
+        or type_code == "http://hl7.org/fhirpath/System.Date"
+    ) and type_extension is not None:
         type_extension_value_url = type_extension[0]["valueUrl"]
         return type_extension_value_url
         # add regex
@@ -111,46 +106,6 @@ def get_item_type(type_code, type_extension=None):
     return "string"
 
 
-def get_element_name_without_resource(element, root_level=True):
-    if root_level:
-        return ".".join(element["id"].split(".")[1:])
-
-    if ":" not in element["id"]:
-        return element["id"]
-
-    # if element is not at root level (i.e. it was further obtained via profile resolution), only use the last part of the id
-    return element["id"].split(":")[1]
-
-
-def get_profile_link(profile_links, root_level=True):
-    if root_level:
-        return profile_links[0]
-
-    # not root level, resolve via appending profie name to end of base url (hardcoded)
-    temp_link = None
-    for link in profile_links:
-        if "datatype" in link:
-            continue
-
-        if "extension" in link:
-            return link
-
-        if "StructureDefinition" in link:
-            try:
-                # Split the URL by "StructureDefinition-" and ".html"
-                part = link.split("StructureDefinition-")[1].split(".html")[0]
-                return (
-                    "https://build.fhir.org/ig/hl7au/au-fhir-base/StructureDefinition-"
-                    + part
-                    + ".json"
-                )
-            except IndexError:
-                print("Fail to get profile link ", link)
-                return None
-
-    return temp_link
-
-
 def get_profile_definition(profile_link):
     if ".html" in profile_link:
         profile_link = profile_link.replace(".html", ".json")
@@ -185,8 +140,6 @@ def process_item_by_code(item, element):
     if "code" in element["type"][0]:
         code = element["type"][0]["code"]
 
-        # if element["id"] == "communication":
-
         if code == "Address":
             return create_address_item(element, item)
 
@@ -207,36 +160,35 @@ def process_item_by_code(item, element):
 
 def process_complex_types(item, element, table_elements, root_level=True):
     item["item"] = []
-
     if "profile" in element["type"][0]:
         element_name = get_element_name_without_resource(element, root_level)
 
         if element_name not in table_elements:
             return item
 
-        element_profile = table_elements[element_name]
-
-        profile_links = [
-            link for link in list(element_profile.values()) if link.startswith("http")
-        ]
+        table_element = table_elements[element_name]
 
         # Get the first profile link
-        profile_link = get_profile_link(profile_links, root_level)
-        profile_definition = get_profile_definition(profile_link)
-        if profile_definition is None:
+        profile_link = get_first_profile_link(table_element)
+        if profile_link is not None:
+            profile_definition = get_profile_definition(profile_link)
+            if profile_definition is None:
+                return item
+
+            # get table elements
+            child_table_elements = read_table_elements(profile_definition)
+
+            transformed_elements = transform_elements(
+                profile_definition,
+                child_table_elements,
+                parent_link_id=item["linkId"],
+                root_level=False,
+            )
+
+            item["item"] = transformed_elements
             return item
 
-        # get table elements
-        child_table_elements = read_table_elements(profile_definition)
-
-        transformed_elements = transform_elements(
-            profile_definition,
-            child_table_elements,
-            parent_link_id=item["linkId"],
-            root_level=False,
-        )
-
-        item["item"] = transformed_elements
+        print(f"{ERROR_RED}ERROR: Fail to get profile{END_C}")
 
         return item
 
@@ -244,61 +196,11 @@ def process_complex_types(item, element, table_elements, root_level=True):
     return process_item_by_code(item, element)
 
 
-def add_initial_expression(item, element):
-    if item.get("extension") is None:
-        item["extension"] = []
-
-    initialExpressionString = ""
-    if "profile" in element["type"][0]:
-        initialExpressionString = f"%{element['path'].lower()}.where(url='{element['type'][0]['profile'][0]}').value"
-    elif "fixedUri" in element:
-        initialExpressionString = (
-            f"%{element['path'].lower()}.where(url='{element['fixedUri']}').value"
-        )
-    else:
-        initialExpressionString = f"%{item['linkId'].lower()}"
-
-    initialExpressionString = initialExpressionString.replace(":", ".")
-
-    if item.get("type") != "group":
-        item["item"] = [
-            {
-                "extension": [
-                    {
-                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory",
-                        "valueCodeableConcept": {
-                            "coding": [
-                                {
-                                    "system": "http://hl7.org/fhir/questionnaire-display-category",
-                                    "code": "instructions",
-                                }
-                            ]
-                        },
-                    }
-                ],
-                "linkId": f"{item['linkId']}-display-instructions",
-                "text": initialExpressionString,
-                "type": "display",
-            }
-        ]
-
-    item["extension"].append(
-        {
-            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-            "valueExpression": {
-                "language": "text/fhirpath",
-                "expression": initialExpressionString,
-            },
-        }
-    )
-
-    return item
-
-
 def transform_element(
     element,
     table_elements,
     parent_link_id=None,
+    structure_definition_url=None,
     root_level=True,
 ):
     item = create_item(element, parent_link_id)
@@ -312,8 +214,8 @@ def transform_element(
         if "code" not in element["type"][0]:
             return None
 
-        type_code = element["type"][0]["code"]
-        item_type = get_item_type(type_code)
+        item_type = get_item_type(element)
+        item_type = convert_to_appropriate_type(item_type)
         item["type"] = item_type
 
         # Rename ids ending with value[x]
@@ -325,21 +227,21 @@ def transform_element(
             item["text"] = modified_id
 
         # Complex type
-        if item_type == "group":
+        if item["type"] == "group":
             item = process_complex_types(item, element, table_elements, root_level)
 
-        # convert id to string
-        if item_type == "id":
-            item["type"] = "string"
+        # add item.initial for "url" type
+        if item["type"] == "url":
+            item = add_item_initial(item, element)
 
         # if present, add answerValueSet to choice items
-        if item_type == "choice":
+        if item["type"] == "choice":
             # answerValueSet
             if "valueSet" in element.get("binding", {}):
                 item["answerValueSet"] = element["binding"]["valueSet"]
 
         # add initialExpression
-        item = add_initial_expression(item, element)
+        item = add_initial_expression(item, element, structure_definition_url)
 
     return item
 
@@ -351,6 +253,7 @@ def transform_elements(
     root_level=True,
 ):
     snapshot_elements_dict = get_snapshot_elements_dict(structure_definition)
+    structure_definition_url = structure_definition.get("url", None)
 
     q_items = []
     for element in structure_definition["differential"]["element"]:
@@ -366,7 +269,13 @@ def transform_elements(
             continue
 
         # transform element into item
-        item = transform_element(element, table_elements, parent_link_id, root_level)
+        item = transform_element(
+            element,
+            table_elements,
+            parent_link_id,
+            structure_definition_url,
+            root_level,
+        )
 
         # Slot item into questionnaire if it is the root level
         if root_level == True:
@@ -412,6 +321,7 @@ if __name__ == "__main__":
     structure_definition_file = "./input/StructureDefinition-au-core-patient.json"
     questionnaire_id = "AuCorePatient"
     questionnaire_title = "AU Core Patient Test Questionnaire"
+    output_file_name = "./output/Q-StructureDefinition-au-core-patient.json"
 
     with open(structure_definition_file, "r") as file:
         structure_definition = json.load(file)
@@ -422,5 +332,5 @@ if __name__ == "__main__":
             structure_definition, table_elements, questionnaire_id, questionnaire_title
         )
 
-        with open("./output/generated_questionnaire.json", "w") as file:
+        with open(output_file_name, "w") as file:
             json.dump(questionnaire, file, indent=2)

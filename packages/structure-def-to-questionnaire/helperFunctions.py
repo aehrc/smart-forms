@@ -38,3 +38,14 @@ def add_launch_context_to_questionnaire(questionnaire, profile_resource_type):
     ]
 
     return questionnaire
+
+
+def get_element_name_without_resource(element, root_level=True):
+    if root_level:
+        return ".".join(element["id"].split(".")[1:])
+
+    if ":" not in element["id"]:
+        return element["id"]
+
+    # if element is not at root level (i.e. it was further obtained via profile resolution), only use the last part of the id
+    return element["id"].split(":")[1]

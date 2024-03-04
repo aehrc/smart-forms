@@ -23,7 +23,10 @@ def read_table_elements(structure_definition):
 
         # Create a dictionary of element names and URLs
         a_tags_dict = {
-            a_tag.text.strip(): a_tag.get("href")
+            a_tag.text.strip(): {
+                "href": a_tag.get("href", None),
+                "title": a_tag.get("title", None),
+            }
             for a_tag in a_tags
             if a_tag.text.strip() != "" or a_tag.get("href") is not None
         }
