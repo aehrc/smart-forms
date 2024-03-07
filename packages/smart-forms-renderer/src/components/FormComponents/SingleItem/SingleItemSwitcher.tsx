@@ -39,6 +39,7 @@ import CustomDateItem from '../CustomDateItem/CustomDateItem';
 import { isSpecificItemControl } from '../../../utils';
 import SliderItem from '../SliderItem/SliderItem';
 import IntegerItem from '../IntegerItem/IntegerItem';
+import AttachmentItem from '../AttachmentItem/AttachmentItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -55,17 +56,8 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     props;
 
   switch (qItem.type) {
-    case 'string':
-      return (
-        <StringItem
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={isRepeated}
-          isTabled={isTabled}
-          parentIsReadOnly={parentIsReadOnly}
-          onQrItemChange={onQrItemChange}
-        />
-      );
+    case 'display':
+      return <DisplayItem qItem={qItem} />;
     case 'boolean':
       return (
         <BooleanItem
@@ -77,9 +69,33 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case 'time':
+    case 'decimal':
       return (
-        <TimeItem
+        <DecimalItem
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    case 'integer':
+      if (isSpecificItemControl(qItem, 'slider')) {
+        return (
+          <SliderItem
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={isRepeated}
+            isTabled={isTabled}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      }
+
+      return (
+        <IntegerItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -110,6 +126,28 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           onQrItemChange={onQrItemChange}
         />
       );
+    case 'time':
+      return (
+        <TimeItem
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    case 'string':
+      return (
+        <StringItem
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      );
     case 'text':
       return (
         <TextItem
@@ -120,35 +158,9 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case 'display':
-      return <DisplayItem qItem={qItem} />;
-    case 'integer':
-      if (isSpecificItemControl(qItem, 'slider')) {
-        return (
-          <SliderItem
-            qItem={qItem}
-            qrItem={qrItem}
-            isRepeated={isRepeated}
-            isTabled={isTabled}
-            parentIsReadOnly={parentIsReadOnly}
-            onQrItemChange={onQrItemChange}
-          />
-        );
-      }
-
+    case 'url':
       return (
-        <IntegerItem
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={isRepeated}
-          isTabled={isTabled}
-          parentIsReadOnly={parentIsReadOnly}
-          onQrItemChange={onQrItemChange}
-        />
-      );
-    case 'decimal':
-      return (
-        <DecimalItem
+        <UrlItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -181,9 +193,21 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           onQrItemChange={onQrItemChange}
         />
       );
-    case 'url':
+    case 'attachment':
       return (
-        <UrlItem
+        <AttachmentItem
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    case 'reference':
+      // FIXME reference item uses the same component as string item
+      return (
+        <StringItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
@@ -195,8 +219,8 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     default:
       return (
         <Typography>
-          Item type not supported yet, or something has went wrong. If your questionnnaire is not a
-          FHIR R4 resource, there might be issues rendering it.
+          Item type <b>{qItem.type}</b> not supported yet, or something has went wrong. If your
+          questionnnaire is not a FHIR R4 resource, there might be issues rendering it.
         </Typography>
       );
   }

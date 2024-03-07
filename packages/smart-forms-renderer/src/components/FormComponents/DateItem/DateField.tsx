@@ -20,6 +20,7 @@ import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps
 import type { Dayjs } from 'dayjs';
 import { DatePicker as MuiDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 
 interface DateFieldProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
@@ -39,7 +40,7 @@ function DateField(props: DateFieldProps) {
         value={value}
         disabled={readOnly}
         label={displayPrompt}
-        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160 }}
+        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
         onChange={onDateChange}
         slotProps={{
           textField: {

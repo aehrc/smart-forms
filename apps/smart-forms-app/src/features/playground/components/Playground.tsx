@@ -107,7 +107,7 @@ function Playground() {
   }
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={HTML5Backend} context={window}>
       <Allotment defaultSizes={[40, 60]}>
         <Box sx={{ height: '100%', overflow: 'auto' }}>
           {buildingState === 'built' ? (

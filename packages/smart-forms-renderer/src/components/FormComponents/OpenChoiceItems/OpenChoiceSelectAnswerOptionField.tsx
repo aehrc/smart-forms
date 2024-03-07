@@ -1,6 +1,6 @@
 import React from 'react';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
-import { StandardTextField } from '../Textfield.styles';
+import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
@@ -33,7 +33,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
       onChange={(_, newValue) => onChange(newValue)}
       freeSolo
       autoHighlight
-      sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
+      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
       disabled={readOnly}
       size="small"
       renderInput={(params) => (

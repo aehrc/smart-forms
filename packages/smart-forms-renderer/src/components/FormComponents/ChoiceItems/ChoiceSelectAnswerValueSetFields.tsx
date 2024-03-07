@@ -17,7 +17,7 @@
 
 import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField } from '../Textfield.styles';
+import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
@@ -49,7 +49,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
         onChange={(_, newValue) => onSelectChange(newValue)}
         openOnFocus
         autoHighlight
-        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
+        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
         size="small"
         disabled={readOnly}
         renderInput={(params) => (

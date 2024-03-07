@@ -38,7 +38,7 @@ function FormWrapper() {
     return <FormInvalid questionnaire={sourceQuestionnaire} />;
   }
 
-  if (topLevelQItems.length === 0 || topLevelQRItems.length === 0) {
+  if (topLevelQItems.length === 0) {
     return <FormInvalid questionnaire={sourceQuestionnaire} />;
   }
 

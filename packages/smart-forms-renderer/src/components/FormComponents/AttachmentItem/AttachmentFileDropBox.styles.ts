@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,16 @@
  */
 
 import { styled } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
+import { Box } from '@mui/material';
+import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 
-export const TEXT_FIELD_WIDTH = 300;
-
-// Always use this accompanied by the TextField prop fullWidth
-export const StandardTextField = styled(TextField, {
-  shouldForwardProp: (prop) => prop !== 'isTabled'
-})<{ isTabled: boolean }>(({ isTabled }) => ({
-  // Set 280 as the standard width for a field
-  // Set a theoretical infinite maxWidth if field is within a table to fill the table row
+export const AttachmentFileDropBoxWrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isTabled'
+})<{ isActive: boolean; isTabled: boolean }>(({ theme, isActive, isTabled }) => ({
+  backgroundColor: theme.palette.background.paper,
+  border: '2px dashed',
+  borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
+  borderRadius: '4px',
   maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000,
   minWidth: 160
 }));
