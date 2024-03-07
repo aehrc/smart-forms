@@ -24,18 +24,20 @@ import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 
 interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   codings: Coding[];
   valueCoding: Coding | null;
-  serverError: Error | null;
+  terminologyError: TerminologyError;
   readOnly: boolean;
   onSelectChange: (newValue: Coding | null) => void;
 }
 
 function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetFieldsProps) {
-  const { qItem, codings, valueCoding, serverError, readOnly, isTabled, onSelectChange } = props;
+  const { qItem, codings, valueCoding, terminologyError, readOnly, isTabled, onSelectChange } =
+    props;
 
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
@@ -74,12 +76,13 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     );
   }
 
-  if (serverError) {
+  if (terminologyError.error) {
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server
+          There was an error fetching options from the terminology server for{' '}
+          {terminologyError.answerValueSet}
         </Typography>
       </StyledAlert>
     );

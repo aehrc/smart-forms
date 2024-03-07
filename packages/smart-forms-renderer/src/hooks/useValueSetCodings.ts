@@ -28,7 +28,15 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 
-function useValueSetCodings(qItem: QuestionnaireItem) {
+export interface TerminologyError {
+  error: Error | null;
+  answerValueSet: string;
+}
+
+function useValueSetCodings(qItem: QuestionnaireItem): {
+  codings: Coding[];
+  terminologyError: TerminologyError;
+} {
   const patient = useSmartConfigStore.use.patient();
   const user = useSmartConfigStore.use.user();
   const encounter = useSmartConfigStore.use.encounter();
@@ -145,7 +153,7 @@ function useValueSetCodings(qItem: QuestionnaireItem) {
     }
   }, [qItem]);
 
-  return { codings, serverError };
+  return { codings, terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' } };
 }
 
 export default useValueSetCodings;

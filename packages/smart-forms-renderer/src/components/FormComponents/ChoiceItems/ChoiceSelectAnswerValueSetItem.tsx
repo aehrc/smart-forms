@@ -53,7 +53,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   }
 
   // Get codings/options from valueSet
-  const { codings, serverError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem);
 
   valueCoding = useMemo(() => {
     const updatedValueCoding = codings.find(
@@ -94,7 +94,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         qItem={qItem}
         codings={codings}
         valueCoding={valueCoding}
-        serverError={serverError}
+        terminologyError={terminologyError}
         readOnly={readOnly}
         isTabled={isTabled}
         onSelectChange={handleChange}
@@ -109,7 +109,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
           qItem={qItem}
           codings={codings}
           valueCoding={valueCoding}
-          serverError={serverError}
+          terminologyError={terminologyError}
           readOnly={readOnly}
           isTabled={isTabled}
           onSelectChange={handleChange}

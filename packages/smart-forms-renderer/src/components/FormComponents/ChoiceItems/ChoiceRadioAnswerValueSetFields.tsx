@@ -23,6 +23,7 @@ import ChoiceRadioSingle from './ChoiceRadioSingle';
 import { StyledRadioGroup } from '../Item.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -30,12 +31,13 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   valueRadio: string | null;
   orientation: ChoiceItemOrientation;
   readOnly: boolean;
-  serverError: Error | null;
+  terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsProps) {
-  const { qItem, codings, valueRadio, orientation, readOnly, serverError, onCheckedChange } = props;
+  const { qItem, codings, valueRadio, orientation, readOnly, terminologyError, onCheckedChange } =
+    props;
 
   if (codings.length > 0) {
     return (
@@ -59,12 +61,13 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     );
   }
 
-  if (serverError) {
+  if (terminologyError.error) {
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server
+          There was an error fetching options from the terminology server for{' '}
+          {terminologyError.answerValueSet}
         </Typography>
       </StyledAlert>
     );

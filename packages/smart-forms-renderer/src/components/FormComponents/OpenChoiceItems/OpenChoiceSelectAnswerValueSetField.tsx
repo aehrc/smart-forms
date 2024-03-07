@@ -8,6 +8,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledAttribute,
@@ -15,13 +16,14 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
   qItem: QuestionnaireItem;
   options: Coding[];
   valueSelect: Coding | null;
-  serverError: Error | null;
+  terminologyError: TerminologyError;
   readOnly: boolean;
   onValueChange: (newValue: Coding | string | null) => void;
 }
 
 function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueSetFieldProps) {
-  const { qItem, options, valueSelect, serverError, readOnly, isTabled, onValueChange } = props;
+  const { qItem, options, valueSelect, terminologyError, readOnly, isTabled, onValueChange } =
+    props;
 
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
@@ -57,9 +59,10 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
           />
         )}
       />
-      {serverError ? (
+      {terminologyError.error ? (
         <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server.
+          There was an error fetching options from the terminology server for{' '}
+          {terminologyError.answerValueSet}
         </Typography>
       ) : null}
     </>

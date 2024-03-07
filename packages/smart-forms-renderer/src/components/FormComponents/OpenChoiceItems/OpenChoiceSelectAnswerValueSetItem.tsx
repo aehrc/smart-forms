@@ -52,7 +52,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   }
 
   // Get codings/options from valueSet
-  const { codings, serverError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem);
 
   // Event handlers
   function handleValueChange(newValue: Coding | string | null) {
@@ -79,7 +79,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
         qItem={qItem}
         options={codings}
         valueSelect={valueSelect}
-        serverError={serverError}
+        terminologyError={terminologyError}
         isTabled={isTabled}
         readOnly={readOnly}
         onValueChange={handleValueChange}
@@ -94,7 +94,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
           qItem={qItem}
           options={codings}
           valueSelect={valueSelect}
-          serverError={serverError}
+          terminologyError={terminologyError}
           isTabled={isTabled}
           readOnly={readOnly}
           onValueChange={handleValueChange}
