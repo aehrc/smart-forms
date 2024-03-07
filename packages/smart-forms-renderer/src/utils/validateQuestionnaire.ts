@@ -15,14 +15,19 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHidden } from './qItem';
 import { getRegexValidation } from './itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { RegexValidation } from '../interfaces/regex.interface';
+import type { RegexValidation } from '../interfaces/regex.interface';
 
 export type InvalidType = 'regex' | 'minLength' | 'maxLength' | 'required';
 
@@ -38,7 +43,6 @@ interface ValidateQuestionnaireParams {
 /**
  * Recursively go through the questionnaireResponse and check for un-filled required qItems
  * At the moment item.required for group items are not checked
- * FIXME will eventually be renamed to validate questionnaire
  *
  * @author Sean Fong
  */
@@ -129,7 +133,7 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
 
   // FIXME repeat groups not working
   if (qItem.type === 'group' && qItem.repeats) {
-    return validateRepeatGroup(qItem, qrItem, invalidItems);
+    return;
   }
 
   const childQItems = qItem.item;
@@ -227,13 +231,13 @@ function validateSingleItem(
   return invalidItems;
 }
 
-function validateRepeatGroup(
-  qItem: QuestionnaireItem,
-  qrItems: QuestionnaireResponseItem,
-  invalidLinkIds: Record<string, InvalidType>
-) {
-  return;
-}
+// function validateRepeatGroup(
+//   qItem: QuestionnaireItem,
+//   qrItems: QuestionnaireResponseItem,
+//   invalidLinkIds: Record<string, InvalidType>
+// ) {
+//   return;
+// }
 
 function getInputInString(answer: QuestionnaireResponseItemAnswer) {
   if (answer.valueString) {

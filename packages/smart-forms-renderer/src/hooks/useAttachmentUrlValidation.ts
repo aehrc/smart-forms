@@ -15,17 +15,13 @@
  * limitations under the License.
  */
 
-import { styled } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
+function useAttachmentUrlValidation(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
-export const TEXT_FIELD_WIDTH = 300;
-
-// Always use this accompanied by the TextField prop fullWidth
-export const StandardTextField = styled(TextField, {
-  shouldForwardProp: (prop) => prop !== 'isTabled'
-})<{ isTabled: boolean }>(({ isTabled }) => ({
-  // Set 280 as the standard width for a field
-  // Set a theoretical infinite maxWidth if field is within a table to fill the table row
-  maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000,
-  minWidth: 160
-}));
+export default useAttachmentUrlValidation;

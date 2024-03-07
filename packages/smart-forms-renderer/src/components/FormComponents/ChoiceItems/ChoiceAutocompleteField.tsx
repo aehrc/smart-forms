@@ -21,7 +21,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Fade from '@mui/material/Fade';
 import Tooltip from '@mui/material/Tooltip';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
-import { StandardTextField } from '../Textfield.styles';
+import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
@@ -32,7 +32,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute
 } from '../../../interfaces/renderProps.interface';
-import { AlertColor } from '@mui/material/Alert';
+import type { AlertColor } from '@mui/material/Alert';
 
 interface ChoiceAutocompleteFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -75,7 +75,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       clearOnEscape
       autoHighlight
       onChange={(_, newValue) => onValueChange(newValue)}
-      sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
+      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
       filterOptions={(x) => x}
       renderInput={(params) => (
         <StandardTextField

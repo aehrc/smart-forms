@@ -1,6 +1,6 @@
 import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField } from '../Textfield.styles';
+import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
 import type {
   PropsWithIsTabledAttribute,
@@ -36,7 +36,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         onInputChange={(_, newValue) => onValueChange(newValue)}
         freeSolo
         autoHighlight
-        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160, flexGrow: 1 }}
+        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
         disabled={readOnly}
         size="small"
         renderInput={(params) => (

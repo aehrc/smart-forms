@@ -22,6 +22,7 @@ import Select from '@mui/material/Select';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
@@ -45,7 +46,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
       placeholder={entryFormat}
       label={displayPrompt}
       endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
-      sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 160 }}
+      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
       size="small"
       onChange={(e) => onSelectChange(e.target.value)}>
       {qItem.answerOption?.map((option, index) => {

@@ -18,7 +18,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField } from '../Textfield.styles';
+import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import SearchIcon from '@mui/icons-material/Search';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fade from '@mui/material/Fade';
@@ -80,7 +80,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         clearOnEscape
         freeSolo
         autoHighlight
-        sx={{ maxWidth: !isTabled ? 280 : 3000, minWidth: 220, flexGrow: 1 }}
+        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 220, flexGrow: 1 }}
         onChange={(_, newValue) => onValueChange(newValue)}
         filterOptions={(x) => x}
         renderInput={(params) => (
