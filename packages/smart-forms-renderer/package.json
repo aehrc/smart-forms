@@ -34,6 +34,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "nanoid": "^5.0.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-markdown": "^8.0.7",
