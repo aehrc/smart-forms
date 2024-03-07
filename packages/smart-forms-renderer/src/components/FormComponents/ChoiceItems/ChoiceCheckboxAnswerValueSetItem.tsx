@@ -64,7 +64,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Get codings/options from valueSet
-  const { codings, serverError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem);
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {
@@ -91,7 +91,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
           answers={answers}
           orientation={orientation}
           readOnly={readOnly}
-          serverError={serverError}
+          terminologyError={terminologyError}
           onCheckedChange={handleCheckedChange}
         />
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
@@ -107,7 +107,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
           answers={answers}
           orientation={orientation}
           readOnly={readOnly}
-          serverError={serverError}
+          terminologyError={terminologyError}
           onCheckedChange={handleCheckedChange}
         />
       </ItemFieldGrid>

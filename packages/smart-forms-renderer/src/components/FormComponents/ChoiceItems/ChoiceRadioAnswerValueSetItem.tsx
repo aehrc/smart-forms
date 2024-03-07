@@ -54,7 +54,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   }
 
   // Get codings/options from valueSet
-  const { codings, serverError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem);
 
   function handleChange(newValue: string) {
     if (codings.length > 0) {
@@ -76,7 +76,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         valueRadio={valueRadio}
         orientation={orientation}
         readOnly={readOnly}
-        serverError={serverError}
+        terminologyError={terminologyError}
         onCheckedChange={handleChange}
       />
     );
@@ -91,7 +91,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
           valueRadio={valueRadio}
           orientation={orientation}
           readOnly={readOnly}
-          serverError={serverError}
+          terminologyError={terminologyError}
           onCheckedChange={handleChange}
         />
       </ItemFieldGrid>

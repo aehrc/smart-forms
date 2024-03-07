@@ -23,18 +23,19 @@ import { StyledFormGroup } from '../Item.styles';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
   codings: Coding[];
   answers: QuestionnaireResponseItemAnswer[];
   orientation: ChoiceItemOrientation;
   readOnly: boolean;
-  serverError: Error | null;
+  terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { codings, answers, orientation, readOnly, serverError, onCheckedChange } = props;
+  const { codings, answers, orientation, readOnly, terminologyError, onCheckedChange } = props;
 
   if (codings.length > 0) {
     return (
@@ -55,12 +56,13 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
     );
   }
 
-  if (serverError) {
+  if (terminologyError.error) {
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server
+          There was an error fetching options from the terminology server for{' '}
+          {terminologyError.answerValueSet}
         </Typography>
       </StyledAlert>
     );

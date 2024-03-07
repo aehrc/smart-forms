@@ -18,7 +18,7 @@
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 
-export const TEXT_FIELD_WIDTH = 300;
+export const TEXT_FIELD_WIDTH = 320;
 
 // Always use this accompanied by the TextField prop fullWidth
 export const StandardTextField = styled(TextField, {
