@@ -205,9 +205,21 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         />
       );
     case 'reference':
-      // FIXME reference item uses the same component as string item
+      // FIXME reference item uses the same component as string item currently
       return (
         <StringItem
+          qItem={qItem}
+          qrItem={qrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    case 'quantity':
+      // FIXME quantity item uses the same component as decimal item currently
+      return (
+        <DecimalItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
