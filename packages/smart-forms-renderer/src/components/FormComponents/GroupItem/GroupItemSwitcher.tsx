@@ -136,6 +136,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <RepeatItem
         qItem={qItem}
         qrItem={qrItem ?? null}
+        groupCardElevation={groupCardElevation + 1}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
       />

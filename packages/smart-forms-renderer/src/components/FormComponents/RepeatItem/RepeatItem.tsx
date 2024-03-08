@@ -39,10 +39,12 @@ interface RepeatItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
+  groupCardElevation: number;
 }
 
 function RepeatItem(props: RepeatItemProps) {
-  const { qItem, qrItem, showMinimalView, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, groupCardElevation, showMinimalView, parentIsReadOnly, onQrItemChange } =
+    props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -104,6 +106,7 @@ function RepeatItem(props: RepeatItemProps) {
               qrItem={repeatAnswerQrItem}
               answer={answer}
               numOfRepeatAnswers={repeatAnswers.length}
+              groupCardElevation={groupCardElevation}
               parentIsReadOnly={parentIsReadOnly}
               showMinimalView={showMinimalView}
               onDeleteAnswer={() => handleDeleteItem(index)}
@@ -132,6 +135,7 @@ function RepeatItem(props: RepeatItemProps) {
                   qrItem={repeatAnswerQrItem}
                   answer={answer}
                   numOfRepeatAnswers={repeatAnswers.length}
+                  groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
                   showMinimalView={showMinimalView}
                   onDeleteAnswer={() => handleDeleteItem(index)}

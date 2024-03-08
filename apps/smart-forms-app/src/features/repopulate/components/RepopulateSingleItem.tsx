@@ -45,6 +45,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
             }
             isRepeated={true}
             isTabled={false}
+            groupCardElevation={1}
             showMinimalView={true}
             onQrItemChange={() => void 0}
           />
@@ -60,6 +61,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
             qrItem={newQRItem}
             isRepeated={true}
             isTabled={false}
+            groupCardElevation={1}
             showMinimalView={true}
             onQrItemChange={() => void 0}
           />
