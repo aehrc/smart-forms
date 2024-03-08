@@ -30,7 +30,7 @@ interface AddItemButtonProps {
 function AddItemButton(props: AddItemButtonProps) {
   const { repeatGroups, readOnly, onAddItem } = props;
 
-  const isDisabled = repeatGroups[repeatGroups.length - 1].qrItem === null || readOnly;
+  const isDisabled = repeatGroups[repeatGroups.length - 1]?.qrItem === null || readOnly;
 
   return (
     <Box display="flex" flexDirection="row-reverse">
