@@ -28,6 +28,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import SingleItemSwitcher from './SingleItemSwitcher';
 import useHidden from '../../../hooks/useHidden';
 import useReadOnly from '../../../hooks/useReadOnly';
+import SingleNestedItems from './SingleNestedItems';
 
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler,
@@ -37,11 +38,20 @@ interface SingleItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
+  groupCardElevation: number;
 }
 
 function SingleItem(props: SingleItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    groupCardElevation,
+    showMinimalView,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const updateEnableWhenItem = useQuestionnaireStore.use.updateEnableWhenItem();
 
@@ -50,10 +60,24 @@ function SingleItem(props: SingleItemProps) {
       if (newQrItem.answer) {
         updateEnableWhenItem(qItem.linkId, newQrItem.answer);
       }
+
+      if (qrItem && qrItem.item && qrItem.item.length > 0) {
+        onQrItemChange({ ...newQrItem, item: qrItem.item });
+      } else {
+        onQrItemChange(newQrItem);
+      }
+    },
+    [updateEnableWhenItem, qItem.linkId, qrItem, onQrItemChange]
+  );
+
+  const handleQrItemChangeWithNestedItems = useCallback(
+    (newQrItem: QuestionnaireResponseItem) => {
       onQrItemChange(newQrItem);
     },
-    [updateEnableWhenItem, onQrItemChange, qItem.linkId]
+    [onQrItemChange]
   );
+
+  const qItemHasNestedItems = !!qItem.item && qItem.item.length > 0;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
@@ -62,15 +86,26 @@ function SingleItem(props: SingleItemProps) {
   }
 
   return (
-    <SingleItemSwitcher
-      qItem={qItem}
-      qrItem={qrItem}
-      isRepeated={isRepeated}
-      isTabled={isTabled}
-      showMinimalView={showMinimalView}
-      parentIsReadOnly={readOnly}
-      onQrItemChange={handleQrItemChange}
-    />
+    <>
+      <SingleItemSwitcher
+        qItem={qItem}
+        qrItem={qrItem}
+        isRepeated={isRepeated}
+        isTabled={isTabled}
+        showMinimalView={showMinimalView}
+        parentIsReadOnly={readOnly}
+        onQrItemChange={handleQrItemChange}
+      />
+      {qItemHasNestedItems ? (
+        <SingleNestedItems
+          qItem={qItem}
+          qrItem={qrItem}
+          groupCardElevation={groupCardElevation}
+          parentIsReadOnly={readOnly}
+          onQrItemChange={handleQrItemChangeWithNestedItems}
+        />
+      ) : null}
+    </>
   );
 }
 

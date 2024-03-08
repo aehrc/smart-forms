@@ -40,6 +40,7 @@ interface RepeatFieldProps
   qrItem: QuestionnaireResponseItem | null;
   answer: QuestionnaireResponseItemAnswer | null;
   numOfRepeatAnswers: number;
+  groupCardElevation: number;
   onDeleteAnswer: () => void;
 }
 
@@ -49,6 +50,7 @@ function RepeatField(props: RepeatFieldProps) {
     qrItem,
     answer,
     numOfRepeatAnswers,
+    groupCardElevation,
     parentIsReadOnly,
     showMinimalView,
     onDeleteAnswer,
@@ -65,6 +67,7 @@ function RepeatField(props: RepeatFieldProps) {
           qrItem={qrItem}
           isRepeated={qItem.repeats ?? false}
           isTabled={false}
+          groupCardElevation={groupCardElevation}
           showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}

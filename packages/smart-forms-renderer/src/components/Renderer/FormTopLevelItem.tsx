@@ -130,6 +130,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         qrItem={topLevelQRItem}
         isRepeated={false}
         isTabled={false}
+        groupCardElevation={1}
         parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
       />

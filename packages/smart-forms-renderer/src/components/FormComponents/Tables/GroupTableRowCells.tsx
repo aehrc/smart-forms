@@ -70,6 +70,7 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
               qrItem={qrItem ?? null}
               isRepeated={true}
               isTabled={true}
+              groupCardElevation={1}
               showMinimalView={true}
               parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={handleQrRowItemChange}
