@@ -90,7 +90,7 @@
     "@types/fhir": "^0.0.38",
     "@types/he": "^1.2.2",
     "@types/jest": "^29.5.7",
-    "@types/lodash.clonedeep": "^4.5.7",
+    "@types/lodash.clonedeep": "^4.5.9",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.filter": "^4.6.7",
     "@types/lodash.isequal": "^4.5.8",

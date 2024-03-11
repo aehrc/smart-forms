@@ -69,7 +69,7 @@
     "@testing-library/react-hooks": "^7.0.2",
     "@types/deep-diff": "^1.0.4",
     "@types/jest": "^29.5.7",
-    "@types/lodash.clonedeep": "^4.5.7",
+    "@types/lodash.clonedeep": "^4.5.9",
     "@types/lodash.debounce": "^4.0.7",
     "@types/react": ">=17.0.0",
     "@types/react-beautiful-dnd": "^13.1.7",
