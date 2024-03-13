@@ -31,7 +31,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.10.8",
     "@fontsource/material-icons": "^5.0.7",
-    "@fontsource/roboto": "^5.0.8",
+    "@fontsource/roboto": "^5.0.12",
     "@iconify/react": "^4.1.1",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.15.13",
