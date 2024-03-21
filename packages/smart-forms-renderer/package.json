@@ -55,7 +55,7 @@
     "@babel/core": "^7.23.3",
     "@storybook/addon-essentials": "^7.4.6",
     "@storybook/addon-interactions": "^7.4.6",
-    "@storybook/addon-links": "^7.5.2",
+    "@storybook/addon-links": "^8.0.3",
     "@storybook/addon-onboarding": "^8.0.0",
     "@storybook/addon-styling": "^1.3.7",
     "@storybook/blocks": "^7.5.2",
