@@ -70,14 +70,14 @@ export function initialiseQuestionnaireResponse(
   }
 
   if (!questionnaireResponse.questionnaire) {
-    questionnaireResponse.questionnaire = setQuestionnaireReference(questionnaire);
+    questionnaireResponse.questionnaire = createQuestionnaireReference(questionnaire);
   }
 
   return questionnaireResponse;
 }
 
-function setQuestionnaireReference(questionnaire: Questionnaire) {
-  // Use {url}|{version} - the ideal way
+function createQuestionnaireReference(questionnaire: Questionnaire) {
+  // Use {url}|{version}
   if (questionnaire.url) {
     let questionnaireReference = questionnaire.url;
     if (questionnaire.version) {

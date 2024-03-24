@@ -93,10 +93,24 @@ function DebugResponse(props: Props) {
         </Box>
       </Stack>
 
-      {questionnaireSelected ? <pre>{JSON.stringify(questionnaire, null, 2)}</pre> : null}
-      {questionnaireResponseSelected ? (
-        <pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>
+      {questionnaireSelected ? (
+        <JSONTree
+          data={questionnaire}
+          shouldExpandNodeInitially={(_keyName, _data, level) => level < 2}
+          theme={jsonTreeTheme}
+          invertTheme
+        />
       ) : null}
+
+      {questionnaireResponseSelected ? (
+        <JSONTree
+          data={questionnaireResponse}
+          shouldExpandNodeInitially={(_keyName, _data, level) => level < 2}
+          theme={jsonTreeTheme}
+          invertTheme
+        />
+      ) : null}
+
       {variablesSelected ? (
         <JSONTree
           data={fhirPathContext}
