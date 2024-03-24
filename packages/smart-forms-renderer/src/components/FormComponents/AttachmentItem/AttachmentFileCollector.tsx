@@ -18,7 +18,6 @@
 import type { ChangeEvent } from 'react';
 import React, { memo, useCallback } from 'react';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
-import { useSnackbar } from 'notistack';
 import AttachmentFileDropBox from './AttachmentFileDropBox';
 import Iconify from '../../Iconify/Iconify';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
@@ -33,19 +32,10 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
 ) {
   const { uploadedFile, isTabled, onUploadFile } = props;
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const handleFileDrop = useCallback(
     (item: { files: any[] }) => {
       if (item) {
         const files = item.files;
-
-        if (files.length > 1) {
-          enqueueSnackbar('Only one file allowed', {
-            variant: 'warning',
-            preventDuplicate: true
-          });
-        }
 
         if (files[0] instanceof File) {
           const file = files[0];
@@ -54,7 +44,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
         }
       }
     },
-    [onUploadFile, enqueueSnackbar]
+    [onUploadFile]
   );
 
   function handleAttachFile(event: ChangeEvent<HTMLInputElement>) {
