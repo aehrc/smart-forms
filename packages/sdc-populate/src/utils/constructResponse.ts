@@ -42,6 +42,7 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { findInAnswerOptions } from './answerOption';
 import { getItemPopulationContextName } from './readPopulationExpressions';
+import { createQuestionnaireReference } from './createQuestionnaireReference';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -117,7 +118,7 @@ export async function constructResponse(
     )
     .filter((item): item is QuestionnaireResponseItem => item !== null);
 
-  questionnaireResponse.questionnaire = questionnaire.url;
+  questionnaireResponse.questionnaire = createQuestionnaireReference(questionnaire);
   questionnaireResponse.item = updatedTopLevelQRItems;
   questionnaireResponse.subject = subject;
 
