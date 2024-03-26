@@ -90,9 +90,9 @@ export function updateQrItemsInGroup(
   questionnaireResponseOrQrItem: QuestionnaireResponseItem | QuestionnaireResponse,
   qItemsIndexMap: Record<string, number>
 ): void {
-  const qrItems = questionnaireResponseOrQrItem.item;
+  let qrItems = questionnaireResponseOrQrItem.item;
   if (!qrItems) {
-    return;
+    qrItems = [];
   }
 
   // Get actual sequence indexes of qrItems present within a qrGroup
