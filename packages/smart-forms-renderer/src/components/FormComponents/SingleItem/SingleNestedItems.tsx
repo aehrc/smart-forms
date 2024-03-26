@@ -47,7 +47,6 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    console.log(updatedQrGroup);
     onQrItemChange(updatedQrGroup);
   }
 

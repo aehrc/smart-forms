@@ -245,13 +245,24 @@ export function checkItemIsEnabled(enableWhenItemProperties: EnableWhenItemPrope
 
   enableWhenItemProperties.linked.forEach((linkedItem) => {
     if (linkedItem.answer && linkedItem.answer.length > 0) {
-      linkedItem.answer.forEach((answer) => {
-        checkedIsEnabledItems.push(isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, answer));
-      });
+      for (const answer of linkedItem.answer) {
+        const isEnabledForThisLinkedItem = isEnabledAnswerTypeSwitcher(
+          linkedItem.enableWhen,
+          answer
+        );
+
+        // In a repeat item, if at least one answer satisfies the condition, the item is enabled
+        if (isEnabledForThisLinkedItem) {
+          checkedIsEnabledItems.push(isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, answer));
+          break;
+        }
+      }
     }
   });
 
-  if (checkedIsEnabledItems.length === 0) return false;
+  if (checkedIsEnabledItems.length === 0) {
+    return false;
+  }
 
   return enableWhenItemProperties.enableBehavior === 'any'
     ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
