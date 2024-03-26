@@ -40,9 +40,9 @@ import moment from 'moment';
 import dayjs from 'dayjs';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { findInAnswerOptions } from './answerOption';
 import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
+import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -256,6 +256,13 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
     }
   }
 
+  // Populate answers from item.initial if present
+  if (qItem.initial) {
+    populatedAnswers = qItem.initial
+      .map((initial) => parseItemInitialToAnswer(initial))
+      .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
+  }
+
   if (qrItems.length > 0) {
     return {
       linkId: qItem.linkId,
@@ -323,6 +330,18 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
       };
     }
   }
+
+  // Populate answers from item.initial if present
+  if (qItem.initial) {
+    return {
+      linkId: qItem.linkId,
+      answer: qItem.initial
+        .map((initial) => parseItemInitialToAnswer(initial))
+        .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null),
+      ...(qItem.text ? { text: qItem.text } : {})
+    };
+  }
+
   return null;
 }
 
@@ -390,48 +409,6 @@ function itemIsHidden(item: QuestionnaireItem): boolean {
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden' &&
       extension.valueBoolean === true
   );
-}
-
-function parseValueToAnswer(qItem: QuestionnaireItem, value: any): QuestionnaireResponseItemAnswer {
-  if (qItem.answerOption) {
-    const answerOption = findInAnswerOptions(qItem.answerOption, value);
-
-    if (answerOption) {
-      return answerOption;
-    }
-  }
-
-  if (typeof value === 'boolean' && qItem.type === 'boolean') {
-    return { valueBoolean: value };
-  }
-
-  if (typeof value === 'number') {
-    if (qItem.type === 'decimal') {
-      return { valueDecimal: value };
-    }
-    if (qItem.type === 'integer') {
-      return { valueInteger: value };
-    }
-  }
-
-  if (typeof value === 'object') {
-    return { valueCoding: value };
-  }
-
-  // Value is string at this point
-  if (qItem.type === 'date' && checkIsDateTime(value)) {
-    return { valueDate: convertDateTimeToDate(value) };
-  }
-
-  if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
-    return { valueDateTime: value };
-  }
-
-  if (qItem.type === 'time' && checkIsTime(value)) {
-    return { valueTime: value };
-  }
-
-  return { valueString: value };
 }
 
 /**
