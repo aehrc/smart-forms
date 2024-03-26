@@ -101,7 +101,9 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox
+      data-test="q-item-choice-autocomplete-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceAutocompleteField
           qItem={qItem}

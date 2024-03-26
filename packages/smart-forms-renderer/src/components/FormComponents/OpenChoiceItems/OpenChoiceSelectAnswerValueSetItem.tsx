@@ -88,7 +88,9 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   }
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox
+      data-test="q-item-open-choice-select-answer-value-set-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceSelectAnswerValueSetField
           qItem={qItem}

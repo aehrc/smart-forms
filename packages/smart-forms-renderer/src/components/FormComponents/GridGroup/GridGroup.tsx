@@ -99,7 +99,11 @@ function GridGroup(props: GridGroupProps) {
   }
 
   return (
-    <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
+    <QGroupContainerBox
+      cardElevation={groupCardElevation}
+      isRepeated={false}
+      py={3}
+      data-linkid={qItem.linkId}>
       {qItem.text ? (
         <>
           <Typography

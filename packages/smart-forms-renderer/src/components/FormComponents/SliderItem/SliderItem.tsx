@@ -88,7 +88,7 @@ function SliderItem(props: SliderItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-slider-box">
+    <FullWidthFormComponentBox data-test="q-item-slider-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <Box px={4}>
           <SliderField

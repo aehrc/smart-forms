@@ -82,7 +82,7 @@ function DateTimeItem(props: DateTimeItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-date-time-box">
+    <FullWidthFormComponentBox data-test="q-item-date-time-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <DateTimeField
           value={dateTimeDayJs}

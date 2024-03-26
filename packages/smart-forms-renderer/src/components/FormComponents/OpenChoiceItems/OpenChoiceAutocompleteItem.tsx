@@ -130,7 +130,9 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox
+      data-test="q-item-open-choice-autocomplete-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceAutocompleteField
           qItem={qItem}

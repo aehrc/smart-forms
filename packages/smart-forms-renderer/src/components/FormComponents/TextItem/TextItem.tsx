@@ -104,7 +104,7 @@ function TextItem(props: TextItemProps) {
     );
   }
   return (
-    <FullWidthFormComponentBox data-test="q-item-text-box">
+    <FullWidthFormComponentBox data-test="q-item-text-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <TextField
           linkId={qItem.linkId}

@@ -103,7 +103,9 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-dropdown-answer-value-set-box">
+    <FullWidthFormComponentBox
+      data-test="q-item-choice-dropdown-answer-value-set-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceSelectAnswerValueSetFields
           qItem={qItem}

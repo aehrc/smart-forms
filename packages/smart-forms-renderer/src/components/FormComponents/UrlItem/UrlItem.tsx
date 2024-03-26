@@ -93,7 +93,7 @@ function UrlItem(props: UrlItemProps) {
     );
   }
   return (
-    <FullWidthFormComponentBox data-test="q-item-string-box">
+    <FullWidthFormComponentBox data-test="q-item-string-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <UrlField
           linkId={qItem.linkId}

@@ -119,7 +119,7 @@ function RepeatItem(props: RepeatItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-repeat-box">
+    <FullWidthFormComponentBox data-test="q-item-repeat-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <TransitionGroup>
           {repeatAnswers.map(({ nanoId, answer }, index) => {
