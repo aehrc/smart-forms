@@ -39,9 +39,6 @@ function BaseRenderer() {
 
   function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
     const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
-    if (!updatedResponse.item || updatedResponse.item.length === 0) {
-      return;
-    }
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
@@ -52,9 +49,6 @@ function BaseRenderer() {
 
   function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
     const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
-    if (!updatedResponse.item || updatedResponse.item.length === 0) {
-      return;
-    }
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
