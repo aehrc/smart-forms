@@ -96,7 +96,7 @@ function DebugResponse(props: Props) {
       {questionnaireSelected ? (
         <JSONTree
           data={questionnaire}
-          shouldExpandNodeInitially={(_keyName, _data, level) => level < 2}
+          shouldExpandNodeInitially={() => true}
           theme={jsonTreeTheme}
           invertTheme
         />
@@ -105,7 +105,7 @@ function DebugResponse(props: Props) {
       {questionnaireResponseSelected ? (
         <JSONTree
           data={questionnaireResponse}
-          shouldExpandNodeInitially={(_keyName, _data, level) => level < 2}
+          shouldExpandNodeInitially={() => true}
           theme={jsonTreeTheme}
           invertTheme
         />
@@ -114,7 +114,7 @@ function DebugResponse(props: Props) {
       {variablesSelected ? (
         <JSONTree
           data={fhirPathContext}
-          shouldExpandNodeInitially={(_keyName, _data, level) => level < 2}
+          shouldExpandNodeInitially={() => true}
           theme={jsonTreeTheme}
           invertTheme
         />
