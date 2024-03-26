@@ -100,7 +100,9 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-value-set-box">
+    <FullWidthFormComponentBox
+      data-test="q-item-choice-checkbox-answer-value-set-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceCheckboxAnswerValueSetFields
           codings={codings}

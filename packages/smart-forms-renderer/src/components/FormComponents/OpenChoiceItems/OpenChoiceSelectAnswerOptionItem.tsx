@@ -104,7 +104,9 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-open-choice-select-answer-option-box">
+    <FullWidthFormComponentBox
+      data-test="q-item-open-choice-select-answer-option-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceSelectAnswerOptionField
           qItem={qItem}

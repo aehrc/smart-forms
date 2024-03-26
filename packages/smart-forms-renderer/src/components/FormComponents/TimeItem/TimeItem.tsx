@@ -78,7 +78,7 @@ function TimeItem(props: TimeItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-time-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <TimeField
           value={timeDayJs}

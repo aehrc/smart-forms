@@ -116,7 +116,7 @@ function CustomDateItem(props: CustomDateItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-date-box">
+    <FullWidthFormComponentBox data-test="q-item-date-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <CustomDateField
           linkId={qItem.linkId}

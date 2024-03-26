@@ -114,7 +114,7 @@ function IntegerItem(props: IntegerItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-integer-box">
+    <FullWidthFormComponentBox data-test="q-item-integer-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}

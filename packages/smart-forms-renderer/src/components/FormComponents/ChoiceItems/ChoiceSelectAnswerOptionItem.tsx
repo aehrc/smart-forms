@@ -77,7 +77,9 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-select-answer-option-box">
+    <FullWidthFormComponentBox
+      data-test="q-item-choice-select-answer-option-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceSelectAnswerOptionFields
           qItem={qItem}

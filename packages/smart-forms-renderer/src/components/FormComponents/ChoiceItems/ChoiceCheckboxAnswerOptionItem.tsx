@@ -95,7 +95,9 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-checkbox-answer-option-box">
+    <FullWidthFormComponentBox
+      data-test="q-item-choice-checkbox-answer-option-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceCheckboxAnswerValueSetFields
           qItem={qItem}

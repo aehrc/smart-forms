@@ -71,7 +71,9 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-choice-radio-answer-option-box">
+    <FullWidthFormComponentBox
+      data-test="q-item-choice-radio-answer-option-box"
+      data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceRadioAnswerOptionFields
           qItem={qItem}

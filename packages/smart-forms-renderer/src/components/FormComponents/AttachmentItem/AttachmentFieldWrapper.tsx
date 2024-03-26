@@ -68,7 +68,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-attachment-box">
+    <FullWidthFormComponentBox data-test="q-item-attachment-box" data-linkid={qItem.linkId}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <AttachmentField
           linkId={qItem.linkId}

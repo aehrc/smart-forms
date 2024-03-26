@@ -34,7 +34,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox>
+    <FullWidthFormComponentBox data-test="q-item-display-box" data-linkid={qItem.linkId}>
       <LabelWrapper qItem={qItem} readOnly={false} />
     </FullWidthFormComponentBox>
   );

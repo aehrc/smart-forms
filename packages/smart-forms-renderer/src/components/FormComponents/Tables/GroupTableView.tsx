@@ -112,7 +112,11 @@ function GroupTableView(props: GroupTableViewProps) {
   }
 
   return (
-    <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={3}>
+    <QGroupContainerBox
+      cardElevation={groupCardElevation}
+      isRepeated={false}
+      py={3}
+      data-linkid={qItem.linkId}>
       {groupCardElevation !== 1 ? (
         <>
           <Typography
