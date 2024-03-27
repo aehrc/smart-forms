@@ -30,6 +30,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import SliderField from './SliderField';
 import useSliderExtensions from '../../../hooks/useSliderExtensions';
 import Box from '@mui/material/Box';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface SliderItemProps
   extends PropsWithQrItemChangeHandler,
@@ -42,6 +43,8 @@ interface SliderItemProps
 
 function SliderItem(props: SliderItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { minValue, maxValue, stepValue, minLabel, maxLabel } = useSliderExtensions(qItem);
@@ -88,7 +91,10 @@ function SliderItem(props: SliderItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-slider-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-slider-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <Box px={4}>
           <SliderField

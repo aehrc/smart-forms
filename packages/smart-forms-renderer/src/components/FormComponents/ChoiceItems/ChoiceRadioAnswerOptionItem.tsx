@@ -29,6 +29,7 @@ import type {
 import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -41,6 +42,8 @@ interface ChoiceRadioAnswerOptionItemProps
 
 function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
@@ -73,7 +76,8 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   return (
     <FullWidthFormComponentBox
       data-test="q-item-choice-radio-answer-option-box"
-      data-linkid={qItem.linkId}>
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceRadioAnswerOptionFields
           qItem={qItem}

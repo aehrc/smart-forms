@@ -29,6 +29,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import BooleanField from './BooleanField';
 import Box from '@mui/material/Box';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler,
@@ -41,6 +42,8 @@ interface BooleanItemProps
 
 function BooleanItem(props: BooleanItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -72,7 +75,10 @@ function BooleanItem(props: BooleanItemProps) {
     );
   }
   return (
-    <FullWidthFormComponentBox data-test="q-item-boolean-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-boolean-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
       </ItemFieldGrid>

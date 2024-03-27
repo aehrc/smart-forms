@@ -58,6 +58,7 @@ interface QuestionnaireStoreType {
   processedValueSetUrls: Record<string, string>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
+  focusedLinkId: string;
   readOnly: boolean;
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
@@ -77,6 +78,7 @@ interface QuestionnaireStoreType {
     populatedResponse: QuestionnaireResponse,
     persistTabIndex?: boolean
   ) => QuestionnaireResponse;
+  onFocusLinkId: (linkId: string) => void;
 }
 
 export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
@@ -96,6 +98,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   processedValueSetUrls: {},
   cachedValueSetCodings: {},
   fhirPathContext: {},
+  focusedLinkId: '',
   readOnly: false,
   buildSourceQuestionnaire: async (
     questionnaire,
@@ -269,7 +272,11 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     }));
 
     return updatedResponse;
-  }
+  },
+  onFocusLinkId: (linkId: string) =>
+    set(() => ({
+      focusedLinkId: linkId
+    }))
 }));
 
 export const useQuestionnaireStore = createSelectors(questionnaireStore);

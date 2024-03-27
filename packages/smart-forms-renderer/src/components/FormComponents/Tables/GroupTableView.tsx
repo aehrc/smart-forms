@@ -37,6 +37,7 @@ import type {
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
 import Checkbox from '@mui/material/Checkbox';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface GroupTableViewProps
   extends PropsWithShowMinimalViewAttribute,
@@ -74,6 +75,8 @@ function GroupTableView(props: GroupTableViewProps) {
     onSelectAll,
     onReorderRows
   } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   if (showMinimalView) {
     return (
@@ -116,7 +119,8 @@ function GroupTableView(props: GroupTableViewProps) {
       cardElevation={groupCardElevation}
       isRepeated={false}
       py={3}
-      data-linkid={qItem.linkId}>
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       {groupCardElevation !== 1 ? (
         <>
           <Typography

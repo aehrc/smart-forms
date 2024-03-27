@@ -32,6 +32,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import UrlField from './UrlField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface UrlItemProps
   extends PropsWithQrItemChangeHandler,
@@ -43,6 +44,8 @@ interface UrlItemProps
 }
 function UrlItem(props: UrlItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
@@ -93,7 +96,10 @@ function UrlItem(props: UrlItemProps) {
     );
   }
   return (
-    <FullWidthFormComponentBox data-test="q-item-string-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-string-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <UrlField
           linkId={qItem.linkId}
