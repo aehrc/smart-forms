@@ -20,36 +20,6 @@ import { getChoiceControlType } from './choice';
 import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { getOpenChoiceControlType } from './openChoice';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
-import { structuredDataCapture } from 'fhir-sdc-helpers';
-
-interface isHiddenParams {
-  questionnaireItem: QuestionnaireItem;
-  enableWhenIsActivated: boolean;
-  enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
-}
-
-/**
- * Test the given QItem on a series of checks to verify if the item should be displayed
- * Check if qItem has hidden attribute
- * Check if qItem fulfilled its enableWhen criteria
- *
- * @author Sean Fong
- */
-export function isHidden(params: isHiddenParams): boolean {
-  const { questionnaireItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } =
-    params;
-  if (structuredDataCapture.getHidden(questionnaireItem)) {
-    return true;
-  }
-
-  return isHiddenByEnableWhens({
-    linkId: questionnaireItem.linkId,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  });
-}
 
 interface isHiddenByEnableWhensParams {
   linkId: string;
@@ -58,7 +28,7 @@ interface isHiddenByEnableWhensParams {
   enableWhenExpressions: Record<string, EnableWhenExpression>;
 }
 
-export function isHiddenByEnableWhens(params: isHiddenByEnableWhensParams): boolean {
+export function isHiddenByEnableWhen(params: isHiddenByEnableWhensParams): boolean {
   const { linkId, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
 
   if (enableWhenIsActivated) {

@@ -33,7 +33,7 @@ export async function requestPopulate(
     authToken: fhirClient.state.tokenResponse!.access_token!
   };
 
-  const populatePromise = IS_IN_APP_POPULATE
+  const populatePromise: Promise<any> = IS_IN_APP_POPULATE
     ? populate(inputParameters, fetchResourceCallback, requestConfig)
     : fhirClient.request({
         url: 'Questionnaire/$populate',
