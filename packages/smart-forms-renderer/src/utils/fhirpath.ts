@@ -90,10 +90,13 @@ export function createFhirPathContext(
   variablesFhirPath: Record<string, Expression[]>,
   existingFhirPathContext: Record<string, any>
 ): Record<string, any> {
-  let fhirPathContext: Record<string, any> = { resource: questionnaireResponse };
+  let fhirPathContext = {};
   if (Object.keys(existingFhirPathContext).length > 0) {
     fhirPathContext = { ...fhirPathContext, ...existingFhirPathContext };
   }
+
+  // Add latest resource to fhirPathContext
+  fhirPathContext = { ...fhirPathContext, resource: questionnaireResponse };
 
   if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) {
     return fhirPathContext;
