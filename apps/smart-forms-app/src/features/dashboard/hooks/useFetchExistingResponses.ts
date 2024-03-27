@@ -42,11 +42,15 @@ function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
 
   // Have different questionnaireRef config due to SMART Health IT limitation
   if (smartClient) {
-    const questionnaireRef = smartClient.state.serverUrl.includes(
-      'https://launch.smarthealthit.org/v/r4/fhir'
-    )
-      ? `Questionnaire/${questionnaire?.id}-SMARTcopy`
-      : questionnaire?.url;
+    let questionnaireRef = '';
+    if (smartClient.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
+      questionnaireRef = `Questionnaire/${questionnaire?.id}-SMARTcopy`;
+    } else {
+      questionnaireRef = questionnaire?.url ?? '';
+      if (questionnaire?.version) {
+        questionnaireRef += `|${questionnaire?.version}`;
+      }
+    }
 
     if (questionnaireRef) {
       questionnaireRefParam = `questionnaire=${questionnaireRef}&`;
