@@ -34,6 +34,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -45,6 +46,8 @@ interface StringItemProps
 }
 function StringItem(props: StringItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
@@ -106,7 +109,10 @@ function StringItem(props: StringItemProps) {
     );
   }
   return (
-    <FullWidthFormComponentBox data-test="q-item-string-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-string-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <StringField
           linkId={qItem.linkId}

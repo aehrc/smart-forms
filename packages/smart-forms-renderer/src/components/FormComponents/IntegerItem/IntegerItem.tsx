@@ -35,6 +35,7 @@ import { parseValidInteger } from '../../../utils/parseInputs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useNumberInput from '../../../hooks/useNumberInput';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface IntegerItemProps
   extends PropsWithQrItemChangeHandler,
@@ -47,6 +48,8 @@ interface IntegerItemProps
 
 function IntegerItem(props: IntegerItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
@@ -114,7 +117,10 @@ function IntegerItem(props: IntegerItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-integer-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-integer-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}

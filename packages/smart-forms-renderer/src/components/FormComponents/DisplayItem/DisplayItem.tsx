@@ -20,6 +20,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import { isSpecificItemControl } from '../../../utils';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface DisplayItemProps {
   qItem: QuestionnaireItem;
@@ -28,13 +29,18 @@ interface DisplayItemProps {
 const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
   const { qItem } = props;
 
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
+
   const isContextDisplay = isSpecificItemControl(qItem, 'context-display');
   if (isContextDisplay) {
     return null;
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-display-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-display-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <LabelWrapper qItem={qItem} readOnly={false} />
     </FullWidthFormComponentBox>
   );

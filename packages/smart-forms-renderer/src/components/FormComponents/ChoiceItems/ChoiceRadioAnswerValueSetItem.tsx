@@ -30,6 +30,7 @@ import type {
 import ChoiceRadioAnswerValueSetFields from './ChoiceRadioAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -42,6 +43,8 @@ interface ChoiceRadioAnswerValueSetItemProps
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
   const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -85,7 +88,8 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   return (
     <FullWidthFormComponentBox
       data-test="q-item-choice-radio-answer-value-set-box"
-      data-linkid={qItem.linkId}>
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceRadioAnswerValueSetFields
           qItem={qItem}

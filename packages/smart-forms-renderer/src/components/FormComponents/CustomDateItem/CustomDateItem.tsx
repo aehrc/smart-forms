@@ -35,6 +35,7 @@ import {
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import useDateValidation from '../../../hooks/useDateValidation';
 import CustomDateField from './customDateTimePicker/CustomDateField';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface CustomDateItemProps
   extends PropsWithQrItemChangeHandler,
@@ -47,6 +48,8 @@ interface CustomDateItemProps
 
 function CustomDateItem(props: CustomDateItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayPrompt, entryFormat } = useRenderingExtensions(qItem);
@@ -116,7 +119,10 @@ function CustomDateItem(props: CustomDateItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-date-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-date-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <CustomDateField
           linkId={qItem.linkId}

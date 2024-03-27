@@ -39,6 +39,7 @@ import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface DecimalItemProps
   extends PropsWithQrItemChangeHandler,
@@ -51,6 +52,8 @@ interface DecimalItemProps
 
 function DecimalItem(props: DecimalItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
@@ -126,7 +129,10 @@ function DecimalItem(props: DecimalItemProps) {
   }
 
   return (
-    <FullWidthFormComponentBox data-test="q-item-decimal-box" data-linkid={qItem.linkId}>
+    <FullWidthFormComponentBox
+      data-test="q-item-decimal-box"
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <DecimalField
           linkId={qItem.linkId}

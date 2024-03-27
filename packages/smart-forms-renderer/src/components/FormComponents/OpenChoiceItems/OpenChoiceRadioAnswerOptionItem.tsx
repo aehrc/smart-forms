@@ -31,6 +31,7 @@ import type {
 import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -43,6 +44,8 @@ interface OpenChoiceRadioAnswerOptionItemProps
 
 function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
   const { qItem, qrItem, orientation, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const openLabelText = getOpenLabelText(qItem);
@@ -118,7 +121,8 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   return (
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-radio-answer-option-box"
-      data-linkid={qItem.linkId}>
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceRadioAnswerOptionFields
           qItem={qItem}

@@ -30,6 +30,7 @@ import type {
 import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface ChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -42,6 +43,8 @@ interface ChoiceSelectAnswerOptionItemProps
 
 function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -79,7 +82,8 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   return (
     <FullWidthFormComponentBox
       data-test="q-item-choice-select-answer-option-box"
-      data-linkid={qItem.linkId}>
+      data-linkid={qItem.linkId}
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceSelectAnswerOptionFields
           qItem={qItem}
