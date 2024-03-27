@@ -79,7 +79,6 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         loadingText={'Fetching results...'}
         clearOnEscape
         freeSolo
-        autoHighlight
         sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 220, flexGrow: 1 }}
         onChange={(_, newValue) => onValueChange(newValue)}
         filterOptions={(x) => x}
@@ -103,11 +102,12 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                   {params.InputProps.startAdornment}
                 </>
               ),
+              // Warning indicator should not show up in open-choice autocomplete
               endAdornment: (
                 <>
                   {loading ? (
                     <CircularProgress color="inherit" size={16} />
-                  ) : feedback ? (
+                  ) : feedback && feedback.color !== 'warning' ? (
                     <Fade in={!!feedback} timeout={300}>
                       <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
                         {
