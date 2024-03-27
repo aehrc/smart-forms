@@ -304,10 +304,6 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
 
   const { initialExpressions } = populationExpressions;
 
-  if (itemIsHidden(qItem)) {
-    return null;
-  }
-
   // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
   if (initialExpression) {
@@ -401,14 +397,6 @@ function getAnswerValues(
   });
 
   return { newValues, expandRequired };
-}
-
-function itemIsHidden(item: QuestionnaireItem): boolean {
-  return !!item.extension?.find(
-    (extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden' &&
-      extension.valueBoolean === true
-  );
 }
 
 /**
@@ -511,11 +499,6 @@ function constructRepeatGroupInstances(
     };
 
     for (const childItem of qRepeatGroupParent.item) {
-      // Skip if item is hidden
-      if (itemIsHidden(childItem)) {
-        continue;
-      }
-
       // Populate answers from initialExpressions
       const initialExpression = initialExpressions[childItem.linkId];
       if (initialExpression) {

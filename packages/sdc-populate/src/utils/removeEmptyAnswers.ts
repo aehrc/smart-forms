@@ -21,7 +21,6 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 export function removeEmptyAnswersFromResponse(
   questionnaire: Questionnaire,
@@ -62,11 +61,6 @@ function removeEmptyAnswersFromItemRecursive(
 
   // Process group items
   if (qItems && qItems.length > 0) {
-    // Return nothing if corresponding qItem is hidden
-    if (structuredDataCapture.getHidden(qItem)) {
-      return null;
-    }
-
     if (qrItems && qrItems.length > 0) {
       const newQrItems: QuestionnaireResponseItem[] = [];
 
@@ -108,18 +102,14 @@ function removeEmptyAnswersFromItemRecursive(
     }
 
     // Also perform checks if answer exists
-    return answerIsEmpty(qItem, qrItem) ? null : qrItem;
+    return answerIsEmpty(qrItem) ? null : qrItem;
   }
 
   // Process non-group items
-  return answerIsEmpty(qItem, qrItem) ? null : { ...qrItem };
+  return answerIsEmpty(qrItem) ? null : { ...qrItem };
 }
 
-function answerIsEmpty(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem) {
-  if (structuredDataCapture.getHidden(qItem)) {
-    return true;
-  }
-
+function answerIsEmpty(qrItem: QuestionnaireResponseItem) {
   if (!qrItem.answer) {
     return true;
   }

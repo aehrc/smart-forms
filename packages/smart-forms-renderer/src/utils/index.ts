@@ -16,4 +16,4 @@
  */
 
 export { isSpecificItemControl } from './itemControl';
-export { isRepeatItemAndNotCheckbox, isHidden } from './qItem';
+export { isRepeatItemAndNotCheckbox } from './qItem';

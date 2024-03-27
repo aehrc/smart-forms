@@ -17,7 +17,7 @@
 
 import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
-import { isHiddenByEnableWhens } from '../utils/qItem';
+import { isHiddenByEnableWhen } from '../utils/qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 function useHidden(qItem: QuestionnaireItem): boolean {
@@ -29,7 +29,7 @@ function useHidden(qItem: QuestionnaireItem): boolean {
     return true;
   }
 
-  return isHiddenByEnableWhens({
+  return isHiddenByEnableWhen({
     linkId: qItem.linkId,
     enableWhenIsActivated,
     enableWhenItems,

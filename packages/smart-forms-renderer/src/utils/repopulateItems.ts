@@ -27,7 +27,7 @@ import { containsTabs, isTabContainer } from './tabs';
 import { getShortText, isSpecificItemControl } from './itemControl';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
-import { isHidden } from './qItem';
+import { isHiddenByEnableWhen } from './qItem';
 
 export interface ItemToRepopulate {
   qItem: QuestionnaireItem | null;
@@ -162,8 +162,8 @@ function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursivePara
 
   // Return nothing if corresponding qItem is hidden
   if (
-    isHidden({
-      questionnaireItem: qItem,
+    isHiddenByEnableWhen({
+      linkId: qItem.linkId,
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions
@@ -300,8 +300,8 @@ function getGridTableToRepopulate(params: getGridTableToRepopulateParams) {
   const gridChildQRItemsToRepopulate = gridChildQItems
     .map((qItem, index) => {
       if (
-        isHidden({
-          questionnaireItem: qItem,
+        isHiddenByEnableWhen({
+          linkId: qItem.linkId,
           enableWhenIsActivated,
           enableWhenItems,
           enableWhenExpressions

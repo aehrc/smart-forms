@@ -24,7 +24,7 @@ import type {
 } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
-import { isHidden } from './qItem';
+import { isHiddenByEnableWhen } from './qItem';
 import { getRegexValidation } from './itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
@@ -121,8 +121,8 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
   } = params;
 
   if (
-    isHidden({
-      questionnaireItem: qItem,
+    isHiddenByEnableWhen({
+      linkId: qItem.linkId,
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions

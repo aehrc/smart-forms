@@ -19,7 +19,7 @@ import type { Tabs } from '../interfaces/tab.interface';
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { isSpecificItemControl } from './itemControl';
-import { isHidden, isHiddenByEnableWhens } from './qItem';
+import { isHiddenByEnableWhen } from './qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 export function getFirstVisibleTab(
@@ -154,7 +154,7 @@ export function constructTabsWithVisibility(
   const { tabs, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
 
   return Object.entries(tabs).map(([linkId]) => {
-    const isVisible = !isHiddenByEnableWhens({
+    const isVisible = !isHiddenByEnableWhen({
       linkId,
       enableWhenIsActivated,
       enableWhenItems,
@@ -258,12 +258,13 @@ export function isTabHidden(params: IsTabHiddenParams): boolean {
 
   if (
     !isTab ||
-    isHidden({
-      questionnaireItem: qItem,
+    isHiddenByEnableWhen({
+      linkId: qItem.linkId,
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions
-    })
+    }) ||
+    structuredDataCapture.getHidden(qItem)
   ) {
     return true;
   }
@@ -272,15 +273,17 @@ export function isTabHidden(params: IsTabHiddenParams): boolean {
     const completedDisplayItem = contextDisplayItems.find(
       (contextDisplayItem) => contextDisplayItem.text === 'Complete'
     );
-    if (
-      completedDisplayItem &&
-      !isHidden({
-        questionnaireItem: completedDisplayItem,
-        enableWhenIsActivated,
-        enableWhenItems,
-        enableWhenExpressions
-      })
-    ) {
+    const isHidden =
+      (completedDisplayItem &&
+        isHiddenByEnableWhen({
+          linkId: completedDisplayItem.linkId,
+          enableWhenIsActivated,
+          enableWhenItems,
+          enableWhenExpressions
+        })) ||
+      structuredDataCapture.getHidden(completedDisplayItem);
+
+    if (!isHidden) {
       return true;
     }
   }
