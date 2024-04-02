@@ -19,9 +19,10 @@ import type { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fh
 import type { CalculatedExpression } from '../../interfaces/calculatedExpression.interface';
 import type {
   EnableWhenExpression,
-  EnableWhenItemProperties,
-  EnableWhenLinkedItem
-} from '../../interfaces/enableWhen.interface';
+  EnableWhenLinkedItem,
+  RepeatEnableWhenItemProperties,
+  SingleEnableWhenItemProperties
+} from '../../interfaces';
 import type { AnswerExpression } from '../../interfaces/answerExpression.interface';
 import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
 import { getAnswerExpression } from '../itemControl';
@@ -31,7 +32,7 @@ import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables
 
 interface ReturnParamsRecursive {
   variables: Variables;
-  enableWhenItems: Record<string, EnableWhenItemProperties>;
+  enableWhenItems: Record<string, SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties>;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
@@ -44,7 +45,10 @@ export function extractOtherExtensions(
   valueSetPromises: Record<string, ValueSetPromise>,
   terminologyServerUrl: string
 ): ReturnParamsRecursive {
-  const enableWhenItems: Record<string, EnableWhenItemProperties> = {};
+  const enableWhenItems: Record<
+    string,
+    SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties
+  > = {};
   const enableWhenExpressions: Record<string, EnableWhenExpression> = {};
   const calculatedExpressions: Record<string, CalculatedExpression> = {};
   const answerExpressions: Record<string, AnswerExpression> = {};
@@ -86,7 +90,7 @@ export function extractOtherExtensions(
 interface extractExtensionsFromItemRecursiveParams {
   item: QuestionnaireItem;
   variables: Variables;
-  enableWhenItems: Record<string, EnableWhenItemProperties>;
+  enableWhenItems: Record<string, SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties>;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
@@ -120,7 +124,7 @@ function extractExtensionsFromItemRecursive(
   }
 
   // Read enable when items, enablehen/calculated/answer expressions, valueSets and variables from qItem
-  const enableWhenItemProperties = getEnableWhenItemProperties(item);
+  const enableWhenItemProperties = initialiseEnableWhenItemProperties(item);
   if (enableWhenItemProperties) {
     enableWhenItems[item.linkId] = enableWhenItemProperties;
   }
@@ -183,12 +187,18 @@ function extractExtensionsFromItemRecursive(
  *
  * @author Sean Fong
  */
-export function getEnableWhenItemProperties(
+export function initialiseEnableWhenItemProperties(
   qItem: QuestionnaireItem
-): EnableWhenItemProperties | null {
+): SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties | null {
   const enableWhen = qItem.enableWhen;
   if (enableWhen) {
-    const enableWhenItemProperties: EnableWhenItemProperties = { linked: [], isEnabled: false };
+    const enableWhenItemProperties:
+      | SingleEnableWhenItemProperties
+      | RepeatEnableWhenItemProperties = {
+      linked: [],
+      isEnabled: false,
+      isRepeating: !!qItem.repeats && qItem.type === 'group' // item has repeat enableWhen if it's a repeat group
+    };
     enableWhenItemProperties.linked = enableWhen.map((linkedItem): EnableWhenLinkedItem => {
       return { enableWhen: linkedItem };
     });

@@ -26,12 +26,23 @@ export interface EnableWhenExpression {
   isEnabled?: boolean;
 }
 
-export type EnableWhenItems = Record<string, EnableWhenItemProperties>;
+export type EnableWhenItems = Record<
+  string,
+  SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties
+>;
 
-export interface EnableWhenItemProperties {
+interface EnableWhenItemProperties {
   linked: EnableWhenLinkedItem[];
-  isEnabled: boolean;
+  isRepeating: boolean;
   enableBehavior?: QuestionnaireItem['enableBehavior'];
+}
+
+export interface SingleEnableWhenItemProperties extends EnableWhenItemProperties {
+  isEnabled: boolean;
+}
+
+export interface RepeatEnableWhenItemProperties extends EnableWhenItemProperties {
+  isEnabled: boolean[];
 }
 
 export interface EnableWhenLinkedItem {

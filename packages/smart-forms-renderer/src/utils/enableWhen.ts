@@ -23,7 +23,11 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import cloneDeep from 'lodash.clonedeep';
-import type { EnableWhenItemProperties, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type {
+  EnableWhenItems,
+  RepeatEnableWhenItemProperties,
+  SingleEnableWhenItemProperties
+} from '../interfaces';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items
@@ -240,7 +244,9 @@ export function updateItemAnswer(
  *
  * @author Sean Fong
  */
-export function checkItemIsEnabled(enableWhenItemProperties: EnableWhenItemProperties): boolean {
+export function checkItemIsEnabled(
+  enableWhenItemProperties: SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties
+): boolean {
   const checkedIsEnabledItems: boolean[] = [];
 
   enableWhenItemProperties.linked.forEach((linkedItem) => {

@@ -18,7 +18,11 @@
 import type { Tabs } from './tab.interface';
 import type { Variables } from './variables.interface';
 import type { LaunchContext } from './populate.interface';
-import type { EnableWhenExpression, EnableWhenItemProperties } from './enableWhen.interface';
+import type {
+  EnableWhenExpression,
+  RepeatEnableWhenItemProperties,
+  SingleEnableWhenItemProperties
+} from './enableWhen.interface';
 import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding } from 'fhir/r4';
@@ -28,7 +32,7 @@ export interface QuestionnaireModel {
   tabs: Tabs;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
-  enableWhenItems: Record<string, EnableWhenItemProperties>;
+  enableWhenItems: Record<string, SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties>;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;

@@ -17,3 +17,8 @@
 
 export { isSpecificItemControl } from './itemControl';
 export { isRepeatItemAndNotCheckbox } from './qItem';
+export {
+  createEnableWhenLinkedQuestions,
+  readInitialAnswers,
+  setInitialAnswers
+} from './enableWhen';
