@@ -20,7 +20,7 @@ import { useQuestionnaireStore } from '../stores';
 import { isHiddenByEnableWhen } from '../utils/qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
-function useHidden(qItem: QuestionnaireItem): boolean {
+function useHidden(qItem: QuestionnaireItem, parentRepeatGroupIndex?: number): boolean {
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
@@ -33,7 +33,8 @@ function useHidden(qItem: QuestionnaireItem): boolean {
     linkId: qItem.linkId,
     enableWhenIsActivated,
     enableWhenItems,
-    enableWhenExpressions
+    enableWhenExpressions,
+    parentRepeatGroupIndex
   });
 }
 

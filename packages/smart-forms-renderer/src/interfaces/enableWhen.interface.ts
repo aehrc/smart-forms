@@ -26,26 +26,33 @@ export interface EnableWhenExpression {
   isEnabled?: boolean;
 }
 
-export type EnableWhenItems = Record<
-  string,
-  SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties
->;
+export interface EnableWhenItems {
+  singleItems: Record<string, EnableWhenSingleItemProperties>;
+  repeatItems: Record<string, EnableWhenRepeatItemProperties>;
+}
 
-interface EnableWhenItemProperties {
-  linked: EnableWhenLinkedItem[];
-  isRepeating: boolean;
+export interface EnableWhenSingleItemProperties {
+  linked: EnableWhenSingleLinkedItem[];
+  isEnabled: boolean;
   enableBehavior?: QuestionnaireItem['enableBehavior'];
 }
 
-export interface SingleEnableWhenItemProperties extends EnableWhenItemProperties {
-  isEnabled: boolean;
+export interface EnableWhenRepeatItemProperties {
+  linked: EnableWhenRepeatLinkedItem[];
+  parentLinkId: string;
+  enabledIndexes: boolean[];
+  enableBehavior?: QuestionnaireItem['enableBehavior'];
 }
 
-export interface RepeatEnableWhenItemProperties extends EnableWhenItemProperties {
-  isEnabled: boolean[];
-}
-
-export interface EnableWhenLinkedItem {
+// For non-repeat groups
+export interface EnableWhenSingleLinkedItem {
   enableWhen: QuestionnaireItemEnableWhen;
   answer?: QuestionnaireResponseItemAnswer[];
+}
+
+// For repeat groups
+export interface EnableWhenRepeatLinkedItem {
+  enableWhen: QuestionnaireItemEnableWhen;
+  parentLinkId: string;
+  answers: QuestionnaireResponseItemAnswer[];
 }

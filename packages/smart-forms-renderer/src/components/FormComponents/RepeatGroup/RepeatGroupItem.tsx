@@ -33,6 +33,7 @@ interface RepeatGroupItemProps
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
+  repeatGroupIndex: number;
   answeredQrItem: QuestionnaireResponseItem;
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
@@ -43,6 +44,7 @@ interface RepeatGroupItemProps
 function RepeatGroupItem(props: RepeatGroupItemProps) {
   const {
     qItem,
+    repeatGroupIndex,
     answeredQrItem,
     nullableQrItem,
     numOfRepeatGroups,
@@ -62,6 +64,8 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
           qItem={qItem}
           qrItem={answeredQrItem}
           isRepeated={true}
+          parentIsRepeatGroup={true}
+          parentRepeatGroupIndex={repeatGroupIndex}
           parentIsReadOnly={parentIsReadOnly}
           groupCardElevation={groupCardElevation + 1}
           onQrItemChange={onQrItemChange}

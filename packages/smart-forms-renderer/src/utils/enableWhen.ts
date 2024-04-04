@@ -25,8 +25,8 @@ import type {
 import cloneDeep from 'lodash.clonedeep';
 import type {
   EnableWhenItems,
-  RepeatEnableWhenItemProperties,
-  SingleEnableWhenItemProperties
+  EnableWhenRepeatItemProperties,
+  EnableWhenSingleItemProperties
 } from '../interfaces';
 
 /**
@@ -39,18 +39,23 @@ import type {
 export function createEnableWhenLinkedQuestions(enableWhenItems: EnableWhenItems) {
   const linkedQuestionsMap: Record<string, string[]> = {};
 
-  for (const linkId in enableWhenItems) {
-    enableWhenItems[linkId].linked.forEach((linkedItem) => {
-      const linkQId = linkedItem.enableWhen.question;
-      if (!linkedQuestionsMap[linkQId]) {
-        linkedQuestionsMap[linkQId] = [];
-      }
+  const { singleItems, repeatItems } = enableWhenItems;
 
-      if (!linkedQuestionsMap[linkQId].includes(linkId)) {
-        linkedQuestionsMap[linkQId].push(linkId);
-      }
-    });
+  for (const items of [singleItems, repeatItems]) {
+    for (const linkId in items) {
+      items[linkId].linked.forEach((linkedItem) => {
+        const linkQId = linkedItem.enableWhen.question;
+        if (!linkedQuestionsMap[linkQId]) {
+          linkedQuestionsMap[linkQId] = [];
+        }
+
+        if (!linkedQuestionsMap[linkQId].includes(linkId)) {
+          linkedQuestionsMap[linkQId].push(linkId);
+        }
+      });
+    }
   }
+
   return linkedQuestionsMap;
 }
 
@@ -207,7 +212,13 @@ export function setInitialAnswers(
       const linkedQuestions = linkedQuestionsMap[linkId];
       const newAnswer = initialAnswers[linkId];
 
-      updatedItems = updateItemAnswer(updatedItems, linkedQuestions, linkId, newAnswer);
+      updatedItems = updateEnableWhenItemAnswer(
+        updatedItems,
+        linkedQuestions,
+        linkId,
+        newAnswer,
+        null
+      );
     }
   }
   return updatedItems;
@@ -219,33 +230,57 @@ export function setInitialAnswers(
  *
  * @author Sean Fong
  */
-export function updateItemAnswer(
+export function updateEnableWhenItemAnswer(
   items: EnableWhenItems,
   linkedQuestions: string[],
   linkId: string,
-  newAnswer: QuestionnaireResponseItemAnswer[]
+  newAnswer: QuestionnaireResponseItemAnswer[],
+  parentRepeatGroupIndex: number | null
 ): EnableWhenItems {
-  linkedQuestions.forEach((question) => {
-    // Update modified linked answer
-    items[question].linked.forEach((linkedItem) => {
-      if (linkedItem.enableWhen.question === linkId) {
-        linkedItem.answer = newAnswer ?? undefined;
-      }
-    });
+  const { singleItems, repeatItems } = items;
 
-    // Update enabled status of modified enableWhenItem
-    items[question].isEnabled = checkItemIsEnabled(items[question]);
-  });
+  for (const linkedQuestion of linkedQuestions) {
+    // Linked question is in single items
+    if (singleItems[linkedQuestion]) {
+      // Update modified linked answer
+      singleItems[linkedQuestion].linked.forEach((linkedItem) => {
+        if (linkedItem.enableWhen.question === linkId) {
+          linkedItem.answer = newAnswer ?? undefined;
+        }
+      });
+
+      // Update enabled status of modified enableWhenItem
+      singleItems[linkedQuestion].isEnabled = checkItemIsEnabledSingle(singleItems[linkedQuestion]);
+      continue;
+    }
+
+    // Linked question is in repeat items
+    if (repeatItems[linkedQuestion] && parentRepeatGroupIndex !== null) {
+      // Update modified linked answer
+      repeatItems[linkedQuestion].linked.forEach((linkedItem) => {
+        if (linkedItem.enableWhen.question === linkId) {
+          linkedItem.answers[parentRepeatGroupIndex] = newAnswer[0] ?? undefined;
+        }
+      });
+
+      // Update enabled status of modified enableWhenItem
+      repeatItems[linkedQuestion].enabledIndexes[parentRepeatGroupIndex] = checkItemIsEnabledRepeat(
+        repeatItems[linkedQuestion],
+        parentRepeatGroupIndex
+      );
+    }
+  }
+
   return items;
 }
 
 /**
- * Check if an enableWhenItem is enabled based on the answer of its linked items
+ * Check if a single enableWhenItem is enabled based on the answer of its linked items
  *
  * @author Sean Fong
  */
-export function checkItemIsEnabled(
-  enableWhenItemProperties: SingleEnableWhenItemProperties | RepeatEnableWhenItemProperties
+export function checkItemIsEnabledSingle(
+  enableWhenItemProperties: EnableWhenSingleItemProperties
 ): boolean {
   const checkedIsEnabledItems: boolean[] = [];
 
@@ -275,6 +310,42 @@ export function checkItemIsEnabled(
     : checkedIsEnabledItems.every((isEnabled) => isEnabled);
 }
 
+/**
+ * Check if a repeat enableWhenItem is enabled based on the answer of its linked items
+ *
+ * @author Sean Fong
+ */
+export function checkItemIsEnabledRepeat(
+  enableWhenItemProperties: EnableWhenRepeatItemProperties,
+  parentRepeatGroupIndex: number
+): boolean {
+  const checkedIsEnabledItems: boolean[] = [];
+
+  enableWhenItemProperties.linked.forEach((linkedItem) => {
+    const linkedAnswer = linkedItem.answers[parentRepeatGroupIndex];
+    if (linkedAnswer) {
+      const isEnabledForThisLinkedItem = isEnabledAnswerTypeSwitcher(
+        linkedItem.enableWhen,
+        linkedAnswer
+      );
+
+      if (isEnabledForThisLinkedItem) {
+        checkedIsEnabledItems.push(
+          isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, linkedAnswer)
+        );
+      }
+    }
+  });
+
+  if (checkedIsEnabledItems.length === 0) {
+    return false;
+  }
+
+  return enableWhenItemProperties.enableBehavior === 'any'
+    ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
+    : checkedIsEnabledItems.every((isEnabled) => isEnabled);
+}
+
 export function assignPopulatedAnswersToEnableWhen(
   items: EnableWhenItems,
   questionnaireResponse: QuestionnaireResponse
@@ -291,29 +362,59 @@ export function assignPopulatedAnswersToEnableWhen(
   return { initialisedItems, linkedQuestions };
 }
 
-function initialiseBooleanFalses(items: EnableWhenItems): EnableWhenItems {
-  for (const linkId in items) {
-    const checkedIsEnabledItems: boolean[] = [];
-    const enableWhenItemProperties = items[linkId];
+function checkedBooleanEnabledItems(
+  enableWhenItemProperties: EnableWhenSingleItemProperties | EnableWhenRepeatItemProperties
+) {
+  const checkedIsEnabledItems: boolean[] = [];
 
-    for (const linkedItem of enableWhenItemProperties.linked) {
-      if (linkedItem.enableWhen.answerBoolean === true && linkedItem.enableWhen.operator === '!=') {
-        checkedIsEnabledItems.push(true);
-        continue;
-      }
-
-      if (linkedItem.enableWhen.answerBoolean === false && linkedItem.enableWhen.operator === '=') {
-        checkedIsEnabledItems.push(true);
-        continue;
-      }
-
-      checkedIsEnabledItems.push(false);
+  for (const linkedItem of enableWhenItemProperties.linked) {
+    if (linkedItem.enableWhen.answerBoolean === true && linkedItem.enableWhen.operator === '!=') {
+      checkedIsEnabledItems.push(true);
+      continue;
     }
 
-    enableWhenItemProperties.isEnabled =
-      enableWhenItemProperties.enableBehavior === 'any'
+    if (linkedItem.enableWhen.answerBoolean === false && linkedItem.enableWhen.operator === '=') {
+      checkedIsEnabledItems.push(true);
+      continue;
+    }
+
+    checkedIsEnabledItems.push(false);
+  }
+
+  return checkedIsEnabledItems;
+}
+
+function initialiseBooleanFalses(items: EnableWhenItems): EnableWhenItems {
+  const { singleItems, repeatItems } = items;
+
+  for (const linkId in singleItems) {
+    const enableWhenSingleItemProperties = singleItems[linkId];
+    const checkedIsEnabledItems: boolean[] = checkedBooleanEnabledItems(
+      enableWhenSingleItemProperties
+    );
+
+    enableWhenSingleItemProperties.isEnabled =
+      enableWhenSingleItemProperties.enableBehavior === 'any'
         ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
         : checkedIsEnabledItems.every((isEnabled) => isEnabled);
+  }
+
+  for (const linkId in repeatItems) {
+    const enableWhenRepeatItemProperties = repeatItems[linkId];
+    const checkedIsEnabledItems: boolean[] = checkedBooleanEnabledItems(
+      enableWhenRepeatItemProperties
+    );
+
+    // FIXME do it dynamically based on the answers that come in
+    // TODO might not be a concern anymore after separation of boolean items
+
+    const isEnabled =
+      enableWhenRepeatItemProperties.enableBehavior === 'any'
+        ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
+        : checkedIsEnabledItems.every((isEnabled) => isEnabled);
+
+    enableWhenRepeatItemProperties.enabledIndexes =
+      enableWhenRepeatItemProperties.enabledIndexes.map(() => isEnabled);
   }
 
   return items;

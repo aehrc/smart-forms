@@ -26,19 +26,35 @@ interface isHiddenByEnableWhensParams {
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: Record<string, EnableWhenExpression>;
+  parentRepeatGroupIndex?: number;
 }
 
 export function isHiddenByEnableWhen(params: isHiddenByEnableWhensParams): boolean {
-  const { linkId, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
+  const {
+    linkId,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions,
+    parentRepeatGroupIndex
+  } = params;
 
-  if (enableWhenIsActivated) {
-    if (enableWhenItems[linkId]) {
-      return !enableWhenItems[linkId].isEnabled;
-    }
+  const { singleItems, repeatItems } = enableWhenItems;
 
-    if (enableWhenExpressions[linkId]) {
-      return !enableWhenExpressions[linkId].isEnabled;
-    }
+  // If enableWhen is not activated, items are not hidden by enableWhen
+  if (!enableWhenIsActivated) {
+    return false;
+  }
+
+  if (singleItems[linkId]) {
+    return !singleItems[linkId].isEnabled;
+  }
+
+  if (repeatItems[linkId] && parentRepeatGroupIndex !== undefined) {
+    return !repeatItems[linkId].enabledIndexes[parentRepeatGroupIndex];
+  }
+
+  if (enableWhenExpressions[linkId]) {
+    return !enableWhenExpressions[linkId].isEnabled;
   }
 
   return false;

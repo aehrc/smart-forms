@@ -27,6 +27,9 @@ export function getFirstVisibleTab(
   enableWhenItems: EnableWhenItems,
   enableWhenExpressions: Record<string, EnableWhenExpression>
 ) {
+  // Only singleEnableWhenItems are relevant for tab operations
+  const { singleItems } = enableWhenItems;
+
   return Object.entries(tabs)
     .sort(([, tabA], [, tabB]) => tabA.tabIndex - tabB.tabIndex)
     .findIndex(([tabLinkId, tab]) => {
@@ -34,8 +37,8 @@ export function getFirstVisibleTab(
         return false;
       }
 
-      if (enableWhenItems[tabLinkId]) {
-        return enableWhenItems[tabLinkId].isEnabled;
+      if (singleItems[tabLinkId]) {
+        return singleItems[tabLinkId].isEnabled;
       }
 
       if (enableWhenExpressions[tabLinkId]) {

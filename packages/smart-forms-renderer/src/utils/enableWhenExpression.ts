@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { EnableWhenExpression } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpression } from '../interfaces';
 import type { Expression, QuestionnaireResponse } from 'fhir/r4';
 import { createFhirPathContext } from './fhirpath';
 import fhirpath from 'fhirpath';

@@ -21,6 +21,7 @@ import type {
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
+import { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import { QGroupContainerBox } from '../../Box.styles';
@@ -40,7 +41,8 @@ import Typography from '@mui/material/Typography';
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentIsRepeatGroupAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
@@ -120,6 +122,7 @@ function RepeatGroup(props: RepeatGroupProps) {
               <RepeatGroupItem
                 key={nanoId}
                 qItem={qItem}
+                repeatGroupIndex={index}
                 answeredQrItem={answeredQrItem}
                 nullableQrItem={nullableQrItem}
                 numOfRepeatGroups={repeatGroups.length}
@@ -158,6 +161,7 @@ function RepeatGroup(props: RepeatGroupProps) {
               <Collapse key={nanoId} timeout={200}>
                 <RepeatGroupItem
                   qItem={qItem}
+                  repeatGroupIndex={index}
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
