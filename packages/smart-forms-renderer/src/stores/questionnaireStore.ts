@@ -72,7 +72,7 @@ interface QuestionnaireStoreType {
   markTabAsComplete: (tabLinkId: string) => void;
   updateEnableWhenItem: (
     linkId: string,
-    newAnswer: QuestionnaireResponseItemAnswer[],
+    newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
     parentRepeatGroupIndex: number | null
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
@@ -181,7 +181,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   },
   updateEnableWhenItem: (
     linkId: string,
-    newAnswer: QuestionnaireResponseItemAnswer[],
+    newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
     parentRepeatGroupIndex: number | null
   ) => {
     const enableWhenLinkedQuestions = get().enableWhenLinkedQuestions;

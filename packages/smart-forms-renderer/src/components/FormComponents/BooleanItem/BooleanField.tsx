@@ -18,27 +18,55 @@
 import React, { memo } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { grey } from '@mui/material/colors';
+import Fade from '@mui/material/Fade';
+import Tooltip from '@mui/material/Tooltip';
 
-interface BooleanFieldProps {
+interface BooleanFieldProps extends PropsWithIsTabledAttribute {
   checked: boolean;
   readOnly: boolean;
+  valueBoolean: boolean | undefined;
   onCheckedChange: (newChecked: boolean) => void;
+  onClear: () => void;
 }
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { checked, readOnly, onCheckedChange } = props;
+  const { checked, readOnly, valueBoolean, isTabled, onCheckedChange, onClear } = props;
 
   return (
-    <FormControlLabel
-      disabled={readOnly}
-      control={
-        <Checkbox
-          size="small"
-          checked={checked}
-          onChange={(event) => onCheckedChange(event.target.checked)}
-        />
-      }
-      label=""
-    />
+    <Box
+      display="flex"
+      alignItems="center"
+      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}>
+      <FormControlLabel
+        disabled={readOnly}
+        control={
+          <Checkbox
+            size="small"
+            checked={checked}
+            onChange={(event) => onCheckedChange(event.target.checked)}
+          />
+        }
+        label=""
+      />
+      <Box flexGrow={1} />
+
+      <Fade in={valueBoolean !== undefined} timeout={100}>
+        <Tooltip title="Set question as unanswered">
+          <Button
+            sx={{
+              color: grey['500'],
+              '&:hover': { backgroundColor: grey['200'] }
+            }}
+            onClick={onClear}>
+            Clear
+          </Button>
+        </Tooltip>
+      </Fade>
+    </Box>
   );
 });
 

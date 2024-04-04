@@ -21,7 +21,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../../utils';
 import GroupTable from '../Tables/GroupTable';

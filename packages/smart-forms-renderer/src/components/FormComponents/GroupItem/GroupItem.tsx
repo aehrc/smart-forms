@@ -25,7 +25,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';

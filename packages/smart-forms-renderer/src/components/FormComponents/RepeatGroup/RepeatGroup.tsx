@@ -21,7 +21,7 @@ import type {
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import { QGroupContainerBox } from '../../Box.styles';

@@ -61,13 +61,11 @@ function SingleItem(props: SingleItemProps) {
 
   const handleQrItemChange = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
-      if (newQrItem.answer) {
-        updateEnableWhenItem(
-          qItem.linkId,
-          newQrItem.answer,
-          parentIsRepeatGroup ? parentRepeatGroupIndex ?? null : null
-        );
-      }
+      updateEnableWhenItem(
+        qItem.linkId,
+        newQrItem.answer,
+        parentIsRepeatGroup ? parentRepeatGroupIndex ?? null : null
+      );
 
       if (qrItem && qrItem.item && qrItem.item.length > 0) {
         onQrItemChange({ ...newQrItem, item: qrItem.item });

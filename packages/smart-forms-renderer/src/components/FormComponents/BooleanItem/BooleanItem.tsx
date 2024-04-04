@@ -47,10 +47,12 @@ function BooleanItem(props: BooleanItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  const valueBoolean = qrItem?.answer && qrItem.answer[0].valueBoolean;
+
   // Init input value
   let checked = false;
   if (qrItem?.answer && qrItem.answer[0].valueBoolean) {
-    checked = qrItem.answer[0].valueBoolean;
+    checked = qrItem?.answer?.[0].valueBoolean;
   }
 
   // Event handlers
@@ -61,17 +63,35 @@ function BooleanItem(props: BooleanItemProps) {
     });
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem));
+  }
+
   if (isTabled) {
     return (
       <Box display="flex" justifyContent="center">
-        <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
+        <BooleanField
+          checked={checked}
+          readOnly={readOnly}
+          isTabled={isTabled}
+          valueBoolean={valueBoolean}
+          onCheckedChange={handleCheckedChange}
+          onClear={handleClear}
+        />
       </Box>
     );
   }
 
   if (isRepeated) {
     return (
-      <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
+      <BooleanField
+        checked={checked}
+        readOnly={readOnly}
+        isTabled={isTabled}
+        valueBoolean={valueBoolean}
+        onCheckedChange={handleCheckedChange}
+        onClear={handleClear}
+      />
     );
   }
   return (
@@ -80,7 +100,14 @@ function BooleanItem(props: BooleanItemProps) {
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <BooleanField checked={checked} readOnly={readOnly} onCheckedChange={handleCheckedChange} />
+        <BooleanField
+          checked={checked}
+          readOnly={readOnly}
+          isTabled={isTabled}
+          valueBoolean={valueBoolean}
+          onCheckedChange={handleCheckedChange}
+          onClear={handleClear}
+        />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>
   );

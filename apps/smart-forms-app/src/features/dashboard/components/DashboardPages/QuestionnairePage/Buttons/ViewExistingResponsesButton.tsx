@@ -71,8 +71,8 @@ function ViewExistingResponsesButton() {
         {isFetching && selectedQuestionnaire
           ? 'Loading responses'
           : existingResponses.length === 0
-          ? 'No responses found'
-          : 'View responses'}
+            ? 'No responses found'
+            : 'View responses'}
       </Typography>
     </Stack>
   );

@@ -234,7 +234,7 @@ export function updateEnableWhenItemAnswer(
   items: EnableWhenItems,
   linkedQuestions: string[],
   linkId: string,
-  newAnswer: QuestionnaireResponseItemAnswer[],
+  newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
   parentRepeatGroupIndex: number | null
 ): EnableWhenItems {
   const { singleItems, repeatItems } = items;
@@ -259,7 +259,11 @@ export function updateEnableWhenItemAnswer(
       // Update modified linked answer
       repeatItems[linkedQuestion].linked.forEach((linkedItem) => {
         if (linkedItem.enableWhen.question === linkId) {
-          linkedItem.answers[parentRepeatGroupIndex] = newAnswer[0] ?? undefined;
+          if (newAnswer) {
+            linkedItem.answers[parentRepeatGroupIndex] = newAnswer[0] ?? undefined;
+          } else {
+            delete linkedItem.answers[parentRepeatGroupIndex];
+          }
         }
       });
 
@@ -352,7 +356,6 @@ export function assignPopulatedAnswersToEnableWhen(
 ): { initialisedItems: EnableWhenItems; linkedQuestions: Record<string, string[]> } {
   const linkedQuestions = createEnableWhenLinkedQuestions(items);
   const initialAnswers = readInitialAnswers(questionnaireResponse, linkedQuestions);
-  items = initialiseBooleanFalses(items);
 
   const initialisedItems =
     Object.keys(initialAnswers).length > 0
@@ -360,62 +363,4 @@ export function assignPopulatedAnswersToEnableWhen(
       : items;
 
   return { initialisedItems, linkedQuestions };
-}
-
-function checkedBooleanEnabledItems(
-  enableWhenItemProperties: EnableWhenSingleItemProperties | EnableWhenRepeatItemProperties
-) {
-  const checkedIsEnabledItems: boolean[] = [];
-
-  for (const linkedItem of enableWhenItemProperties.linked) {
-    if (linkedItem.enableWhen.answerBoolean === true && linkedItem.enableWhen.operator === '!=') {
-      checkedIsEnabledItems.push(true);
-      continue;
-    }
-
-    if (linkedItem.enableWhen.answerBoolean === false && linkedItem.enableWhen.operator === '=') {
-      checkedIsEnabledItems.push(true);
-      continue;
-    }
-
-    checkedIsEnabledItems.push(false);
-  }
-
-  return checkedIsEnabledItems;
-}
-
-function initialiseBooleanFalses(items: EnableWhenItems): EnableWhenItems {
-  const { singleItems, repeatItems } = items;
-
-  for (const linkId in singleItems) {
-    const enableWhenSingleItemProperties = singleItems[linkId];
-    const checkedIsEnabledItems: boolean[] = checkedBooleanEnabledItems(
-      enableWhenSingleItemProperties
-    );
-
-    enableWhenSingleItemProperties.isEnabled =
-      enableWhenSingleItemProperties.enableBehavior === 'any'
-        ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
-        : checkedIsEnabledItems.every((isEnabled) => isEnabled);
-  }
-
-  for (const linkId in repeatItems) {
-    const enableWhenRepeatItemProperties = repeatItems[linkId];
-    const checkedIsEnabledItems: boolean[] = checkedBooleanEnabledItems(
-      enableWhenRepeatItemProperties
-    );
-
-    // FIXME do it dynamically based on the answers that come in
-    // TODO might not be a concern anymore after separation of boolean items
-
-    const isEnabled =
-      enableWhenRepeatItemProperties.enableBehavior === 'any'
-        ? checkedIsEnabledItems.some((isEnabled) => isEnabled)
-        : checkedIsEnabledItems.every((isEnabled) => isEnabled);
-
-    enableWhenRepeatItemProperties.enabledIndexes =
-      enableWhenRepeatItemProperties.enabledIndexes.map(() => isEnabled);
-  }
-
-  return items;
 }
