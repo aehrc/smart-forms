@@ -28,7 +28,10 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
 import type { EnableWhenExpression, EnableWhenItems } from '../interfaces';
 import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import type { Tabs } from '../interfaces/tab.interface';
-import { updateEnableWhenItemAnswer } from '../utils/enableWhen';
+import {
+  mutateRepeatEnableWhenItemInstances,
+  updateEnableWhenItemAnswer
+} from '../utils/enableWhen';
 import { evaluateUpdatedExpressions } from '../utils/fhirpath';
 import {
   evaluateInitialCalculatedExpressions,
@@ -74,6 +77,11 @@ interface QuestionnaireStoreType {
     linkId: string,
     newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
     parentRepeatGroupIndex: number | null
+  ) => void;
+  mutateRepeatEnableWhenItems: (
+    parentRepeatGroupLinkId: string,
+    parentRepeatGroupIndex: number,
+    actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
   updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
@@ -197,6 +205,26 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       linkId,
       newAnswer,
       parentRepeatGroupIndex
+    );
+
+    set(() => ({
+      enableWhenItems: updatedEnableWhenItems
+    }));
+  },
+  mutateRepeatEnableWhenItems: (
+    parentRepeatGroupLinkId: string,
+    parentRepeatGroupIndex: number,
+    actionType: 'add' | 'remove'
+  ) => {
+    const enableWhenItems = get().enableWhenItems;
+
+    const updatedEnableWhenItems = mutateRepeatEnableWhenItemInstances(
+      {
+        ...enableWhenItems
+      },
+      parentRepeatGroupLinkId,
+      parentRepeatGroupIndex,
+      actionType
     );
 
     set(() => ({

@@ -16,8 +16,6 @@
  */
 
 import React, { memo } from 'react';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import Box from '@mui/material/Box';
@@ -25,33 +23,42 @@ import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import Fade from '@mui/material/Fade';
 import Tooltip from '@mui/material/Tooltip';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import type { QuestionnaireItem } from 'fhir/r4';
+import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
+import { StyledRadioGroup } from '../Item.styles';
+import { getChoiceOrientation } from '../../../utils/choice';
 
 interface BooleanFieldProps extends PropsWithIsTabledAttribute {
-  checked: boolean;
+  qItem: QuestionnaireItem;
   readOnly: boolean;
   valueBoolean: boolean | undefined;
-  onCheckedChange: (newChecked: boolean) => void;
+  onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
+
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { checked, readOnly, valueBoolean, isTabled, onCheckedChange, onClear } = props;
+  const { qItem, readOnly, valueBoolean, isTabled, onCheckedChange, onClear } = props;
+
+  const orientation = getChoiceOrientation(qItem);
+
+  const selection = valueBoolean === undefined ? null : valueBoolean.toString();
 
   return (
     <Box
       display="flex"
       alignItems="center"
       sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}>
-      <FormControlLabel
-        disabled={readOnly}
-        control={
-          <Checkbox
-            size="small"
-            checked={checked}
-            onChange={(event) => onCheckedChange(event.target.checked)}
-          />
-        }
-        label=""
-      />
+      <StyledRadioGroup
+        row={orientation === ChoiceItemOrientation.Horizontal}
+        name={qItem.text}
+        id={qItem.id}
+        onChange={(e) => onCheckedChange(e.target.value)}
+        value={selection}>
+        <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
+        <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
+      </StyledRadioGroup>
+
       <Box flexGrow={1} />
 
       <Fade in={valueBoolean !== undefined} timeout={100}>

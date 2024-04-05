@@ -49,18 +49,25 @@ function BooleanItem(props: BooleanItemProps) {
 
   const valueBoolean = qrItem?.answer && qrItem.answer[0].valueBoolean;
 
-  // Init input value
-  let checked = false;
-  if (qrItem?.answer && qrItem.answer[0].valueBoolean) {
-    checked = qrItem?.answer?.[0].valueBoolean;
-  }
-
   // Event handlers
-  function handleCheckedChange(newChecked: boolean) {
-    onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: [{ valueBoolean: newChecked }]
-    });
+  function handleValueChange(newValue: string) {
+    switch (newValue) {
+      case 'true':
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: [{ valueBoolean: true }]
+        });
+        break;
+      case 'false':
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: [{ valueBoolean: false }]
+        });
+        break;
+      default:
+        onQrItemChange(createEmptyQrItem(qItem));
+        break;
+    }
   }
 
   function handleClear() {
@@ -71,11 +78,11 @@ function BooleanItem(props: BooleanItemProps) {
     return (
       <Box display="flex" justifyContent="center">
         <BooleanField
-          checked={checked}
+          qItem={qItem}
           readOnly={readOnly}
           isTabled={isTabled}
           valueBoolean={valueBoolean}
-          onCheckedChange={handleCheckedChange}
+          onCheckedChange={handleValueChange}
           onClear={handleClear}
         />
       </Box>
@@ -85,11 +92,11 @@ function BooleanItem(props: BooleanItemProps) {
   if (isRepeated) {
     return (
       <BooleanField
-        checked={checked}
+        qItem={qItem}
         readOnly={readOnly}
         isTabled={isTabled}
         valueBoolean={valueBoolean}
-        onCheckedChange={handleCheckedChange}
+        onCheckedChange={handleValueChange}
         onClear={handleClear}
       />
     );
@@ -101,11 +108,11 @@ function BooleanItem(props: BooleanItemProps) {
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <BooleanField
-          checked={checked}
+          qItem={qItem}
           readOnly={readOnly}
           isTabled={isTabled}
           valueBoolean={valueBoolean}
-          onCheckedChange={handleCheckedChange}
+          onCheckedChange={handleValueChange}
           onClear={handleClear}
         />
       </ItemFieldGrid>

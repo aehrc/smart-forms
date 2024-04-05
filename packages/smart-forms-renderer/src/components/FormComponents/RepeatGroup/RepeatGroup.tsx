@@ -18,10 +18,10 @@
 import React, { useState } from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import { QGroupContainerBox } from '../../Box.styles';
@@ -37,6 +37,7 @@ import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
 import useReadOnly from '../../../hooks/useReadOnly';
 import Typography from '@mui/material/Typography';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -57,6 +58,8 @@ function RepeatGroup(props: RepeatGroupProps) {
     parentIsReadOnly,
     onQrRepeatGroupChange
   } = props;
+
+  const mutateRepeatEnableWhenItems = useQuestionnaireStore.use.mutateRepeatEnableWhenItems();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -86,8 +89,10 @@ function RepeatGroup(props: RepeatGroupProps) {
 
   function handleDeleteItem(index: number) {
     const updatedRepeatGroups = [...repeatGroups];
-
     updatedRepeatGroups.splice(index, 1);
+
+    const newLastItemIndex = repeatGroups.length;
+    mutateRepeatEnableWhenItems(qItem.linkId, newLastItemIndex, 'remove');
 
     setRepeatGroups(updatedRepeatGroups);
     onQrRepeatGroupChange({
@@ -99,6 +104,8 @@ function RepeatGroup(props: RepeatGroupProps) {
   }
 
   function handleAddItem() {
+    const newLastItemIndex = repeatGroups.length;
+    mutateRepeatEnableWhenItems(qItem.linkId, newLastItemIndex, 'add');
     setRepeatGroups([
       ...repeatGroups,
       {
