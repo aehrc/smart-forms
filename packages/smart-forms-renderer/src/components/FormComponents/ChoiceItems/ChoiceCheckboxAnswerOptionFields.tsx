@@ -20,17 +20,19 @@ import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import QItemChoiceCheckboxSingle from '../ItemParts/CheckboxSingle';
 import { StyledFormGroup } from '../Item.styles';
+import { getChoiceOrientation } from '../../../utils/choice';
 
 interface ChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   answers: QuestionnaireResponseItemAnswer[];
-  orientation: ChoiceItemOrientation;
   readOnly: boolean;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionFieldsProps) {
-  const { qItem, answers, orientation, readOnly, onCheckedChange } = props;
+  const { qItem, answers, readOnly, onCheckedChange } = props;
+
+  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
     <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>

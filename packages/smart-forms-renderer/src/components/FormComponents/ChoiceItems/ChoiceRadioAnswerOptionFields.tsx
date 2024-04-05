@@ -20,17 +20,19 @@ import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem } from 'fhir/r4';
 import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
 import { StyledRadioGroup } from '../Item.styles';
+import { getChoiceOrientation } from '../../../utils/choice';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   valueRadio: string | null;
-  orientation: ChoiceItemOrientation;
   readOnly: boolean;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps) {
-  const { qItem, valueRadio, orientation, readOnly, onCheckedChange } = props;
+  const { qItem, valueRadio, readOnly, onCheckedChange } = props;
+
+  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
     <StyledRadioGroup

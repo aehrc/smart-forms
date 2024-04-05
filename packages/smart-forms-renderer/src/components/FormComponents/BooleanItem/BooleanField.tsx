@@ -40,7 +40,8 @@ interface BooleanFieldProps extends PropsWithIsTabledAttribute {
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { qItem, readOnly, valueBoolean, isTabled, onCheckedChange, onClear } = props;
 
-  const orientation = getChoiceOrientation(qItem);
+  // defaults to horizontal, only set to vertical if explicitly set
+  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Horizontal;
 
   const selection = valueBoolean === undefined ? null : valueBoolean.toString();
 

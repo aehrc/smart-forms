@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -37,11 +36,10 @@ interface ChoiceRadioAnswerOptionItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  orientation: ChoiceItemOrientation;
 }
 
 function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -66,7 +64,6 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
       <ChoiceRadioAnswerOptionFields
         qItem={qItem}
         valueRadio={valueRadio}
-        orientation={orientation}
         readOnly={readOnly}
         onCheckedChange={handleChange}
       />
@@ -82,7 +79,6 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
         <ChoiceRadioAnswerOptionFields
           qItem={qItem}
           valueRadio={valueRadio}
-          orientation={orientation}
           readOnly={readOnly}
           onCheckedChange={handleChange}
         />

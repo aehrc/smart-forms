@@ -16,7 +16,6 @@
  */
 
 import React, { useCallback, useMemo, useState } from 'react';
-import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { CheckBoxOption } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -48,14 +47,12 @@ interface OpenChoiceCheckboxAnswerOptionItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  orientation: ChoiceItemOrientation;
 }
 
 function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptionItemProps) {
   const {
     qItem,
     qrItem,
-    orientation,
     isRepeated,
     showMinimalView = false,
     parentIsReadOnly,
@@ -149,7 +146,6 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
           readOnly={readOnly}
-          orientation={orientation}
           onValueChange={handleValueChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
@@ -172,7 +168,6 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
           readOnly={readOnly}
-          orientation={orientation}
           onValueChange={handleValueChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}

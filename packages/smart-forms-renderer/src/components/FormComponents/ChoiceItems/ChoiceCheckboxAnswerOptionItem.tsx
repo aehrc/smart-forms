@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { updateQrCheckboxAnswers } from '../../../utils/choice';
@@ -41,14 +40,12 @@ interface ChoiceCheckboxAnswerOptionItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  orientation: ChoiceItemOrientation;
 }
 
 function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
   const {
     qItem,
     qrItem,
-    orientation,
     isRepeated,
     showMinimalView = false,
     parentIsReadOnly,
@@ -88,7 +85,6 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
         <ChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           answers={answers}
-          orientation={orientation}
           readOnly={readOnly}
           onCheckedChange={handleCheckedChange}
         />
@@ -106,7 +102,6 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
         <ChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           answers={answers}
-          orientation={orientation}
           readOnly={readOnly}
           onCheckedChange={handleCheckedChange}
         />
