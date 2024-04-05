@@ -53,8 +53,15 @@ export function isHiddenByEnableWhen(params: isHiddenByEnableWhensParams): boole
     return !repeatItems[linkId].enabledIndexes[parentRepeatGroupIndex];
   }
 
+  if (enableWhenExpressions[linkId] && parentRepeatGroupIndex !== undefined) {
+    const isEnabledMultiple = enableWhenExpressions[linkId].isEnabledMultiple;
+    if (isEnabledMultiple) {
+      return !isEnabledMultiple[parentRepeatGroupIndex];
+    }
+  }
+
   if (enableWhenExpressions[linkId]) {
-    return !enableWhenExpressions[linkId].isEnabled;
+    return !enableWhenExpressions[linkId].isEnabledSingle;
   }
 
   return false;

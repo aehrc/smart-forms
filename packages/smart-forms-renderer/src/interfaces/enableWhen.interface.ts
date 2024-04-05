@@ -23,7 +23,8 @@ import type {
 
 export interface EnableWhenExpression {
   expression: string;
-  isEnabled?: boolean;
+  isEnabledSingle?: boolean;
+  isEnabledMultiple?: boolean[];
 }
 
 export interface EnableWhenItems {
