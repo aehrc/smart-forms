@@ -107,3 +107,54 @@ function getParentItemRecursive(
   // No matching parent item found in the current item or its child items, return null
   return null;
 }
+
+export function getRepeatGroupParentItem(
+  questionnaire: Questionnaire,
+  targetLinkId: string
+): QuestionnaireItem | null {
+  // Search through the top level items recursively
+  const topLevelQItems = questionnaire.item;
+  if (topLevelQItems) {
+    for (const topLevelQItem of topLevelQItems) {
+      const foundParentQItem = getRepeatGroupParentItemRecursive(topLevelQItem, targetLinkId);
+      if (foundParentQItem) {
+        return foundParentQItem;
+      }
+    }
+  }
+
+  // No matching repeat group parent item found in the questionnaire, return null
+  return null;
+}
+
+function getRepeatGroupParentItemRecursive(
+  qItem: QuestionnaireItem,
+  targetLinkId: string,
+  repeatGroupParentQItem?: QuestionnaireItem
+): QuestionnaireItem | null {
+  // Current item has the target linkId, return the parent item if it exists
+  if (qItem.linkId === targetLinkId && repeatGroupParentQItem) {
+    return repeatGroupParentQItem ?? null;
+  }
+
+  // Check if the current item is a repeat group
+  const isRepeatGroup = qItem.repeats && qItem.type === 'group';
+
+  // Search through its child items recursively
+  const childQItems = qItem.item;
+  if (childQItems) {
+    for (const childQItem of childQItems) {
+      const foundParentQItem = getRepeatGroupParentItemRecursive(
+        childQItem,
+        targetLinkId,
+        isRepeatGroup ? qItem : repeatGroupParentQItem
+      );
+      if (foundParentQItem) {
+        return foundParentQItem;
+      }
+    }
+  }
+
+  // No matching repeat group parent item found in the current item or its child items, return null
+  return null;
+}

@@ -31,7 +31,7 @@ import { getAnswerExpression } from '../itemControl';
 import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables';
-import { getParentItem } from '../misc';
+import { getRepeatGroupParentItem } from '../misc';
 
 interface ReturnParamsRecursive {
   variables: Variables;
@@ -254,7 +254,7 @@ export function initialiseEnableWhenRepeatItemProperties(
   }
 
   const linkedItems = enableWhen.map((linkedItem): EnableWhenRepeatLinkedItem | null => {
-    const linkedParentItem = getParentItem(questionnaire, linkedItem.question);
+    const linkedParentItem = getRepeatGroupParentItem(questionnaire, linkedItem.question);
     // Check if parentLinkId match the linked item's parent linkId
     if (parentLinkId === linkedParentItem?.linkId) {
       return { enableWhen: linkedItem, parentLinkId: linkedParentItem.linkId, answers: [] };

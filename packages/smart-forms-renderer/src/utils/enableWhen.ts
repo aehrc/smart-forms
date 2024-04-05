@@ -126,11 +126,11 @@ function answerOperatorSwitcher(
   value: boolean | string | number | Quantity | QuestionnaireResponseItemAnswer,
   operator: QuestionnaireItemEnableWhen['operator']
 ): boolean {
-  // FIXME runs even when the linked textbox is not changed
   switch (operator) {
-    case 'exists':
-      // check if value is an object and contains any answerValues
-      return typeof value === 'object' && Object.keys(value).length !== 0;
+    case 'exists': {
+      const answerExists = typeof value === 'object' && Object.keys(value).length !== 0;
+      return answerExists === expected;
+    }
     case '=':
       return value === expected;
     case '!=':
@@ -336,7 +336,7 @@ export function checkItemIsEnabledSingle(
     }
 
     // Linked item doesn't have any answers, but we still have to check for unanswered booleans
-    if (evaluateUnansweredBoolean(linkedItem.enableWhen)) {
+    if (evaluateNonExistentAnswers(linkedItem.enableWhen)) {
       checkedIsEnabledItems.push(true);
     }
   }
@@ -376,7 +376,7 @@ export function checkItemIsEnabledRepeat(
     }
 
     // Linked item doesn't have any answers, but we still have to check for unanswered booleans
-    if (evaluateUnansweredBoolean(linkedItem.enableWhen)) {
+    if (evaluateNonExistentAnswers(linkedItem.enableWhen)) {
       checkedIsEnabledItems.push(true);
     }
   }
@@ -410,7 +410,7 @@ function initialiseUnansweredBooleans(items: EnableWhenItems): EnableWhenItems {
   // Initialise unanswered booleans for enableWhen single items
   for (const linkId in singleItems) {
     const checkedIsEnabledItems = singleItems[linkId].linked.map((linkedItem) =>
-      evaluateUnansweredBoolean(linkedItem.enableWhen)
+      evaluateNonExistentAnswers(linkedItem.enableWhen)
     );
 
     singleItems[linkId].isEnabled = evaluateEnableBehaviour(
@@ -422,7 +422,7 @@ function initialiseUnansweredBooleans(items: EnableWhenItems): EnableWhenItems {
   // Initialise unanswered booleans for enableWhen repeat items
   for (const linkId in repeatItems) {
     const checkedIsEnabledItems = repeatItems[linkId].linked.map((linkedItem) =>
-      evaluateUnansweredBoolean(linkedItem.enableWhen)
+      evaluateNonExistentAnswers(linkedItem.enableWhen)
     );
 
     const isEnabled = evaluateEnableBehaviour(
@@ -436,8 +436,11 @@ function initialiseUnansweredBooleans(items: EnableWhenItems): EnableWhenItems {
 }
 
 // Internal functions
-function evaluateUnansweredBoolean(enableWhen: QuestionnaireItemEnableWhen) {
-  return typeof enableWhen.answerBoolean === 'boolean' && enableWhen.operator === '!=';
+function evaluateNonExistentAnswers(enableWhen: QuestionnaireItemEnableWhen) {
+  const unansweredBoolean =
+    typeof enableWhen.answerBoolean === 'boolean' && enableWhen.operator === '!=';
+  const unExistingAnswer = enableWhen.answerBoolean === false && enableWhen.operator === 'exists';
+  return unansweredBoolean || unExistingAnswer;
 }
 
 function evaluateEnableBehaviour(
