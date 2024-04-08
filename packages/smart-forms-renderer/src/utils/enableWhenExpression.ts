@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { EnableWhenExpression } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpression } from '../interfaces';
 import type { Expression, QuestionnaireResponse } from 'fhir/r4';
 import { createFhirPathContext } from './fhirpath';
 import fhirpath from 'fhirpath';
@@ -69,13 +69,14 @@ export function evaluateInitialEnableWhenExpressions(
         fhirpath_r4_model
       );
 
+      // Update enableWhenExpressions if length of result array > 0
       if (result.length > 0) {
-        initialEnableWhenExpressions[linkId].isEnabled = result[0];
+        updateEnableWhenExpressionStatus(initialEnableWhenExpressions, linkId, result);
       }
 
       // handle intersect edge case - evaluate() returns empty array if result is false
       if (enableWhenExpressions[linkId].expression.includes('intersect') && result.length === 0) {
-        initialEnableWhenExpressions[linkId].isEnabled = false;
+        initialEnableWhenExpressions[linkId].isEnabledSingle = false;
       }
     } catch (e) {
       console.warn(
@@ -112,16 +113,14 @@ export function evaluateEnableWhenExpressions(
         fhirpath_r4_model
       );
 
+      // Update enableWhenExpressions if length of result array > 0
       if (result.length > 0) {
-        if (enableWhenExpressions[linkId].isEnabled !== result[0]) {
-          isUpdated = true;
-          updatedEnableWhenExpressions[linkId].isEnabled = result[0];
-        }
+        isUpdated = updateEnableWhenExpressionStatus(updatedEnableWhenExpressions, linkId, result);
       }
 
       // handle intersect edge case - evaluate() returns empty array if result is false
       if (enableWhenExpressions[linkId].expression.includes('intersect') && result.length === 0) {
-        updatedEnableWhenExpressions[linkId].isEnabled = false;
+        updatedEnableWhenExpressions[linkId].isEnabledSingle = false;
       }
     } catch (e) {
       console.warn(
@@ -135,4 +134,32 @@ export function evaluateEnableWhenExpressions(
     enableWhenExpsIsUpdated: isUpdated,
     updatedEnableWhenExpressions: updatedEnableWhenExpressions
   };
+}
+
+function updateEnableWhenExpressionStatus(
+  enableWhenExpressions: Record<string, EnableWhenExpression>,
+  linkId: string,
+  result: any[]
+): boolean {
+  // Values are not fully boolean, expression is invalid
+  const everyResultIsBoolean = result.every((r) => typeof r === 'boolean');
+  if (!everyResultIsBoolean) {
+    return false;
+  }
+
+  // If result has multiple values
+  if (result.length > 1) {
+    if (enableWhenExpressions[linkId].isEnabledMultiple !== result) {
+      enableWhenExpressions[linkId].isEnabledMultiple = result;
+      return true;
+    }
+  }
+
+  // If result has only one value
+  if (enableWhenExpressions[linkId].isEnabledSingle !== result[0]) {
+    enableWhenExpressions[linkId].isEnabledSingle = result[0];
+    return true;
+  }
+
+  return false;
 }

@@ -23,18 +23,37 @@ import type {
 
 export interface EnableWhenExpression {
   expression: string;
-  isEnabled?: boolean;
+  isEnabledSingle?: boolean;
+  isEnabledMultiple?: boolean[];
 }
 
-export type EnableWhenItems = Record<string, EnableWhenItemProperties>;
+export interface EnableWhenItems {
+  singleItems: Record<string, EnableWhenSingleItemProperties>;
+  repeatItems: Record<string, EnableWhenRepeatItemProperties>;
+}
 
-export interface EnableWhenItemProperties {
-  linked: EnableWhenLinkedItem[];
+export interface EnableWhenSingleItemProperties {
+  linked: EnableWhenSingleLinkedItem[];
   isEnabled: boolean;
   enableBehavior?: QuestionnaireItem['enableBehavior'];
 }
 
-export interface EnableWhenLinkedItem {
+export interface EnableWhenRepeatItemProperties {
+  linked: EnableWhenRepeatLinkedItem[];
+  parentLinkId: string;
+  enabledIndexes: boolean[];
+  enableBehavior?: QuestionnaireItem['enableBehavior'];
+}
+
+// For non-repeat groups
+export interface EnableWhenSingleLinkedItem {
   enableWhen: QuestionnaireItemEnableWhen;
   answer?: QuestionnaireResponseItemAnswer[];
+}
+
+// For repeat groups
+export interface EnableWhenRepeatLinkedItem {
+  enableWhen: QuestionnaireItemEnableWhen;
+  parentLinkId: string;
+  answers: QuestionnaireResponseItemAnswer[];
 }

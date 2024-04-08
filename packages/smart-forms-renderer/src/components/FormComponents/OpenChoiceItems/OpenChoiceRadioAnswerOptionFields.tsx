@@ -22,6 +22,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import { StyledRadioGroup } from '../Item.styles';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
+import { getChoiceOrientation } from '../../../utils/choice';
 
 interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -29,7 +30,6 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   openLabelText: string | null;
   openLabelValue: string | null;
   openLabelSelected: boolean;
-  orientation: ChoiceItemOrientation;
   readOnly: boolean;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
 }
@@ -41,10 +41,11 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     openLabelText,
     openLabelValue,
     openLabelSelected,
-    orientation,
     readOnly,
     onValueChange
   } = props;
+
+  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
     <StyledRadioGroup

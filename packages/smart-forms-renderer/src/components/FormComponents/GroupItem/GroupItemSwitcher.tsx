@@ -21,6 +21,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../../utils';
 import GroupTable from '../Tables/GroupTable';
@@ -34,7 +35,8 @@ import GridGroup from '../GridGroup/GridGroup';
 interface GroupItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
     PropsWithQrRepeatGroupChangeHandler,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentIsRepeatGroupAttribute {
   qItem: QuestionnaireItem;
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined;
   groupCardElevation: number;
@@ -46,11 +48,13 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
     qrItemOrItems,
     groupCardElevation,
     parentIsReadOnly,
+    parentIsRepeatGroup,
+    parentRepeatGroupIndex,
     onQrItemChange,
     onQrRepeatGroupChange
   } = props;
 
-  const itemIsHidden = useHidden(qItem);
+  const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
   if (itemIsHidden) {
     return null;
   }
@@ -152,6 +156,8 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         isRepeated={false}
         groupCardElevation={groupCardElevation + 1}
         parentIsReadOnly={parentIsReadOnly}
+        parentIsRepeatGroup={parentIsRepeatGroup}
+        parentRepeatGroupIndex={parentRepeatGroupIndex}
         onQrItemChange={onQrItemChange}
       />
     );
@@ -166,6 +172,8 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       isTabled={false}
       groupCardElevation={groupCardElevation + 1}
       parentIsReadOnly={parentIsReadOnly}
+      parentIsRepeatGroup={parentIsRepeatGroup}
+      parentRepeatGroupIndex={parentRepeatGroupIndex}
       onQrItemChange={onQrItemChange}
     />
   );

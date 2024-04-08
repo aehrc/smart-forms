@@ -174,11 +174,12 @@ export function updateQrCheckboxAnswers(
  *
  * @author Sean Fong
  */
-export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrientation {
+export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrientation | null {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation'
   );
+
   if (itemControl) {
     const code = itemControl.valueCode;
     if (code) {
@@ -189,7 +190,8 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrient
       }
     }
   }
-  return ChoiceItemOrientation.Vertical;
+
+  return null;
 }
 
 /**

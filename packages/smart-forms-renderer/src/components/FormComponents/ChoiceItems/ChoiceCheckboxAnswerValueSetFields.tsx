@@ -17,25 +17,28 @@
 
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { Coding, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import { StyledFormGroup } from '../Item.styles';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { getChoiceOrientation } from '../../../utils/choice';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
+  qItem: QuestionnaireItem;
   codings: Coding[];
   answers: QuestionnaireResponseItemAnswer[];
-  orientation: ChoiceItemOrientation;
   readOnly: boolean;
   terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { codings, answers, orientation, readOnly, terminologyError, onCheckedChange } = props;
+  const { qItem, codings, answers, readOnly, terminologyError, onCheckedChange } = props;
+
+  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (codings.length > 0) {
     return (

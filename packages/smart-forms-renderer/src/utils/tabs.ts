@@ -16,7 +16,7 @@
  */
 
 import type { Tabs } from '../interfaces/tab.interface';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpression, EnableWhenItems } from '../interfaces';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { isSpecificItemControl } from './itemControl';
 import { isHiddenByEnableWhen } from './qItem';
@@ -27,6 +27,9 @@ export function getFirstVisibleTab(
   enableWhenItems: EnableWhenItems,
   enableWhenExpressions: Record<string, EnableWhenExpression>
 ) {
+  // Only singleEnableWhenItems are relevant for tab operations
+  const { singleItems } = enableWhenItems;
+
   return Object.entries(tabs)
     .sort(([, tabA], [, tabB]) => tabA.tabIndex - tabB.tabIndex)
     .findIndex(([tabLinkId, tab]) => {
@@ -34,12 +37,12 @@ export function getFirstVisibleTab(
         return false;
       }
 
-      if (enableWhenItems[tabLinkId]) {
-        return enableWhenItems[tabLinkId].isEnabled;
+      if (singleItems[tabLinkId]) {
+        return singleItems[tabLinkId].isEnabled;
       }
 
       if (enableWhenExpressions[tabLinkId]) {
-        return enableWhenExpressions[tabLinkId].isEnabled;
+        return enableWhenExpressions[tabLinkId].isEnabledSingle;
       }
 
       return true;

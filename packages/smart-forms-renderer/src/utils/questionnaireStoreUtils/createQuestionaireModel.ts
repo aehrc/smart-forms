@@ -100,7 +100,7 @@ function createEmptyModel(): QuestionnaireModel {
     calculatedExpressions: {},
     enableWhenExpressions: {},
     answerExpressions: {},
-    enableWhenItems: {},
+    enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSetCodings: {},
     processedValueSetUrls: {},
     fhirPathContext: {}

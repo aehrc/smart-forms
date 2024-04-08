@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findInAnswerValueSetCodings } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -38,11 +37,10 @@ interface ChoiceRadioAnswerValueSetItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  orientation: ChoiceItemOrientation;
 }
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, orientation, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -77,7 +75,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         qItem={qItem}
         codings={codings}
         valueRadio={valueRadio}
-        orientation={orientation}
         readOnly={readOnly}
         terminologyError={terminologyError}
         onCheckedChange={handleChange}
@@ -95,7 +92,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
           qItem={qItem}
           codings={codings}
           valueRadio={valueRadio}
-          orientation={orientation}
           readOnly={readOnly}
           terminologyError={terminologyError}
           onCheckedChange={handleChange}

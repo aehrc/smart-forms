@@ -16,7 +16,6 @@
  */
 
 import React, { useState } from 'react';
-import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { getOpenLabelText } from '../../../utils/itemControl';
@@ -39,11 +38,10 @@ interface OpenChoiceRadioAnswerOptionItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  orientation: ChoiceItemOrientation;
 }
 
 function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, orientation, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -130,7 +128,6 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
           openLabelText={openLabelText}
           openLabelValue={openLabelValue}
           openLabelSelected={openLabelSelected}
-          orientation={orientation}
           readOnly={readOnly}
           onValueChange={handleValueChange}
         />

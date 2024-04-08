@@ -72,11 +72,11 @@ export function getResponseToolBarColors(
           bgcolor: 'pale.primary'
         }
       : selectedQuestionnaire && existingResponses.length > 0
-      ? {
-          color: 'secondary.main',
-          bgcolor: 'pale.secondary'
-        }
-      : null)
+        ? {
+            color: 'secondary.main',
+            bgcolor: 'pale.secondary'
+          }
+        : null)
   };
 }
 

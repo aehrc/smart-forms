@@ -23,7 +23,7 @@ import ChoiceSelectAnswerOptionItem from './ChoiceSelectAnswerOptionItem';
 import ChoiceCheckboxAnswerOptionItem from './ChoiceCheckboxAnswerOptionItem';
 import ChoiceAutocompleteItem from './ChoiceAutocompleteItem';
 import ChoiceSelectAnswerValueSetItem from './ChoiceSelectAnswerValueSetItem';
-import { getChoiceControlType, getChoiceOrientation } from '../../../utils/choice';
+import { getChoiceControlType } from '../../../utils/choice';
 import ChoiceRadioAnswerValueSetItem from './ChoiceRadioAnswerValueSetItem';
 import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem';
 import type {
@@ -48,7 +48,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
   const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
-  const orientation = getChoiceOrientation(qItem);
   const choiceControlType = getChoiceControlType(qItem);
 
   switch (choiceControlType) {
@@ -58,7 +57,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            orientation={orientation}
             isRepeated={isRepeated}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
@@ -69,7 +67,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            orientation={orientation}
             isRepeated={isRepeated}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
@@ -82,7 +79,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            orientation={orientation}
             isRepeated={qItem.repeats ?? false}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
@@ -95,7 +91,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem.repeats ?? false}
-            orientation={orientation}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}

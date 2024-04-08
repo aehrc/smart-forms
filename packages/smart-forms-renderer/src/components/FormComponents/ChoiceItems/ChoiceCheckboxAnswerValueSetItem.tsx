@@ -19,7 +19,6 @@ import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import type { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
@@ -42,7 +41,6 @@ interface ChoiceCheckboxAnswerValueSetItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  orientation: ChoiceItemOrientation;
   showText?: boolean;
 }
 
@@ -50,7 +48,6 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const {
     qItem,
     qrItem,
-    orientation,
     isRepeated,
     showMinimalView = false,
     parentIsReadOnly,
@@ -90,9 +87,9 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
     return (
       <>
         <ChoiceCheckboxAnswerValueSetFields
+          qItem={qItem}
           codings={codings}
           answers={answers}
-          orientation={orientation}
           readOnly={readOnly}
           terminologyError={terminologyError}
           onCheckedChange={handleCheckedChange}
@@ -109,9 +106,9 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceCheckboxAnswerValueSetFields
+          qItem={qItem}
           codings={codings}
           answers={answers}
-          orientation={orientation}
           readOnly={readOnly}
           terminologyError={terminologyError}
           onCheckedChange={handleCheckedChange}

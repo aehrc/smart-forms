@@ -25,10 +25,13 @@ import type {
 import type { Variables } from '../interfaces/variables.interface';
 import type { LaunchContext } from '../interfaces/populate.interface';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpression, EnableWhenItems } from '../interfaces';
 import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import type { Tabs } from '../interfaces/tab.interface';
-import { updateItemAnswer } from '../utils/enableWhen';
+import {
+  mutateRepeatEnableWhenItemInstances,
+  updateEnableWhenItemAnswer
+} from '../utils/enableWhen';
 import { evaluateUpdatedExpressions } from '../utils/fhirpath';
 import {
   evaluateInitialCalculatedExpressions,
@@ -70,7 +73,16 @@ interface QuestionnaireStoreType {
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
   markTabAsComplete: (tabLinkId: string) => void;
-  updateEnableWhenItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => void;
+  updateEnableWhenItem: (
+    linkId: string,
+    newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
+    parentRepeatGroupIndex: number | null
+  ) => void;
+  mutateRepeatEnableWhenItems: (
+    parentRepeatGroupLinkId: string,
+    parentRepeatGroupIndex: number,
+    actionType: 'add' | 'remove'
+  ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
   updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
@@ -91,7 +103,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   calculatedExpressions: {},
   enableWhenExpressions: {},
   answerExpressions: {},
-  enableWhenItems: {},
+  enableWhenItems: { singleItems: {}, repeatItems: {} },
   enableWhenLinkedQuestions: {},
   enableWhenIsActivated: true,
   processedValueSetCodings: {},
@@ -156,7 +168,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       currentTabIndex: 0,
       variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
       launchContexts: {},
-      enableWhenItems: {},
+      enableWhenItems: { singleItems: {}, repeatItems: {} },
       enableWhenLinkedQuestions: {},
       enableWhenExpressions: {},
       calculatedExpressions: {},
@@ -175,7 +187,11 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       }
     }));
   },
-  updateEnableWhenItem: (linkId: string, newAnswer: QuestionnaireResponseItemAnswer[]) => {
+  updateEnableWhenItem: (
+    linkId: string,
+    newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
+    parentRepeatGroupIndex: number | null
+  ) => {
     const enableWhenLinkedQuestions = get().enableWhenLinkedQuestions;
     const enableWhenItems = get().enableWhenItems;
     if (!enableWhenLinkedQuestions[linkId]) {
@@ -183,11 +199,32 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     }
 
     const itemLinkedQuestions = enableWhenLinkedQuestions[linkId];
-    const updatedEnableWhenItems = updateItemAnswer(
+    const updatedEnableWhenItems = updateEnableWhenItemAnswer(
       { ...enableWhenItems },
       itemLinkedQuestions,
       linkId,
-      newAnswer
+      newAnswer,
+      parentRepeatGroupIndex
+    );
+
+    set(() => ({
+      enableWhenItems: updatedEnableWhenItems
+    }));
+  },
+  mutateRepeatEnableWhenItems: (
+    parentRepeatGroupLinkId: string,
+    parentRepeatGroupIndex: number,
+    actionType: 'add' | 'remove'
+  ) => {
+    const enableWhenItems = get().enableWhenItems;
+
+    const updatedEnableWhenItems = mutateRepeatEnableWhenItemInstances(
+      {
+        ...enableWhenItems
+      },
+      parentRepeatGroupLinkId,
+      parentRepeatGroupIndex,
+      actionType
     );
 
     set(() => ({

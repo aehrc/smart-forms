@@ -19,17 +19,17 @@ import enableWhenItemsSample from '../data/test-data/enable-when-items-sample.js
 import linkedQuestionsMapSample from '../data/test-data/linked-questions-map.json';
 import questionnaireResponseSample from '../data/test-data/questionnaire-response-sample.json';
 import initialAnswersSample from '../data/test-data/initial-answers-sample.json';
+import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { describe, expect, test } from '@jest/globals';
+import type { EnableWhenItems } from '@aehrc/smart-forms-renderer';
 import {
   createEnableWhenLinkedQuestions,
   readInitialAnswers,
   setInitialAnswers
-} from './enableWhen.ts';
-import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import type { EnableWhenItems } from '../types/enableWhen.interface.ts';
-import { describe, expect, test } from '@jest/globals';
+} from '@aehrc/smart-forms-renderer';
 
 describe('verify correctness of linked questions map created from enable when items', () => {
-  const enableWhenItems = enableWhenItemsSample as EnableWhenItems;
+  const enableWhenItems = enableWhenItemsSample as unknown as EnableWhenItems;
 
   const linkedQuestionsMap = createEnableWhenLinkedQuestions(enableWhenItems);
   const linkedQuestionsOfAge = linkedQuestionsMap['e2a16e4d-2765-4b61-b286-82cfc6356b30'];
@@ -78,7 +78,7 @@ describe('verify correctness of initial answers created from linked questions ma
 });
 
 describe('update enable when items by setting initial answers', () => {
-  const enableWhenItems = enableWhenItemsSample as EnableWhenItems;
+  const enableWhenItems = enableWhenItemsSample as unknown as EnableWhenItems;
   const linkedQuestionsMap = linkedQuestionsMapSample as Record<string, string[]>;
   const initialAnswers = initialAnswersSample as Record<string, QuestionnaireResponseItemAnswer[]>;
 
@@ -102,7 +102,7 @@ describe('update enable when items by setting initial answers', () => {
     };
 
     const updatedAnswers = setInitialAnswers(initialAnswers, enableWhenItems, linkedQuestionsMap);
-    const objectWithLinkedAge = updatedAnswers['c587e3b6-b91a-40dc-9a16-179342d001e9'];
+    const objectWithLinkedAge = updatedAnswers.singleItems['c587e3b6-b91a-40dc-9a16-179342d001e9'];
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const answer = objectWithLinkedAge.linked![0].answer!;

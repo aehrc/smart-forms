@@ -21,8 +21,9 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { RoundButton } from '../../../../components/Button/Button.styles.tsx';
-import { JSONTree } from 'react-json-tree';
-import { jsonTreeTheme } from '../../utils/jsonTreeTheme.ts';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import NotesIcon from '@mui/icons-material/Notes';
+import DebugResponseView from './DebugResponseView.tsx';
 
 interface Props {
   questionnaire: Questionnaire;
@@ -35,6 +36,7 @@ function DebugResponse(props: Props) {
   const { questionnaire, questionnaireResponse, fhirPathContext, clearQResponse } = props;
 
   const [displayName, setDisplayName] = useState('Questionnaire Response');
+  const [showJsonTree, setShowJsonTree] = useState(false);
 
   const displayObject =
     {
@@ -48,10 +50,16 @@ function DebugResponse(props: Props) {
   const variablesSelected = displayName === 'Variables';
 
   return (
-    <Box sx={{ pt: 6 }}>
+    <Stack sx={{ pt: 6 }}>
       <Stack direction="row" justifyContent="space-between">
-        <Stack direction="row">
+        <Stack direction="row" alignItems="center">
           <Typography variant="h5">{displayName}</Typography>
+          <IconButton
+            onClick={() => {
+              setShowJsonTree(!showJsonTree);
+            }}>
+            {showJsonTree ? <NotesIcon /> : <AccountTreeIcon />}
+          </IconButton>
           <IconButton
             onClick={() => {
               navigator.clipboard
@@ -71,55 +79,32 @@ function DebugResponse(props: Props) {
             </IconButton>
           ) : null}
         </Stack>
-        <Box display="flex" columnGap={1}>
-          <RoundButton
-            variant="outlined"
-            disabled={questionnaireSelected}
-            onClick={() => setDisplayName('Questionnaire')}>
-            Questionnaire
-          </RoundButton>
-          <RoundButton
-            variant="outlined"
-            disabled={questionnaireResponseSelected}
-            onClick={() => setDisplayName('Questionnaire Response')}>
-            QuestionnaireResponse
-          </RoundButton>
-          <RoundButton
-            variant="outlined"
-            disabled={variablesSelected}
-            onClick={() => setDisplayName('Variables')}>
-            Variables
-          </RoundButton>
-        </Box>
       </Stack>
+      <Box display="flex" columnGap={1}>
+        <RoundButton
+          variant="outlined"
+          disabled={questionnaireSelected}
+          onClick={() => setDisplayName('Questionnaire')}>
+          Questionnaire
+        </RoundButton>
+        <RoundButton
+          variant="outlined"
+          disabled={questionnaireResponseSelected}
+          onClick={() => setDisplayName('Questionnaire Response')}>
+          QuestionnaireResponse
+        </RoundButton>
+        <RoundButton
+          variant="outlined"
+          disabled={variablesSelected}
+          onClick={() => setDisplayName('Variables')}>
+          Variables
+        </RoundButton>
+      </Box>
 
-      {questionnaireSelected ? (
-        <JSONTree
-          data={questionnaire}
-          shouldExpandNodeInitially={() => true}
-          theme={jsonTreeTheme}
-          invertTheme
-        />
-      ) : null}
-
-      {questionnaireResponseSelected ? (
-        <JSONTree
-          data={questionnaireResponse}
-          shouldExpandNodeInitially={() => true}
-          theme={jsonTreeTheme}
-          invertTheme
-        />
-      ) : null}
-
-      {variablesSelected ? (
-        <JSONTree
-          data={fhirPathContext}
-          shouldExpandNodeInitially={() => true}
-          theme={jsonTreeTheme}
-          invertTheme
-        />
-      ) : null}
-    </Box>
+      <Box p={2}>
+        <DebugResponseView displayObject={displayObject} showJsonTree={showJsonTree} />
+      </Box>
+    </Stack>
   );
 }
 

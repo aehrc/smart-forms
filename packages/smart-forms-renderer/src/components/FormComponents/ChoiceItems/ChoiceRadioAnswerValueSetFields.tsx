@@ -24,20 +24,21 @@ import { StyledRadioGroup } from '../Item.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { getChoiceOrientation } from '../../../utils/choice';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   codings: Coding[];
   valueRadio: string | null;
-  orientation: ChoiceItemOrientation;
   readOnly: boolean;
   terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsProps) {
-  const { qItem, codings, valueRadio, orientation, readOnly, terminologyError, onCheckedChange } =
-    props;
+  const { qItem, codings, valueRadio, readOnly, terminologyError, onCheckedChange } = props;
+
+  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (codings.length > 0) {
     return (

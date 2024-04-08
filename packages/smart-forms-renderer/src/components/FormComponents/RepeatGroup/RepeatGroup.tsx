@@ -18,6 +18,7 @@
 import React, { useState } from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -36,11 +37,13 @@ import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
 import useReadOnly from '../../../hooks/useReadOnly';
 import Typography from '@mui/material/Typography';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentIsRepeatGroupAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
@@ -55,6 +58,8 @@ function RepeatGroup(props: RepeatGroupProps) {
     parentIsReadOnly,
     onQrRepeatGroupChange
   } = props;
+
+  const mutateRepeatEnableWhenItems = useQuestionnaireStore.use.mutateRepeatEnableWhenItems();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -84,8 +89,10 @@ function RepeatGroup(props: RepeatGroupProps) {
 
   function handleDeleteItem(index: number) {
     const updatedRepeatGroups = [...repeatGroups];
-
     updatedRepeatGroups.splice(index, 1);
+
+    const newLastItemIndex = repeatGroups.length;
+    mutateRepeatEnableWhenItems(qItem.linkId, newLastItemIndex, 'remove');
 
     setRepeatGroups(updatedRepeatGroups);
     onQrRepeatGroupChange({
@@ -97,6 +104,8 @@ function RepeatGroup(props: RepeatGroupProps) {
   }
 
   function handleAddItem() {
+    const newLastItemIndex = repeatGroups.length;
+    mutateRepeatEnableWhenItems(qItem.linkId, newLastItemIndex, 'add');
     setRepeatGroups([
       ...repeatGroups,
       {
@@ -120,6 +129,7 @@ function RepeatGroup(props: RepeatGroupProps) {
               <RepeatGroupItem
                 key={nanoId}
                 qItem={qItem}
+                repeatGroupIndex={index}
                 answeredQrItem={answeredQrItem}
                 nullableQrItem={nullableQrItem}
                 numOfRepeatGroups={repeatGroups.length}
@@ -158,6 +168,7 @@ function RepeatGroup(props: RepeatGroupProps) {
               <Collapse key={nanoId} timeout={200}>
                 <RepeatGroupItem
                   qItem={qItem}
+                  repeatGroupIndex={index}
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
