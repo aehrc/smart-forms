@@ -77,7 +77,7 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@sentry/cli": "^2.20.6",
-    "@storybook/addon-essentials": "^7.4.6",
+    "@storybook/addon-essentials": "^8.0.6",
     "@storybook/addon-interactions": "^7.4.6",
     "@storybook/addon-links": "^8.0.3",
     "@storybook/addon-onboarding": "^8.0.0",
