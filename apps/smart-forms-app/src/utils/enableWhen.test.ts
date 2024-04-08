@@ -102,7 +102,7 @@ describe('update enable when items by setting initial answers', () => {
     };
 
     const updatedAnswers = setInitialAnswers(initialAnswers, enableWhenItems, linkedQuestionsMap);
-    const objectWithLinkedAge = updatedAnswers['c587e3b6-b91a-40dc-9a16-179342d001e9'];
+    const objectWithLinkedAge = updatedAnswers.singleItems['c587e3b6-b91a-40dc-9a16-179342d001e9'];
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const answer = objectWithLinkedAge.linked![0].answer!;
