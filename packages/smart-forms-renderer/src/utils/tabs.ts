@@ -16,7 +16,7 @@
  */
 
 import type { Tabs } from '../interfaces/tab.interface';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpression, EnableWhenItems } from '../interfaces';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { isSpecificItemControl } from './itemControl';
 import { isHiddenByEnableWhen } from './qItem';
@@ -42,7 +42,7 @@ export function getFirstVisibleTab(
       }
 
       if (enableWhenExpressions[tabLinkId]) {
-        return enableWhenExpressions[tabLinkId].isEnabled;
+        return enableWhenExpressions[tabLinkId].isEnabledSingle;
       }
 
       return true;
