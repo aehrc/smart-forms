@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@ import {
   getNumOfSeparators,
   validateThreeMatches,
   validateTwoMatches
-} from '../components/FormComponents/CustomDateItem/customDateTimePicker/utils/parseDates';
+} from '../components/FormComponents/DateTimeItems/utils/parseDate';
 import dayjs from 'dayjs';
 
 function useDateValidation(input: string, parseFail: boolean = false): string | null {
@@ -70,7 +70,7 @@ function useDateValidation(input: string, parseFail: boolean = false): string | 
   }
 
   if (parseFail) {
-    return 'The date entered is not valid.';
+    return 'Input is an invalid date.';
   }
 
   return 'Input does not match any date format.';
