@@ -19,31 +19,31 @@ import dayjs from 'dayjs';
 
 const inputMatchRegex = /(\d{4}|\d{3}|\d{2})/g;
 
-export function validateInput(input: string) {
+export function validateDateInput(input: string) {
   const matches = input.match(inputMatchRegex);
 
   if (!matches) {
     return false;
   }
 
-  const seperator = input.includes('/') ? '/' : null;
+  const separator = input.includes('/') ? '/' : null;
 
   if (matches.length === 1) {
-    // seperator not supposed to be present if only one match present
-    if (seperator) {
+    // separator not supposed to be present if only one match present
+    if (separator) {
       return false;
     }
 
     return matches[0].length === 4;
   }
 
-  // Invalid if seperator is not present
-  if (!seperator) {
+  // Invalid if separator is not present
+  if (!separator) {
     return false;
   }
 
   // Invalid if num of slots don't match the number of regex matches
-  const slotsMatched = input.split(seperator);
+  const slotsMatched = input.split(separator);
   if (slotsMatched.length != matches.length) {
     return false;
   }
@@ -95,7 +95,7 @@ export function getNumOfSeparators(valueDate: string, seperator: string) {
 
 export function parseFhirDateToDisplayDate(fhirDate: string): {
   displayDate: string;
-  parseFail?: boolean;
+  dateParseFail?: boolean;
 } {
   if (fhirDate.length === 0) {
     return { displayDate: '' };
@@ -122,7 +122,7 @@ export function parseFhirDateToDisplayDate(fhirDate: string): {
     return { displayDate: oneMatchDate.format('YYYY') };
   }
 
-  return { displayDate: fhirDate, parseFail: true };
+  return { displayDate: fhirDate, dateParseFail: true };
 }
 
 export function parseInputDateToFhirDate(displayDate: string) {

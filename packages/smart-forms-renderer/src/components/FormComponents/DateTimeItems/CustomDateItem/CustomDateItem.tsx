@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,21 +21,21 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
-} from '../../../interfaces/renderProps.interface';
+} from '../../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useReadOnly from '../../../hooks/useReadOnly';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import useReadOnly from '../../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../../hooks/useRenderingExtensions';
+import { FullWidthFormComponentBox } from '../../../Box.styles';
+import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
 import {
   parseFhirDateToDisplayDate,
   parseInputDateToFhirDate,
-  validateInput
-} from './customDateTimePicker/utils/parseDates';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import useDateValidation from '../../../hooks/useDateValidation';
-import CustomDateField from './customDateTimePicker/CustomDateField';
-import { useQuestionnaireStore } from '../../../stores';
+  validateDateInput
+} from '../utils/parseDate';
+import { createEmptyQrItem } from '../../../../utils/qrItem';
+import useDateValidation from '../../../../hooks/useDateValidation';
+import CustomDateField from './CustomDateField';
+import { useQuestionnaireStore } from '../../../../stores';
 
 interface CustomDateItemProps
   extends PropsWithQrItemChangeHandler,
@@ -66,13 +66,13 @@ function CustomDateItem(props: CustomDateItemProps) {
     }
   }
 
-  const { displayDate, parseFail } = parseFhirDateToDisplayDate(valueDate);
+  const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDate);
 
   const [input, setInput] = useState(displayDate);
   const [focused, setFocused] = useState(false);
 
   // Perform validation checks
-  const errorFeedback = useDateValidation(input, parseFail);
+  const errorFeedback = useDateValidation(input, dateParseFail);
 
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
@@ -89,7 +89,7 @@ function CustomDateItem(props: CustomDateItemProps) {
       onQrItemChange(createEmptyQrItem(qItem));
     }
 
-    if (!validateInput(newInput)) {
+    if (!validateDateInput(newInput)) {
       return;
     }
 

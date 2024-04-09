@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,16 +30,16 @@ import type {
 import StringItem from '../StringItem/StringItem';
 import BooleanItem from '../BooleanItem/BooleanItem';
 import TimeItem from '../TimeItem/TimeItem';
-import DateTimeItem from '../DateTimeItem/DateTimeItem';
 import TextItem from '../TextItem/TextItem';
 import DisplayItem from '../DisplayItem/DisplayItem';
 import DecimalItem from '../DecimalItem/DecimalItem';
 import UrlItem from '../UrlItem/UrlItem';
-import CustomDateItem from '../CustomDateItem/CustomDateItem';
+import CustomDateItem from '../DateTimeItems/CustomDateItem/CustomDateItem';
 import { isSpecificItemControl } from '../../../utils';
 import SliderItem from '../SliderItem/SliderItem';
 import IntegerItem from '../IntegerItem/IntegerItem';
 import AttachmentItem from '../AttachmentItem/AttachmentItem';
+import CustomDateTimeItem from '../DateTimeItems/CustomDateTimeItem/CustomDateTimeItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -117,7 +117,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       );
     case 'dateTime':
       return (
-        <DateTimeItem
+        <CustomDateTimeItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}

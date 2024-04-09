@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -164,8 +164,8 @@ function qrItemAnswerValueTypeSwitcher(answer: QuestionnaireResponseItemAnswer):
   }
 
   if (answer.valueDate) {
-    const { displayDate, parseFail } = parseFhirDateToDisplayDate(answer.valueDate);
-    if (!parseFail) {
+    const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(answer.valueDate);
+    if (!dateParseFail) {
       return `${displayDate}`;
     }
 
