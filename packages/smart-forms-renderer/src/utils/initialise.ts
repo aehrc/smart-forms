@@ -26,7 +26,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 import type { Tabs } from '../interfaces/tab.interface';
 import { assignPopulatedAnswersToEnableWhen } from './enableWhen';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
@@ -315,7 +315,7 @@ function createNewRepeatGroupQuestionnaireResponseItem(
 export interface initialFormFromResponseParams {
   questionnaireResponse: QuestionnaireResponse;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression>;
   variablesFhirPath: Record<string, Expression[]>;
   tabs: Tabs;
@@ -325,7 +325,7 @@ export interface initialFormFromResponseParams {
 export function initialiseFormFromResponse(params: initialFormFromResponseParams): {
   initialEnableWhenItems: EnableWhenItems;
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
-  initialEnableWhenExpressions: Record<string, EnableWhenExpression>;
+  initialEnableWhenExpressions: EnableWhenExpressions;
   initialCalculatedExpressions: Record<string, CalculatedExpression>;
   firstVisibleTab: number;
   updatedFhirPathContext: Record<string, any>;

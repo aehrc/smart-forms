@@ -16,7 +16,7 @@
  */
 
 import type { Tabs } from '../interfaces/tab.interface';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { isSpecificItemControl } from './itemControl';
 import { isHiddenByEnableWhen } from './qItem';
@@ -25,10 +25,11 @@ import { structuredDataCapture } from 'fhir-sdc-helpers';
 export function getFirstVisibleTab(
   tabs: Tabs,
   enableWhenItems: EnableWhenItems,
-  enableWhenExpressions: Record<string, EnableWhenExpression>
+  enableWhenExpressions: EnableWhenExpressions
 ) {
   // Only singleEnableWhenItems are relevant for tab operations
   const { singleItems } = enableWhenItems;
+  const { singleExpressions } = enableWhenExpressions;
 
   return Object.entries(tabs)
     .sort(([, tabA], [, tabB]) => tabA.tabIndex - tabB.tabIndex)
@@ -41,29 +42,13 @@ export function getFirstVisibleTab(
         return singleItems[tabLinkId].isEnabled;
       }
 
-      if (enableWhenExpressions[tabLinkId]) {
-        return enableWhenExpressions[tabLinkId].isEnabledSingle;
+      if (singleExpressions[tabLinkId]) {
+        return singleExpressions[tabLinkId].isEnabled;
       }
 
       return true;
     });
 }
-/*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
- * Organisation (CSIRO) ABN 41 687 119 230.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 /**
  * Checks if any of the items in a qItem array is a tabbed item
@@ -148,7 +133,7 @@ interface constructTabsWithVisibilityParams {
   tabs: Tabs;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 export function constructTabsWithVisibility(
@@ -176,7 +161,7 @@ interface getNextVisibleTabIndexParams {
   currentTabIndex: number;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 /**
  * Get index of next visible tab
@@ -216,7 +201,7 @@ export function findNumOfVisibleTabs(
   tabs: Tabs,
   enableWhenIsActivated: boolean,
   enableWhenItems: EnableWhenItems,
-  enableWhenExpressions: Record<string, EnableWhenExpression>
+  enableWhenExpressions: EnableWhenExpressions
 ): number {
   const tabsWithVisibility = constructTabsWithVisibility({
     tabs,
@@ -244,7 +229,7 @@ interface IsTabHiddenParams {
   isTab: boolean;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
   completedTabsCollapsed: boolean;
 }
 

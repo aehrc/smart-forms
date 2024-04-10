@@ -26,7 +26,7 @@ import _isEqual from 'lodash/isEqual';
 import { containsTabs, isTabContainer } from './tabs';
 import { getShortText, isSpecificItemControl } from './itemControl';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 import { isHiddenByEnableWhen } from './qItem';
 
 export interface ItemToRepopulate {
@@ -49,7 +49,7 @@ interface getItemsToRepopulateParams {
   updatableResponse: QuestionnaireResponse;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 export function getItemsToRepopulate(
@@ -135,7 +135,7 @@ interface getItemsToRepopulateRecursiveParams {
   itemsToRepopulate: Record<string, ItemToRepopulate>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 // 1. Get items to repopulate (only new items)
@@ -278,7 +278,7 @@ interface getGridTableToRepopulateParams {
   itemsToRepopulate: Record<string, ItemToRepopulate>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 function getGridTableToRepopulate(params: getGridTableToRepopulateParams) {

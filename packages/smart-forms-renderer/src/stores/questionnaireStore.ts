@@ -25,7 +25,7 @@ import type {
 import type { Variables } from '../interfaces/variables.interface';
 import type { LaunchContext } from '../interfaces/populate.interface';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import type { Tabs } from '../interfaces/tab.interface';
 import {
@@ -43,6 +43,8 @@ import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
 import { terminologyServerStore } from './terminologyServerStore';
 import { createSelectors } from './selector';
+import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
+import { questionnaireResponseStore } from './questionnaireResponseStore';
 
 interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
@@ -54,7 +56,7 @@ interface QuestionnaireStoreType {
   enableWhenItems: EnableWhenItems;
   enableWhenLinkedQuestions: Record<string, string[]>;
   enableWhenIsActivated: boolean;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   processedValueSetCodings: Record<string, Coding[]>;
@@ -101,7 +103,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
   launchContexts: {},
   calculatedExpressions: {},
-  enableWhenExpressions: {},
+  enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
   answerExpressions: {},
   enableWhenItems: { singleItems: {}, repeatItems: {} },
   enableWhenLinkedQuestions: {},
@@ -170,7 +172,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       launchContexts: {},
       enableWhenItems: { singleItems: {}, repeatItems: {} },
       enableWhenLinkedQuestions: {},
-      enableWhenExpressions: {},
+      enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
       calculatedExpressions: {},
       answerExpressions: {},
       processedValueSetCodings: {},
@@ -217,6 +219,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     actionType: 'add' | 'remove'
   ) => {
     const enableWhenItems = get().enableWhenItems;
+    const enableWhenExpressions = get().enableWhenExpressions;
 
     const updatedEnableWhenItems = mutateRepeatEnableWhenItemInstances(
       {
@@ -227,9 +230,22 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       actionType
     );
 
-    set(() => ({
-      enableWhenItems: updatedEnableWhenItems
-    }));
+    const { updatedEnableWhenExpressions, isUpdated } = mutateRepeatEnableWhenExpressionInstances({
+      questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
+      variablesFhirPath: get().variables.fhirPathVariables,
+      existingFhirPathContext: get().fhirPathContext,
+      enableWhenExpressions: enableWhenExpressions,
+      parentRepeatGroupLinkId,
+      parentRepeatGroupIndex,
+      actionType
+    });
+
+    if (isUpdated) {
+      set(() => ({
+        enableWhenItems: updatedEnableWhenItems,
+        enableWhenExpressions: updatedEnableWhenExpressions
+      }));
+    }
   },
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),

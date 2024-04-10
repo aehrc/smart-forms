@@ -21,10 +21,20 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 
-export interface EnableWhenExpression {
+export interface EnableWhenExpressions {
+  singleExpressions: Record<string, EnableWhenSingleExpression>;
+  repeatExpressions: Record<string, EnableWhenRepeatExpression>;
+}
+
+export interface EnableWhenSingleExpression {
   expression: string;
-  isEnabledSingle?: boolean;
-  isEnabledMultiple?: boolean[];
+  isEnabled?: boolean;
+}
+
+export interface EnableWhenRepeatExpression {
+  expression: string;
+  parentLinkId: string;
+  enabledIndexes: boolean[];
 }
 
 export interface EnableWhenItems {

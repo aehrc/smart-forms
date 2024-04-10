@@ -21,7 +21,7 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 import { isHiddenByEnableWhen } from './qItem';
 
 interface removeEmptyAnswersParams {
@@ -29,7 +29,7 @@ interface removeEmptyAnswersParams {
   questionnaireResponse: QuestionnaireResponse;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 /**
@@ -79,7 +79,7 @@ interface removeEmptyAnswersFromItemRecursiveParams {
   qrItem: QuestionnaireResponseItem;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 function removeEmptyAnswersFromItemRecursive(
@@ -167,7 +167,7 @@ function answerIsEmpty(
   qrItem: QuestionnaireResponseItem,
   enableWhenIsActivated: boolean,
   enableWhenItems: EnableWhenItems,
-  enableWhenExpressions: Record<string, EnableWhenExpression>
+  enableWhenExpressions: EnableWhenExpressions
 ) {
   if (
     isHiddenByEnableWhen({

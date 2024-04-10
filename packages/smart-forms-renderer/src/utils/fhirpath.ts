@@ -19,21 +19,21 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
-import type { EnableWhenExpression } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpressions } from '../interfaces';
 import { evaluateEnableWhenExpressions } from './enableWhenExpression';
 import { evaluateCalculatedExpressions } from './calculatedExpression';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
   calculatedExpressions: Record<string, CalculatedExpression>;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
 }
 
 export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsParams): {
   isUpdated: boolean;
-  updatedEnableWhenExpressions: Record<string, EnableWhenExpression>;
+  updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression>;
   updatedFhirPathContext: Record<string, any>;
 } {

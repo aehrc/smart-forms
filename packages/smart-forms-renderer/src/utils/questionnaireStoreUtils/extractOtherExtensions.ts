@@ -15,13 +15,21 @@
  * limitations under the License.
  */
 
-import type { Expression, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type {
+  Expression,
+  Extension,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireItemEnableWhen
+} from 'fhir/r4';
 import type { CalculatedExpression } from '../../interfaces/calculatedExpression.interface';
 import type {
-  EnableWhenExpression,
+  EnableWhenExpressions,
   EnableWhenItems,
+  EnableWhenRepeatExpression,
   EnableWhenRepeatItemProperties,
   EnableWhenRepeatLinkedItem,
+  EnableWhenSingleExpression,
   EnableWhenSingleItemProperties,
   EnableWhenSingleLinkedItem
 } from '../../interfaces';
@@ -32,11 +40,15 @@ import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables';
 import { getRepeatGroupParentItem } from '../misc';
+import { checkItemIsEnabledRepeat } from '../enableWhen';
+import cloneDeep from 'lodash.clonedeep';
+import { emptyResponse } from '../emptyResource';
+import { evaluateEnableWhenRepeatExpressionInstance } from '../enableWhenExpression';
 
 interface ReturnParamsRecursive {
   variables: Variables;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
@@ -49,7 +61,10 @@ export function extractOtherExtensions(
   terminologyServerUrl: string
 ): ReturnParamsRecursive {
   const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
-  const enableWhenExpressions: Record<string, EnableWhenExpression> = {};
+  const enableWhenExpressions: EnableWhenExpressions = {
+    singleExpressions: {},
+    repeatExpressions: {}
+  };
   const calculatedExpressions: Record<string, CalculatedExpression> = {};
   const answerExpressions: Record<string, AnswerExpression> = {};
 
@@ -57,7 +72,10 @@ export function extractOtherExtensions(
     return {
       variables: variables,
       enableWhenItems: { singleItems: {}, repeatItems: {} },
-      enableWhenExpressions: {},
+      enableWhenExpressions: {
+        singleExpressions: {},
+        repeatExpressions: {}
+      },
       calculatedExpressions: {},
       answerExpressions: {},
       valueSetPromises: valueSetPromises
@@ -95,7 +113,7 @@ interface extractExtensionsFromItemRecursiveParams {
   item: QuestionnaireItem;
   variables: Variables;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
@@ -149,11 +167,21 @@ function extractExtensionsFromItemRecursive(
     }
   }
 
-  const enableWhenExpression = getEnableWhenExpression(item);
-  if (enableWhenExpression) {
-    enableWhenExpressions[item.linkId] = {
-      expression: `${enableWhenExpression.expression}`
-    };
+  const initialisedEnableWhenExpressions = initialiseEnableWhenExpression(
+    item,
+    questionnaire,
+    parentRepeatGroupLinkId
+  );
+  if (initialisedEnableWhenExpressions) {
+    const { enableWhenExpressionType, enableWhenExpression } = initialisedEnableWhenExpressions;
+
+    if (enableWhenExpressionType === 'single') {
+      enableWhenExpressions.singleExpressions[item.linkId] =
+        enableWhenExpression as EnableWhenSingleExpression;
+    } else if (enableWhenExpressionType === 'repeat') {
+      enableWhenExpressions.repeatExpressions[item.linkId] =
+        enableWhenExpression as EnableWhenRepeatExpression;
+    }
   }
 
   const calculatedExpression = getCalculatedExpression(item);
@@ -215,10 +243,16 @@ export function initialiseEnableWhenItemProperties(
   enableWhenItemType: 'single' | 'repeat';
   enableWhenItemProperties: EnableWhenSingleItemProperties | EnableWhenRepeatItemProperties;
 } | null {
+  const enableWhen = qItem.enableWhen;
+  if (!enableWhen) {
+    return null;
+  }
+
   // Parent repeat group linkId exist, try to classify this item as a repeat enableWhen item
   if (parentLinkId) {
     const enableWhenRepeatItemProperties = initialiseEnableWhenRepeatItemProperties(
       qItem,
+      enableWhen,
       questionnaire,
       parentLinkId
     );
@@ -232,28 +266,23 @@ export function initialiseEnableWhenItemProperties(
   }
 
   // If parentLinkId is not provided or item cannot be classified as a repeat enableWhen item, classify it as a single enableWhen item
-  const enableWhenSingleItemProperties = initialiseEnableWhenSingleItemProperties(qItem);
-  if (enableWhenSingleItemProperties) {
-    return {
-      enableWhenItemType: 'single',
-      enableWhenItemProperties: enableWhenSingleItemProperties
-    };
-  }
-
-  return null;
+  const enableWhenSingleItemProperties = initialiseEnableWhenSingleItemProperties(
+    qItem,
+    enableWhen
+  );
+  return {
+    enableWhenItemType: 'single',
+    enableWhenItemProperties: enableWhenSingleItemProperties
+  };
 }
 
 export function initialiseEnableWhenRepeatItemProperties(
   qItem: QuestionnaireItem,
+  enableWhen: QuestionnaireItemEnableWhen[],
   questionnaire: Questionnaire,
   parentLinkId: string
 ): EnableWhenRepeatItemProperties | null {
-  const enableWhen = qItem.enableWhen;
-  if (!enableWhen) {
-    return null;
-  }
-
-  const linkedItems = enableWhen.map((linkedItem): EnableWhenRepeatLinkedItem | null => {
+  const linkedItemsNullable = enableWhen.map((linkedItem): EnableWhenRepeatLinkedItem | null => {
     const linkedParentItem = getRepeatGroupParentItem(questionnaire, linkedItem.question);
     // Check if parentLinkId match the linked item's parent linkId
     if (parentLinkId === linkedParentItem?.linkId) {
@@ -265,16 +294,24 @@ export function initialiseEnableWhenRepeatItemProperties(
   });
 
   // If any linked item is not valid, exit early
-  if (linkedItems.some((linkedItem) => linkedItem === null)) {
+  if (linkedItemsNullable.some((linkedItem) => linkedItem === null)) {
     return null;
   }
 
-  return {
+  const linkedItems = linkedItemsNullable as EnableWhenRepeatLinkedItem[];
+  const enableWhenRepeatItemProperties = {
     linked: linkedItems as EnableWhenRepeatLinkedItem[],
     parentLinkId: parentLinkId,
     enabledIndexes: [false],
     enableBehavior: qItem.enableBehavior
   };
+
+  enableWhenRepeatItemProperties.enabledIndexes[0] = checkItemIsEnabledRepeat(
+    enableWhenRepeatItemProperties,
+    0
+  );
+
+  return enableWhenRepeatItemProperties;
 }
 
 /**
@@ -283,20 +320,103 @@ export function initialiseEnableWhenRepeatItemProperties(
  * @author Sean Fong
  */
 export function initialiseEnableWhenSingleItemProperties(
-  qItem: QuestionnaireItem
-): EnableWhenSingleItemProperties | null {
-  const enableWhen = qItem.enableWhen;
-  if (enableWhen) {
-    return {
-      linked: enableWhen.map((linkedItem): EnableWhenSingleLinkedItem => {
-        return { enableWhen: linkedItem };
-      }),
-      isEnabled: false,
-      enableBehavior: qItem.enableBehavior
-    };
+  qItem: QuestionnaireItem,
+  enableWhen: QuestionnaireItemEnableWhen[]
+): EnableWhenSingleItemProperties {
+  return {
+    linked: enableWhen.map((linkedItem): EnableWhenSingleLinkedItem => {
+      return { enableWhen: linkedItem };
+    }),
+    isEnabled: false,
+    enableBehavior: qItem.enableBehavior
+  };
+}
+
+function initialiseEnableWhenExpressionRepeat(
+  enableWhenExpression: Expression,
+  questionnaire: Questionnaire,
+  parentLinkId: string
+): Expression | null {
+  const expression = enableWhenExpression.expression;
+  if (!expression) {
+    return null;
+  }
+
+  // Get the last linkId in the expression
+  const regExpLinkId = /linkId\s*=\s*'([^']+)'/g;
+  const matches = expression.replace(' ', '').match(regExpLinkId);
+  if (!matches) {
+    return null;
+  }
+  const linkIdMatches = matches.map((match) =>
+    match.substring(match.indexOf("'") + 1, match.lastIndexOf("'"))
+  );
+  const lastLinkIdMatch = linkIdMatches[linkIdMatches.length - 1];
+
+  // Use the last linkId as the linkedItem, and get it's repeat group parent item's linkId
+  // If both parent linkId matches, this enableWhenExpression is a repeat enableWhenExpression
+  const linkedParentItem = getRepeatGroupParentItem(questionnaire, lastLinkIdMatch);
+  if (parentLinkId === linkedParentItem?.linkId) {
+    return enableWhenExpression;
   }
 
   return null;
+}
+
+function initialiseEnableWhenExpression(
+  qItem: QuestionnaireItem,
+  questionnaire: Questionnaire,
+  parentLinkId?: string
+): {
+  enableWhenExpressionType: 'single' | 'repeat';
+  enableWhenExpression: EnableWhenSingleExpression | EnableWhenRepeatExpression;
+} | null {
+  const enableWhenExpression = getEnableWhenExpression(qItem);
+  if (!enableWhenExpression) {
+    return null;
+  }
+
+  // Parent repeat group linkId exist, try to classify this item as a repeat enableWhen item
+  if (parentLinkId) {
+    const expressionRepeat = initialiseEnableWhenExpressionRepeat(
+      enableWhenExpression,
+      questionnaire,
+      parentLinkId
+    );
+
+    if (expressionRepeat) {
+      const enableWhenRepeatExpression = {
+        expression: `${expressionRepeat.expression}`,
+        parentLinkId: parentLinkId,
+        enabledIndexes: [false]
+      };
+
+      const { isEnabled } = evaluateEnableWhenRepeatExpressionInstance(
+        qItem.linkId,
+        { resource: cloneDeep(emptyResponse) },
+        enableWhenRepeatExpression.expression,
+        parentLinkId,
+        enableWhenRepeatExpression.expression.lastIndexOf('.where(linkId'),
+        0
+      );
+
+      if (typeof isEnabled === 'boolean') {
+        enableWhenRepeatExpression.enabledIndexes[0] = isEnabled;
+      }
+
+      return {
+        enableWhenExpressionType: 'repeat',
+        enableWhenExpression: enableWhenRepeatExpression
+      };
+    }
+  }
+
+  return {
+    enableWhenExpressionType: 'single',
+    enableWhenExpression: {
+      expression: `${enableWhenExpression.expression}`
+    }
+  };
 }
 
 /**
