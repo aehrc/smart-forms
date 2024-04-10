@@ -47,7 +47,7 @@
     "fhirclient": "^2.5.2",
     "fhirpath": "^3.7.1",
     "he": "^1.2.0",
-    "html-react-parser": "^5.0.3",
+    "html-react-parser": "^5.1.10",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "lodash.filter": "^4.6.0",
