@@ -1,8 +1,10 @@
 export {
-  EnableWhenExpression,
   EnableWhenItems,
   EnableWhenSingleItemProperties,
   EnableWhenRepeatItemProperties,
   EnableWhenSingleLinkedItem,
-  EnableWhenRepeatLinkedItem
+  EnableWhenRepeatLinkedItem,
+  EnableWhenExpressions,
+  EnableWhenSingleExpression,
+  EnableWhenRepeatExpression
 } from './enableWhen.interface';

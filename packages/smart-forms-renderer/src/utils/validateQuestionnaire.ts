@@ -23,7 +23,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 import { isHiddenByEnableWhen } from './qItem';
 import { getRegexValidation } from './itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
@@ -37,7 +37,7 @@ interface ValidateQuestionnaireParams {
   invalidItems: Record<string, InvalidType>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 /**
@@ -107,7 +107,7 @@ interface ValidateItemRecursiveParams {
   invalidItems: Record<string, InvalidType>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
 }
 
 function validateItemRecursive(params: ValidateItemRecursiveParams) {
@@ -230,14 +230,6 @@ function validateSingleItem(
 
   return invalidItems;
 }
-
-// function validateRepeatGroup(
-//   qItem: QuestionnaireItem,
-//   qrItems: QuestionnaireResponseItem,
-//   invalidLinkIds: Record<string, InvalidType>
-// ) {
-//   return;
-// }
 
 function getInputInString(answer: QuestionnaireResponseItemAnswer) {
   if (answer.valueString) {

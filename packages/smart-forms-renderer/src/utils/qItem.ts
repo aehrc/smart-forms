@@ -19,13 +19,13 @@ import type { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { getChoiceControlType } from './choice';
 import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { getOpenChoiceControlType } from './openChoice';
-import type { EnableWhenExpression, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 
 interface isHiddenByEnableWhensParams {
   linkId: string;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: Record<string, EnableWhenExpression>;
+  enableWhenExpressions: EnableWhenExpressions;
   parentRepeatGroupIndex?: number;
 }
 
@@ -38,13 +38,13 @@ export function isHiddenByEnableWhen(params: isHiddenByEnableWhensParams): boole
     parentRepeatGroupIndex
   } = params;
 
-  const { singleItems, repeatItems } = enableWhenItems;
-
   // If enableWhen is not activated, items are not hidden by enableWhen
   if (!enableWhenIsActivated) {
     return false;
   }
 
+  // Check enableWhen items
+  const { singleItems, repeatItems } = enableWhenItems;
   if (singleItems[linkId]) {
     return !singleItems[linkId].isEnabled;
   }
@@ -53,15 +53,15 @@ export function isHiddenByEnableWhen(params: isHiddenByEnableWhensParams): boole
     return !repeatItems[linkId].enabledIndexes[parentRepeatGroupIndex];
   }
 
-  if (enableWhenExpressions[linkId] && parentRepeatGroupIndex !== undefined) {
-    const isEnabledMultiple = enableWhenExpressions[linkId].isEnabledMultiple;
-    if (isEnabledMultiple) {
-      return !isEnabledMultiple[parentRepeatGroupIndex];
-    }
+  // Check enableWhenExpressions
+  const { singleExpressions, repeatExpressions } = enableWhenExpressions;
+
+  if (repeatExpressions[linkId] && parentRepeatGroupIndex !== undefined) {
+    return !repeatExpressions[linkId].enabledIndexes[parentRepeatGroupIndex];
   }
 
-  if (enableWhenExpressions[linkId]) {
-    return !enableWhenExpressions[linkId].isEnabledSingle;
+  if (singleExpressions[linkId]) {
+    return !enableWhenExpressions.singleExpressions[linkId].isEnabled;
   }
 
   return false;

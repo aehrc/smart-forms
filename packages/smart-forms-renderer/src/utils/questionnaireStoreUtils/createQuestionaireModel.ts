@@ -98,7 +98,7 @@ function createEmptyModel(): QuestionnaireModel {
     variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
     launchContexts: {},
     calculatedExpressions: {},
-    enableWhenExpressions: {},
+    enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
     answerExpressions: {},
     enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSetCodings: {},
