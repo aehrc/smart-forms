@@ -394,8 +394,7 @@ function initialiseEnableWhenExpression(
       const { isEnabled } = evaluateEnableWhenRepeatExpressionInstance(
         qItem.linkId,
         { resource: cloneDeep(emptyResponse) },
-        enableWhenRepeatExpression.expression,
-        parentLinkId,
+        enableWhenRepeatExpression,
         enableWhenRepeatExpression.expression.lastIndexOf('.where(linkId'),
         0
       );

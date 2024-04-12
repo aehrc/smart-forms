@@ -78,27 +78,27 @@ function evaluateEnableWhenSingleExpressions(
 } {
   let isUpdated = false;
   for (const linkId in enableWhenSingleExpressions) {
+    const initialValue = enableWhenSingleExpressions[linkId].isEnabled;
+    const expression = enableWhenSingleExpressions[linkId].expression;
+
     try {
-      const result = fhirpath.evaluate(
-        '',
-        enableWhenSingleExpressions[linkId].expression,
-        updatedFhirPathContext,
-        fhirpath_r4_model
-      );
+      const result = fhirpath.evaluate('', expression, updatedFhirPathContext, fhirpath_r4_model);
 
       // Update enableWhenExpressions if length of result array > 0
-      if (result.length > 0) {
-        isUpdated = true;
+      // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per #733
+      if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
         enableWhenSingleExpressions[linkId].isEnabled = result[0];
+        isUpdated = true;
       }
 
       // handle intersect edge case - evaluate() returns empty array if result is false
       if (
         enableWhenSingleExpressions[linkId].expression.includes('intersect') &&
-        result.length === 0
+        result.length === 0 &&
+        initialValue !== false
       ) {
-        isUpdated = true;
         enableWhenSingleExpressions[linkId].isEnabled = false;
+        isUpdated = true;
       }
     } catch (e) {
       console.warn(
@@ -154,8 +154,7 @@ function evaluateEnableWhenRepeatExpressions(
       const { isEnabled, isUpdated } = evaluateEnableWhenRepeatExpressionInstance(
         linkId,
         fhirPathContext,
-        enableWhenExpression.expression,
-        enableWhenExpression.parentLinkId,
+        enableWhenExpression,
         lastLinkIdIndex,
         i
       );
@@ -174,11 +173,14 @@ function evaluateEnableWhenRepeatExpressions(
 export function evaluateEnableWhenRepeatExpressionInstance(
   linkId: string,
   fhirPathContext: Record<string, any>,
-  expression: string,
-  parentLinkId: string,
+  enableWhenRepeatExpression: EnableWhenRepeatExpression,
   lastLinkIdIndex: number,
   instanceIndex: number
 ): { isEnabled: boolean | null; isUpdated: boolean } {
+  const expression = enableWhenRepeatExpression.expression;
+  const parentLinkId = enableWhenRepeatExpression.parentLinkId;
+  const initialValue = enableWhenRepeatExpression.enabledIndexes[instanceIndex];
+
   const modifiedExpression =
     expression.slice(0, lastLinkIdIndex) +
     `.where(linkId='${parentLinkId}').item[${instanceIndex}]` +
@@ -190,13 +192,14 @@ export function evaluateEnableWhenRepeatExpressionInstance(
     const result = fhirpath.evaluate('', modifiedExpression, fhirPathContext, fhirpath_r4_model);
 
     // Update enableWhenExpressions if length of result array > 0
-    if (result.length > 0 && typeof result[0] === 'boolean') {
+    // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per #733
+    if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
       isEnabled = result[0];
       isUpdated = true;
     }
 
     // handle intersect edge case - evaluate() returns empty array if result is false
-    if (expression.includes('intersect') && result.length === 0) {
+    if (expression.includes('intersect') && result.length === 0 && initialValue !== result[0]) {
       isEnabled = false;
       isUpdated = true;
     }
@@ -281,8 +284,7 @@ export function mutateRepeatEnableWhenExpressionInstances(
       const { isEnabled } = evaluateEnableWhenRepeatExpressionInstance(
         linkId,
         updatedFhirPathContext,
-        repeatExpressions[linkId].expression,
-        repeatExpressions[linkId].parentLinkId,
+        repeatExpressions[linkId],
         repeatExpressions[linkId].expression.lastIndexOf('.where(linkId'),
         parentRepeatGroupIndex
       );
