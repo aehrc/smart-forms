@@ -23,15 +23,15 @@ import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';
 import GroupHeading from './GroupHeading';
 import { GroupCard } from './GroupItem.styles';
-import NextTabButtonWrapper from './NextTabButtonWrapper';
+import TabButtonsWrapper from './TabButtonsWrapper';
 import GroupItemSwitcher from './GroupItemSwitcher';
 import useReadOnly from '../../../hooks/useReadOnly';
 
@@ -126,7 +126,7 @@ function GroupItem(props: GroupItemProps) {
         })}
 
         {/* Next tab button at the end of each tab group */}
-        <NextTabButtonWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
+        <TabButtonsWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
       </GroupCard>
     </QGroupContainerBox>
   );

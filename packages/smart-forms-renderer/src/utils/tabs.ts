@@ -156,7 +156,8 @@ export function constructTabsWithVisibility(
   });
 }
 
-interface getNextVisibleTabIndexParams {
+interface getVisibleTabIndexParams {
+  direction: 'next' | 'previous';
   tabs: Tabs;
   currentTabIndex: number;
   enableWhenIsActivated: boolean;
@@ -168,9 +169,15 @@ interface getNextVisibleTabIndexParams {
  *
  * @author Sean Fong
  */
-export function getNextVisibleTabIndex(params: getNextVisibleTabIndexParams): number {
-  const { tabs, currentTabIndex, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } =
-    params;
+export function getVisibleTabIndex(params: getVisibleTabIndexParams): number {
+  const {
+    direction,
+    tabs,
+    currentTabIndex,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  } = params;
 
   const tabsWithVisibility = constructTabsWithVisibility({
     tabs,
@@ -179,16 +186,28 @@ export function getNextVisibleTabIndex(params: getNextVisibleTabIndexParams): nu
     enableWhenExpressions
   });
 
-  let nextTabIndex = currentTabIndex + 1;
-  const nextTabIndexIsVisible = false;
-  while (!nextTabIndexIsVisible) {
-    if (tabsWithVisibility[nextTabIndex].isVisible) {
-      return nextTabIndex;
+  let visibleTabIndex;
+  if (direction === 'next') {
+    visibleTabIndex = currentTabIndex + 1;
+    const nextTabIndexIsVisible = false;
+    while (!nextTabIndexIsVisible) {
+      if (tabsWithVisibility[visibleTabIndex].isVisible) {
+        return visibleTabIndex;
+      }
+      visibleTabIndex++;
     }
-    nextTabIndex++;
+  } else {
+    visibleTabIndex = currentTabIndex - 1;
+    const previousTabIndexIsVisible = false;
+    while (!previousTabIndexIsVisible) {
+      if (tabsWithVisibility[visibleTabIndex].isVisible) {
+        return visibleTabIndex;
+      }
+      visibleTabIndex--;
+    }
   }
 
-  return nextTabIndex;
+  return visibleTabIndex;
 }
 
 /**

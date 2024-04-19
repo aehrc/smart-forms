@@ -17,17 +17,18 @@
 
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
-import { findNumOfVisibleTabs, getNextVisibleTabIndex } from '../../../utils/tabs';
+import { findNumOfVisibleTabs, getVisibleTabIndex } from '../../../utils/tabs';
 import type { Tabs } from '../../../interfaces/tab.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import NextTabButton from './NextTabButton';
+import PreviousTabButton from './PreviousTabButton';
 
-interface NextTabButtonWrapperProps {
+interface TabButtonsWrapperProps {
   currentTabIndex?: number;
   tabs?: Tabs;
 }
 
-const NextTabButtonWrapper = memo(function NextTabWrapper(props: NextTabButtonWrapperProps) {
+const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapperProps) {
   const { currentTabIndex, tabs } = props;
 
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
@@ -37,19 +38,20 @@ const NextTabButtonWrapper = memo(function NextTabWrapper(props: NextTabButtonWr
 
   const tabsNotDefined = currentTabIndex === undefined || tabs === undefined;
 
-  function handleNextTabClick() {
+  function handleButtonClick(direction: 'next' | 'previous') {
     if (tabsNotDefined) {
       return;
     }
 
-    const nextVisibleTabIndex = getNextVisibleTabIndex({
+    const visibleTabIndex = getVisibleTabIndex({
+      direction,
       tabs,
       currentTabIndex,
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions
     });
-    switchTab(nextVisibleTabIndex);
+    switchTab(visibleTabIndex);
 
     // Scroll to top of page
     window.scrollTo(0, 0);
@@ -59,18 +61,29 @@ const NextTabButtonWrapper = memo(function NextTabWrapper(props: NextTabButtonWr
     return null;
   }
 
-  if (currentTabIndex === Object.keys(tabs).length - 1) {
-    return null;
-  }
+  const previousTabButtonHidden = currentTabIndex === 0;
+  const nextTabButtonHidden = currentTabIndex === Object.keys(tabs).length - 1;
 
   const buttonIsDisabled =
     findNumOfVisibleTabs(tabs, enableWhenIsActivated, enableWhenItems, enableWhenExpressions) <= 1;
 
   return (
-    <Box display="flex" flexDirection="row-reverse" mt={3}>
-      <NextTabButton isDisabled={buttonIsDisabled} onNextTabClick={handleNextTabClick} />
+    <Box display="flex" mt={3}>
+      {previousTabButtonHidden ? null : (
+        <PreviousTabButton
+          isDisabled={buttonIsDisabled}
+          onPreviousTabClick={() => handleButtonClick('previous')}
+        />
+      )}
+      <Box flexGrow={1} />
+      {nextTabButtonHidden ? null : (
+        <NextTabButton
+          isDisabled={buttonIsDisabled}
+          onNextTabClick={() => handleButtonClick('next')}
+        />
+      )}
     </Box>
   );
 });
 
-export default NextTabButtonWrapper;
+export default TabButtonsWrapper;
