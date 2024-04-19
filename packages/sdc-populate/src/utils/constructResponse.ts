@@ -16,6 +16,7 @@
  */
 
 import type {
+  Encounter,
   FhirResource,
   Questionnaire,
   QuestionnaireItem,
@@ -50,6 +51,7 @@ import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
  * @param questionnaire - The questionnaire resource to construct a response from
  * @param subject - A subject reference to form the subject within the response
  * @param populationExpressions - expressions used for pre-population i.e. initialExpressions, itemPopulationContexts
+ * @param enounter - An optional encounter resource to form the questionnaireResponse.encounter property
  * @returns A populated questionnaire response wrapped within a Promise
  *
  * @author Sean Fong
@@ -57,7 +59,8 @@ import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 export async function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
-  populationExpressions: PopulationExpressions
+  populationExpressions: PopulationExpressions,
+  encounter?: Encounter
 ): Promise<QuestionnaireResponse> {
   const questionnaireResponse: QuestionnaireResponse = {
     resourceType: 'QuestionnaireResponse',
@@ -121,6 +124,14 @@ export async function constructResponse(
   questionnaireResponse.questionnaire = createQuestionnaireReference(questionnaire);
   questionnaireResponse.item = updatedTopLevelQRItems;
   questionnaireResponse.subject = subject;
+
+  // Add encounter reference if present
+  if (encounter && encounter.id) {
+    questionnaireResponse.encounter = {
+      type: 'Encounter',
+      reference: `Encounter/${encounter.id}`
+    };
+  }
 
   return questionnaireResponse;
 }

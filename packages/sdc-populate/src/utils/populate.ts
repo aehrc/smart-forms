@@ -16,7 +16,7 @@
  */
 
 import type { FetchResourceCallback, InputParameters, OutputParameters } from '../interfaces';
-import type { OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
+import type { Encounter, OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
 import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
 import { isSubjectParameter } from './index';
 import { createFhirPathContext } from './createFhirPathContext';
@@ -26,6 +26,7 @@ import { sortResourceArrays } from './sortResourceArrays';
 import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
 import { removeEmptyAnswersFromResponse } from './removeEmptyAnswers';
+import { isEncounterContextParameter } from './typePredicates';
 
 /**
  * Main function of this populate module.
@@ -47,6 +48,8 @@ export async function populate(
 
   const subjectReference = parameters.parameter.find((param) => isSubjectParameter(param))
     ?.valueReference as Reference;
+  const encounter = parameters.parameter.find((param) => isEncounterContextParameter(param))
+    ?.part?.[1].resource as Encounter | undefined;
 
   // Create contextMap to hold variables for population
   let fhirPathContext = await createFhirPathContext(
@@ -77,10 +80,15 @@ export async function populate(
   );
 
   // Construct response from initialExpressions
-  const questionnaireResponse = await constructResponse(questionnaire, subjectReference, {
-    initialExpressions: evaluatedInitialExpressions,
-    itemPopulationContexts: evaluatedItemPopulationContexts
-  });
+  const questionnaireResponse = await constructResponse(
+    questionnaire,
+    subjectReference,
+    {
+      initialExpressions: evaluatedInitialExpressions,
+      itemPopulationContexts: evaluatedItemPopulationContexts
+    },
+    encounter
+  );
 
   const cleanQuestionnaireResponse = removeEmptyAnswersFromResponse(
     questionnaire,
