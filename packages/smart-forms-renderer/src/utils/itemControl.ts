@@ -312,17 +312,30 @@ export function getTextDisplayFlyover(qItem: QuestionnaireItem): string {
 }
 
 /**
- * Get entry format if its extension is present
- * i.e. DD-MM-YYYY for dates, HH:MM for times etc.
+ * Get regex validation for items with regex extensions
  *
  * @author Sean Fong
  */
 export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | null {
+  // Get regex expression from extension
+  const regexString = getRegexString(qItem);
+  if (regexString) {
+    return { expression: new RegExp(regexString), feedback: null };
+  }
+
+  // Get regex expression from item types if regex extensions not present
+  if (qItem.type === 'url') {
+    return { expression: new RegExp(/^\S*$/), feedback: 'URLs should not contain any whitespaces' };
+  }
+
+  return null;
+}
+
+export function getRegexString(qItem: QuestionnaireItem): string | null {
   const itemControl = qItem.extension?.find(
     (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/regex'
   );
 
-  // Get regex expression from extension
   if (itemControl) {
     const extensionString = itemControl.valueString;
     if (extensionString) {
@@ -336,13 +349,8 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | 
         regexString = extensionString;
       }
 
-      return { expression: new RegExp(regexString), feedback: null };
+      return regexString;
     }
-  }
-
-  // Get regex expression from item types if regex extensions not present
-  if (qItem.type === 'url') {
-    return { expression: new RegExp(/^\S*$/), feedback: 'URLs should not contain any whitespaces' };
   }
 
   return null;
