@@ -16,13 +16,12 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { OperationOutcome, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
 import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
-import type { InvalidType } from '../utils/validateQuestionnaire';
 import { validateQuestionnaire } from '../utils/validateQuestionnaire';
 import { questionnaireStore } from './questionnaireStore';
 
@@ -30,7 +29,7 @@ interface QuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
   formChangesHistory: (Diff<QuestionnaireResponse, QuestionnaireResponse>[] | null)[];
-  invalidItems: Record<string, InvalidType>;
+  invalidItems: Record<string, OperationOutcome>;
   responseIsValid: boolean;
   validateQuestionnaire: (
     questionnaire: Questionnaire,
