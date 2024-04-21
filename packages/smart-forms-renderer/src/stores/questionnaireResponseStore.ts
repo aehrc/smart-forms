@@ -54,24 +54,21 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       questionnaire: Questionnaire,
       updatedResponse: QuestionnaireResponse
     ) => {
-      const tempInvalidItems = get().invalidItems;
-
       const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
       const enableWhenItems = questionnaireStore.getState().enableWhenItems;
       const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
 
-      validateQuestionnaire({
+      const updatedInvalidItems = validateQuestionnaire({
         questionnaire,
         questionnaireResponse: updatedResponse,
-        invalidItems: tempInvalidItems,
         enableWhenIsActivated,
         enableWhenItems,
         enableWhenExpressions
       });
 
       set(() => ({
-        invalidItems: tempInvalidItems,
-        responseIsValid: Object.keys(tempInvalidItems).length === 0
+        invalidItems: updatedInvalidItems,
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
     buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {

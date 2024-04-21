@@ -316,7 +316,7 @@ export function getTextDisplayFlyover(qItem: QuestionnaireItem): string {
  *
  * @author Sean Fong
  */
-export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | null {
+export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | undefined {
   // Get regex expression from extension
   const regexString = getRegexString(qItem);
   if (regexString) {
@@ -328,7 +328,7 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | 
     return { expression: new RegExp(/^\S*$/), feedback: 'URLs should not contain any whitespaces' };
   }
 
-  return null;
+  return undefined;
 }
 
 export function getRegexString(qItem: QuestionnaireItem): string | null {
