@@ -76,7 +76,6 @@ export enum ValidationResult {
 interface ValidateQuestionnaireParams {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
-  invalidItems: Record<string, OperationOutcome>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
@@ -94,7 +93,6 @@ export function validateQuestionnaire(
   const {
     questionnaire,
     questionnaireResponse,
-    invalidItems,
     enableWhenIsActivated,
     enableWhenItems,
     enableWhenExpressions
@@ -106,7 +104,7 @@ export function validateQuestionnaire(
     !questionnaireResponse.item ||
     questionnaireResponse.item.length === 0
   ) {
-    return invalidItems;
+    return {};
   }
 
   const qItemsIndexMap = mapQItemsIndex(questionnaire);
@@ -116,13 +114,19 @@ export function validateQuestionnaire(
     qItemsIndexMap
   );
 
+  const invalidItems: Record<string, OperationOutcome> = {};
+  let qrItemIndex = 0;
   for (const [index, topLevelQItem] of questionnaire.item.entries()) {
+    let repeatGroupInstances: number | null = null;
     let topLevelQRItem = topLevelQRItemsByIndex[index] ?? {
       linkId: topLevelQItem.linkId,
       text: topLevelQItem.text
     };
 
+    // topLevelQRItem being an array means this item is a repeat group
+    const isRepeatGroup = Array.isArray(topLevelQRItem);
     if (Array.isArray(topLevelQRItem)) {
+      repeatGroupInstances = topLevelQRItem.length;
       topLevelQRItem = {
         linkId: topLevelQItem.linkId,
         text: topLevelQItem.text,
@@ -130,14 +134,26 @@ export function validateQuestionnaire(
       };
     }
 
+    const locationExpression = `QuestionnaireResponse.item`;
     validateItemRecursive({
       qItem: topLevelQItem,
       qrItem: topLevelQRItem,
-      invalidItems: invalidItems,
+      qrItemIndex,
+      locationExpression,
+      invalidItems,
       enableWhenIsActivated,
       enableWhenItems,
-      enableWhenExpressions
+      enableWhenExpressions,
+      isRepeatGroupInstance: false
     });
+
+    // Increment qrItemIndex
+    // If its a repeat group, increment by the number of instances so qrItemIndex is correct once we reach the next item
+    if (isRepeatGroup && typeof repeatGroupInstances === 'number') {
+      qrItemIndex += repeatGroupInstances;
+    } else {
+      qrItemIndex++;
+    }
   }
 
   return invalidItems;
@@ -146,22 +162,29 @@ export function validateQuestionnaire(
 interface ValidateItemRecursiveParams {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem;
+  qrItemIndex: number;
+  locationExpression: string;
   invalidItems: Record<string, OperationOutcome>;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
+  isRepeatGroupInstance: boolean;
 }
 
 function validateItemRecursive(params: ValidateItemRecursiveParams) {
   const {
     qItem,
     qrItem,
+    qrItemIndex,
     invalidItems,
     enableWhenIsActivated,
     enableWhenItems,
-    enableWhenExpressions
+    enableWhenExpressions,
+    isRepeatGroupInstance
   } = params;
+  let { locationExpression } = params;
 
+  // If item is hidden by enableWhen, skip validation
   if (
     isHiddenByEnableWhen({
       linkId: qItem.linkId,
@@ -173,11 +196,27 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
     return;
   }
 
-  // FIXME repeat groups not working
+  // Validate repeat groups
   if (qItem.type === 'group' && qItem.repeats) {
-    return;
+    if (!isRepeatGroupInstance) {
+      validateRepeatGroupRecursive({
+        qItem,
+        qrItem,
+        qrItemIndex,
+        locationExpression,
+        invalidItems,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions,
+        isRepeatGroupInstance: false
+      });
+      return;
+    }
   }
 
+  locationExpression = `${locationExpression}[${qrItemIndex}]`;
+
+  // Recursively validate groups with child items
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
     const childQrItems = qrItem?.item ?? [];
@@ -185,17 +224,23 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
     const indexMap = mapQItemsIndex(qItem);
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
 
+    // Check if group is required and has no answers
     if (qItem.type === 'group' && qItem.required) {
       if (!qrItem || qrItemsByIndex.length === 0) {
         invalidItems[qItem.linkId] = createValidationOperationOutcome(
           ValidationResult.required,
           qItem,
-          qrItem
+          qrItem,
+          null,
+          locationExpression,
+          invalidItems[qItem.linkId]?.issue
         );
       }
     }
 
+    // Loop through child items
     for (const [index, childQItem] of childQItems.entries()) {
+      const childLocationExpression = `${locationExpression}.item`;
       let childQRItem = qrItemsByIndex[index] ?? {
         linkId: childQItem.linkId,
         text: childQItem.text
@@ -212,21 +257,62 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
       validateItemRecursive({
         qItem: childQItem,
         qrItem: childQRItem,
+        qrItemIndex: index,
+        locationExpression: childLocationExpression,
         invalidItems: invalidItems,
         enableWhenIsActivated,
         enableWhenItems,
-        enableWhenExpressions
+        enableWhenExpressions,
+        isRepeatGroupInstance: false
       });
     }
   }
 
-  validateSingleItem(qItem, qrItem, invalidItems);
+  // Validate the item, note that this can be either a group or a non-group
+  validateSingleItem(qItem, qrItem, invalidItems, locationExpression);
+}
+
+function validateRepeatGroupRecursive(params: ValidateItemRecursiveParams) {
+  const {
+    qItem,
+    qrItem,
+    qrItemIndex,
+    locationExpression,
+    invalidItems,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions
+  } = params;
+
+  if (!qItem.item || qItem.item.length === 0 || !qrItem.item || qrItem.item.length === 0) {
+    return;
+  }
+
+  // Get repeat group answers
+  const repeatGroupAnswers = qrItem.item ?? [];
+  for (const [index, repeatGroupAnswer] of repeatGroupAnswers.entries()) {
+    // Because the item is a repeat group and might have multiple answer instances, we need to increment the qItemIndex by the instanceIndex
+    const updatedQrItemIndex = qrItemIndex + index;
+
+    validateItemRecursive({
+      qItem: qItem,
+      qrItem: repeatGroupAnswer,
+      qrItemIndex: updatedQrItemIndex,
+      locationExpression: locationExpression,
+      invalidItems: invalidItems,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions,
+      isRepeatGroupInstance: true
+    });
+  }
 }
 
 function validateSingleItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
-  invalidItems: Record<string, OperationOutcome>
+  invalidItems: Record<string, OperationOutcome>,
+  locationExpression: string
 ) {
   // Validate item.required first before every other validation check
   if (qItem.type !== 'display') {
@@ -234,73 +320,51 @@ function validateSingleItem(
       invalidItems[qItem.linkId] = createValidationOperationOutcome(
         ValidationResult.required,
         qItem,
-        qrItem
+        qrItem,
+        null,
+        locationExpression,
+        invalidItems[qItem.linkId]?.issue
       );
+
       return invalidItems;
     }
   }
 
   // Validate regex, maxLength and minLength
   if (qrItem.answer) {
-    for (const answer of qrItem.answer) {
+    for (const [i, answer] of qrItem.answer.entries()) {
+      // Your code here, you can use 'index' and 'answer' as needed
       if (answer.valueString || answer.valueInteger || answer.valueDecimal || answer.valueUri) {
         const invalidInputType = getInputInvalidType(
           getInputInString(answer),
           getRegexValidation(qItem),
-          structuredDataCapture.getMinLength(qItem) ?? null,
-          qItem.maxLength ?? null
+          structuredDataCapture.getMinLength(qItem),
+          qItem.maxLength,
+          structuredDataCapture.getMaxDecimalPlaces(qItem)
         );
 
-        if (!invalidInputType) {
-          continue;
+        if (invalidInputType) {
+          invalidItems[qItem.linkId] = createValidationOperationOutcome(
+            invalidInputType,
+            qItem,
+            qrItem,
+            i,
+            locationExpression,
+            invalidItems[qItem.linkId]?.issue
+          );
         }
-
-        // Assign invalid type and break - stop checking other answers if is a repeat item
-        switch (invalidInputType) {
-          case ValidationResult.regex: {
-            invalidItems[qItem.linkId] = createValidationOperationOutcome(
-              ValidationResult.regex,
-              qItem,
-              qrItem
-            );
-            break;
-          }
-          case ValidationResult.minLength: {
-            invalidItems[qItem.linkId] = createValidationOperationOutcome(
-              ValidationResult.minLength,
-              qItem,
-              qrItem
-            );
-            break;
-          }
-          case ValidationResult.maxLength: {
-            invalidItems[qItem.linkId] = createValidationOperationOutcome(
-              ValidationResult.maxLength,
-              qItem,
-              qrItem
-            );
-            break;
-          }
-        }
-        break;
       }
-    }
-
-    // Reached the end of the loop and no invalid input type found
-    // If a required item is filled, remove the required invalid type
-    if (
-      qItem.required &&
-      invalidItems[qItem.linkId] &&
-      invalidItems[qItem.linkId].issue[0].code === 'required'
-    ) {
-      delete invalidItems[qItem.linkId];
     }
   }
 
   return invalidItems;
 }
 
-function getInputInString(answer: QuestionnaireResponseItemAnswer) {
+function getInputInString(answer?: QuestionnaireResponseItemAnswer) {
+  if (!answer) {
+    return '';
+  }
+
   if (answer.valueString) {
     return answer.valueString;
   } else if (answer.valueInteger) {
@@ -316,9 +380,10 @@ function getInputInString(answer: QuestionnaireResponseItemAnswer) {
 
 export function getInputInvalidType(
   input: string,
-  regexValidation: RegexValidation | null,
-  minLength: number | null,
-  maxLength: number | null
+  regexValidation?: RegexValidation,
+  minLength?: number,
+  maxLength?: number,
+  maxDecimalPlaces?: number
 ): ValidationResult | null {
   if (input) {
     if (regexValidation && !regexValidation.expression.test(input)) {
@@ -332,6 +397,13 @@ export function getInputInvalidType(
     if (maxLength && input.length > maxLength) {
       return ValidationResult.maxLength;
     }
+
+    if (maxDecimalPlaces) {
+      const decimalPlaces = input.split('.')[1]?.length ?? 0;
+      if (decimalPlaces > maxDecimalPlaces) {
+        return ValidationResult.maxDecimalPlaces;
+      }
+    }
   }
 
   return null;
@@ -340,27 +412,35 @@ export function getInputInvalidType(
 function createValidationOperationOutcome(
   error: ValidationResult,
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem
+  qrItem: QuestionnaireResponseItem,
+  answerIndex: number | null,
+  locationExpression: string,
+  existingOperationOutcomeIssues: OperationOutcomeIssue[] = []
 ): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',
-    issue: [createValidationOperationOutcomeIssue(error, qItem, qrItem)]
+    issue: existingOperationOutcomeIssues.concat(
+      createValidationOperationOutcomeIssue(error, qItem, qrItem, answerIndex, locationExpression)
+    )
   };
 }
 
 function createValidationOperationOutcomeIssue(
   error: ValidationResult,
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem
+  qrItem: QuestionnaireResponseItem,
+  answerIndex: number | null,
+  locationExpression: string
 ): OperationOutcomeIssue {
   const errorCodeSystem = 'http://fhir.forms-lab.com/CodeSystem/errors';
   let detailsText = '';
-  const location = qrItem.linkId ?? qItem.linkId;
   let fieldDisplayText =
     qrItem?.text ?? getShortText(qItem) ?? qItem?.text ?? qItem.linkId ?? qrItem.linkId;
   if (!fieldDisplayText && fieldDisplayText.endsWith(':')) {
     fieldDisplayText = fieldDisplayText.substring(0, fieldDisplayText.length - 1);
   }
+
+  answerIndex = answerIndex ?? 0;
 
   // create operationOutcomeIssue based on error
   switch (error) {
@@ -374,7 +454,7 @@ function createValidationOperationOutcomeIssue(
       return {
         severity: 'error',
         code: 'required',
-        location: [location],
+        expression: [locationExpression],
         details: {
           coding: [
             {
@@ -389,7 +469,7 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.regex: {
-      detailsText = `${fieldDisplayText}: The value '${qrItem.answer?.[0].valueString}' does not match the defined format.`;
+      detailsText = `${fieldDisplayText}: The value '${getInputInString(qrItem.answer?.[answerIndex])}' does not match the defined format.`;
       if (structuredDataCapture.getEntryFormat(qItem)) {
         detailsText += ` ${structuredDataCapture.getEntryFormat(qItem)}`;
       }
@@ -397,7 +477,7 @@ function createValidationOperationOutcomeIssue(
       return {
         severity: 'error',
         code: 'invalid',
-        location: [location],
+        expression: [locationExpression],
         details: {
           coding: [
             {
@@ -413,11 +493,11 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.minLength: {
-      detailsText = `${fieldDisplayText}: Expected the minimum value ${structuredDataCapture.getMinLength(qItem)} characters, received ${qrItem.answer?.[0].valueString?.length}`;
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${structuredDataCapture.getMinLength(qItem)} characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',
-        location: [location],
+        expression: [locationExpression],
         details: {
           coding: [
             {
@@ -432,11 +512,11 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.maxLength: {
-      detailsText = `${fieldDisplayText}: Exceeded maximum of  ${qItem.maxLength} characters, received ${qrItem.answer?.[0].valueString?.length}`;
+      detailsText = `${fieldDisplayText}: Exceeded maximum of  ${qItem.maxLength} characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',
-        location: [location],
+        expression: [locationExpression],
         details: {
           coding: [
             {
@@ -450,12 +530,31 @@ function createValidationOperationOutcomeIssue(
       };
     }
 
+    case ValidationResult.maxDecimalPlaces: {
+      detailsText = `${fieldDisplayText}: Exceeded maximum decimal places ${structuredDataCapture.getMaxDecimalPlaces(qItem)}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      return {
+        severity: 'error',
+        code: 'business-rule',
+        expression: [locationExpression],
+        details: {
+          coding: [
+            {
+              system: errorCodeSystem,
+              code: error,
+              display: 'Too precise'
+            }
+          ],
+          text: detailsText
+        }
+      };
+    }
+
     // mark unknown issues as fatal
     default: {
       return {
         severity: 'error',
         code: 'unknown',
-        location: [location],
+        expression: [locationExpression],
         details: {
           coding: [
             {
