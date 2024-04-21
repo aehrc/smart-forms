@@ -78,7 +78,6 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     if (tempDateTime.includes('T')) {
       valueDate = tempDateTime.split('T')[0];
       dateTimeDayJs = dayjs(tempDateTime);
-      console.log(dateTimeDayJs);
     } else {
       valueDate = tempDateTime;
     }

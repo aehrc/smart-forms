@@ -31,6 +31,7 @@ import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
+import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 
 function Playground() {
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
@@ -130,6 +131,7 @@ function Playground() {
           onDestroyForm={handleDestroyForm}
         />
       </Allotment>
+      <RendererDebugFooter />
     </DndProvider>
   );
 }
