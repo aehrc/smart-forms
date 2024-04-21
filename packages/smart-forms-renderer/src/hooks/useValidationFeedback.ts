@@ -16,32 +16,44 @@
  */
 
 import type { RegexValidation } from '../interfaces/regex.interface';
-import { getInputInvalidType } from '../utils/validateQuestionnaire';
+import { getInputInvalidType, ValidationResult } from '../utils/validateQuestionnaire';
 
 function useValidationFeedback(
   input: string,
-  regexValidation: RegexValidation | null,
-  minLength: number | null,
-  maxLength: number | null
+  regexValidation?: RegexValidation,
+  minLength?: number,
+  maxLength?: number,
+  maxDecimalPlaces?: number
 ): string {
-  const invalidType = getInputInvalidType(input, regexValidation, minLength, maxLength);
+  const invalidType = getInputInvalidType(
+    input,
+    regexValidation,
+    minLength,
+    maxLength,
+    maxDecimalPlaces
+  );
 
   if (!invalidType) {
     return '';
   }
 
-  if (invalidType === 'regex' && regexValidation) {
+  if (invalidType === ValidationResult.regex && regexValidation) {
     return `Input should match the specified regex ${regexValidation.expression}`;
   }
 
   // Test min character limit
-  if (invalidType === 'minLength' && minLength) {
+  if (invalidType === ValidationResult.minLength && typeof minLength === 'number') {
     return `Enter at least ${minLength} characters.`;
   }
 
   // Test max character limit
-  if (invalidType === 'maxLength' && maxLength) {
+  if (invalidType === ValidationResult.maxLength && typeof maxLength === 'number') {
     return `Input exceeds maximum character limit of ${maxLength}.`;
+  }
+
+  // Test max decimal places limit
+  if (invalidType === ValidationResult.maxDecimalPlaces && typeof maxDecimalPlaces === 'number') {
+    return `Input exceeds maximum decimal places limit of ${maxDecimalPlaces}.`;
   }
 
   return '';

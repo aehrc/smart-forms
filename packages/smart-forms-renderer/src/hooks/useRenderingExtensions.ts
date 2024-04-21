@@ -35,9 +35,10 @@ interface RenderingExtensions {
   readOnly: boolean;
   entryFormat: string;
   required: boolean;
-  regexValidation: RegexValidation | null;
-  minLength: number | null;
-  maxLength: number | null;
+  regexValidation?: RegexValidation;
+  minLength?: number;
+  maxLength?: number;
+  maxDecimalPlaces?: number;
 }
 
 function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
@@ -51,8 +52,9 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
       entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
       required: qItem.required ?? false,
       regexValidation: getRegexValidation(qItem),
-      minLength: structuredDataCapture.getMinLength(qItem) ?? null,
-      maxLength: qItem.maxLength ?? null
+      minLength: structuredDataCapture.getMinLength(qItem),
+      maxLength: qItem.maxLength,
+      maxDecimalPlaces: structuredDataCapture.getMaxDecimalPlaces(qItem)
     }),
     [qItem]
   );

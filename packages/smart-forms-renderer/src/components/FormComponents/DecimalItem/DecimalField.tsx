@@ -68,6 +68,7 @@ function DecimalField(props: DecimalFieldProps) {
           </InputAdornment>
         )
       }}
+      helperText={feedback}
       data-test="q-item-decimal-field"
     />
   );
