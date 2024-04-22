@@ -118,7 +118,7 @@ export function readQuestionnaireContext(
     canonical = canonical.replace('|', '&version=');
 
     return FHIR.client(endpointUrl).request({
-      url: 'Questionnaire?url=' + canonical,
+      url: 'Questionnaire?url=' + canonical + '&_sort=_lastUpdated',
       method: 'GET',
       headers: HEADERS
     });
