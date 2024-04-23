@@ -16,14 +16,12 @@
  */
 
 import {
-  getRegexValidation,
   getTextDisplayFlyover,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit
 } from '../utils/itemControl';
 import type { QuestionnaireItem } from 'fhir/r4';
-import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { useMemo } from 'react';
 
@@ -35,10 +33,6 @@ interface RenderingExtensions {
   readOnly: boolean;
   entryFormat: string;
   required: boolean;
-  regexValidation?: RegexValidation;
-  minLength?: number;
-  maxLength?: number;
-  maxDecimalPlaces?: number;
 }
 
 function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
@@ -50,11 +44,7 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
       displayFlyover: getTextDisplayFlyover(qItem),
       readOnly: !!qItem.readOnly,
       entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
-      required: qItem.required ?? false,
-      regexValidation: getRegexValidation(qItem),
-      minLength: structuredDataCapture.getMinLength(qItem),
-      maxLength: qItem.maxLength,
-      maxDecimalPlaces: structuredDataCapture.getMaxDecimalPlaces(qItem)
+      required: qItem.required ?? false
     }),
     [qItem]
   );

@@ -57,15 +57,7 @@ function DecimalItem(props: DecimalItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
-  const {
-    displayUnit,
-    displayPrompt,
-    entryFormat,
-    regexValidation,
-    minLength,
-    maxLength,
-    maxDecimalPlaces
-  } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let valueDecimal = 0.0;
@@ -84,13 +76,7 @@ function DecimalItem(props: DecimalItemProps) {
   const [input, setInput] = useStringInput(initialInput);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(
-    input,
-    regexValidation,
-    minLength,
-    maxLength,
-    maxDecimalPlaces
-  );
+  const feedback = useValidationFeedback(qItem, input);
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({

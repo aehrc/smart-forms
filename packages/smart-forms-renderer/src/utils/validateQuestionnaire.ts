@@ -335,13 +335,13 @@ function validateSingleItem(
     for (const [i, answer] of qrItem.answer.entries()) {
       // Your code here, you can use 'index' and 'answer' as needed
       if (answer.valueString || answer.valueInteger || answer.valueDecimal || answer.valueUri) {
-        const invalidInputType = getInputInvalidType(
-          getInputInString(answer),
-          getRegexValidation(qItem),
-          structuredDataCapture.getMinLength(qItem),
-          qItem.maxLength,
-          structuredDataCapture.getMaxDecimalPlaces(qItem)
-        );
+        const invalidInputType = getInputInvalidType({
+          input: getInputInString(answer),
+          regexValidation: getRegexValidation(qItem),
+          minLength: structuredDataCapture.getMinLength(qItem),
+          maxLength: qItem.maxLength,
+          maxDecimalPlaces: structuredDataCapture.getMaxDecimalPlaces(qItem)
+        });
 
         if (invalidInputType) {
           invalidItems[qItem.linkId] = createValidationOperationOutcome(
@@ -378,13 +378,20 @@ function getInputInString(answer?: QuestionnaireResponseItemAnswer) {
   return '';
 }
 
+interface GetInputInvalidTypeParams {
+  input: string;
+  regexValidation?: RegexValidation;
+  minLength?: number;
+  maxLength?: number;
+  maxDecimalPlaces?: number;
+}
+
 export function getInputInvalidType(
-  input: string,
-  regexValidation?: RegexValidation,
-  minLength?: number,
-  maxLength?: number,
-  maxDecimalPlaces?: number
+  getInputInvalidTypeParams: GetInputInvalidTypeParams
 ): ValidationResult | null {
+  const { input, regexValidation, minLength, maxLength, maxDecimalPlaces } =
+    getInputInvalidTypeParams;
+
   if (input) {
     if (regexValidation && !regexValidation.expression.test(input)) {
       return ValidationResult.regex;

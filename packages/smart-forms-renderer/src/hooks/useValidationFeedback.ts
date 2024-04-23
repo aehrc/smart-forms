@@ -15,23 +15,24 @@
  * limitations under the License.
  */
 
-import type { RegexValidation } from '../interfaces/regex.interface';
 import { getInputInvalidType, ValidationResult } from '../utils/validateQuestionnaire';
+import { QuestionnaireItem } from 'fhir/r4';
+import { getRegexValidation } from '../utils/itemControl';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
-function useValidationFeedback(
-  input: string,
-  regexValidation?: RegexValidation,
-  minLength?: number,
-  maxLength?: number,
-  maxDecimalPlaces?: number
-): string {
-  const invalidType = getInputInvalidType(
+function useValidationFeedback(qItem: QuestionnaireItem, input: string): string {
+  const regexValidation = getRegexValidation(qItem);
+  const minLength = structuredDataCapture.getMinLength(qItem);
+  const maxLength = qItem.maxLength;
+  const maxDecimalPlaces = structuredDataCapture.getMaxDecimalPlaces(qItem);
+
+  const invalidType = getInputInvalidType({
     input,
     regexValidation,
     minLength,
     maxLength,
     maxDecimalPlaces
-  );
+  });
 
   if (!invalidType) {
     return '';
