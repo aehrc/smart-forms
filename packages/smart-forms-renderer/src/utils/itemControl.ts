@@ -17,6 +17,7 @@
 
 import type { Coding, Expression, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 /**
  * Check if the extension has an itemControl code equal to the given itemControlCode
@@ -354,4 +355,50 @@ export function getRegexString(qItem: QuestionnaireItem): string | null {
   }
 
   return null;
+}
+
+export function getMinValue(qItem: QuestionnaireItem) {
+  switch (qItem.type) {
+    case 'integer':
+      return structuredDataCapture.getMinValueAsInteger(qItem);
+    case 'decimal':
+      // In the case for decimals, permit minValue to be a decimal or integer
+      return (
+        structuredDataCapture.getMinValueAsDecimal(qItem) ??
+        structuredDataCapture.getMinValueAsInteger(qItem)
+      );
+    case 'date':
+      return structuredDataCapture.getMinValueAsDate(qItem);
+    case 'dateTime':
+      // In the case for dateTime, permit minValue to be a dateTime or date
+      return (
+        structuredDataCapture.getMinValueAsDateTime(qItem) ??
+        structuredDataCapture.getMinValueAsDate(qItem)
+      );
+    default:
+      return undefined;
+  }
+}
+
+export function getMaxValue(qItem: QuestionnaireItem) {
+  switch (qItem.type) {
+    case 'integer':
+      return structuredDataCapture.getMaxValueAsInteger(qItem);
+    case 'decimal':
+      // In the case for decimals, permit maxValue to be a decimal or integer
+      return (
+        structuredDataCapture.getMaxValueAsDecimal(qItem) ??
+        structuredDataCapture.getMaxValueAsInteger(qItem)
+      );
+    case 'date':
+      return structuredDataCapture.getMaxValueAsDate(qItem);
+    case 'dateTime':
+      // In the case for dateTime, permit maxValue to be a dateTime or date
+      return (
+        structuredDataCapture.getMaxValueAsDateTime(qItem) ??
+        structuredDataCapture.getMaxValueAsDate(qItem)
+      );
+    default:
+      return undefined;
+  }
 }

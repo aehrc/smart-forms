@@ -27,9 +27,18 @@ import type {
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
 import { isHiddenByEnableWhen } from './qItem';
-import { getRegexString, getRegexValidation, getShortText } from './itemControl';
+import {
+  getDecimalPrecision,
+  getMaxValue,
+  getMinValue,
+  getRegexString,
+  getRegexValidation,
+  getShortText
+} from './itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
+import { parseDecimalStringToFloat } from './parseInputs';
+import dayjs from 'dayjs';
 
 export enum ValidationResult {
   unknown = 'unknown', // Unknown validation result
@@ -148,7 +157,7 @@ export function validateQuestionnaire(
     });
 
     // Increment qrItemIndex
-    // If its a repeat group, increment by the number of instances so qrItemIndex is correct once we reach the next item
+    // If it's a repeat group, increment by the number of instances so qrItemIndex is correct once we reach the next item
     if (isRepeatGroup && typeof repeatGroupInstances === 'number') {
       qrItemIndex += repeatGroupInstances;
     } else {
@@ -336,11 +345,14 @@ function validateSingleItem(
       // Your code here, you can use 'index' and 'answer' as needed
       if (answer.valueString || answer.valueInteger || answer.valueDecimal || answer.valueUri) {
         const invalidInputType = getInputInvalidType({
+          qItem,
           input: getInputInString(answer),
           regexValidation: getRegexValidation(qItem),
           minLength: structuredDataCapture.getMinLength(qItem),
           maxLength: qItem.maxLength,
-          maxDecimalPlaces: structuredDataCapture.getMaxDecimalPlaces(qItem)
+          maxDecimalPlaces: structuredDataCapture.getMaxDecimalPlaces(qItem),
+          minValue: getMinValue(qItem),
+          maxValue: getMaxValue(qItem)
         });
 
         if (invalidInputType) {
@@ -379,18 +391,29 @@ function getInputInString(answer?: QuestionnaireResponseItemAnswer) {
 }
 
 interface GetInputInvalidTypeParams {
+  qItem: QuestionnaireItem;
   input: string;
   regexValidation?: RegexValidation;
   minLength?: number;
   maxLength?: number;
   maxDecimalPlaces?: number;
+  minValue?: string | number;
+  maxValue?: string | number;
 }
 
 export function getInputInvalidType(
   getInputInvalidTypeParams: GetInputInvalidTypeParams
 ): ValidationResult | null {
-  const { input, regexValidation, minLength, maxLength, maxDecimalPlaces } =
-    getInputInvalidTypeParams;
+  const {
+    qItem,
+    input,
+    regexValidation,
+    minLength,
+    maxLength,
+    maxDecimalPlaces,
+    minValue,
+    maxValue
+  } = getInputInvalidTypeParams;
 
   if (input) {
     if (regexValidation && !regexValidation.expression.test(input)) {
@@ -411,6 +434,114 @@ export function getInputInvalidType(
         return ValidationResult.maxDecimalPlaces;
       }
     }
+
+    if (minValue) {
+      const minValueError = checkMinValue(qItem, input, minValue);
+      if (minValueError !== null) {
+        return ValidationResult.minValue;
+      }
+    }
+
+    if (maxValue) {
+      const maxValueError = checkMaxValue(qItem, input, maxValue);
+      if (maxValueError !== null) {
+        return ValidationResult.maxValue;
+      }
+    }
+  }
+
+  return null;
+}
+
+function checkMinValue(
+  qItem: QuestionnaireItem,
+  input: string,
+  minValue: string | number
+): ValidationResult.minValue | null {
+  switch (qItem.type) {
+    case 'integer':
+      if (typeof minValue === 'number') {
+        if (parseInt(input) < minValue) {
+          return ValidationResult.minValue;
+        }
+      }
+      break;
+    case 'decimal': {
+      const precision = getDecimalPrecision(qItem);
+      const decimalValue = precision
+        ? parseDecimalStringToFloat(input, precision)
+        : parseFloat(input);
+
+      if (typeof minValue === 'number') {
+        if (decimalValue < minValue) {
+          return ValidationResult.minValue;
+        }
+      }
+      break;
+    }
+    case 'date':
+      if (typeof minValue === 'string') {
+        if (new Date(input) < new Date(minValue)) {
+          return ValidationResult.minValue;
+        }
+      }
+      break;
+    case 'dateTime':
+      if (typeof minValue === 'string') {
+        if (dayjs(input).isBefore(dayjs(minValue))) {
+          return ValidationResult.minValue;
+        }
+      }
+      break;
+    default:
+      return null;
+  }
+
+  return null;
+}
+
+function checkMaxValue(
+  qItem: QuestionnaireItem,
+  input: string,
+  maxValue: string | number
+): ValidationResult.maxValue | null {
+  switch (qItem.type) {
+    case 'integer':
+      if (typeof maxValue === 'number') {
+        if (parseInt(input) > maxValue) {
+          return ValidationResult.maxValue;
+        }
+      }
+      break;
+    case 'decimal': {
+      const precision = getDecimalPrecision(qItem);
+      const decimalValue = precision
+        ? parseDecimalStringToFloat(input, precision)
+        : parseFloat(input);
+
+      if (typeof maxValue === 'number') {
+        if (decimalValue > maxValue) {
+          return ValidationResult.maxValue;
+        }
+      }
+      break;
+    }
+    case 'date':
+      if (typeof maxValue === 'string') {
+        if (new Date(input) > new Date(maxValue)) {
+          return ValidationResult.maxValue;
+        }
+      }
+      break;
+    case 'dateTime':
+      if (typeof maxValue === 'string') {
+        if (dayjs(input).isAfter(dayjs(maxValue))) {
+          return ValidationResult.maxValue;
+        }
+      }
+      break;
+    default:
+      return null;
   }
 
   return null;
@@ -549,6 +680,44 @@ function createValidationOperationOutcomeIssue(
               system: errorCodeSystem,
               code: error,
               display: 'Too precise'
+            }
+          ],
+          text: detailsText
+        }
+      };
+    }
+
+    case ValidationResult.minValue: {
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${getMinValue(qItem)}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      return {
+        severity: 'error',
+        code: 'business-rule',
+        expression: [locationExpression],
+        details: {
+          coding: [
+            {
+              system: errorCodeSystem,
+              code: error,
+              display: 'Too small'
+            }
+          ],
+          text: detailsText
+        }
+      };
+    }
+
+    case ValidationResult.maxValue: {
+      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${getMaxValue(qItem)}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      return {
+        severity: 'error',
+        code: 'business-rule',
+        expression: [locationExpression],
+        details: {
+          coding: [
+            {
+              system: errorCodeSystem,
+              code: error,
+              display: 'Too big'
             }
           ],
           text: detailsText
