@@ -238,6 +238,7 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
  * @author Sean Fong
  */
 export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
+  // Check if the item has a display unit childItem
   if (qItem.item) {
     for (const childItem of qItem.item) {
       if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
@@ -245,6 +246,16 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
       }
     }
   }
+
+  // Otherwise, check if the item has a unit extension
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit'
+  );
+  if (itemControl && itemControl.valueCoding) {
+    return itemControl.valueCoding.display ?? '';
+  }
+
   return '';
 }
 
