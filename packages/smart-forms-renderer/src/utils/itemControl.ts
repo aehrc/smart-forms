@@ -17,6 +17,7 @@
 
 import type { Coding, Expression, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 /**
  * Check if the extension has an itemControl code equal to the given itemControlCode
@@ -237,6 +238,7 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
  * @author Sean Fong
  */
 export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
+  // Check if the item has a display unit childItem
   if (qItem.item) {
     for (const childItem of qItem.item) {
       if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
@@ -244,6 +246,16 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
       }
     }
   }
+
+  // Otherwise, check if the item has a unit extension
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit'
+  );
+  if (itemControl && itemControl.valueCoding) {
+    return itemControl.valueCoding.display ?? '';
+  }
+
   return '';
 }
 
@@ -354,4 +366,50 @@ export function getRegexString(qItem: QuestionnaireItem): string | null {
   }
 
   return null;
+}
+
+export function getMinValue(qItem: QuestionnaireItem) {
+  switch (qItem.type) {
+    case 'integer':
+      return structuredDataCapture.getMinValueAsInteger(qItem);
+    case 'decimal':
+      // In the case for decimals, permit minValue to be a decimal or integer
+      return (
+        structuredDataCapture.getMinValueAsDecimal(qItem) ??
+        structuredDataCapture.getMinValueAsInteger(qItem)
+      );
+    case 'date':
+      return structuredDataCapture.getMinValueAsDate(qItem);
+    case 'dateTime':
+      // In the case for dateTime, permit minValue to be a dateTime or date
+      return (
+        structuredDataCapture.getMinValueAsDateTime(qItem) ??
+        structuredDataCapture.getMinValueAsDate(qItem)
+      );
+    default:
+      return undefined;
+  }
+}
+
+export function getMaxValue(qItem: QuestionnaireItem) {
+  switch (qItem.type) {
+    case 'integer':
+      return structuredDataCapture.getMaxValueAsInteger(qItem);
+    case 'decimal':
+      // In the case for decimals, permit maxValue to be a decimal or integer
+      return (
+        structuredDataCapture.getMaxValueAsDecimal(qItem) ??
+        structuredDataCapture.getMaxValueAsInteger(qItem)
+      );
+    case 'date':
+      return structuredDataCapture.getMaxValueAsDate(qItem);
+    case 'dateTime':
+      // In the case for dateTime, permit maxValue to be a dateTime or date
+      return (
+        structuredDataCapture.getMaxValueAsDateTime(qItem) ??
+        structuredDataCapture.getMaxValueAsDate(qItem)
+      );
+    default:
+      return undefined;
+  }
 }

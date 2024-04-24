@@ -52,8 +52,7 @@ function IntegerItem(props: IntegerItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
-    useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let valueInteger = 0;
@@ -68,7 +67,7 @@ function IntegerItem(props: IntegerItemProps) {
   const [value, setValue] = useNumberInput(valueInteger);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(value.toString(), regexValidation, minLength, maxLength);
+  const feedback = useValidationFeedback(qItem, value.toString());
 
   // Process calculated expressions
   const { calcExpUpdated } = useIntegerCalculatedExpression({

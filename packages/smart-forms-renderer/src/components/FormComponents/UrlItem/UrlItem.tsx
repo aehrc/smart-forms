@@ -48,8 +48,7 @@ function UrlItem(props: UrlItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
-    useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let valueUri = '';
@@ -59,7 +58,7 @@ function UrlItem(props: UrlItemProps) {
   const [input, setInput] = useState(valueUri);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(input, regexValidation, minLength, maxLength);
+  const feedback = useValidationFeedback(qItem, input);
 
   // Event handlers
   function handleChange(newInput: string) {

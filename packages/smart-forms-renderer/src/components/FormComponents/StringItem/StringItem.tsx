@@ -50,8 +50,7 @@ function StringItem(props: StringItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayUnit, displayPrompt, entryFormat, regexValidation, minLength, maxLength } =
-    useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
   let valueString = '';
@@ -61,7 +60,7 @@ function StringItem(props: StringItemProps) {
   const [input, setInput] = useStringInput(valueString);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(input, regexValidation, minLength, maxLength);
+  const feedback = useValidationFeedback(qItem, input);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({

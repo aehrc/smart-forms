@@ -15,23 +15,29 @@
  * limitations under the License.
  */
 
-import type { RegexValidation } from '../interfaces/regex.interface';
 import { getInputInvalidType, ValidationResult } from '../utils/validateQuestionnaire';
+import type { QuestionnaireItem } from 'fhir/r4';
+import { getMaxValue, getMinValue, getRegexValidation } from '../utils/itemControl';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
-function useValidationFeedback(
-  input: string,
-  regexValidation?: RegexValidation,
-  minLength?: number,
-  maxLength?: number,
-  maxDecimalPlaces?: number
-): string {
-  const invalidType = getInputInvalidType(
+function useValidationFeedback(qItem: QuestionnaireItem, input: string): string {
+  const regexValidation = getRegexValidation(qItem);
+  const minLength = structuredDataCapture.getMinLength(qItem);
+  const maxLength = qItem.maxLength;
+  const maxDecimalPlaces = structuredDataCapture.getMaxDecimalPlaces(qItem);
+  const minValue = getMinValue(qItem);
+  const maxValue = getMaxValue(qItem);
+
+  const invalidType = getInputInvalidType({
+    qItem,
     input,
     regexValidation,
     minLength,
     maxLength,
-    maxDecimalPlaces
-  );
+    maxDecimalPlaces,
+    minValue,
+    maxValue
+  });
 
   if (!invalidType) {
     return '';
@@ -54,6 +60,22 @@ function useValidationFeedback(
   // Test max decimal places limit
   if (invalidType === ValidationResult.maxDecimalPlaces && typeof maxDecimalPlaces === 'number') {
     return `Input exceeds maximum decimal places limit of ${maxDecimalPlaces}.`;
+  }
+
+  // Test min value
+  if (
+    invalidType === ValidationResult.minValue &&
+    (typeof minValue === 'string' || typeof minValue === 'number')
+  ) {
+    return `Input is lower than the expected minimum value of ${minValue}.`;
+  }
+
+  // Test min value
+  if (
+    invalidType === ValidationResult.maxValue &&
+    (typeof maxValue === 'string' || typeof maxValue === 'number')
+  ) {
+    return `Input exceeds permitted maximum value of ${maxValue}.`;
   }
 
   return '';
