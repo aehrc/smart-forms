@@ -85,9 +85,10 @@ function SingleItem(props: SingleItemProps) {
 
   const handleQrItemChangeWithNestedItems = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
-      onQrItemChange(newQrItem);
+      const updatedQrItem = qrItem ? { ...qrItem, item: newQrItem.item } : newQrItem;
+      onQrItemChange(updatedQrItem);
     },
-    [onQrItemChange]
+    [qrItem, onQrItemChange]
   );
 
   const qItemHasNestedItems = !!qItem.item && qItem.item.length > 0;
