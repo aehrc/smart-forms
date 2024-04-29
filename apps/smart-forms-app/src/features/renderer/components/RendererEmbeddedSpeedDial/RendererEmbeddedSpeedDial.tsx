@@ -21,6 +21,7 @@ import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import RendererEmbeddedStandardActions from './RendererEmbeddedStandardActions.tsx';
 import RendererEmbeddedLaunchQuestionnaireActions from './RendererEmbeddedLaunchQuestionnaireActions.tsx';
+import { useState } from 'react';
 
 interface RendererEmbeddedSpeedDialProps {
   spinner: RendererSpinner;
@@ -31,6 +32,11 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
   const { spinner, onSpinnerChange } = props;
 
   const { launchQuestionnaire } = useSmartClient();
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   if (spinner.isSpinning) {
     return null;
@@ -45,14 +51,22 @@ function RendererEmbeddedSpeedDial(props: RendererEmbeddedSpeedDialProps) {
         right: 8,
         '& .MuiFab-primary': { width: 46, height: 46 }
       }}
-      icon={<BuildIcon />}>
+      icon={<BuildIcon />}
+      open={open}
+      onClose={handleClose}
+      onOpen={handleOpen}>
       {launchQuestionnaire ? (
         <RendererEmbeddedLaunchQuestionnaireActions
           spinner={spinner}
+          onClose={handleClose}
           onSpinnerChange={onSpinnerChange}
         />
       ) : (
-        <RendererEmbeddedStandardActions spinner={spinner} onSpinnerChange={onSpinnerChange} />
+        <RendererEmbeddedStandardActions
+          spinner={spinner}
+          onClose={handleClose}
+          onSpinnerChange={onSpinnerChange}
+        />
       )}
     </SpeedDial>
   );

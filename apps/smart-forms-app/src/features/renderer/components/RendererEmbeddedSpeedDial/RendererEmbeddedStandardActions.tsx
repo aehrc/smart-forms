@@ -28,10 +28,11 @@ import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 interface RendererEmbeddedStandardActionsProps extends SpeedDialActionProps {
   spinner: RendererSpinner;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
+  onClose: () => void;
 }
 
 function RendererEmbeddedStandardActions(props: RendererEmbeddedStandardActionsProps) {
-  const { spinner, onSpinnerChange, ...speedDialActionProps } = props;
+  const { spinner, onSpinnerChange, onClose, ...speedDialActionProps } = props;
 
   const { smartClient } = useSmartClient();
 
@@ -44,8 +45,8 @@ function RendererEmbeddedStandardActions(props: RendererEmbeddedStandardActionsP
       <>
         <BackToQuestionnairesAction isSpeedDial={true} {...speedDialActionProps} />
         <PreviewAction isSpeedDial={true} {...speedDialActionProps} />
-        <SaveProgressAction isSpeedDial={true} {...speedDialActionProps} />
-        <SaveAsFinalAction isSpeedDial={true} {...speedDialActionProps} />
+        <SaveProgressAction isSpeedDial={true} onClose={onClose} {...speedDialActionProps} />
+        <SaveAsFinalAction isSpeedDial={true} onClose={onClose} {...speedDialActionProps} />
         <RepopulateAction
           spinner={spinner}
           onSpinnerChange={onSpinnerChange}
