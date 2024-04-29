@@ -93,6 +93,7 @@ function BlockerUnsavedFormDialog(props: Props) {
       })
       .catch((error) => {
         console.error(error);
+        setIsSaving(false);
         blocker.reset?.();
         closeDialog();
       });
