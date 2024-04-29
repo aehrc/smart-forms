@@ -184,6 +184,10 @@ function answerIsEmpty(
     return true;
   }
 
+  if (qrItem.answer.length === 0) {
+    return true;
+  }
+
   if (qrItem.answer[0]?.valueString === '') {
     return true;
   }
