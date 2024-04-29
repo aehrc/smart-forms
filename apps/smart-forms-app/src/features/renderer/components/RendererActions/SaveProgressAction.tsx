@@ -16,7 +16,7 @@
  */
 
 import type { SpeedDialActionProps } from '@mui/material';
-import { IconButton, SpeedDialAction, Tooltip } from '@mui/material';
+import { CircularProgress, IconButton, SpeedDialAction, Tooltip } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import SaveIcon from '@mui/icons-material/Save';
@@ -27,14 +27,16 @@ import { saveErrorMessage, saveSuccessMessage } from '../../../../utils/snackbar
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import { saveProgress } from '../../../../api/saveQr.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import { useState } from 'react';
 
 interface SaveProgressSpeedDialActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
+  onClose?: () => void;
   refetchResponses?: () => void;
 }
 
 function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
-  const { refetchResponses, isSpeedDial, ...speedDialActionProps } = props;
+  const { isSpeedDial, onClose, refetchResponses, ...speedDialActionProps } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
@@ -43,6 +45,8 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
   const setUpdatableResponseAsSaved =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
+
+  const [isSaving, setIsSaving] = useState(false);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -64,11 +68,16 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
   }
 
   async function handleSaveProgress() {
+    if (onClose) {
+      onClose();
+    }
+
     closeSnackbar();
     if (!(smartClient && patient && user)) {
       return;
     }
 
+    setIsSaving(true);
     const savedResponse = await saveProgress(
       smartClient,
       patient,
@@ -77,6 +86,7 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
       updatableResponse,
       'in-progress'
     );
+    setIsSaving(false);
 
     // If the response is null or undefined, then the save has failed
     if (savedResponse === null || savedResponse === undefined) {
@@ -118,12 +128,12 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
     );
   }
 
-  const buttonIsDisabled = !smartClient || formChangesHistory.length === 0;
+  const buttonIsDisabled = !smartClient || formChangesHistory.length === 0 || isSaving;
 
   return (
     <RendererOperationItem
       title="Save Progress"
-      icon={<SaveIcon />}
+      icon={isSaving ? <CircularProgress size={18} color="inherit" /> : <SaveIcon />}
       disabled={buttonIsDisabled}
       onClick={handleSaveProgress}
     />

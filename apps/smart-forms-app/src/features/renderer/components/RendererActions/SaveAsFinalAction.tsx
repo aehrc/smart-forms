@@ -26,10 +26,11 @@ import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
+  onClose?: () => void;
 }
 
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
-  const { isSpeedDial, ...speedDialActionProps } = props;
+  const { isSpeedDial, onClose, ...speedDialActionProps } = props;
 
   const { smartClient } = useSmartClient();
 
@@ -39,6 +40,10 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   function handleOpenDialog() {
+    if (onClose) {
+      onClose();
+    }
+
     if (smartClient) {
       setSaveAsFinalDialogOpen(true);
     }
