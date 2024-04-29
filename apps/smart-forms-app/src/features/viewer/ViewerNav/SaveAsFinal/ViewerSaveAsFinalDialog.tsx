@@ -80,6 +80,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
       })
       .catch((error) => {
         console.error(error);
+        setIsSaving(false);
         enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
         handleClose();
       });
