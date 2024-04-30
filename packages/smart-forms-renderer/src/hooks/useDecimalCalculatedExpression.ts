@@ -43,10 +43,16 @@ function useDecimalCalculatedExpression(
 
   useEffect(
     () => {
-      const calcExpression = calculatedExpressions[qItem.linkId];
+      const calcExpression = calculatedExpressions[qItem.linkId]?.find(
+        (exp) => exp.from === 'item'
+      );
+
+      if (!calcExpression) {
+        return;
+      }
 
       // only update if calculated value is different from current value
-      if (calcExpression?.value !== inputValue && typeof calcExpression?.value === 'number') {
+      if (calcExpression.value !== inputValue && typeof calcExpression.value === 'number') {
         const value = precision
           ? parseFloat(calcExpression.value.toFixed(precision))
           : calcExpression.value;

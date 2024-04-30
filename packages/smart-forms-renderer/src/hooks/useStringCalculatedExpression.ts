@@ -18,7 +18,7 @@
 import { useEffect, useState } from 'react';
 import { createEmptyQrItem } from '../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { useQuestionnaireStore } from '../stores/questionnaireStore';
+import { useQuestionnaireStore } from '../stores';
 
 interface UseStringCalculatedExpression {
   calcExpUpdated: boolean;
@@ -42,21 +42,35 @@ function useStringCalculatedExpression(
 
   useEffect(
     () => {
-      const calcExpression = calculatedExpressions[qItem.linkId];
+      const calcExpression = calculatedExpressions[qItem.linkId]?.find(
+        (exp) => exp.from === 'item'
+      );
+
+      if (!calcExpression) {
+        return;
+      }
 
       // only update if calculated value is different from current value
-      if (calcExpression?.value !== inputValue && typeof calcExpression?.value === 'string') {
+      if (
+        calcExpression.value !== inputValue &&
+        (typeof calcExpression.value === 'string' || typeof calcExpression.value === 'number')
+      ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
         setTimeout(() => {
           setCalcExpUpdated(false);
         }, 500);
 
+        const updatedInputValue =
+          typeof calcExpression.value === 'string'
+            ? calcExpression.value
+            : calcExpression.value.toString();
+
         // update questionnaireResponse
-        setInputValue(calcExpression.value);
+        setInputValue(updatedInputValue);
         onQrItemChange({
           ...createEmptyQrItem(qItem),
-          answer: [{ valueString: calcExpression.value }]
+          answer: [{ valueString: updatedInputValue }]
         });
       }
     },
