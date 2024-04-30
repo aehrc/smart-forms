@@ -49,11 +49,11 @@ export function convertCodingsToAnswerOptions(codings: Coding[]): QuestionnaireI
  */
 export function findInAnswerOptions(
   options: QuestionnaireItemAnswerOption[],
-  str: string
+  valueInString: string
 ): QuestionnaireResponseItemAnswer | undefined {
   for (const option of options) {
     if (option.valueCoding) {
-      if (str === option.valueCoding.code) {
+      if (valueInString === option.valueCoding.code) {
         return {
           valueCoding: option.valueCoding
         };
@@ -61,7 +61,7 @@ export function findInAnswerOptions(
     }
 
     if (option.valueString) {
-      if (str === option.valueString) {
+      if (valueInString === option.valueString) {
         return {
           valueString: option.valueString
         };
@@ -69,7 +69,7 @@ export function findInAnswerOptions(
     }
 
     if (option.valueInteger) {
-      if (str === option.valueInteger.toString()) {
+      if (valueInString === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
         };
