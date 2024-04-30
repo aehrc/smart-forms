@@ -27,7 +27,7 @@
   "dependencies": {
     "@aehrc/sdc-assemble": "^1.2.0",
     "@aehrc/sdc-populate": "^1.6.1",
-    "@aehrc/smart-forms-renderer": "^0.23.2",
+    "@aehrc/smart-forms-renderer": "^0.24.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.10.8",
     "@fontsource/material-icons": "^5.0.16",
