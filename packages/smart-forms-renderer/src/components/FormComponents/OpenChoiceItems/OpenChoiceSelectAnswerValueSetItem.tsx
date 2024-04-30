@@ -73,6 +73,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
       }
       return;
     }
+
     onQrItemChange(createEmptyQrItem(qItem));
   }
 

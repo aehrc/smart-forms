@@ -33,6 +33,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
+import Typography from '@mui/material/Typography';
 
 interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -58,6 +59,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
+            isTabled={isTabled}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
@@ -133,7 +135,11 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
         );
       }
     default:
-      return null;
+      return (
+        <Typography>
+          Something has went wrong when parsing item {qItem.linkId} - {qItem.text}
+        </Typography>
+      );
   }
 }
 

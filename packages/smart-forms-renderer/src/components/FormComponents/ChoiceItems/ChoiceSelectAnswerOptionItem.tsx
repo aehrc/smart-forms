@@ -49,29 +49,28 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Init input value
-  const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
-  let valueSelect = getQrChoiceValue(qrChoiceSelect);
-  if (!valueSelect) {
-    valueSelect = '';
-  }
+  const qrChoice = qrItem ?? createEmptyQrItem(qItem);
+  const valueChoice = getQrChoiceValue(qrChoice);
 
   // Event handlers
   function handleChange(newValue: string) {
-    if (qItem.answerOption) {
-      const qrAnswer = findInAnswerOptions(qItem.answerOption, newValue);
-      if (qrAnswer) {
-        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
-        return;
-      }
+    if (!qItem.answerOption) {
+      onQrItemChange(createEmptyQrItem(qItem));
+      return;
     }
-    onQrItemChange(createEmptyQrItem(qItem));
+
+    const qrAnswer = findInAnswerOptions(qItem.answerOption, newValue);
+    if (qrAnswer) {
+      onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
+      return;
+    }
   }
 
   if (isRepeated) {
     return (
       <ChoiceSelectAnswerOptionFields
         qItem={qItem}
-        valueSelect={valueSelect}
+        valueSelect={valueChoice ?? ''}
         readOnly={readOnly}
         isTabled={isTabled}
         onSelectChange={handleChange}
@@ -87,7 +86,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceSelectAnswerOptionFields
           qItem={qItem}
-          valueSelect={valueSelect}
+          valueSelect={valueChoice ?? ''}
           readOnly={readOnly}
           isTabled={isTabled}
           onSelectChange={handleChange}

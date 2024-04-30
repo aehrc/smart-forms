@@ -26,6 +26,23 @@ import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.e
 import { isSpecificItemControl } from './itemControl';
 
 /**
+ * Convert codings to Questionnaire answer options
+ *
+ * @author Sean Fong
+ */
+export function convertCodingsToAnswerOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
+  return codings.map(
+    (coding): QuestionnaireItemAnswerOption => ({
+      valueCoding: {
+        system: coding.system,
+        code: coding.code,
+        display: coding.display
+      }
+    })
+  );
+}
+
+/**
  * Find and return corresponding answerOption based on selected answer in form
  *
  * @author Sean Fong
@@ -96,7 +113,7 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
 }
 
 /**
- * Find and return corresponding coding from AnswerValyeSet based on selected answer in form
+ * Find and return corresponding coding from AnswerValueSet based on selected answer in form
  *
  * @author Sean Fong
  */

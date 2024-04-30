@@ -45,7 +45,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
       fullWidth
       placeholder={entryFormat}
       label={displayPrompt}
-      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      endAdornment={<InputAdornment position="end">{displayUnit}</InputAdornment>}
       sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
       size="small"
       onChange={(e) => onSelectChange(e.target.value)}>
