@@ -30,7 +30,7 @@ export interface QuestionnaireModel {
   launchContexts: Record<string, LaunchContext>;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
-  calculatedExpressions: Record<string, CalculatedExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   answerExpressions: Record<string, AnswerExpression>;
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;

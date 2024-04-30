@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, Expression, Extension, QuestionnaireItem } from 'fhir/r4';
+import type { Coding, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
@@ -99,26 +99,6 @@ export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
     }
   }
   return false;
-}
-
-/**
- * Check if an answerExpression extension is present
- *
- * @author Sean Fong
- */
-export function getAnswerExpression(qItem: QuestionnaireItem): Expression | null {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url ===
-        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression' &&
-      extension.valueExpression?.language === 'text/fhirpath'
-  );
-  if (itemControl) {
-    if (itemControl.valueExpression) {
-      return itemControl.valueExpression;
-    }
-  }
-  return null;
 }
 
 /**

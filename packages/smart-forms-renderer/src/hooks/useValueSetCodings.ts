@@ -23,7 +23,7 @@ import {
   getValueSetCodings,
   getValueSetPromise
 } from '../utils/valueSet';
-import { getAnswerExpression } from '../utils/itemControl';
+import { getAnswerExpression } from '../utils/getExpressionsFromItem';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';

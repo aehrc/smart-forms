@@ -37,7 +37,7 @@ import dayjs from 'dayjs';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
-  calculatedExpressions: Record<string, CalculatedExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
 }
@@ -45,7 +45,7 @@ interface EvaluateInitialCalculatedExpressionsParams {
 export function evaluateInitialCalculatedExpressions(
   params: EvaluateInitialCalculatedExpressionsParams
 ): {
-  initialCalculatedExpressions: Record<string, CalculatedExpression>;
+  initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
 } {
   const { initialResponse, calculatedExpressions, variablesFhirPath, existingFhirPathContext } =
@@ -62,7 +62,7 @@ export function evaluateInitialCalculatedExpressions(
     };
   }
 
-  const initialCalculatedExpressions: Record<string, CalculatedExpression> = {
+  const initialCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
   const updatedFhirPathContext = createFhirPathContext(
@@ -72,23 +72,26 @@ export function evaluateInitialCalculatedExpressions(
   );
 
   for (const linkId in initialCalculatedExpressions) {
-    try {
-      const result = fhirpath.evaluate(
-        initialResponse,
-        calculatedExpressions[linkId].expression,
-        updatedFhirPathContext,
-        fhirpath_r4_model
-      );
+    const itemCalcExpressions = calculatedExpressions[linkId];
 
-      if (!_isEqual(calculatedExpressions[linkId].value, result[0])) {
-        initialCalculatedExpressions[linkId].value = result[0];
+    for (const calcExpression of itemCalcExpressions) {
+      try {
+        const result = fhirpath.evaluate(
+          {},
+          calcExpression.expression,
+          updatedFhirPathContext,
+          fhirpath_r4_model
+        );
+
+        if (!_isEqual(calcExpression.value, result[0])) {
+          calcExpression.value = result[0];
+        }
+      } catch (e) {
+        console.warn(e.message, `LinkId: ${linkId}\nExpression: ${calcExpression.expression}`);
       }
-    } catch (e) {
-      console.warn(
-        e.message,
-        `LinkId: ${linkId}\nExpression: ${calculatedExpressions[linkId].expression}`
-      );
     }
+
+    initialCalculatedExpressions[linkId] = itemCalcExpressions;
   }
 
   return {
@@ -99,37 +102,40 @@ export function evaluateInitialCalculatedExpressions(
 
 export function evaluateCalculatedExpressions(
   fhirPathContext: Record<string, any>,
-  calculatedExpressions: Record<string, CalculatedExpression>
+  calculatedExpressions: Record<string, CalculatedExpression[]>
 ): {
   calculatedExpsIsUpdated: boolean;
-  updatedCalculatedExpressions: Record<string, CalculatedExpression>;
+  updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
 } {
-  const updatedCalculatedExpressions: Record<string, CalculatedExpression> = {
+  const updatedCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
 
   let isUpdated = false;
   for (const linkId in calculatedExpressions) {
-    try {
-      const result = fhirpath.evaluate(
-        '',
-        calculatedExpressions[linkId].expression,
-        fhirPathContext,
-        fhirpath_r4_model
-      );
+    const itemCalcExpressions = calculatedExpressions[linkId];
 
-      if (result.length > 0) {
-        if (!_isEqual(calculatedExpressions[linkId].value, result[0])) {
-          isUpdated = true;
-          updatedCalculatedExpressions[linkId].value = result[0];
+    for (const calcExpression of itemCalcExpressions) {
+      try {
+        const result = fhirpath.evaluate(
+          {},
+          calcExpression.expression,
+          fhirPathContext,
+          fhirpath_r4_model
+        );
+
+        if (result.length > 0) {
+          if (!_isEqual(calcExpression.value, result[0])) {
+            isUpdated = true;
+            calcExpression.value = result[0];
+          }
         }
+      } catch (e) {
+        console.warn(e.message, `LinkId: ${linkId}\nExpression: ${calcExpression.expression}`);
       }
-    } catch (e) {
-      console.warn(
-        e.message,
-        `LinkId: ${linkId}\nExpression: ${calculatedExpressions[linkId].expression}`
-      );
     }
+
+    updatedCalculatedExpressions[linkId] = itemCalcExpressions;
   }
 
   return {
@@ -141,17 +147,8 @@ export function evaluateCalculatedExpressions(
 export function initialiseCalculatedExpressionValues(
   questionnaire: Questionnaire,
   populatedResponse: QuestionnaireResponse,
-  calculatedExpressions: Record<string, CalculatedExpression>
+  calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponse {
-  const calculatedExpressionsWithValues = Object.keys(calculatedExpressions)
-    .filter((key) => calculatedExpressions[key].value !== undefined)
-    .reduce(
-      (mapping: Record<string, CalculatedExpression>, key: string) => (
-        (mapping[key] = calculatedExpressions[key]), mapping
-      ),
-      {}
-    );
-
   if (
     !questionnaire.item ||
     questionnaire.item.length === 0 ||
@@ -161,6 +158,19 @@ export function initialiseCalculatedExpressionValues(
     return populatedResponse;
   }
 
+  // Filter calculated expressions, only preserve key-value pairs with values
+  const calculatedExpressionsWithValues: Record<string, CalculatedExpression[]> = {};
+  for (const linkId in calculatedExpressions) {
+    const itemCalcExpressionsWithValues = calculatedExpressions[linkId].filter(
+      (calcExpression) => calcExpression.value !== undefined
+    );
+
+    if (itemCalcExpressionsWithValues.length > 0) {
+      calculatedExpressionsWithValues[linkId] = itemCalcExpressionsWithValues;
+    }
+  }
+
+  // Populate calculated expression values into QR
   const topLevelQrItems: QuestionnaireResponseItem[] = [];
   for (const [index, topLevelQItem] of questionnaire.item.entries()) {
     const populatedTopLevelQrItem = populatedResponse.item[index] ?? {
@@ -193,7 +203,7 @@ export function initialiseCalculatedExpressionValues(
 function initialiseItemCalculatedExpressionValueRecursive(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem | undefined,
-  calculatedExpressions: Record<string, CalculatedExpression>
+  calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponseItem[] | QuestionnaireResponseItem | null {
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
@@ -245,16 +255,27 @@ function initialiseItemCalculatedExpressionValueRecursive(
   return constructSingleItem(qItem, calculatedExpressions);
 }
 
+function getCalculatedExpressionAnswer(
+  qItem: QuestionnaireItem,
+  calculatedExpressions: Record<string, CalculatedExpression[]>
+): QuestionnaireResponseItemAnswer | undefined {
+  const calcExpressionFromItem = calculatedExpressions[qItem.linkId]?.find(
+    (calcExpression) => calcExpression.from === 'item'
+  );
+
+  if (calcExpressionFromItem && calcExpressionFromItem.value) {
+    return parseValueToAnswer(qItem, calcExpressionFromItem.value);
+  }
+
+  return;
+}
+
 function constructGroupItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem | undefined,
-  calculatedExpressions: Record<string, CalculatedExpression>
+  calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponseItem | null {
-  const itemCalculatedExpression = calculatedExpressions[qItem.linkId];
-  let calculatedExpressionAnswer: QuestionnaireResponseItemAnswer | undefined;
-  if (itemCalculatedExpression && itemCalculatedExpression.value) {
-    calculatedExpressionAnswer = parseValueToAnswer(qItem, itemCalculatedExpression.value);
-  }
+  const calculatedExpressionAnswer = getCalculatedExpressionAnswer(qItem, calculatedExpressions);
 
   // If group item has an existing answer, do not overwrite it with calculated expression value
   if (qrItem?.answer && qrItem?.answer.length > 0) {
@@ -281,14 +302,9 @@ function constructGroupItem(
 
 function constructSingleItem(
   qItem: QuestionnaireItem,
-  calculatedExpressions: Record<string, CalculatedExpression>
+  calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponseItem | null {
-  const itemCalculatedExpression = calculatedExpressions[qItem.linkId];
-  let calculatedExpressionAnswer: QuestionnaireResponseItemAnswer | undefined;
-  if (itemCalculatedExpression && itemCalculatedExpression.value) {
-    calculatedExpressionAnswer = parseValueToAnswer(qItem, itemCalculatedExpression.value);
-  }
-
+  const calculatedExpressionAnswer = getCalculatedExpressionAnswer(qItem, calculatedExpressions);
   if (!calculatedExpressionAnswer) {
     return null;
   }

@@ -316,7 +316,7 @@ export interface initialFormFromResponseParams {
   questionnaireResponse: QuestionnaireResponse;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
-  calculatedExpressions: Record<string, CalculatedExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   variablesFhirPath: Record<string, Expression[]>;
   tabs: Tabs;
   fhirPathContext: Record<string, any>;
@@ -326,7 +326,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
   initialEnableWhenItems: EnableWhenItems;
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
   initialEnableWhenExpressions: EnableWhenExpressions;
-  initialCalculatedExpressions: Record<string, CalculatedExpression>;
+  initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   firstVisibleTab: number;
   updatedFhirPathContext: Record<string, any>;
 } {

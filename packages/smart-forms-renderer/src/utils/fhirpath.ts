@@ -25,7 +25,7 @@ import { evaluateCalculatedExpressions } from './calculatedExpression';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
-  calculatedExpressions: Record<string, CalculatedExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
@@ -34,7 +34,7 @@ interface EvaluateUpdatedExpressionsParams {
 export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsParams): {
   isUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
-  updatedCalculatedExpressions: Record<string, CalculatedExpression>;
+  updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
 } {
   const {

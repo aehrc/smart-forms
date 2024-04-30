@@ -17,7 +17,6 @@
 
 import type {
   Expression,
-  Extension,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen
@@ -35,7 +34,6 @@ import type {
 } from '../../interfaces';
 import type { AnswerExpression } from '../../interfaces/answerExpression.interface';
 import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
-import { getAnswerExpression } from '../itemControl';
 import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables';
@@ -44,12 +42,17 @@ import { checkItemIsEnabledRepeat } from '../enableWhen';
 import cloneDeep from 'lodash.clonedeep';
 import { emptyResponse } from '../emptyResource';
 import { evaluateEnableWhenRepeatExpressionInstance } from '../enableWhenExpression';
+import {
+  getAnswerExpression,
+  getCalculatedExpressions,
+  getEnableWhenExpression
+} from '../getExpressionsFromItem';
 
 interface ReturnParamsRecursive {
   variables: Variables;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
-  calculatedExpressions: Record<string, CalculatedExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
 }
@@ -65,7 +68,7 @@ export function extractOtherExtensions(
     singleExpressions: {},
     repeatExpressions: {}
   };
-  const calculatedExpressions: Record<string, CalculatedExpression> = {};
+  const calculatedExpressions: Record<string, CalculatedExpression[]> = {};
   const answerExpressions: Record<string, AnswerExpression> = {};
 
   if (!questionnaire.item || questionnaire.item.length === 0) {
@@ -114,7 +117,7 @@ interface extractExtensionsFromItemRecursiveParams {
   variables: Variables;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
-  calculatedExpressions: Record<string, CalculatedExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
   defaultTerminologyServerUrl: string;
@@ -184,13 +187,13 @@ function extractExtensionsFromItemRecursive(
     }
   }
 
-  const calculatedExpression = getCalculatedExpression(item);
-  if (calculatedExpression) {
-    calculatedExpressions[item.linkId] = {
-      expression: `${calculatedExpression.expression}`
-    };
+  // Get calculatedExpressions
+  const calculatedExpressionsOfItem = getCalculatedExpressions(item);
+  if (calculatedExpressionsOfItem.length > 0) {
+    calculatedExpressions[item.linkId] = calculatedExpressionsOfItem;
   }
 
+  // Get answerExpressions
   const answerExpression = getAnswerExpression(item);
   if (answerExpression) {
     answerExpressions[item.linkId] = {
@@ -416,44 +419,4 @@ function initialiseEnableWhenExpression(
       expression: `${enableWhenExpression.expression}`
     }
   };
-}
-
-/**
- * Check if an enableWhenExpression extension is present
- *
- * @author Sean Fong
- */
-export function getEnableWhenExpression(qItem: QuestionnaireItem): Expression | null {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url ===
-        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression' &&
-      extension.valueExpression?.language === 'text/fhirpath'
-  );
-  if (itemControl) {
-    if (itemControl.valueExpression) {
-      return itemControl.valueExpression;
-    }
-  }
-  return null;
-}
-
-/**
- * Check if an calculatedExpression extension is present
- *
- * @author Sean Fong
- */
-export function getCalculatedExpression(qItem: QuestionnaireItem): Expression | null {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url ===
-        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' &&
-      extension.valueExpression?.language === 'text/fhirpath'
-  );
-  if (itemControl) {
-    if (itemControl.valueExpression) {
-      return itemControl.valueExpression;
-    }
-  }
-  return null;
 }

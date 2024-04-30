@@ -22,6 +22,7 @@ import parse from 'html-react-parser';
 import Box from '@mui/material/Box';
 import ReactMarkdown from 'react-markdown';
 import Typography from '@mui/material/Typography';
+import useDisplayCalculatedExpression from '../../../hooks/useDisplayCalculatedExpression';
 
 interface ItemLabelTextProps {
   qItem: QuestionnaireItem;
@@ -31,6 +32,16 @@ interface ItemLabelTextProps {
 const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   const { qItem, readOnly } = props;
 
+  // Use calculatedExpressionString if available
+  const calculatedExpressionString = useDisplayCalculatedExpression(qItem);
+  if (calculatedExpressionString) {
+    return (
+      <Typography color={readOnly ? 'text.disabled' : 'text.primary'} sx={{ mt: 0.25 }}>
+        {calculatedExpressionString}
+      </Typography>
+    );
+  }
+
   // parse xHTML if found
   const xHtmlString = getXHtmlString(qItem);
 
@@ -38,7 +49,7 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
     return <Box>{parse(xHtmlString)}</Box>;
   }
 
-  // parse xHTML if found
+  // parse markdown if found
   const markdownString = getMarkdownString(qItem);
   if (markdownString) {
     return (
