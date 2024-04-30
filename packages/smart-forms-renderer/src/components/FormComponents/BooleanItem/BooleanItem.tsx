@@ -30,6 +30,7 @@ import BooleanField from './BooleanField';
 import Box from '@mui/material/Box';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
+import useBooleanCalculatedExpression from '../../../hooks/useBooleanCalculatedExpression';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler,
@@ -48,6 +49,13 @@ function BooleanItem(props: BooleanItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const valueBoolean = qrItem?.answer && qrItem.answer[0].valueBoolean;
+
+  // Process calculated expressions
+  const { calcExpUpdated } = useBooleanCalculatedExpression({
+    qItem: qItem,
+    booleanValue: valueBoolean,
+    onQrItemChange: onQrItemChange
+  });
 
   // Event handlers
   function handleValueChange(newValue: string) {
@@ -82,6 +90,7 @@ function BooleanItem(props: BooleanItemProps) {
           readOnly={readOnly}
           isTabled={isTabled}
           valueBoolean={valueBoolean}
+          calcExpUpdated={calcExpUpdated}
           onCheckedChange={handleValueChange}
           onClear={handleClear}
         />
@@ -96,6 +105,7 @@ function BooleanItem(props: BooleanItemProps) {
         readOnly={readOnly}
         isTabled={isTabled}
         valueBoolean={valueBoolean}
+        calcExpUpdated={calcExpUpdated}
         onCheckedChange={handleValueChange}
         onClear={handleClear}
       />
@@ -112,6 +122,7 @@ function BooleanItem(props: BooleanItemProps) {
           readOnly={readOnly}
           isTabled={isTabled}
           valueBoolean={valueBoolean}
+          calcExpUpdated={calcExpUpdated}
           onCheckedChange={handleValueChange}
           onClear={handleClear}
         />

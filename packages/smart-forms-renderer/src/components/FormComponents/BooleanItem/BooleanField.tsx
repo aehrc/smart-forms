@@ -28,17 +28,20 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
+import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 
 interface BooleanFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   valueBoolean: boolean | undefined;
+  calcExpUpdated: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, isTabled, onCheckedChange, onClear } = props;
+  const { qItem, readOnly, valueBoolean, calcExpUpdated, isTabled, onCheckedChange, onClear } =
+    props;
 
   // defaults to horizontal, only set to vertical if explicitly set
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Horizontal;
@@ -62,6 +65,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
       <Box flexGrow={1} />
 
+      <FadingCheckIcon fadeIn={calcExpUpdated} />
       <Fade in={valueBoolean !== undefined} timeout={100}>
         <Tooltip title="Set question as unanswered">
           <Button
