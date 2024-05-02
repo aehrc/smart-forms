@@ -68,51 +68,73 @@ export function isEnabledAnswerTypeSwitcher(
   enableWhen: QuestionnaireItemEnableWhen,
   answer: QuestionnaireResponseItemAnswer
 ): boolean {
-  if (enableWhen['answerBoolean'] !== undefined && enableWhen.operator === 'exists') {
+  if (typeof enableWhen.answerBoolean === 'boolean' && enableWhen.operator === 'exists') {
     return answerOperatorSwitcher(enableWhen.answerBoolean, answer, enableWhen.operator);
-  } else if (enableWhen['answerBoolean'] !== undefined && answer.valueBoolean !== undefined) {
+  }
+
+  if (typeof enableWhen.answerBoolean === 'boolean' && typeof answer.valueBoolean === 'boolean') {
     return answerOperatorSwitcher(
       enableWhen.answerBoolean,
       answer.valueBoolean,
       enableWhen.operator
     );
-  } else if (enableWhen['answerDecimal'] && answer.valueDecimal) {
+  }
+
+  if (typeof enableWhen.answerDecimal === 'number' && typeof answer.valueDecimal === 'number') {
     return answerOperatorSwitcher(
       enableWhen.answerDecimal,
       answer.valueDecimal,
       enableWhen.operator
     );
-  } else if (enableWhen['answerInteger'] !== undefined && answer.valueInteger !== undefined) {
+  }
+
+  if (typeof enableWhen.answerInteger === 'number' && typeof answer.valueInteger === 'number') {
     return answerOperatorSwitcher(
       enableWhen.answerInteger,
       answer.valueInteger,
       enableWhen.operator
     );
-  } else if (enableWhen['answerDate'] && answer.valueDate) {
+  }
+
+  if (typeof enableWhen.answerDate === 'string' && typeof answer.valueDate === 'string') {
     return answerOperatorSwitcher(enableWhen.answerDate, answer.valueDate, enableWhen.operator);
-  } else if (enableWhen['answerDateTime'] && answer.valueDateTime) {
+  }
+
+  if (typeof enableWhen.answerDateTime === 'string' && typeof answer.valueDateTime === 'string') {
     return answerOperatorSwitcher(
       enableWhen.answerDateTime,
       answer.valueDateTime,
       enableWhen.operator
     );
-  } else if (enableWhen['answerTime'] && answer.valueTime) {
+  }
+
+  if (typeof enableWhen.answerTime === 'string' && typeof answer.valueTime === 'string') {
     return answerOperatorSwitcher(enableWhen.answerTime, answer.valueTime, enableWhen.operator);
-  } else if (enableWhen['answerString'] && answer.valueString) {
+  }
+
+  if (typeof enableWhen.answerString === 'string' && typeof answer.valueString === 'string') {
     return answerOperatorSwitcher(enableWhen.answerString, answer.valueString, enableWhen.operator);
-  } else if (enableWhen['answerCoding']?.code && answer.valueCoding?.code) {
+  }
+
+  if (
+    typeof enableWhen.answerCoding?.code === 'string' &&
+    typeof answer.valueCoding?.code === 'string'
+  ) {
     return answerOperatorSwitcher(
       enableWhen.answerCoding.code,
       answer.valueCoding.code,
       enableWhen.operator
     );
-  } else if (enableWhen['answerQuantity'] && answer.valueQuantity) {
+  }
+
+  if (enableWhen.answerQuantity && answer.valueQuantity) {
     return answerOperatorSwitcher(
       enableWhen.answerQuantity,
       answer.valueQuantity,
       enableWhen.operator
     );
   }
+
   return false;
 }
 
