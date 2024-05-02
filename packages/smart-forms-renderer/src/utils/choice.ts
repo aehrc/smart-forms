@@ -86,7 +86,6 @@ export function findInAnswerOptions(
  * @author Sean Fong
  */
 export function getChoiceControlType(qItem: QuestionnaireItem) {
-  const dropdownOptionsCount = 5;
   if (isSpecificItemControl(qItem, 'autocomplete')) {
     return ChoiceItemControl.Autocomplete;
   }
@@ -103,13 +102,7 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
     return ChoiceItemControl.Select;
   }
 
-  if (qItem.answerOption) {
-    return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
-      ? ChoiceItemControl.Radio
-      : ChoiceItemControl.Select;
-  } else {
-    return ChoiceItemControl.Select;
-  }
+  return ChoiceItemControl.Select;
 }
 
 /**
