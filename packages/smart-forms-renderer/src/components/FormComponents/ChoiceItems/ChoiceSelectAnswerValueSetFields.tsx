@@ -25,6 +25,7 @@ import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 
 interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
@@ -32,12 +33,21 @@ interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribu
   valueCoding: Coding | null;
   terminologyError: TerminologyError;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onSelectChange: (newValue: Coding | null) => void;
 }
 
 function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetFieldsProps) {
-  const { qItem, codings, valueCoding, terminologyError, readOnly, isTabled, onSelectChange } =
-    props;
+  const {
+    qItem,
+    codings,
+    valueCoding,
+    terminologyError,
+    readOnly,
+    calcExpUpdated,
+    isTabled,
+    onSelectChange
+  } = props;
 
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
@@ -64,6 +74,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               ...params.InputProps,
               endAdornment: (
                 <>
+                  <FadingCheckIcon fadeIn={calcExpUpdated} />
                   {params.InputProps.endAdornment}
                   {displayUnit}
                 </>

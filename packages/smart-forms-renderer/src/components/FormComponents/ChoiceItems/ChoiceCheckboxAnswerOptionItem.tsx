@@ -23,6 +23,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -36,6 +37,7 @@ import { useQuestionnaireStore } from '../../../stores';
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -47,6 +49,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     qItem,
     qrItem,
     isRepeated,
+    isTabled,
     showMinimalView = false,
     parentIsReadOnly,
     onQrItemChange
@@ -60,6 +63,10 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {

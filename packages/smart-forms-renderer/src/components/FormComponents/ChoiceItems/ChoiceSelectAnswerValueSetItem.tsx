@@ -31,6 +31,8 @@ import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
+import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -79,6 +81,22 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     []
   );
 
+  const answerOptions = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
+
+  // Process calculated expressions
+  const { calcExpUpdated } = useCodingCalculatedExpression({
+    qItem: qItem,
+    valueInString: valueCoding?.code ?? '',
+    onChangeByCalcExpression: (newValueInString) => {
+      if (codings.length > 0) {
+        const qrAnswer = findInAnswerOptions(answerOptions, newValueInString);
+        onQrItemChange(
+          qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
+        );
+      }
+    }
+  });
+
   // Event handlers
   function handleChange(newValue: Coding | null) {
     if (newValue) {
@@ -99,6 +117,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         valueCoding={valueCoding}
         terminologyError={terminologyError}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onSelectChange={handleChange}
       />
@@ -117,6 +136,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
           valueCoding={valueCoding}
           terminologyError={terminologyError}
           readOnly={readOnly}
+          calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onSelectChange={handleChange}
         />
