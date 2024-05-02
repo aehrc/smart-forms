@@ -137,7 +137,8 @@ View the page here: http://hl7.org/fhir/uv/sdc/behavior.html
 | integer                                                                                                 |
 | decimal                                                                                                 |
 | string                                                                                                  |
-| text                                                                                                    | |
+| text                                                                                                    |
+| choice (limited to the below) <br/>- radio item control <br/> - dropdown    item control        |
 
 
 **Other Control**
