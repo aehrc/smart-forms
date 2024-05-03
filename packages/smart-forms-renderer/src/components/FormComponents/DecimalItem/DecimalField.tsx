@@ -55,7 +55,7 @@ function DecimalField(props: DecimalFieldProps) {
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly}
       label={displayPrompt}
-      placeholder={entryFormat}
+      placeholder={entryFormat === '' ? '0.0' : entryFormat}
       fullWidth
       isTabled={isTabled}
       size="small"

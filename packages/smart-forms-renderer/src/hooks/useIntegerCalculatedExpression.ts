@@ -26,8 +26,8 @@ interface UseIntegerCalculatedExpression {
 
 interface useIntegerCalculatedExpressionProps {
   qItem: QuestionnaireItem;
-  inputValue: number;
-  setInputValue: (value: number) => void;
+  inputValue: string;
+  setInputValue: (value: string) => void;
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
 }
 
@@ -52,18 +52,22 @@ function useIntegerCalculatedExpression(
 
       // only update if calculated value is different from current value
       if (calcExpression.value !== inputValue && typeof calcExpression.value === 'number') {
-        // update ui to show calculated value changes
-        setCalcExpUpdated(true);
-        setTimeout(() => {
-          setCalcExpUpdated(false);
-        }, 500);
+        const calcExpressionValue = calcExpression.value;
 
-        // update questionnaireResponse
-        setInputValue(calcExpression.value);
-        onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueInteger: calcExpression.value }]
-        });
+        if (calcExpressionValue !== parseInt(inputValue)) {
+          // update ui to show calculated value changes
+          setCalcExpUpdated(true);
+          setTimeout(() => {
+            setCalcExpUpdated(false);
+          }, 500);
+
+          // update questionnaireResponse
+          setInputValue(calcExpressionValue.toString());
+          onQrItemChange({
+            ...createEmptyQrItem(qItem),
+            answer: [{ valueInteger: calcExpressionValue }]
+          });
+        }
       }
     },
     // Only trigger this effect if calculatedExpression of item changes

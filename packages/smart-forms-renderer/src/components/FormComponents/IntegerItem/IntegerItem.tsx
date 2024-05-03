@@ -31,11 +31,11 @@ import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import IntegerField from './IntegerField';
 import useIntegerCalculatedExpression from '../../../hooks/useIntegerCalculatedExpression';
-import { parseValidInteger } from '../../../utils/parseInputs';
+import { parseIntegerString } from '../../../utils/parseInputs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import useNumberInput from '../../../hooks/useNumberInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
+import useStringInput from '../../../hooks/useStringInput';
 
 interface IntegerItemProps
   extends PropsWithQrItemChangeHandler,
@@ -56,44 +56,53 @@ function IntegerItem(props: IntegerItemProps) {
 
   // Init input value
   let valueInteger = 0;
+  let initialInput = '';
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueInteger) {
       valueInteger = qrItem.answer[0].valueInteger;
     }
+
     if (qrItem?.answer[0].valueDecimal) {
       valueInteger = Math.round(qrItem.answer[0].valueDecimal);
     }
+
+    initialInput = valueInteger.toString();
   }
-  const [value, setValue] = useNumberInput(valueInteger);
+
+  const [input, setInput] = useStringInput(initialInput);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, value.toString());
+  const feedback = useValidationFeedback(qItem, input);
 
   // Process calculated expressions
   const { calcExpUpdated } = useIntegerCalculatedExpression({
     qItem: qItem,
-    inputValue: value,
-    setInputValue: (newValue) => {
-      setValue(newValue);
+    inputValue: input,
+    setInputValue: (newInput) => {
+      setInput(newInput);
     },
     onQrItemChange: onQrItemChange
   });
 
   // Event handlers
   function handleInputChange(newInput: string) {
-    const newValue = parseValidInteger(newInput);
+    const parsedNewInput = parseIntegerString(newInput);
 
-    setValue(newValue);
-    updateQrItemWithDebounce(newValue);
+    setInput(parsedNewInput);
+    updateQrItemWithDebounce(parsedNewInput);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
-    debounce((newValue: number) => {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueInteger: newValue }]
-      });
+    debounce((parsedNewInput: string) => {
+      if (parsedNewInput === '') {
+        onQrItemChange(createEmptyQrItem(qItem));
+      } else {
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: [{ valueInteger: parseInt(parsedNewInput) }]
+        });
+      }
     }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem, displayUnit]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
@@ -102,7 +111,7 @@ function IntegerItem(props: IntegerItemProps) {
     return (
       <IntegerField
         linkId={qItem.linkId}
-        value={value}
+        input={input}
         feedback={feedback}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
@@ -123,7 +132,7 @@ function IntegerItem(props: IntegerItemProps) {
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <IntegerField
           linkId={qItem.linkId}
-          value={value}
+          input={input}
           feedback={feedback}
           displayPrompt={displayPrompt}
           displayUnit={displayUnit}
