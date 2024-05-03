@@ -73,6 +73,13 @@ export function initialiseQuestionnaireResponse(
     questionnaireResponse.questionnaire = createQuestionnaireReference(questionnaire);
   }
 
+  // Add "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse" profile
+  const profiles: string[] = [
+    'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse'
+  ];
+  questionnaireResponse.meta = questionnaireResponse.meta || {};
+  questionnaireResponse.meta.profile = profiles;
+
   return questionnaireResponse;
 }
 
