@@ -53,12 +53,12 @@ function useDecimalCalculatedExpression(
 
       // only update if calculated value is different from current value
       if (calcExpression.value !== inputValue && typeof calcExpression.value === 'number') {
-        const value = precision
+        const calcExpressionValue = precision
           ? parseFloat(calcExpression.value.toFixed(precision))
           : calcExpression.value;
 
         // only update if calculated value is different from current value
-        if (value !== parseFloat(inputValue)) {
+        if (calcExpressionValue !== parseFloat(inputValue)) {
           // update ui to show calculated value changes
           setCalcExpUpdated(true);
           setTimeout(() => {
@@ -66,10 +66,12 @@ function useDecimalCalculatedExpression(
           }, 500);
 
           // update questionnaireResponse
-          setInputValue(precision ? value.toFixed(precision) : value.toString());
+          setInputValue(
+            precision ? calcExpressionValue.toFixed(precision) : calcExpressionValue.toString()
+          );
           onQrItemChange({
             ...createEmptyQrItem(qItem),
-            answer: [{ valueDecimal: value }]
+            answer: [{ valueDecimal: calcExpressionValue }]
           });
         }
       }

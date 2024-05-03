@@ -30,6 +30,12 @@ export function parseValidNumericString(input: string): string {
   return input;
 }
 
+export function parseIntegerString(input: string): string {
+  input = parseValidNumericString(input);
+
+  return parseInt(input).toString();
+}
+
 export function parseDecimalStringWithPrecision(input: string, precision: number | null): string {
   input = parseValidNumericString(input);
 
