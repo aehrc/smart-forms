@@ -61,7 +61,7 @@ function DecimalItem(props: DecimalItemProps) {
 
   // Init input value
   let valueDecimal = 0.0;
-  let initialInput = '0';
+  let initialInput = '';
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueDecimal) {
       valueDecimal = qrItem.answer[0].valueDecimal;
@@ -100,12 +100,16 @@ function DecimalItem(props: DecimalItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: precision
-          ? [{ valueDecimal: parseDecimalStringToFloat(parsedNewInput, precision) }]
-          : [{ valueDecimal: parseFloat(parsedNewInput) }]
-      });
+      if (parsedNewInput === '') {
+        onQrItemChange(createEmptyQrItem(qItem));
+      } else {
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: precision
+            ? [{ valueDecimal: parseDecimalStringToFloat(parsedNewInput, precision) }]
+            : [{ valueDecimal: parseFloat(parsedNewInput) }]
+        });
+      }
     }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem, displayUnit, precision]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies

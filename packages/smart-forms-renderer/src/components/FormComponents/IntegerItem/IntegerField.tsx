@@ -56,7 +56,7 @@ function IntegerField(props: IntegerFieldProps) {
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly}
       label={displayPrompt}
-      placeholder={entryFormat ?? '0'}
+      placeholder={entryFormat === '' ? '0' : entryFormat}
       fullWidth
       isTabled={isTabled}
       size="small"

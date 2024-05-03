@@ -56,7 +56,7 @@ function IntegerItem(props: IntegerItemProps) {
 
   // Init input value
   let valueInteger = 0;
-  let initialInput = '0';
+  let initialInput = '';
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueInteger) {
       valueInteger = qrItem.answer[0].valueInteger;
@@ -95,10 +95,14 @@ function IntegerItem(props: IntegerItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueInteger: parseInt(parsedNewInput) }]
-      });
+      if (parsedNewInput === '') {
+        onQrItemChange(createEmptyQrItem(qItem));
+      } else {
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: [{ valueInteger: parseInt(parsedNewInput) }]
+        });
+      }
     }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem, displayUnit]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies

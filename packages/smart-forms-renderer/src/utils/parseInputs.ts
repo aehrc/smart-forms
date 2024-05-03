@@ -31,12 +31,19 @@ export function parseValidNumericString(input: string): string {
 }
 
 export function parseIntegerString(input: string): string {
-  input = parseValidNumericString(input);
+  if (input === '') {
+    return '';
+  }
 
+  input = parseValidNumericString(input);
   return parseInt(input).toString();
 }
 
 export function parseDecimalStringWithPrecision(input: string, precision: number | null): string {
+  if (input === '') {
+    return '';
+  }
+
   input = parseValidNumericString(input);
 
   let parsedInput = parseFloat(input).toString();
