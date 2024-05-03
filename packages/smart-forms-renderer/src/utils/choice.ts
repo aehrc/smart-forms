@@ -26,17 +26,34 @@ import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.e
 import { isSpecificItemControl } from './itemControl';
 
 /**
+ * Convert codings to Questionnaire answer options
+ *
+ * @author Sean Fong
+ */
+export function convertCodingsToAnswerOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
+  return codings.map(
+    (coding): QuestionnaireItemAnswerOption => ({
+      valueCoding: {
+        system: coding.system,
+        code: coding.code,
+        display: coding.display
+      }
+    })
+  );
+}
+
+/**
  * Find and return corresponding answerOption based on selected answer in form
  *
  * @author Sean Fong
  */
 export function findInAnswerOptions(
   options: QuestionnaireItemAnswerOption[],
-  str: string
+  valueInString: string
 ): QuestionnaireResponseItemAnswer | undefined {
   for (const option of options) {
     if (option.valueCoding) {
-      if (str === option.valueCoding.code) {
+      if (valueInString === option.valueCoding.code) {
         return {
           valueCoding: option.valueCoding
         };
@@ -44,7 +61,7 @@ export function findInAnswerOptions(
     }
 
     if (option.valueString) {
-      if (str === option.valueString) {
+      if (valueInString === option.valueString) {
         return {
           valueString: option.valueString
         };
@@ -52,7 +69,7 @@ export function findInAnswerOptions(
     }
 
     if (option.valueInteger) {
-      if (str === option.valueInteger.toString()) {
+      if (valueInString === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
         };
@@ -69,7 +86,6 @@ export function findInAnswerOptions(
  * @author Sean Fong
  */
 export function getChoiceControlType(qItem: QuestionnaireItem) {
-  const dropdownOptionsCount = 5;
   if (isSpecificItemControl(qItem, 'autocomplete')) {
     return ChoiceItemControl.Autocomplete;
   }
@@ -86,17 +102,11 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
     return ChoiceItemControl.Select;
   }
 
-  if (qItem.answerOption) {
-    return qItem.answerOption.length > 0 && qItem.answerOption.length < dropdownOptionsCount
-      ? ChoiceItemControl.Radio
-      : ChoiceItemControl.Select;
-  } else {
-    return ChoiceItemControl.Select;
-  }
+  return ChoiceItemControl.Select;
 }
 
 /**
- * Find and return corresponding coding from AnswerValyeSet based on selected answer in form
+ * Find and return corresponding coding from AnswerValueSet based on selected answer in form
  *
  * @author Sean Fong
  */

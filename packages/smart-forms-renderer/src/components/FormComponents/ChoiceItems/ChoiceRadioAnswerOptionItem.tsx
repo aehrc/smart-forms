@@ -17,74 +17,107 @@
 
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
+import { findInAnswerOptions, getChoiceControlType, getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { FullWidthFormComponentBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import { ChoiceItemControl } from '../../../interfaces/choice.enum';
+import Typography from '@mui/material/Typography';
+import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
+import ChoiceRadioAnswerOptionView from './ChoiceRadioAnswerOptionView';
+import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
-  const valueRadio = getQrChoiceValue(qrChoiceRadio);
+  const qrChoice = qrItem ?? createEmptyQrItem(qItem);
+  const valueChoice = getQrChoiceValue(qrChoice);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  // Process calculated expressions
+  const { calcExpUpdated } = useCodingCalculatedExpression({
+    qItem: qItem,
+    valueInString: valueChoice ?? '',
+    onChangeByCalcExpression: (newValueInString) => {
+      handleChange(newValueInString);
+    }
+  });
+
   // Event handlers
   function handleChange(newValue: string) {
-    if (qItem.answerOption) {
-      const qrAnswer = findInAnswerOptions(qItem.answerOption, newValue);
-      if (qrAnswer) {
-        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
-      }
+    if (!qItem.answerOption) {
+      onQrItemChange(createEmptyQrItem(qItem));
+      return;
     }
-  }
 
-  if (isRepeated) {
-    return (
-      <ChoiceRadioAnswerOptionFields
-        qItem={qItem}
-        valueRadio={valueRadio}
-        readOnly={readOnly}
-        onCheckedChange={handleChange}
-      />
+    const qrAnswer = findInAnswerOptions(qItem.answerOption, newValue);
+    onQrItemChange(
+      qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
     );
   }
 
-  return (
-    <FullWidthFormComponentBox
-      data-test="q-item-choice-radio-answer-option-box"
-      data-linkid={qItem.linkId}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceRadioAnswerOptionFields
+  // TODO This is in preparation of refactoring all choice answerOption fields into one component
+  const choiceControlType = getChoiceControlType(qItem);
+
+  switch (choiceControlType) {
+    // TODO At the moment only this case will be executed because this switch statment was already in the parent components
+    case ChoiceItemControl.Radio: {
+      return (
+        <ChoiceRadioAnswerOptionView
           qItem={qItem}
-          valueRadio={valueRadio}
+          valueChoice={valueChoice}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
           readOnly={readOnly}
+          calcExpUpdated={calcExpUpdated}
+          onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onCheckedChange={handleChange}
         />
-      </ItemFieldGrid>
-    </FullWidthFormComponentBox>
-  );
+      );
+    }
+
+    case ChoiceItemControl.Select: {
+      return (
+        <ChoiceSelectAnswerOptionView
+          qItem={qItem}
+          valueChoice={valueChoice}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          readOnly={readOnly}
+          calcExpUpdated={calcExpUpdated}
+          onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
+          onSelectChange={handleChange}
+        />
+      );
+    }
+
+    default: {
+      return (
+        <Typography>
+          Something has went wrong when parsing item {qItem.linkId} - {qItem.text}
+        </Typography>
+      );
+    }
+  }
 }
 
 export default ChoiceRadioAnswerOptionItem;

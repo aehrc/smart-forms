@@ -28,13 +28,16 @@ interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute
   qItem: QuestionnaireItem;
   valueSelect: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onSelectChange: (newValue: string) => void;
 }
 
 function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsProps) {
-  const { qItem, valueSelect, readOnly, isTabled, onSelectChange } = props;
+  const { qItem, valueSelect, readOnly, calcExpUpdated, isTabled, onSelectChange } = props;
 
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+
+  // TODO use calcExpUpdated as updated feedback
 
   return (
     <Select
@@ -45,7 +48,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
       fullWidth
       placeholder={entryFormat}
       label={displayPrompt}
-      endAdornment={<InputAdornment position={'end'}>{displayUnit}</InputAdornment>}
+      endAdornment={<InputAdornment position="end">{displayUnit}</InputAdornment>}
       sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
       size="small"
       onChange={(e) => onSelectChange(e.target.value)}>
