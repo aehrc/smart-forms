@@ -16,7 +16,12 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { OperationOutcome, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type {
+  OperationOutcome,
+  Questionnaire,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 import { emptyResponse } from '../utils/emptyResource';
 import cloneDeep from 'lodash.clonedeep';
 import type { Diff } from 'deep-diff';
@@ -24,10 +29,12 @@ import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
 import { validateQuestionnaire } from '../utils/validateQuestionnaire';
 import { questionnaireStore } from './questionnaireStore';
+import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 
 interface QuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
+  updatableResponseItems: Record<string, QuestionnaireResponseItem[]>;
   formChangesHistory: (Diff<QuestionnaireResponse, QuestionnaireResponse>[] | null)[];
   invalidItems: Record<string, OperationOutcome>;
   responseIsValid: boolean;
@@ -47,6 +54,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
   (set, get) => ({
     sourceResponse: cloneDeep(emptyResponse),
     updatableResponse: cloneDeep(emptyResponse),
+    updatableResponseItems: {},
     formChangesHistory: [],
     invalidItems: {},
     responseIsValid: true,
@@ -74,13 +82,15 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
       set(() => ({
         sourceResponse: questionnaireResponse,
-        updatableResponse: questionnaireResponse
+        updatableResponse: questionnaireResponse,
+        updatableResponseItems: createQuestionnaireResponseItemMap(questionnaireResponse)
       }));
     },
     setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
       const formChanges = diff(get().updatableResponse, populatedResponse) ?? null;
       set(() => ({
         updatableResponse: populatedResponse,
+        updatableResponseItems: createQuestionnaireResponseItemMap(populatedResponse),
         formChangesHistory: [...get().formChangesHistory, formChanges]
       }));
     },
@@ -88,6 +98,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
       set(() => ({
         updatableResponse: updatedResponse,
+        updatableResponseItems: createQuestionnaireResponseItemMap(updatedResponse),
         formChangesHistory: [...get().formChangesHistory, formChanges]
       }));
     },
@@ -95,17 +106,20 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       set(() => ({
         sourceResponse: savedResponse,
         updatableResponse: savedResponse,
+        updatableResponseItems: createQuestionnaireResponseItemMap(savedResponse),
         formChangesHistory: []
       })),
     setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) =>
       set(() => ({
         updatableResponse: clearedResponse,
+        updatableResponseItems: createQuestionnaireResponseItemMap(clearedResponse),
         formChangesHistory: []
       })),
     destroySourceResponse: () =>
       set(() => ({
         sourceResponse: cloneDeep(emptyResponse),
         updatableResponse: cloneDeep(emptyResponse),
+        updatableResponseItems: createQuestionnaireResponseItemMap(cloneDeep(emptyResponse)),
         formChangesHistory: []
       }))
   })

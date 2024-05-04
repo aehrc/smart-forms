@@ -37,6 +37,7 @@ import dayjs from 'dayjs';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
+  initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
@@ -48,8 +49,13 @@ export function evaluateInitialCalculatedExpressions(
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
 } {
-  const { initialResponse, calculatedExpressions, variablesFhirPath, existingFhirPathContext } =
-    params;
+  const {
+    initialResponse,
+    initialResponseItemMap,
+    calculatedExpressions,
+    variablesFhirPath,
+    existingFhirPathContext
+  } = params;
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
   if (
@@ -65,10 +71,11 @@ export function evaluateInitialCalculatedExpressions(
   const initialCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
+
   const updatedFhirPathContext = createFhirPathContext(
     initialResponse,
-    variablesFhirPath,
-    existingFhirPathContext
+    initialResponseItemMap,
+    variablesFhirPath
   );
 
   for (const linkId in initialCalculatedExpressions) {

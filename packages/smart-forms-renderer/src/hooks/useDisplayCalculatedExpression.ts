@@ -24,6 +24,7 @@ function useDisplayCalculatedExpression(qItem: QuestionnaireItem): string | null
   const calcExpression = calculatedExpressions[qItem.linkId]?.find(
     (exp) => exp.from === 'item._text'
   );
+
   if (!calcExpression) {
     return null;
   }

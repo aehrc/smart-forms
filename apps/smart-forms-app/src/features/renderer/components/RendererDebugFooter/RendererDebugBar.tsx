@@ -50,7 +50,7 @@ function RendererDebugBar(props: RendererDebugBarProps) {
         }
         label={
           <Typography variant="overline">
-            {isHidden ? 'Debug response hidden' : 'Debug response shown'}
+            {isHidden ? 'Debug section hidden' : 'Debug section shown'}
           </Typography>
         }
       />
