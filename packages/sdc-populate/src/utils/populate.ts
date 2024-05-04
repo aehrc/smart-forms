@@ -31,6 +31,8 @@ import { isEncounterContextParameter } from './typePredicates';
 /**
  * Main function of this populate module.
  * Input and output specific parameters conformant to the SDC populate specification.
+ * @see {@link https://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-populate.html}
+ * Added populationContextResults for visual and debugging purposes.
  *
  * @author Sean Fong
  */
@@ -95,5 +97,5 @@ export async function populate(
     questionnaireResponse
   );
 
-  return createOutputParameters(cleanQuestionnaireResponse, issues);
+  return createOutputParameters(cleanQuestionnaireResponse, issues, fhirPathContext);
 }

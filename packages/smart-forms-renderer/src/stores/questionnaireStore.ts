@@ -64,6 +64,7 @@ interface QuestionnaireStoreType {
   processedValueSetUrls: Record<string, string>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
+  populatedContext: Record<string, any>;
   focusedLinkId: string;
   readOnly: boolean;
   buildSourceQuestionnaire: (
@@ -91,9 +92,11 @@ interface QuestionnaireStoreType {
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
+    populatedContext?: Record<string, any>,
     persistTabIndex?: boolean
   ) => QuestionnaireResponse;
   onFocusLinkId: (linkId: string) => void;
+  setPopulatedContext: (newPopulatedContext: Record<string, any>) => void;
 }
 
 export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
@@ -113,6 +116,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   processedValueSetUrls: {},
   cachedValueSetCodings: {},
   fhirPathContext: {},
+  populatedContext: {},
   focusedLinkId: '',
   readOnly: false,
   buildSourceQuestionnaire: async (
@@ -287,7 +291,11 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         [valueSetUrl]: codings
       }
     })),
-  updatePopulatedProperties: (populatedResponse: QuestionnaireResponse, persistTabIndex) => {
+  updatePopulatedProperties: (
+    populatedResponse: QuestionnaireResponse,
+    populatedContext?: Record<string, any>,
+    persistTabIndex?: boolean
+  ) => {
     const initialResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
 
     const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
@@ -328,7 +336,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
       currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab,
-      fhirPathContext: updatedFhirPathContext
+      fhirPathContext: updatedFhirPathContext,
+      populatedContext: populatedContext ?? get().populatedContext
     }));
 
     return updatedResponse;
@@ -336,6 +345,10 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   onFocusLinkId: (linkId: string) =>
     set(() => ({
       focusedLinkId: linkId
+    })),
+  setPopulatedContext: (newPopulatedContext: Record<string, any>) =>
+    set(() => ({
+      populatedContext: newPopulatedContext
     }))
 }));
 

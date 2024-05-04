@@ -55,7 +55,7 @@ function RenderAuthStatus(props: RenderAuthStatusProps) {
         </Stack>
         <UnlaunchedButton />
         <Stack my={4} rowGap={1}>
-          <Typography variant="subtitle2">Debug section:</Typography>
+          <Typography variant="subtitle2">Debug panel:</Typography>
           <AuthDebugLaunchContexts launchContexts={launchContexts} />
           <AuthDebugFhirClient smartClient={smartClient} />
 

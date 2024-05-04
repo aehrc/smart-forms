@@ -16,6 +16,7 @@
  */
 
 import type {
+  Attachment,
   OperationOutcome,
   Parameters,
   ParametersParameter,
@@ -32,7 +33,11 @@ export interface OutputParameters extends Parameters {
   parameter: OutputParamArray;
 }
 
-type OutputParamArray = [ResponseParameter, IssuesParameter] | [ResponseParameter];
+type OutputParamArray =
+  | [ResponseParameter, IssuesParameter, CustomContextResultParameter]
+  | [ResponseParameter, IssuesParameter]
+  | [ResponseParameter, CustomContextResultParameter]
+  | [ResponseParameter];
 
 export interface ResponseParameter extends ParametersParameter {
   name: 'response';
@@ -42,4 +47,10 @@ export interface ResponseParameter extends ParametersParameter {
 export interface IssuesParameter extends ParametersParameter {
   name: 'issues';
   resource: OperationOutcome;
+}
+
+// This is used for debugging purposes, it does not exist in the FHIR spec
+export interface CustomContextResultParameter extends ParametersParameter {
+  name: 'contextResult-custom';
+  valueAttachment: Attachment;
 }

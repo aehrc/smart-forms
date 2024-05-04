@@ -46,6 +46,7 @@ function RepopulateAction(props: RepopulateActionProps) {
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
+  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -90,7 +91,13 @@ function RepopulateAction(props: RepopulateActionProps) {
         return;
       }
 
-      const { populated, hasWarnings } = populateResult;
+      const { populated, hasWarnings, populatedContext } = populateResult;
+
+      // If populatedContext is provided, update it in QuestionnaireStore so it gets updated in debug panel
+      if (populatedContext) {
+        setPopulatedContext(populatedContext);
+      }
+
       const itemToRepopulate = generateItemsToRepopulate(populated);
 
       setItemsToRepopulate(itemToRepopulate);

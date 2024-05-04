@@ -16,7 +16,12 @@
  */
 
 import type { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
-import type { OutputParameters, ResponseParameter } from '../interfaces/outputParameters.interface';
+import type {
+  CustomContextResultParameter,
+  OutputParameters,
+  ResponseParameter
+} from '../interfaces';
+import { Base64 } from 'js-base64';
 
 /**
  * Create output parameters as a response to be returned to the renderer. If they are issues, return with an issues parameter.
@@ -25,31 +30,43 @@ import type { OutputParameters, ResponseParameter } from '../interfaces/outputPa
  */
 export function createOutputParameters(
   questionnaireResponse: QuestionnaireResponse,
-  issues: OperationOutcomeIssue[]
+  issues: OperationOutcomeIssue[],
+  contextResult: Record<string, any>
 ): OutputParameters {
   const responseParameter: ResponseParameter = {
     name: 'response',
     resource: questionnaireResponse
   };
 
+  const customContextResultParameter: CustomContextResultParameter = {
+    name: 'contextResult-custom',
+    valueAttachment: {
+      contentType: 'application/json',
+      data: Base64.encode(JSON.stringify(contextResult))
+    }
+  };
+
+  // No issues to report
   if (issues.length === 0) {
     return {
       resourceType: 'Parameters',
-      parameter: [responseParameter]
-    };
-  } else {
-    return {
-      resourceType: 'Parameters',
-      parameter: [
-        responseParameter,
-        {
-          name: 'issues',
-          resource: {
-            resourceType: 'OperationOutcome',
-            issue: issues
-          }
-        }
-      ]
+      parameter: [responseParameter, customContextResultParameter]
     };
   }
+
+  // There are issues, so include issues parameter
+  return {
+    resourceType: 'Parameters',
+    parameter: [
+      responseParameter,
+      {
+        name: 'issues',
+        resource: {
+          resourceType: 'OperationOutcome',
+          issue: issues
+        }
+      },
+      customContextResultParameter
+    ]
+  };
 }

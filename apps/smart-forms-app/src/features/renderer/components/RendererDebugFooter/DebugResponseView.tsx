@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-import { jsonTreeTheme } from '../../utils/jsonTreeTheme.ts';
-import { JSONTree } from 'react-json-tree';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import ReactJson from '@microlink/react-json-view';
 
 interface DebugResponseViewProps {
   displayObject: Questionnaire | QuestionnaireResponse | Record<string, any> | null;
@@ -27,14 +26,22 @@ interface DebugResponseViewProps {
 function DebugResponseView(props: DebugResponseViewProps) {
   const { displayObject, showJsonTree } = props;
 
-  return showJsonTree ? (
-    <JSONTree
-      data={displayObject}
-      shouldExpandNodeInitially={() => true}
-      theme={jsonTreeTheme}
-      invertTheme
-    />
-  ) : (
+  if (showJsonTree) {
+    return (
+      <ReactJson
+        src={displayObject as object}
+        collapsed={1}
+        indentWidth={4}
+        displayDataTypes={false}
+        style={{
+          fontSize: 11,
+          backgroundColor: 'white'
+        }}
+      />
+    );
+  }
+
+  return (
     <pre
       style={{
         wordWrap: 'break-word',

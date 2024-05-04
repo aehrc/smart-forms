@@ -84,8 +84,8 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
         return;
       }
 
-      const { populated, hasWarnings } = populateResult;
-      const updatedResponse = updatePopulatedProperties(populated);
+      const { populated, hasWarnings, populatedContext } = populateResult;
+      const updatedResponse = updatePopulatedProperties(populated, populatedContext);
       setUpdatableResponseAsPopulated(updatedResponse);
       onStopSpinner();
       if (hasWarnings) {
