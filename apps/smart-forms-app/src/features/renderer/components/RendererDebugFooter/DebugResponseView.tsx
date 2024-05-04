@@ -29,6 +29,7 @@ function DebugResponseView(props: DebugResponseViewProps) {
 
   return showJsonTree ? (
     <JSONTree
+      hideRoot={true}
       data={displayObject}
       shouldExpandNodeInitially={() => true}
       theme={jsonTreeTheme}
