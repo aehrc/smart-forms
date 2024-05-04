@@ -29,7 +29,17 @@ function useDisplayCalculatedExpression(qItem: QuestionnaireItem): string | null
     return null;
   }
 
-  if (typeof calcExpression.value === 'string' || typeof calcExpression.value === 'number') {
+  if (
+    typeof calcExpression.value === 'string' ||
+    typeof calcExpression.value === 'number' ||
+    calcExpression.value === null
+  ) {
+    // calculatedExpression value is null
+    if (calcExpression.value === null) {
+      return '';
+    }
+
+    // calculatedExpression value is string or number
     return typeof calcExpression.value === 'string'
       ? calcExpression.value
       : calcExpression.value.toString();

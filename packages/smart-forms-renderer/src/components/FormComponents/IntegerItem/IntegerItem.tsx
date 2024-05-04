@@ -78,10 +78,17 @@ function IntegerItem(props: IntegerItemProps) {
   const { calcExpUpdated } = useIntegerCalculatedExpression({
     qItem: qItem,
     inputValue: input,
-    setInputValue: (newInput) => {
-      setInput(newInput);
+    onChangeByCalcExpressionInteger: (newValueInteger: number) => {
+      setInput(newValueInteger.toString());
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueInteger: newValueInteger }]
+      });
     },
-    onQrItemChange: onQrItemChange
+    onChangeByCalcExpressionNull: () => {
+      setInput('');
+      onQrItemChange(createEmptyQrItem(qItem));
+    }
   });
 
   // Event handlers

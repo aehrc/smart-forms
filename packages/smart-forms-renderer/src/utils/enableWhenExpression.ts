@@ -85,7 +85,7 @@ function evaluateEnableWhenSingleExpressions(
       const result = fhirpath.evaluate('', expression, updatedFhirPathContext, fhirpath_r4_model);
 
       // Update enableWhenExpressions if length of result array > 0
-      // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per issue #733
+      // Only update when current isEnabled value is different from the result, otherwise it will result in an infinite loop as per issue #733
       if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
         enableWhenSingleExpressions[linkId].isEnabled = result[0];
         isUpdated = true;

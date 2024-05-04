@@ -54,7 +54,15 @@ function BooleanItem(props: BooleanItemProps) {
   const { calcExpUpdated } = useBooleanCalculatedExpression({
     qItem: qItem,
     booleanValue: valueBoolean,
-    onQrItemChange: onQrItemChange
+    onChangeByCalcExpressionBoolean: (newValueBoolean: boolean) => {
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueBoolean: newValueBoolean }]
+      });
+    },
+    onChangeByCalcExpressionNull: () => {
+      onQrItemChange(createEmptyQrItem(qItem));
+    }
   });
 
   // Event handlers

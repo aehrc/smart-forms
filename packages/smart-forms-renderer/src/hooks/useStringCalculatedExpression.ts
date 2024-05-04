@@ -16,8 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createEmptyQrItem } from '../utils/qrItem';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 
 interface UseStringCalculatedExpression {
@@ -27,14 +26,14 @@ interface UseStringCalculatedExpression {
 interface useStringCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   inputValue: string;
-  setInputValue: (value: string) => void;
-  onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
+  onChangeByCalcExpressionString: (newValueString: string) => void;
+  onChangeByCalcExpressionNull: () => void;
 }
 
 function useStringCalculatedExpression(
   props: useStringCalculatedExpressionProps
 ): UseStringCalculatedExpression {
-  const { qItem, inputValue, setInputValue, onQrItemChange } = props;
+  const { qItem, inputValue, onChangeByCalcExpressionString, onChangeByCalcExpressionNull } = props;
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
@@ -53,7 +52,9 @@ function useStringCalculatedExpression(
       // only update if calculated value is different from current value
       if (
         calcExpression.value !== inputValue &&
-        (typeof calcExpression.value === 'string' || typeof calcExpression.value === 'number')
+        (typeof calcExpression.value === 'string' ||
+          typeof calcExpression.value === 'number' ||
+          calcExpression.value === null)
       ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
@@ -61,17 +62,19 @@ function useStringCalculatedExpression(
           setCalcExpUpdated(false);
         }, 500);
 
-        const updatedInputValue =
+        // calculatedExpression value is null
+        if (calcExpression.value === null) {
+          onChangeByCalcExpressionNull();
+          return;
+        }
+
+        // calculatedExpression value is a string or number
+        const newInputValue =
           typeof calcExpression.value === 'string'
             ? calcExpression.value
             : calcExpression.value.toString();
 
-        // update questionnaireResponse
-        setInputValue(updatedInputValue);
-        onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueString: updatedInputValue }]
-        });
+        onChangeByCalcExpressionString(newInputValue);
       }
     },
     // Only trigger this effect if calculatedExpression of item changes
