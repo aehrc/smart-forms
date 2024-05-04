@@ -31,6 +31,7 @@
     "fhirclient": "^2.5.2",
     "fhirpath": "^3.7.1",
     "html-react-parser": "4.2.10",
+    "js-base64": "^3.7.7",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
     "nanoid": "^5.0.1",

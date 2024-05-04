@@ -22,16 +22,23 @@ import type {
   Questionnaire,
   QuestionnaireResponse
 } from 'fhir/r4';
-import { getLaunchContexts, getSourceQueries, getXFhirQueryVariables } from './getExtensions.ts';
-import type { IssuesParameter, ResponseParameter } from '@aehrc/sdc-populate';
+import { getLaunchContexts, getSourceQueries, getXFhirQueryVariables } from './getExtensions';
+import type {
+  CustomContextResultParameter,
+  IssuesParameter,
+  ResponseParameter
+} from '@aehrc/sdc-populate';
 import { isInputParameters } from '@aehrc/sdc-populate';
 import type Client from 'fhirclient/lib/Client';
-import { createPopulateInputParameters } from './createInputParameters.ts';
-import { requestPopulate } from '../api/requestPopulate.ts';
+import { createPopulateInputParameters } from './createInputParameters';
+import { requestPopulate } from '../api/requestPopulate';
+import { Base64 } from 'js-base64';
+import { isRecord } from '../typePredicates/isRecord.ts';
 
 export interface PopulateResult {
   populated: QuestionnaireResponse;
   hasWarnings: boolean;
+  populatedContext?: Record<string, any>;
 }
 /**
  * Pre-populate questionnaire from CMS patient data to form a populated questionnaireResponse
@@ -101,27 +108,44 @@ export async function populateQuestionnaire(
     };
   }
 
+  // Get individual output parameters
   const responseParameter = outputParameters.parameter.find(
     (param) => param.name === 'response'
   ) as ResponseParameter;
   const issuesParameter = outputParameters.parameter.find((param) => param.name === 'issues') as
     | IssuesParameter
     | undefined;
+  const contextResultParameter = outputParameters.parameter.find(
+    (param) => param.name === 'contextResult-custom'
+  ) as CustomContextResultParameter | undefined;
 
+  const populateResult: PopulateResult = {
+    populated: responseParameter.resource,
+    hasWarnings: false
+  };
+
+  // Add populated context to populateResult if it exists
+  if (contextResultParameter?.valueAttachment.data) {
+    const contextResult = JSON.parse(Base64.decode(contextResultParameter.valueAttachment.data));
+
+    if (isRecord(contextResult)) {
+      populateResult.populatedContext = contextResult;
+    }
+  }
+
+  // Add warnings to console if they exist
   if (issuesParameter) {
     for (const issue of issuesParameter.resource.issue) {
       if (issue.details?.text) {
         console.warn(issue.details.text);
       }
     }
-    return {
-      populateSuccess: true,
-      populateResult: { populated: responseParameter.resource, hasWarnings: true }
-    };
+
+    populateResult.hasWarnings = true;
   }
 
   return {
     populateSuccess: true,
-    populateResult: { populated: responseParameter.resource, hasWarnings: false }
+    populateResult: populateResult
   };
 }

@@ -22,3 +22,4 @@ export {
   readInitialAnswers,
   setInitialAnswers
 } from './enableWhen';
+export { initialiseQuestionnaireResponse } from './initialise';
