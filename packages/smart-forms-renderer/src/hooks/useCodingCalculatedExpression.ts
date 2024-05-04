@@ -26,14 +26,16 @@ interface UseCodingCalculatedExpression {
 interface UseCodingCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   valueInString: string;
-  onChangeByCalcExpression: (newValueInString: string) => void;
+  onChangeByCalcExpressionString: (newValueInString: string) => void;
+  onChangeByCalcExpressionNull: () => void;
 }
 
 // TODO use this in all choice and open choice items if possible
-function UseCodingCalculatedExpression(
+function useCodingCalculatedExpression(
   props: UseCodingCalculatedExpressionProps
 ): UseCodingCalculatedExpression {
-  const { qItem, valueInString, onChangeByCalcExpression } = props;
+  const { qItem, valueInString, onChangeByCalcExpressionString, onChangeByCalcExpressionNull } =
+    props;
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
@@ -52,7 +54,9 @@ function UseCodingCalculatedExpression(
       // only update if calculated value is different from current value
       if (
         calcExpression.value !== valueInString &&
-        (typeof calcExpression.value === 'string' || typeof calcExpression.value === 'number')
+        (typeof calcExpression.value === 'string' ||
+          typeof calcExpression.value === 'number' ||
+          calcExpression.value === null)
       ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
@@ -60,13 +64,19 @@ function UseCodingCalculatedExpression(
           setCalcExpUpdated(false);
         }, 500);
 
-        const updatedValueInString =
+        // calculatedExpression value is null
+        if (calcExpression.value === null) {
+          onChangeByCalcExpressionNull();
+          return;
+        }
+
+        // calculatedExpression value is a string or number
+        const newValueString =
           typeof calcExpression.value === 'string'
             ? calcExpression.value
             : calcExpression.value.toString();
 
-        // update questionnaireResponse
-        onChangeByCalcExpression(updatedValueInString);
+        onChangeByCalcExpressionString(newValueString);
       }
     },
     // Only trigger this effect if calculatedExpression of item changes
@@ -77,4 +87,4 @@ function UseCodingCalculatedExpression(
   return { calcExpUpdated: calcExpUpdated };
 }
 
-export default UseCodingCalculatedExpression;
+export default useCodingCalculatedExpression;

@@ -16,8 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createEmptyQrItem } from '../utils/qrItem';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 
 interface UseBooleanCalculatedExpression {
@@ -27,13 +26,15 @@ interface UseBooleanCalculatedExpression {
 interface UseBooleanCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   booleanValue: boolean | undefined;
-  onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
+  onChangeByCalcExpressionBoolean: (newValueBoolean: boolean) => void;
+  onChangeByCalcExpressionNull: () => void;
 }
 
-function UseBooleanCalculatedExpression(
+function useBooleanCalculatedExpression(
   props: UseBooleanCalculatedExpressionProps
 ): UseBooleanCalculatedExpression {
-  const { qItem, booleanValue, onQrItemChange } = props;
+  const { qItem, booleanValue, onChangeByCalcExpressionBoolean, onChangeByCalcExpressionNull } =
+    props;
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
@@ -50,18 +51,24 @@ function UseBooleanCalculatedExpression(
       }
 
       // only update if calculated value is different from current value
-      if (calcExpression.value !== booleanValue && typeof calcExpression.value === 'boolean') {
+      if (
+        calcExpression.value !== booleanValue &&
+        (typeof calcExpression.value === 'boolean' || calcExpression.value === null)
+      ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
         setTimeout(() => {
           setCalcExpUpdated(false);
         }, 500);
 
-        // update questionnaireResponse
-        onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueBoolean: calcExpression.value }]
-        });
+        // calculatedExpression value is null
+        if (calcExpression.value === null) {
+          onChangeByCalcExpressionNull();
+          return;
+        }
+
+        // calculatedExpression value is boolean
+        onChangeByCalcExpressionBoolean(calcExpression.value);
       }
     },
     // Only trigger this effect if calculatedExpression of item changes
@@ -72,4 +79,4 @@ function UseBooleanCalculatedExpression(
   return { calcExpUpdated: calcExpUpdated };
 }
 
-export default UseBooleanCalculatedExpression;
+export default useBooleanCalculatedExpression;

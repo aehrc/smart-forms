@@ -16,8 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createEmptyQrItem } from '../utils/qrItem';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 
 interface UseDecimalCalculatedExpression {
@@ -28,14 +27,20 @@ interface useDecimalCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   inputValue: string;
   precision: number | null;
-  setInputValue: (value: string) => void;
-  onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
+  onChangeByCalcExpressionDecimal: (calcExpressionValue: number) => void;
+  onChangeByCalcExpressionNull: () => void;
 }
 
 function useDecimalCalculatedExpression(
   props: useDecimalCalculatedExpressionProps
 ): UseDecimalCalculatedExpression {
-  const { qItem, inputValue, precision, setInputValue, onQrItemChange } = props;
+  const {
+    qItem,
+    inputValue,
+    precision,
+    onChangeByCalcExpressionDecimal,
+    onChangeByCalcExpressionNull
+  } = props;
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
@@ -52,10 +57,14 @@ function useDecimalCalculatedExpression(
       }
 
       // only update if calculated value is different from current value
-      if (calcExpression.value !== inputValue && typeof calcExpression.value === 'number') {
-        const calcExpressionValue = precision
-          ? parseFloat(calcExpression.value.toFixed(precision))
-          : calcExpression.value;
+      if (
+        calcExpression.value !== inputValue &&
+        (typeof calcExpression.value === 'number' || calcExpression.value === null)
+      ) {
+        const calcExpressionValue =
+          typeof calcExpression.value === 'number' && typeof precision === 'number'
+            ? parseFloat(calcExpression.value.toFixed(precision))
+            : calcExpression.value;
 
         // only update if calculated value is different from current value
         if (calcExpressionValue !== parseFloat(inputValue)) {
@@ -65,14 +74,14 @@ function useDecimalCalculatedExpression(
             setCalcExpUpdated(false);
           }, 500);
 
-          // update questionnaireResponse
-          setInputValue(
-            precision ? calcExpressionValue.toFixed(precision) : calcExpressionValue.toString()
-          );
-          onQrItemChange({
-            ...createEmptyQrItem(qItem),
-            answer: [{ valueDecimal: calcExpressionValue }]
-          });
+          // calculatedExpression value is null
+          if (calcExpressionValue === null) {
+            onChangeByCalcExpressionNull();
+            return;
+          }
+
+          // calculatedExpression value is a number
+          onChangeByCalcExpressionDecimal(calcExpressionValue);
         }
       }
     },

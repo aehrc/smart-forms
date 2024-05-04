@@ -16,9 +16,8 @@
  */
 
 import { useEffect, useState } from 'react';
-import { createEmptyQrItem } from '../utils/qrItem';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { useQuestionnaireStore } from '../stores/questionnaireStore';
+import type { QuestionnaireItem } from 'fhir/r4';
+import { useQuestionnaireStore } from '../stores';
 
 interface UseIntegerCalculatedExpression {
   calcExpUpdated: boolean;
@@ -27,14 +26,15 @@ interface UseIntegerCalculatedExpression {
 interface useIntegerCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   inputValue: string;
-  setInputValue: (value: string) => void;
-  onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
+  onChangeByCalcExpressionInteger: (calcExpressionValue: number) => void;
+  onChangeByCalcExpressionNull: () => void;
 }
 
 function useIntegerCalculatedExpression(
   props: useIntegerCalculatedExpressionProps
 ): UseIntegerCalculatedExpression {
-  const { qItem, inputValue, setInputValue, onQrItemChange } = props;
+  const { qItem, inputValue, onChangeByCalcExpressionInteger, onChangeByCalcExpressionNull } =
+    props;
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
@@ -51,7 +51,10 @@ function useIntegerCalculatedExpression(
       }
 
       // only update if calculated value is different from current value
-      if (calcExpression.value !== inputValue && typeof calcExpression.value === 'number') {
+      if (
+        calcExpression.value !== inputValue &&
+        (typeof calcExpression.value === 'number' || calcExpression.value === null)
+      ) {
         const calcExpressionValue = calcExpression.value;
 
         if (calcExpressionValue !== parseInt(inputValue)) {
@@ -61,12 +64,14 @@ function useIntegerCalculatedExpression(
             setCalcExpUpdated(false);
           }, 500);
 
-          // update questionnaireResponse
-          setInputValue(calcExpressionValue.toString());
-          onQrItemChange({
-            ...createEmptyQrItem(qItem),
-            answer: [{ valueInteger: calcExpressionValue }]
-          });
+          // calculatedExpression value is null
+          if (calcExpressionValue === null) {
+            onChangeByCalcExpressionNull();
+            return;
+          }
+
+          // calculatedExpression value is a number
+          onChangeByCalcExpressionInteger(calcExpressionValue);
         }
       }
     },

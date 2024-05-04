@@ -83,10 +83,21 @@ function DecimalItem(props: DecimalItemProps) {
     qItem: qItem,
     inputValue: input,
     precision: precision,
-    setInputValue: (newInput) => {
-      setInput(newInput);
+    onChangeByCalcExpressionDecimal: (newValueDecimal: number) => {
+      setInput(
+        typeof precision === 'number'
+          ? newValueDecimal.toFixed(precision)
+          : newValueDecimal.toString()
+      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueInteger: newValueDecimal }]
+      });
     },
-    onQrItemChange: onQrItemChange
+    onChangeByCalcExpressionNull: () => {
+      setInput('');
+      onQrItemChange(createEmptyQrItem(qItem));
+    }
   });
 
   // Event handlers

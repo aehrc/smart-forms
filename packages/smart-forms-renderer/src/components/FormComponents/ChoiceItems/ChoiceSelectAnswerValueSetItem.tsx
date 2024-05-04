@@ -87,13 +87,16 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
     valueInString: valueCoding?.code ?? '',
-    onChangeByCalcExpression: (newValueInString) => {
+    onChangeByCalcExpressionString: (newValueString) => {
       if (codings.length > 0) {
-        const qrAnswer = findInAnswerOptions(answerOptions, newValueInString);
+        const qrAnswer = findInAnswerOptions(answerOptions, newValueString);
         onQrItemChange(
           qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
         );
       }
+    },
+    onChangeByCalcExpressionNull: () => {
+      onQrItemChange(createEmptyQrItem(qItem));
     }
   });
 

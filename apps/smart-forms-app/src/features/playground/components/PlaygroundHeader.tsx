@@ -51,9 +51,11 @@ const PlaygroundHeader = memo(function PlaygroundHeader() {
           </IconButton>
         </Tooltip>
 
-        <LogoWrapper>
-          <Logo />
-        </LogoWrapper>
+        <Box color="text.primary">
+          <LogoWrapper>
+            <Logo />
+          </LogoWrapper>
+        </Box>
 
         <Box flexGrow={1} />
 

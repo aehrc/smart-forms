@@ -31,6 +31,7 @@ import type { Tabs } from '../interfaces/tab.interface';
 import { assignPopulatedAnswersToEnableWhen } from './enableWhen';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 import { evaluateInitialCalculatedExpressions } from './calculatedExpression';
+import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 
 /**
  * Initialise a conformant questionnaireResponse from a given questionnaire
@@ -345,6 +346,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     variablesFhirPath,
     tabs
   } = params;
+  const initialResponseItemMap = createQuestionnaireResponseItemMap(questionnaireResponse);
   let updatedFhirPathContext = params.fhirPathContext;
 
   const { initialisedItems, linkedQuestions } = assignPopulatedAnswersToEnableWhen(
@@ -354,15 +356,16 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
 
   const evaluateInitialEnableWhenExpressionsResult = evaluateInitialEnableWhenExpressions({
     initialResponse: questionnaireResponse,
+    initialResponseItemMap: initialResponseItemMap,
     enableWhenExpressions: enableWhenExpressions,
-    variablesFhirPath: variablesFhirPath,
-    existingFhirPathContext: updatedFhirPathContext
+    variablesFhirPath: variablesFhirPath
   });
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
 
   const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
     initialResponse: questionnaireResponse,
+    initialResponseItemMap: initialResponseItemMap,
     calculatedExpressions: calculatedExpressions,
     variablesFhirPath: variablesFhirPath,
     existingFhirPathContext: updatedFhirPathContext

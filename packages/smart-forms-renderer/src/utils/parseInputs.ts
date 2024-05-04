@@ -59,7 +59,7 @@ export function parseDecimalStringWithPrecision(input: string, precision: number
 
   // truncate decimal digits based on precision
   const parsedDecimalPoint = input.indexOf('.');
-  if (precision && parsedDecimalPoint !== -1) {
+  if (typeof precision === 'number' && parsedDecimalPoint !== -1) {
     parsedInput = parsedInput.substring(0, parsedDecimalPoint + precision + 1);
   }
 

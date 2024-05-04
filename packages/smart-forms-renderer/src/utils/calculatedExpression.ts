@@ -37,6 +37,7 @@ import dayjs from 'dayjs';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
+  initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
@@ -48,8 +49,13 @@ export function evaluateInitialCalculatedExpressions(
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
 } {
-  const { initialResponse, calculatedExpressions, variablesFhirPath, existingFhirPathContext } =
-    params;
+  const {
+    initialResponse,
+    initialResponseItemMap,
+    calculatedExpressions,
+    variablesFhirPath,
+    existingFhirPathContext
+  } = params;
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
   if (
@@ -65,10 +71,11 @@ export function evaluateInitialCalculatedExpressions(
   const initialCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
+
   const updatedFhirPathContext = createFhirPathContext(
     initialResponse,
-    variablesFhirPath,
-    existingFhirPathContext
+    initialResponseItemMap,
+    variablesFhirPath
   );
 
   for (const linkId in initialCalculatedExpressions) {
@@ -83,7 +90,8 @@ export function evaluateInitialCalculatedExpressions(
           fhirpath_r4_model
         );
 
-        if (!_isEqual(calcExpression.value, result[0])) {
+        // Only update calculatedExpressions if length of result array > 0
+        if (result.length > 0 && !_isEqual(calcExpression.value, result[0])) {
           calcExpression.value = result[0];
         }
       } catch (e) {
@@ -124,11 +132,17 @@ export function evaluateCalculatedExpressions(
           fhirpath_r4_model
         );
 
-        if (result.length > 0) {
-          if (!_isEqual(calcExpression.value, result[0])) {
-            isUpdated = true;
-            calcExpression.value = result[0];
-          }
+        // Update calculatedExpressions if length of result array > 0
+        // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
+        if (result.length > 0 && !_isEqual(calcExpression.value, result[0])) {
+          isUpdated = true;
+          calcExpression.value = result[0];
+        }
+
+        // Update calculatedExpression value to null if no result is returned
+        if (result.length === 0 && calcExpression.value !== null) {
+          isUpdated = true;
+          calcExpression.value = null;
         }
       } catch (e) {
         console.warn(e.message, `LinkId: ${linkId}\nExpression: ${calcExpression.expression}`);

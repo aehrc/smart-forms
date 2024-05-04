@@ -66,10 +66,17 @@ function StringItem(props: StringItemProps) {
   const { calcExpUpdated } = useStringCalculatedExpression({
     qItem: qItem,
     inputValue: input,
-    setInputValue: (value) => {
-      setInput(value);
+    onChangeByCalcExpressionString: (newValueString: string) => {
+      setInput(newValueString);
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueString: newValueString }]
+      });
     },
-    onQrItemChange: onQrItemChange
+    onChangeByCalcExpressionNull: () => {
+      setInput('');
+      onQrItemChange(createEmptyQrItem(qItem));
+    }
   });
 
   // Event handlers

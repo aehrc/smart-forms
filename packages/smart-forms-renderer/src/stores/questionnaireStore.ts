@@ -45,6 +45,7 @@ import { terminologyServerStore } from './terminologyServerStore';
 import { createSelectors } from './selector';
 import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
 import { questionnaireResponseStore } from './questionnaireResponseStore';
+import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 
 interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
@@ -232,6 +233,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     const { updatedEnableWhenExpressions, isUpdated } = mutateRepeatEnableWhenExpressionInstances({
       questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
+      questionnaireResponseItemMap: questionnaireResponseStore.getState().updatableResponseItems,
       variablesFhirPath: get().variables.fhirPathVariables,
       existingFhirPathContext: get().fhirPathContext,
       enableWhenExpressions: enableWhenExpressions,
@@ -250,6 +252,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: (updatedResponse: QuestionnaireResponse) => {
+    const updatedResponseItemMap = createQuestionnaireResponseItemMap(updatedResponse);
     const {
       isUpdated,
       updatedEnableWhenExpressions,
@@ -257,6 +260,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       updatedFhirPathContext
     } = evaluateUpdatedExpressions({
       updatedResponse,
+      updatedResponseItemMap,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
@@ -284,8 +288,11 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       }
     })),
   updatePopulatedProperties: (populatedResponse: QuestionnaireResponse, persistTabIndex) => {
+    const initialResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
+
     const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
+      initialResponseItemMap: initialResponseItemMap,
       calculatedExpressions: get().calculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
       existingFhirPathContext: get().fhirPathContext
