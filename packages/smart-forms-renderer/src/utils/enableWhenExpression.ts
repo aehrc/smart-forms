@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Expression, QuestionnaireResponse } from 'fhir/r4';
+import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { createFhirPathContext } from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
@@ -27,9 +27,9 @@ import type {
 
 interface EvaluateInitialEnableWhenExpressionsParams {
   initialResponse: QuestionnaireResponse;
+  initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   enableWhenExpressions: EnableWhenExpressions;
   variablesFhirPath: Record<string, Expression[]>;
-  existingFhirPathContext: Record<string, any>;
 }
 
 export function evaluateInitialEnableWhenExpressions(
@@ -38,7 +38,7 @@ export function evaluateInitialEnableWhenExpressions(
   initialEnableWhenExpressions: EnableWhenExpressions;
   updatedFhirPathContext: Record<string, any>;
 } {
-  const { initialResponse, enableWhenExpressions, variablesFhirPath, existingFhirPathContext } =
+  const { initialResponse, initialResponseItemMap, enableWhenExpressions, variablesFhirPath } =
     params;
 
   const initialEnableWhenExpressions: EnableWhenExpressions = {
@@ -46,8 +46,8 @@ export function evaluateInitialEnableWhenExpressions(
   };
   const updatedFhirPathContext = createFhirPathContext(
     initialResponse,
-    variablesFhirPath,
-    existingFhirPathContext
+    initialResponseItemMap,
+    variablesFhirPath
   );
 
   const initialEnableWhenSingleExpressions = evaluateEnableWhenSingleExpressions(
@@ -85,9 +85,15 @@ function evaluateEnableWhenSingleExpressions(
       const result = fhirpath.evaluate('', expression, updatedFhirPathContext, fhirpath_r4_model);
 
       // Update enableWhenExpressions if length of result array > 0
-      // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per #733
+      // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per issue #733
       if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
         enableWhenSingleExpressions[linkId].isEnabled = result[0];
+        isUpdated = true;
+      }
+
+      // Update isEnabled value to false if no result is returned
+      if (result.length === 0 && initialValue !== false) {
+        enableWhenSingleExpressions[linkId].isEnabled = false;
         isUpdated = true;
       }
 
@@ -198,6 +204,12 @@ export function evaluateEnableWhenRepeatExpressionInstance(
       isUpdated = true;
     }
 
+    // Update isEnabled value to false if no result is returned
+    if (result.length === 0 && initialValue !== false) {
+      isEnabled = false;
+      isUpdated = true;
+    }
+
     // handle intersect edge case - evaluate() returns empty array if result is false
     if (expression.includes('intersect') && result.length === 0 && initialValue !== result[0]) {
       isEnabled = false;
@@ -245,6 +257,7 @@ export function evaluateEnableWhenExpressions(
 
 interface MutateRepeatEnableWhenExpressionInstancesParams {
   questionnaireResponse: QuestionnaireResponse;
+  questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
   enableWhenExpressions: EnableWhenExpressions;
@@ -258,8 +271,8 @@ export function mutateRepeatEnableWhenExpressionInstances(
 ): { updatedEnableWhenExpressions: EnableWhenExpressions; isUpdated: boolean } {
   const {
     questionnaireResponse,
+    questionnaireResponseItemMap,
     variablesFhirPath,
-    existingFhirPathContext,
     enableWhenExpressions,
     parentRepeatGroupLinkId,
     parentRepeatGroupIndex,
@@ -270,8 +283,8 @@ export function mutateRepeatEnableWhenExpressionInstances(
 
   const updatedFhirPathContext = createFhirPathContext(
     questionnaireResponse,
-    variablesFhirPath,
-    existingFhirPathContext
+    questionnaireResponseItemMap,
+    variablesFhirPath
   );
 
   let isUpdated = false;
