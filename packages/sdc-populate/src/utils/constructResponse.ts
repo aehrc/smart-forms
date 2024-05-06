@@ -51,7 +51,7 @@ import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
  * @param questionnaire - The questionnaire resource to construct a response from
  * @param subject - A subject reference to form the subject within the response
  * @param populationExpressions - expressions used for pre-population i.e. initialExpressions, itemPopulationContexts
- * @param enounter - An optional encounter resource to form the questionnaireResponse.encounter property
+ * @param encounter - An optional encounter resource to form the questionnaireResponse.encounter property
  * @returns A populated questionnaire response wrapped within a Promise
  *
  * @author Sean Fong
@@ -132,6 +132,13 @@ export async function constructResponse(
       reference: `Encounter/${encounter.id}`
     };
   }
+
+  // Add "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse" profile
+  // const profiles: string[] = [
+  //   'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse'
+  // ];
+  // questionnaireResponse.meta = questionnaireResponse.meta || {};
+  // questionnaireResponse.meta.profile = profiles;
 
   return questionnaireResponse;
 }
