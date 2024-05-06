@@ -16,7 +16,7 @@
  */
 
 import React, { useLayoutEffect, useState } from 'react';
-import type { Questionnaire } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import ThemeProvider from '../theme/Theme';
@@ -25,18 +25,19 @@ import { buildForm } from '../utils';
 
 interface BuildFormWrapperProps {
   questionnaire: Questionnaire;
+  questionnaireResponse?: QuestionnaireResponse;
 }
 
 function BuildFormWrapper(props: BuildFormWrapperProps) {
-  const { questionnaire } = props;
+  const { questionnaire, questionnaireResponse } = props;
 
   const [isLoading, setIsLoading] = useState(true);
 
   useLayoutEffect(() => {
-    buildForm(questionnaire).then(() => {
+    buildForm(questionnaire, questionnaireResponse).then(() => {
       setIsLoading(false);
     });
-  }, [questionnaire]);
+  }, [questionnaire, questionnaireResponse]);
 
   const queryClient = useQueryClient();
 
