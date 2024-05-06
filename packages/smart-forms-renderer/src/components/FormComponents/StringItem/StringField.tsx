@@ -61,7 +61,7 @@ function StringField(props: StringFieldProps) {
       size="small"
       InputProps={{
         endAdornment: (
-          <InputAdornment position={'end'}>
+          <InputAdornment position="end">
             <FadingCheckIcon fadeIn={calcExpUpdated} />
             {displayUnit}
           </InputAdornment>

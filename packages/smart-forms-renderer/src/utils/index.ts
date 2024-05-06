@@ -23,3 +23,4 @@ export {
   setInitialAnswers
 } from './enableWhen';
 export { initialiseQuestionnaireResponse } from './initialise';
+export { buildForm } from './buildForm';
