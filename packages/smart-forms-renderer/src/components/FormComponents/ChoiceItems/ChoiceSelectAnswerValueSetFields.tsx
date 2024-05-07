@@ -56,7 +56,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
       <Autocomplete
         id={qItem.id}
         options={codings}
-        getOptionLabel={(option) => `${option.display}`}
+        getOptionLabel={(option) => option.display ?? `${option.code}`}
         value={valueCoding ?? null}
         onChange={(_, newValue) => onSelectChange(newValue)}
         openOnFocus

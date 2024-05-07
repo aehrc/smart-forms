@@ -27,6 +27,7 @@ import { getAnswerExpression } from '../utils/getExpressionsFromItem';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
+import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 
 export interface TerminologyError {
   error: Error | null;
@@ -140,12 +141,18 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
     const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
     if (promise) {
       promise
-        .then((valueSet: ValueSet) => {
+        .then(async (valueSet: ValueSet) => {
           const codings = getValueSetCodings(valueSet);
-          if (codings.length > 0) {
-            addCodingToCache(valueSetUrl, codings);
-            setCodings(codings);
-          }
+          addDisplayToCodingArray(codings, terminologyServerUrl)
+            .then((codingsWithDisplay) => {
+              if (codingsWithDisplay.length > 0) {
+                addCodingToCache(valueSetUrl, codingsWithDisplay);
+                setCodings(codings);
+              }
+            })
+            .catch((error: Error) => {
+              setServerError(error);
+            });
         })
         .catch((error: Error) => {
           setServerError(error);

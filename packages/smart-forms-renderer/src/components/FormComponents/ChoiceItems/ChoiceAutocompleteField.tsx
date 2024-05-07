@@ -67,7 +67,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       id={qItem.id}
       value={valueCoding ?? null}
       options={options}
-      getOptionLabel={(option) => `${option.display}`}
+      getOptionLabel={(option) => option.display ?? `${option.code}`}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       disabled={readOnly}
       loading={loading}
