@@ -92,12 +92,13 @@ export function createFhirPathContext(
   questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>,
   variablesFhirPath: Record<string, Expression[]>
 ): Record<string, any> {
-  if (!questionnaireResponse.item) {
-    return {};
-  }
-
   // Add latest resource to fhirPathContext
   let fhirPathContext: Record<string, any> = { resource: questionnaireResponse };
+
+  // Exit early if there are no QR items
+  if (!questionnaireResponse.item) {
+    return fhirPathContext;
+  }
 
   // Evaluate resource-level variables
   fhirPathContext = evaluateQuestionnaireLevelVariables(
