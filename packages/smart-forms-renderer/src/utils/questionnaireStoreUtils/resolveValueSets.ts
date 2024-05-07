@@ -20,7 +20,7 @@ import {
   createValueSetToXFhirQueryVariableNameMap,
   getValueSetCodings,
   getValueSetPromise,
-  resolvePromises
+  resolveValueSetPromises
 } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
@@ -44,7 +44,7 @@ export async function resolveValueSets(
   }
 
   // Resolve promises and store valueSet codings in preprocessedValueSetCodings AND XFhirQueryVariables
-  const resolvedPromises = await resolvePromises(valueSetPromises);
+  const resolvedPromises = await resolveValueSetPromises(valueSetPromises);
 
   for (const valueSetUrl in resolvedPromises) {
     const valueSet = resolvedPromises[valueSetUrl].valueSet;

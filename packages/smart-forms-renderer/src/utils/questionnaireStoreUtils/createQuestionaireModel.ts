@@ -28,6 +28,7 @@ import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
 import { addAdditionalVariables } from './addAdditionalVariables';
 import { getLinkIdTypeTuples } from '../qItem';
+import { addDisplayToProcessedCodings } from './addDisplayToCodings';
 
 export async function createQuestionnaireModel(
   questionnaire: Questionnaire,
@@ -75,6 +76,12 @@ export async function createQuestionnaireModel(
 
   variables = resolveValueSetsResult.variables;
   processedValueSetCodings = resolveValueSetsResult.processedValueSetCodings;
+
+  // In processedCodings, add display values to codings lacking them
+  processedValueSetCodings = await addDisplayToProcessedCodings(
+    processedValueSetCodings,
+    terminologyServerUrl
+  );
 
   return {
     itemTypes,

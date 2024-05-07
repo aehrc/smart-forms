@@ -74,7 +74,7 @@ async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
   return Promise.race([promise, timeoutPromise]);
 }
 
-export async function resolvePromises(
+export async function resolveValueSetPromises(
   valueSetPromises: Record<string, ValueSetPromise>
 ): Promise<Record<string, ValueSetPromise>> {
   const newValueSetPromises: Record<string, ValueSetPromise> = {};
