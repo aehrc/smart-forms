@@ -24,6 +24,9 @@ import { RoundButton } from '../../../../components/Button/Button.styles.tsx';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import NotesIcon from '@mui/icons-material/Notes';
 import DebugResponseView from './DebugResponseView.tsx';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+
+const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
 
 interface Props {
   questionnaire: Questionnaire;
@@ -90,6 +93,18 @@ function DebugPanel(props: Props) {
               <ContentCopyIcon />
             </IconButton>
           </Tooltip>
+          {questionnaireSelected ? (
+            <Tooltip title="Open Questionnaire in new tab">
+              <a
+                href={endpointUrl + '/Questionnaire/' + questionnaire.id}
+                target="_blank"
+                rel="noreferrer">
+                <IconButton>
+                  <OpenInNewIcon />
+                </IconButton>
+              </a>
+            </Tooltip>
+          ) : null}
           {questionnaireResponseSelected ? (
             <Tooltip title="Clear response">
               <IconButton onClick={clearQResponse} color="error">
