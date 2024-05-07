@@ -160,7 +160,7 @@ export const qTextItem: Questionnaire = {
   item: [
     {
       linkId: 'details-text',
-      type: 'string',
+      type: 'text',
       repeats: false,
       text: 'Details of intermittent fasting'
     }
@@ -187,8 +187,65 @@ export const qUrlItem: Questionnaire = {
   ]
 };
 
+export const qAttachmentItem: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'AttachmentComponent',
+  name: 'AttachmentComponent',
+  title: 'Attachment Component',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/attachment',
+  item: [
+    {
+      linkId: 'file-attachment',
+      type: 'attachment',
+      repeats: false,
+      text: 'File Attachment'
+    }
+  ]
+};
+
+export const qReferenceItem: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'ReferenceComponent',
+  name: 'ReferenceComponent',
+  title: 'Reference Component',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/reference',
+  item: [
+    {
+      linkId: 'patient-reference',
+      type: 'reference',
+      repeats: false,
+      text: 'Patient Reference'
+    }
+  ]
+};
+
+export const qQuantityItem: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'QuantityComponent',
+  name: 'QuantityComponent',
+  title: 'Quantity Component',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/quantity',
+  item: [
+    {
+      linkId: 'body-weight',
+      type: 'quantity',
+      repeats: false,
+      text: 'Body Weight'
+    }
+  ]
+};
+
 // choice
 // open-choice
-// attachment
-// reference
-// quantity

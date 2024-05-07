@@ -18,23 +18,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapper from './BuildFormWrapper';
 import {
-  qMaxDecimalPlacesValidation,
-  qMaxLengthValidation,
-  qMaxValueValidation,
-  qMinLengthValidation,
-  qMinValueValidation,
-  qRegexValidation,
-  qrMaxDecimalPlacesValidation,
-  qrMaxLengthValidation,
-  qrMaxValueValidation,
-  qrMinLengthValidation,
-  qrMinValueValidation,
-  qrRegexValidation
-} from './assets/QValidation';
+  qItemControlDisplayLowerAndUpper,
+  qItemControlDisplayTabContainer,
+  qItemControlGroupGrid,
+  qItemControlGroupGTable,
+  qItemControlQuestionAutocomplete,
+  qItemControlQuestionCheckbox,
+  qItemControlQuestionDropDown
+} from './assets/QAdvancedControlApperance';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Validation',
+  title: 'Component/Advanced Control Appearance',
   component: BuildFormWrapper,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -45,44 +40,44 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const Regex: Story = {
+export const ItemControlGroupGtable: Story = {
   args: {
-    questionnaire: qRegexValidation,
-    questionnaireResponse: qrRegexValidation
+    questionnaire: qItemControlGroupGTable
   }
 };
 
-export const MinLength: Story = {
+export const ItemControlGroupGrid: Story = {
   args: {
-    questionnaire: qMinLengthValidation,
-    questionnaireResponse: qrMinLengthValidation
+    questionnaire: qItemControlGroupGrid
   }
 };
 
-export const MaxLength: Story = {
+export const ItemControlGroupTabContainer: Story = {
   args: {
-    questionnaire: qMaxLengthValidation,
-    questionnaireResponse: qrMaxLengthValidation
+    questionnaire: qItemControlDisplayTabContainer
   }
 };
 
-export const MaxDecimalPlaces: Story = {
+export const ItemControlDisplayLowerAndUpper: Story = {
   args: {
-    questionnaire: qMaxDecimalPlacesValidation,
-    questionnaireResponse: qrMaxDecimalPlacesValidation
+    questionnaire: qItemControlDisplayLowerAndUpper
   }
 };
 
-export const MinValueValidation: Story = {
+export const ItemControlQuestionAutocomplete: Story = {
   args: {
-    questionnaire: qMinValueValidation,
-    questionnaireResponse: qrMinValueValidation
+    questionnaire: qItemControlQuestionAutocomplete
   }
 };
 
-export const MaxValue: Story = {
+export const ItemControlQuestionDropDown: Story = {
   args: {
-    questionnaire: qMaxValueValidation,
-    questionnaireResponse: qrMaxValueValidation
+    questionnaire: qItemControlQuestionDropDown
+  }
+};
+
+export const ItemControlQuestionCheckbox: Story = {
+  args: {
+    questionnaire: qItemControlQuestionCheckbox
   }
 };

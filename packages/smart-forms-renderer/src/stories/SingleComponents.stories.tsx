@@ -17,11 +17,14 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import {
+  qAttachmentItem,
   qBooleanItem,
   qDateItem,
   qDateTimeItem,
   qDecimalItem,
   qIntegerItem,
+  qQuantityItem,
+  qReferenceItem,
   QSingleItems,
   qTextItem,
   qTimeItem,
@@ -42,56 +45,74 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const BooleanItem: Story = {
+export const Boolean: Story = {
   args: {
     questionnaire: qBooleanItem
   }
 };
 
-export const DecimalItem: Story = {
+export const Decimal: Story = {
   args: {
     questionnaire: qDecimalItem
   }
 };
 
-export const IntegerItem: Story = {
+export const Integer: Story = {
   args: {
     questionnaire: qIntegerItem
   }
 };
 
-export const DateItem: Story = {
+export const Date: Story = {
   args: {
     questionnaire: qDateItem
   }
 };
 
-export const DateTimeItem: Story = {
+export const DateTime: Story = {
   args: {
     questionnaire: qDateTimeItem
   }
 };
 
-export const TimeItem: Story = {
+export const Time: Story = {
   args: {
     questionnaire: qTimeItem
   }
 };
 
-export const StringItem: Story = {
+export const String: Story = {
   args: {
     questionnaire: QSingleItems
   }
 };
 
-export const TextItem: Story = {
+export const Text: Story = {
   args: {
     questionnaire: qTextItem
   }
 };
 
-export const UrlItem: Story = {
+export const Url: Story = {
   args: {
     questionnaire: qUrlItem
+  }
+};
+
+export const Attachment: Story = {
+  args: {
+    questionnaire: qAttachmentItem
+  }
+};
+
+export const Reference: Story = {
+  args: {
+    questionnaire: qReferenceItem
+  }
+};
+
+export const Quantity: Story = {
+  args: {
+    questionnaire: qQuantityItem
   }
 };
