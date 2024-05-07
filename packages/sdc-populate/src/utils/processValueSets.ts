@@ -17,40 +17,14 @@
 
 import type {
   Coding,
-  QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   ValueSet
 } from 'fhir/r4';
 import type { ValueSetPromise } from '../interfaces/expressions.interface';
-import * as FHIR from 'fhirclient';
 
-const ONTOSERVER_ENDPOINT = 'https://r4.ontoserver.csiro.au/fhir/';
-
-export function getValueSetPromise(
-  qItem: QuestionnaireItem,
-  fullUrl: string,
-  valueSetPromiseMap: Record<string, ValueSetPromise>
-) {
-  let valueSetUrl = fullUrl;
-  if (fullUrl.includes('ValueSet/$expand?url=')) {
-    const splitUrl = fullUrl.split('ValueSet/$expand?url=');
-    if (splitUrl[1]) {
-      valueSetUrl = splitUrl[1];
-    }
-  }
-
-  valueSetUrl = valueSetUrl.replace('|', '&version=');
-
-  valueSetPromiseMap[qItem.linkId] = {
-    promise: FHIR.client({ serverUrl: ONTOSERVER_ENDPOINT }).request({
-      url: 'ValueSet/$expand?url=' + valueSetUrl
-    })
-  };
-}
-
-export async function resolvePromises(
+export async function resolveValueSetPromises(
   valueSetPromises: Record<string, ValueSetPromise>
 ): Promise<Record<string, ValueSetPromise>> {
   const newValueSetPromises: Record<string, ValueSetPromise> = {};
