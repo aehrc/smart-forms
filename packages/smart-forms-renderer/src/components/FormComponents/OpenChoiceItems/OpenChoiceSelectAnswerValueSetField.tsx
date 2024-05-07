@@ -33,7 +33,9 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         id={qItem.id}
         value={valueSelect ?? null}
         options={options}
-        getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
+        getOptionLabel={(option) =>
+          typeof option === 'string' ? option : option.display ?? `${option.code}`
+        }
         onChange={(_, newValue) => onValueChange(newValue)}
         onInputChange={(_, newValue) => onValueChange(newValue)}
         freeSolo
