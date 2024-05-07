@@ -27,6 +27,7 @@ import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
 import { removeEmptyAnswersFromResponse } from './removeEmptyAnswers';
 import { isEncounterContextParameter } from './typePredicates';
+import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
 
 /**
  * Main function of this populate module.
@@ -81,12 +82,17 @@ export async function populate(
     issues
   );
 
+  // In evaluatedInitialExpressions, add display values to codings lacking them
+  const completeInitialExpressions = await addDisplayToInitialExpressionsCodings(
+    evaluatedInitialExpressions
+  );
+
   // Construct response from initialExpressions
   const questionnaireResponse = await constructResponse(
     questionnaire,
     subjectReference,
     {
-      initialExpressions: evaluatedInitialExpressions,
+      initialExpressions: completeInitialExpressions,
       itemPopulationContexts: evaluatedItemPopulationContexts
     },
     encounter

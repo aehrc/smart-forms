@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { ValueSet } from 'fhir/r4';
+import type { Coding, ValueSet } from 'fhir/r4';
 
 export interface InitialExpression {
   expression: string;
@@ -38,4 +38,10 @@ export interface PopulationExpressions {
 export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   valueSet?: ValueSet;
+}
+
+export interface CodeSystemLookupPromise {
+  promise: Promise<Parameters<any>>;
+  oldCoding: Coding;
+  newCoding?: Coding;
 }

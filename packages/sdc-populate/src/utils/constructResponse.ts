@@ -32,11 +32,7 @@ import type {
   PopulationExpressions,
   ValueSetPromise
 } from '../interfaces/expressions.interface';
-import {
-  filterValueSetAnswersRecursive,
-  getValueSetPromise,
-  resolvePromises
-} from './processValueSets';
+import { filterValueSetAnswersRecursive, resolveValueSetPromises } from './processValueSets';
 import moment from 'moment';
 import dayjs from 'dayjs';
 import fhirpath from 'fhirpath';
@@ -44,6 +40,7 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
+import { getValueSetPromise } from '../api/expandValueset';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -114,7 +111,7 @@ export async function constructResponse(
   }
 
   // Step 2: populate valueSet answers
-  valueSetPromises = await resolvePromises(valueSetPromises);
+  valueSetPromises = await resolveValueSetPromises(valueSetPromises);
   const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems
     .map((qrItem) =>
       filterValueSetAnswersRecursive(qrItem, valueSetPromises, answerOptions, containedValueSets)
