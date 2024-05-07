@@ -73,7 +73,9 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         id={qItem.id}
         value={valueAutocomplete}
         options={options}
-        getOptionLabel={(option) => (typeof option === 'string' ? option : `${option.display}`)}
+        getOptionLabel={(option) =>
+          typeof option === 'string' ? option : option.display ?? `${option.code}`
+        }
         disabled={readOnly}
         loading={loading}
         loadingText={'Fetching results...'}
