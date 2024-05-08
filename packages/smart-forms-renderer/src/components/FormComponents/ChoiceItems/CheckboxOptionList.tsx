@@ -16,35 +16,25 @@
  */
 
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type {
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItemAnswer
-} from 'fhir/r4';
-import QItemChoiceCheckboxSingle from '../ItemParts/CheckboxSingle';
-import { StyledFormGroup } from '../Item.styles';
-import { getChoiceOrientation } from '../../../utils/choice';
+import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import CheckboxSingle from '../ItemParts/CheckboxSingle';
 
-interface ChoiceCheckboxFieldsProps {
-  qItem: QuestionnaireItem;
+interface CheckboxOptionListProps {
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   readOnly: boolean;
   onCheckedChange: (newValue: string) => void;
 }
 
-function ChoiceCheckboxFields(props: ChoiceCheckboxFieldsProps) {
-  const { qItem, options, answers, readOnly, onCheckedChange } = props;
-
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
+function CheckboxOptionList(props: CheckboxOptionListProps) {
+  const { options, answers, readOnly, onCheckedChange } = props;
 
   return (
-    <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+    <>
       {options.map((option) => {
         if (option['valueCoding']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <CheckboxSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
@@ -59,7 +49,7 @@ function ChoiceCheckboxFields(props: ChoiceCheckboxFieldsProps) {
 
         if (option['valueString']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <CheckboxSingle
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
@@ -72,7 +62,7 @@ function ChoiceCheckboxFields(props: ChoiceCheckboxFieldsProps) {
 
         if (option['valueInteger']) {
           return (
-            <QItemChoiceCheckboxSingle
+            <CheckboxSingle
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
@@ -85,8 +75,8 @@ function ChoiceCheckboxFields(props: ChoiceCheckboxFieldsProps) {
 
         return null;
       })}
-    </StyledFormGroup>
+    </>
   );
 }
 
-export default ChoiceCheckboxFields;
+export default CheckboxOptionList;

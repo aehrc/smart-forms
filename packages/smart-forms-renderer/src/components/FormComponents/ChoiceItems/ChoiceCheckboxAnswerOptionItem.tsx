@@ -18,7 +18,7 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { updateQrCheckboxAnswers } from '../../../utils/choice';
+import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
@@ -29,10 +29,10 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import ChoiceCheckboxFields from './ChoiceCheckboxFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -76,7 +76,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
       return null;
     }
 
-    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
+    const updatedQrChoiceCheckbox = updateChoiceCheckboxAnswers(
       changedValue,
       answers,
       options,
@@ -92,7 +92,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   if (showMinimalView) {
     return (
       <>
-        <ChoiceCheckboxFields
+        <ChoiceCheckboxAnswerOptionFields
           qItem={qItem}
           options={options}
           answers={answers}
@@ -110,7 +110,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceCheckboxFields
+        <ChoiceCheckboxAnswerOptionFields
           qItem={qItem}
           options={options}
           answers={answers}

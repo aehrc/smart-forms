@@ -149,15 +149,15 @@ export function getQrChoiceValue(
  *
  * @author Sean Fong
  */
-export function updateQrCheckboxAnswers(
+export function updateChoiceCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
-  answerOptions: QuestionnaireItemAnswerOption[],
+  options: QuestionnaireItemAnswerOption[],
   oldQrItem: QuestionnaireResponseItem,
   isMultiSelection: boolean
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
-  const newAnswer = findInAnswerOptions(answerOptions, changedValue);
+  const newAnswer = findInAnswerOptions(options, changedValue);
   if (!newAnswer) {
     return null;
   }
@@ -178,9 +178,11 @@ export function updateQrCheckboxAnswers(
   }
 
   // Process single selection
-  return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
-    ? { ...oldQrItem, answer: [] }
-    : { ...oldQrItem, answer: [newAnswer] };
+  // If answer already exists, remove it from the array. Otherwise, add it to the array
+  const answerExists = answers.some(
+    (answer) => JSON.stringify(answer) === JSON.stringify(newAnswer)
+  );
+  return answerExists ? { ...oldQrItem, answer: [] } : { ...oldQrItem, answer: [newAnswer] };
 }
 
 /**
@@ -206,17 +208,4 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrient
   }
 
   return null;
-}
-
-/**
- * Converts an array of codings to an array of valueCodings which can use the QuestionnaireItemAnswerOption type
- *
- * @author Sean Fong
- */
-export function mapCodingsToOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
-  return codings.map((coding) => {
-    return {
-      valueCoding: coding
-    };
-  });
 }

@@ -25,9 +25,12 @@ import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import ChoiceCheckboxFields from './ChoiceCheckboxFields';
+import { getChoiceOrientation } from '../../../utils/choice';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import CheckboxOptionList from './CheckboxOptionList';
+import { StyledFormGroup } from '../Item.styles';
 
-interface ChoiceCheckboxAnswerValueSetViewProps {
+interface ChoiceCheckboxAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
@@ -36,18 +39,21 @@ interface ChoiceCheckboxAnswerValueSetViewProps {
   onCheckedChange: (newValue: string) => void;
 }
 
-function ChoiceCheckboxAnswerValueSetView(props: ChoiceCheckboxAnswerValueSetViewProps) {
+function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
   const { qItem, options, answers, readOnly, terminologyError, onCheckedChange } = props;
+
+  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
     return (
-      <ChoiceCheckboxFields
-        qItem={qItem}
-        options={options}
-        answers={answers}
-        readOnly={readOnly}
-        onCheckedChange={onCheckedChange}
-      />
+      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+        <CheckboxOptionList
+          options={options}
+          answers={answers}
+          readOnly={readOnly}
+          onCheckedChange={onCheckedChange}
+        />
+      </StyledFormGroup>
     );
   }
 
@@ -73,4 +79,4 @@ function ChoiceCheckboxAnswerValueSetView(props: ChoiceCheckboxAnswerValueSetVie
   );
 }
 
-export default ChoiceCheckboxAnswerValueSetView;
+export default ChoiceCheckboxAnswerValueSetFields;

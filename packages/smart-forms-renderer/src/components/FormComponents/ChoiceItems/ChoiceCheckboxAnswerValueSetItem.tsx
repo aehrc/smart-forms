@@ -19,7 +19,7 @@ import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import { convertCodingsToAnswerOptions, updateQrCheckboxAnswers } from '../../../utils/choice';
+import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
@@ -30,7 +30,7 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import ChoiceCheckboxAnswerValueSetView from './ChoiceCheckboxAnswerValueSetView';
+import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
@@ -78,10 +78,10 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   // Event handlers
   function handleCheckedChange(changedValue: string) {
     if (options.length === 0) {
-      return null;
+      return;
     }
 
-    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
+    const updatedQrChoiceCheckbox = updateChoiceCheckboxAnswers(
       changedValue,
       answers,
       options,
@@ -97,7 +97,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   if (showMinimalView) {
     return (
       <>
-        <ChoiceCheckboxAnswerValueSetView
+        <ChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           options={options}
           answers={answers}
@@ -116,7 +116,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceCheckboxAnswerValueSetView
+        <ChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           options={options}
           answers={answers}
