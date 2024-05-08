@@ -153,13 +153,16 @@ export function updateQrCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
   answerOptions: QuestionnaireItemAnswerOption[],
-  qrChoiceCheckbox: QuestionnaireResponseItem,
+  oldQrItem: QuestionnaireResponseItem,
   isMultiSelection: boolean
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
   const newAnswer = findInAnswerOptions(answerOptions, changedValue);
-  if (!newAnswer) return null;
+  if (!newAnswer) {
+    return null;
+  }
 
+  // Process multi-selection
   if (isMultiSelection && answers.length > 0) {
     // check and filter if new answer exists in existing qrAnswers
     const updatedAnswers = answers.filter(
@@ -171,12 +174,13 @@ export function updateQrCheckboxAnswers(
       updatedAnswers.push(newAnswer);
     }
 
-    return { ...qrChoiceCheckbox, answer: updatedAnswers };
-  } else {
-    return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
-      ? { ...qrChoiceCheckbox, answer: [] }
-      : { ...qrChoiceCheckbox, answer: [newAnswer] };
+    return { ...oldQrItem, answer: updatedAnswers };
   }
+
+  // Process single selection
+  return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
+    ? { ...oldQrItem, answer: [] }
+    : { ...oldQrItem, answer: [newAnswer] };
 }
 
 /**

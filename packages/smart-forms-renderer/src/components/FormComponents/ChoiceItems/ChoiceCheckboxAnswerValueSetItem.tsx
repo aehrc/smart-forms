@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import { mapCodingsToOptions, updateQrCheckboxAnswers } from '../../../utils/choice';
+import { convertCodingsToAnswerOptions, updateQrCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
@@ -30,7 +30,7 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFields';
+import ChoiceCheckboxAnswerValueSetView from './ChoiceCheckboxAnswerValueSetView';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
@@ -61,7 +61,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
 
   // Init input value
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
-  const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
+  const answers = qrChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -69,18 +69,22 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   // Get codings/options from valueSet
   const { codings, terminologyError } = useValueSetCodings(qItem);
 
+  const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
+
   // TODO Process calculated expressions
   // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
   // This will be done after the choice/open-choice refactoring
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {
-    if (codings.length < 1) return null;
+    if (options.length === 0) {
+      return null;
+    }
 
     const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
       changedValue,
       answers,
-      mapCodingsToOptions(codings),
+      options,
       qrChoiceCheckbox,
       isRepeated
     );
@@ -93,9 +97,9 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   if (showMinimalView) {
     return (
       <>
-        <ChoiceCheckboxAnswerValueSetFields
+        <ChoiceCheckboxAnswerValueSetView
           qItem={qItem}
-          codings={codings}
+          options={options}
           answers={answers}
           readOnly={readOnly}
           terminologyError={terminologyError}
@@ -112,9 +116,9 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceCheckboxAnswerValueSetFields
+        <ChoiceCheckboxAnswerValueSetView
           qItem={qItem}
-          codings={codings}
+          options={options}
           answers={answers}
           readOnly={readOnly}
           terminologyError={terminologyError}

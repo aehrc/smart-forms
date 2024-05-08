@@ -17,26 +17,31 @@
 
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import QItemChoiceCheckboxSingle from '../ItemParts/CheckboxSingle';
 import { StyledFormGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 
-interface ChoiceCheckboxAnswerOptionFieldsProps {
+interface ChoiceCheckboxFieldsProps {
   qItem: QuestionnaireItem;
+  options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   readOnly: boolean;
   onCheckedChange: (newValue: string) => void;
 }
 
-function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionFieldsProps) {
-  const { qItem, answers, readOnly, onCheckedChange } = props;
+function ChoiceCheckboxFields(props: ChoiceCheckboxFieldsProps) {
+  const { qItem, options, answers, readOnly, onCheckedChange } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
     <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-      {qItem.answerOption?.map((option) => {
+      {options.map((option) => {
         if (option['valueCoding']) {
           return (
             <QItemChoiceCheckboxSingle
@@ -84,4 +89,4 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
   );
 }
 
-export default ChoiceCheckboxAnswerOptionFields;
+export default ChoiceCheckboxFields;
