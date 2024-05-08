@@ -344,10 +344,11 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     enableWhenExpressions,
     calculatedExpressions,
     variablesFhirPath,
-    tabs
+    tabs,
+    fhirPathContext
   } = params;
   const initialResponseItemMap = createQuestionnaireResponseItemMap(questionnaireResponse);
-  let updatedFhirPathContext = params.fhirPathContext;
+  let updatedFhirPathContext = {};
 
   const { initialisedItems, linkedQuestions } = assignPopulatedAnswersToEnableWhen(
     enableWhenItems,
@@ -358,7 +359,8 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     enableWhenExpressions: enableWhenExpressions,
-    variablesFhirPath: variablesFhirPath
+    variablesFhirPath: variablesFhirPath,
+    existingFhirPathContext: fhirPathContext
   });
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
@@ -368,7 +370,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     initialResponseItemMap: initialResponseItemMap,
     calculatedExpressions: calculatedExpressions,
     variablesFhirPath: variablesFhirPath,
-    existingFhirPathContext: updatedFhirPathContext
+    existingFhirPathContext: fhirPathContext
   });
   const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;

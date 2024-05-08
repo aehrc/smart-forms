@@ -75,7 +75,8 @@ export function evaluateInitialCalculatedExpressions(
   const updatedFhirPathContext = createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
-    variablesFhirPath
+    variablesFhirPath,
+    existingFhirPathContext
   );
 
   for (const linkId in initialCalculatedExpressions) {
