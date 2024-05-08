@@ -78,6 +78,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   // Event handlers
   function handleCheckedChange(changedValue: string) {
     if (options.length === 0) {
+      onQrItemChange(createEmptyQrItem(qItem));
       return;
     }
 

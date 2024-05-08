@@ -26,6 +26,10 @@ import type {
 import { getChoiceOrientation } from '../../../utils/choice';
 import { StyledFormGroup } from '../Item.styles';
 import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
+import { StyledAlert } from '../../Alert.styles';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Typography from '@mui/material/Typography';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 
 interface OpenChoiceCheckboxFieldsProps {
   qItem: QuestionnaireItem;
@@ -35,12 +39,13 @@ interface OpenChoiceCheckboxFieldsProps {
   openLabelValue: string;
   openLabelChecked: boolean;
   readOnly: boolean;
+  terminologyError: TerminologyError;
   onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
   onOpenLabelInputChange: (input: string) => void;
 }
 
-function OpenChoiceCheckboxFields(props: OpenChoiceCheckboxFieldsProps) {
+function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsProps) {
   const {
     qItem,
     options,
@@ -49,6 +54,7 @@ function OpenChoiceCheckboxFields(props: OpenChoiceCheckboxFieldsProps) {
     openLabelValue,
     openLabelChecked,
     readOnly,
+    terminologyError,
     onOptionChange,
     onOpenLabelCheckedChange,
     onOpenLabelInputChange
@@ -56,26 +62,49 @@ function OpenChoiceCheckboxFields(props: OpenChoiceCheckboxFieldsProps) {
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
-  return (
-    <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-      <CheckboxOptionList
-        options={options}
-        answers={answers}
-        readOnly={readOnly}
-        onCheckedChange={onOptionChange}
-      />
-
-      {openLabelText !== null ? (
-        <CheckboxSingleWithOpenLabel
-          value={openLabelValue}
-          label={openLabelText}
-          isChecked={openLabelChecked}
-          onCheckedChange={onOpenLabelCheckedChange}
-          onInputChange={onOpenLabelInputChange}
+  if (options.length > 0) {
+    return (
+      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+        <CheckboxOptionList
+          options={options}
+          answers={answers}
+          readOnly={readOnly}
+          onCheckedChange={onOptionChange}
         />
-      ) : null}
-    </StyledFormGroup>
+
+        {openLabelText !== null ? (
+          <CheckboxSingleWithOpenLabel
+            value={openLabelValue}
+            label={openLabelText}
+            isChecked={openLabelChecked}
+            onCheckedChange={onOpenLabelCheckedChange}
+            onInputChange={onOpenLabelInputChange}
+          />
+        ) : null}
+      </StyledFormGroup>
+    );
+  }
+
+  if (terminologyError.error) {
+    return (
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">
+          There was an error fetching options from the terminology server for{' '}
+          {terminologyError.answerValueSet}
+        </Typography>
+      </StyledAlert>
+    );
+  }
+
+  return (
+    <StyledAlert color="error">
+      <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+      <Typography variant="subtitle2">
+        Unable to fetch options from the questionnaire or launch context
+      </Typography>
+    </StyledAlert>
   );
 }
 
-export default OpenChoiceCheckboxFields;
+export default OpenChoiceCheckboxAnswerValueSetFields;

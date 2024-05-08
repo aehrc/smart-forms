@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
 import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
@@ -28,6 +28,7 @@ import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 
 interface ChoiceRadioAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
+  options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -35,7 +36,7 @@ interface ChoiceRadioAnswerOptionFieldsProps extends PropsWithIsTabledAttribute 
 }
 
 function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps) {
-  const { qItem, valueRadio, readOnly, calcExpUpdated, isTabled, onCheckedChange } = props;
+  const { qItem, options, valueRadio, readOnly, calcExpUpdated, isTabled, onCheckedChange } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -51,7 +52,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
         onChange={(e) => onCheckedChange(e.target.value)}
         value={valueRadio}
         data-test="q-item-radio-group">
-        <RadioAnswerOptionButtons qItem={qItem} readOnly={readOnly} />
+        <RadioAnswerOptionButtons options={options} readOnly={readOnly} />
       </StyledRadioGroup>
 
       <Box flexGrow={1} />

@@ -17,19 +17,19 @@
 
 import React from 'react';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 
 interface RadioAnswerOptionButtonsProps {
-  qItem: QuestionnaireItem;
+  options: QuestionnaireItemAnswerOption[];
   readOnly: boolean;
 }
 
 function RadioAnswerOptionButtons(props: RadioAnswerOptionButtonsProps) {
-  const { qItem, readOnly } = props;
+  const { options, readOnly } = props;
 
   return (
     <>
-      {qItem.answerOption?.map((option) => {
+      {options.map((option) => {
         if (option['valueCoding']) {
           return (
             <ChoiceRadioSingle

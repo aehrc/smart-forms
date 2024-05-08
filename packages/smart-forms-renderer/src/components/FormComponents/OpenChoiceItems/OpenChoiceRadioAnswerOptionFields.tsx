@@ -18,7 +18,7 @@
 import type { ChangeEvent } from 'react';
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { StyledRadioGroup } from '../Item.styles';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
@@ -26,6 +26,7 @@ import { getChoiceOrientation } from '../../../utils/choice';
 
 interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
+  options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
   openLabelText: string | null;
   openLabelValue: string | null;
@@ -37,6 +38,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
 function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFieldsProps) {
   const {
     qItem,
+    options,
     valueRadio,
     openLabelText,
     openLabelValue,
@@ -55,7 +57,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
       onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
       value={valueRadio}
       data-test="q-item-radio-group">
-      <RadioAnswerOptionButtons qItem={qItem} readOnly={readOnly} />
+      <RadioAnswerOptionButtons options={options} readOnly={readOnly} />
 
       {openLabelText ? (
         <RadioButtonWithOpenLabel

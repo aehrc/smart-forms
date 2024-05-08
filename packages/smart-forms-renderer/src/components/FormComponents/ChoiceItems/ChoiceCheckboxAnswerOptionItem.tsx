@@ -73,7 +73,8 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   // Event handlers
   function handleCheckedChange(changedValue: string) {
     if (options.length === 0) {
-      return null;
+      onQrItemChange(createEmptyQrItem(qItem));
+      return;
     }
 
     const updatedQrChoiceCheckbox = updateChoiceCheckboxAnswers(

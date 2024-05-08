@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { getOpenLabelText } from '../../../utils/itemControl';
@@ -31,14 +31,15 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
+import OpenChoiceCheckboxAnswerValueSetFields from './OpenChoiceCheckboxAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useOpenLabel from '../../../hooks/useOpenLabel';
-import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
-import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
+import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
 
-interface OpenChoiceCheckboxAnswerOptionItemProps
+interface OpenChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
@@ -47,7 +48,7 @@ interface OpenChoiceCheckboxAnswerOptionItemProps
   qrItem: QuestionnaireResponseItem | null;
 }
 
-function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptionItemProps) {
+function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerValueSetItemProps) {
   const {
     qItem,
     qrItem,
@@ -67,7 +68,10 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   const { displayInstructions } = useRenderingExtensions(qItem);
   const openLabelText = getOpenLabelText(qItem);
 
-  const options = qItem.answerOption ?? [];
+  // Get codings/options from valueSet
+  const { codings, terminologyError } = useValueSetCodings(qItem);
+
+  const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
   const { openLabelValue, setOpenLabelValue, openLabelChecked, setOpenLabelChecked } = useOpenLabel(
     options,
@@ -139,7 +143,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   if (showMinimalView) {
     return (
       <>
-        <OpenChoiceCheckboxAnswerOptionFields
+        <OpenChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           options={options}
           answers={answers}
@@ -147,6 +151,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
           readOnly={readOnly}
+          terminologyError={terminologyError}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
@@ -162,7 +167,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceCheckboxAnswerOptionFields
+        <OpenChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           options={options}
           answers={answers}
@@ -170,6 +175,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
           readOnly={readOnly}
+          terminologyError={terminologyError}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
@@ -179,4 +185,4 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   );
 }
 
-export default OpenChoiceCheckboxAnswerOptionItem;
+export default OpenChoiceCheckboxAnswerValueSetItem;
