@@ -18,7 +18,7 @@
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
+import RadioOptionList from '../ItemParts/RadioOptionList';
 import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
@@ -52,7 +52,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
         onChange={(e) => onCheckedChange(e.target.value)}
         value={valueRadio}
         data-test="q-item-radio-group">
-        <RadioAnswerOptionButtons options={options} readOnly={readOnly} />
+        <RadioOptionList options={options} readOnly={readOnly} />
       </StyledRadioGroup>
 
       <Box flexGrow={1} />

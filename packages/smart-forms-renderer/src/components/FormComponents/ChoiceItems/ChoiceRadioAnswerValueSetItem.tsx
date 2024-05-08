@@ -60,7 +60,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   // Get codings/options from valueSet
   const { codings, terminologyError } = useValueSetCodings(qItem);
 
-  const answerOptions = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
+  const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
@@ -75,7 +75,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
 
   function handleChange(newValue: string) {
     if (codings.length > 0) {
-      const qrAnswer = findInAnswerOptions(answerOptions, newValue);
+      const qrAnswer = findInAnswerOptions(options, newValue);
       onQrItemChange(
         qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
       );
@@ -86,7 +86,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     return (
       <ChoiceRadioAnswerValueSetFields
         qItem={qItem}
-        codings={codings}
+        options={options}
         valueRadio={valueRadio}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
@@ -105,7 +105,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceRadioAnswerValueSetFields
           qItem={qItem}
-          codings={codings}
+          options={options}
           valueRadio={valueRadio}
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}

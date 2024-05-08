@@ -15,65 +15,67 @@
  * limitations under the License.
  */
 
+import type { ChangeEvent } from 'react';
 import React from 'react';
-import Typography from '@mui/material/Typography';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { StyledRadioGroup } from '../Item.styles';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { StyledAlert } from '../../Alert.styles';
-import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { getChoiceOrientation } from '../../../utils/choice';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import Box from '@mui/material/Box';
+import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioOptionList from '../ItemParts/RadioOptionList';
+import { getChoiceOrientation } from '../../../utils/choice';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Typography from '@mui/material/Typography';
 
-interface ChoiceRadioAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
+interface OpenChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
+  openLabelText: string | null;
+  openLabelValue: string | null;
+  openLabelSelected: boolean;
   readOnly: boolean;
-  calcExpUpdated: boolean;
   terminologyError: TerminologyError;
-  onCheckedChange: (newValue: string) => void;
+  onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
 }
 
-function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsProps) {
+function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSetFieldsProps) {
   const {
     qItem,
     options,
     valueRadio,
+    openLabelText,
+    openLabelValue,
+    openLabelSelected,
     readOnly,
-    calcExpUpdated,
     terminologyError,
-    isTabled,
-    onCheckedChange
+    onValueChange
   } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
     return (
-      <Box
-        display="flex"
-        alignItems="center"
-        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}>
-        <StyledRadioGroup
-          row={orientation === ChoiceItemOrientation.Horizontal}
-          name={qItem.text}
-          id={qItem.id}
-          onChange={(e) => onCheckedChange(e.target.value)}
-          value={valueRadio}
-          data-test="q-item-radio-group">
-          <RadioOptionList options={options} readOnly={readOnly} />
-        </StyledRadioGroup>
+      <StyledRadioGroup
+        row={orientation === ChoiceItemOrientation.Horizontal}
+        name={qItem.text}
+        id={qItem.id}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
+        value={valueRadio}
+        data-test="q-item-radio-group">
+        <RadioOptionList options={options} readOnly={readOnly} />
 
-        <Box flexGrow={1} />
-
-        <FadingCheckIcon fadeIn={calcExpUpdated} />
-      </Box>
+        {openLabelText ? (
+          <RadioButtonWithOpenLabel
+            value={openLabelValue}
+            label={openLabelText}
+            readOnly={readOnly}
+            isSelected={openLabelSelected}
+            onInputChange={(input) => onValueChange(null, input)}
+          />
+        ) : null}
+      </StyledRadioGroup>
     );
   }
 
@@ -99,4 +101,4 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
   );
 }
 
-export default ChoiceRadioAnswerValueSetFields;
+export default OpenChoiceRadioAnswerValueSetFields;

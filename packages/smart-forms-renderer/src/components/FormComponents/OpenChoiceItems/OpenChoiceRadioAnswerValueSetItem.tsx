@@ -15,24 +15,29 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { getOpenLabelText } from '../../../utils/itemControl';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
+import {
+  convertCodingsToAnswerOptions,
+  findInAnswerOptions,
+  getQrChoiceValue
+} from '../../../utils/choice';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
+import OpenChoiceRadioAnswerValueSetFields from './OpenChoiceRadioAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
 
-interface OpenChoiceRadioAnswerOptionItemProps
+interface OpenChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute {
@@ -40,7 +45,7 @@ interface OpenChoiceRadioAnswerOptionItemProps
   qrItem: QuestionnaireResponseItem | null;
 }
 
-function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
+function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetItemProps) {
   const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
@@ -53,7 +58,10 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const openLabelText = getOpenLabelText(qItem);
 
-  const options = qItem.answerOption ?? [];
+  // Get codings/options from valueSet
+  const { codings, terminologyError } = useValueSetCodings(qItem);
+
+  const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
   // Init empty open label
   let initialOpenLabelValue = '';
@@ -129,7 +137,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceRadioAnswerOptionFields
+        <OpenChoiceRadioAnswerValueSetFields
           qItem={qItem}
           options={options}
           valueRadio={valueRadio}
@@ -137,6 +145,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
           openLabelValue={openLabelValue}
           openLabelSelected={openLabelSelected}
           readOnly={readOnly}
+          terminologyError={terminologyError}
           onValueChange={handleValueChange}
         />
       </ItemFieldGrid>
@@ -144,4 +153,4 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   );
 }
 
-export default OpenChoiceRadioAnswerOptionItem;
+export default OpenChoiceRadioAnswerValueSetItem;

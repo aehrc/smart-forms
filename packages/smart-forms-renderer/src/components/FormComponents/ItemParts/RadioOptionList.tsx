@@ -19,12 +19,12 @@ import React from 'react';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 
-interface RadioAnswerOptionButtonsProps {
+interface RadioOptionListProps {
   options: QuestionnaireItemAnswerOption[];
   readOnly: boolean;
 }
 
-function RadioAnswerOptionButtons(props: RadioAnswerOptionButtonsProps) {
+function RadioOptionList(props: RadioOptionListProps) {
   const { options, readOnly } = props;
 
   return (
@@ -69,4 +69,4 @@ function RadioAnswerOptionButtons(props: RadioAnswerOptionButtonsProps) {
   );
 }
 
-export default RadioAnswerOptionButtons;
+export default RadioOptionList;
