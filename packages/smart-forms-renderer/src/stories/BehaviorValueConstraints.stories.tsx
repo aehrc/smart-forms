@@ -18,23 +18,23 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapper from './BuildFormWrapper';
 import {
-  qMaxDecimalPlacesValidation,
-  qMaxLengthValidation,
-  qMaxValueValidation,
-  qMinLengthValidation,
-  qMinValueValidation,
-  qRegexValidation,
-  qrMaxDecimalPlacesValidation,
-  qrMaxLengthValidation,
-  qrMaxValueValidation,
-  qrMinLengthValidation,
-  qrMinValueValidation,
-  qrRegexValidation
-} from './assets/QValidation';
+  qMaxDecimalPlaces,
+  qMaxLength,
+  qMaxValue,
+  qMinLength,
+  qMinValue,
+  qRegex,
+  qrMaxDecimalPlaces,
+  qrMaxLength,
+  qrMaxValue,
+  qrMinLength,
+  qrMinValue,
+  qrRegex
+} from './assets/QBehaviorValueConstraints';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Validation',
+  title: 'Component/Form Behavior Value Constraints',
   component: BuildFormWrapper,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -45,44 +45,44 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const Regex: Story = {
+export const MaxLength: Story = {
   args: {
-    questionnaire: qRegexValidation,
-    questionnaireResponse: qrRegexValidation
+    questionnaire: qMaxLength,
+    questionnaireResponse: qrMaxLength
   }
 };
 
 export const MinLength: Story = {
   args: {
-    questionnaire: qMinLengthValidation,
-    questionnaireResponse: qrMinLengthValidation
+    questionnaire: qMinLength,
+    questionnaireResponse: qrMinLength
   }
 };
 
-export const MaxLength: Story = {
+export const Regex: Story = {
   args: {
-    questionnaire: qMaxLengthValidation,
-    questionnaireResponse: qrMaxLengthValidation
+    questionnaire: qRegex,
+    questionnaireResponse: qrRegex
   }
 };
 
-export const MaxDecimalPlaces: Story = {
+export const MinValue: Story = {
   args: {
-    questionnaire: qMaxDecimalPlacesValidation,
-    questionnaireResponse: qrMaxDecimalPlacesValidation
-  }
-};
-
-export const MinValueValidation: Story = {
-  args: {
-    questionnaire: qMinValueValidation,
-    questionnaireResponse: qrMinValueValidation
+    questionnaire: qMinValue,
+    questionnaireResponse: qrMinValue
   }
 };
 
 export const MaxValue: Story = {
   args: {
-    questionnaire: qMaxValueValidation,
-    questionnaireResponse: qrMaxValueValidation
+    questionnaire: qMaxValue,
+    questionnaireResponse: qrMaxValue
+  }
+};
+
+export const MaxDecimalPlaces: Story = {
+  args: {
+    questionnaire: qMaxDecimalPlaces,
+    questionnaireResponse: qrMaxDecimalPlaces
   }
 };
