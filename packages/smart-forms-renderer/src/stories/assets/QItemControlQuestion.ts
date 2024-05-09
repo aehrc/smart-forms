@@ -409,7 +409,6 @@ export const qChoiceCheckboxAnswerOption: Questionnaire = {
   ]
 };
 
-// FIXME repeat checkbox does not work :(
 export const qChoiceCheckboxAnswerValueSet: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'ChoiceCheckboxAVS',
