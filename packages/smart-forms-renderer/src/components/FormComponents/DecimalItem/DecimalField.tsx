@@ -63,7 +63,7 @@ function DecimalField(props: DecimalFieldProps) {
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} />
+            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
             {displayUnit}
           </InputAdornment>
         )
