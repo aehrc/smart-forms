@@ -21,7 +21,6 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import RadioAnswerOptionButtons from '../ItemParts/RadioAnswerOptionButtons';
 import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
@@ -40,10 +39,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}>
+    <Box display="flex" alignItems="center">
       <StyledRadioGroup
         row={orientation === ChoiceItemOrientation.Horizontal}
         name={qItem.text}

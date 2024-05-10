@@ -25,7 +25,6 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { getChoiceOrientation } from '../../../utils/choice';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
@@ -56,10 +55,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
 
   if (codings.length > 0) {
     return (
-      <Box
-        display="flex"
-        alignItems="center"
-        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}>
+      <Box display="flex" alignItems="center">
         <StyledRadioGroup
           row={orientation === ChoiceItemOrientation.Horizontal}
           name={qItem.text}
