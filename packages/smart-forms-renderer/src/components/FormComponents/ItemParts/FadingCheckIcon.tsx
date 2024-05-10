@@ -21,14 +21,19 @@ import SyncIcon from '@mui/icons-material/Sync';
 
 interface FadingCheckIconProps {
   fadeIn: boolean;
+  disabled: boolean;
 }
 
 function FadingCheckIcon(props: FadingCheckIconProps) {
-  const { fadeIn } = props;
+  const { fadeIn, disabled } = props;
 
   return (
     <Fade in={fadeIn} timeout={{ enter: 100, exit: 300 }}>
-      <SyncIcon color="success" fontSize="small" />
+      <SyncIcon
+        color="success"
+        fontSize="small"
+        sx={{ ...(disabled ? { color: 'text.disabled' } : null) }}
+      />
     </Fade>
   );
 }

@@ -61,7 +61,7 @@ function TextField(props: TextFieldProps) {
       InputProps={{
         endAdornment: (
           <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} />
+            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
             {displayUnit}
           </InputAdornment>
         )

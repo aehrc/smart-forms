@@ -52,7 +52,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
 
       <Box flexGrow={1} />
 
-      <FadingCheckIcon fadeIn={calcExpUpdated} />
+      <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
     </Box>
   );
 }

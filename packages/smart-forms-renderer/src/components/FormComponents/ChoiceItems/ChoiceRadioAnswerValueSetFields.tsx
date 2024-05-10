@@ -75,7 +75,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
         </StyledRadioGroup>
         <Box flexGrow={1} />
 
-        <FadingCheckIcon fadeIn={calcExpUpdated} />
+        <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
       </Box>
     );
   }
