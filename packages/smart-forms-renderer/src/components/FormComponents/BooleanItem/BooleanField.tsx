@@ -17,7 +17,6 @@
 
 import React, { memo } from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
@@ -49,10 +48,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const selection = valueBoolean === undefined ? null : valueBoolean.toString();
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}>
+    <Box display="flex" alignItems="center">
       <StyledRadioGroup
         row={orientation === ChoiceItemOrientation.Horizontal}
         name={qItem.text}
@@ -65,7 +61,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
       <Box flexGrow={1} />
 
-      <FadingCheckIcon fadeIn={calcExpUpdated} />
+      <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
       <Fade in={valueBoolean !== undefined} timeout={100}>
         <Tooltip title="Set question as unanswered">
           <Button
@@ -73,6 +69,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
               color: grey['500'],
               '&:hover': { backgroundColor: grey['200'] }
             }}
+            disabled={readOnly}
             onClick={onClear}>
             Clear
           </Button>

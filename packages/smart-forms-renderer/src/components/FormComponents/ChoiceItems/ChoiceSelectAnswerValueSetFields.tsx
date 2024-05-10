@@ -75,7 +75,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               endAdornment: (
                 <>
                   {params.InputProps.endAdornment}
-                  <FadingCheckIcon fadeIn={calcExpUpdated} />
+                  <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
                   {displayUnit}
                 </>
               )
