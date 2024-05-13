@@ -17,11 +17,11 @@
 
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
-import { findNumOfVisibleTabs, getVisibleTabIndex } from '../../../utils/tabs';
 import type { Tabs } from '../../../interfaces/tab.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import NextTabButton from './NextTabButton';
 import PreviousTabButton from './PreviousTabButton';
+import useNextAndPreviousVisibleTabs from '../../../hooks/useNextAndPreviousVisibleTabs';
 
 interface TabButtonsWrapperProps {
   currentTabIndex?: number;
@@ -31,27 +31,33 @@ interface TabButtonsWrapperProps {
 const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapperProps) {
   const { currentTabIndex, tabs } = props;
 
-  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
-  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
-  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
   const switchTab = useQuestionnaireStore.use.switchTab();
+
+  const { previousTabIndex, nextTabIndex, numOfVisibleTabs } = useNextAndPreviousVisibleTabs(
+    currentTabIndex,
+    tabs
+  );
 
   const tabsNotDefined = currentTabIndex === undefined || tabs === undefined;
 
-  function handleButtonClick(direction: 'next' | 'previous') {
-    if (tabsNotDefined) {
+  // Event handlers
+  function handlePreviousTabButtonClick() {
+    if (previousTabIndex === null) {
       return;
     }
 
-    const visibleTabIndex = getVisibleTabIndex({
-      direction,
-      tabs,
-      currentTabIndex,
-      enableWhenIsActivated,
-      enableWhenItems,
-      enableWhenExpressions
-    });
-    switchTab(visibleTabIndex);
+    switchTab(previousTabIndex);
+
+    // Scroll to top of page
+    window.scrollTo(0, 0);
+  }
+
+  function handleNextTabButtonClick() {
+    if (nextTabIndex === null) {
+      return;
+    }
+
+    switchTab(nextTabIndex);
 
     // Scroll to top of page
     window.scrollTo(0, 0);
@@ -61,26 +67,23 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
     return null;
   }
 
-  const previousTabButtonHidden = currentTabIndex === 0;
-  const nextTabButtonHidden = currentTabIndex === Object.keys(tabs).length - 1;
+  const previousTabButtonHidden = previousTabIndex === null;
+  const nextTabButtonHidden = nextTabIndex === null;
 
-  const buttonIsDisabled =
-    findNumOfVisibleTabs(tabs, enableWhenIsActivated, enableWhenItems, enableWhenExpressions) <= 1;
+  // This is more of a fallback check to prevent the user from navigating to an invisble tab if buttons are visble for some reason
+  const tabButtonsDisabled = numOfVisibleTabs <= 1;
 
   return (
     <Box display="flex" mt={3}>
       {previousTabButtonHidden ? null : (
         <PreviousTabButton
-          isDisabled={buttonIsDisabled}
-          onPreviousTabClick={() => handleButtonClick('previous')}
+          isDisabled={tabButtonsDisabled}
+          onPreviousTabClick={handlePreviousTabButtonClick}
         />
       )}
       <Box flexGrow={1} />
       {nextTabButtonHidden ? null : (
-        <NextTabButton
-          isDisabled={buttonIsDisabled}
-          onNextTabClick={() => handleButtonClick('next')}
-        />
+        <NextTabButton isDisabled={tabButtonsDisabled} onNextTabClick={handleNextTabButtonClick} />
       )}
     </Box>
   );
