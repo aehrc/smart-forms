@@ -91,7 +91,7 @@ function DecimalItem(props: DecimalItemProps) {
       );
       onQrItemChange({
         ...createEmptyQrItem(qItem),
-        answer: [{ valueInteger: newValueDecimal }]
+        answer: [{ valueDecimal: newValueDecimal }]
       });
     },
     onChangeByCalcExpressionNull: () => {
