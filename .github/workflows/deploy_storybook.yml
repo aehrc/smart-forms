@@ -2,7 +2,7 @@ name: Smart Forms Docs Deployment Workflow
 
 on:
   push:
-#    branches: [ "main" ]
+    branches: [ "main" ]
 
 
 permissions:
