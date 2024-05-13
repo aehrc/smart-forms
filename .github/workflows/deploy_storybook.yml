@@ -1,4 +1,4 @@
-name: Smart Forms Workflow
+name: Smart Forms Docs Deployment Workflow
 
 on:
   push:
@@ -14,6 +14,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run build-storybook -w packages/smart-forms-renderer
+
       - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
         with:
           path: packages/smart-forms-renderer/storybook-static
