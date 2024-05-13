@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapper from './BuildFormWrapper';
-import { qItemControlDisplayLowerAndUpper } from './assets/QItemControlDisplay';
+import { qItemControlDisplayLowerAndUpper } from '@aehrc/smart-forms-questionnaire-samples';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {

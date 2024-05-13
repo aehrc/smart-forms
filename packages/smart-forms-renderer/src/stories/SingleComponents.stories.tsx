@@ -29,7 +29,7 @@ import {
   qTextItem,
   qTimeItem,
   qUrlItem
-} from './assets/QSingleItems';
+} from '@aehrc/smart-forms-questionnaire-samples';
 import BuildFormWrapper from './BuildFormWrapper';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

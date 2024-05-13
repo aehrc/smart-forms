@@ -23,7 +23,7 @@ import {
   qOpenLabel,
   qRenderingXhtmlBooleanCheckboxItem,
   qRenderingXhtmlDisplayListItem
-} from './assets/QAdvancedTextApperance';
+} from '@aehrc/smart-forms-questionnaire-samples';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {

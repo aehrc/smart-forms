@@ -1,0 +1,24 @@
+{
+  "name": "@aehrc/smart-forms-questionnaire-samples",
+  "version": "1.0.0",
+  "description": "Sample questionnaires used in @aehrc/smart-forms-renderer Storybook.",
+  "main": "lib/index.js",
+  "scripts": {
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "prepare": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aehrc/smart-forms.git"
+  },
+  "author": "Sean Fong",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aehrc/smart-forms/issues"
+  },
+  "homepage": "https://github.com/aehrc/smart-forms#readme",
+  "devDependencies": {
+    "@types/fhir": "^0.0.38"
+  }
+}

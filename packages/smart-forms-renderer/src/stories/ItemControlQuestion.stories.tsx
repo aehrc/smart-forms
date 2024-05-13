@@ -28,9 +28,9 @@ import {
   qOpenChoiceCheckboxAnswerOption,
   qOpenChoiceCheckboxAnswerValueSet,
   qOpenChoiceRadioAnswerOption,
-  qOpenChoiceRadioAnswerValueSet
-} from './assets/QItemControlQuestion';
-import { qSliderStepValue } from './assets/QAdvancedControlAppearance';
+  qOpenChoiceRadioAnswerValueSet,
+  qSliderStepValue
+} from '@aehrc/smart-forms-questionnaire-samples';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
