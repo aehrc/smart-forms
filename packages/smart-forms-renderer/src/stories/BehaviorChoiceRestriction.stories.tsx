@@ -28,7 +28,7 @@ import {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Form Behavior Choice Restriction',
+  title: 'Component/9.1.2 Form Behavior Choice Restriction',
   component: BuildFormWrapper,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs']
