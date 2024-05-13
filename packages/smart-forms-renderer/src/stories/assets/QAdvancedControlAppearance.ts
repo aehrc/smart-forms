@@ -29,7 +29,16 @@ export const qItemControl: Questionnaire = {
   url: 'https://smartforms.csiro.au/docs/advanced/text/item-control',
   item: [
     {
-      linkId: 'item-control',
+      linkId: 'item-control-instructions',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the respective itemControl sections for group, display and question items.</p></div>'
+          }
+        ]
+      },
       text: 'Please refer to the respective itemControl sections for group, display and question items.',
       type: 'display',
       repeats: false
