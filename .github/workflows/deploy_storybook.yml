@@ -12,24 +12,22 @@ permissions:
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.build-publish.outputs.page_url }}
+
     runs-on: ubuntu-latest
     steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Use Node.js 18.x
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: 18
-#          cache: npm
-#
-#      - name: Install dependencies
-#        run: npm ci
-#
-#      - name: Build Storybook
-#        run: npm run build-storybook -w packages/smart-forms-renderer
+      - uses: actions/checkout@v4
 
-      - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
         with:
-          path: packages/smart-forms-renderer/storybook-static
-          install_command: npm ci
-          build_command: npm run build-storybook -w packages/smart-forms-renderer
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run build-storybook -w packages/smart-forms-renderer
