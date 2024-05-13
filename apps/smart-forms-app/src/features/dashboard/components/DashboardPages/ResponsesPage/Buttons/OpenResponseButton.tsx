@@ -30,6 +30,7 @@ import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { buildForm } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
+import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface Props {
   selectedResponse: QuestionnaireResponse | null;
@@ -65,7 +66,10 @@ function OpenResponseButton(props: Props) {
 
   if (error) {
     console.error(error);
-    enqueueSnackbar('There might be an issue with this response', { variant: 'warning' });
+    enqueueSnackbar('There might be an issue with this response', {
+      variant: 'warning',
+      action: <CloseSnackbar />
+    });
   }
 
   let referencedQuestionnaire: Questionnaire | null = useMemo(
@@ -75,13 +79,14 @@ function OpenResponseButton(props: Props) {
 
   async function handleClick() {
     if (!selectedResponse) {
-      enqueueSnackbar('No response selected.', { variant: 'error' });
+      enqueueSnackbar('No response selected.', { variant: 'error', action: <CloseSnackbar /> });
       return;
     }
 
     if (!referencedQuestionnaire) {
       enqueueSnackbar('Referenced questionnaire of selected response not found', {
-        variant: 'error'
+        variant: 'error',
+        action: <CloseSnackbar />
       });
       return;
     }
@@ -94,7 +99,8 @@ function OpenResponseButton(props: Props) {
     if (!referencedQuestionnaire) {
       console.error(error);
       enqueueSnackbar('Referenced questionnaire not found. Unable to open response', {
-        variant: 'error'
+        variant: 'error',
+        action: <CloseSnackbar />
       });
       setIsLoading(false);
       return;

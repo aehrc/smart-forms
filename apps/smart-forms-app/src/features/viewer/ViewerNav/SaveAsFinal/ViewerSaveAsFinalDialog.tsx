@@ -75,7 +75,10 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
         setIsSaving(false);
         setUpdatableResponseAsSaved(savedResponse);
         handleClose();
-        enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success' });
+        enqueueSnackbar(saveAsFinalSuccessMessage, {
+          variant: 'success',
+          action: <CloseSnackbar />
+        });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');
       })
       .catch((error) => {
