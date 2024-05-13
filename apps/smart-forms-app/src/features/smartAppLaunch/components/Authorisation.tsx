@@ -34,6 +34,7 @@ import { assembleIfRequired } from '../../../utils/assemble.ts';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {
@@ -97,7 +98,8 @@ function Authorisation() {
               enqueueSnackbar(
                 'Fail to fetch patient or user launch context. Try launching the app again',
                 {
-                  variant: 'error'
+                  variant: 'error',
+                  action: <CloseSnackbar />
                 }
               );
             }
@@ -134,7 +136,7 @@ function Authorisation() {
                   } else {
                     enqueueSnackbar(
                       'An error occurred while fetching initially specified questionnaire',
-                      { variant: 'error' }
+                      { variant: 'error', action: <CloseSnackbar /> }
                     );
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
                   }
@@ -142,7 +144,8 @@ function Authorisation() {
               })
               .catch(() => {
                 enqueueSnackbar('An error occurred while fetching Questionnaire launch context', {
-                  variant: 'error'
+                  variant: 'error',
+                  action: <CloseSnackbar />
                 });
                 dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
               });
@@ -173,7 +176,10 @@ function Authorisation() {
           } else {
             console.error(error);
             dispatch({ type: 'FAIL_AUTH', payload: error.message });
-            enqueueSnackbar('An error occurred while launching the app', { variant: 'error' });
+            enqueueSnackbar('An error occurred while launching the app', {
+              variant: 'error',
+              action: <CloseSnackbar />
+            });
           }
         });
     },

@@ -18,7 +18,7 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { updateQrCheckboxAnswers } from '../../../utils/choice';
+import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
@@ -29,10 +29,10 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -59,7 +59,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
 
   // Init input value
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
-  const answers = qrChoiceCheckbox.answer ? qrChoiceCheckbox.answer : [];
+  const answers = qrChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -68,15 +68,19 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
   // This will be done after the choice/open-choice refactoring
 
+  const options = qItem.answerOption ?? [];
+
   // Event handlers
   function handleCheckedChange(changedValue: string) {
-    const answerOptions = qItem.answerOption;
-    if (!answerOptions) return null;
+    if (options.length === 0) {
+      onQrItemChange(createEmptyQrItem(qItem));
+      return;
+    }
 
-    const updatedQrChoiceCheckbox = updateQrCheckboxAnswers(
+    const updatedQrChoiceCheckbox = updateChoiceCheckboxAnswers(
       changedValue,
       answers,
-      answerOptions,
+      options,
       qrChoiceCheckbox,
       isRepeated
     );
@@ -89,8 +93,9 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   if (showMinimalView) {
     return (
       <>
-        <ChoiceCheckboxAnswerValueSetFields
+        <ChoiceCheckboxAnswerOptionFields
           qItem={qItem}
+          options={options}
           answers={answers}
           readOnly={readOnly}
           onCheckedChange={handleCheckedChange}
@@ -106,8 +111,9 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceCheckboxAnswerValueSetFields
+        <ChoiceCheckboxAnswerOptionFields
           qItem={qItem}
+          options={options}
           answers={answers}
           readOnly={readOnly}
           onCheckedChange={handleCheckedChange}

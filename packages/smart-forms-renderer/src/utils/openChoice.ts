@@ -16,127 +16,112 @@
  */
 
 import type {
-  Coding,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { CheckBoxOption, OpenChoiceItemControl } from '../interfaces/choice.enum';
+import { OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
-import { findInAnswerOptions, findInAnswerValueSetCodings } from './choice';
+import _isEqual from 'lodash/isEqual';
 
 /**
- * Update open-choice checkbox group answers based on checkbox changes
+ * Update open choice answer based on open label value
  *
  * @author Sean Fong
  */
-export function updateQrOpenChoiceCheckboxAnswers(
-  changedOptionAnswer: string | null,
-  changedOpenLabelAnswer: string | null,
+export function updateOpenLabelAnswer(
+  openLabelChecked: boolean,
+  changedOpenLabelValue: string,
   answers: QuestionnaireResponseItemAnswer[],
-  answerOptions: QuestionnaireItemAnswerOption[] | Coding[],
-  qrChoiceCheckbox: QuestionnaireResponseItem,
-  checkboxOptionType: CheckBoxOption,
+  options: QuestionnaireItemAnswerOption[],
+  oldQrItem: QuestionnaireResponseItem,
   isMultiSelection: boolean
-): QuestionnaireResponseItem | null {
-  if (changedOptionAnswer) {
-    const newAnswer =
-      checkboxOptionType === CheckBoxOption.AnswerOption
-        ? findInAnswerOptions(answerOptions, changedOptionAnswer)
-        : findInAnswerValueSetCodings(answerOptions, changedOptionAnswer);
-    if (!newAnswer) return null;
-
-    if (isMultiSelection && answers.length > 0) {
-      // check if new answer exists in existing answers
-      const newAnswerInAnswers =
-        checkboxOptionType === CheckBoxOption.AnswerOption
-          ? findInAnswerOptions(answers, changedOptionAnswer)
-          : findInAnswerValueSetCodings(answers, changedOptionAnswer);
-
-      if (newAnswerInAnswers) {
-        // remove new answer from qrAnswers
-        const newAnswers = [...answers].filter(
-          (answer) => JSON.stringify(answer) !== JSON.stringify(newAnswerInAnswers)
-        );
-        return { ...qrChoiceCheckbox, answer: newAnswers };
-      } else {
-        // add new answer to qrAnswers
-        return { ...qrChoiceCheckbox, answer: [...answers, newAnswer] };
-      }
-    } else {
-      return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
-        ? { ...qrChoiceCheckbox, answer: [] }
-        : { ...qrChoiceCheckbox, answer: [newAnswer] };
-    }
-  } else if (changedOpenLabelAnswer !== null) {
-    const newOpenLabelAnswer = { valueString: changedOpenLabelAnswer };
-    const oldOpenLabelAnswer: QuestionnaireResponseItemAnswer | null = getOldOpenLabelAnswer(
-      answers,
-      answerOptions
-    );
-
-    if (answers.length === 0) {
-      if (changedOpenLabelAnswer === '') {
-        return { linkId: qrChoiceCheckbox.linkId, text: qrChoiceCheckbox.text };
-      } else {
-        return { ...qrChoiceCheckbox, answer: [newOpenLabelAnswer] };
-      }
+) {
+  // Open label is unchecked, search for open label value and remove it
+  if (!openLabelChecked) {
+    // In single-selection, return empty array because there can only be one answer
+    if (!isMultiSelection) {
+      return {
+        ...oldQrItem,
+        answer: []
+      };
     }
 
-    if (isMultiSelection) {
-      if (!oldOpenLabelAnswer) {
-        // append newOpenLabel if oldOpenLabel doesnt exist
-        return {
-          ...qrChoiceCheckbox,
-          answer: [...answers, newOpenLabelAnswer]
-        };
-      } else {
-        // An oldOpenLabel already exists
-        // Remove oldOpenLabel from answers
-        const answersWithoutOpenLabel = [...answers].filter(
-          (answer) => JSON.stringify(answer) !== JSON.stringify(oldOpenLabelAnswer)
-        );
+    // The rest of the processing is for multi-selection
+    // Get the indexes of answers that match the open label value
+    const matchedIndexes = answers
+      .filter((answer) => answer.valueString === changedOpenLabelValue)
+      .map((matched) => answers.indexOf(matched));
 
-        if (
-          JSON.stringify(newOpenLabelAnswer) === JSON.stringify(oldOpenLabelAnswer) ||
-          changedOpenLabelAnswer === ''
-        ) {
-          // User unchecks openLabel checkbox or clears field
-          if (answersWithoutOpenLabel.length > 0) {
-            return { ...qrChoiceCheckbox, answer: answersWithoutOpenLabel };
-          } else {
-            return { linkId: qrChoiceCheckbox.linkId, text: qrChoiceCheckbox.text };
-          }
-        } else {
-          // User changes openLabel value
-          return {
-            ...qrChoiceCheckbox,
-            answer: [...answersWithoutOpenLabel, newOpenLabelAnswer]
-          };
-        }
-      }
-    } else {
-      if (!oldOpenLabelAnswer || newOpenLabelAnswer !== oldOpenLabelAnswer) {
-        // set newOpenLabel as sole answer if oldOpenLabel doesnt exist OR if user changed openLabel value
-        return { ...qrChoiceCheckbox, answer: [newOpenLabelAnswer] };
-      } else {
-        // User unchecks openLabel checkbox
-        return { ...qrChoiceCheckbox, answer: [] };
-      }
+    // Only remove the last one if there are multiple matches, in case open label value is same as an option
+    if (matchedIndexes.length > 0) {
+      const lastMatchedIndex = matchedIndexes[matchedIndexes.length - 1];
+      const newAnswers = answers.filter((answer, index) => index !== lastMatchedIndex);
+
+      return {
+        ...oldQrItem,
+        answer: newAnswers
+      };
     }
-  } else {
-    // Default condition which will not happen
-    return { ...qrChoiceCheckbox };
+
+    // Return oldQrItem if no matches are found
+    return oldQrItem;
   }
+
+  // Open label is checked, search for open label value and add it
+  const newOpenLabelAnswer: QuestionnaireResponseItemAnswer = {
+    valueString: changedOpenLabelValue
+  };
+
+  // In single-selection, return only newOpenLabelAnswer in an array because there can only be one answer
+  if (!isMultiSelection) {
+    return {
+      ...oldQrItem,
+      answer: [newOpenLabelAnswer]
+    };
+  }
+
+  const oldOpenLabelAnswer: QuestionnaireResponseItemAnswer | null = getOldOpenLabelAnswer(
+    answers,
+    options
+  );
+
+  // No open label answer exists initially, add newOpenLabelAnswer to answers
+  if (!oldOpenLabelAnswer) {
+    return {
+      ...oldQrItem,
+      answer: [...answers, newOpenLabelAnswer]
+    };
+  }
+
+  // Old open label answer equals to new open label answer
+  // This should not happen, but return oldQrItem
+  if (_isEqual(oldOpenLabelAnswer, newOpenLabelAnswer)) {
+    return oldQrItem;
+  }
+
+  // New open label answer is different from old open label answer, update it
+  oldOpenLabelAnswer.valueString = changedOpenLabelValue;
+  return {
+    ...oldQrItem,
+    answer: oldQrItem.answer
+  };
 }
 
+/**
+ * Get the old open label answer from the list of answers
+ *
+ * @author Sean Fong
+ */
 export function getOldOpenLabelAnswer(
   answers: QuestionnaireResponseItemAnswer[],
   options: QuestionnaireItemAnswerOption[]
 ): QuestionnaireResponseItemAnswer | null {
-  const openLabelAnswers = answers.filter((answer) => options.indexOf(answer) === -1);
-  return openLabelAnswers.length > 0 ? openLabelAnswers[0] : null;
+  const openLabelAnswer = answers.find(
+    (answer) => !options.some((option) => _isEqual(option, answer))
+  );
+  return openLabelAnswer ?? null;
 }
 
 /**

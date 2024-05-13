@@ -31,6 +31,8 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
+import OpenChoiceCheckboxAnswerValueSetItem from './OpenChoiceCheckboxAnswerValueSetItem';
+import OpenChoiceRadioAnswerValueSetItem from './OpenChoiceRadioAnswerValueSetItem';
 
 interface OpenChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -48,26 +50,51 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
 
   switch (getOpenChoiceControlType(qItem)) {
     case OpenChoiceItemControl.Checkbox:
-      return (
-        <OpenChoiceCheckboxAnswerOptionItem
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={qItem['repeats'] ?? false}
-          showMinimalView={showMinimalView}
-          parentIsReadOnly={parentIsReadOnly}
-          onQrItemChange={onQrItemChange}
-        />
-      );
+      if (qItem.answerValueSet) {
+        return (
+          <OpenChoiceCheckboxAnswerValueSetItem
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={qItem['repeats'] ?? false}
+            showMinimalView={showMinimalView}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      } else {
+        return (
+          <OpenChoiceCheckboxAnswerOptionItem
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={qItem['repeats'] ?? false}
+            showMinimalView={showMinimalView}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      }
     case OpenChoiceItemControl.Radio:
-      return (
-        <OpenChoiceRadioAnswerOptionItem
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={qItem['repeats'] ?? false}
-          parentIsReadOnly={parentIsReadOnly}
-          onQrItemChange={onQrItemChange}
-        />
-      );
+      if (qItem.answerValueSet) {
+        return (
+          <OpenChoiceRadioAnswerValueSetItem
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={qItem['repeats'] ?? false}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      } else {
+        return (
+          <OpenChoiceRadioAnswerOptionItem
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={qItem['repeats'] ?? false}
+            parentIsReadOnly={parentIsReadOnly}
+            onQrItemChange={onQrItemChange}
+          />
+        );
+      }
     case OpenChoiceItemControl.Autocomplete:
       return (
         <OpenChoiceAutocompleteItem

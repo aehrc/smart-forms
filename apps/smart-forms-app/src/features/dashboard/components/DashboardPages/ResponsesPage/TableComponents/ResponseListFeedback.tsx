@@ -19,6 +19,7 @@ import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
 import ResponseFeedbackMessage from './ResponseFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 import type { Questionnaire } from 'fhir/r4';
+import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface Props {
   isEmpty: boolean;
@@ -45,7 +46,8 @@ function ResponseListFeedback(props: Props) {
     console.error(error);
     enqueueSnackbar('An error occurred while fetching responses', {
       variant: 'error',
-      preventDuplicate: true
+      preventDuplicate: true,
+      action: <CloseSnackbar />
     });
   }
 

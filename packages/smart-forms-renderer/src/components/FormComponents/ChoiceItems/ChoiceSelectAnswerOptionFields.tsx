@@ -19,13 +19,14 @@ import React, { Fragment } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
+  options: QuestionnaireItemAnswerOption[];
   valueSelect: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -33,7 +34,7 @@ interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute
 }
 
 function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsProps) {
-  const { qItem, valueSelect, readOnly, calcExpUpdated, isTabled, onSelectChange } = props;
+  const { qItem, options, valueSelect, readOnly, calcExpUpdated, isTabled, onSelectChange } = props;
 
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
@@ -52,7 +53,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
       sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
       size="small"
       onChange={(e) => onSelectChange(e.target.value)}>
-      {qItem.answerOption?.map((option, index) => {
+      {options.map((option, index) => {
         if (option['valueCoding']) {
           return (
             <MenuItem key={option.valueCoding.code} value={option.valueCoding.code}>

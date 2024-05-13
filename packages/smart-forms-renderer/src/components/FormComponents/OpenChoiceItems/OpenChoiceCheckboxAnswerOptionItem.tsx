@@ -15,15 +15,11 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo, useState } from 'react';
-import { CheckBoxOption } from '../../../interfaces/choice.enum';
+import React, { useCallback } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { getOpenLabelText } from '../../../utils/itemControl';
-import {
-  getOldOpenLabelAnswer,
-  updateQrOpenChoiceCheckboxAnswers
-} from '../../../utils/openChoice';
+import { updateOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import debounce from 'lodash.debounce';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
@@ -35,10 +31,12 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useOpenLabel from '../../../hooks/useOpenLabel';
+import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
+import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -61,92 +59,95 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const openLabelText = getOpenLabelText(qItem);
-  const { displayInstructions } = useRenderingExtensions(qItem);
-
-  // Init answers
+  // Init input value
   const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
-  const answers = useMemo(() => qrOpenChoiceCheckbox.answer ?? [], [qrOpenChoiceCheckbox.answer]);
+  const answers = qrOpenChoiceCheckbox.answer ?? [];
 
-  // Init options and open label value
-  const answerOptions = qItem.answerOption;
-  let initialOpenLabelValue = '';
-  let initialOpenLabelChecked = false;
-  if (answerOptions) {
-    const oldLabelAnswer = getOldOpenLabelAnswer(answers, answerOptions);
-    if (oldLabelAnswer && oldLabelAnswer.valueString) {
-      initialOpenLabelValue = oldLabelAnswer.valueString;
-      initialOpenLabelChecked = true;
-    }
-  }
-  const [openLabelValue, setOpenLabelValue] = useState(initialOpenLabelValue);
-  const [openLabelChecked, setOpenLabelChecked] = useState(initialOpenLabelChecked);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const openLabelText = getOpenLabelText(qItem);
 
-  // Event handlers
-  const handleValueChange = useCallback(
-    (changedOptionValue: string | null, changedOpenLabelValue: string | null) => {
-      if (!answerOptions) return null;
+  const options = qItem.answerOption ?? [];
 
-      let updatedQrChoiceCheckbox: QuestionnaireResponseItem | null = null;
-      if (changedOptionValue) {
-        updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
-          changedOptionValue,
-          null,
-          answers,
-          answerOptions,
-          qrOpenChoiceCheckbox,
-          CheckBoxOption.AnswerOption,
-          isRepeated
-        );
-      } else if (changedOpenLabelValue !== null) {
-        updatedQrChoiceCheckbox = updateQrOpenChoiceCheckboxAnswers(
-          null,
-          changedOpenLabelValue,
-          answers,
-          answerOptions,
-          qrOpenChoiceCheckbox,
-          CheckBoxOption.AnswerOption,
-          isRepeated
-        );
-      }
-
-      if (updatedQrChoiceCheckbox) {
-        onQrItemChange(updatedQrChoiceCheckbox);
-      }
-    },
-    [answerOptions, answers, isRepeated, onQrItemChange, qrOpenChoiceCheckbox]
+  const { openLabelValue, setOpenLabelValue, openLabelChecked, setOpenLabelChecked } = useOpenLabel(
+    options,
+    answers
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const updateOpenLabelValueWithDebounce = useCallback(
-    debounce((input: string) => {
-      handleValueChange(null, input);
-    }, DEBOUNCE_DURATION),
-    [handleValueChange]
-  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
+  // Event handlers
+
+  // One of the options is changed
+  // Processing is similar to a choice checkbox
+  function handleOptionChange(changedOptionValue: string) {
+    if (options.length === 0) {
+      onQrItemChange(createEmptyQrItem(qItem));
+      return;
+    }
+
+    // Process as a choice checkbox
+    const updatedQrItem = updateChoiceCheckboxAnswers(
+      changedOptionValue,
+      answers,
+      options,
+      qrOpenChoiceCheckbox,
+      isRepeated
+    );
+
+    if (updatedQrItem) {
+      onQrItemChange(updatedQrItem);
+    }
+
+    // If single-selection, uncheck open label
+    if (!isRepeated) {
+      setOpenLabelChecked(false);
+    }
+  }
+
+  function handleOpenLabelChange(openLabelChecked: boolean, changedOpenLabelValue: string) {
+    const updatedQrItem = updateOpenLabelAnswer(
+      openLabelChecked,
+      changedOpenLabelValue,
+      answers,
+      options,
+      qrOpenChoiceCheckbox,
+      isRepeated
+    );
+
+    if (updatedQrItem) {
+      onQrItemChange(updatedQrItem);
+    }
+  }
 
   function handleOpenLabelCheckedChange(checked: boolean) {
-    handleValueChange(null, openLabelValue);
+    handleOpenLabelChange(checked, openLabelValue);
     setOpenLabelChecked(checked);
   }
 
   function handleOpenLabelInputChange(newValue: string) {
-    setOpenLabelValue(newValue);
     updateOpenLabelValueWithDebounce(newValue);
+    setOpenLabelValue(newValue);
   }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateOpenLabelValueWithDebounce = useCallback(
+    debounce((input: string) => {
+      handleOpenLabelChange(openLabelChecked, input);
+    }, DEBOUNCE_DURATION),
+    [handleOpenLabelChange]
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   if (showMinimalView) {
     return (
       <>
         <OpenChoiceCheckboxAnswerOptionFields
           qItem={qItem}
+          options={options}
           answers={answers}
           openLabelText={openLabelText}
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
           readOnly={readOnly}
-          onValueChange={handleValueChange}
+          onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
         />
@@ -163,12 +164,13 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceCheckboxAnswerOptionFields
           qItem={qItem}
+          options={options}
           answers={answers}
           openLabelText={openLabelText}
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
           readOnly={readOnly}
-          onValueChange={handleValueChange}
+          onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
         />

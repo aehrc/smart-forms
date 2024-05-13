@@ -349,18 +349,16 @@ export function checkItemIsEnabledSingle(
         );
 
         // In a repeat item, if at least one answer satisfies the condition, the item is enabled
-        if (isEnabledForThisLinkedItem) {
-          checkedIsEnabledItems.push(isEnabledAnswerTypeSwitcher(linkedItem.enableWhen, answer));
-          break;
-        }
+        // FIXME need to look further at this
+        checkedIsEnabledItems.push(isEnabledForThisLinkedItem);
+        break;
       }
       continue;
     }
 
     // Linked item doesn't have any answers, but we still have to check for unanswered booleans
-    if (evaluateNonExistentAnswers(linkedItem.enableWhen)) {
-      checkedIsEnabledItems.push(true);
-    }
+    const checkedNonExistentAnswer = evaluateNonExistentAnswers(linkedItem.enableWhen);
+    checkedIsEnabledItems.push(checkedNonExistentAnswer);
   }
 
   if (checkedIsEnabledItems.length === 0) {

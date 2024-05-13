@@ -22,6 +22,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import GradingIcon from '@mui/icons-material/Grading';
 import useFetchExistingResponses from '../../../../hooks/useFetchExistingResponses.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
+import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 
 function ViewExistingResponsesButton() {
   const { selectedQuestionnaire, setExistingResponses } = useSelectedQuestionnaire();
@@ -35,7 +36,8 @@ function ViewExistingResponsesButton() {
     console.error(fetchError);
     enqueueSnackbar('An error occurred while fetching existing responses', {
       variant: 'error',
-      preventDuplicate: true
+      preventDuplicate: true,
+      action: <CloseSnackbar />
     });
   }
 

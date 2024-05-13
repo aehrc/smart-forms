@@ -149,17 +149,20 @@ export function getQrChoiceValue(
  *
  * @author Sean Fong
  */
-export function updateQrCheckboxAnswers(
+export function updateChoiceCheckboxAnswers(
   changedValue: string,
   answers: QuestionnaireResponseItemAnswer[],
-  answerOptions: QuestionnaireItemAnswerOption[],
-  qrChoiceCheckbox: QuestionnaireResponseItem,
+  options: QuestionnaireItemAnswerOption[],
+  oldQrItem: QuestionnaireResponseItem,
   isMultiSelection: boolean
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
-  const newAnswer = findInAnswerOptions(answerOptions, changedValue);
-  if (!newAnswer) return null;
+  const newAnswer = findInAnswerOptions(options, changedValue);
+  if (!newAnswer) {
+    return null;
+  }
 
+  // Process multi-selection
   if (isMultiSelection && answers.length > 0) {
     // check and filter if new answer exists in existing qrAnswers
     const updatedAnswers = answers.filter(
@@ -171,12 +174,15 @@ export function updateQrCheckboxAnswers(
       updatedAnswers.push(newAnswer);
     }
 
-    return { ...qrChoiceCheckbox, answer: updatedAnswers };
-  } else {
-    return answers.some((answer) => JSON.stringify(answer) === JSON.stringify(newAnswer))
-      ? { ...qrChoiceCheckbox, answer: [] }
-      : { ...qrChoiceCheckbox, answer: [newAnswer] };
+    return { ...oldQrItem, answer: updatedAnswers };
   }
+
+  // Process single selection
+  // If answer already exists, remove it from the array. Otherwise, add it to the array
+  const answerExists = answers.some(
+    (answer) => JSON.stringify(answer) === JSON.stringify(newAnswer)
+  );
+  return answerExists ? { ...oldQrItem, answer: [] } : { ...oldQrItem, answer: [newAnswer] };
 }
 
 /**
@@ -202,17 +208,4 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrient
   }
 
   return null;
-}
-
-/**
- * Converts an array of codings to an array of valueCodings which can use the QuestionnaireItemAnswerOption type
- *
- * @author Sean Fong
- */
-export function mapCodingsToOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
-  return codings.map((coding) => {
-    return {
-      valueCoding: coding
-    };
-  });
 }

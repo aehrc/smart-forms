@@ -18,8 +18,7 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { Coding, QuestionnaireItem } from 'fhir/r4';
-import ChoiceRadioSingle from './ChoiceRadioSingle';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { StyledRadioGroup } from '../Item.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
@@ -28,10 +27,11 @@ import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
+import RadioOptionList from '../ItemParts/RadioOptionList';
 
 interface ChoiceRadioAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
-  codings: Coding[];
+  options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -42,7 +42,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps extends PropsWithIsTabledAttribut
 function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsProps) {
   const {
     qItem,
-    codings,
+    options,
     valueRadio,
     readOnly,
     calcExpUpdated,
@@ -53,7 +53,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
-  if (codings.length > 0) {
+  if (options.length > 0) {
     return (
       <Box display="flex" alignItems="center">
         <StyledRadioGroup
@@ -61,18 +61,11 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
           name={qItem.text}
           id={qItem.id}
           onChange={(e) => onCheckedChange(e.target.value)}
-          value={valueRadio ?? null}>
-          {codings.map((coding: Coding) => {
-            return (
-              <ChoiceRadioSingle
-                key={coding.code ?? ''}
-                value={coding.code ?? ''}
-                label={coding.display ?? `${coding.code}`}
-                readOnly={readOnly}
-              />
-            );
-          })}
+          value={valueRadio}
+          data-test="q-item-radio-group">
+          <RadioOptionList options={options} readOnly={readOnly} />
         </StyledRadioGroup>
+
         <Box flexGrow={1} />
 
         <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />

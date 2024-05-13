@@ -32,6 +32,7 @@ import type { BuildState } from '../types/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
 import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 function Playground() {
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
@@ -56,7 +57,8 @@ function Playground() {
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
           variant: 'error',
-          preventDuplicate: true
+          preventDuplicate: true,
+          action: <CloseSnackbar />
         });
         setBuildingState('idle');
       }
@@ -64,7 +66,8 @@ function Playground() {
       console.log(error);
       enqueueSnackbar('JSON string invalid', {
         variant: 'error',
-        preventDuplicate: true
+        preventDuplicate: true,
+        action: <CloseSnackbar />
       });
       setBuildingState('idle');
     }
@@ -75,7 +78,8 @@ function Playground() {
     if (!jsonFile.name.endsWith('.json')) {
       enqueueSnackbar('Attached file must be a JSON file', {
         variant: 'error',
-        preventDuplicate: true
+        preventDuplicate: true,
+        action: <CloseSnackbar />
       });
       setBuildingState('idle');
       return;
@@ -93,14 +97,16 @@ function Playground() {
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {
             variant: 'error',
-            preventDuplicate: true
+            preventDuplicate: true,
+            action: <CloseSnackbar />
           });
           setBuildingState('idle');
         }
       } catch (error) {
         enqueueSnackbar('Attached file has invalid JSON format', {
           variant: 'error',
-          preventDuplicate: true
+          preventDuplicate: true,
+          action: <CloseSnackbar />
         });
         setBuildingState('idle');
       }

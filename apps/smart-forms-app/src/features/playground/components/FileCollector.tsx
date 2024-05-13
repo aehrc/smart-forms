@@ -21,6 +21,7 @@ import DropBox from './DropBox.tsx';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
 import { useSnackbar } from 'notistack';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface FileCollectorProps {
   onBuild: (file: File) => unknown;
@@ -40,7 +41,8 @@ const FileCollector = memo(function FileCollector(props: FileCollectorProps) {
         if (files.length > 1) {
           enqueueSnackbar('Only one file allowed', {
             variant: 'warning',
-            preventDuplicate: true
+            preventDuplicate: true,
+            action: <CloseSnackbar />
           });
         }
 

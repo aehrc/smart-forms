@@ -65,7 +65,8 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar(saveSuccessMessage, {
-          variant: 'success'
+          variant: 'success',
+          action: <CloseSnackbar />
         });
         onAutoSave();
       })

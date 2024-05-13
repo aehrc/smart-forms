@@ -45,20 +45,21 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const openLabelText = getOpenLabelText(qItem);
-
   // Init answers
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
   let valueRadio: string | null = getQrChoiceValue(qrOpenChoiceRadio, true);
   const answers = qrOpenChoiceRadio.answer ?? [];
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const openLabelText = getOpenLabelText(qItem);
+
+  const options = qItem.answerOption ?? [];
+
   // Init empty open label
-  const answerOptions = qItem.answerOption;
   let initialOpenLabelValue = '';
   let initialOpenLabelSelected = false;
-  if (answerOptions) {
-    const oldLabelAnswer = getOldOpenLabelAnswer(answers, answerOptions);
+  if (options) {
+    const oldLabelAnswer = getOldOpenLabelAnswer(answers, options);
     if (oldLabelAnswer && oldLabelAnswer.valueString) {
       initialOpenLabelValue = oldLabelAnswer.valueString;
       initialOpenLabelSelected = true;
@@ -79,40 +80,46 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
     changedOptionValue: string | null,
     changedOpenLabelValue: string | null
   ) {
-    if (!answerOptions) return null;
+    if (options.length === 0) {
+      onQrItemChange(createEmptyQrItem(qItem));
+      return;
+    }
 
     if (changedOptionValue !== null) {
-      if (qItem.answerOption) {
-        const qrAnswer = findInAnswerOptions(qItem.answerOption, changedOptionValue);
+      const qrAnswer = findInAnswerOptions(options, changedOptionValue);
 
-        // If selected answer can be found in options, it is a non-open label selection
-        if (qrAnswer) {
-          onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
-          setOpenLabelSelected(false);
-        } else {
-          // Otherwise, it is an open-label selection
-          onQrItemChange({
-            ...createEmptyQrItem(qItem),
-            answer: [{ valueString: changedOptionValue }]
-          });
-          setOpenLabelValue(changedOptionValue);
-          setOpenLabelSelected(true);
-        }
+      // If selected answer can be found in options, it is a non-open label selection
+      if (qrAnswer) {
+        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
+        setOpenLabelSelected(false);
+        return;
       }
+
+      // Otherwise, it is an open-label selection
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueString: changedOptionValue }]
+      });
+      setOpenLabelValue(changedOptionValue);
+      setOpenLabelSelected(true);
+      return;
     }
 
     if (changedOpenLabelValue !== null) {
       setOpenLabelValue(changedOpenLabelValue);
 
+      // If open label is unchecked, remove it from answers
       if (changedOpenLabelValue === '') {
         onQrItemChange(createEmptyQrItem(qItem));
-      } else {
-        setOpenLabelValue(changedOpenLabelValue);
-        onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueString: changedOpenLabelValue }]
-        });
+        return;
       }
+
+      // Otherwise, add open label to answers
+      setOpenLabelValue(changedOpenLabelValue);
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [{ valueString: changedOpenLabelValue }]
+      });
     }
   }
 
@@ -124,6 +131,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <OpenChoiceRadioAnswerOptionFields
           qItem={qItem}
+          options={options}
           valueRadio={valueRadio}
           openLabelText={openLabelText}
           openLabelValue={openLabelValue}

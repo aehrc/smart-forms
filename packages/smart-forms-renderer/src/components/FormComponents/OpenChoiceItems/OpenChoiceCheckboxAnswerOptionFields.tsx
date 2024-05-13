@@ -16,21 +16,26 @@
  */
 
 import React from 'react';
-import { StyledFormGroup } from '../Item.styles';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
-import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { getChoiceOrientation } from '../../../utils/choice';
+import { StyledFormGroup } from '../Item.styles';
+import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
 
 interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
+  options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   openLabelText: string | null;
   openLabelValue: string;
   openLabelChecked: boolean;
   readOnly: boolean;
-  onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
+  onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
   onOpenLabelInputChange: (input: string) => void;
 }
@@ -38,12 +43,13 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
 function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOptionFieldsProps) {
   const {
     qItem,
+    options,
     answers,
     openLabelText,
     openLabelValue,
     openLabelChecked,
     readOnly,
-    onValueChange,
+    onOptionChange,
     onOpenLabelCheckedChange,
     onOpenLabelInputChange
   } = props;
@@ -52,52 +58,14 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
 
   return (
     <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-      {qItem.answerOption?.map((option) => {
-        if (option['valueCoding']) {
-          return (
-            <CheckboxSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(option)
-              )}
-              onCheckedChange={(changedValue) => onValueChange(changedValue, null)}
-            />
-          );
-        }
+      <CheckboxOptionList
+        options={options}
+        answers={answers}
+        readOnly={readOnly}
+        onCheckedChange={onOptionChange}
+      />
 
-        if (option['valueString']) {
-          return (
-            <CheckboxSingle
-              key={option.valueString}
-              value={option.valueString}
-              label={option.valueString}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueString === option.valueString)}
-              onCheckedChange={(changedValue) => onValueChange(changedValue, null)}
-            />
-          );
-        }
-
-        if (option['valueInteger']) {
-          return (
-            <CheckboxSingle
-              key={option.valueInteger}
-              value={option.valueInteger.toString()}
-              label={option.valueInteger.toString()}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
-              onCheckedChange={(changedValue) => onValueChange(changedValue, null)}
-            />
-          );
-        }
-
-        return null;
-      })}
-
-      {openLabelText ? (
+      {openLabelText !== null ? (
         <CheckboxSingleWithOpenLabel
           value={openLabelValue}
           label={openLabelText}

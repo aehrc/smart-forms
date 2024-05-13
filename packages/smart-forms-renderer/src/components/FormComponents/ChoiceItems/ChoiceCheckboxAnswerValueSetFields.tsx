@@ -16,19 +16,23 @@
  */
 
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { Coding, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import CheckboxSingle from '../ItemParts/CheckboxSingle';
-import { StyledFormGroup } from '../Item.styles';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { getChoiceOrientation } from '../../../utils/choice';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import CheckboxOptionList from './CheckboxOptionList';
+import { StyledFormGroup } from '../Item.styles';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
-  codings: Coding[];
+  options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   readOnly: boolean;
   terminologyError: TerminologyError;
@@ -36,25 +40,19 @@ interface ChoiceCheckboxAnswerValueSetFieldsProps {
 }
 
 function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { qItem, codings, answers, readOnly, terminologyError, onCheckedChange } = props;
+  const { qItem, options, answers, readOnly, terminologyError, onCheckedChange } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
-  if (codings.length > 0) {
+  if (options.length > 0) {
     return (
       <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        {codings.map((coding) => (
-          <CheckboxSingle
-            key={coding.code ?? ''}
-            value={coding.code ?? ''}
-            label={coding.display ?? `${coding.code}`}
-            readOnly={readOnly}
-            isChecked={answers.some(
-              (answer) => JSON.stringify(answer.valueCoding) === JSON.stringify(coding)
-            )}
-            onCheckedChange={onCheckedChange}
-          />
-        ))}
+        <CheckboxOptionList
+          options={options}
+          answers={answers}
+          readOnly={readOnly}
+          onCheckedChange={onCheckedChange}
+        />
       </StyledFormGroup>
     );
   }

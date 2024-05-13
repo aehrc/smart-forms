@@ -21,6 +21,7 @@ import { useSnackbar } from 'notistack';
 import ConfettiExplosion from 'react-confetti-explosion';
 import useClickCounter from '../../features/easterEgg/hooks/useClickCounter.ts';
 import useDebugMode from '../../hooks/useDebugMode.ts';
+import CloseSnackbar from '../Snackbar/CloseSnackbar.tsx';
 
 function CsiroLogo() {
   const { debugModeEnabled, toggleDebugMode } = useDebugMode();
@@ -44,7 +45,8 @@ function CsiroLogo() {
               if (counter === 2) {
                 toggleDebugMode();
                 enqueueSnackbar('Debug mode enabled!', {
-                  preventDuplicate: true
+                  preventDuplicate: true,
+                  action: <CloseSnackbar />
                 });
               }
             }

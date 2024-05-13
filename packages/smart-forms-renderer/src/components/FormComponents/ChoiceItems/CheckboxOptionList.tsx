@@ -16,49 +16,59 @@
  */
 
 import React from 'react';
-import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import CheckboxSingle from '../ItemParts/CheckboxSingle';
 
-interface RadioAnswerOptionButtonsProps {
-  qItem: QuestionnaireItem;
+interface CheckboxOptionListProps {
+  options: QuestionnaireItemAnswerOption[];
+  answers: QuestionnaireResponseItemAnswer[];
   readOnly: boolean;
+  onCheckedChange: (newValue: string) => void;
 }
 
-function RadioAnswerOptionButtons(props: RadioAnswerOptionButtonsProps) {
-  const { qItem, readOnly } = props;
+function CheckboxOptionList(props: CheckboxOptionListProps) {
+  const { options, answers, readOnly, onCheckedChange } = props;
 
   return (
     <>
-      {qItem.answerOption?.map((option) => {
+      {options.map((option) => {
         if (option['valueCoding']) {
           return (
-            <ChoiceRadioSingle
+            <CheckboxSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               readOnly={readOnly}
+              isChecked={answers.some(
+                (answer) => JSON.stringify(answer) === JSON.stringify(option)
+              )}
+              onCheckedChange={onCheckedChange}
             />
           );
         }
 
         if (option['valueString']) {
           return (
-            <ChoiceRadioSingle
+            <CheckboxSingle
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
               readOnly={readOnly}
+              isChecked={answers.some((answer) => answer.valueString === option.valueString)}
+              onCheckedChange={onCheckedChange}
             />
           );
         }
 
         if (option['valueInteger']) {
           return (
-            <ChoiceRadioSingle
+            <CheckboxSingle
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
               readOnly={readOnly}
+              isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
+              onCheckedChange={onCheckedChange}
             />
           );
         }
@@ -69,4 +79,4 @@ function RadioAnswerOptionButtons(props: RadioAnswerOptionButtonsProps) {
   );
 }
 
-export default RadioAnswerOptionButtons;
+export default CheckboxOptionList;

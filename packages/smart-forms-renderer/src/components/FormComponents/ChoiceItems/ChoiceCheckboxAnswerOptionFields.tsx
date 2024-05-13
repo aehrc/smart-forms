@@ -16,72 +16,43 @@
  */
 
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import QItemChoiceCheckboxSingle from '../ItemParts/CheckboxSingle';
-import { StyledFormGroup } from '../Item.styles';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { getChoiceOrientation } from '../../../utils/choice';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import CheckboxOptionList from './CheckboxOptionList';
+import { StyledFormGroup } from '../Item.styles';
 
 interface ChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
+  options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   readOnly: boolean;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionFieldsProps) {
-  const { qItem, answers, readOnly, onCheckedChange } = props;
+  const { qItem, options, answers, readOnly, onCheckedChange } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
-  return (
-    <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-      {qItem.answerOption?.map((option) => {
-        if (option['valueCoding']) {
-          return (
-            <QItemChoiceCheckboxSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
-              label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(option)
-              )}
-              onCheckedChange={onCheckedChange}
-            />
-          );
-        }
+  if (options.length > 0) {
+    return (
+      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+        <CheckboxOptionList
+          options={options}
+          answers={answers}
+          readOnly={readOnly}
+          onCheckedChange={onCheckedChange}
+        />
+      </StyledFormGroup>
+    );
+  }
 
-        if (option['valueString']) {
-          return (
-            <QItemChoiceCheckboxSingle
-              key={option.valueString}
-              value={option.valueString}
-              label={option.valueString}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueString === option.valueString)}
-              onCheckedChange={onCheckedChange}
-            />
-          );
-        }
-
-        if (option['valueInteger']) {
-          return (
-            <QItemChoiceCheckboxSingle
-              key={option.valueInteger}
-              value={option.valueInteger.toString()}
-              label={option.valueInteger.toString()}
-              readOnly={readOnly}
-              isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
-              onCheckedChange={onCheckedChange}
-            />
-          );
-        }
-
-        return null;
-      })}
-    </StyledFormGroup>
-  );
+  return null;
 }
 
 export default ChoiceCheckboxAnswerOptionFields;
