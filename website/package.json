@@ -1,5 +1,5 @@
 {
-  "name": "website",
+  "name": "@aehrc/smart-forms-documentation",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,6 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@aehrc/smart-forms-questionnaire-samples": "1.0.0",
     "@aehrc/smart-forms-renderer": "^0.27.3",
     "@docusaurus/core": "3.3.2",
     "@docusaurus/preset-classic": "3.3.2",
