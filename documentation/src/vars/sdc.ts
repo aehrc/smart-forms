@@ -1,5 +1,5 @@
 export const urls = {
-  // 5 Advanced Form Rendering http://hl7.org/fhir/uv/sdc/expressions.html
+  // 5 Using Expressions http://hl7.org/fhir/uv/sdc/expressions.html
   // 5.2 Expression Extensions
   variable: 'http://hl7.org/fhir/StructureDefinition/variable',
   answerExpression:

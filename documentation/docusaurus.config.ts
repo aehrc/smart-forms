@@ -110,6 +110,10 @@ const config: Config = {
               href: 'https://smartforms.csiro.au/playground'
             },
             {
+              label: 'Storybook',
+              href: 'https://smartforms.csiro.au/storybook/'
+            },
+            {
               label: 'Forms Server FHIR API',
               href: 'https://smartforms.csiro.au/api/fhir/Questionnaire'
             }
