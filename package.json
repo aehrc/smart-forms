@@ -10,7 +10,7 @@
     "services/*",
     "deployment/forms-server/*",
     "deployment/ehr-proxy/*",
-    "website/*"
+    "documentation"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.8.0",
