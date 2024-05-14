@@ -1,0 +1,650 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": "http://www.health.gov.au/assessments/mbs/715",
+  "item": [
+    {
+      "linkId": "fd5af92e-c248-497a-8007-ee0952ccd4d9",
+      "text": "Aboriginal and Torres Strait Islander health check",
+      "item": [
+        {
+          "linkId": "1016f79d-9756-4daf-b6ee-29add134b34f",
+          "text": "Consent",
+          "item": [
+            {
+              "linkId": "84162f36-f4af-4509-b178-ef2a3849d0b6",
+              "text": "Date",
+              "answer": [
+                {
+                  "valueDate": "2023-02-20"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "5b224753-9365-44e3-823b-9c17e7394005",
+          "text": "Patient Details",
+          "item": [
+            {
+              "linkId": "17596726-34cf-4133-9960-7081e1d63558",
+              "text": "Name",
+              "answer": [
+                {
+                  "valueString": "Benito Lucio"
+                }
+              ]
+            },
+            {
+              "linkId": "90ad8f16-16e4-4438-a7aa-b3189f510da2",
+              "text": "Date of birth",
+              "answer": [
+                {
+                  "valueDate": "1936-08-18"
+                }
+              ]
+            },
+            {
+              "linkId": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+              "text": "Age",
+              "answer": [
+                {
+                  "valueInteger": 86
+                }
+              ]
+            },
+            {
+              "linkId": "418e4a02-de77-48a0-a92a-fe8fcc52b1aa",
+              "text": "Gender",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "male",
+                    "display": "Male"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "f1262ade-843c-4eba-a86d-51a9c97d134b",
+              "text": "Home address",
+              "item": [
+                {
+                  "linkId": "2fee2d51-7828-4178-b8c1-35edd32ba338",
+                  "text": "Street address",
+                  "answer": [
+                    {
+                      "valueString": "320 Ritchie Byway  "
+                    }
+                  ]
+                },
+                {
+                  "linkId": "ddb65ed1-f4b2-4730-af2a-2f98bc73c76f",
+                  "text": "City",
+                  "answer": [
+                    {
+                      "valueString": "Boston"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "d9a1236c-8d6e-4f20-a12a-9d5de5a1d0f6",
+                  "text": "State",
+                  "answer": [
+                    {
+                      "valueString": "Massachusetts"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "3f61a1ea-1c74-4f52-8519-432ce861a74f",
+                  "text": "Postcode",
+                  "answer": [
+                    {
+                      "valueString": "02108"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "9541f0b0-f5ba-4fe7-a8e9-ad003cef897b",
+              "text": "Home phone",
+              "answer": [
+                {
+                  "valueString": "555-913-5055"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "28d5dbe4-1e65-487c-847a-847f544a6a91",
+          "text": "Medical history and current problems",
+          "item": [
+            {
+              "linkId": "736f2a51-e04d-4e7f-aef1-c47f3a1f4e3c",
+              "text": "Other relevant medical history, operations, hospital admissions, etc",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "162864005",
+                    "display": "Body mass index 30+ - obesity (finding)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "444814009",
+                    "display": "Viral sinusitis (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "26929004",
+                    "display": "Alzheimer's disease (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "444814009",
+                    "display": "Viral sinusitis (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "62564004",
+                    "display": "Concussion with loss of consciousness"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "444814009",
+                    "display": "Viral sinusitis (disorder)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "55822004",
+                    "display": "Hyperlipidemia"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "68496003",
+                    "display": "Polyp of colon"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "162864005",
+                        "display": "Body mass index 30+ - obesity (finding)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "active"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "1986-08-19T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "1986-08-19T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "444814009",
+                        "display": "Viral sinusitis (disorder)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "resolved"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2018-04-10T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2018-04-10T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "26929004",
+                        "display": "Alzheimer's disease (disorder)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "active"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2017-01-03T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2017-01-03T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "444814009",
+                        "display": "Viral sinusitis (disorder)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "resolved"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2019-06-01T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2019-06-01T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "62564004",
+                        "display": "Concussion with loss of consciousness"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "resolved"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2011-12-18T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2011-12-18T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "444814009",
+                        "display": "Viral sinusitis (disorder)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "resolved"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2017-12-15T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2017-12-15T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "55822004",
+                        "display": "Hyperlipidemia"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "active"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "1995-09-05T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "1995-09-05T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+              "text": "Medical history and current problems list",
+              "item": [
+                {
+                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                  "text": "Condition",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "68496003",
+                        "display": "Polyp of colon"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                  "text": "Clinical Status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        "code": "resolved"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                  "text": "Onset Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2014-11-02T19:08:38+00:00"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                  "text": "Recorded Date",
+                  "answer": [
+                    {
+                      "valueDateTime": "2014-11-02T19:08:38+00:00"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "14a9fb5f-5b0e-4862-b143-08a11cd3ebf0",
+          "text": "Substance use, including tobacco",
+          "item": [
+            {
+              "linkId": "515eda6e-973a-4b10-910a-0d4bf4f2efff",
+              "text": "Smoking",
+              "item": [
+                {
+                  "linkId": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+                  "text": "Smoking status",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "8517006",
+                        "display": "Former smoker"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "d95abe99-8ef2-4b97-bc88-a2901e2ebc9c",
+          "text": "Absolute cardiovascular risk calculation",
+          "item": [
+            {
+              "linkId": "e8fed84e-6c15-4f62-bc95-cd08033af3f7",
+              "text": "Diabetes",
+              "answer": [
+                {
+                  "valueBoolean": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "16971bd2-5494-483d-9713-eda182c47f02",
+          "text": "Finalising the health check",
+          "item": [
+            {
+              "linkId": "a400fe69-c99f-47ed-bee1-083c3e4be467",
+              "text": "Recalls entered (eg clinical review, investigations, influenza vaccination, asthma plan/cycle of care, diabetes cycle of care, care plan review, cervical screening, investigations)",
+              "item": [
+                {
+                  "linkId": "40e3933d-77bb-40f3-8609-0c38ebb4421e",
+                  "text": "recall-subject",
+                  "answer": [
+                    {
+                      "valueString": "d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "subject": {
+    "type": "Patient",
+    "reference": "Patient/d64b37f5-d3b5-4c25-abe8-23ebe8f5a04e"
+  }
+}

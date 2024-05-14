@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-import { CodeSystemLookupPromise, InitialExpression } from '../interfaces/expressions.interface';
-import { Coding } from 'fhir/r4';
+import type {
+  CodeSystemLookupPromise,
+  InitialExpression
+} from '../interfaces/expressions.interface';
+import type { Coding } from 'fhir/r4';
 import { getCodeSystemLookupPromise, lookupResponseIsValid } from '../api/lookupCodeSystem';
 
 export async function addDisplayToInitialExpressionsCodings(

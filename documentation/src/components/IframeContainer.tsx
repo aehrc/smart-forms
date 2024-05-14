@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import OpenInStorybook from '@site/src/components/OpenInStorybook';
 

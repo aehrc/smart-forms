@@ -607,7 +607,9 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.regex: {
-      detailsText = `${fieldDisplayText}: The value '${getInputInString(qrItem.answer?.[answerIndex])}' does not match the defined format.`;
+      detailsText = `${fieldDisplayText}: The value '${getInputInString(
+        qrItem.answer?.[answerIndex]
+      )}' does not match the defined format.`;
       if (structuredDataCapture.getEntryFormat(qItem)) {
         detailsText += ` ${structuredDataCapture.getEntryFormat(qItem)}`;
       }
@@ -631,7 +633,9 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.minLength: {
-      detailsText = `${fieldDisplayText}: Expected the minimum value ${structuredDataCapture.getMinLength(qItem)} characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${structuredDataCapture.getMinLength(
+        qItem
+      )} characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',
@@ -650,7 +654,9 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.maxLength: {
-      detailsText = `${fieldDisplayText}: Exceeded maximum of  ${qItem.maxLength} characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Exceeded maximum of  ${
+        qItem.maxLength
+      } characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',
@@ -669,7 +675,9 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.maxDecimalPlaces: {
-      detailsText = `${fieldDisplayText}: Exceeded maximum decimal places ${structuredDataCapture.getMaxDecimalPlaces(qItem)}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Exceeded maximum decimal places ${structuredDataCapture.getMaxDecimalPlaces(
+        qItem
+      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',
@@ -688,7 +696,9 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.minValue: {
-      detailsText = `${fieldDisplayText}: Expected the minimum value ${getMinValue(qItem)}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${getMinValue(
+        qItem
+      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',
@@ -707,7 +717,9 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.maxValue: {
-      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${getMaxValue(qItem)}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${getMaxValue(
+        qItem
+      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',

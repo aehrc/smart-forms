@@ -6,6 +6,6 @@
       "decorators": true,
       "dynamicImport": true
     },
-    "target": "es2015",
-  },
+    "target": "es2015"
+  }
 }

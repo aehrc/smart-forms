@@ -10,9 +10,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -36,9 +34,7 @@
             }
           ]
         },
-        "category": [
-          "environment"
-        ],
+        "category": ["environment"],
         "code": {
           "coding": [
             {
@@ -69,9 +65,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -95,9 +89,7 @@
             }
           ]
         },
-        "category": [
-          "environment"
-        ],
+        "category": ["environment"],
         "code": {
           "coding": [
             {
@@ -162,9 +154,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -189,9 +179,7 @@
           ]
         },
         "type": "intolerance",
-        "category": [
-          "food"
-        ],
+        "category": ["food"],
         "code": {
           "coding": [
             {
@@ -301,9 +289,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -327,9 +313,7 @@
             }
           ]
         },
-        "category": [
-          "medication"
-        ],
+        "category": ["medication"],
         "criticality": "high",
         "code": {
           "coding": [
@@ -388,9 +372,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -496,9 +478,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -583,9 +563,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -612,9 +590,7 @@
           "text": "Confirmed"
         },
         "type": "allergy",
-        "category": [
-          "food"
-        ],
+        "category": ["food"],
         "code": {
           "coding": [
             {
@@ -686,9 +662,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:32:47.902+00:00",
           "source": "#J6xUVvOo3KGxd242",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -715,9 +689,7 @@
           "text": "Confirmed"
         },
         "type": "allergy",
-        "category": [
-          "food"
-        ],
+        "category": ["food"],
         "code": {
           "coding": [
             {
@@ -789,9 +761,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:33:08.265+00:00",
           "source": "#xxSeXTYauPNRBnUG",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -883,9 +853,7 @@
           "versionId": "3",
           "lastUpdated": "2024-03-20T06:23:26.256+00:00",
           "source": "#9uWYdx1P05Jevn5X",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-allergyintolerance"]
         },
         "text": {
           "status": "generated",
@@ -1101,9 +1069,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1207,9 +1173,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "extensions",
@@ -1313,9 +1277,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1383,9 +1345,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1448,9 +1408,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1511,9 +1469,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1575,9 +1531,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1650,9 +1604,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1714,9 +1666,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1780,9 +1730,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1845,9 +1793,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1899,9 +1845,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -1953,9 +1897,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2040,9 +1982,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2126,9 +2066,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2183,9 +2121,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2291,9 +2227,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2385,9 +2319,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2443,9 +2375,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "extensions",
@@ -2549,9 +2479,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2624,9 +2552,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2686,9 +2612,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2792,9 +2716,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2862,9 +2784,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -2937,9 +2857,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -3023,9 +2941,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -3098,9 +3014,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:35:10.044+00:00",
           "source": "#Y8OxAPVknxTdhKbG",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -3164,9 +3078,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:35:30.191+00:00",
           "source": "#4qRN9PTWMqU27V0a",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "extensions",
@@ -3270,9 +3182,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:36:04.774+00:00",
           "source": "#wuU9CAaRstDMlivq",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -3340,9 +3250,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:36:24.772+00:00",
           "source": "#MbkRY1khdALRj6Mh",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -3415,9 +3323,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T05:51:12.783+00:00",
           "source": "#83bmEKbavFIOMlDh",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -3502,9 +3408,7 @@
           "versionId": "3",
           "lastUpdated": "2024-03-20T06:24:31.518+00:00",
           "source": "#9fJM0RsJIXFjOHl6",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition"]
         },
         "text": {
           "status": "generated",
@@ -3761,9 +3665,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-documentreference"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-documentreference"]
         },
         "text": {
           "status": "generated",
@@ -3848,9 +3750,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-documentreference"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-documentreference"]
         },
         "text": {
           "status": "generated",
@@ -3927,9 +3827,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "generated",
@@ -3983,9 +3881,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "generated",
@@ -4089,9 +3985,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "generated",
@@ -4193,9 +4087,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "extensions",
@@ -4288,9 +4180,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "generated",
@@ -4350,9 +4240,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "extensions",
@@ -4445,9 +4333,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "generated",
@@ -4527,9 +4413,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "generated",
@@ -4631,9 +4515,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "extensions",
@@ -4674,9 +4556,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "generated",
@@ -4749,9 +4629,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "extensions",
@@ -4826,9 +4704,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-encounter"]
         },
         "text": {
           "status": "extensions",
@@ -5190,9 +5066,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-healthcareservice"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-healthcareservice"]
         },
         "text": {
           "status": "generated",
@@ -5277,9 +5151,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-healthcareservice"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-healthcareservice"]
         },
         "text": {
           "status": "generated",
@@ -5348,9 +5220,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"]
         },
         "text": {
           "status": "extensions",
@@ -5421,9 +5291,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"]
         },
         "text": {
           "status": "generated",
@@ -5490,9 +5358,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"]
         },
         "text": {
           "status": "extensions",
@@ -5612,9 +5478,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"]
         },
         "text": {
           "status": "generated",
@@ -5662,9 +5526,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"]
         },
         "text": {
           "status": "extensions",
@@ -5804,9 +5666,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-immunization"]
         },
         "text": {
           "status": "generated",
@@ -5871,9 +5731,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"]
         },
         "text": {
           "status": "generated",
@@ -5881,9 +5739,7 @@
         },
         "status": "active",
         "name": "Tindal Building",
-        "alias": [
-          "Bobrester Medical Center"
-        ],
+        "alias": ["Bobrester Medical Center"],
         "mode": "instance",
         "type": [
           {
@@ -5902,9 +5758,7 @@
           }
         ],
         "address": {
-          "line": [
-            "87 Western Esp"
-          ],
+          "line": ["87 Western Esp"],
           "city": "Tindal RAAF",
           "state": "QLD",
           "postalCode": "4655",
@@ -5933,9 +5787,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"]
         },
         "text": {
           "status": "generated",
@@ -5951,10 +5803,7 @@
         "description": "Second floor, South Wing, Physiotherapy Offices",
         "mode": "instance",
         "address": {
-          "line": [
-            "Suite 14, Building 31",
-            "54301 Stanley St"
-          ],
+          "line": ["Suite 14, Building 31", "54301 Stanley St"],
           "city": "South Brisbane",
           "state": "QLD",
           "postalCode": "4101",
@@ -5989,9 +5838,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"]
         },
         "text": {
           "status": "generated",
@@ -6025,9 +5872,7 @@
           }
         ],
         "address": {
-          "line": [
-            "6 Macquarie St"
-          ],
+          "line": ["6 Macquarie St"],
           "city": "Sydney",
           "state": "NSW",
           "postalCode": "2000",
@@ -6056,9 +5901,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"]
         },
         "text": {
           "status": "generated",
@@ -6088,10 +5931,7 @@
           }
         ],
         "address": {
-          "line": [
-            "Suite 14, Building 31",
-            "54301 Stanley St"
-          ],
+          "line": ["Suite 14, Building 31", "54301 Stanley St"],
           "city": "South Brisbane",
           "state": "QLD",
           "postalCode": "4101",
@@ -6126,9 +5966,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"]
         },
         "text": {
           "status": "generated",
@@ -6136,9 +5974,7 @@
         },
         "status": "active",
         "name": "QLD Hospital",
-        "alias": [
-          "Queensland Hospital"
-        ],
+        "alias": ["Queensland Hospital"],
         "mode": "instance",
         "type": [
           {
@@ -6164,9 +6000,7 @@
         ],
         "address": {
           "text": "54301 Stanley St, South Brisbane QLD 4101",
-          "line": [
-            "54301 Stanley St"
-          ],
+          "line": ["54301 Stanley St"],
           "city": "South Brisbane",
           "state": "QLD",
           "postalCode": "4101",
@@ -6198,9 +6032,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"]
         },
         "text": {
           "status": "generated",
@@ -6242,9 +6074,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-location"]
         },
         "text": {
           "status": "generated",
@@ -6292,9 +6122,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"]
         },
         "text": {
           "status": "extensions",
@@ -6488,9 +6316,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"]
         },
         "text": {
           "status": "generated",
@@ -6581,9 +6407,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"]
         },
         "text": {
           "status": "extensions",
@@ -6669,9 +6493,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medication"]
         },
         "text": {
           "status": "extensions",
@@ -6743,9 +6565,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationrequest"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationrequest"]
         },
         "text": {
           "status": "generated",
@@ -6883,9 +6703,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationrequest"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationrequest"]
         },
         "text": {
           "status": "generated",
@@ -7030,9 +6848,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"]
         },
         "text": {
           "status": "generated",
@@ -7084,9 +6900,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"]
         },
         "text": {
           "status": "generated",
@@ -7153,9 +6967,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"]
         },
         "text": {
           "status": "generated",
@@ -7233,9 +7045,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"]
         },
         "text": {
           "status": "generated",
@@ -7287,9 +7097,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"]
         },
         "text": {
           "status": "generated",
@@ -7365,9 +7173,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"]
         },
         "text": {
           "status": "generated",
@@ -7420,9 +7226,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-medicationstatement"]
         },
         "text": {
           "status": "generated",
@@ -7470,9 +7274,7 @@
                 "period": 1,
                 "periodMax": 10,
                 "periodUnit": "d",
-                "timeOfDay": [
-                  "10:00:00"
-                ]
+                "timeOfDay": ["10:00:00"]
               }
             },
             "route": {
@@ -10479,9 +10281,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-observation"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-observation"]
         },
         "text": {
           "status": "generated",
@@ -10754,9 +10554,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-observation"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-observation"]
         },
         "text": {
           "status": "generated",
@@ -11901,9 +11699,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -11957,9 +11753,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12013,9 +11807,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12065,9 +11857,7 @@
           }
         ],
         "name": "Hospital Australia",
-        "alias": [
-          "AU Hospitals"
-        ],
+        "alias": ["AU Hospitals"],
         "telecom": [
           {
             "system": "phone",
@@ -12077,9 +11867,7 @@
         "address": [
           {
             "text": "54301 Stanley St, South Brisbane QLD 4101",
-            "line": [
-              "54301 Stanley St"
-            ],
+            "line": ["54301 Stanley St"],
             "city": "South Brisbane",
             "state": "QLD",
             "postalCode": "4101",
@@ -12103,9 +11891,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12141,9 +11927,7 @@
         "name": "A Chain Retail Pharmacy",
         "address": [
           {
-            "line": [
-              "6 Macquarie St"
-            ],
+            "line": ["6 Macquarie St"],
             "city": "Sydney",
             "state": "NSW",
             "postalCode": "2000",
@@ -12164,9 +11948,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12220,9 +12002,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12280,9 +12060,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12319,9 +12097,7 @@
           }
         ],
         "name": "Hospitals International",
-        "alias": [
-          "International Hospital Care"
-        ],
+        "alias": ["International Hospital Care"],
         "telecom": [
           {
             "system": "phone",
@@ -12346,9 +12122,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12405,9 +12179,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-organization"]
         },
         "text": {
           "status": "generated",
@@ -12455,9 +12227,7 @@
         ],
         "address": [
           {
-            "line": [
-              "87 Western Esp"
-            ],
+            "line": ["87 Western Esp"],
             "city": "Tindal RAAF",
             "state": "QLD",
             "postalCode": "4655",
@@ -12478,9 +12248,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -12515,12 +12283,8 @@
         "name": [
           {
             "family": "Dan",
-            "given": [
-              "Harry"
-            ],
-            "prefix": [
-              "Mr."
-            ]
+            "given": ["Harry"],
+            "prefix": ["Mr."]
           }
         ],
         "telecom": [
@@ -12535,9 +12299,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "29 Gadsby Street"
-            ],
+            "line": ["29 Gadsby Street"],
             "city": "Blacktown",
             "state": "NSW",
             "postalCode": "2148",
@@ -12558,9 +12320,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -12588,9 +12348,7 @@
           {
             "use": "temp",
             "family": "SMITH",
-            "given": [
-              "Baby of Emma"
-            ]
+            "given": ["Baby of Emma"]
           }
         ],
         "gender": "male",
@@ -12617,9 +12375,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -12660,12 +12416,8 @@
         "name": [
           {
             "family": "Italia",
-            "given": [
-              "Sofia"
-            ],
-            "prefix": [
-              "Ms"
-            ]
+            "given": ["Sofia"],
+            "prefix": ["Ms"]
           }
         ],
         "gender": "female",
@@ -12673,9 +12425,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "Piazza del Colosseo"
-            ],
+            "line": ["Piazza del Colosseo"],
             "city": "Rome",
             "state": "Lazio",
             "postalCode": "00184",
@@ -12696,9 +12446,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -12794,12 +12542,8 @@
         "name": [
           {
             "family": "Wang",
-            "given": [
-              "Li"
-            ],
-            "prefix": [
-              "Mr"
-            ]
+            "given": ["Li"],
+            "prefix": ["Mr"]
           }
         ],
         "gender": "male",
@@ -12819,9 +12563,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "29 Gadsby Street"
-            ],
+            "line": ["29 Gadsby Street"],
             "city": "Blacktown",
             "state": "NSW",
             "postalCode": "2148",
@@ -12856,9 +12598,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -12897,12 +12637,8 @@
           {
             "use": "usual",
             "family": "SMITH",
-            "given": [
-              "Emma"
-            ],
-            "prefix": [
-              "Ms."
-            ]
+            "given": ["Emma"],
+            "prefix": ["Ms."]
           }
         ],
         "gender": "female",
@@ -12921,9 +12657,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -12959,12 +12693,8 @@
             "use": "official",
             "text": "Mrs. Anne Bennelong",
             "family": "Bennelong",
-            "given": [
-              "Anne"
-            ],
-            "prefix": [
-              "Mrs"
-            ]
+            "given": ["Anne"],
+            "prefix": ["Mrs"]
           }
         ],
         "telecom": [
@@ -12979,9 +12709,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "4 Brisbane Street"
-            ],
+            "line": ["4 Brisbane Street"],
             "city": "Brisbane",
             "state": "QLD",
             "postalCode": "4112",
@@ -13015,9 +12743,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -13044,20 +12770,13 @@
           {
             "use": "official",
             "family": "Resident",
-            "given": [
-              "Aged",
-              "Care"
-            ],
-            "prefix": [
-              "Mr"
-            ]
+            "given": ["Aged", "Care"],
+            "prefix": ["Mr"]
           },
           {
             "use": "usual",
             "family": "Resident",
-            "given": [
-              "Tom"
-            ]
+            "given": ["Tom"]
           }
         ],
         "gender": "male",
@@ -13094,9 +12813,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -13178,12 +12895,8 @@
             "use": "official",
             "text": "Mrs. Smart Form",
             "family": "Form",
-            "given": [
-              "Smart"
-            ],
-            "prefix": [
-              "Mrs"
-            ]
+            "given": ["Smart"],
+            "prefix": ["Mrs"]
           },
           {
             "use": "usual",
@@ -13208,9 +12921,7 @@
           {
             "use": "home",
             "type": "physical",
-            "line": [
-              "4 Brisbane Street"
-            ],
+            "line": ["4 Brisbane Street"],
             "city": "Brisbane",
             "state": "QLD",
             "postalCode": "4112",
@@ -13219,9 +12930,7 @@
           {
             "use": "temp",
             "type": "postal",
-            "line": [
-              "PO Box Number"
-            ],
+            "line": ["PO Box Number"],
             "city": "Brisbane",
             "state": "QLD",
             "postalCode": "4112",
@@ -13278,9 +12987,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-19T01:17:00.247+00:00",
           "source": "#AzyOymzctMxhTDwO",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -13387,10 +13094,7 @@
           {
             "use": "usual",
             "family": "Banks",
-            "given": [
-              "Mia",
-              "Leanne"
-            ]
+            "given": ["Mia", "Leanne"]
           }
         ],
         "telecom": [
@@ -13423,9 +13127,7 @@
         "birthDate": "1983-08-25",
         "address": [
           {
-            "line": [
-              "50 Sebastien St"
-            ],
+            "line": ["50 Sebastien St"],
             "city": "Minjary",
             "state": "NSW",
             "postalCode": "2720",
@@ -13446,9 +13148,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:19:09.898+00:00",
           "source": "#2In1lNbab0zwxZWK",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-patient"]
         },
         "text": {
           "status": "generated",
@@ -13556,20 +13256,13 @@
             "use": "official",
             "text": "Ms. Electronic Request Form",
             "family": "Form",
-            "given": [
-              "Electronic",
-              "Request"
-            ],
-            "prefix": [
-              "Ms"
-            ]
+            "given": ["Electronic", "Request"],
+            "prefix": ["Ms"]
           },
           {
             "use": "usual",
             "family": "Form",
-            "given": [
-              "eRequest"
-            ]
+            "given": ["eRequest"]
           }
         ],
         "telecom": [
@@ -13602,9 +13295,7 @@
         "birthDate": "1983-08-25",
         "address": [
           {
-            "line": [
-              "50 Sebastien St"
-            ],
+            "line": ["50 Sebastien St"],
             "city": "Minjary",
             "state": "NSW",
             "postalCode": "2720",
@@ -13625,9 +13316,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -13636,12 +13325,8 @@
         "name": [
           {
             "family": "Pharmacist",
-            "given": [
-              "Representative"
-            ],
-            "prefix": [
-              "Mr."
-            ]
+            "given": ["Representative"],
+            "prefix": ["Mr."]
           }
         ],
         "qualification": [
@@ -13665,9 +13350,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -13676,12 +13359,8 @@
         "name": [
           {
             "family": "Cardy",
-            "given": [
-              "Igist"
-            ],
-            "prefix": [
-              "Dr."
-            ]
+            "given": ["Igist"],
+            "prefix": ["Dr."]
           }
         ],
         "telecom": [
@@ -13704,9 +13383,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -13744,12 +13421,8 @@
         "name": [
           {
             "family": "Sandyson",
-            "given": [
-              "Sandy"
-            ],
-            "prefix": [
-              "Ms."
-            ]
+            "given": ["Sandy"],
+            "prefix": ["Ms."]
           }
         ]
       },
@@ -13766,9 +13439,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -13783,20 +13454,14 @@
         "name": [
           {
             "family": "Primary",
-            "given": [
-              "Peter"
-            ],
-            "prefix": [
-              "Dr"
-            ]
+            "given": ["Peter"],
+            "prefix": ["Dr"]
           }
         ],
         "address": [
           {
             "use": "work",
-            "line": [
-              "310 Hay St"
-            ],
+            "line": ["310 Hay St"],
             "city": "East Perth",
             "state": "WA",
             "postalCode": "6004"
@@ -13816,9 +13481,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -13833,23 +13496,15 @@
         "name": [
           {
             "family": "Levin",
-            "given": [
-              "Henry"
-            ],
-            "prefix": [
-              "Dr"
-            ],
-            "suffix": [
-              "VII"
-            ]
+            "given": ["Henry"],
+            "prefix": ["Dr"],
+            "suffix": ["VII"]
           }
         ],
         "address": [
           {
             "use": "work",
-            "line": [
-              "310 Hay St"
-            ],
+            "line": ["310 Hay St"],
             "city": "East Perth",
             "state": "WA",
             "postalCode": "6004"
@@ -13869,9 +13524,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -13909,12 +13562,8 @@
         "name": [
           {
             "family": "Surgeon",
-            "given": [
-              "David"
-            ],
-            "prefix": [
-              "Dr."
-            ]
+            "given": ["David"],
+            "prefix": ["Dr."]
           }
         ]
       },
@@ -13931,9 +13580,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -13948,12 +13595,8 @@
         "name": [
           {
             "family": "Nurse",
-            "given": [
-              "Nancy"
-            ],
-            "prefix": [
-              "RNP"
-            ]
+            "given": ["Nancy"],
+            "prefix": ["RNP"]
           }
         ],
         "telecom": [
@@ -13966,9 +13609,7 @@
         "address": [
           {
             "use": "work",
-            "line": [
-              "310 Hay St"
-            ],
+            "line": ["310 Hay St"],
             "city": "East Perth",
             "state": "WA",
             "postalCode": "6004"
@@ -13988,9 +13629,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -14001,9 +13640,7 @@
           {
             "text": "Jill Bradley",
             "family": "Bradley",
-            "given": [
-              "Jill"
-            ]
+            "given": ["Jill"]
           }
         ],
         "telecom": [
@@ -14028,9 +13665,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -14068,12 +13703,8 @@
         "name": [
           {
             "family": "Bobrester",
-            "given": [
-              "Bob"
-            ],
-            "prefix": [
-              "Dr."
-            ]
+            "given": ["Bob"],
+            "prefix": ["Dr."]
           }
         ],
         "telecom": [
@@ -14144,9 +13775,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -14173,13 +13802,8 @@
           {
             "use": "official",
             "family": "Nurse",
-            "given": [
-              "Aged",
-              "Care"
-            ],
-            "prefix": [
-              "Ms"
-            ]
+            "given": ["Aged", "Care"],
+            "prefix": ["Ms"]
           }
         ]
       },
@@ -14196,9 +13820,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-20T04:19:43.992+00:00",
           "source": "#L86mENCeo7KGvk9x",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitioner"]
         },
         "text": {
           "status": "generated",
@@ -14214,21 +13836,14 @@
           {
             "text": "Dr David Lee Roth",
             "family": "Roth",
-            "given": [
-              "David",
-              "Lee"
-            ],
-            "prefix": [
-              "Dr"
-            ]
+            "given": ["David", "Lee"],
+            "prefix": ["Dr"]
           }
         ],
         "address": [
           {
             "use": "work",
-            "line": [
-              "310 Hay St"
-            ],
+            "line": ["310 Hay St"],
             "city": "East Perth",
             "state": "WA",
             "postalCode": "6004"
@@ -14248,9 +13863,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14308,9 +13921,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14376,9 +13987,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14449,9 +14058,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14536,9 +14143,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14627,9 +14232,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14690,19 +14293,12 @@
         ],
         "availableTime": [
           {
-            "daysOfWeek": [
-              "mon",
-              "tue",
-              "wed"
-            ],
+            "daysOfWeek": ["mon", "tue", "wed"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "16:30:00"
           },
           {
-            "daysOfWeek": [
-              "thu",
-              "fri"
-            ],
+            "daysOfWeek": ["thu", "fri"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "12:00:00"
           }
@@ -14731,9 +14327,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14811,9 +14405,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -14872,19 +14464,12 @@
         ],
         "availableTime": [
           {
-            "daysOfWeek": [
-              "mon",
-              "tue",
-              "wed"
-            ],
+            "daysOfWeek": ["mon", "tue", "wed"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "16:30:00"
           },
           {
-            "daysOfWeek": [
-              "thu",
-              "fri"
-            ],
+            "daysOfWeek": ["thu", "fri"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "12:00:00"
           }
@@ -14913,9 +14498,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -15000,9 +14583,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -15066,19 +14647,12 @@
         ],
         "availableTime": [
           {
-            "daysOfWeek": [
-              "mon",
-              "tue",
-              "wed"
-            ],
+            "daysOfWeek": ["mon", "tue", "wed"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "16:30:00"
           },
           {
-            "daysOfWeek": [
-              "thu",
-              "fri"
-            ],
+            "daysOfWeek": ["thu", "fri"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "12:00:00"
           }
@@ -15107,9 +14681,7 @@
           "versionId": "2",
           "lastUpdated": "2024-03-20T05:04:31.322+00:00",
           "source": "#GkgouQ9gufw36O7J",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-practitionerrole"]
         },
         "text": {
           "status": "generated",
@@ -15223,19 +14795,12 @@
         ],
         "availableTime": [
           {
-            "daysOfWeek": [
-              "mon",
-              "tue",
-              "wed"
-            ],
+            "daysOfWeek": ["mon", "tue", "wed"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "16:30:00"
           },
           {
-            "daysOfWeek": [
-              "thu",
-              "fri"
-            ],
+            "daysOfWeek": ["thu", "fri"],
             "availableStartTime": "09:00:00",
             "availableEndTime": "12:00:00"
           }
@@ -15264,9 +14829,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"]
         },
         "text": {
           "status": "generated",
@@ -15346,9 +14909,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"]
         },
         "text": {
           "status": "generated",
@@ -15405,9 +14966,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"]
         },
         "text": {
           "status": "generated",
@@ -15473,9 +15032,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-procedure"]
         },
         "text": {
           "status": "generated",
@@ -15540,9 +15097,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-provenance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-provenance"]
         },
         "text": {
           "status": "generated",
@@ -15596,9 +15151,7 @@
           "versionId": "1",
           "lastUpdated": "2024-03-15T00:46:54.304+00:00",
           "source": "#C7BOorAPPMJb81ue",
-          "profile": [
-            "http://hl7.org.au/fhir/core/StructureDefinition/au-core-provenance"
-          ]
+          "profile": ["http://hl7.org.au/fhir/core/StructureDefinition/au-core-provenance"]
         },
         "text": {
           "status": "generated",
@@ -15826,9 +15379,7 @@
         "title": "Aged Care CMS Facade",
         "status": "draft",
         "experimental": true,
-        "subjectType": [
-          "Patient"
-        ],
+        "subjectType": ["Patient"],
         "date": "2023-11-27",
         "publisher": "AEHRC CSIRO",
         "contact": [
@@ -19149,12 +18700,8 @@
         "name": [
           {
             "family": "SMITH",
-            "given": [
-              "Emma"
-            ],
-            "prefix": [
-              "Mrs."
-            ]
+            "given": ["Emma"],
+            "prefix": ["Mrs."]
           }
         ],
         "telecom": [
@@ -19206,10 +18753,7 @@
           {
             "use": "usual",
             "family": "Rabbit",
-            "given": [
-              "Peter",
-              "Rabbit"
-            ]
+            "given": ["Peter", "Rabbit"]
           }
         ],
         "telecom": [
@@ -19222,9 +18766,7 @@
         "address": [
           {
             "use": "home",
-            "line": [
-              "29 Gadsby Street"
-            ],
+            "line": ["29 Gadsby Street"],
             "city": "Blacktown",
             "state": "NSW",
             "postalCode": "2148",

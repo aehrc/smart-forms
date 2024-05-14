@@ -1,0 +1,3848 @@
+{
+  "singleItems": {
+    "2e82032a-dc28-45f2-916e-862303d39fe5": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "d1e1ab3d-1c6c-430b-8ae7-af56b8f0af55": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "7fa8bc57-f3f9-4ddc-bf9b-12a9b9885dbd": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "b7d116f9-0425-4cf1-8cde-fbf4dfaee550": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "c72933c7-349f-4fef-94ff-c424c69da6f3",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "80a6a405-49a4-44fb-bff3-212902096b95": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "43517c44-5cd2-4d9a-9f18-d6bf8124f4ae": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "057483ce-f265-46df-a1c5-7a18d492c1ba",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "5bbfb4a3-a667-4ef2-98c2-76e76da55c03": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "9a51c056-021d-445d-8eaa-2123a69aa9c2": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "1016f79d-9756-4daf-b6ee-29add134b34f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "c8852db9-efe9-4102-96db-cef3a8be0a5f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "7089c48e-4216-4089-a548-034cd585e4da": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "42b1f5e0-bf4a-47d9-86a4-f2fe946ac01f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "06737e46-e880-4037-9a2c-bcd278cd70ba": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "2fee2d51-7828-4178-b8c1-35edd32ba338": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
+            "operator": "=",
+            "answerBoolean": false
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "ddb65ed1-f4b2-4730-af2a-2f98bc73c76f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
+            "operator": "=",
+            "answerBoolean": false
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "d9a1236c-8d6e-4f20-a12a-9d5de5a1d0f6": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
+            "operator": "=",
+            "answerBoolean": false
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "3f61a1ea-1c74-4f52-8519-432ce861a74f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "311d83bb-f22e-4f60-9b50-b6e38dd2059b",
+            "operator": "=",
+            "answerBoolean": false
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "aa35d559-f45b-4d35-9453-dd02e4a790f3": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "27099697-d6d1-42c0-bb0a-5e9ff7372a96": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "e63547c6-1623-412f-963f-5f1ebf23563f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "04e50521-dc85-4744-b7ab-6f8682aacb11": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "7165c072-e3d8-4564-9d1d-d17f6807787c",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "a8143230-b30d-4b85-9805-5f2f73f2dffa": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "7379a0fd-d95b-4ecb-a781-9f43d1394f10": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "924b4500-53ac-4c4e-831b-7ab5569ff981",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "241f5fca-f61a-49bd-8972-52613c0e6d15": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e90b436b-2751-4e07-a40c-adfe951b6528",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "74ce4c60-31d6-4e78-9056-579937379451": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e90b436b-2751-4e07-a40c-adfe951b6528",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "9bc882bc-e989-4600-9587-8089fb757641": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "4c14b158-3ae4-4994-8446-76e02640702c": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "a08271f1-194b-4fe9-91f9-4f3398858eb0",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "2b5ae784-4341-4172-875d-1698cc8069f0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "b9991e7e-ce03-465d-b4b0-5a1725b24e02": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "d05558fb-a3cc-4bd6-b803-b672b36b9c51",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "6c80c675-1320-4ca3-ae3f-51ad173da741": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "38f81a73-447f-4ecd-a8eb-6eccd9dee050": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "a0c06f8d-3210-480b-9031-7b5eb5bf1dda": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "96f3396e-f5f8-4347-8692-9abdecb97768": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "a30d0101-06ce-4481-b142-9fa2c091fe4f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "2655e0e1-fe4b-431e-87af-30d4ff1aca76",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "17651f83-8476-499c-a5ef-dd4e1a6c9f13": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "35b3f6d8-2907-4134-ae55-1e321b908f70": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "b3a3eee2-f340-452e-9d05-d1f54f677b81": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "a10a7375-e9d3-4e71-a47a-282e9ba38ec1": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "29b6d8ea-23b2-4a69-98d9-899198692de7": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "033db7b3-80da-43e2-9838-88f3d51e5913": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "384ab440-10ed-4ac1-89da-cd7d24f87a95": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "c24ae0d2-8932-4b87-9b7e-a644b5eb2874": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "bba27ef5-05c5-4e9c-bc9f-cf42091e99cb": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "28d5dbe4-1e65-487c-847a-847f544a6a91": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "6eb59145-ed9a-4184-af83-3506d47e4d4e": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "3a2d27b6-e918-4df5-aca9-b374fcf9faad": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "874ec8db-95c9-4cc0-95db-e45edaa3cd12": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "6eb59145-ed9a-4184-af83-3506d47e4d4e",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "3a2d27b6-e918-4df5-aca9-b374fcf9faad",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "any"
+    },
+    "36290837-ad70-48b2-9c66-31533fec918b": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "6eb59145-ed9a-4184-af83-3506d47e4d4e",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "3a2d27b6-e918-4df5-aca9-b374fcf9faad",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "any"
+    },
+    "7dfe7c6a-ca7f-4ddf-9241-a7b918a9695a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "d4e4db07-a795-4a30-bd0f-9c109f96a22b": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "532e09ea-2c2d-48c6-81f8-e23380b329a0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "df5b2081-a373-48ee-acab-96225dad3c1d": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "01f67f0b-e3be-48d8-a2ad-4c54f469cd13": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "4c3427ce-062f-4f62-b566-2decb506a9cb": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e7297156-cfed-4437-b877-c345f744168b",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "7d783b71-7303-441b-822a-14e11a740038": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "9e991b80-7080-40d5-9ad9-447dc47e3a68": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "0a3c9c93-5836-4a5b-93e5-d7de559e053a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "1ea0a898-d680-4a5d-a0f1-91b57eb77a91": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "062f5234-686a-4bf3-afcd-3fcd988afd6c",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "272af1cb-4309-4227-bab4-a6cc9fb47635": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "a5cc8a8f-89cf-470c-a6bd-ce9da2f64ee9": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "isTab": true
+    },
+    "476dae02-d0e8-4128-81a1-7ad71dd06e97": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "a7542da8-aad6-4a80-8b5b-806ca11d68d2",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "N"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "9bd5f571-8cbf-4c25-975c-5fc8395b75f5": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "6f73d1ee-dd8e-419a-9142-ede367200e3b",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "N"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "819b3305-bf93-4502-9986-242ea2ae5f43": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "818c9aaa-1b00-4c76-9971-49df74edff7a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "e7ef5692-25e6-4598-aa08-d0107e21fe31": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "335f4c10-a6e6-455b-8a7e-2962158f5183": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "e5b886ad-840e-4f01-af04-55c5ea7f215d": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "f0e0ea74-cffc-46a5-8554-67e8fcc667f1": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "73a40641-04c9-4da4-813e-a8b9ae3a2ecf": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "47f09b28-9eea-4f8c-8d3c-7efef0504728": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "9371dddc-49f4-4a8f-a9dc-a0e128f99636": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "3e7d7246-98f8-4803-b063-8405ac30b086": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "isTab": true
+    },
+    "0e30e9b4-ec83-44ea-88ab-47963e52a2d7": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<",
+            "answerInteger": 25
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "c0ba8a79-a9c5-40cc-b0c2-041e736784e9": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 25
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "5437e30d-8a0a-4785-974e-00a10d2a1df0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all",
+      "isTab": true
+    },
+    "dec713ae-246a-4961-95c9-0626bfebfed2": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "9559242e-9ffe-4e1f-a9fc-86d1fa62c4b9": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "69985e2e-4619-42fa-a111-e6fb3118ef74": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e29701be-2b79-471d-a42e-7e3830459080",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "43d2cb6c-29a7-4293-a6c8-87a228a82e19": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "06a67326-9e3d-4c4c-b271-af5b168d077c",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "1bd58e7b-2cb7-45fb-965f-d5fa33d0bb4c": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "c5da020c-c4f3-437c-b658-ea7e7667514d": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "9674ffa0-2ad9-4ca3-80e6-e8bb0670a802": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 74
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all",
+      "isTab": true
+    },
+    "e2942894-5537-47a6-ab43-06eb6761f9b5": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "69d92a26-95ac-4556-94da-5b0e09940bfd": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "f6907808-3e42-4206-9bf8-ca4082ea4814": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2942894-5537-47a6-ab43-06eb6761f9b5",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "69d92a26-95ac-4556-94da-5b0e09940bfd",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "any"
+    },
+    "9ac8c78d-9c36-4bf5-8c6e-e48109902dfa": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "ff6a46e6-0812-4718-a854-489b24805925": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "b5f748d2-1874-4949-a7df-6e233f03135d": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "1d5c3354-6780-4b6a-b9af-7a17b0386781": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "646302e9-d384-4943-99bc-11e638641703",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "9266b946-74b3-4fc2-91ce-df557692e600": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "ce71f016-c5e4-4121-abe5-fe0c974c1bba": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "6dc96b26-cbc5-4434-8f6b-0260196311c2",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "c4c51d01-7acf-4551-a652-82f9fdf58a6d": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "9f6adf74-f240-41a2-a509-d216d5308911": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "7a22a4c4-6611-4687-af00-37c80c3f8fc0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "92908e91-9453-4d22-99eb-23dad580c1cb": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "12a41538-5dbd-4c1d-af69-52c59c48b1a9",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "ae7a3801-9491-4b1f-820c-678236d18f56": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "26707b9a-4e3d-4063-a890-7ec2ff02ced1": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "304d0332-9bfd-42dc-a4be-a5122596fb89",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "8c5e737f-820b-47a4-8c8a-27ce1eb18cf4": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "isTab": true
+    },
+    "13040f64-5cbf-4592-a683-c03527c64ac6": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "465eacce-f9ee-4022-9186-89065cf01ce2",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "e24d487b-3dd4-4a6d-a58e-85dfa8ce3f36": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "isTab": true
+    },
+    "57fa51e3-11c5-43f1-bdf0-73b2b48414c3": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "08320c7a-831b-4237-95e2-d79aee155b90",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "e9b6ac74-d810-4350-8b41-8ea2e4bd14fc": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "b2269be8-3ea5-494c-9368-06912b629789": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "74736baa-455b-41d2-af98-fb65cd463e97": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "isTab": true
+    },
+    "fd6beb79-ffc3-4879-913b-f42b0ec930ba": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "b30d5d21-c6d6-4bb3-aab4-0fdee80b3093",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "d56234a0-aafd-4c22-96c9-00ead8424f0b": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "96dc7c22-d003-459c-8a56-f6cd182fc077": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006"
+            }
+          },
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "8517006",
+                "display": "Former smoker"
+              }
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "9e86387d-1be4-4c26-9047-9dd6b03e1ee0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "77176002"
+            }
+          },
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "8517006",
+                "display": "Former smoker"
+              }
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006"
+            }
+          },
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "8517006",
+                "display": "Former smoker"
+              }
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+            "operator": "=",
+            "answerString": "Wants to quit"
+          },
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "8517006",
+                "display": "Former smoker"
+              }
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "enableBehavior": "any"
+    },
+    "32e71641-f660-4ca2-af99-dff8917f07be": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "77176002"
+            }
+          },
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "8517006",
+                "display": "Former smoker"
+              }
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://snomed.info/sct",
+              "code": "8517006"
+            }
+          },
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "8517006",
+                "display": "Former smoker"
+              }
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+            "operator": "=",
+            "answerString": "Wants to quit"
+          },
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "8517006",
+                "display": "Former smoker"
+              }
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "enableBehavior": "any"
+    },
+    "14a9fb5f-5b0e-4862-b143-08a11cd3ebf0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "d1b68cfc-77cf-464e-83ce-0e8517bed9f3": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "a233c01e-a72e-474b-9a26-bab1504491fa",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "a7bb0dd2-4b2d-49c2-9da6-3cb0a4dd9240": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "d7b92cad-4aa8-47d3-975c-92563f132325": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "1d20138a-caf3-4c43-9693-04c08d37a84a",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "4b49c291-6e93-4b7e-be3b-15ef8bc207ad": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all",
+      "isTab": true
+    },
+    "5148c6c6-c99f-480d-bb05-569064ba7118": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e56e79e5-8fbb-43f0-b2a3-018b55750bd0",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "589b53a4-ceb2-41c0-850a-69438f9fd1cc": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all",
+      "isTab": true
+    },
+    "f93fe768-9215-4a15-9376-686e9530ea79": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "1c40a720-bdb7-4386-a9f6-be82b7349bf7",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "4fc14fd9-4c7e-48ec-90c0-c406523400fa": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "64fd0f79-7e09-4934-905d-9bff6715f9ba",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "02048954-e9d7-424e-8c7b-6a3c495d7ce4": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "bc49ee24-62a8-4252-a5ee-9c68bfed601c": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "6286346d-c805-4519-8e82-bf364a215c58": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "468770e4-af95-4377-8af5-280deb585e01": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "bc49ee24-62a8-4252-a5ee-9c68bfed601c",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "6286346d-c805-4519-8e82-bf364a215c58",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "any"
+    },
+    "58e29c14-e279-4a1d-a7d6-b9d92b60d0e2": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<",
+            "answerInteger": 1
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "70773cba-54b0-43bc-b1f2-2942693957ce": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "3424f8ef-d17c-4ad6-ba09-60a0d0b7a1d2": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 3
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "f6603a1c-7176-4121-8df5-03433cdc36db": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 25
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "961da481-1698-4a1d-962b-a9c2185e335a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "297114f4-8c3f-4916-b840-c38ea14d37b1": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "f982c374-f023-4e68-8968-1f1f5d3969ae",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "f3473e82-4336-4858-96de-3a61eff5abfb": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "30dc1581-f6b7-49f0-be09-3902178a495f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "06c150f8-4d54-4d10-aeff-2ef7567b6812",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "d2a3a346-7b20-4634-beb4-f2bdc7252fe5": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "36a3967c-e79a-49a7-8022-ac9561c4e656": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "b326271b-e9b1-45a0-b899-125364833702",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "6662bc91-fd05-4ea0-a96b-1cc124a9769a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "d72dacb8-a9b3-483b-ae24-8b062873b2cb": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "3e53edc7-c90e-4681-a006-b7a05b91a02c",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "ec7b6e93-e1f0-41f5-b2c2-43c7ddff8aed": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "fe96046a-a202-4c22-ad3e-00419e717185": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "2841915f-c8d2-4edb-8bc7-39b63385a2fb": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "361b3c80-375b-423e-bb61-5732826bc2f0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "972afa06-9649-43d9-b8ce-c802f7f27e39": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "de71bbd0-178c-4974-9c75-55d5a48c66f7": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "e4cf4f15-7eed-4aa1-9f9d-61ccd659685c": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "cb287506-9a64-4ee8-8f24-ba7cb77756f3": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "cf949305-5ff7-4767-b946-7a50efd21cfc": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e4cf4f15-7eed-4aa1-9f9d-61ccd659685c",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "cb287506-9a64-4ee8-8f24-ba7cb77756f3",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "any"
+    },
+    "ffe81bde-608f-4e3f-98ae-39d0b9884dcc": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 50
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "bde9ab00-a20f-4a7c-9266-11f53f60c65f": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "829de3f8-eea9-4139-8a18-47c16182ac9e": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "353f528b-3518-4fb3-a0bd-3ed5ae6b036a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "b9332f4f-ed6c-4e87-a467-13d7e83bd550": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "829de3f8-eea9-4139-8a18-47c16182ac9e",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "353f528b-3518-4fb3-a0bd-3ed5ae6b036a",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "any"
+    },
+    "80e4349f-6d89-4017-8632-9a947e50e947": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "7d4772cb-a1cd-49d9-853f-883ccd8343a6": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "isTab": true
+    },
+    "54de7714-b917-4426-acb4-29d48648a2d8": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "d77c527d-6fde-4ed7-97b9-c71acf817f39": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "77d87581-d4d7-4267-9f3c-ad6541ad0f46": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "a2631d2c-2b5c-4147-9aca-05ae655a56a5": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "c8da01ec-de58-46e3-81a1-2c49aed8c28e": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "9f5787e6-8ece-46a4-8d67-e7c3e14daf18",
+            "operator": "=",
+            "answerCoding": {
+              "system": "http://terminology.hl7.org/CodeSystem/v2-0136",
+              "code": "Y"
+            }
+          }
+        }
+      ],
+      "isEnabled": false
+    },
+    "205677d6-17c7-4285-a7c4-61aa02b6c816": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "d15824f8-eafc-4fa0-80a2-82f0ec7f8728": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "7df41f88-6511-4793-a26a-d96fcd89fbba": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "2d68889b-88c1-4c6d-8b00-db4178dc1f52": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "820f5b73-3539-44d2-8e8f-c485cf443839": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "e9bc555b-39f7-4ab7-9998-c2e691c3dd85": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "f8cb01db-7ac7-4794-a276-773e3f1520c2": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 18
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "15200593-ab79-47ec-babe-4fdcb2327737": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "213a3eac-e530-4e27-859c-407136c7a0a6": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "8886f3bb-52de-4294-a5cb-8f960e2a6bbe": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "5e10229c-390d-4968-90d3-f896840f3c50": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "6c69ee91-f777-494c-bf09-d963773cd4ae": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<",
+            "answerInteger": 1
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "7a431d03-1726-4905-aae7-49f62a10ce5e": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "c587e3b6-b91a-40dc-9a16-179342d001e9": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "d95abe99-8ef2-4b97-bc88-a2901e2ebc9c": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 25
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "740cbc59-08e3-41e8-bc00-de22c1ad45a0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 18
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "73e1e470-5c41-4644-b279-03f57bde036d": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 30
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "77847d34-103e-497d-a7d5-f62cbaf4f698": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "4aa47bda-d740-4294-9466-52b1be2ec15b": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 30
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "918f7f32-cdaf-4742-b33a-8254eda2d8bd": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    },
+    "30532ad8-3465-4bdd-97ed-ec5664f9d733": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "6aa0a113-4d33-4f6b-9899-fa249674075a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "71c19d58-a8ae-43ba-8b96-463c108c75dc": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "d0e58402-a08a-49ca-b2ca-9f4bbdb89da0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "0f70dec3-c1f2-4b36-b1f6-bd7f5743d5f8": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "eaed9770-95f4-4c6a-b06c-d573427a2616": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "25f27e83-fcf0-49c8-86c1-e285e201a043": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "2657da9c-a27e-4939-af7a-08a19b9ab6f7": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "4044d0b4-94b2-4a89-b826-a14614298511": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "f97f211a-ef2a-49a3-aef7-c4e9cd08aa2a": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "07cfe077-ba93-4f93-b2a5-027023faa33b": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "a525c370-d8c3-4764-ab3a-bf62081725e0": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 24
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "d68d9693-48d3-4663-9dbb-dd3a7aec5278": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 49
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "0ef84b09-ca34-44c2-96d1-fcbbea0bae66": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "4044d0b4-94b2-4a89-b826-a14614298511",
+            "operator": "exists",
+            "answerBoolean": true
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "f97f211a-ef2a-49a3-aef7-c4e9cd08aa2a",
+            "operator": "exists",
+            "answerBoolean": true
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "07cfe077-ba93-4f93-b2a5-027023faa33b",
+            "operator": "exists",
+            "answerBoolean": true
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "a525c370-d8c3-4764-ab3a-bf62081725e0",
+            "operator": "exists",
+            "answerBoolean": true
+          }
+        },
+        {
+          "enableWhen": {
+            "question": "d68d9693-48d3-4663-9dbb-dd3a7aec5278",
+            "operator": "exists",
+            "answerBoolean": true
+          }
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "any"
+    },
+    "5a0c98f8-5349-4045-9ba0-27a4f35630b9": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false
+    },
+    "cde03bf0-182a-4998-a37e-7b3f22786617": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "<=",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        },
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 5
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": false,
+      "enableBehavior": "all"
+    },
+    "51ff0c15-312a-45ce-a25a-6c6a4bf0e17e": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": ">",
+            "answerInteger": 12
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true
+    },
+    "16971bd2-5494-483d-9713-eda182c47f02": {
+      "linked": [
+        {
+          "enableWhen": {
+            "question": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+            "operator": "exists",
+            "answerBoolean": true
+          },
+          "answer": [
+            {
+              "valueInteger": 86
+            }
+          ]
+        }
+      ],
+      "isEnabled": true,
+      "isTab": true
+    }
+  }
+}

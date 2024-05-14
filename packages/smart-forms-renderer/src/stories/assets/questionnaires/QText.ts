@@ -16,7 +16,7 @@
  */
 
 import type { Questionnaire } from 'fhir/r4';
-import { QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 export const qTextBasic: Questionnaire = {
   resourceType: 'Questionnaire',
