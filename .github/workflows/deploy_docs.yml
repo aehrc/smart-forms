@@ -2,7 +2,7 @@ name: Smart Forms Docs Deployment Workflow
 
 on:
   push:
-#    branches: [ "main" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build
+          path: documentation/build
 
       - name: Deploy to GitHub Pages
         id: deployment
