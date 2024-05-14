@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "0.27.3",
+  "version": "0.27.4",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
   "scripts": {
@@ -25,8 +25,6 @@
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "@iconify/react": "^4.1.1",
-    "@storybook/test": "^8.0.10",
-    "@types/fhir": "^0.0.38",
     "dayjs": "^1.11.10",
     "deep-diff": "^1.0.2",
     "fhirclient": "^2.5.2",
@@ -55,7 +53,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
-    "@chromatic-com/storybook": "^1.3.3",
+    "@chromatic-com/storybook": "^1.3.5",
     "@storybook/addon-essentials": "^8.0.10",
     "@storybook/addon-interactions": "^8.0.10",
     "@storybook/addon-links": "^8.0.10",
@@ -63,12 +61,14 @@
     "@storybook/blocks": "^8.0.10",
     "@storybook/react": "^8.0.10",
     "@storybook/react-vite": "^8.0.10",
+    "@storybook/test": "^8.0.10",
     "@swc/cli": "^0.1.63",
     "@swc/core": "^1.3.99",
     "@testing-library/jest-dom": "^6.1.2",
     "@testing-library/react": "^14.2.1",
     "@testing-library/react-hooks": "^7.0.2",
     "@types/deep-diff": "^1.0.5",
+    "@types/fhir": "^0.0.38",
     "@types/jest": "^29.5.12",
     "@types/lodash.clonedeep": "^4.5.9",
     "@types/lodash.debounce": "^4.0.7",
