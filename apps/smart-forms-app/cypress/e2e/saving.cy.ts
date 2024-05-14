@@ -15,69 +15,54 @@
  * limitations under the License.
  */
 
-describe('save response', () => {
-  const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
-
-  const launchUrlWithoutQuestionnaire =
-    'http://localhost:5173/launch?iss=https%3A%2F%2Flaunch.smarthealthit.org%2Fv%2Fr4%2Ffhir&launch=WzAsImQ2NGIzN2Y1LWQzYjUtNGMyNS1hYmU4LTIzZWJlOGY1YTA0ZSIsImU0NDNhYzU4LThlY2UtNDM4NS04ZDU1LTc3NWMxYjhmM2EzNyIsIkFVVE8iLDAsMCwwLCIiLCIiLCIiLCIiLCIiLCIiLCIiLDAsMV0';
-
+describe('Saving', () => {
   beforeEach(() => {
-    cy.intercept(`${formsServerUrl}/Questionnaire?_count=100&_sort=-date&`).as(
-      'fetchQuestionnaire'
-    );
-    cy.intercept(
-      `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
-    ).as('fetchQuestionnaireByTitle');
+    cy.launchFromEHRProxyQuesContext();
 
-    cy.visit(launchUrlWithoutQuestionnaire);
-    cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
-
-    cy.getByData('search-field-questionnaires')
-      .find('input')
-      .type('Aboriginal and Torres Strait Islander Health Check');
-
-    cy.wait('@fetchQuestionnaireByTitle').its('response.statusCode').should('eq', 200);
-
-    cy.getByData('questionnaire-list-row')
-      .contains('Aboriginal and Torres Strait Islander Health Check')
-      .click();
-    cy.getByData('button-create-response').click();
     cy.waitForPopulation();
   });
 
-  context('saving a response as draft', () => {
-    it('saving a response as draft', () => {
-      cy.intercept({
-        method: 'POST',
-        url: 'https://launch.smarthealthit.org/v/r4/fhir/QuestionnaireResponse'
-      }).as('savingResponse');
+  it('Saving a response as draft then final', () => {
+    // Fill in one of the radio buttons
+    cy.goToTab('Consent');
+    cy.getByData('q-item-boolean-box').eq(0).find('input').eq(0).click();
 
-      cy.goToPatientDetailsTab();
-      cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
-      cy.initAgeValue(60);
+    // Save as draft
+    cy.clickOnRendererOperation('Save Progress');
 
-      cy.clickOnRendererOperation('Save Progress');
+    cy.intercept({
+      method: 'POST',
+      url: 'https://proxy.smartforms.io/v/r4/fhir/QuestionnaireResponse'
+    }).as('savingResponseAsDraft');
 
-      cy.wait('@savingResponse');
-    });
+    cy.wait(1500);
+    cy.clickOnRendererOperation('View Existing Responses');
 
-    it('saving a response as final', () => {
-      cy.intercept({
-        method: 'POST',
-        url: 'https://launch.smarthealthit.org/v/r4/fhir/QuestionnaireResponse'
-      }).as('savingResponse');
+    // Select response
+    cy.getByData('response-list-row').contains('in-progress').click();
 
-      cy.goToPatientDetailsTab();
-      cy.getByData('q-item-integer-box').eq(0).find('input').clear().wait(50);
-      cy.initAgeValue(60);
+    cy.getByData('button-open-response').should('not.be.disabled').click();
 
-      cy.getByData('renderer-operation-item');
-      cy.contains('Save as Final').click();
-      cy.get('.MuiButtonBase-root').contains('Save as final').click();
+    cy.location('pathname').should('eq', '/viewer');
+    cy.getByData('response-preview-box').should(
+      'include.text',
+      'Aboriginal and Torres Strait Islander Health Check'
+    );
 
-      cy.wait('@savingResponse');
-      cy.location('pathname').should('eq', '/dashboard/responses');
-    });
+    // Re-open the response
+    cy.clickOnRendererOperation('Edit Response');
+    cy.location('pathname').should('eq', '/renderer');
+
+    // Save as final
+    cy.clickOnRendererOperation('Save as Final');
+    cy.getByData('save-as-final-button').click();
+
+    cy.intercept({
+      method: 'PUT',
+      url: 'https://proxy.smartforms.io/v/r4/fhir/QuestionnaireResponse/*'
+    }).as('savingResponseAsFinal');
+
+    cy.location('pathname').should('eq', '/dashboard/existing');
   });
 });
 

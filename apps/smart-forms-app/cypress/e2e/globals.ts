@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,7 @@
  * limitations under the License.
  */
 
-/// <reference types="cypress" />
+export const ehrUrl = 'https://proxy.smartforms.io/v/r4/fhir';
+export const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
 
-declare namespace Cypress {
-  interface Chainable {
-    getByData(dataTestAttribute: string, args?: any): Chainable<Element>;
-    clickOnNavPage(pageName: string): void;
-    clickOnRendererOperation(operationName: string): void;
-    goToTab(tabName: string): void;
-    waitForFormUpdate(): Chainable<Element>;
-    waitForPopulation(): void;
-    launchFromEHRProxy(): void;
-    launchFromEHRProxyQuesContext(): void;
-    waitForExistingResponses(): void;
-  }
-}
+export const appUrl = 'http://localhost:5173';
