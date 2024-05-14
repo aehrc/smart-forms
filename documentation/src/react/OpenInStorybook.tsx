@@ -1,5 +1,5 @@
 import React from 'react';
-import Iconify from '@site/src/components/Iconify';
+import Iconify from '@site/src/react/Iconify';
 import { IconButton, Tooltip } from '@mui/material';
 
 interface OpenInStorybookProps {

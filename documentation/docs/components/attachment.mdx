@@ -1,7 +1,41 @@
 ---
-sidebar_position: 12
+sidebar_position: 15
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # Attachment
 
-[Question with binary content such as an image, PDF, etc. as an answer (valueAttachment).](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-attachment)
+[Question with binary content such as an image, PDF, etc. as an answer (valueAttachment)](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-attachment).
+
+:::warning
+
+This component is not thoroughly tested yet. Please use it with caution.
+
+:::
+
+### Basic usage
+
+#### Questionnaire-only
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-attachment--attachment-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-attachment--attachment-basic"
+    width="100%"
+    height="320"
+  />
+</IframeContainer>
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                      |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                          |
+| required             | item.required                                                                         |
+| repeats              | item.repeats                                                                          |
+| readOnly             | item.readOnly                                                                         |
+| enableWhen           | item.enableWhen                                                                       |
+| enableBehavior       | item.enableBehavior                                                                   |
+| text                 | item.text                                                                             |

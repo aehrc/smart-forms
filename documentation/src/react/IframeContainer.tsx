@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 import Box from '@mui/material/Box';
-import OpenInStorybook from '@site/src/components/OpenInStorybook';
+import OpenInStorybook from '@site/src/react/OpenInStorybook';
 
 interface OpenInStorybookProps {
   storyUrl: string;

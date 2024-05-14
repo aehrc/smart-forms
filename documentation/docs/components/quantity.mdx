@@ -1,7 +1,53 @@
 ---
-sidebar_position: 14
+sidebar_position: 17
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # Quantity
 
-[Question with a combination of a numeric value and unit, potentially with a comparator (< , >, etc.) as an answer. (valueQuantity) There is an extension 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit' that can be used to define what unit should be captured (or the unit that has a ucum conversion from the provided unit).](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-quantity)
+[Question with a combination of a numeric value and unit, potentially with a comparator (< , >, etc.) as an answer. (valueQuantity)](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-quantity).
+
+There is an extension "http://hl7.org/fhir/StructureDefinition/questionnaire-unit" that can be used to define what unit should be captured (or the unit that has a ucum conversion from the provided unit).
+
+:::warning
+
+This component is not thoroughly tested yet. It is currently using the same exact UI component as **[decimal](/smart-forms/docs/components/decimal)**. Please use it with caution.
+
+:::
+
+### Basic usage
+
+#### Questionnaire-only
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-quantity--quantity-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-quantity--quantity-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>{' '}
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                              |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a integer or decimal value.     |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to integer or decimal value. |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                         |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                  |
+| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                                                                                           |
+| required             | item.required                                                                                                                                                 |
+| repeats              | item.repeats                                                                                                                                                  |
+| readOnly             | item.readOnly                                                                                                                                                 |
+| maxLength            | item.maxLength                                                                                                                                                |
+| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                                                                                             |
+| regex                | http://hl7.org/fhir/StructureDefinition/regex                                                                                                                 |
+| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                                                                                              |
+| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                                                                                              |
+| maxDecimalPlaces     | http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces                                                                                                      |
+| initial              | item.initial                                                                                                                                                  |
+| enableWhen           | item.enableWhen                                                                                                                                               |
+| enableBehavior       | item.enableBehavior                                                                                                                                           |
+| text                 | item.text                                                                                                                                                     |

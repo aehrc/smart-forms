@@ -1,7 +1,89 @@
 ---
-sidebar_position: 10
+sidebar_position: 13
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # Choice
 
-[Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding).](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-choice)
+[Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding)](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-choice).
+
+### Basic usage
+
+#### Answer Option
+
+Questionnaire-only
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-choice--choice-answer-option-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-choice--choice-answer-option-basic"
+    width="100%"
+    height="200"
+  />
+</IframeContainer>
+
+With Response
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-choice--choice-answer-option-basic-response">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-choice--choice-answer-option-basic-response"
+    width="100%"
+    height="200"
+  />
+</IframeContainer>
+
+:::note
+
+The current answerOption drop-down component doesn't allow the field to be cleared. There are plans to migrate to the same component used for answerValueSet.
+
+:::
+
+#### Answer Value Set
+
+Questionnaire-only
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-choice--choice-answer-value-set-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-choice--choice-answer-value-set-basic"
+    width="100%"
+    height="270"
+  />
+</IframeContainer>
+
+With Response
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-choice--choice-answer-value-set-basic-response">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-choice--choice-answer-value-set-basic-response"
+    width="100%"
+    height="270"
+  />
+</IframeContainer>
+
+If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                                                                                                                                    |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                                                         |
+| answerExpression     | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression<br/>- Only tested with answerValueSet.                                                                                                                                 |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a coding value.                                                                                                            |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a coding or valueCoding.code[^1] value.                                                                              |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                                                                    |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                                                                             |
+| itemControl          | http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl<br/>Supports:<br/>- autocomplete<br/>- drop-down<br/>- check-box<br/>- radio-button                                                                                                    |
+| choiceOrientation    | http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation<br/>- ChoiceOrientation is only supported on [itemControl](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) "radio-button" and "check-box" extensions |
+| required             | item.required                                                                                                                                                                                                                                            |
+| repeats              | item.repeats                                                                                                                                                                                                                                             |
+| readOnly             | item.readOnly                                                                                                                                                                                                                                            |
+| answerOption         | item.answerOption                                                                                                                                                                                                                                        |
+| answerValueSet       | item.answerValueSet                                                                                                                                                                                                                                      |
+| initial              | item.initial                                                                                                                                                                                                                                             |
+| enableWhen           | item.enableWhen                                                                                                                                                                                                                                          |
+| enableBehavior       | item.enableBehavior                                                                                                                                                                                                                                      |
+| text                 | item.text                                                                                                                                                                                                                                                |
+
+---
+
+[^1]: For calculated expressions, `valueCoding.code` as a fhirpath result is also permitted, as FHIRPath cannot dynamically generated a valueCoding object.

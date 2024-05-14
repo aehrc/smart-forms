@@ -5,8 +5,8 @@ import * as path from 'path';
 
 const config: Config = {
   title: 'Smart Forms',
-  tagline: '',
-  favicon: 'img/logo.svg',
+  tagline: 'FHIR Questionnaire Form Renderer',
+  favicon: 'img/logo-sf.svg',
 
   // Set the production url of your site here
   url: 'https://aehrc.github.io',
@@ -41,36 +41,54 @@ const config: Config = {
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/aehrc/smart-forms/'
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/aehrc/smart-forms/'
-        },
         theme: {
           customCss: './src/css/custom.css'
-        }
+        },
+        sitemap: {}
       } satisfies Preset.Options
     ]
   ],
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/logo-sf.svg',
     navbar: {
       title: 'Smart Forms',
-      // logo: {
-      //   alt: 'Smart Forms Logo',
-      //   src: 'img/docusaurus-social-card.jpg'
-      // },
+      logo: {
+        alt: 'Smart Forms',
+        src: 'img/logo-sf.svg',
+        href: 'https://smartforms.csiro.au'
+      },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Documentation'
+          type: 'doc',
+          sidebarId: 'left',
+          docId: 'index',
+          label: 'Overview'
         },
-        // { to: '/blog', label: 'Blog', position: 'left' },
+        {
+          type: 'docSidebar',
+          sidebarId: 'componentsSidebar',
+          position: 'left',
+          label: 'Components'
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'sdcSidebar',
+          position: 'left',
+          label: 'SDC'
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'devUsageSidebar',
+          position: 'left',
+          label: 'Developer Usage'
+        },
+        {
+          href: 'https://smartforms.csiro.au/ig/',
+          label: 'FHIR IG',
+          position: 'right'
+        },
         {
           href: 'https://github.com/aehrc/smart-forms',
           label: 'GitHub',
@@ -79,25 +97,7 @@ const config: Config = {
       ]
     },
     footer: {
-      style: 'dark',
       links: [
-        {
-          title: 'Documentation',
-          items: [
-            {
-              label: 'Developer Usage',
-              to: '/docs/intro'
-            },
-            {
-              label: 'Components',
-              to: '/docs/category/components'
-            },
-            {
-              label: 'Structured Data Capture',
-              to: '/docs/intro'
-            }
-          ]
-        },
         {
           title: 'Tools',
           items: [
@@ -120,7 +120,7 @@ const config: Config = {
           items: [
             {
               label: 'FHIR Implementation Guide',
-              to: 'https://smartforms.csiro.au/ig'
+              to: 'https://smartforms.csiro.au/ig/'
             },
             {
               label: 'GitHub',
@@ -130,7 +130,7 @@ const config: Config = {
         }
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Commonwealth Scientific and Industrial Research
-  - Organisation (CSIRO). Built with Docusaurus.`
+  - Organisation (CSIRO).`
     },
     prism: {
       theme: prismThemes.github,

@@ -1,59 +1,69 @@
 ---
-sidebar_position: 2
+sidebar_position: 5
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # Decimal
 
-[Question with is a real number answer (valueDecimal).](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-decimal)
+[Question with is a real number answer (valueDecimal)](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-decimal).
 
-[//]: # '## Basic usage'
-[//]: #
-[//]: # '<IframeContainer storyUrl="https://aehrc.github.io/smart-forms/?path=/story/component-single-components--decimal">'
-[//]: # '  <iframe'
-[//]: # '    src="https://aehrc.github.io/smart-forms/iframe.html?viewMode=story&id=component-single-components--decimal"'
-[//]: # '    width="100%"'
-[//]: # '    height="100"'
-[//]: # '  />'
-[//]: # '</IframeContainer>'
-[//]: #
-[//]: # '## Advanced usage'
-[//]: #
-[//]: # '#### Calculated Expressions'
-[//]: #
-[//]: # '<IframeContainer storyUrl="https://aehrc.github.io/smart-forms/?path=/story/component-single-components--decimal">'
-[//]: # '  <iframe'
-[//]: # '    src="https://aehrc.github.io/smart-forms/iframe.html?viewMode=story&id=component-single-components--decimal"'
-[//]: # '    width="100%"'
-[//]: # '    height="100"'
-[//]: # '  />'
-[//]: # '</IframeContainer>'
-[//]: # "If there are other advanced usage scenarios you'd like to see, please [let us know](https://github.com/aehrc/smart-forms/issues/new)."
+### Basic usage
 
-:::caution
+#### Questionnaire-only
 
-// In development, you can only use one locale at a time.
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-decimal--decimal-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-decimal--decimal-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
 
-:::
+#### With Response
 
-## SDC Supported extensions
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-decimal--decimal-basic-response">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-decimal--decimal-basic-response"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
 
-| Code                 | Usage                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression    |
-| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression |
-| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression |
-| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                          |
-| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                   |
-| required             | item.required                                                                         |
-| repeats              | item.repeats                                                                          |
-| readOnly             | item.readOnly                                                                         |
-| maxLength            | item.maxLength                                                                        |
-| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                     |
-| regex                | http://hl7.org/fhir/StructureDefinition/regex                                         |
-| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                      |
-| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                      |
-| maxDecimalPlaces     | http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces                              |
-| initial              | item.initial                                                                          |
-| enableWhen           | item.enableWhen                                                                       |
-| enableBehavior       | item.enableBehavior                                                                   |
-| text                 | item.text                                                                             |
+### Advanced usage
+
+#### Calculated Expressions
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-decimal--decimal-calculation">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-decimal--decimal-calculation"
+    width="100%"
+    height="270"
+  />
+</IframeContainer>
+
+If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                              |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a integer or decimal value.     |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to integer or decimal value. |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                         |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                  |
+| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                                                                                           |
+| required             | item.required                                                                                                                                                 |
+| repeats              | item.repeats                                                                                                                                                  |
+| readOnly             | item.readOnly                                                                                                                                                 |
+| maxLength            | item.maxLength                                                                                                                                                |
+| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                                                                                             |
+| regex                | http://hl7.org/fhir/StructureDefinition/regex                                                                                                                 |
+| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                                                                                              |
+| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                                                                                              |
+| maxDecimalPlaces     | http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces                                                                                                      |
+| initial              | item.initial                                                                                                                                                  |
+| enableWhen           | item.enableWhen                                                                                                                                               |
+| enableBehavior       | item.enableBehavior                                                                                                                                           |
+| text                 | item.text                                                                                                                                                     |

@@ -1,0 +1,40 @@
+---
+sidebar_position: 2
+---
+
+import IframeContainer from '../../src/react/IframeContainer';
+
+# Group
+
+[An item with no direct answer but should have at least one child item](https://www.hl7.org/fhir/r4/codesystem-item-type.html#item-type-group).
+
+### Basic usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-group--group-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-group--group-basic"
+    width="100%"
+    height="220"
+  />
+</IframeContainer>
+
+### Advanced usage
+
+If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+
+### SDC Supported extensions
+
+| Code                  | Usage                                                                                                                       |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| variable              | http://hl7.org/fhir/StructureDefinition/variable                                                                            |
+| enableWhenExpression  | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                       |
+| itemPopulationContext | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext                                      |
+| hidden                | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                |
+| required              | item.required                                                                                                               |
+| itemControl           | http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl<br/>Supports:<br/>- gtable<br/>- grid<br/>- tab-container |
+| shortText             | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText                                                  |
+| repeats               | item.repeats<br/>- Results in a repeat group                                                                                |
+| readOnly              | item.readOnly<br/>- Applies `readOnly` on all items in the group                                                            |
+| enableWhen            | item.enableWhen                                                                                                             |
+| enableBehavior        | item.enableBehavior                                                                                                         |
+| text                  | item.text                                                                                                                   |

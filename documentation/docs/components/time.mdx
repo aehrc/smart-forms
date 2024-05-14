@@ -1,7 +1,47 @@
 ---
-sidebar_position: 6
+sidebar_position: 9
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # Time
 
-[Question with a time (hour:minute:second) answer independent of date (valueTime).](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-time)
+[Question with a time (hour:minute:second) answer independent of date (valueTime)](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-time).
+
+It uses the FHIR [time](https://hl7.org/fhir/r4/datatypes.html#time) data type.
+
+**There are plans to convert this to be similar to the dateTime component's date field.**
+
+:::warning
+
+This component is not thoroughly tested yet. Please use it with caution.
+
+:::
+
+### Basic usage
+
+#### Questionnaire-only
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-time--time-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-time--time-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                        |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a date or dateTime value. |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                   |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                            |
+| required             | item.required                                                                                                                                           |
+| repeats              | item.repeats                                                                                                                                            |
+| readOnly             | item.readOnly                                                                                                                                           |
+| initial              | item.initial                                                                                                                                            |
+| enableWhen           | item.enableWhen                                                                                                                                         |
+| enableBehavior       | item.enableBehavior                                                                                                                                     |
+| text                 | item.text                                                                                                                                               |
