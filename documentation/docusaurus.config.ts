@@ -66,9 +66,9 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'gettingStartedSidebar',
+          sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Getting Started'
+          label: 'Documentation'
         },
         // { to: '/blog', label: 'Blog', position: 'left' },
         {
@@ -82,10 +82,18 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Documentation',
           items: [
             {
-              label: 'Docs',
+              label: 'Developer Usage',
+              to: '/docs/intro'
+            },
+            {
+              label: 'Components',
+              to: '/docs/category/components'
+            },
+            {
+              label: 'Structured Data Capture',
               to: '/docs/intro'
             }
           ]
@@ -138,7 +146,7 @@ const config: Config = {
           resolve: {
             alias: {
               // assuming root node_modules is up from "./packages/<your-docusaurus>
-              react: path.resolve('../../node_modules/react')
+              react: path.resolve('../node_modules/react')
             }
           }
         };
