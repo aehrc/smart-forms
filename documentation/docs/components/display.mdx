@@ -1,0 +1,52 @@
+---
+sidebar_position: 3
+---
+
+import IframeContainer from '../../src/react/IframeContainer';
+
+# Display
+
+[Text for display that will not capture an answer or have child items](http://www.hl7.org/fhir/r4/codesystem-item-type.html#item-type-display).
+
+### Basic usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-display--display-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-display--display-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### Advanced usage
+
+#### Calculations
+
+[//]: # 'FIXME use calc'
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-display--display-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-display--display-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- Note: Correct usage might actually be [`cqf-expression`](http://hl7.org/fhir/uv/sdc/examples.html#cqf) but it is not supported at the moment.                                                                                                                                                                                                                                                                                 |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| renderingXhtml       | http://hl7.org/fhir/StructureDefinition/rendering-xhtml                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| displayCategory      | http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory<br/>- Only [`instructions`](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-display-category.html) are supported currently.                                                                                                                                                                                                                                                                                                                |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| itemControl          | http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl<br/>Supports:<br/>- prompt ([deprecated](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) - encouraged to use [entryFormat](http://hl7.org/fhir/uv/sdc/rendering.html#entryFormat) <br/>- unit ([deprecated](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) - encouraged to use [questionnaire-unit](https://hl7.org/fhir/extensions/StructureDefinition-questionnaire-unit.html)<br/>- flyover |
+| repeats              | item.repeats                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| enableWhen           | item.enableWhen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| enableBehavior       | item.enableBehavior                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| text                 | item.text                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |

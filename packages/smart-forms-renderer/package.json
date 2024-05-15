@@ -11,13 +11,16 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aehrc/smart-forms.git"
   },
-  "author": "Sean Fong",
+  "author": {
+    "name": "Sean Fong"
+  },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/aehrc/smart-forms/issues"

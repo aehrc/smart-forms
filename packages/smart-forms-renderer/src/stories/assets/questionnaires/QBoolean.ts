@@ -63,7 +63,7 @@ export const qBooleanCalculation: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/boolean',
+  url: 'https://smartforms.csiro.au/docs/components/boolean/calculation',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',

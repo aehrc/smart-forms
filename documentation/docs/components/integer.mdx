@@ -1,29 +1,70 @@
 ---
-sidebar_position: 3
+sidebar_position: 6
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # Integer
 
-[Question with an integer answer (valueInteger).](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-integer)
+[Question with an integer answer (valueInteger)](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-integer).
 
-## SDC Supported extensions
+### Basic usage
 
-| Code                 | Usage                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression    |
-| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression |
-| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression |
-| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                          |
-| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                   |
-| required             | item.required                                                                         |
-| repeats              | item.repeats                                                                          |
-| readOnly             | item.readOnly                                                                         |
-| maxLength            | item.maxLength                                                                        |
-| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                     |
-| regex                | http://hl7.org/fhir/StructureDefinition/regex                                         |
-| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                      |
-| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                      |
-| initial              | item.initial                                                                          |
-| enableWhen           | item.enableWhen                                                                       |
-| enableBehavior       | item.enableBehavior                                                                   |
-| text                 | item.text                                                                             |
+#### Questionnaire-only
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-integer--integer-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-integer--integer-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+#### With Response
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-integer--integer-basic-response">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-integer--integer-basic-response"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### Advanced usage
+
+#### Calculations
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-integer--integer-calculation">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-integer--integer-calculation"
+    width="100%"
+    height="160"
+  />
+</IframeContainer>
+
+If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                                                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                              |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a integer or decimal value.                                                                     |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a integer or decimal value.                                                               |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                                         |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                                                  |
+| itemControl          | http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl<br/>Supports:<br/>- slider                                                                                                                                  |
+| sliderStepValue      | http://hl7.org/fhir/StructureDefinition/questionnaire-sliderStepValue<br/>- SliderStepValue is only supported on [itemControl](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) "slider" extension |
+| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                                                                                                                                                           |
+| required             | item.required                                                                                                                                                                                                                 |
+| repeats              | item.repeats                                                                                                                                                                                                                  |
+| readOnly             | item.readOnly                                                                                                                                                                                                                 |
+| maxLength            | item.maxLength                                                                                                                                                                                                                |
+| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                                                                                                                                                             |
+| regex                | http://hl7.org/fhir/StructureDefinition/regex                                                                                                                                                                                 |
+| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                                                                                                                                                              |
+| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                                                                                                                                                              |
+| initial              | item.initial                                                                                                                                                                                                                  |
+| enableWhen           | item.enableWhen                                                                                                                                                                                                               |
+| enableBehavior       | item.enableBehavior                                                                                                                                                                                                           |
+| text                 | item.text                                                                                                                                                                                                                     |

@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import CustomDateField from '../CustomDateItem/CustomDateField';
 import CustomTimeField from './CustomTimeField';

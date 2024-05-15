@@ -1,0 +1,69 @@
+---
+sidebar_position: 4
+---
+
+import IframeContainer from '../../src/react/IframeContainer';
+
+# Calculations
+
+Calculations are used to dynamically calculate the value of a question based on the values of other questions. The extensions that fall under this category are:
+
+- [variable](http://hl7.org/fhir/uv/sdc/expressions.html#variable)
+- [calculatedExpression](http://hl7.org/fhir/uv/sdc/expressions.html#calculatedExpression)
+
+For pre-population/initialisation of form answers, please refer to the [pre-population section](/docs/sdc/prepopulation).
+
+:::warning
+
+**InitialExpressions** can be used without pre-population according to the [spec](http://hl7.org/fhir/uv/sdc/expressions.html#initialExpression), but it is not supported.
+The only way to use calculations is via **calculatedExpressions** currently.
+
+:::
+
+### CalculatedExpression
+
+The basis of calculations in SDC. Allows an item value to update continuously as the answers to dependent questions change.
+In Smart Forms, calculated expressions are driven by [FHIRPath](https://hl7.org/fhir/fhirpath.html).
+
+Not all components support calculated expressions. The following components support calculated expressions:
+
+| Components | Limitations                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| boolean    | -                                                                                                                                                          |
+| decimal    | -                                                                                                                                                          |
+| integer    | -                                                                                                                                                          |
+| string     | -                                                                                                                                                          |
+| text       | -                                                                                                                                                          |
+| choice     | Only supports the following [itemControls](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html):<br/>- radio-button<br/>- drop-down |
+
+#### Basic usage
+
+Basic usage examples are covered in the respective components:
+
+- [boolean](/smart-forms/docs/components/boolean#calculated-expressions)
+- [decimal](/smart-forms/docs/components/decimal#calculated-expressions)
+- [integer](/smart-forms/docs/components/integer#calculated-expressions)
+- [string](/smart-forms/docs/components/string#calculated-expressions)
+- [text](/smart-forms/docs/components/text#calculated-expressions)
+- [choice (answerOption)](/smart-forms/docs/components/choice#answer-option---calculations)
+- [choice (answerValueSet)](/smart-forms/docs/components/choice#answer-value-set---calculations)
+
+#### BMI Calculation usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-3-form-behavior-calculations--calculated-expression-bmi-calculator">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-3-form-behavior-calculations--calculated-expression-bmi-calculator"
+    width="100%"
+    height="270"
+  />
+</IframeContainer>
+
+#### Absolute Cardiovascular Risk Calculation usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-3-form-behavior-calculations--calculated-expression-cvd-risk-calculator">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-3-form-behavior-calculations--calculated-expression-cvd-risk-calculator"
+    width="100%"
+    height="920"
+  />
+</IframeContainer>

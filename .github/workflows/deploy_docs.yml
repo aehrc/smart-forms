@@ -2,7 +2,7 @@ name: Smart Forms Docs Deployment Workflow
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 permissions:
   contents: read
@@ -41,7 +41,6 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-
   deploy-storybook:
     name: Deploy Storybook to S3
     runs-on: ubuntu-latest
@@ -64,8 +63,7 @@ jobs:
         run: npm ci
 
       - name: Build application
-        run:
-          npm run build-storybook -w packages/smart-forms-renderer
+        run: npm run build-storybook -w packages/smart-forms-renderer
 
       - name: Upload static Storybook site to S3
         run: aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook

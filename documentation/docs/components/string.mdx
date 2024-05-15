@@ -1,7 +1,66 @@
 ---
-sidebar_position: 7
+sidebar_position: 10
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # String
 
-[ Question with a short (few words to short sentence) free-text entry answer (valueString).](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-string)
+[Question with a short (few words to short sentence) free-text entry answer (valueString)](https://hl7.org/fhir/r4/codesystem-item-type.html#item-type-string).
+
+### Basic usage
+
+#### Questionnaire-only
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-string--string-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-string--string-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+#### With Response
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-string--string-basic-response">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-string--string-basic-response"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### Advanced usage
+
+#### Calculations
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-string--string-calculation">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-string--string-calculation"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
+
+If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                  |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a string value.     |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to string value. |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                             |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                      |
+| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                                                                               |
+| required             | item.required                                                                                                                                     |
+| repeats              | item.repeats                                                                                                                                      |
+| readOnly             | item.readOnly                                                                                                                                     |
+| maxLength            | item.maxLength                                                                                                                                    |
+| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                                                                                 |
+| regex                | http://hl7.org/fhir/StructureDefinition/regex                                                                                                     |
+| initial              | item.initial                                                                                                                                      |
+| enableWhen           | item.enableWhen                                                                                                                                   |
+| enableBehavior       | item.enableBehavior                                                                                                                               |
+| text                 | item.text                                                                                                                                         |

@@ -29,6 +29,12 @@ export const qQuantityBasic: Questionnaire = {
   url: 'https://smartforms.csiro.au/docs/components/quantity/basic',
   item: [
     {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'kg', display: 'kg' }
+        }
+      ],
       linkId: 'body-weight',
       type: 'quantity',
       repeats: false,

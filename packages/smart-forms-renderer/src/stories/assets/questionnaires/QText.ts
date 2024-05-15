@@ -16,7 +16,7 @@
  */
 
 import type { Questionnaire } from 'fhir/r4';
-import { QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 export const qTextBasic: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -48,7 +48,7 @@ export const qrTextBasicResponse: QuestionnaireResponse = {
       answer: [
         {
           valueString:
-            '- 8 hour eating window\n- cup of black coffee in the morning\n- small portions of lunch and dinner'
+            '- 8 hour eating window\n- Cup of black coffee in the morning\n- Small portions of lunch and dinner'
         }
       ]
     }

@@ -18,6 +18,7 @@ jobs:
         run: npm ci
       - name: Build application
         run: npm run build -w apps/smart-forms-app
+
   jest-test:
     name: Jest Tests
     runs-on: ubuntu-latest
@@ -31,8 +32,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run jest tests
-        run: npm run test -w apps/smart-forms-app
+        run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
+
   cypress-test:
     name: Cypress Tests
     runs-on: ubuntu-latest
@@ -49,6 +51,30 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  chromatic:
+    name: Run Chromatic
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: packages/smart-forms-renderer
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -59,9 +85,12 @@ jobs:
         with:
           node-version: 16
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run linter
         run: npm run lint
+
       - name: Check formatting
         run: npm run check-formatting

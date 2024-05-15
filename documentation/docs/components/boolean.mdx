@@ -1,50 +1,62 @@
 ---
-sidebar_position: 1
+sidebar_position: 4
 ---
+
+import IframeContainer from '../../src/react/IframeContainer';
 
 # Boolean
 
-[Question with a yes/no answer (valueBoolean).](https://www.hl7.org/fhir/r4/codesystem-item-type.html#item-type-boolean)
+[Question with a yes/no answer (valueBoolean)](https://www.hl7.org/fhir/r4/codesystem-item-type.html#item-type-boolean).
 
-## Basic usage
+### Basic usage
 
-#### Calculated Expressions
+#### Questionnaire-only
 
-[//]: # '<IframeContainer storyUrl="https://aehrc.github.io/smart-forms/?path=/story/component-single-components--boolean">'
-[//]: # '  <iframe'
-[//]: # '    src="https://aehrc.github.io/smart-forms/iframe.html?viewMode=story&id=component-single-components--boolean"'
-[//]: # '    width="100%"'
-[//]: # '    height="100"'
-[//]: # '  />'
-[//]: # '</IframeContainer>'
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-boolean--boolean-basic">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-boolean--boolean-basic"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
 
-## Advanced usage
+#### With Response
 
-#### Calculated Expressions
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-boolean--boolean-basic-response">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-boolean--boolean-basic-response"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
 
-[//]: # '<IframeContainer storyUrl="https://aehrc.github.io/smart-forms/?path=/story/component-single-components--boolean">'
-[//]: # '  <iframe'
-[//]: # '    src="https://aehrc.github.io/smart-forms/iframe.html?viewMode=story&id=component-single-components--boolean"'
-[//]: # '    width="100%"'
-[//]: # '    height="100"'
-[//]: # '  />'
-[//]: # '</IframeContainer>'
-[//]: # 'Insert referenced Stories here'
+### Advanced usage
 
-If there are other advanced usage scenarios you'd like to see, please [let us know](https://github.com/aehrc/smart-forms/issues/new).
+#### Calculations
 
-## SDC Supported extensions
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-boolean--boolean-calculation">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-boolean--boolean-calculation"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
 
-| Code                 | Usage                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression    |
-| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression |
-| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression |
-| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                          |
-| required             | item.required                                                                         |
-| repeats              | item.repeats                                                                          |
-| readOnly             | item.readOnly                                                                         |
-| initial              | item.initial                                                                          |
-| enableWhen           | item.enableWhen                                                                       |
-| enableBehavior       | item.enableBehavior                                                                   |
-| text                 | item.text                                                                             |
+If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+
+### SDC Supported extensions
+
+| Code                 | Usage                                                                                                                                                |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                     |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a boolean value.       |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a boolean value. |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                         |
+| required             | item.required                                                                                                                                        |
+| repeats              | item.repeats                                                                                                                                         |
+| readOnly             | item.readOnly                                                                                                                                        |
+| initial              | item.initial                                                                                                                                         |
+| enableWhen           | item.enableWhen                                                                                                                                      |
+| enableBehavior       | item.enableBehavior                                                                                                                                  |
+| text                 | item.text                                                                                                                                            |

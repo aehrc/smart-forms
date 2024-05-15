@@ -1,19 +1,16 @@
-describe('pre-test setup', () => {
-  const clientUrl = 'https://launch.smarthealthit.org/v/r4/fhir';
-  const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
+import { ehrUrl, formsServerUrl } from './globals';
 
-  beforeEach(() => {
-    cy.launchFromSMARTHealthIT();
-  });
+describe('pre-run', () => {
+  it('Launch without questionnaire context, select a questionnaire and create a new response', () => {
+    cy.launchFromEHRProxy();
 
-  it('selecting a questionnaire and creating a new response', () => {
     cy.intercept(`${formsServerUrl}/Questionnaire?_count=100&_sort=-date&`).as(
       'fetchQuestionnaire'
     );
     cy.intercept(
       `${formsServerUrl}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
     ).as('fetchQuestionnaireByTitle');
-    cy.intercept(`${clientUrl}/QuestionnaireResponse`).as('saveAsDraft');
+    cy.intercept(`${ehrUrl}/QuestionnaireResponse`).as('saveAsDraft');
 
     cy.wait('@fetchQuestionnaire').its('response.statusCode').should('eq', 200);
 

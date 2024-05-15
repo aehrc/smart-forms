@@ -106,7 +106,10 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton loading={isSaving} onClick={handleSaveAsFinal}>
+        <LoadingButton
+          data-test="save-as-final-button"
+          loading={isSaving}
+          onClick={handleSaveAsFinal}>
           Save as final
         </LoadingButton>
       </DialogActions>

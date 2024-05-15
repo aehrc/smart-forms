@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export const qOpenChoiceAnswerOptionBasic: Questionnaire = {
   resourceType: 'Questionnaire',
