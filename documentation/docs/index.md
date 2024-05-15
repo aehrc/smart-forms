@@ -15,7 +15,6 @@ This documentation is intended to provide a guide on how to use Smart Forms. It 
 - [SDC](./doc/components/boolean): A section around the conformance and usage of functionalities defined in the SDC specification.
 - [Developer Usage](./doc/developer-usage/overview): A guide on how to use the form-rendering engine in your own application.
 
-
 ### Referenced FHIR Specifications 
 
 #### Structured Data Capture (SDC)

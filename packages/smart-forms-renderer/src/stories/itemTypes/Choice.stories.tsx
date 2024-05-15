@@ -19,7 +19,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapper from '../BuildFormWrapper';
 import {
   qChoiceAnswerOptionBasic,
+  qChoiceAnswerOptionCalculation,
   qChoiceAnswerValueSetBasic,
+  qChoiceAnswerValueSetCalculation,
   qrChoiceAnswerOptionBasicResponse,
   qrChoiceAnswerValueSetBasicResponse
 } from '../assets/questionnaires';
@@ -42,6 +44,7 @@ export const ChoiceAnswerOptionBasic: Story = {
     questionnaire: qChoiceAnswerOptionBasic
   }
 };
+
 export const ChoiceAnswerOptionBasicResponse: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic,
@@ -59,5 +62,17 @@ export const ChoiceAnswerValueSetBasicResponse: Story = {
   args: {
     questionnaire: qChoiceAnswerValueSetBasic,
     questionnaireResponse: qrChoiceAnswerValueSetBasicResponse
+  }
+};
+
+export const ChoiceAnswerOptionCalculation: Story = {
+  args: {
+    questionnaire: qChoiceAnswerOptionCalculation
+  }
+};
+
+export const ChoiceAnswerValueSetCalculation: Story = {
+  args: {
+    questionnaire: qChoiceAnswerValueSetCalculation
   }
 };

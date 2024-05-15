@@ -62,7 +62,6 @@ If there are any advanced usage scenarios you'd like to see, feel free to [let u
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | answerExpression     | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression<br/>- Only tested with answerValueSet.                                                                                                                                 |
 | initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a coding or string (openLabel) value.                                                                                      |
-| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a coding, valueCoding.code[^1] or string (openLabel) value.                                                          |
 | enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                                                                    |
 | openLabel            | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel<br/>- OpenLabel is only supported on [itemControl](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) "radio-button" and "check-box" extensions      |
 | hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                                                                             |
@@ -77,7 +76,3 @@ If there are any advanced usage scenarios you'd like to see, feel free to [let u
 | enableWhen           | item.enableWhen                                                                                                                                                                                                                                          |
 | enableBehavior       | item.enableBehavior                                                                                                                                                                                                                                      |
 | text                 | item.text                                                                                                                                                                                                                                                |
-
----
-
-[^1]: For calculated expressions, `valueCoding.code` as a fhirpath result is also permitted, as FHIRPath cannot dynamically generated a valueCoding object.

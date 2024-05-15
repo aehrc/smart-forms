@@ -12,7 +12,12 @@ function IframeContainer(props: OpenInStorybookProps) {
   const { storyUrl, children } = props;
 
   return (
-    <Box sx={{ position: 'relative', height: '100%', width: '100%' }}>
+    <Box
+      sx={{
+        position: 'relative',
+        height: '100%',
+        width: '100%'
+      }}>
       {children}
       <div style={{ position: 'absolute', top: '4px', right: '4px' }}>
         <OpenInStorybook storyUrl={storyUrl} />

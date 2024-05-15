@@ -62,7 +62,7 @@ const config: Config = {
       items: [
         {
           type: 'doc',
-          sidebarId: 'left',
+          position: 'left',
           docId: 'index',
           label: 'Overview'
         },
