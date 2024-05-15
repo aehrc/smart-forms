@@ -1,0 +1,79 @@
+---
+sidebar_position: 3
+---
+
+import IframeContainer from '../../src/react/IframeContainer';
+
+# Conditional Rendering
+
+Conditional rendering is a way to render form items based on certain conditions. The extensions that fall under this category are:
+
+- [enableWhen](http://hl7.org/fhir/uv/sdc/behavior.html#enableWhen)
+- [enableBehavior](http://hl7.org/fhir/uv/sdc/behavior.html#enableBehavior)
+- [enableWhenExpression](http://hl7.org/fhir/uv/sdc/expressions.html#enableWhenExpression)
+
+### EnableWhen
+
+The most basic way to use conditional rendering.
+
+#### Basic usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--enable-when">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--enable-when"
+    width="100%"
+    height="220"
+  />
+</IframeContainer>
+
+### EnableBehavior
+
+Used in tandem with **enableWhen** to provide more control over the behavior of the form item.
+
+If set to "all", then the item will only be enabled if all the enableWhen conditions are met. If set to "any", the item will be enabled if any of the enableWhen conditions are met.
+
+#### "all" usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--enable-behavior-all">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--enable-behavior-all"
+    width="100%"
+    height="210"
+  />
+</IframeContainer>
+
+#### "any" usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--enable-behavior-any">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--enable-behavior-any"
+    width="100%"
+    height="310"
+  />
+</IframeContainer>
+
+### EnableWhenExpression
+
+Allows more complex logic to be used for conditional rendering. Refer to the [EnableWhenExpression section](http://hl7.org/fhir/uv/sdc/expressions.html#enableWhenExpression) in the spec for more information.
+
+EnableWhenExpressions are commonly used with [variables](http://hl7.org/fhir/uv/sdc/expressions.html#variable).
+
+#### Basic usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--enable-when-expression-simple">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--enable-when-expression-simple"
+    width="100%"
+    height="840"
+  />
+</IframeContainer>
+
+#### Tabs usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--enable-when-expression-tabs">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--enable-when-expression-tabs"
+    width="100%"
+    height="420"
+  />
+</IframeContainer>

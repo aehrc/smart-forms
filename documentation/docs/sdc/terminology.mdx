@@ -1,0 +1,246 @@
+---
+sidebar_position: 5
+---
+
+import IframeContainer from '../../src/react/IframeContainer';
+
+# Terminology Binding
+
+Standardised terminology can be used in FHIR Questionnaires via [codes](https://hl7.org/fhir/r4/terminologies.html) and [valueSets](https://www.hl7.org/fhir/r4/valueset.html).
+The elements/extensions that fall under this category are:
+
+- [answerOption](http://hl7.org/fhir/uv/sdc/behavior.html#answerOption)
+- [answerValueSet](http://hl7.org/fhir/uv/sdc/behavior.html#answerValueSet)
+- [answerExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerExpression)
+
+:::note
+
+These three mechanisms are mutually exclusive. Only one should appear on the same item.
+
+:::
+
+Not all components support terminology binding. The following components support Not all components support calculated expressions. The following components support calculated expressions::
+
+| Components  |
+| ----------- |
+| choice      |
+| open-choice |
+
+### AnswerOption
+
+AnswerOption is used to specify a list of possible answers to a question. Each answer can be represented by a **integer**, **date**, **time**, **string**, **Coding** or **Reference** element.
+
+#### Basic usage
+
+- [choice](/smart-forms/docs/components/choice#answer-option)
+- [open-choice](/smart-forms/docs/components/open-choice#answer-option)
+
+#### Check-box usage
+
+Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-option"
+    width="100%"
+    height="550"
+  />
+</IframeContainer>
+
+Open Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-option"
+    width="100%"
+    height="890"
+  />
+</IframeContainer>
+
+#### Drop down usage
+
+Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-option"
+    width="100%"
+    height="310"
+  />
+</IframeContainer>
+
+#### Radio button usage
+
+Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-option"
+    width="100%"
+    height="180"
+  />
+</IframeContainer>
+
+Open Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-option"
+    width="100%"
+    height="220"
+  />
+</IframeContainer>
+
+### AnswerValueSet
+
+AnswerValueSet allows a set of codes in a code system within a [valueSet](https://www.hl7.org/fhir/r4/valueset.html) to be used as a set of possible answers to a question.
+It also allows for the possibility of sharing a set of answers across multiple items within a single Questionnaire.
+
+There are two ways to define an answerValueSet:
+
+1. Referencing a ValueSet URL
+
+```
+{
+  "resourceType": "Questionnaire",
+  // ...
+  "item": [
+    {
+      // ...
+      "answerValueSet": "http://hl7.org/fhir/ValueSet/example-valueSet"
+    }
+  ]
+}
+```
+
+2. Referencing a ValueSet defined in a [contained resource](https://hl7.org/fhir/r4/references.html#contained)
+
+```
+{
+  "resourceType": "Questionnaire",
+  // ...
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "example-value-set",
+      "url": "http://hl7.org/fhir/ValueSet/example-valueSet",
+      // ...
+      "expansion": [
+        {
+          "contains": [
+            {
+              "system": "http://hl7.org/fhir/ValueSet/example-valueSet",
+              "code": "code-1",
+              "display": "display-1"
+            },
+            {
+              "system": "http://hl7.org/fhir/ValueSet/example-valueSet",
+              "code": "code-2",
+              "display": "display-2"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "item": [
+    {
+      // ...
+      "answerValueSet": "#example-value-set"
+    }
+  ]
+}
+```
+
+#### Basic usage
+
+- [choice](/smart-forms/docs/components/choice#answer-value-set)
+- [open-choice](/smart-forms/docs/components/open-choice#answer-value-set)
+
+#### Auto-complete usage
+
+Open Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--autocomplete-open-choice">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--autocomplete-open-choice"
+    width="100%"
+    height="580"
+  />
+</IframeContainer>
+
+#### Check-box usage
+
+Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-value-set"
+    width="100%"
+    height="340"
+  />
+</IframeContainer>
+
+Open Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-value-set"
+    width="100%"
+    height="830"
+  />
+</IframeContainer>
+
+#### Drop down usage
+
+Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-value-set"
+    width="100%"
+    height="260"
+  />
+</IframeContainer>
+
+#### Radio button usage
+
+Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-value-set"
+    width="100%"
+    height="150"
+  />
+</IframeContainer>
+
+Open Choice
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-value-set"
+    width="100%"
+    height="180"
+  />
+</IframeContainer>
+
+### AnswerExpression
+
+Allows specifying a FHIR Query or FHIRPath that resolves to be used as a set of possible answers to a question.
+
+:::warning
+
+Support for this extension is not thoroughly tested yet.
+
+:::
+
+#### Basic usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-2-form-behavior-choice-restriction--answer-expression">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-2-form-behavior-choice-restriction--answer-expression"
+    width="100%"
+    height="500"
+  />
+</IframeContainer>
