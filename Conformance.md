@@ -1,6 +1,6 @@
 # Smart Forms Questionnaire & SDC conformance
 
-Smart Forms is based on FHIR R4. No plans for compatibility for R5 at the moment or in the near future.
+Smart Forms is based on FHIR R4.
 
 ## Supported item types 
 The list can be found here: http://hl7.org/fhir/R4/valueset-item-type.html
@@ -15,19 +15,40 @@ The list can be found here: http://hl7.org/fhir/R4/valueset-item-type.html
 - [x] time
 - [x] string
 - [x] text
-- [ ] url
+- [ ] url (partial implementation - using string UI component currently)
 - [x] choice
 - [x] open-choice
-- [ ] attachment
-- [ ] reference
-- [ ] quantity
+- [x] attachment 
+- [ ] reference (partial implementation - using string UI component currently)
+- [ ] quantity (partial implementation - using decimal UI component currently)
 
+### Using Expressions
+View the source here: http://hl7.org/fhir/uv/sdc/expressions.html
 
+#### [Expression Extensions](http://hl7.org/fhir/uv/sdc/expressions.html#expression-extensions)
+- [x] variable
+- [x] answerExpression
+- [x] initialExpression
+- [ ] candidateExpression
+- [ ] contextExpression
+- [x] calculatedExpression
+- [x] enableWhenExpression
+- [ ] answerOptionToggleExpression
+- [x] itemPopulationContext
+- [ ] itemExtractionContext
+- [ ] constraint
 
-## Advanced Form Rendering
-View the page here: http://hl7.org/fhir/uv/sdc/rendering.html
+#### [Other extensions](http://hl7.org/fhir/uv/sdc/expressions.html#other-extensions)
+- [ ] library
+- [x] launchContext
 
-**Text Appearance**
+#### [x-fhir-query enhancements](http://hl7.org/fhir/uv/sdc/expressions.html#x-fhir-query-enhancements)
+- [x] x-fhir-query
+
+### Advanced Form Rendering
+View the source here: http://hl7.org/fhir/uv/sdc/rendering.html
+
+#### [Text Appearance](http://hl7.org/fhir/uv/sdc/rendering.html#extension-overview)
 - [ ] rendering-style
 - [x] rendering-xhtml
 - [x] displayCategory
@@ -36,42 +57,46 @@ View the page here: http://hl7.org/fhir/uv/sdc/rendering.html
 - [ ] itemMedia
 - [ ] itemAnswerMedia
 
-**Control Apperance**
+#### [Control Appearance](http://hl7.org/fhir/uv/sdc/rendering.html#control-appearance)
 - [x] itemControl
 - [x] choiceOrientation
 - [x] sliderStepValue
 - [ ] width
 - [ ] collapsible
 
-**Questionnaire Item Controls** (http://hl7.org/fhir/r4/valueset-questionnaire-item-control.html)
+**Questionnaire `itemControl` Checklist**
+
+View the source here: https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html
 - [ ] group
-    - [ ] list
-    - [ ] table
-    - [ ] htable
-    - [x] gtable
-    - [ ] atable
-    - [ ] header
-    - [ ] footer
-- [ ] text
-    - [ ] inline
-    - [x] prompt
-    - [x] unit
-    - [ ] lower (supported for slider currently)
-    - [ ] upper (supported for slider currently)
-    - [ ] flyover
-    - [ ] help
+  - [ ] list
+  - [ ] table
+  - [ ] htable
+  - [x] gtable
+  - [x] grid
+  - [ ] header
+  - [ ] footer
+  - [ ] page
+  - [x] tab-container
+- [ ] display
+  - [ ] inline
+  - [x] prompt (deprecated - encouraged to use [entryFormat](http://hl7.org/fhir/uv/sdc/rendering.html#entryFormat))
+  - [x] unit (deprecated - encouraged to use [questionnaire-unit](https://hl7.org/fhir/extensions/StructureDefinition-questionnaire-unit.html))
+  - [x] lower
+  - [x] upper
+  - [x] flyover
+  - [ ] help
+  - [ ] legal
 - [ ] question
-    - [x] autocomplete
-    - [x] drop-down
-    - [x] check-box
-    - [ ] lookup
-    - [x] radio-button
-    - [x] slider
-    - [ ] spinner
-    - [ ] text-box
+  - [x] autocomplete
+  - [x] drop-down
+  - [x] check-box
+  - [ ] lookup
+  - [x] radio-button
+  - [x] slider
+  - [ ] spinner
+  - [ ] text-box
 
-
-**Additional Display Content**
+#### [Additional Display Content](http://hl7.org/fhir/uv/sdc/rendering.html#additional-display-content)
 - [ ] supportLink
 - [ ] choiceColumn
 - [ ] optionPrefix
@@ -79,36 +104,37 @@ View the page here: http://hl7.org/fhir/uv/sdc/rendering.html
 - [x] entryFormat
 - [x] shortText
 
-**Other**
-- [ ] required
+#### [Other](http://hl7.org/fhir/uv/sdc/rendering.html#other)
+- [x] required
 - [x] repeats
 - [x] readOnly
 - [ ] rendering-styleSensitive
 - [ ] optionalDisplay
 
-## Form Behavior and Calculation
-View the page here: http://hl7.org/fhir/uv/sdc/behavior.html
+### Form Behavior and Calculation
 
+View the source here: http://hl7.org/fhir/uv/sdc/behavior.html
 
-**Value constraints**
+#### [Value Constraints](http://hl7.org/fhir/uv/sdc/behavior.html#value-constraints)
 - [x] maxLength
-- [ ] minLength
+- [x] minLength
 - [x] regex
-- [ ] minValue
-- [ ] maxValue
+- [x] minValue
+- [x] maxValue
 - [ ] minQuantity
 - [ ] maxQuantity
-- [ ] maxDecimalPlaces
+- [x] maxDecimalPlaces
 - [ ] mimeType
 - [ ] maxSize
 
-**Choice Restriction**
+#### [Choice Restriction](http://hl7.org/fhir/uv/sdc/behavior.html#choice-restriction)
+
 - [x] answerOption
 - [x] answerValueSet
 - [ ] answerValueSet with Expression
 - [x] answerExpression
 - [ ] answerOptionToggleExpression
-- [ ] required
+- [x] required
 - [x] repeats
 - [x] readOnly
 - [ ] minOccurs
@@ -123,7 +149,8 @@ View the page here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [ ] candidateExpression
 - [ ] lookupQuestionnaire
 
-**Calculations**
+#### [Calculations](http://hl7.org/fhir/uv/sdc/behavior.html#calculations)
+
 - [ ] cqf-library
 - [x] launchContext
 - [x] variable
@@ -141,10 +168,10 @@ View the page here: http://hl7.org/fhir/uv/sdc/behavior.html
 | boolean                                                                                                 |
 | choice (limited to the below) <br/>- radio item control <br/> - dropdown    item control                |
 
+#### [Other Control](http://hl7.org/fhir/uv/sdc/behavior.html#other-control)
 
-**Other Control**
 - [ ] entryMode
-- [ ] initial
+- [x] initial
 - [x] enableWhen
 - [x] enableBehavior
 - [x] enableWhenExpression
@@ -163,7 +190,7 @@ View the page here: http://hl7.org/fhir/uv/sdc/populate.html
 - [ ] $populate-html
 - [ ] $populate-link
 
-Smart Forms only supports **Full population** at the moment, and SMART App Launch is a requirement. Only patient, practitioner and encounter launch contexts are supported.
+Smart Forms only supports **full population** at the moment, and SMART App Launch is a requirement. Only patient, practitioner and encounter launch contexts are supported.
 
 **Population mechanisms**
 - [ ] Observation-based
@@ -175,16 +202,16 @@ While StructuredMap-based population mechanism is not supported, [sdc-questionna
 ## Form Data Extraction
 View the page here: http://hl7.org/fhir/uv/sdc/extraction.html
 
-This is something we are super interested in, but we haven't quite gotten to it yet.
+This is something we are super interested in, but haven't quite got to it yet.
 
 ## Modular Forms
 View the page here: http://hl7.org/fhir/uv/sdc/modular.html#modular-questionnaires
 
-Our Forms Server https://smartforms.csiro.au/api/fhir supports the [$assemble](http://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-assemble.html) operation. 
+Our Forms Server https://smartforms.csiro.au/api/fhir supports the [$assemble](http://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-assemble.html) operation.
 The implementation is based on http://hl7.org/fhir/uv/sdc/modular.html#modular-questionnaires.
 
 ## Adaptive Forms
 
 View the page here: http://hl7.org/fhir/uv/sdc/adaptive.html
 
-This is not something on our radar at the moment. 
+This is not something on our radar at the moment :(
