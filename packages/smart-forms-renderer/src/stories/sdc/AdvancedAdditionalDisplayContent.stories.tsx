@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapper from '../BuildFormWrapper';
-import { qEntryFormat, qShortText } from '../assets/questionnaires';
+import { qEntryFormat, qQuestionnaireUnit, qShortText } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -41,5 +41,11 @@ export const EntryFormat: Story = {
 export const ShortText: Story = {
   args: {
     questionnaire: qShortText
+  }
+};
+
+export const QuestionnaireUnit: Story = {
+  args: {
+    questionnaire: qQuestionnaireUnit
   }
 };

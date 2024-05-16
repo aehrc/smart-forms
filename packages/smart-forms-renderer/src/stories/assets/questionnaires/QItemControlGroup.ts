@@ -224,17 +224,16 @@ export const qItemControlGroupGTable: Questionnaire = {
   ]
 };
 
-// FIXME at the moment, itemControl grid does not work without a parent container
-export const qItemControlGroupGrid: Questionnaire = {
+export const qItemControlGroupGridSingleRow: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupGrid',
-  name: 'ItemControlGroupGrid',
-  title: 'Item Control Group Grid',
+  id: 'ItemControlGroupGridSingleRow',
+  name: 'ItemControlGroupGridSingleRow',
+  title: 'Item Control Group Grid - Single Row',
   version: '0.1.0',
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-grid',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-grid-1',
   item: [
     {
       linkId: 'parent-container',
@@ -300,6 +299,221 @@ export const qItemControlGroupGrid: Questionnaire = {
                 },
                 {
                   linkId: 'blood-pressure-date',
+                  text: 'Date performed',
+                  type: 'date',
+                  repeats: false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+export const qItemControlGroupGridMultiRow: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'ItemControlGroupGridMultiRow',
+  name: 'ItemControlGroupGridMultiRow',
+  title: 'Item Control Group Grid - Multi Row',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-grid-2',
+  item: [
+    {
+      linkId: 'parent-container',
+      text: '',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    version: '1.0.0',
+                    code: 'grid'
+                  }
+                ]
+              }
+            }
+          ],
+          linkId: 'grid-group',
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              linkId: 'height-row',
+              text: 'Height',
+              type: 'group',
+              repeats: false,
+              item: [
+                {
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                      valueCoding: {
+                        system: 'http://unitsofmeasure.org',
+                        code: 'cm',
+                        display: 'cm'
+                      }
+                    }
+                  ],
+                  linkId: 'height-value',
+                  text: 'Value',
+                  type: 'decimal',
+                  repeats: false
+                },
+                {
+                  linkId: 'height-date-performed',
+                  text: 'Date performed',
+                  type: 'date',
+                  repeats: false
+                }
+              ]
+            },
+            {
+              linkId: 'weight-row',
+              text: 'Weight',
+              type: 'group',
+              repeats: false,
+              item: [
+                {
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                      valueCoding: {
+                        system: 'http://unitsofmeasure.org',
+                        code: 'kg',
+                        display: 'kg'
+                      }
+                    }
+                  ],
+                  linkId: 'weight-value',
+                  text: 'Value',
+                  type: 'decimal',
+                  repeats: false
+                },
+                {
+                  linkId: 'weight-date-performed',
+                  text: 'Date performed',
+                  type: 'date',
+                  repeats: false
+                }
+              ]
+            },
+            {
+              linkId: 'bmi-row',
+              text: 'BMI',
+              type: 'group',
+              repeats: false,
+              item: [
+                {
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+                      valueExpression: {
+                        description: 'BMI calculation',
+                        language: 'text/fhirpath',
+                        expression: '(%weight/((%height/100).power(2))).round(1)'
+                      }
+                    },
+                    {
+                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                      valueCoding: {
+                        system: 'http://unitsofmeasure.org',
+                        code: 'kg/m2',
+                        display: 'kg/m2'
+                      }
+                    }
+                  ],
+                  linkId: 'bmi-value',
+                  text: 'Value',
+                  type: 'decimal',
+                  repeats: false,
+                  readOnly: false
+                }
+              ]
+            },
+            {
+              linkId: 'heart-rate-row',
+              text: 'Heart rate',
+              type: 'group',
+              repeats: false,
+              item: [
+                {
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                      valueCoding: {
+                        system: 'http://unitsofmeasure.org',
+                        code: '/min',
+                        display: '/min'
+                      }
+                    }
+                  ],
+                  linkId: 'heart-rate-value',
+                  text: 'Value',
+                  type: 'integer',
+                  repeats: false
+                },
+                {
+                  linkId: 'heart-rate-date-performed',
+                  text: 'Date performed',
+                  type: 'date',
+                  repeats: false
+                }
+              ]
+            },
+            {
+              linkId: 'heart-rhythm-row',
+              text: 'Heart rhythm',
+              type: 'group',
+              repeats: false,
+              item: [
+                {
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                      valueCodeableConcept: {
+                        coding: [
+                          {
+                            system: 'http://hl7.org/fhir/questionnaire-item-control',
+                            code: 'radio-button'
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  linkId: 'heart-rhythm-value',
+                  text: 'Value',
+                  type: 'choice',
+                  repeats: false,
+                  answerOption: [
+                    {
+                      valueCoding: {
+                        system: 'http://snomed.info/sct',
+                        code: '271636001',
+                        display: 'Pulse regular'
+                      }
+                    },
+                    {
+                      valueCoding: {
+                        system: 'http://snomed.info/sct',
+                        code: '61086009',
+                        display: 'Pulse irregular'
+                      }
+                    }
+                  ]
+                },
+                {
+                  linkId: 'heart-rhythm-date-performed',
                   text: 'Date performed',
                   type: 'date',
                   repeats: false

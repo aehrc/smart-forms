@@ -31,7 +31,7 @@ const meta = {
   title: 'Component/SDC/9.1.2 Form Behavior Choice Restriction',
   component: BuildFormWrapper,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
-  tags: ['autodocs']
+  tags: []
 } satisfies Meta<typeof BuildFormWrapper>;
 
 export default meta;

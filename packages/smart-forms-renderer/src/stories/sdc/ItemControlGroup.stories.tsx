@@ -19,7 +19,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapper from '../BuildFormWrapper';
 import {
   qItemControlDisplayTabContainer,
-  qItemControlGroupGrid,
+  qItemControlGroupGridMultiRow,
+  qItemControlGroupGridSingleRow,
   qItemControlGroupGTable
 } from '../assets/questionnaires';
 
@@ -42,9 +43,15 @@ export const Gtable: Story = {
   }
 };
 
-export const Grid: Story = {
+export const GridSingleRow: Story = {
   args: {
-    questionnaire: qItemControlGroupGrid
+    questionnaire: qItemControlGroupGridSingleRow
+  }
+};
+
+export const GridMultiRow: Story = {
+  args: {
+    questionnaire: qItemControlGroupGridMultiRow
   }
 };
 

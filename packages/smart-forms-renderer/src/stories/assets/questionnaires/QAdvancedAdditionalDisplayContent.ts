@@ -81,3 +81,33 @@ export const qShortText: Questionnaire = {
     }
   ]
 };
+
+export const qQuestionnaireUnit: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'QuestionnaireUnit',
+  name: 'QuestionnaireUnit',
+  title: 'Questionnaire Unit',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/additional-display/questionnaire-unit',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'cm',
+            display: 'cm'
+          }
+        }
+      ],
+      linkId: 'height',
+      text: 'Height',
+      type: 'decimal',
+      repeats: false
+    }
+  ]
+};

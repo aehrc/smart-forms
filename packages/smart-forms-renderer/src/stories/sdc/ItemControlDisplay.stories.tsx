@@ -17,7 +17,13 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapper from '../BuildFormWrapper';
-import { qItemControlDisplayLowerAndUpper } from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+import {
+  qItemControlDisplayContextDisplay,
+  qItemControlDisplayFlyover,
+  qItemControlDisplayLowerAndUpper,
+  qItemControlDisplayPrompt,
+  qItemControlDisplayUnit
+} from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -32,8 +38,32 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
+export const Prompt: Story = {
+  args: {
+    questionnaire: qItemControlDisplayPrompt
+  }
+};
+
+export const Unit: Story = {
+  args: {
+    questionnaire: qItemControlDisplayUnit
+  }
+};
+
 export const LowerAndUpper: Story = {
   args: {
     questionnaire: qItemControlDisplayLowerAndUpper
+  }
+};
+
+export const Flyover: Story = {
+  args: {
+    questionnaire: qItemControlDisplayFlyover
+  }
+};
+
+export const CustomContextDisplay: Story = {
+  args: {
+    questionnaire: qItemControlDisplayContextDisplay
   }
 };
