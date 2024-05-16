@@ -1,0 +1,145 @@
+---
+sidebar_position: 5
+---
+
+import IframeContainer from '../../../src/react/IframeContainer';
+
+# Value Constraints
+
+This subsection consists of extensions related to value constraints and form validation.
+
+The elements/extensions that fall under this subsection are:
+
+**From Core Questionnaire**
+
+- [required](https://www.hl7.org/fhir/r4/questionnaire-definitions.html#Questionnaire.item.required)
+
+**From SDC**
+
+- [maxLength](http://hl7.org/fhir/uv/sdc/behavior.html#maxLength)
+- [minLength](http://hl7.org/fhir/uv/sdc/behavior.html#minLength)
+- [regex](http://hl7.org/fhir/uv/sdc/behavior.html#regex)
+- [minValue](http://hl7.org/fhir/uv/sdc/behavior.html#minValue)
+- [maxValue](http://hl7.org/fhir/uv/sdc/behavior.html#maxValue)
+- [maxDecimalPlaces](http://hl7.org/fhir/uv/sdc/behavior.html#maxDecimalPlaces)
+
+[//]: # 'FIXME dev docs reference'
+
+:::tip
+Elements/extensions in this subsection invokes form validation in the renderer. OperationOutcome resources are generated when the current state of the form does not meet the constraints defined in the Questionnaire.
+
+For more information, refer to developer usage.
+
+:::
+
+### Required
+
+An indication, if true, that the item must be present in a "completed" QuestionnaireResponse. If false, the item may be skipped when answering the questionnaire.
+
+Also appears in the [Fundamental Elements](/smart-forms/docs/sdc/advanced/fundamental) subsection.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--required">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--required"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### MaxLength
+
+The maximum length of the string value of the answer to this question.
+
+MaxLength is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-1-form-behavior-value-constraints--max-length">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-1-form-behavior-value-constraints--max-length"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
+
+### MinLength
+
+The minimum length of the string value of the answer to this question.
+
+MinLength is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-1-form-behavior-value-constraints--min-length">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-1-form-behavior-value-constraints--min-length"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
+
+### Regex
+
+A [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions) constraint for the string value of the answer to this question.
+
+Regex is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-1-form-behavior-value-constraints--regex">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-1-form-behavior-value-constraints--regex"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
+
+### MinValue
+
+The minimum value of the quantifiable answer to this question.
+
+MinValue is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-1-form-behavior-value-constraints--min-value">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-1-form-behavior-value-constraints--min-value"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
+
+### MaxValue
+
+The maximum value of the quantifiable answer to this question.
+
+MaxValue is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-1-form-behavior-value-constraints--max-value">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-1-form-behavior-value-constraints--max-value"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
+
+### MaxDecimalPlaces
+
+The maximum number of decimal places allowed in the numeric answer to this question.
+
+MaxDecimalPlaces is only supported on **decimal** items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-1-form-behavior-value-constraints--max-decimal-places">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-1-form-behavior-value-constraints--max-decimal-places"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>

@@ -121,7 +121,7 @@ export const qMinLength: Questionnaire = {
       extension: [
         {
           url: 'http://hl7.org/fhir/StructureDefinition/minLength',
-          valueInteger: 9
+          valueInteger: 10
         }
       ],
       linkId: 'phone-feedback',
