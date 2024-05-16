@@ -57,6 +57,34 @@ export const qRenderingXhtmlDisplayListItem: Questionnaire = {
   ]
 };
 
+export const qRenderingXhtmlDisplayBase64ImageItem: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'RenderingXhtml-3',
+  name: 'RenderingXhtml-3',
+  title: 'Rendering XHTML 3',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-3',
+  item: [
+    {
+      linkId: 'CD-in-progress-1',
+      text: 'In progress',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div title="Section completed" xmlns="http://www.w3.org/1999/xhtml">\r\n\t<div style="display: flex; flex-direction: row;">\r\n\t\t<img width=\'64\' height=\'64\' src=\'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMyZTdkMzIiIGQ9Ik0yMCAxMmE4IDggMCAwIDEtOCA4YTggOCAwIDAgMS04LThhOCA4IDAgMCAxIDgtOGMuNzYgMCAxLjUuMTEgMi4yLjMxbDEuNTctMS41N0E5LjgyMiA5LjgyMiAwIDAgMCAxMiAyQTEwIDEwIDAgMCAwIDIgMTJhMTAgMTAgMCAwIDAgMTAgMTBhMTAgMTAgMCAwIDAgMTAtMTBNNy45MSAxMC4wOEw2LjUgMTEuNUwxMSAxNkwyMSA2bC0xLjQxLTEuNDJMMTEgMTMuMTdsLTMuMDktMy4wOVoiLz48L3N2Zz4=\'\r\n\t\tstyle="align-self: center;"/>\r\n\t</div>\r\n</div>'
+          }
+        ]
+      },
+      type: 'display'
+    }
+  ]
+};
+
 export const qDisplayCategoryInstructions: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'DisplayCategoryInstructions',

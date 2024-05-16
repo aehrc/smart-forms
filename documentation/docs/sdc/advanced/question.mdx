@@ -2,21 +2,243 @@
 sidebar_position: 4
 ---
 
+import IframeContainer from '../../../src/react/IframeContainer';
+
 # Question Rendering
 
-Question Rendering Placeholder
+This subsection consists of the question-related advanced rendering extensions.
 
-- [answerOption](http://hl7.org/fhir/uv/sdc/behavior.html#answerOption)
-- [answerValueSet](http://hl7.org/fhir/uv/sdc/behavior.html#answerValueSet)
-- [answerExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerExpression)
+The extensions that fall under this category are:
 
-- autocomplete
-- drop-down
-- check-box
-- radio-button
-- slider
+**From SDC - [Questionnaire Item UI Controls](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html)**
 
-- choiceOrientation (used in choice questions)
-- sliderStepValue (used in slider)
-- entryFormat (used in string, integer, decimal, text)
-- questionnaire-unit
+- **autocomplete** - Auto-complete
+- **drop-down** - Drop down
+- **check-box** - Checkbox
+- **radio-button** - Radio Button
+- **slider** - Slider
+
+**From SDC - [Advanced Form Rendering](http://hl7.org/fhir/uv/sdc/rendering.html)**
+
+- [choiceOrientation](http://hl7.org/fhir/uv/sdc/rendering.html#choiceOrientation)
+- [sliderStepValue](http://hl7.org/fhir/uv/sdc/rendering.html#sliderStepValue)
+- [entryFormat](http://hl7.org/fhir/uv/sdc/rendering.html#entryFormat)
+- [questionnaire-unit](https://hl7.org/fhir/extensions/StructureDefinition-questionnaire-unit.html)
+
+### Autocomplete
+
+Provides a list of potential matches based on text entered into the field. It is useful when performing a search over a large valueSet via a terminology service.
+
+Autocomplete is only supported on **open-choice** items.
+
+#### Open Choice Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--autocomplete-open-choice">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--autocomplete-open-choice"
+    width="100%"
+    height="580"
+  />
+</IframeContainer>
+
+### Drop down
+
+Provides a list of options to choose from drop-down list. It is useful for small-to-medium sized lists of options that can reasonably be scanned and selected.
+
+Drop down is only supported on **choice** items.
+
+#### Choice AnswerOption Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-option"
+    width="100%"
+    height="310"
+  />
+</IframeContainer>
+
+#### Choice AnswerValueSet Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-value-set"
+    width="100%"
+    height="260"
+  />
+</IframeContainer>
+
+### Checkbox
+
+Provides a list of options with a box beside each option. It is useful for questions where more than one option can be selected.
+
+Checkbox is only supported on **choice** and **open-choice** items. It is commonly used with [choiceOrientation](http://hl7.org/fhir/StructureDefinition/choiceOrientation) extension.
+
+#### Choice AnswerOption Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-option"
+    width="100%"
+    height="550"
+  />
+</IframeContainer>
+
+#### Open-choice AnswerOption Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-option"
+    width="100%"
+    height="890"
+  />
+</IframeContainer>
+
+#### Choice AnswerValueSet Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-value-set"
+    width="100%"
+    height="340"
+  />
+</IframeContainer>
+
+#### Open-choice AnswerValueSet Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-value-set"
+    width="100%"
+    height="830"
+  />
+</IframeContainer>
+
+### Radio Button
+
+Provides a list of options with a radio button beside each option. It is useful for questions where only one option can be selected.
+
+Radio button is only supported on **choice** and **open-choice** items. It is commonly used with [choiceOrientation](http://hl7.org/fhir/StructureDefinition/choiceOrientation) extension.
+
+#### Choice AnswerOption usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-option"
+    width="100%"
+    height="180"
+  />
+</IframeContainer>
+
+#### Open-Choice AnswerOption usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-option">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-option"
+    width="100%"
+    height="220"
+  />
+</IframeContainer>
+
+#### Choice AnswerValueSet usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-value-set"
+    width="100%"
+    height="150"
+  />
+</IframeContainer>
+
+#### Open-Choice AnswerValueSet usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-value-set">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-value-set"
+    width="100%"
+    height="180"
+  />
+</IframeContainer>
+
+### Slider
+
+Provides a horizontal axis between the high and low values which can be visually manipulated to select values. It is useful for limiting the number of selectable values within a certain range.
+
+Slider is only supported on **integer** items. It is commonly used with [minValue](http://hl7.org/fhir/StructureDefinition/minValue), [maxValue](http://hl7.org/fhir/StructureDefinition/minValue) and [sliderStepValue](http://hl7.org/fhir/StructureDefinition/questionnaire-sliderStepValue) extensions.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--slider-integer">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--slider-integer"
+    width="100%"
+    height="110"
+  />
+</IframeContainer>
+
+### ChoiceOrientation
+
+Forces the rendering of choices in a vertical or horizontal orientation.
+
+ChoiceOrientation is only supported on [itemControl](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) "radio-button" and "check-box" extensions.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance--choice-orientation">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance--choice-orientation"
+    width="100%"
+    height="240"
+  />
+</IframeContainer>
+
+### SliderStepValue
+
+[//]: # 'FIXME reference in value constriants minValue maxValue'
+
+Indicates the increment with which a [slider](#slider) will move between the minValue and the maxValue.
+
+SliderStepValue is only supported on the [itemControl](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) "slider" extension.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance--slider-step-value">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance--slider-step-value"
+    width="100%"
+    height="110"
+  />
+</IframeContainer>
+
+### EntryFormat
+
+Displays a "ghost" text in the field. Acts as a guide for the user on what to enter in the field.
+
+It disappears from the field after text is entered.
+
+EntryFormat is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-3-advanced-additional-display-content--entry-format">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-3-advanced-additional-display-content--entry-format"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### Questionnaire-unit
+
+Displays a unit of measurement at the right end of the field. This is useful when the field expects a specific unit to be entered.
+
+Questionnaire-unit is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-3-advanced-additional-display-content--questionnaire-unit">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-3-advanced-additional-display-content--questionnaire-unit"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>

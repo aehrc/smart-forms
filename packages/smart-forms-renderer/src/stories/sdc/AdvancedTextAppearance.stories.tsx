@@ -22,6 +22,7 @@ import {
   qHidden,
   qOpenLabel,
   qRenderingXhtmlBooleanCheckboxItem,
+  qRenderingXhtmlDisplayBase64ImageItem,
   qRenderingXhtmlDisplayListItem
 } from '../assets/questionnaires';
 
@@ -47,6 +48,12 @@ export const RenderingXHTMLBooleanCheckbox: Story = {
 export const RenderingXHTMLDisplayList: Story = {
   args: {
     questionnaire: qRenderingXhtmlDisplayListItem
+  }
+};
+
+export const RenderingXHTMLDisplayBase64Image: Story = {
+  args: {
+    questionnaire: qRenderingXhtmlDisplayBase64ImageItem
   }
 };
 

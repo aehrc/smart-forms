@@ -2,10 +2,112 @@
 sidebar_position: 2
 ---
 
+import IframeContainer from '../../../src/react/IframeContainer';
+
 # Group Rendering
 
-Group Rendering Placeholder
+This subsection consists of the group-related advanced rendering extensions.
 
-- gtable
-- grid
-- tab-container
+The extensions that fall under this category are:
+
+**From SDC - [Questionnaire Item UI Controls](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html)**
+
+- **gtable** - Group Table
+- **grid** - Group Grid
+- **tab-container** - Tab Container
+
+### Group Table
+
+Allows questions within the group to be rendered as columns in a table with each group repetition as a row.
+
+A group table provides the following controls:
+
+1. **Add Row** - Adds a new row to the group table.
+2. **Remove Item** - Removes the selected row from the group table.
+3. **Row checkbox** - Selects row items to be captured in the QuestionnaireResponse. By default, all rows are selected.
+4. **Select-all checkbox** - Selects or unselects all rows in the group table.
+5. **Row drag indicator** - Allows the user to drag and drop rows for reordering.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-group--gtable">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-group--gtable"
+    width="100%"
+    height="580"
+  />
+</IframeContainer>
+
+:::note
+
+Having too many columns in a group table can make the form question difficult to read. It is recommended to have a maximum of 4-5 columns in a group table.
+
+:::
+
+### Group Grid
+
+Allows questions within the group to be rendered as a grid. Each row in the grid should refer to a topic/section, with the columns representing the related questions.
+
+Refer to the **grid** section in [Questionnaire Item UI Controls](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) for a detailed explanation in constructing a group grid.
+
+#### Single-row Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-group--grid-single-row">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-group--grid-single-row"
+    width="100%"
+    height="250"
+  />
+</IframeContainer>
+
+#### Multi-row Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-group--grid-multi-row">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-group--grid-multi-row"
+    width="100%"
+    height="560"
+  />
+</IframeContainer>
+
+:::danger
+
+There is currently a known issue which requires group grids to have a parent group item, otherwise it will be rendered as a regular group.
+
+For more information, refer to https://github.com/aehrc/smart-forms/issues/789.
+
+:::
+
+:::note
+
+Similar to the group table, having too many columns in a group grid can make the form question difficult to read. It is recommended to have a maximum of 4-5 columns in a group table.
+
+:::
+
+### Tab Container
+
+Indicates that the group represents a collection of tabs.
+
+This can be used to create a "tabbed" form, with clickable tabs on the left and the form sections on the right.
+
+[Conditional rendering](/smart-forms/docs/sdc/conditional) can be used to show/hide tabs based on form answers or a pre-filled value i.e. a patient's age.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-group--tab-container">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-group--tab-container"
+    width="100%"
+    height="560"
+  />
+</IframeContainer>
+
+#### Conditional Rendering Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--enable-when-expression-tabs">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--enable-when-expression-tabs"
+    width="100%"
+    height="420"
+  />
+</IframeContainer>

@@ -6,7 +6,8 @@ import IframeContainer from '../../src/react/IframeContainer';
 
 # Terminology Binding
 
-Standardised terminology can be used in FHIR Questionnaires via [codes](https://hl7.org/fhir/r4/terminologies.html) and [valueSets](https://www.hl7.org/fhir/r4/valueset.html).
+Standardised terminology can be used in FHIR Questionnaires via [codes](https://hl7.org/fhir/r4/terminologies.html) and [valueSets](https://www.hl7.org/fhir/r4/valueset.html) for interoperability purposes.
+
 The elements/extensions that fall under this category are:
 
 - [answerOption](http://hl7.org/fhir/uv/sdc/behavior.html#answerOption)
@@ -30,66 +31,26 @@ Not all components support terminology binding. The following components support
 
 AnswerOption is used to specify a list of possible answers to a question. Each answer can be represented by a **integer**, **date**, **time**, **string**, **Coding** or **Reference** element.
 
+AnswerOption provides a way to initially set answer(s) as selected for a question via `answerOption.initialSelected`. However, multiple initial selections can only be used in repeating items. There can only be one initial selected value for non-repeating items.
+
 #### Basic usage
 
 - [choice](/smart-forms/docs/components/choice#answer-option)
 - [open-choice](/smart-forms/docs/components/open-choice#answer-option)
 
-#### Check-box usage
-
-Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-option">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-option"
-    width="100%"
-    height="550"
-  />
-</IframeContainer>
-
-Open Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-option">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-option"
-    width="100%"
-    height="890"
-  />
-</IframeContainer>
-
 #### Drop down usage
 
-Choice
+- [choice](/smart-forms/docs/sdc/advanced/question#choice-answeroption-usage)
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-option">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-option"
-    width="100%"
-    height="310"
-  />
-</IframeContainer>
+#### Checkbox usage
+
+- [choice](/smart-forms/docs/sdc/advanced/question#choice-answeroption-usage-1)
+- [open-choice](/smart-forms/docs/sdc/advanced/question#open-choice-answeroption-usage)
 
 #### Radio button usage
 
-Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-option">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-option"
-    width="100%"
-    height="180"
-  />
-</IframeContainer>
-
-Open Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-option">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-option"
-    width="100%"
-    height="220"
-  />
-</IframeContainer>
+- [choice](/smart-forms/docs/sdc/advanced/question#choice-answeroption-usage-2)
+- [open-choice](/smart-forms/docs/sdc/advanced/question#open-choice-answeroption-usage-1)
 
 ### AnswerValueSet
 
@@ -159,71 +120,21 @@ There are two ways to define an answerValueSet:
 
 #### Auto-complete usage
 
-Open Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--autocomplete-open-choice">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--autocomplete-open-choice"
-    width="100%"
-    height="580"
-  />
-</IframeContainer>
-
-#### Check-box usage
-
-Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-value-set">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-choice-answer-value-set"
-    width="100%"
-    height="340"
-  />
-</IframeContainer>
-
-Open Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-value-set">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--checkbox-open-choice-answer-value-set"
-    width="100%"
-    height="830"
-  />
-</IframeContainer>
+- [open-choice](/smart-forms/docs/sdc/advanced/question#open-choice-usage)
 
 #### Drop down usage
 
-Choice
+- [choice](/smart-forms/docs/sdc/advanced/question#choice-answervalueset-usage)
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-value-set">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--drop-down-choice-answer-value-set"
-    width="100%"
-    height="260"
-  />
-</IframeContainer>
+#### Checkbox usage
 
-#### Radio button usage
+- [choice](/smart-forms/docs/sdc/advanced/question#choice-answervalueset-usage-1)
+- [open-choice](/smart-forms/docs/sdc/advanced/question#open-choice-answervalueset-usage)
 
-Choice
+#### Radio Button usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-value-set">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-choice-answer-value-set"
-    width="100%"
-    height="150"
-  />
-</IframeContainer>
-
-Open Choice
-
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-value-set">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance-item-control-question--radio-open-choice-answer-value-set"
-    width="100%"
-    height="180"
-  />
-</IframeContainer>
+- [choice](/smart-forms/docs/sdc/advanced/question#choice-answervalueset-usage-2)
+- [open-choice](/smart-forms/docs/sdc/advanced/question#open-choice-answervalueset-usage-1)
 
 ### AnswerExpression
 

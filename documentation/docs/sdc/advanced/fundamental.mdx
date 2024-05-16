@@ -1,0 +1,164 @@
+---
+sidebar_position: 1
+---
+
+import IframeContainer from '../../../src/react/IframeContainer';
+
+# Fundamental Elements
+
+This subsection consists of the commonly-used elements to change form behavior and appearance.
+
+The elements/extensions that fall under this category are:
+
+#### From Core Questionnaire
+
+- [required](https://www.hl7.org/fhir/r4/questionnaire-definitions.html#Questionnaire.item.required)
+- [repeats](https://www.hl7.org/fhir/r4/questionnaire-definitions.html#Questionnaire.item.repeats)
+- [readOnly](https://www.hl7.org/fhir/r4/questionnaire-definitions.html#Questionnaire.item.readOnly)
+- [initial](https://www.hl7.org/fhir/r4/questionnaire-definitions.html#Questionnaire.item.initial)
+
+#### From SDC
+
+- [hidden](http://hl7.org/fhir/uv/sdc/rendering.html#hidden)
+
+### Required
+
+An indication, if true, that the item must be present in a "completed" QuestionnaireResponse. If false, the item may be skipped when answering the questionnaire.
+
+Also appears in the [Validation](/smart-forms/docs/sdc/advanced/validation) subsection.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--required">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--required"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### Repeats
+
+An indication, if true, that the item may occur multiple times in the response, collecting multiple answers for questions or multiple sets of answers for groups.
+
+#### Basic Usage
+
+Most question items with `item.repeats = true` are presented in this manner. An add and remove button is provided to manage additional instances of the item.
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-autocomplete">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-autocomplete"
+    width="100%"
+    height="580"
+  />
+</IframeContainer>
+
+:::danger
+
+There is currently a known issue which requires repeating items to have a parent group item, otherwise it will be rendered as a non-repeating item.
+
+For more information, refer to https://github.com/aehrc/smart-forms/issues/788.
+
+:::
+
+#### Checkbox Usage
+
+If a question is a checkbox and `item.repeats = true`, a different view is presented. Instead of having add and remove buttons, multiple selections can be made in the checkbox.
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-checkbox">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-checkbox"
+    width="100%"
+    height="180"
+  />
+</IframeContainer>
+
+:::tip
+
+From a form design perspective, checkboxes are generally used if multiple answers are allowed to be selected. If only one answer is allowed, radio buttons should be used instead.
+
+For more information, refer to https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio.
+
+:::
+
+#### Group Usage
+
+Similar to the basic usage, a repeating group provides add and remove buttons to manage additional instances of the group item.
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-group">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-group"
+    width="100%"
+    height="750"
+  />
+</IframeContainer>
+
+#### Nested Group Usage
+
+You can nest repeating groups(or any other components, really) within another repeating group. This allows for a more complex form structure.
+
+It is recommended to view this example in Storybook in full screen mode.
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-group-nested">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-group-nested"
+    width="100%"
+    height="980"
+  />
+</IframeContainer>
+
+### ReadOnly
+
+An indication, when true, that the value cannot be changed by a human respondent to the Questionnaire.
+
+It is generally used with calculations or pre-filled values.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--read-only">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--read-only"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### Initial
+
+Allows one or more values to be pre-filled in the answer when initially rendering the questionnaire for user input. Initial values can't be specified for groups or display items.
+
+Questions using answerOption can use `answerOption.initialSelected` as an alternative.
+
+[//]: # 'FIXME add support for initialSelected'
+
+:::note
+
+Multiple initial values can be used in repeating items. There can only be one initial value for non-repeating items.
+
+:::
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--read-only">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--read-only"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
+
+### Hidden
+
+Allows the item to be hidden from the user interface.
+
+This is useful for answers to be captured behind the scenes via pre-fill and calculation mechanisms but are not intended to be displayed to the user. The output QuestionnaireResponse will still contain answers from hidden items.
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-1-advanced-text-appearance--hidden">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-1-advanced-text-appearance--hidden"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>
