@@ -35,6 +35,7 @@ interface ChoiceSelectAnswerOptionViewProps
   calcExpUpdated: boolean;
   onSelectChange: (linkId: string) => void;
   onFocusLinkId: () => void;
+  onClear: () => void;
 }
 
 function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) {
@@ -47,7 +48,8 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     readOnly,
     calcExpUpdated,
     onFocusLinkId,
-    onSelectChange
+    onSelectChange,
+    onClear
   } = props;
 
   if (isRepeated) {

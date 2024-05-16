@@ -24,6 +24,10 @@ import { getChoiceOrientation } from '../../../utils/choice';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import Fade from '@mui/material/Fade';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import { grey } from '@mui/material/colors';
 
 interface ChoiceRadioAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
@@ -32,10 +36,20 @@ interface ChoiceRadioAnswerOptionFieldsProps extends PropsWithIsTabledAttribute 
   readOnly: boolean;
   calcExpUpdated: boolean;
   onCheckedChange: (newValue: string) => void;
+  onClear: () => void;
 }
 
 function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps) {
-  const { qItem, options, valueRadio, readOnly, calcExpUpdated, isTabled, onCheckedChange } = props;
+  const {
+    qItem,
+    options,
+    valueRadio,
+    readOnly,
+    calcExpUpdated,
+    isTabled,
+    onCheckedChange,
+    onClear
+  } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -54,6 +68,19 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
       <Box flexGrow={1} />
 
       <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+      <Fade in={!!valueRadio} timeout={100}>
+        <Tooltip title="Set question as unanswered">
+          <Button
+            sx={{
+              color: grey['500'],
+              '&:hover': { backgroundColor: grey['200'] }
+            }}
+            disabled={readOnly}
+            onClick={onClear}>
+            Clear
+          </Button>
+        </Tooltip>
+      </Fade>
     </Box>
   );
 }

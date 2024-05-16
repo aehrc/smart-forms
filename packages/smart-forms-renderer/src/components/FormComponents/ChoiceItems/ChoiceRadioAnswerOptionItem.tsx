@@ -80,6 +80,10 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     );
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem));
+  }
+
   // TODO This is in preparation of refactoring all choice answerOption fields into one component
   const choiceControlType = getChoiceControlType(qItem);
 
@@ -97,6 +101,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           calcExpUpdated={calcExpUpdated}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onCheckedChange={handleChange}
+          onClear={handleClear}
         />
       );
     }
@@ -113,6 +118,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           calcExpUpdated={calcExpUpdated}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onSelectChange={handleChange}
+          onClear={handleClear}
         />
       );
     }
