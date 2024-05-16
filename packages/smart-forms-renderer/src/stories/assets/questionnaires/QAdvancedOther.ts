@@ -21,7 +21,6 @@ export const qRequired: Questionnaire = {
   ]
 };
 
-// FIXME requires a parent container
 export const qRepeatsAutocomplete: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RepeatsAutocomplete',
@@ -35,7 +34,7 @@ export const qRepeatsAutocomplete: Questionnaire = {
   item: [
     {
       linkId: 'parent-container',
-      text: 'Parent container',
+      text: '',
       type: 'group',
       repeats: false,
       item: [
