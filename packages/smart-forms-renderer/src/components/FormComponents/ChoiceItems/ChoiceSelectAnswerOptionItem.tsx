@@ -79,6 +79,10 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     );
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem));
+  }
+
   return (
     <ChoiceSelectAnswerOptionView
       qItem={qItem}
@@ -90,6 +94,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       isTabled={isTabled}
       onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
       onSelectChange={handleChange}
+      onClear={handleClear}
     />
   );
 }

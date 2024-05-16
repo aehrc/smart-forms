@@ -82,6 +82,10 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     }
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem));
+  }
+
   if (isRepeated) {
     return (
       <ChoiceRadioAnswerValueSetFields
@@ -93,6 +97,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         terminologyError={terminologyError}
         isTabled={isTabled}
         onCheckedChange={handleChange}
+        onClear={handleClear}
       />
     );
   }
@@ -112,6 +117,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
           terminologyError={terminologyError}
           isTabled={isTabled}
           onCheckedChange={handleChange}
+          onClear={handleClear}
         />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>

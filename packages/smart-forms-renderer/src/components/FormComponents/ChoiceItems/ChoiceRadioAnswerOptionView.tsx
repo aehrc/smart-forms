@@ -35,6 +35,7 @@ interface ChoiceRadioAnswerOptionViewProps
   calcExpUpdated: boolean;
   onCheckedChange: (linkId: string) => void;
   onFocusLinkId: () => void;
+  onClear: () => void;
 }
 
 function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
@@ -47,7 +48,8 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
     readOnly,
     calcExpUpdated,
     onFocusLinkId,
-    onCheckedChange
+    onCheckedChange,
+    onClear
   } = props;
 
   if (isRepeated) {
@@ -60,6 +62,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onCheckedChange={onCheckedChange}
+        onClear={onClear}
       />
     );
   }
@@ -78,6 +81,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
           isTabled={isTabled}
           calcExpUpdated={calcExpUpdated}
           onCheckedChange={onCheckedChange}
+          onClear={onClear}
         />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>

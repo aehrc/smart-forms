@@ -70,7 +70,7 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     return `Input is lower than the expected minimum value of ${minValue}.`;
   }
 
-  // Test min value
+  // Test max value
   if (
     invalidType === ValidationResult.maxValue &&
     (typeof maxValue === 'string' || typeof maxValue === 'number')
