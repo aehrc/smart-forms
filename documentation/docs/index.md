@@ -11,9 +11,9 @@ It is intended to demonstrate the use of [HL7 FHIR](https://hl7.org/fhir/) speci
 ### Getting Started
 
 This documentation is intended to provide a guide on how to use Smart Forms. It is divided into the following sections:
-- [Components](./doc/components/boolean): A showcase of supported Questionnaire form components.
-- [SDC](./doc/components/boolean): A section around the conformance and usage of functionalities defined in the SDC specification.
-- [Developer Usage](./doc/developer-usage/overview): A guide on how to use the form-rendering engine in your own application.
+- [Components](/smart-forms/docs/components): A showcase of supported Questionnaire form components.
+- [SDC](/smart-forms/docs/sdc): A section around the conformance and usage of functionalities defined in the SDC specification.
+- [Developer Usage](/smart-forms/docs/devUsage): A guide on how to use the form-rendering engine in your own application.
 
 ### Referenced FHIR Specifications 
 
