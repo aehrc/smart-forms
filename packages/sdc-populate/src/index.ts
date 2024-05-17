@@ -17,4 +17,6 @@
 
 // Type Predicates
 export * from './interfaces';
+
+// Populate utils
 export * from './utils';

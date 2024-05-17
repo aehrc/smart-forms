@@ -17,7 +17,6 @@
 
 import type { Questionnaire } from 'fhir/r4';
 
-// TODO Add docs on validation is exposed as operationOutcomes
 export const qLaunchContext: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'LaunchContext',
@@ -36,11 +35,11 @@ export const qLaunchContext: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Not defined yet.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Form Population</strong> section for the usage of launch context.</p></div>'
           }
         ]
       },
-      text: 'Not defined yet.',
+      text: 'Please refer to the Form Population section for the usage of launch context.',
       type: 'display',
       repeats: false
     }
@@ -59,24 +58,23 @@ export const qVariable: Questionnaire = {
   url: 'https://smartforms.csiro.au/docs/behavior/calculations/variable',
   item: [
     {
-      linkId: 'launch-context-instructions',
+      linkId: 'variables-instructions',
       _text: {
         extension: [
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Calculated Expression</strong> examples below for the usage of variables.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Calculated Expression</strong> examples above or the <strong>Form Population</strong> section for the usage of variables.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Calculated Expression examples below for the usage of variables.',
+      text: 'Please refer to the Calculated Expression examples above or the Form Population section for the usage of variables.',
       type: 'display',
       repeats: false
     }
   ]
 };
 
-// FIXME need to connect to a real FHIR server
 export const qInitialExpression: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'InitialExpression',
@@ -89,19 +87,19 @@ export const qInitialExpression: Questionnaire = {
   url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/initial-expression',
   item: [
     {
-      extension: [
-        {
-          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
-          valueExpression: {
-            description: 'deadline for submission',
-            language: 'text/fhirpath',
-            expression: 'today() + 7 days'
+      linkId: 'initial-expression-instructions',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Form Population</strong> section for the usage of initial expressions.</p></div>'
           }
-        }
-      ],
-      linkId: '3.1',
-      text: 'Deadline for submission (7 days from now)',
-      type: 'date'
+        ]
+      },
+      text: 'Please refer to the Form Population section for the usage of initial expressions.',
+      type: 'display',
+      repeats: false
     }
   ]
 };

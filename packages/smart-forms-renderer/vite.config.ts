@@ -19,5 +19,13 @@ import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: []
+  plugins: [],
+  optimizeDeps: {
+    include: ['@aehrc/sdc-populate']
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/, '@aehrc/sdc-populate']
+    }
+  }
 });
