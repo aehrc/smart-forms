@@ -15,117 +15,86 @@
  * limitations under the License.
  */
 
-import React, { useLayoutEffect, useState } from 'react';
-import type { Questionnaire } from 'fhir/r4';
+// @ts-ignore
+import React, { useState } from 'react';
+import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import ThemeProvider from '../theme/Theme';
 import useQueryClient from '../hooks/useQueryClient';
-import { buildForm } from '../utils';
-import useSmartClient from './useSmartClientForStorybook';
-import { useQuestionnaireResponseStore } from '../stores';
-import SmartClientContextProvider from './SmartClientContextForStorybook';
-import useAuthorisationForStorybook from './useAuthorisationForStorybook';
-import useLaunchForStorybook from './useLaunchForStorybook';
+import type Client from 'fhirclient/lib/Client';
+import useBuildFormForStorybook from './useBuildFormForStorybook';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../lib';
+import { populateQuestionnaire } from './populateUtilsForStorybook';
+import { flushSync } from 'react-dom';
 
 interface PrePopWrapperProps {
   questionnaire: Questionnaire;
-  formsServerUrl: string;
-  iss: string;
-  clientId: string;
-  scope: string;
-  patientId: string;
-  userId: string;
-  encounterId?: string;
-  questionnaireCanonical?: string;
+  fhirClient: Client;
+  patient: Patient;
+  user: Practitioner;
 }
 
 function PrePopWrapper(props: PrePopWrapperProps) {
-  const {
-    questionnaire,
-    formsServerUrl,
-    iss,
-    clientId,
-    scope,
-    patientId,
-    userId,
-    encounterId,
-    questionnaireCanonical
-  } = props;
+  const { questionnaire, fhirClient, patient, user } = props;
 
-  const { smartClient, patient, user } = useSmartClient();
+  const [isPopulating, setIsPopulating] = useState(false);
 
-  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
+  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const setUpdatableResponseAsPopulated =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
 
-  const [isBuildingForm, setIsBuildingForm] = useState(true);
-
-  // Init population spinner
-  let initialSpinner = { isSpinning: false, message: '' };
-  if (smartClient && patient && user && !sourceResponse.id) {
-    initialSpinner = {
-      // isSpinning: true,
-      isSpinning: false,
-      message: 'Populating form'
-    };
-  }
-  const [spinner, setSpinner] = useState(initialSpinner);
-
-  // 1. Perform launch
-  const launchState = useLaunchForStorybook(
-    iss,
-    clientId,
-    scope,
-    patientId,
-    userId,
-    encounterId,
-    questionnaireCanonical
-  );
-
-  // 2. Authorise with fhirClient
-
-  const isAuthorising = useAuthorisationForStorybook(launchState, formsServerUrl);
-
-  // 3. Build Form
-  useLayoutEffect(() => {
-    buildForm(questionnaire).then(() => {
-      setIsBuildingForm(false);
-    });
-  }, [questionnaire]);
-
-  // 4. Pre-populate
-  // usePopulate(spinner, () => setSpinner({ isSpinning: false, status: null, message: '' }));
+  const isBuilding = useBuildFormForStorybook(questionnaire);
 
   const queryClient = useQueryClient();
 
-  if (launchState === 'loading') {
-    return <div>Launching...</div>;
+  console.log(updatableResponse);
+
+  function handlePrepopulate() {
+    flushSync(() => {
+      setIsPopulating(true);
+    });
+
+    populateQuestionnaire(questionnaire, patient, user, {
+      clientEndpoint: fhirClient.state.serverUrl,
+      authToken: null
+    }).then(async ({ populateSuccess, populateResult }) => {
+      if (!populateSuccess || !populateResult) {
+        setIsPopulating(false);
+        return;
+      }
+
+      const { populated } = populateResult;
+      const updatedResponse = updatePopulatedProperties(populated);
+      // console.log(updatedResponse);
+      setUpdatableResponseAsPopulated(updatedResponse);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setIsPopulating(false);
+    });
   }
 
-  if (launchState === 'error') {
-    return <div>There is a SMART App Launch error.</div>;
-  }
-
-  if (isAuthorising) {
-    return <div>Authorising...</div>;
-  }
-
-  if (isBuildingForm) {
+  if (isBuilding) {
     return <div>Loading...</div>;
   }
 
   return (
-    <>
-      <div>{patient?.id ?? ''}</div>
-      <div>{user?.id ?? ''}</div>
-    </>
-  );
-
-  return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <SmartClientContextProvider>
-          {spinner.isSpinning ? <div>{spinner.message}</div> : <BaseRenderer />}
-        </SmartClientContextProvider>
+        <div>
+          {isPopulating ? <div>Pre-populating...</div> : <BaseRenderer />}
+          <>
+            <button
+              className="increase-button-hitbox"
+              onClick={handlePrepopulate}
+              disabled={isPopulating}>
+              Pre-populate!
+            </button>
+            {isPopulating ? <span style={{ marginLeft: '1em' }}>Pre-populating...</span> : null}
+          </>
+        </div>
       </QueryClientProvider>
     </ThemeProvider>
   );

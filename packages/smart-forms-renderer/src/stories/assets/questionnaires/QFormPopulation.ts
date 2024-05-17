@@ -66,6 +66,22 @@ export const qInitialExpressionBasic: Questionnaire = {
       type: 'integer',
       repeats: false,
       readOnly: false
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: "%patient.gender = 'female'"
+          }
+        }
+      ],
+      linkId: 'gender-female',
+      text: 'Gender Is female',
+      type: 'boolean',
+      repeats: false,
+      readOnly: false
     }
   ]
 };
