@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aehrc/sdc-populate": "^1.5.0",
+    "@aehrc/sdc-populate": "^1.8.0",
     "@aehrc/smart-forms-renderer": "file:../../packages/smart-forms-renderer",
     "@tanstack/react-query": "^4.36.1",
     "react": "^18.2.0",

@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
+    "@aehrc/sdc-populate": "^1.9.0",
     "@iconify/react": "^4.1.1",
     "dayjs": "^1.11.10",
     "deep-diff": "^1.0.2",

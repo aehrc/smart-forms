@@ -267,7 +267,7 @@ function initialiseItemCalculatedExpressionValueRecursive(
     return constructGroupItem(qItem, qrItem, calculatedExpressions);
   }
 
-  return constructSingleItem(qItem, calculatedExpressions);
+  return constructSingleItem(qItem, qrItem, calculatedExpressions);
 }
 
 function getCalculatedExpressionAnswer(
@@ -317,11 +317,12 @@ function constructGroupItem(
 
 function constructSingleItem(
   qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem | undefined,
   calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponseItem | null {
   const calculatedExpressionAnswer = getCalculatedExpressionAnswer(qItem, calculatedExpressions);
   if (!calculatedExpressionAnswer) {
-    return null;
+    return qrItem ?? null;
   }
 
   return {

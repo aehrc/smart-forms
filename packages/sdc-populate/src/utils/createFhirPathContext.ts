@@ -22,7 +22,13 @@ import type {
 } from '../interfaces/inputParameters.interface';
 import { isContextParameter } from './typePredicates';
 import fhirpath from 'fhirpath';
-import type { Bundle, FhirResource, OperationOutcomeIssue, Questionnaire } from 'fhir/r4';
+import type {
+  Bundle,
+  BundleEntry,
+  FhirResource,
+  OperationOutcomeIssue,
+  Questionnaire
+} from 'fhir/r4';
 import { createWarningIssue } from './operationOutcome';
 import type { FetchResourceCallback } from '../interfaces';
 
@@ -47,22 +53,49 @@ export async function createFhirPathContext(
     contextMap[containedBatchContext.part[0].valueString] = containedBatchContext.part[1].resource;
   }
 
+  // Resolve and populate reference context resources into contextMap
+  await populateReferenceContextsIntoContextMap(
+    updatedReferenceContexts,
+    contextMap,
+    fetchResourceCallback,
+    requestConfig,
+    issues
+  );
+
+  // Resolve and populate contained batch resources into contextMap
+  await populateBatchContextsIntoContextMap(
+    updatedContainedBatchContexts,
+    contextMap,
+    fetchResourceCallback,
+    requestConfig,
+    issues
+  );
+
+  return contextMap;
+}
+
+async function populateReferenceContextsIntoContextMap(
+  referenceContexts: ReferenceContext[],
+  contextMap: Record<string, any>,
+  fetchResourceCallback: FetchResourceCallback,
+  requestConfig: any,
+  issues: OperationOutcomeIssue[]
+) {
   // Get promises from context references
-  let referenceContextsTuple: [ReferenceContext, Promise<any>, FhirResource | null][] =
-    updatedReferenceContexts.map((referenceContext) => {
-      const query = referenceContext.part[1]?.valueReference?.reference;
+  let referenceContextTuples = referenceContexts.map((referenceContext) =>
+    createReferenceContextTuple(referenceContext, fetchResourceCallback, requestConfig)
+  );
 
-      // assert non-null as we have filtered the referenceContexts array previously
-      return [referenceContext, fetchResourceCallback(query!, requestConfig), null];
-    });
-
-  // Resolve promises
   try {
-    const promises: Promise<any>[] = referenceContextsTuple.map(([, promise]) => promise);
+    // Resolve promises for referenceContextsTuple
+    const promises: Promise<any>[] = referenceContextTuples.map(([, promise]) => promise);
     const responses = await Promise.all(promises);
+    const resources: (FhirResource | null)[] = responses.map((response) =>
+      responseDataIsFhirResource(response?.data) ? (response.data as FhirResource) : null
+    );
 
-    const resources = responses.map((response) => response.data as FhirResource);
-    referenceContextsTuple = referenceContextsTuple.map((tuple, i) => {
+    // Update referenceContextTuples with resolved resources
+    referenceContextTuples = referenceContextTuples.map((tuple, i) => {
       const [referenceContext, promise] = tuple;
       return [referenceContext, promise, resources[i] ?? null];
     });
@@ -72,9 +105,15 @@ export async function createFhirPathContext(
     }
   }
 
-  // Add bundles from reference contexts to contextMap
-  for (const tuple of referenceContextsTuple) {
-    const [referenceContext, , resource] = tuple;
+  // Add resources to contextMap
+  for (let i = 0; i < referenceContextTuples.length; i++) {
+    const referenceContextTuple = referenceContextTuples[i];
+    if (!referenceContextTuple) {
+      continue;
+    }
+
+    const referenceContext = referenceContextTuple[0];
+    const resource = referenceContextTuple[2];
     if (!resource) {
       issues.push(
         createWarningIssue(
@@ -84,18 +123,150 @@ export async function createFhirPathContext(
       continue;
     }
 
+    // If resource is an OperationOutcome, add to issues array
     if (resource.resourceType === 'OperationOutcome') {
       issues.push(...resource.issue);
       continue;
     }
 
+    // Add resource to contextMap
     const contextName = referenceContext.part[0].valueString;
     if (contextName) {
       contextMap[contextName] = resource;
     }
   }
+}
 
-  return contextMap;
+async function populateBatchContextsIntoContextMap(
+  batchContexts: ResourceContext[],
+  contextMap: Record<string, any>,
+  fetchResourceCallback: FetchResourceCallback,
+  requestConfig: any,
+  issues: OperationOutcomeIssue[]
+) {
+  // Get promises from contained batch contexts
+  const batchContextTuples: [ResourceContext, Promise<any>, FhirResource | null][][] = [];
+  for (const batchContext of batchContexts) {
+    const batchBundle = batchContext.part[1].resource as Bundle;
+    // batch bundle empty
+    if (!batchBundle.entry || batchBundle.entry.length === 0) {
+      batchContextTuples.push([]);
+      continue;
+    }
+
+    // batch bundle contains entries, create a request for each entry
+    const batchContextEntryTuples = batchBundle.entry.map((entry) =>
+      createResourceContextTuple(batchContext, entry, fetchResourceCallback, requestConfig)
+    );
+
+    batchContextTuples.push(batchContextEntryTuples);
+  }
+
+  // Resolve promises for batchContextsTuples and add populated batch bundles to contextMap
+  try {
+    for (const batchContextEntryTuples of batchContextTuples) {
+      if (!batchContextEntryTuples[0]) {
+        continue;
+      }
+
+      // Ensure batch bundle is available
+      const resourceContext = batchContextEntryTuples[0][0];
+      const batchBundleName = resourceContext.part[0].valueString;
+      const batchBundle = resourceContext.part[1].resource as Bundle;
+      if (!batchBundle.entry || batchBundle.entry.length === 0) {
+        continue;
+      }
+
+      // Resolve promises for batchContextEntryTuples
+      const promises: Promise<any>[] = batchContextEntryTuples.map(([, promise]) => promise);
+      const responses = await Promise.all(promises);
+      const resources: (FhirResource | null)[] = responses.map((response) =>
+        responseDataIsFhirResource(response?.data) ? (response.data as FhirResource) : null
+      );
+
+      // Add resources to batch bundle
+      for (let i = 0; i < resources.length; i++) {
+        const resource = resources[i];
+        const entry = batchBundle.entry[i];
+
+        // If resource or entry is null, add a warning issue
+        if (!resource || !entry) {
+          issues.push(
+            createWarningIssue(
+              `The resource for ${batchBundleName} entry ${i} could not be resolved.`
+            )
+          );
+          continue;
+        }
+
+        // If resource is an OperationOutcome, add issues to issues array
+        if (resource.resourceType === 'OperationOutcome') {
+          issues.push(...resource.issue);
+          continue;
+        }
+
+        // Add resource to batch bundle entry
+        entry.resource = resource;
+      }
+
+      // Add batch bundle to contextMap
+      contextMap[batchBundleName] = batchBundle;
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      issues.push(createWarningIssue(e.message));
+    }
+  }
+}
+
+function responseDataIsFhirResource(responseData: any): responseData is FhirResource {
+  return responseData && responseData.resourceType && typeof responseData.resourceType === 'string';
+}
+
+function createReferenceContextTuple(
+  referenceContext: ReferenceContext,
+  fetchResourceCallback: FetchResourceCallback,
+  requestConfig: any
+): [ReferenceContext, Promise<any>, FhirResource | null] {
+  const query = referenceContext.part[1]?.valueReference?.reference;
+
+  if (!query) {
+    return [
+      referenceContext,
+      Promise.resolve(
+        createWarningIssue(
+          `Reference Context ${referenceContext.part[0]?.valueString ?? ''} does not contain a reference`
+        )
+      ),
+      null
+    ];
+  }
+
+  return [referenceContext, fetchResourceCallback(query, requestConfig), null];
+}
+
+function createResourceContextTuple(
+  resourceContext: ResourceContext,
+  bundleEntry: BundleEntry<FhirResource>,
+  fetchResourceCallback: FetchResourceCallback,
+  requestConfig: any
+): [ResourceContext, Promise<any>, FhirResource | null] {
+  const query = bundleEntry.request?.url;
+
+  if (!query) {
+    const resourceContextName = resourceContext.part[0]?.valueString;
+    return [
+      resourceContext,
+      Promise.resolve(
+        createWarningIssue(
+          `${resourceContextName} bundle entry ${bundleEntry.fullUrl ?? ''} does not contain a request`
+        )
+      ),
+      null
+    ];
+  }
+
+  return [resourceContext, fetchResourceCallback(query, requestConfig), null];
 }
 
 function replaceFhirPathEmbeddings(
