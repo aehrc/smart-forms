@@ -16,64 +16,38 @@
  */
 
 // @ts-ignore
-import React, { useState } from 'react';
-import { populateQuestionnaire } from './populateUtilsForStorybook';
-import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
-import type Client from 'fhirclient/lib/Client';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../lib';
+import React from 'react';
+import { Box, CircularProgress, Fade, IconButton, Tooltip } from '@mui/material';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import Typography from '@mui/material/Typography';
 
 interface PrePopButtonProps {
-  questionnaire: Questionnaire;
-  fhirClient: Client;
-  patient: Patient;
-  user: Practitioner;
+  isPopulating: boolean;
+  onPopulate: () => void;
 }
 
 function PrePopButtonForStorybook(props: PrePopButtonProps) {
-  const { questionnaire, fhirClient, patient, user } = props;
-
-  const [isPopulating, setIsPopulating] = useState(false);
-
-  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
-
-  const setUpdatableResponseAsPopulated =
-    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
-
-  async function handlePrepopulate() {
-    setIsPopulating(true);
-
-    const { populateSuccess, populateResult } = await populateQuestionnaire(
-      questionnaire,
-      patient,
-      user,
-      {
-        clientEndpoint: fhirClient.state.serverUrl,
-        authToken: null
-      }
-    );
-    console.log(populateSuccess);
-
-    if (!populateSuccess || !populateResult) {
-      setIsPopulating(false);
-      return;
-    }
-
-    const { populated } = populateResult;
-    const updatedResponse = updatePopulatedProperties(populated);
-    setUpdatableResponseAsPopulated(updatedResponse);
-    setIsPopulating(false);
-  }
+  const { isPopulating, onPopulate } = props;
 
   return (
-    <>
-      <button
-        className="increase-button-hitbox"
-        onClick={handlePrepopulate}
-        disabled={isPopulating}>
-        Pre-populate!
-      </button>
-      {isPopulating ? <span style={{ marginLeft: '1em' }}>Pre-populating...</span> : null}
-    </>
+    <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
+      <Tooltip title="Pre-populate form" placement="right">
+        <IconButton disabled={isPopulating} onClick={onPopulate} size="small" color="primary">
+          {isPopulating ? (
+            <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
+          ) : (
+            <PlayCircleIcon />
+          )}
+        </IconButton>
+      </Tooltip>
+      {isPopulating ? (
+        <Fade in={true} timeout={100}>
+          <Typography variant="body2" color="text.secondary">
+            Pre-populating form...
+          </Typography>
+        </Fade>
+      ) : null}
+    </Box>
   );
 }
 

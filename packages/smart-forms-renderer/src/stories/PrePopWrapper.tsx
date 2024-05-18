@@ -24,9 +24,9 @@ import ThemeProvider from '../theme/Theme';
 import useQueryClient from '../hooks/useQueryClient';
 import type Client from 'fhirclient/lib/Client';
 import useBuildFormForStorybook from './useBuildFormForStorybook';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../lib';
 import { populateQuestionnaire } from './populateUtilsForStorybook';
-import { flushSync } from 'react-dom';
+import { buildForm } from '../utils';
+import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 
 interface PrePopWrapperProps {
   questionnaire: Questionnaire;
@@ -40,21 +40,12 @@ function PrePopWrapper(props: PrePopWrapperProps) {
 
   const [isPopulating, setIsPopulating] = useState(false);
 
-  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
-  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const setUpdatableResponseAsPopulated =
-    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
-
   const isBuilding = useBuildFormForStorybook(questionnaire);
 
   const queryClient = useQueryClient();
 
-  console.log(updatableResponse);
-
   function handlePrepopulate() {
-    flushSync(() => {
-      setIsPopulating(true);
-    });
+    setIsPopulating(true);
 
     populateQuestionnaire(questionnaire, patient, user, {
       clientEndpoint: fhirClient.state.serverUrl,
@@ -66,11 +57,10 @@ function PrePopWrapper(props: PrePopWrapperProps) {
       }
 
       const { populated } = populateResult;
-      const updatedResponse = updatePopulatedProperties(populated);
-      // console.log(updatedResponse);
-      setUpdatableResponseAsPopulated(updatedResponse);
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // buildForm is used here because there is a really bizarre bug - using the store hooks directly doesn't update the baseRenderer
+      // could be the fact that it doesn't play well with storybook
+      await buildForm(questionnaire, populated);
 
       setIsPopulating(false);
     });
@@ -84,16 +74,8 @@ function PrePopWrapper(props: PrePopWrapperProps) {
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          {isPopulating ? <div>Pre-populating...</div> : <BaseRenderer />}
-          <>
-            <button
-              className="increase-button-hitbox"
-              onClick={handlePrepopulate}
-              disabled={isPopulating}>
-              Pre-populate!
-            </button>
-            {isPopulating ? <span style={{ marginLeft: '1em' }}>Pre-populating...</span> : null}
-          </>
+          <PrePopButtonForStorybook isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+          {isPopulating ? null : <BaseRenderer />}
         </div>
       </QueryClientProvider>
     </ThemeProvider>

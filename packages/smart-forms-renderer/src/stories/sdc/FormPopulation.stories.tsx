@@ -17,7 +17,14 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import PrePopWrapper from '../PrePopWrapper';
-import { qInitialExpressionBasic } from '../assets/questionnaires/QFormPopulation';
+import {
+  qCalculatedExpressionBMICalculatorPrepop,
+  qCalculatedExpressionCvdRiskCalculatorPrepop,
+  qInitialExpressionBasic,
+  qItemPopulationContextHomeAddress,
+  qItemPopulationContextMedicalHistory,
+  qSourceQueriesBMICalculator
+} from '../assets/questionnaires/QFormPopulation';
 import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
 import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
@@ -38,6 +45,51 @@ type Story = StoryObj<typeof meta>;
 export const InitialExpression: Story = {
   args: {
     questionnaire: qInitialExpressionBasic,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const CalculatedExpressionBMICalculatorPrepop: Story = {
+  args: {
+    questionnaire: qCalculatedExpressionBMICalculatorPrepop,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const CalculatedExpressionCvdRiskCalculatorPrepop: Story = {
+  args: {
+    questionnaire: qCalculatedExpressionCvdRiskCalculatorPrepop,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const ItemPopulationContextHomeAddress: Story = {
+  args: {
+    questionnaire: qItemPopulationContextHomeAddress,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const ItemPopulationContextMedicalHistory: Story = {
+  args: {
+    questionnaire: qItemPopulationContextMedicalHistory,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const SourceQueriesBMICalculator: Story = {
+  args: {
+    questionnaire: qSourceQueriesBMICalculator,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
