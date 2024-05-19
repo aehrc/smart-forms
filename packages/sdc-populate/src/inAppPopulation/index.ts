@@ -15,5 +15,4 @@
  * limitations under the License.
  */
 
-export * from './SDCPopulateQuestionnaireOperation';
-export * from './inAppPopulation';
+export * from './utils';

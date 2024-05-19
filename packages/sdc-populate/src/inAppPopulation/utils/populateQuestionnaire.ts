@@ -1,0 +1,311 @@
+/*
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import type {
+  Extension,
+  OperationOutcome,
+  Patient,
+  Practitioner,
+  Questionnaire,
+  QuestionnaireResponse
+} from 'fhir/r4';
+import type {
+  FetchResourceCallback,
+  InputParameters,
+  IssuesParameter,
+  OutputParameters,
+  ResponseParameter
+} from '../../SDCPopulateQuestionnaireOperation';
+import {
+  isInputParameters,
+  isOutputParameters,
+  populate
+} from '../../SDCPopulateQuestionnaireOperation';
+import { createPopulateInputParameters } from './createInputParameters';
+import type {
+  LaunchContext,
+  QuestionnaireLevelXFhirQueryVariable,
+  SourceQuery
+} from '../interfaces/inAppPopulation.interface';
+
+export interface PopulateResult {
+  populatedResponse: QuestionnaireResponse;
+  issues?: OperationOutcome;
+}
+
+/**
+ * @param questionnaire - Questionnaire to populate
+ * @param patient - Patient resource as patient in context
+ * @param user - Practitioner resource as user in context
+ * @param fetchResourceCallback - A callback function to fetch resources
+ * @param requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
+ *
+ * @author Sean Fong
+ */
+export interface PopulateQuestionnaireParams {
+  questionnaire: Questionnaire;
+  patient: Patient;
+  user: Practitioner;
+  fetchResourceCallback: FetchResourceCallback;
+  requestConfig: any;
+}
+
+/**
+ * Performs an in-app population of the provided questionnaire.
+ * By in-app, it means that a callback function is provided to fetch resources.
+ *
+ * @param params - Refer to PopulateQuestionnaireParams interface
+ * @returns populateSuccess - A boolean indicating if the population was successful
+ * @returns populateResult - An object containing populated response and issues if any
+ *
+ * @author Sean Fong
+ */
+export async function populateQuestionnaire(params: PopulateQuestionnaireParams): Promise<{
+  populateSuccess: boolean;
+  populateResult: PopulateResult | null;
+}> {
+  const { questionnaire, patient, user, fetchResourceCallback, requestConfig } = params;
+
+  const context: Record<string, any> = {};
+
+  // Get launch contexts, source queries and questionnaire-level variables
+  const launchContexts = getLaunchContexts(questionnaire);
+  const sourceQueries = getSourceQueries(questionnaire);
+  const questionnaireLevelVariables = getQuestionnaireLevelXFhirQueryVariables(questionnaire);
+
+  if (
+    launchContexts.length === 0 &&
+    sourceQueries.length === 0 &&
+    questionnaireLevelVariables.length === 0
+  ) {
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
+  }
+
+  // Define population input parameters from launch contexts, source queries and questionnaire-level variables
+  const inputParameters = createPopulateInputParameters(
+    questionnaire,
+    patient,
+    user,
+    launchContexts,
+    sourceQueries,
+    questionnaireLevelVariables,
+    context
+  );
+
+  if (!inputParameters) {
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
+  }
+
+  if (!isInputParameters(inputParameters)) {
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
+  }
+
+  // Perform population if parameters satisfies input parameters
+  const outputParameters = await performInAppPopulation(
+    inputParameters,
+    fetchResourceCallback,
+    requestConfig
+  );
+
+  if (outputParameters.resourceType === 'OperationOutcome') {
+    return {
+      populateSuccess: false,
+      populateResult: null
+    };
+  }
+
+  const responseParameter = outputParameters.parameter.find(
+    (param) => param.name === 'response'
+  ) as ResponseParameter;
+  const issuesParameter = outputParameters.parameter.find((param) => param.name === 'issues') as
+    | IssuesParameter
+    | undefined;
+
+  if (issuesParameter) {
+    return {
+      populateSuccess: true,
+      populateResult: {
+        populatedResponse: responseParameter.resource,
+        issues: issuesParameter.resource
+      }
+    };
+  }
+
+  return {
+    populateSuccess: true,
+    populateResult: {
+      populatedResponse: responseParameter.resource
+    }
+  };
+}
+
+async function performInAppPopulation(
+  inputParameters: InputParameters,
+  fetchResourceCallback: FetchResourceCallback,
+  requestConfig: any
+): Promise<OutputParameters | OperationOutcome> {
+  const populatePromise = populate(inputParameters, fetchResourceCallback, requestConfig);
+
+  try {
+    const promiseResult = await addTimeoutToPromise(populatePromise, 10000);
+
+    if (promiseResult.timeout) {
+      return {
+        resourceType: 'OperationOutcome',
+        issue: [
+          {
+            severity: 'error',
+            code: 'timeout',
+            details: { text: '$populate operation timed out.' }
+          }
+        ]
+      };
+    }
+
+    if (isOutputParameters(promiseResult)) {
+      return promiseResult;
+    }
+
+    return {
+      resourceType: 'OperationOutcome',
+      issue: [
+        {
+          severity: 'error',
+          code: 'invalid',
+          details: {
+            text: 'Output parameters do not match the specification.'
+          }
+        }
+      ]
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      resourceType: 'OperationOutcome',
+      issue: [
+        {
+          severity: 'error',
+          code: 'unknown',
+          details: { text: 'An unknown error occurred.' }
+        }
+      ]
+    };
+  }
+}
+
+async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error(`Promise timed out after ${timeoutMs} milliseconds`));
+    }, timeoutMs);
+  });
+
+  // Use Promise.race to wait for either the original promise or the timeout promise
+  return Promise.race([promise, timeoutPromise]);
+}
+
+function isLaunchContext(extension: Extension): extension is LaunchContext {
+  const hasLaunchContextName =
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
+    !!extension.extension?.find(
+      (ext) =>
+        ext.url === 'name' &&
+        (ext.valueId ||
+          (ext.valueCoding &&
+            (ext.valueCoding.code === 'patient' ||
+              ext.valueCoding.code === 'encounter' ||
+              ext.valueCoding.code === 'location' ||
+              ext.valueCoding.code === 'user' ||
+              ext.valueCoding.code === 'study' ||
+              ext.valueCoding.code === 'sourceQueries')))
+    );
+
+  const hasLaunchContextType = !!extension.extension?.find(
+    (ext) =>
+      ext.url === 'type' &&
+      ext.valueCode &&
+      (ext.valueCode === 'Patient' ||
+        ext.valueCode === 'Practitioner' ||
+        ext.valueCode === 'Encounter')
+  );
+
+  return (
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
+    hasLaunchContextName &&
+    hasLaunchContextType
+  );
+}
+
+function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) =>
+      isLaunchContext(extension)
+    ) as LaunchContext[];
+  }
+
+  return [];
+}
+
+function isSourceQuery(extension: Extension): extension is SourceQuery {
+  return (
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries' &&
+    !!extension.valueReference
+  );
+}
+
+function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) => isSourceQuery(extension)) as SourceQuery[];
+  }
+
+  return [];
+}
+
+function isXFhirQueryVariable(
+  extension: Extension
+): extension is QuestionnaireLevelXFhirQueryVariable {
+  return (
+    extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
+    !!extension.valueExpression?.name &&
+    extension.valueExpression?.language === 'application/x-fhir-query' &&
+    !!extension.valueExpression?.expression
+  );
+}
+
+function getQuestionnaireLevelXFhirQueryVariables(
+  questionnaire: Questionnaire
+): QuestionnaireLevelXFhirQueryVariable[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) =>
+      isXFhirQueryVariable(extension)
+    ) as QuestionnaireLevelXFhirQueryVariable[];
+  }
+
+  return [];
+}

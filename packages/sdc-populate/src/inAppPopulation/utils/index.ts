@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 
-export * from './SDCPopulateQuestionnaireOperation';
-export * from './inAppPopulation';
+export type { PopulateResult, PopulateQuestionnaireParams } from './populateQuestionnaire';
+export { populateQuestionnaire } from './populateQuestionnaire';

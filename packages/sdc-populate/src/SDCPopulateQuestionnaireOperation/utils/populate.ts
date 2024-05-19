@@ -30,10 +30,10 @@ import { isEncounterContextParameter } from './typePredicates';
 import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
 
 /**
- * Main function of this populate module.
+ * Executes the SDC Populate Questionnaire operation - $populate.
  * Input and output specific parameters conformant to the SDC populate specification.
  * @see {@link https://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-populate.html}
- * Added populationContextResults for visual and debugging purposes.
+ * Added custom output parameters populationContextResults for visual and debugging purposes.
  *
  * @author Sean Fong
  */

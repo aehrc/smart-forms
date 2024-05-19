@@ -50,6 +50,7 @@ export interface IssuesParameter extends ParametersParameter {
 }
 
 // This is used for debugging purposes, it does not exist in the FHIR spec
+// It is used to return the context result to the renderer
 export interface CustomContextResultParameter extends ParametersParameter {
   name: 'contextResult-custom';
   valueAttachment: Attachment;

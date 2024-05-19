@@ -24,9 +24,10 @@ import ThemeProvider from '../theme/Theme';
 import useQueryClient from '../hooks/useQueryClient';
 import type Client from 'fhirclient/lib/Client';
 import useBuildFormForStorybook from './useBuildFormForStorybook';
-import { populateQuestionnaire } from './populateUtilsForStorybook';
 import { buildForm } from '../utils';
 import PrePopButtonForStorybook from './PrePopButtonForStorybook';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { fetchResourceCallback } from './populateCallbackForStorybook';
 
 interface PrePopWrapperProps {
   questionnaire: Questionnaire;
@@ -47,20 +48,26 @@ function PrePopWrapper(props: PrePopWrapperProps) {
   function handlePrepopulate() {
     setIsPopulating(true);
 
-    populateQuestionnaire(questionnaire, patient, user, {
-      clientEndpoint: fhirClient.state.serverUrl,
-      authToken: null
+    populateQuestionnaire({
+      questionnaire: questionnaire,
+      patient: patient,
+      user: user,
+      fetchResourceCallback: fetchResourceCallback,
+      requestConfig: {
+        clientEndpoint: fhirClient.state.serverUrl,
+        authToken: null
+      }
     }).then(async ({ populateSuccess, populateResult }) => {
       if (!populateSuccess || !populateResult) {
         setIsPopulating(false);
         return;
       }
 
-      const { populated } = populateResult;
+      const { populatedResponse } = populateResult;
 
       // buildForm is used here because there is a really bizarre bug - using the store hooks directly doesn't update the baseRenderer
       // could be the fact that it doesn't play well with storybook
-      await buildForm(questionnaire, populated);
+      await buildForm(questionnaire, populatedResponse);
 
       setIsPopulating(false);
     });

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { generateExpressionValues } from '../utils/evaluateExpressions';
+import { generateExpressionValues } from '../SDCPopulateQuestionnaireOperation/utils/evaluateExpressions';
 import initialExpressionsSample from './resources/initial-expressions-sample.json';
 import contextSample from './resources/context-sample.json';
-import type { InitialExpression } from '../interfaces/expressions.interface';
+import type { InitialExpression } from '../SDCPopulateQuestionnaireOperation/interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 
 describe('evaluate initial expressions', () => {
