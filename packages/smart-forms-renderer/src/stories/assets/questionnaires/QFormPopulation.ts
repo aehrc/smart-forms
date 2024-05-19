@@ -1219,22 +1219,6 @@ export const qSourceQueriesBMICalculator: Questionnaire = {
   ],
   extension: [
     {
-      url: 'http://hl7.org/fhir/StructureDefinition/variable',
-      valueExpression: {
-        name: 'ObsBodyHeight',
-        language: 'application/x-fhir-query',
-        expression: 'Observation?code=8302-2&_count=1&_sort=-date&patient={{%patient.id}}'
-      }
-    },
-    // {
-    //   url: 'http://hl7.org/fhir/StructureDefinition/variable',
-    //   valueExpression: {
-    //     name: 'ObsBodyWeight',
-    //     language: 'application/x-fhir-query',
-    //     expression: 'Observation?code=29463-7&_count=1&_sort=-date&patient={{%patient.id}}'
-    //   }
-    // },
-    {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
       extension: [
         {

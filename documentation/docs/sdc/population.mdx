@@ -2,15 +2,133 @@
 sidebar_position: 2
 ---
 
+import IframeContainer from '../../src/react/IframeContainer';
+
 # Pre-population
 
-Pre-population Placeholder
+Pre-population is a mechanism to pre-fill form questions with information already present in the clinical system. It is a way to reduce the burden on the user to fill in information that is already known.
 
-- [initial](http://hl7.org/fhir/uv/sdc/behavior.html#initial)
-- [variable](http://hl7.org/fhir/uv/sdc/expressions.html#variable)
-- [initialExpression](http://hl7.org/fhir/uv/sdc/expressions.html#initialExpression)
-- [calculatedExpression](http://hl7.org/fhir/uv/sdc/expressions.html#calculatedExpression)
-- [itemPopulationContext](http://hl7.org/fhir/uv/sdc/expressions.html#itemPopulationContext)
+For a detailed explanation, see the [Form Population](https://hl7.org/fhir/uv/sdc/populate.html) section in the SDC spec.
+
+The elements/extensions that fall under this category are:
+
+#### Extensions containing pre-population queries:
+
 - [launchContext](http://hl7.org/fhir/uv/sdc/expressions.html#launchContext)
+- [variable](http://hl7.org/fhir/uv/sdc/expressions.html#variable)
 - [x-fhir-query](http://hl7.org/fhir/uv/sdc/expressions.html#x-fhir-query-enhancements)
 - [sourceQueries](https://build.fhir.org/ig/HL7/sdc/populate.html#structuremap-based-population)
+- [itemPopulationContext](http://hl7.org/fhir/uv/sdc/expressions.html#itemPopulationContext)
+
+#### Elements/expressions defined at the question to be pre-populated:
+
+- [initial](http://hl7.org/fhir/uv/sdc/behavior.html#initial)
+- [initialExpression](http://hl7.org/fhir/uv/sdc/expressions.html#initialExpression)
+- [calculatedExpression](http://hl7.org/fhir/uv/sdc/expressions.html#calculatedExpression)
+
+### LaunchContext
+
+Allows information to be passed into the execution environment based on the context in which the Questionnaire is being pre-populated i.e patient, user, encounter, etc.
+
+The passed information is known as "in context" within the launching system, and is subsequently applied in pre-population queries.
+
+#### Example
+
+Below is an example of how a launchContext extension is defined in the questionnaire.
+It specifies that the patient in context is to be used to pre-populate the form.
+
+```json
+{
+  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+  "extension": [
+    {
+      "url": "name",
+      "valueCoding": {
+        "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+        "code": "patient"
+      }
+    },
+    {
+      "url": "type",
+      "valueCode": "Patient"
+    },
+    {
+      "url": "description",
+      "valueString": "The patient that is to be used to pre-populate the form"
+    }
+  ]
+}
+```
+
+In the below x-fhir-query variable, `{{%patient.id}}` is a reference to the launchContext extension defined above. During pre-population, the value of `{{%patient.id}}` will be replaced with the actual patient id before the query is executed.
+
+```json
+{
+  "url": "http://hl7.org/fhir/StructureDefinition/variable",
+  "valueExpression": {
+    "name": "Condition",
+    "language": "application/x-fhir-query",
+    "expression": "Condition?patient={{%patient.id}}"
+  }
+}
+```
+
+For usages, refer to initial, initialExpression, and calculatedExpression sections on this page.
+
+### X-FHIR-Query Variable
+
+The variable extension is used to define a variable that is available for use in expressions within the same item and any descendant items.
+
+When the variable is defined using the `application/x-fhir-query` language, it can be used to contain a query that is executed against the FHIR server during pre-population to retrieve the value to be used in the expression.
+
+For more information, refer to http://hl7.org/fhir/uv/sdc/expressions.html#x-fhir-query-enhancements.
+
+#### Example
+
+Below is an example of how a variable extension using the `application/x-fhir-query` language is defined in the questionnaire.
+
+It specifies a variable called "Condition" and it's value is to be retrieved by executing the query `Condition?patient={{%patient.id}}` on the launching system.
+`{{%patient.id}}` is a reference to a defined launchContext, which will be replaced with the actual patient ID before the query is executed.
+
+After the query is executed, the expression can be consumed by pre-population expressions during the pre-population process.
+
+```json
+{
+  "url": "http://hl7.org/fhir/StructureDefinition/variable",
+  "valueExpression": {
+    "name": "Condition",
+    "language": "application/x-fhir-query",
+    "expression": "Condition?patient={{%patient.id}}"
+  }
+}
+```
+
+For usages, refer to initial, initialExpression, and calculatedExpression sections on this page.
+
+### SourceQueries
+
+[//]: # 'TODO'
+
+### Initial
+
+Allows one or more values to be pre-filled in the answer when initially rendering the questionnaire for user input. Initial values can't be specified for groups or display items.
+
+This uses answers defined in the questionnaire itself, instead of relying on a FHIR server to provide the initial values.
+
+Questions using answerOption can use `answerOption.initialSelected` as an alternative.
+
+:::note
+
+Multiple initial values can be used in repeating items. There can only be one initial value for non-repeating items.
+
+:::
+
+#### Basic Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--read-only">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--read-only"
+    width="100%"
+    height="100"
+  />
+</IframeContainer>

@@ -22,6 +22,14 @@ The only way to use calculations is via **calculatedExpressions** currently.
 
 :::
 
+### Variable
+
+Used to define a variable that is available for use in [expressions](http://hl7.org/fhir/uv/sdc/expressions.html) within the same item and any descendant items. This allows it to be consumed by calculatedExpressions when the renderer executes a calculation.
+
+For more information, refer to http://hl7.org/fhir/uv/sdc/expressions.html#variable.
+
+For usages, refer to the [CalculatedExpression](#calculatedexpression) section on this page.
+
 ### CalculatedExpression
 
 The basis of calculations in SDC. Allows an item value to update continuously as the answers to dependent questions change.
