@@ -10,10 +10,8 @@
     "skipLibCheck": true,
     "jsx": "react",
     "sourceMap": true,
-    "allowJs": true,
     "outDir": "lib",
     "declaration": true,
-    "checkJs": true,
     "resolveJsonModule": true,
 
     "allowUnusedLabels": false,

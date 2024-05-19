@@ -15,17 +15,5 @@
  * limitations under the License.
  */
 
-import { defineConfig } from 'vite';
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [],
-  optimizeDeps: {
-    include: ['@aehrc/sdc-populate']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/, '@aehrc/sdc-populate']
-    }
-  }
-});
+export type { PopulateResult, PopulateQuestionnaireParams } from './populateQuestionnaire';
+export { populateQuestionnaire } from './populateQuestionnaire';

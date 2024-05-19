@@ -15,17 +15,23 @@
  * limitations under the License.
  */
 
-import { defineConfig } from 'vite';
+import { useLayoutEffect, useState } from 'react';
+import { buildForm } from '../utils';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [],
-  optimizeDeps: {
-    include: ['@aehrc/sdc-populate']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/, '@aehrc/sdc-populate']
-    }
-  }
-});
+function useBuildFormForStorybook(
+  questionnaire: Questionnaire,
+  questionnaireResponse?: QuestionnaireResponse
+) {
+  const [isBuilding, setIsBuilding] = useState(true);
+
+  useLayoutEffect(() => {
+    buildForm(questionnaire, questionnaireResponse).then(() => {
+      setIsBuilding(false);
+    });
+  }, [questionnaire, questionnaireResponse]);
+
+  return isBuilding;
+}
+
+export default useBuildFormForStorybook;

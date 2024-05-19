@@ -15,17 +15,8 @@
  * limitations under the License.
  */
 
-import { defineConfig } from 'vite';
+// Export interfaces
+export * from './interfaces';
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [],
-  optimizeDeps: {
-    include: ['@aehrc/sdc-populate']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/, '@aehrc/sdc-populate']
-    }
-  }
-});
+// Export utils
+export * from './utils';

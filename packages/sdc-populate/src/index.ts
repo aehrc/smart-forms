@@ -15,6 +15,5 @@
  * limitations under the License.
  */
 
-// Type Predicates
-export * from './interfaces';
-export * from './utils';
+export * from './SDCPopulateQuestionnaireOperation';
+export * from './inAppPopulation';

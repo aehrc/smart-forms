@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { readPopulationExpressions } from '../utils/readPopulationExpressions';
+import { readPopulationExpressions } from '../SDCPopulateQuestionnaireOperation/utils/readPopulationExpressions';
 import type { Questionnaire } from 'fhir/r4';
 import Q715XFhirQuery from './resources/715-v.json';
 
