@@ -15,38 +15,33 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { nanoid } from 'nanoid';
+import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
-import { useMemo } from 'react';
+import _isEqual from 'lodash/isEqual';
 
-function useInitialiseRepeatGroups(
-  qItem: QuestionnaireItem,
-  qrItems: QuestionnaireResponseItem[]
-): RepeatGroupSingle[] {
-  return useMemo(
+function useRepeatGroups(
+  valueFromProps: RepeatGroupSingle[]
+): [RepeatGroupSingle[], Dispatch<SetStateAction<RepeatGroupSingle[]>>] {
+  const [repeatGroups, setRepeatGroups] = useState(valueFromProps);
+
+  useEffect(
     () => {
-      let initialRepeatGroupAnswers: RepeatGroupSingle[] = [
-        {
-          nanoId: nanoid(),
-          qrItem: null
-        }
-      ];
+      const valueFromPropsQRItems = valueFromProps.map(
+        (repeatGroupSingle) => repeatGroupSingle.qrItem
+      );
+      const repeatGroupsQRItems = repeatGroups.map((repeatGroupSingle) => repeatGroupSingle.qrItem);
 
-      if (qrItems.length > 0) {
-        initialRepeatGroupAnswers = qrItems.map((qrItem) => {
-          return {
-            nanoId: nanoid(),
-            qrItem
-          };
-        });
+      if (!_isEqual(valueFromPropsQRItems, repeatGroupsQRItems)) {
+        setRepeatGroups(valueFromProps);
       }
-      return initialRepeatGroupAnswers;
     },
-    // Requires checking of both qItem and qrItems
+    // Only trigger this effect if prop value changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qItem, qrItems]
+    [valueFromProps]
   );
+
+  return [repeatGroups, setRepeatGroups];
 }
 
-export default useInitialiseRepeatGroups;
+export default useRepeatGroups;
