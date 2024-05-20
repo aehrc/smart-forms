@@ -46,7 +46,7 @@ jobs:
           browser: chrome
           project: ./apps/smart-forms-app
           build: npm run build -w apps/smart-forms-app
-          start: npm run start -w apps/smart-forms-app
+          start: cd apps/smart-forms-app && vite preview --port 4173
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
