@@ -27,7 +27,7 @@ import type {
   EnableWhenItems,
   EnableWhenRepeatItemProperties,
   EnableWhenSingleItemProperties
-} from '../interfaces';
+} from '../interfaces/enableWhen.interface';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items

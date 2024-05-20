@@ -9,7 +9,7 @@ export * from './components';
 export * from './stores';
 export * from './hooks';
 export * from './utils';
-export * from './interfaces';
+export { ThemeProvider } from './theme';
 export type { ItemToRepopulate };
 
 /**
@@ -34,7 +34,7 @@ export function getResponse(): QuestionnaireResponse {
 
 /**
  * Remove all hidden answers from the filled QuestionnaireResponse.
- * This takes into account the questionnaire-hidden extension, enableWhens, enableWhenExpressions and empty strings.
+ * This takes into account enableWhens, enableWhenExpressions, items without item.answer, empty item.answer arrays and empty strings.
  *
  * @author Sean Fong
  */

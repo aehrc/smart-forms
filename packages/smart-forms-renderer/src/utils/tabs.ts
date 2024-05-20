@@ -16,7 +16,7 @@
  */
 
 import type { Tabs } from '../interfaces/tab.interface';
-import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { isSpecificItemControl } from './itemControl';
 import { isHiddenByEnableWhen } from './qItem';

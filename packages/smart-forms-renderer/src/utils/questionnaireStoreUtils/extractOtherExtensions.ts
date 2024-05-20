@@ -31,7 +31,7 @@ import type {
   EnableWhenSingleExpression,
   EnableWhenSingleItemProperties,
   EnableWhenSingleLinkedItem
-} from '../../interfaces';
+} from '../../interfaces/enableWhen.interface';
 import type { AnswerExpression } from '../../interfaces/answerExpression.interface';
 import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
 import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';

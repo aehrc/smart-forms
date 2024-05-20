@@ -26,7 +26,7 @@ import _isEqual from 'lodash/isEqual';
 import { containsTabs, isTabContainer } from './tabs';
 import { getShortText, isSpecificItemControl } from './itemControl';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
 
 export interface ItemToRepopulate {

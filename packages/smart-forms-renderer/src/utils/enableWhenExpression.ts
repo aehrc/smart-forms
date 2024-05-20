@@ -23,7 +23,7 @@ import type {
   EnableWhenExpressions,
   EnableWhenRepeatExpression,
   EnableWhenSingleExpression
-} from '../interfaces';
+} from '../interfaces/enableWhen.interface';
 
 interface EvaluateInitialEnableWhenExpressionsParams {
   initialResponse: QuestionnaireResponse;
