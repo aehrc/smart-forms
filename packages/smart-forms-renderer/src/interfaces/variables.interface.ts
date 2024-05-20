@@ -17,11 +17,23 @@
 
 import type { Expression, FhirResource } from 'fhir/r4';
 
+/**
+ * Variables interface
+ *
+ * @property fhirPathVariables - Key-value pair of FHIRPath variable expressions in a Questionnaire item <linkId, array of FHIRPath expressions>
+ * @property xFhirQueryVariables - Key-value pair of x-fhir-query variables <variable name, x-fhir-query variable properties>
+ */
 export interface Variables {
   fhirPathVariables: Record<string, Expression[]>;
   xFhirQueryVariables: Record<string, VariableXFhirQuery>;
 }
 
+/**
+ * VariableXFhirQuery interface
+ *
+ * @property valueExpression - FHIRPath Expression of the variable
+ * @property result - FHIR resource result of the executed query
+ */
 export interface VariableXFhirQuery {
   valueExpression: Expression;
   result?: FhirResource;

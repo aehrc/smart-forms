@@ -14,5 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * Tab interface
+ *
+ * @property tabIndex - The index of the tab
+ * @property isComplete - Whether the tab is marked as complete
+ * @property isHidden - Whether the tab is hidden
+ */
 export type Tab = { tabIndex: number; isComplete: boolean; isHidden: boolean };
+
+/**
+ * Key-value pair of tabs <linkId, Tab>
+ */
 export type Tabs = Record<string, Tab>;

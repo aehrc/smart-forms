@@ -17,6 +17,12 @@
 
 import type { Coding, Expression, Extension, Reference } from 'fhir/r4';
 
+/**
+ * LaunchContext interface
+ *
+ * @property url - Launch context URL
+ * @property extension - Possible contents of the launch context as an array of extensions
+ */
 export interface LaunchContext extends Extension {
   url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext';
   extension: LaunchContextExtensions;

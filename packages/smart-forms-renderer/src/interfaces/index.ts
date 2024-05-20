@@ -15,13 +15,7 @@
  * limitations under the License.
  */
 
-export type { SmartFormsRendererProps } from './Renderer';
-export { SmartFormsRenderer, BaseRenderer } from './Renderer';
-export {
-  SingleItem,
-  RepeatItem,
-  RepeatGroup,
-  GroupTable,
-  GridGroup,
-  parseFhirDateToDisplayDate
-} from './FormComponents';
+export type { Tab, Tabs } from './tab.interface';
+export type { Variables, VariableXFhirQuery } from './variables.interface';
+export type { LaunchContext } from './populate.interface';
+export type { EnableWhenItems, EnableWhenExpressions } from './enableWhen.interface';
