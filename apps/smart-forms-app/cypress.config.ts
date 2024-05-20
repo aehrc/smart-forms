@@ -25,5 +25,6 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     }
-  }
+  },
+  chromeWebSecurity: false
 });
