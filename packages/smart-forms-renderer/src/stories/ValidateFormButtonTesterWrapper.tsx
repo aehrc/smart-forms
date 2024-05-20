@@ -21,19 +21,24 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import RendererThemeProvider from '../theme/Theme';
-import { useBuildForm } from '../hooks';
 import useRendererQueryClient from '../hooks/useQueryClient';
+import useBuildForm from '../hooks/useBuildForm';
+import { useQuestionnaireResponseStore } from '../stores';
+import { Grid } from '@mui/material';
 
-interface BuildFormWrapperProps {
+interface ValidateFormButtonTesterWrapperProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
 }
 
-function BuildFormWrapper(props: BuildFormWrapperProps) {
+function ValidateFormButtonTesterWrapper(props: ValidateFormButtonTesterWrapperProps) {
   const { questionnaire, questionnaireResponse } = props;
 
-  const queryClient = useRendererQueryClient();
   const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
+
+  const queryClient = useRendererQueryClient();
+
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -42,10 +47,19 @@ function BuildFormWrapper(props: BuildFormWrapperProps) {
   return (
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <BaseRenderer />
+        <div>
+          <Grid container>
+            <Grid item xs={6}>
+              <BaseRenderer />
+            </Grid>
+            <Grid item xs={6}>
+              <pre style={{ fontSize: 9 }}>{JSON.stringify(invalidItems, null, 2)}</pre>
+            </Grid>
+          </Grid>
+        </div>
       </QueryClientProvider>
     </RendererThemeProvider>
   );
 }
 
-export default BuildFormWrapper;
+export default ValidateFormButtonTesterWrapper;

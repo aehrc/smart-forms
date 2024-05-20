@@ -25,7 +25,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
 import {
   getDecimalPrecision,

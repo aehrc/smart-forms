@@ -20,10 +20,10 @@ import React, { useState } from 'react';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import ThemeProvider from '../theme/Theme';
+import RendererThemeProvider from '../theme/Theme';
 import useQueryClient from '../hooks/useQueryClient';
 import type Client from 'fhirclient/lib/Client';
-import useBuildFormForStorybook from './useBuildFormForStorybook';
+import useBuildForm from '../hooks/useBuildForm';
 import { buildForm } from '../utils';
 import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
@@ -41,7 +41,7 @@ function PrePopWrapper(props: PrePopWrapperProps) {
 
   const [isPopulating, setIsPopulating] = useState(false);
 
-  const isBuilding = useBuildFormForStorybook(questionnaire);
+  const isBuilding = useBuildForm(questionnaire);
 
   const queryClient = useQueryClient();
 
@@ -78,14 +78,14 @@ function PrePopWrapper(props: PrePopWrapperProps) {
   }
 
   return (
-    <ThemeProvider>
+    <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
           <PrePopButtonForStorybook isPopulating={isPopulating} onPopulate={handlePrepopulate} />
           {isPopulating ? null : <BaseRenderer />}
         </div>
       </QueryClientProvider>
-    </ThemeProvider>
+    </RendererThemeProvider>
   );
 }
 

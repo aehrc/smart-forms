@@ -21,7 +21,7 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
 
 interface removeEmptyAnswersParams {

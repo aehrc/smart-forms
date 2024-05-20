@@ -15,5 +15,13 @@
  * limitations under the License.
  */
 
-export * from './Renderer';
-export * from './FormComponents';
+export type { SmartFormsRendererProps } from './Renderer';
+export { SmartFormsRenderer, BaseRenderer } from './Renderer';
+export {
+  SingleItem,
+  RepeatItem,
+  RepeatGroup,
+  GroupTable,
+  GridGroup,
+  parseFhirDateToDisplayDate
+} from './FormComponents';

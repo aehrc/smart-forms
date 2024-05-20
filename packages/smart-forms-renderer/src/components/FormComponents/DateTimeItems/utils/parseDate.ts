@@ -93,6 +93,11 @@ export function getNumOfSeparators(valueDate: string, seperator: string) {
   return [...valueDate.matchAll(regex)].length;
 }
 
+/**
+ * Parse a FHIR date string to a date to be consumed and displayed by the DateItem component.
+ *
+ * @author Sean Fong
+ */
 export function parseFhirDateToDisplayDate(fhirDate: string): {
   displayDate: string;
   dateParseFail?: boolean;

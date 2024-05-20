@@ -50,6 +50,12 @@ interface RepeatGroupProps
   groupCardElevation: number;
 }
 
+/**
+ * Main component to render a repeating, group Questionnaire item.
+ * Store and manages the state of multiple instances of GroupItem in a repeating group.
+ *
+ * @author Sean Fong
+ */
 function RepeatGroup(props: RepeatGroupProps) {
   const {
     qItem,

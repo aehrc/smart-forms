@@ -41,6 +41,12 @@ interface GroupTableProps
   groupCardElevation: number;
 }
 
+/**
+ * Main component to render a Group Table (gtable) Questionnaire item.
+ * @see {@link https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html}
+ *
+ * @author Sean Fong
+ */
 function GroupTable(props: GroupTableProps) {
   const {
     qItem,

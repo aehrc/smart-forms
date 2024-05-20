@@ -73,6 +73,7 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
     return [];
   }, [cachedValueSetCodings, processedValueSetCodings, valueSetUrl]);
 
+  // Attempt to get codings from answer expression
   const answerExpression = getAnswerExpression(qItem)?.expression;
   initialCodings = useMemo(() => {
     if (initialCodings.length === 0 && answerExpression) {

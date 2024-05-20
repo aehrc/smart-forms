@@ -43,6 +43,12 @@ interface SingleItemProps
   groupCardElevation: number;
 }
 
+/**
+ * Main component to render a repeating, non-group Questionnaire item.
+ * Store and manages the state of multiple instances of SingleItem in a repeating item.
+ *
+ * @author Sean Fong
+ */
 function SingleItem(props: SingleItemProps) {
   const {
     qItem,

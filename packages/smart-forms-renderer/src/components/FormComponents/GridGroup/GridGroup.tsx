@@ -44,6 +44,12 @@ interface GridGroupProps
   groupCardElevation: number;
 }
 
+/**
+ * Main component to render a Group Grid (grid) Questionnaire item.
+ * @see {@link https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html}
+ *
+ * @author Sean Fong
+ */
 function GridGroup(props: GridGroupProps) {
   const { qItem, qrItem, groupCardElevation, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;

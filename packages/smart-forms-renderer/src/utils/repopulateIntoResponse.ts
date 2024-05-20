@@ -7,6 +7,23 @@ import type {
 import type { ItemToRepopulate } from './repopulateItems';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { isSpecificItemControl } from './itemControl';
+import { questionnaireResponseStore, questionnaireStore } from '../stores';
+
+/**
+ * Re-populate checked items in the re-population dialog into the current QuestionnaireResponse.
+ *
+ * @author Sean Fong
+ */
+export function repopulateResponse(checkedItemsToRepopulate: Record<string, ItemToRepopulate>) {
+  const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
+  const updatableResponse = questionnaireResponseStore.getState().updatableResponse;
+
+  return repopulateItemsIntoResponse(
+    sourceQuestionnaire,
+    updatableResponse,
+    checkedItemsToRepopulate
+  );
+}
 
 export function repopulateItemsIntoResponse(
   questionnaire: Questionnaire,

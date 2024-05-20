@@ -19,10 +19,7 @@ import { useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-function useBuildFormForStorybook(
-  questionnaire: Questionnaire,
-  questionnaireResponse?: QuestionnaireResponse
-) {
+function useBuildForm(questionnaire: Questionnaire, questionnaireResponse?: QuestionnaireResponse) {
   const [isBuilding, setIsBuilding] = useState(true);
 
   useLayoutEffect(() => {
@@ -34,4 +31,4 @@ function useBuildFormForStorybook(
   return isBuilding;
 }
 
-export default useBuildFormForStorybook;
+export default useBuildForm;

@@ -26,7 +26,7 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { Tabs } from '../interfaces/tab.interface';
 import { assignPopulatedAnswersToEnableWhen } from './enableWhen';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';

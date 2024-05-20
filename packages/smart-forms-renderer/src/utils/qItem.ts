@@ -19,7 +19,7 @@ import type { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { getChoiceControlType } from './choice';
 import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { getOpenChoiceControlType } from './openChoice';
-import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 
 interface isHiddenByEnableWhensParams {
   linkId: string;

@@ -26,6 +26,13 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 
+/**
+ * Main component of the form-rendering engine.
+ * Renders the Questionnaire and QuestionnaireResponse defined in the state management stpres QuestionnaireStore and QuestionnaireResponseStore respectively.
+ * Use buildForm() in your wrapping component or in an event handler to initialise the form.
+ *
+ * @author Sean Fong
+ */
 function BaseRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updateExpressions = useQuestionnaireStore.use.updateExpressions();

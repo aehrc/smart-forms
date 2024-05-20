@@ -25,8 +25,12 @@ import questionnaireResponseSample from './test-data/questionnaire-response-samp
 import initialAnswersSample from './test-data/initial-answers-sample.json';
 import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { describe, expect, test } from '@jest/globals';
-import type { EnableWhenItems } from '../interfaces';
-import { createEnableWhenLinkedQuestions, readInitialAnswers, setInitialAnswers } from '../utils';
+import type { EnableWhenItems } from '../interfaces/enableWhen.interface';
+import {
+  createEnableWhenLinkedQuestions,
+  readInitialAnswers,
+  setInitialAnswers
+} from '../utils/enableWhen';
 
 describe('verify correctness of linked questions map created from enable when items', () => {
   const enableWhenItems = enableWhenItemsSample as unknown as EnableWhenItems;

@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import ThemeProvider from '../../theme/Theme';
+import RendererThemeProvider from '../../theme/Theme';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import useInitialiseRenderer from '../../hooks/useInitialiseRenderer';
 import Box from '@mui/material/Box';
@@ -28,7 +28,19 @@ import useQueryClient from '../../hooks/useQueryClient';
 import BaseRenderer from './BaseRenderer';
 import type Client from 'fhirclient/lib/Client';
 
-interface SmartFormsRendererProps {
+/**
+ * SmartFormsRenderer properties
+ *
+ * @property questionnaire - Input FHIR R4 Questionnaire to be rendered
+ * @property questionnaireResponse - Pre-populated QuestionnaireResponse to be rendered (optional)
+ * @property additionalVariables - Additional key-value pair of SDC variables <name, variable extension> for testing (optional)
+ * @property terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
+ * @property fhirClient - FHIRClient object to perform further FHIR calls. At the moment it's only used in answerExpressions (optional)
+ * @property readOnly - Applies read-only mode to all items in the form
+ *
+ * @author Sean Fong
+ */
+export interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   additionalVariables?: Record<string, object>;
@@ -37,6 +49,14 @@ interface SmartFormsRendererProps {
   readOnly?: boolean;
 }
 
+// Will be deprecated in version 1.0.0. Use alternative() instead. //FIXME add alternative
+
+/**
+ * A self-initialising wrapper around the BaseRenderer rendering engine.
+ * See SmartFormsRendererProps for props.
+ *
+ * @author Sean Fong
+ */
 function SmartFormsRenderer(props: SmartFormsRendererProps) {
   const {
     questionnaire,
@@ -67,11 +87,11 @@ function SmartFormsRenderer(props: SmartFormsRendererProps) {
   }
 
   return (
-    <ThemeProvider>
+    <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <BaseRenderer />
       </QueryClientProvider>
-    </ThemeProvider>
+    </RendererThemeProvider>
   );
 }
 

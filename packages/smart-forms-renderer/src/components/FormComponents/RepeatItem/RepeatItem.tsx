@@ -44,6 +44,11 @@ interface RepeatItemProps
   groupCardElevation: number;
 }
 
+/**
+ * Main component to render a repeating, non-group Questionnaire item.
+ *
+ * @author Sean Fong
+ */
 function RepeatItem(props: RepeatItemProps) {
   const { qItem, qrItem, groupCardElevation, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;

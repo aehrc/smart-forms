@@ -89,7 +89,7 @@ export const themeOptions: ThemeOptions = {
   }
 };
 
-function ThemeProvider({ children }: { children: ReactNode }) {
+export function RendererThemeProvider({ children }: { children: ReactNode }) {
   const theme = createTheme(themeOptions);
   theme.components = componentsOverride(theme);
 
@@ -104,4 +104,4 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export default ThemeProvider;
+export default RendererThemeProvider;

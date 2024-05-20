@@ -25,7 +25,7 @@ import type {
 import type { Variables } from '../interfaces/variables.interface';
 import type { LaunchContext } from '../interfaces/populate.interface';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
-import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import type { Tabs } from '../interfaces/tab.interface';
 import {
@@ -47,7 +47,32 @@ import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenEx
 import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 
-interface QuestionnaireStoreType {
+/**
+ * QuestionnaireStore properties and methods
+ *
+ * @property sourceQuestionnaire - FHIR R4 Questionnaire to render
+ * @property itemTypes - Key-value pair of item types <linkId, item.type>
+ * @property tabs - Key-value pair of tabs <linkId, Tab>
+ * @property currentTabIndex - Index of the current tab
+ * @property variables - Questionnaire variables object containing FHIRPath and x-fhir-query variables
+ * @property launchContexts - Key-value pair of launch contexts <launch context name, launch context properties>
+ * @property enableWhenItems - EnableWhenItems object containing enableWhen items and their linked questions
+ * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items <linkId, linkIds of linked questions>
+ * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
+ * @property enableWhenExpressions - EnableWhenExpressions object containing enableWhen expressions
+ * @property calculatedExpressions - Key-value pair of calculated expressions <linkId, array of calculated expression properties>
+ * @property answerExpressions - Key-value pair of answer expressions <linkId, answer expression properties>
+ * @property processedValueSetCodings - Key-value pair of processed value set codings <valueSetUrl, codings>
+ * @property processedValueSetUrls - Key-value pair of contained value set urls <valueSetName, valueSetUrl>
+ * @property cachedValueSetCodings - Key-value pair of cached value set codings <valueSetUrl, codings>
+ * @property fhirPathContext - Key-value pair of evaluated FHIRPath values <variable name, evaluated value(s)>
+ * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values <variable/launchContext/sourceQueries batch name, evaluated value(s)>
+ * @property focusedLinkId - LinkId of the currently focused item
+ * @property readOnly - Flag to set the form to read-only mode
+ // * @method buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and questionnaire response
+ *
+ */
+export interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
   itemTypes: Record<string, string>;
   tabs: Tabs;
@@ -71,7 +96,7 @@ interface QuestionnaireStoreType {
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
     additionalVariables?: Record<string, object>,
-    terminologyServerUrl?: string,
+    terminologyServerUrl?: string, // FIXME
     readOnly?: boolean
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
@@ -99,6 +124,18 @@ interface QuestionnaireStoreType {
   setPopulatedContext: (newPopulatedContext: Record<string, any>) => void;
 }
 
+/**
+ * Questionnaire state management store which contains all properties and methods to manage the state of the questionnaire.
+ *
+ * @param questionnaire - Input FHIR R4 Questionnaire to be rendered
+ * @param questionnaireResponse - Pre-populated QuestionnaireResponse to be rendered (optional)
+ * @param additionalVariables - Additional key-value pair of SDC variables <name, variable extension> for testing (optional)
+ * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
+ * @param fhirClient - FHIRClient object to perform further FHIR calls. At the moment it's only used in answerExpressions (optional)
+ * @param readOnly - Applies read-only mode to all items in the form
+ *
+ * @author Sean Fong
+ */
 export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
   sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
   itemTypes: {},

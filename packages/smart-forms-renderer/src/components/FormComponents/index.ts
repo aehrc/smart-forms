@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-export * from './SingleItem';
-export * from './RepeatItem';
-export * from './RepeatGroup';
-export * from './GridGroup';
-export * from './Tables';
-export * from './DateTimeItems';
+export { SingleItem } from './SingleItem';
+export { RepeatItem } from './RepeatItem';
+export { RepeatGroup } from './RepeatGroup';
+export { GroupTable } from './Tables';
+export { GridGroup } from './GridGroup';
+export { parseFhirDateToDisplayDate } from './DateTimeItems';

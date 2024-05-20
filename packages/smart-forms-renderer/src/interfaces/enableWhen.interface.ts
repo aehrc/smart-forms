@@ -21,6 +21,12 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 
+/**
+ * EnableWhenExpressions interface
+ *
+ * @property singleExpressions - Key-value pair of non-repeat group enableWhen expressions <linkId, enableWhenExpression properties>
+ * @property repeatExpressions - Key-value pair of repeat group enableWhen expressions <linkId, enableWhenExpression properties>
+ */
 export interface EnableWhenExpressions {
   singleExpressions: Record<string, EnableWhenSingleExpression>;
   repeatExpressions: Record<string, EnableWhenRepeatExpression>;
@@ -37,6 +43,12 @@ export interface EnableWhenRepeatExpression {
   enabledIndexes: boolean[];
 }
 
+/**
+ * EnableWhenItems interface
+ *
+ * @property singleItems - Key-value pair of non-repeat group enableWhen items <linkId, enableWhen properties>
+ * @property repeatItems - Key-value pair of repeat group enableWhen items <linkId, enableWhen properties>
+ */
 export interface EnableWhenItems {
   singleItems: Record<string, EnableWhenSingleItemProperties>;
   repeatItems: Record<string, EnableWhenRepeatItemProperties>;

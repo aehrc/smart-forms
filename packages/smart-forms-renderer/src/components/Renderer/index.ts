@@ -15,5 +15,6 @@
  * limitations under the License.
  */
 
+export type { SmartFormsRendererProps } from './SmartFormsRenderer';
 export { default as SmartFormsRenderer } from './SmartFormsRenderer';
 export { default as BaseRenderer } from './BaseRenderer';

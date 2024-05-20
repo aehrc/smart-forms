@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
+export { buildForm, destroyForm, getResponse, removeEmptyAnswersFromResponse } from './manageForm';
+export { initialiseQuestionnaireResponse } from './initialise';
 export { isSpecificItemControl } from './itemControl';
 export { isRepeatItemAndNotCheckbox } from './qItem';
-export {
-  createEnableWhenLinkedQuestions,
-  readInitialAnswers,
-  setInitialAnswers
-} from './enableWhen';
-export { initialiseQuestionnaireResponse } from './initialise';
-export { buildForm } from './buildForm';
+export type { ItemToRepopulate } from './repopulateItems';
+export { generateItemsToRepopulate } from './repopulateItems';
+export { repopulateResponse } from './repopulateIntoResponse';
