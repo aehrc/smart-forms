@@ -18,34 +18,34 @@
 import { useQuestionnaireStore } from '../stores';
 import type { QuestionnaireItem } from 'fhir/r4';
 
-function useDisplayCalculatedExpression(qItem: QuestionnaireItem): string | null {
+function useDisplayCqfAndCalculatedExpression(qItem: QuestionnaireItem): string | null {
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
-  const calcExpression = calculatedExpressions[qItem.linkId]?.find(
+  const cqfOrCalcExpression = calculatedExpressions[qItem.linkId]?.find(
     (exp) => exp.from === 'item._text'
   );
 
-  if (!calcExpression) {
+  if (!cqfOrCalcExpression) {
     return null;
   }
 
   if (
-    typeof calcExpression.value === 'string' ||
-    typeof calcExpression.value === 'number' ||
-    calcExpression.value === null
+    typeof cqfOrCalcExpression.value === 'string' ||
+    typeof cqfOrCalcExpression.value === 'number' ||
+    cqfOrCalcExpression.value === null
   ) {
     // calculatedExpression value is null
-    if (calcExpression.value === null) {
+    if (cqfOrCalcExpression.value === null) {
       return '';
     }
 
     // calculatedExpression value is string or number
-    return typeof calcExpression.value === 'string'
-      ? calcExpression.value
-      : calcExpression.value.toString();
+    return typeof cqfOrCalcExpression.value === 'string'
+      ? cqfOrCalcExpression.value
+      : cqfOrCalcExpression.value.toString();
   }
 
   return null;
 }
 
-export default useDisplayCalculatedExpression;
+export default useDisplayCqfAndCalculatedExpression;

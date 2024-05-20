@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 
-export const DEBOUNCE_DURATION = 250;
+export const DEBOUNCE_DURATION = 300;
 
 export const AUTOCOMPLETE_DEBOUNCE_DURATION = 300;

@@ -43,6 +43,7 @@ export function getEnableWhenExpression(qItem: QuestionnaireItem): Expression | 
  * @author Sean Fong
  */
 export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedExpression[] {
+  // For questions - calculatedExpressions
   const calculatedExpressionsInItem = findCalculatedExpressionsInExtensions(qItem.extension ?? [])
     .map(
       (calculatedExpression): CalculatedExpression => ({
@@ -52,9 +53,12 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
     )
     .filter((calculatedExpression) => calculatedExpression.expression !== '');
 
-  const calculatedExpressionsInText = findCalculatedExpressionsInExtensions(
-    qItem._text?.extension ?? []
-  )
+  // For item._text - calculatedExpressions and cqfExpressions
+  // FIXME this is a band aid addition, eventually we want to fully support cqfExpressions
+  const calculatedAndCqfExpressionsInText = [
+    ...findCqfExpressionsInExtensions(qItem._text?.extension ?? []),
+    ...findCalculatedExpressionsInExtensions(qItem._text?.extension ?? [])
+  ]
     .map(
       (calculatedExpression): CalculatedExpression => ({
         expression: calculatedExpression.valueExpression?.expression ?? '',
@@ -63,7 +67,7 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
     )
     .filter((calculatedExpression) => calculatedExpression.expression !== '');
 
-  return [...calculatedExpressionsInItem, ...calculatedExpressionsInText];
+  return [...calculatedExpressionsInItem, ...calculatedAndCqfExpressionsInText];
 }
 
 function findCalculatedExpressionsInExtensions(extensions: Extension[]): Extension[] {
@@ -71,6 +75,14 @@ function findCalculatedExpressionsInExtensions(extensions: Extension[]): Extensi
     (extension) =>
       extension.url ===
         'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' &&
+      extension.valueExpression?.language === 'text/fhirpath'
+  );
+}
+
+function findCqfExpressionsInExtensions(extensions: Extension[]): Extension[] {
+  return extensions.filter(
+    (extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/cqf-expression' &&
       extension.valueExpression?.language === 'text/fhirpath'
   );
 }
