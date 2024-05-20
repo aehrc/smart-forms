@@ -43,6 +43,7 @@ import {
 import useTimeValidation from '../../../../hooks/useTimeValidation';
 import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
+import useStringInput from '../../../../hooks/useStringInput';
 
 interface CustomDateTimeItemProps
   extends PropsWithQrItemChangeHandler,
@@ -86,9 +87,9 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
   const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDate);
   const { displayTime, displayPeriod, timeParseFail } = parseDateTimeToDisplayTime(dateTimeDayJs);
 
-  const [dateInput, setDateInput] = useState(displayDate);
-  const [timeInput, setTimeInput] = useState(displayTime);
-  const [periodInput, setPeriodInput] = useState(displayPeriod);
+  const [dateInput, setDateInput] = useStringInput(displayDate);
+  const [timeInput, setTimeInput] = useStringInput(displayTime);
+  const [periodInput, setPeriodInput] = useStringInput(displayPeriod);
   const [dateFocused, setDateFocused] = useState(false);
 
   // Perform validation checks

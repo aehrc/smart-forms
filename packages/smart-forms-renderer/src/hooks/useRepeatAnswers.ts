@@ -15,39 +15,31 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 import type { RepeatAnswer } from '../interfaces/repeatItem.interface';
-import { nanoid } from 'nanoid';
-import { useMemo } from 'react';
+import _isEqual from 'lodash/isEqual';
 
-function useInitialiseRepeatAnswers(
-  qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem | null
-): RepeatAnswer[] {
-  return useMemo(
+function useRepeatAnswers(
+  valueFromProps: RepeatAnswer[]
+): [RepeatAnswer[], Dispatch<SetStateAction<RepeatAnswer[]>>] {
+  const [repeatAnswers, setRepeatAnswers] = useState(valueFromProps);
+
+  useEffect(
     () => {
-      let initialRepeatAnswers: RepeatAnswer[] = [
-        {
-          nanoId: nanoid(),
-          answer: null
-        }
-      ];
+      const valueFromPropsQRItemAnswers = valueFromProps.map((answer) => answer.answer);
+      const repeatAnswersQRItemAnswers = repeatAnswers.map((answer) => answer.answer);
 
-      if (qrItem?.answer) {
-        initialRepeatAnswers = qrItem.answer.map((answer) => {
-          return {
-            nanoId: nanoid(),
-            answer
-          };
-        });
+      if (!_isEqual(valueFromPropsQRItemAnswers, repeatAnswersQRItemAnswers)) {
+        setRepeatAnswers(valueFromProps);
       }
-
-      return initialRepeatAnswers;
     },
-    // Requires checking of both qItem and qrItem
+    // Only trigger this effect if prop value changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qItem, qrItem]
+    [valueFromProps]
   );
+
+  return [repeatAnswers, setRepeatAnswers];
 }
 
-export default useInitialiseRepeatAnswers;
+export default useRepeatAnswers;

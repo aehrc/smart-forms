@@ -15,16 +15,27 @@
  * limitations under the License.
  */
 
-import { defineConfig } from 'cypress';
+// @ts-ignore
+import React from 'react';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import Iconify from '../components/Iconify/Iconify';
 
-export default defineConfig({
-  projectId: 'yfvnnr',
-  viewportWidth: 1200,
-  viewportHeight: 660,
-  e2e: {
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-    }
-  },
-  chromeWebSecurity: false
-});
+interface BuildFormButtonProps {
+  onBuild: () => void;
+}
+
+function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
+  const { onBuild } = props;
+
+  return (
+    <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
+      <Tooltip title="Build form" placement="right">
+        <IconButton onClick={onBuild} size="small" color="primary">
+          <Iconify icon="ph:hammer" sx={{ mb: 0.5 }} />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  );
+}
+
+export default BuildFormButtonForStorybook;
