@@ -9,7 +9,7 @@ export * from './components';
 export * from './stores';
 export * from './hooks';
 export * from './utils';
-export { ThemeProvider } from './theme';
+export { RendererThemeProvider } from './theme';
 export type { ItemToRepopulate };
 
 /**

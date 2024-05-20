@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import ThemeProvider from '../../theme/Theme';
+import RendererThemeProvider from '../../theme/Theme';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import useInitialiseRenderer from '../../hooks/useInitialiseRenderer';
 import Box from '@mui/material/Box';
@@ -67,11 +67,11 @@ function SmartFormsRenderer(props: SmartFormsRendererProps) {
   }
 
   return (
-    <ThemeProvider>
+    <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <BaseRenderer />
       </QueryClientProvider>
-    </ThemeProvider>
+    </RendererThemeProvider>
   );
 }
 

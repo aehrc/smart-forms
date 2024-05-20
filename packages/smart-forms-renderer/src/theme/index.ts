@@ -1,1 +1,1 @@
-export { ThemeProvider } from './Theme';
+export { RendererThemeProvider } from './Theme';
