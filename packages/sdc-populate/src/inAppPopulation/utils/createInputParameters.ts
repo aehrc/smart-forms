@@ -17,6 +17,7 @@
 
 // PopulateInputParameter private functions
 import type {
+  Encounter,
   FhirResource,
   Parameters,
   ParametersParameter,
@@ -33,12 +34,13 @@ import type {
 
 export function createPopulateInputParameters(
   questionnaire: Questionnaire,
-  patient: Patient,
-  user: Practitioner,
   launchContexts: LaunchContext[],
   sourceQueries: SourceQuery[],
   questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[],
-  context: Record<string, any>
+  context: Record<string, any>,
+  patient: Patient,
+  user?: Practitioner,
+  encounter?: Encounter
 ): Parameters | null {
   const patientSubject = createPatientSubject(questionnaire, patient);
   if (!patientSubject) {
@@ -69,7 +71,13 @@ export function createPopulateInputParameters(
   // add launch contexts
   if (launchContexts.length > 0) {
     for (const launchContext of launchContexts) {
-      const launchContextParam = createLaunchContextParam(launchContext, patient, user, context);
+      const launchContextParam = createLaunchContextParam(
+        launchContext,
+        context,
+        patient,
+        user,
+        encounter
+      );
       if (launchContextParam) {
         contexts.push(launchContextParam);
       }
@@ -139,9 +147,10 @@ function createLocalParam(): ParametersParameter {
 
 function createLaunchContextParam(
   launchContext: LaunchContext,
+  context: Record<string, any>,
   patient: Patient,
-  user: Practitioner,
-  context: Record<string, any>
+  user?: Practitioner,
+  encounter?: Encounter
 ): ParametersParameter | null {
   const name = launchContext.extension[0].valueId ?? launchContext.extension[0].valueCoding?.code;
   if (!name) {
@@ -152,8 +161,10 @@ function createLaunchContextParam(
   let resource: FhirResource | null;
   if (name === 'patient' && resourceType === 'Patient') {
     resource = patient;
-  } else if (name === 'user' && resourceType === 'Practitioner') {
+  } else if (name === 'user' && resourceType === 'Practitioner' && user) {
     resource = user;
+  } else if (name === 'encounter' && resourceType === 'Encounter' && encounter) {
+    resource = encounter;
   } else {
     return null;
   }

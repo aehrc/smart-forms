@@ -50,13 +50,13 @@ function PrePopWrapper(props: PrePopWrapperProps) {
 
     populateQuestionnaire({
       questionnaire: questionnaire,
-      patient: patient,
-      user: user,
       fetchResourceCallback: fetchResourceCallback,
       requestConfig: {
         clientEndpoint: fhirClient.state.serverUrl,
         authToken: null
-      }
+      },
+      patient: patient,
+      user: user
     }).then(async ({ populateSuccess, populateResult }) => {
       if (!populateSuccess || !populateResult) {
         setIsPopulating(false);

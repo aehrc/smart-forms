@@ -16,6 +16,7 @@
  */
 
 import type {
+  Encounter,
   Extension,
   OperationOutcome,
   Patient,
@@ -49,19 +50,21 @@ export interface PopulateResult {
 
 /**
  * @param questionnaire - Questionnaire to populate
- * @param patient - Patient resource as patient in context
- * @param user - Practitioner resource as user in context
  * @param fetchResourceCallback - A callback function to fetch resources
  * @param requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
+ * @param patient - Patient resource as patient in context
+ * @param user - Practitioner resource as user in context
+ * @param encounter - Encounter resource as encounter in context, optional
  *
  * @author Sean Fong
  */
 export interface PopulateQuestionnaireParams {
   questionnaire: Questionnaire;
-  patient: Patient;
-  user: Practitioner;
   fetchResourceCallback: FetchResourceCallback;
   requestConfig: any;
+  patient: Patient;
+  user?: Practitioner;
+  encounter?: Encounter;
 }
 
 /**
@@ -78,7 +81,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   populateSuccess: boolean;
   populateResult: PopulateResult | null;
 }> {
-  const { questionnaire, patient, user, fetchResourceCallback, requestConfig } = params;
+  const { questionnaire, fetchResourceCallback, requestConfig, patient, user, encounter } = params;
 
   const context: Record<string, any> = {};
 
@@ -101,12 +104,13 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   // Define population input parameters from launch contexts, source queries and questionnaire-level variables
   const inputParameters = createPopulateInputParameters(
     questionnaire,
-    patient,
-    user,
     launchContexts,
     sourceQueries,
     questionnaireLevelVariables,
-    context
+    context,
+    patient,
+    user,
+    encounter
   );
 
   if (!inputParameters) {
