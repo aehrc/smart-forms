@@ -18,4 +18,4 @@
 export const ehrUrl = 'https://proxy.smartforms.io/v/r4/fhir';
 export const formsServerUrl = 'https://smartforms.csiro.au/api/fhir';
 
-export const appUrl = 'http://localhost:5173';
+export const appUrl = 'http://localhost:4173';
