@@ -26,6 +26,8 @@ import ViewerNav from './ViewerNav/ViewerNav.tsx';
 
 import type { PrintComponentRefContextType } from '../../types/printComponentRefContext.type.ts';
 import GenericHeader from '../../components/Header/GenericHeader.tsx';
+import RendererDebugFooter from '../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
+import useDebugMode from '../../hooks/useDebugMode.ts';
 
 export const PrintComponentRefContext = createContext<PrintComponentRefContextType>({
   componentRef: null,
@@ -37,6 +39,8 @@ function ViewerLayout() {
 
   const [componentRef, setComponentRef] = useState<MutableRefObject<null> | null>(null);
 
+  const { debugModeEnabled } = useDebugMode();
+
   return (
     <PrintComponentRefContext.Provider value={{ componentRef, setComponentRef }}>
       <StyledRoot>
@@ -45,6 +49,9 @@ function ViewerLayout() {
 
         <Main>
           <Outlet />
+
+          {/* Debug footer */}
+          {debugModeEnabled ? <RendererDebugFooter /> : null}
         </Main>
         <BackToTopButton>
           <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
