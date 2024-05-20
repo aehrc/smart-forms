@@ -17,6 +17,7 @@
 
 import { defineConfig } from 'vite';
 
+// This Vite config is for storybook usage only.
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [],
@@ -27,5 +28,6 @@ export default defineConfig({
     commonjsOptions: {
       include: [/node_modules/, '@aehrc/sdc-populate']
     }
-  }
+  },
+  resolve: { preserveSymlinks: true }
 });
