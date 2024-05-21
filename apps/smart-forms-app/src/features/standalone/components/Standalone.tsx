@@ -36,7 +36,8 @@ const rendererPropsReducer = (state: RendererPropsState, action: RendererPropsAc
         questionnaire: action.payload.questionnaire,
         response: action.payload.response,
         additionalVars: action.payload.additionalVars,
-        terminologyServerUrl: action.payload.terminologyServerUrl
+        terminologyServerUrl: action.payload.terminologyServerUrl,
+        readOnly: action.payload.readOnly
       };
     case 'SET_RESPONSE':
       return { ...state, response: action.payload };
@@ -44,6 +45,8 @@ const rendererPropsReducer = (state: RendererPropsState, action: RendererPropsAc
       return { ...state, additionalVars: action.payload };
     case 'SET_TERMINOLOGY_SERVER':
       return { ...state, terminologyServerUrl: action.payload };
+    case 'SET_READ_ONLY':
+      return { ...state, readOnly: action.payload };
     default:
       return state;
   }
@@ -55,7 +58,8 @@ function Standalone() {
     questionnaire: rendererPropsList[0].questionnaire,
     response: rendererPropsList[0].response,
     additionalVars: rendererPropsList[0].additionalVars,
-    terminologyServerUrl: rendererPropsList[0].terminologyServerUrl
+    terminologyServerUrl: rendererPropsList[0].terminologyServerUrl,
+    readOnly: rendererPropsList[0].readOnly
   });
   const [resourcesShown, setResourcesShown] = useState(false);
 
@@ -87,6 +91,7 @@ function Standalone() {
                   questionnaireResponse={state.response ?? undefined}
                   additionalVariables={state.additionalVars ?? undefined}
                   terminologyServerUrl={state.terminologyServerUrl ?? undefined}
+                  readOnly={state.readOnly}
                 />
               </Stack>
             );
