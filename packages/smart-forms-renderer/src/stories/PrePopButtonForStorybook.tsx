@@ -32,13 +32,15 @@ function PrePopButtonForStorybook(props: PrePopButtonProps) {
   return (
     <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
       <Tooltip title="Pre-populate form" placement="right">
-        <IconButton disabled={isPopulating} onClick={onPopulate} size="small" color="primary">
-          {isPopulating ? (
-            <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
-          ) : (
-            <PlayCircleIcon />
-          )}
-        </IconButton>
+        <span>
+          <IconButton disabled={isPopulating} onClick={onPopulate} size="small" color="primary">
+            {isPopulating ? (
+              <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
+            ) : (
+              <PlayCircleIcon />
+            )}
+          </IconButton>
+        </span>
       </Tooltip>
       {isPopulating ? (
         <Fade in={true} timeout={100}>
