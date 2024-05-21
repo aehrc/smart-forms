@@ -19,6 +19,12 @@ import { useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
+/**
+ * React hook wrapping around the buildForm() function to build a form from a questionnaire and optionally a questionnaireResponse.
+ * @see {buildForm}
+ *
+ * @author Sean Fong
+ */
 function useBuildForm(questionnaire: Questionnaire, questionnaireResponse?: QuestionnaireResponse) {
   const [isBuilding, setIsBuilding] = useState(true);
 

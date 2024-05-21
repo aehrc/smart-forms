@@ -20,6 +20,22 @@ import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import { createSelectors } from './selector';
 
+/**
+ * SmartConfigStore properties and methods
+ * Properties can be accessed for fine-grain details.
+ * Methods are usually used internally, using them from an external source is not recommended.
+ *
+ * @property client - The FHIRClient object (https://github.com/smart-on-fhir/client-js)
+ * @property patient - The patient resource in context
+ * @property user - The user resource in context
+ * @property encounter - The encounter resource in context
+ * @method setClient - Set the FHIRClient object when launching via SMART App Launch
+ * @method setPatient - Set the patient resource in context
+ * @method setUser - Set the user resource in context
+ * @method setEncounter - Set the encounter resource in context
+ *
+ * @author Sean Fong
+ */
 export interface SmartConfigStoreType {
   client: Client | null;
   patient: Patient | null;
@@ -31,6 +47,16 @@ export interface SmartConfigStoreType {
   setEncounter: (encounter: Encounter) => void;
 }
 
+/**
+ * Smart Config state management store. This is only used for answerExpressions.
+ * It is recommended to manage the state of the FHIRClient, patient, user, and encounter in the parent application, since the renderer doesn't provide pre-population capabilities.
+ * Will be deprecated in version 1.0.0.
+ *
+ * This is the vanilla version of the store which can be used in non-React environments.
+ * @see {SmartConfigStoreType} for available properties and methods.
+ *
+ * @author Sean Fong
+ */
 export const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
   client: null,
   patient: null,
@@ -42,4 +68,15 @@ export const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
   setEncounter: (encounter: Encounter) => set(() => ({ encounter: encounter }))
 }));
 
+/**
+ * Smart Config state management store. This is only used for answerExpressions.
+ * It is recommended to manage the state of the FHIRClient, patient, user, and encounter in the parent application, since the renderer doesn't provide pre-population capabilities.
+ * Will be deprecated in version 1.0.0.
+ *
+ * This is the React version of the store which can be used as React hooks in React functional components.
+ * @see {SmartConfigStoreType} for available properties and methods.
+ * @see {smartConfigStore} for the vanilla store.
+ *
+ * @author Sean Fong
+ */
 export const useSmartConfigStore = createSelectors(smartConfigStore);

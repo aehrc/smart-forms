@@ -23,22 +23,20 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import RendererThemeProvider from '../theme/Theme';
 import useRendererQueryClient from '../hooks/useQueryClient';
 import useBuildForm from '../hooks/useBuildForm';
-import { useQuestionnaireResponseStore } from '../stores';
 import { Grid } from '@mui/material';
+import FormValidationViewerForStorybook from './FormValidationViewerForStorybook';
 
-interface ValidateFormButtonTesterWrapperProps {
+interface FormValidationTesterWrapperProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
 }
 
-function ValidateFormButtonTesterWrapper(props: ValidateFormButtonTesterWrapperProps) {
+function FormValidationTesterWrapper(props: FormValidationTesterWrapperProps) {
   const { questionnaire, questionnaireResponse } = props;
 
   const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
 
   const queryClient = useRendererQueryClient();
-
-  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -53,7 +51,7 @@ function ValidateFormButtonTesterWrapper(props: ValidateFormButtonTesterWrapperP
               <BaseRenderer />
             </Grid>
             <Grid item xs={6}>
-              <pre style={{ fontSize: 9 }}>{JSON.stringify(invalidItems, null, 2)}</pre>
+              <FormValidationViewerForStorybook />
             </Grid>
           </Grid>
         </div>
@@ -62,4 +60,4 @@ function ValidateFormButtonTesterWrapper(props: ValidateFormButtonTesterWrapperP
   );
 }
 
-export default ValidateFormButtonTesterWrapper;
+export default FormValidationTesterWrapper;

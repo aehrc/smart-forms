@@ -15,6 +15,12 @@ export {
 } from './components';
 
 // state management store exports
+export type {
+  QuestionnaireStoreType,
+  QuestionnaireResponseStoreType,
+  SmartConfigStoreType,
+  TerminologyServerStoreType
+} from './stores';
 export {
   questionnaireStore,
   useQuestionnaireStore,

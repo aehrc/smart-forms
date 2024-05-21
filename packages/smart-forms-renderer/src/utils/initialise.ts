@@ -34,7 +34,7 @@ import { evaluateInitialCalculatedExpressions } from './calculatedExpression';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 
 /**
- * Initialise a conformant questionnaireResponse from a given questionnaire
+ * Initialise a questionnaireResponse from a given questionnaire
  * optionally takes in an existing questionnaireResponse to be initialised
  *
  * @author Sean Fong

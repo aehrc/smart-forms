@@ -89,6 +89,12 @@ export const themeOptions: ThemeOptions = {
   }
 };
 
+/**
+ * Default Material UI theme used by the renderer. You can customise your own theme by defining a new ThemeProvider.
+ * @see {@link https://mui.com/material-ui/customization/theming/}
+ *
+ * @author Sean Fong
+ */
 export function RendererThemeProvider({ children }: { children: ReactNode }) {
   const theme = createTheme(themeOptions);
   theme.components = componentsOverride(theme);

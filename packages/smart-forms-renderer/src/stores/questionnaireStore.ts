@@ -49,6 +49,8 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
 
 /**
  * QuestionnaireStore properties and methods
+ * Properties can be accessed for fine-grain details.
+ * Methods are usually used internally, using them from an external source is not recommended.
  *
  * @property sourceQuestionnaire - FHIR R4 Questionnaire to render
  * @property itemTypes - Key-value pair of item types <linkId, item.type>
@@ -69,8 +71,20 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
  * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values <variable/launchContext/sourceQueries batch name, evaluated value(s)>
  * @property focusedLinkId - LinkId of the currently focused item
  * @property readOnly - Flag to set the form to read-only mode
- // * @method buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and questionnaire response
+ * @method buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
+ * @method destroySourceQuestionnaire - Used to destroy the source questionnaire and reset all properties
+ * @method switchTab - Used to switch the current tab index
+ * @method markTabAsComplete - Used to mark a tab index as complete
+ * @method updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
+ * @method mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
+ * @method toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
+ * @method updateExpressions - Used to update all SDC expressions based on the updated questionnaire response
+ * @method addCodingToCache - Used to add a coding to the cached value set codings
+ * @method updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
+ * @method onFocusLinkId - Used to set the focused linkId
+ * @method setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
  *
+ * @author Sean Fong
  */
 export interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
@@ -96,7 +110,7 @@ export interface QuestionnaireStoreType {
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
     additionalVariables?: Record<string, object>,
-    terminologyServerUrl?: string, // FIXME
+    terminologyServerUrl?: string,
     readOnly?: boolean
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
@@ -126,13 +140,8 @@ export interface QuestionnaireStoreType {
 
 /**
  * Questionnaire state management store which contains all properties and methods to manage the state of the questionnaire.
- *
- * @param questionnaire - Input FHIR R4 Questionnaire to be rendered
- * @param questionnaireResponse - Pre-populated QuestionnaireResponse to be rendered (optional)
- * @param additionalVariables - Additional key-value pair of SDC variables <name, variable extension> for testing (optional)
- * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
- * @param fhirClient - FHIRClient object to perform further FHIR calls. At the moment it's only used in answerExpressions (optional)
- * @param readOnly - Applies read-only mode to all items in the form
+ * This is the vanilla version of the store which can be used in non-React environments.
+ * @see {QuestionnaireStoreType} for available properties and methods.
  *
  * @author Sean Fong
  */
@@ -389,4 +398,12 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     }))
 }));
 
+/**
+ * Questionnaire state management store which contains all properties and methods to manage the state of the questionnaire.
+ * This is the React version of the store which can be used as React hooks in React functional components.
+ * @see {QuestionnaireStoreType} for available properties and methods.
+ * @see {questionnaireStore} for the vanilla store.
+ *
+ * @author Sean Fong
+ */
 export const useQuestionnaireStore = createSelectors(questionnaireStore);

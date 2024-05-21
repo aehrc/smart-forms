@@ -16,16 +16,16 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import ValidateFormButtonTesterWrapper from '../ValidateFormButtonTesterWrapper';
+import ValidationFormTesterWrapper from '../FormValidationTesterWrapper';
 import { qValidateFormButtonTester } from '../assets/questionnaires/QValidateFormButtonTester';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'Component/Testing/Validate Form Button Tester',
-  component: ValidateFormButtonTesterWrapper,
+  component: ValidationFormTesterWrapper,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
-} satisfies Meta<typeof ValidateFormButtonTesterWrapper>;
+} satisfies Meta<typeof ValidationFormTesterWrapper>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

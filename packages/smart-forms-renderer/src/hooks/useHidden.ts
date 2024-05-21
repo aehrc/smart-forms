@@ -20,6 +20,12 @@ import { useQuestionnaireStore } from '../stores';
 import { isHiddenByEnableWhen } from '../utils/qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
+/**
+ * React hook to determine if a QuestionnaireItem is hidden via item.hidden, enableWhens, enableWhenExpressions.
+ * When checking for repeating group enableWhen items, the parentRepeatGroupIndex should be provided.
+ *
+ * @author Sean Fong
+ */
 function useHidden(qItem: QuestionnaireItem, parentRepeatGroupIndex?: number): boolean {
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
