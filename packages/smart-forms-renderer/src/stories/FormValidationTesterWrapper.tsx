@@ -20,9 +20,8 @@ import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import RendererThemeProvider from '../theme/Theme';
-import useRendererQueryClient from '../hooks/useQueryClient';
-import useBuildForm from '../hooks/useBuildForm';
+import { RendererThemeProvider } from '../theme';
+import { useBuildForm, useRendererQueryClient } from '../hooks';
 import { Grid } from '@mui/material';
 import FormValidationViewerForStorybook from './FormValidationViewerForStorybook';
 

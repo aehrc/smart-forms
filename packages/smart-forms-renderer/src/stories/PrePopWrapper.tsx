@@ -20,10 +20,9 @@ import React, { useState } from 'react';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import RendererThemeProvider from '../theme/Theme';
-import useQueryClient from '../hooks/useQueryClient';
+import { RendererThemeProvider } from '../theme';
+import { useBuildForm, useRendererQueryClient } from '../hooks';
 import type Client from 'fhirclient/lib/Client';
-import useBuildForm from '../hooks/useBuildForm';
 import { buildForm } from '../utils';
 import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
@@ -43,7 +42,7 @@ function PrePopWrapper(props: PrePopWrapperProps) {
 
   const isBuilding = useBuildForm(questionnaire);
 
-  const queryClient = useQueryClient();
+  const queryClient = useRendererQueryClient();
 
   function handlePrepopulate() {
     setIsPopulating(true);
