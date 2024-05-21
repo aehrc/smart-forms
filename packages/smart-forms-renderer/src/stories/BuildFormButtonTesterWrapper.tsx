@@ -22,7 +22,6 @@ import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { RendererThemeProvider } from '../theme';
 import { useBuildForm, useRendererQueryClient } from '../hooks';
-import { buildForm } from '../utils';
 import BuildFormButtonForStorybook from './BuildFormButtonForStorybook';
 
 interface BuildFormButtonTesterWrapperProps {
@@ -37,10 +36,6 @@ function BuildFormButtonTesterWrapper(props: BuildFormButtonTesterWrapperProps) 
 
   const isBuilding = useBuildForm(questionnaire);
 
-  async function handleBuildForm() {
-    await buildForm(questionnaire, questionnaireResponse);
-  }
-
   if (isBuilding) {
     return <div>Loading...</div>;
   }
@@ -49,7 +44,10 @@ function BuildFormButtonTesterWrapper(props: BuildFormButtonTesterWrapperProps) 
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <BuildFormButtonForStorybook onBuild={handleBuildForm} />
+          <BuildFormButtonForStorybook
+            questionnaire={questionnaire}
+            questionnaireResponse={questionnaireResponse}
+          />
           <BaseRenderer />
         </div>
       </QueryClientProvider>

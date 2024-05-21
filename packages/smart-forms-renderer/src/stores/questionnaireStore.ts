@@ -83,6 +83,7 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
  * @method updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
  * @method onFocusLinkId - Used to set the focused linkId
  * @method setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
+ * @method setFormAsReadOnly - Used to set the form as read-only
  *
  * @author Sean Fong
  */
@@ -136,6 +137,7 @@ export interface QuestionnaireStoreType {
   ) => QuestionnaireResponse;
   onFocusLinkId: (linkId: string) => void;
   setPopulatedContext: (newPopulatedContext: Record<string, any>) => void;
+  setFormAsReadOnly: (readOnly: boolean) => void;
 }
 
 /**
@@ -395,6 +397,10 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   setPopulatedContext: (newPopulatedContext: Record<string, any>) =>
     set(() => ({
       populatedContext: newPopulatedContext
+    })),
+  setFormAsReadOnly: (readOnly: boolean) =>
+    set(() => ({
+      readOnly: readOnly
     }))
 }));
 

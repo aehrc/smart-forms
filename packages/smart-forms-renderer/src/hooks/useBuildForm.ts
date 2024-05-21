@@ -20,19 +20,37 @@ import { buildForm } from '../utils';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 /**
- * React hook wrapping around the buildForm() function to build a form from a questionnaire and optionally a questionnaireResponse.
- * @see {buildForm}
+ * React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse.
+ * @see {buildForm} for more information.
+ *
+ * @param questionnaire - Questionnaire to be rendered
+ * @param questionnaireResponse - Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional)
+ * @param readOnly - Applies read-only mode to all items in the form view
+ * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
+ * @param additionalVariables - Additional key-value pair of SDC variables <name, variable extension> for testing (optional)
  *
  * @author Sean Fong
  */
-function useBuildForm(questionnaire: Questionnaire, questionnaireResponse?: QuestionnaireResponse) {
+function useBuildForm(
+  questionnaire: Questionnaire,
+  questionnaireResponse?: QuestionnaireResponse,
+  readOnly?: boolean,
+  terminologyServerUrl?: string,
+  additionalVariables?: Record<string, object>
+) {
   const [isBuilding, setIsBuilding] = useState(true);
 
   useLayoutEffect(() => {
-    buildForm(questionnaire, questionnaireResponse).then(() => {
+    buildForm(
+      questionnaire,
+      questionnaireResponse,
+      readOnly,
+      terminologyServerUrl,
+      additionalVariables
+    ).then(() => {
       setIsBuilding(false);
     });
-  }, [questionnaire, questionnaireResponse]);
+  }, [additionalVariables, questionnaire, questionnaireResponse, readOnly, terminologyServerUrl]);
 
   return isBuilding;
 }

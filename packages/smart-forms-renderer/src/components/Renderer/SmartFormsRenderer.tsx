@@ -18,13 +18,13 @@
 import React from 'react';
 import RendererThemeProvider from '../../theme/Theme';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import useInitialiseRenderer from '../../hooks/useInitialiseRenderer';
+import useInitialiseForm from '../../hooks/useInitialiseForm';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
 import { QueryClientProvider } from '@tanstack/react-query';
-import useQueryClient from '../../hooks/useQueryClient';
+import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 import BaseRenderer from './BaseRenderer';
 import type Client from 'fhirclient/lib/Client';
 
@@ -53,7 +53,9 @@ export interface SmartFormsRendererProps {
 
 /**
  * A self-initialising wrapper around the BaseRenderer rendering engine.
- * See SmartFormsRendererProps for props.
+ * // FIXME add github link
+ *
+ * @see {SmartFormsRendererProps} for props.
  *
  * @author Sean Fong
  */
@@ -67,15 +69,15 @@ function SmartFormsRenderer(props: SmartFormsRendererProps) {
     readOnly
   } = props;
 
-  const isLoading = useInitialiseRenderer(
+  const isLoading = useInitialiseForm(
     questionnaire,
     questionnaireResponse,
-    additionalVariables,
+    readOnly,
     terminologyServerUrl,
-    fhirClient,
-    readOnly
+    additionalVariables,
+    fhirClient
   );
-  const queryClient = useQueryClient();
+  const queryClient = useRendererQueryClient();
 
   if (isLoading) {
     return (
