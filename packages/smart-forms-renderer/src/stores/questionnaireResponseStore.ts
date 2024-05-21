@@ -38,9 +38,9 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
  *
  * @property sourceResponse - The original response created when the form is first initialised i.e. empty, pre-populated, opened saved draft
  * @property updatableResponse - The current state of the response that is being updated via form fields
- * @property updatableResponseItems - Key-value pair of updatableResponse items <linkId, QR.item(s)>
+ * @property updatableResponseItems - Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
  * @property formChangesHistory - Array of form changes history in the form of deep-diff objects
- * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire <linkId, OperationOutcome>
+ * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire `Record<linkId, OperationOutcome>`
  * @property responseIsValid - Whether there are any invalid items in the response
  * @method validateQuestionnaire - Used to validate the questionnaire response based on the questionnaire
  * @method buildSourceResponse - Used to build the source response when the form is first initialised

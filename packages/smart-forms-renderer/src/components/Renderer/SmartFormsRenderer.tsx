@@ -33,7 +33,7 @@ import type Client from 'fhirclient/lib/Client';
  *
  * @property questionnaire - Input FHIR R4 Questionnaire to be rendered
  * @property questionnaireResponse - Pre-populated QuestionnaireResponse to be rendered (optional)
- * @property additionalVariables - Additional key-value pair of SDC variables <name, variable extension> for testing (optional)
+ * @property additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
  * @property terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
  * @property fhirClient - FHIRClient object to perform further FHIR calls. At the moment it's only used in answerExpressions (optional)
  * @property readOnly - Applies read-only mode to all items in the form

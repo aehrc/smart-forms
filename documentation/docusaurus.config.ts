@@ -155,7 +155,15 @@ const config: Config = {
           }
         };
       }
-    })
+    }),
+    [
+      'docusaurus-plugin-typedoc',
+      // Options
+      {
+        entryPoints: ['../packages/smart-forms-renderer/src/index.ts'],
+        tsconfig: '../packages/smart-forms-renderer/tsconfig.json'
+      }
+    ]
   ]
 };
 

@@ -20,8 +20,8 @@ import type { Expression, FhirResource } from 'fhir/r4';
 /**
  * Variables interface
  *
- * @property fhirPathVariables - Key-value pair of FHIRPath variable expressions in a Questionnaire item <linkId, array of FHIRPath expressions>
- * @property xFhirQueryVariables - Key-value pair of x-fhir-query variables <variable name, x-fhir-query variable properties>
+ * @property fhirPathVariables - Key-value pair of FHIRPath variable expressions in a Questionnaire item `Record<linkId, array of FHIRPath expressions>`
+ * @property xFhirQueryVariables - Key-value pair of x-fhir-query variables `Record<variable name, x-fhir-query variable properties>`
  */
 export interface Variables {
   fhirPathVariables: Record<string, Expression[]>;
