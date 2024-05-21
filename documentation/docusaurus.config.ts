@@ -160,8 +160,10 @@ const config: Config = {
       'docusaurus-plugin-typedoc',
       // Options
       {
+        excludeTags: ['@author'],
         entryPoints: ['../packages/smart-forms-renderer/src/index.ts'],
-        tsconfig: '../packages/smart-forms-renderer/tsconfig.json'
+        tsconfig: '../packages/smart-forms-renderer/tsconfig.json',
+        out: 'docs/devUsage/api'
       }
     ]
   ]
