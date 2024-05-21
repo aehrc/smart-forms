@@ -53,7 +53,8 @@ export interface SmartFormsRendererProps {
 
 /**
  * A self-initialising wrapper around the BaseRenderer rendering engine.
- * // FIXME add github link
+ * Will be deprecated in version 1.0.0. For alternative usage, see:
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/InitialiseFormWrapperForStorybook.tsx#L40-L51
  *
  * @see {SmartFormsRendererProps} for props.
  *

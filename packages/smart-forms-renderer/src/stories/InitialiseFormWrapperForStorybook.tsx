@@ -47,6 +47,10 @@ interface InitialiseFormWrapperProps {
  * - Make your own initialiseFhirClient() call in a button click or other event handler. Alternatively, you can use the useInitialiseForm hook to initialise the form.
  * - The initialised FHIRClient is only used for further FHIR calls. It does not provide pre-population capabilities.
  *
+ * For button click usage examples of buildForm(), see:
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonTesterWrapper.tsx#L47
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonForStorybook.tsx
+ *
  * @author Sean Fong
  */
 function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
@@ -66,8 +70,7 @@ function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
    * The useInitialiseForm hook provides initialisation logic for the form
    * Alternatively (and recommended to do so), you can initialise your form via a button click or other event handler.
    *
-   * // FIXME add github link
-   * @see BuildFormButtonTesterWrapper for button click usage examples.
+   * @see {@link https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonForStorybook.tsx} for button click usage examples.
    */
   const isInitialising = useInitialiseForm(
     questionnaire,
