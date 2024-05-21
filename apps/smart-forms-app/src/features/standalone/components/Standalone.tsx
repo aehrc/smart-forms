@@ -21,11 +21,11 @@ import type {
   RendererPropsActions,
   RendererPropsState
 } from '../interfaces/standalone.interface.ts';
-import { SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
 import { rendererPropsList } from '../utils/standaloneList.ts';
 import StandaloneQuestionnairePicker from './StandaloneQuestionnairePicker.tsx';
 import StandalonePropsPicker from './StandalonePropsPicker.tsx';
 import StandaloneResourceViewer from './StandaloneResourceViewer.tsx';
+import { InitialiseFormWrapperForStorybook } from '@aehrc/smart-forms-renderer';
 
 const rendererPropsReducer = (state: RendererPropsState, action: RendererPropsActions) => {
   switch (action.type) {
@@ -86,7 +86,7 @@ function Standalone() {
                   resourcesShown={resourcesShown}
                   onShowResources={() => setResourcesShown(!resourcesShown)}
                 />
-                <SmartFormsRenderer
+                <InitialiseFormWrapperForStorybook
                   questionnaire={state.questionnaire}
                   questionnaireResponse={state.response ?? undefined}
                   additionalVariables={state.additionalVars ?? undefined}
