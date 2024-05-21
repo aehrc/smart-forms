@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import PrePopWrapper from '../PrePopWrapper';
+import PrePopWrapperForStorybook from '../StorybookWrappers/PrePopWrapperForStorybook';
 import {
   qCalculatedExpressionBMICalculatorPrepop,
   qCalculatedExpressionCvdRiskCalculatorPrepop,
@@ -32,10 +32,10 @@ import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'Component/SDC/12 Form Population',
-  component: PrePopWrapper,
+  component: PrePopWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
-} satisfies Meta<typeof PrePopWrapper>;
+} satisfies Meta<typeof PrePopWrapperForStorybook>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

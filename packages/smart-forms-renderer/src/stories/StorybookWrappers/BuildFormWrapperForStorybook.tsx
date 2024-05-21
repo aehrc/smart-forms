@@ -18,31 +18,34 @@
 // @ts-ignore
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { Box, IconButton, Tooltip } from '@mui/material';
-import Iconify from '../components/Iconify/Iconify';
-import { buildForm } from '../utils';
+import { BaseRenderer } from '../../components';
+import { QueryClientProvider } from '@tanstack/react-query';
+import RendererThemeProvider from '../../theme/Theme';
+import { useBuildForm } from '../../hooks';
+import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 
-interface BuildFormButtonProps {
+interface BuildFormWrapperForStorybookProps {
   questionnaire: Questionnaire;
-  questionnaireResponse: QuestionnaireResponse;
+  questionnaireResponse?: QuestionnaireResponse;
 }
 
-function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
+function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) {
   const { questionnaire, questionnaireResponse } = props;
 
-  async function handleBuildForm() {
-    await buildForm(questionnaire, questionnaireResponse);
+  const queryClient = useRendererQueryClient();
+  const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
+
+  if (isBuilding) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
-      <Tooltip title="Build form with questionnaire response" placement="right">
-        <IconButton onClick={handleBuildForm} size="small" color="primary">
-          <Iconify icon="ph:hammer" sx={{ mb: 0.5 }} />
-        </IconButton>
-      </Tooltip>
-    </Box>
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BaseRenderer />
+      </QueryClientProvider>
+    </RendererThemeProvider>
   );
 }
 
-export default BuildFormButtonForStorybook;
+export default BuildFormWrapperForStorybook;

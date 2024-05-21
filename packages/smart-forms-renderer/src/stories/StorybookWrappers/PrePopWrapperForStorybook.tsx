@@ -18,24 +18,24 @@
 // @ts-ignore
 import React, { useState } from 'react';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
-import { BaseRenderer } from '../components';
+import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { RendererThemeProvider } from '../theme';
-import { useBuildForm, useRendererQueryClient } from '../hooks';
+import { RendererThemeProvider } from '../../theme';
+import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import type Client from 'fhirclient/lib/Client';
-import { buildForm } from '../utils';
+import { buildForm } from '../../utils';
 import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './populateCallbackForStorybook';
 
-interface PrePopWrapperProps {
+interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
   fhirClient: Client;
   patient: Patient;
   user: Practitioner;
 }
 
-function PrePopWrapper(props: PrePopWrapperProps) {
+function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
   const { questionnaire, fhirClient, patient, user } = props;
 
   const [isPopulating, setIsPopulating] = useState(false);
@@ -88,4 +88,4 @@ function PrePopWrapper(props: PrePopWrapperProps) {
   );
 }
 
-export default PrePopWrapper;
+export default PrePopWrapperForStorybook;

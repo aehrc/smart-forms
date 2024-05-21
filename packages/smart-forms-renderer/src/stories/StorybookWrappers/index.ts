@@ -16,3 +16,4 @@
  */
 
 export { default as InitialiseFormWrapperForStorybook } from './InitialiseFormWrapperForStorybook';
+export { default as FullCoverageTesterWrapperForStorybook } from './FullCoverageTesterWrapperForStorybook';

@@ -17,25 +17,32 @@
 
 // @ts-ignore
 import React from 'react';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import Iconify from '../components/Iconify/Iconify';
+import Iconify from '../../components/Iconify/Iconify';
+import { buildForm } from '../../utils';
 
-interface ValidationFormButtonProps {
-  onValidate: () => void;
+interface BuildFormButtonProps {
+  questionnaire: Questionnaire;
+  questionnaireResponse?: QuestionnaireResponse;
 }
 
-function ValidationFormButtonForStorybook(props: ValidationFormButtonProps) {
-  const { onValidate } = props;
+function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
+  const { questionnaire, questionnaireResponse } = props;
+
+  async function handleBuildForm() {
+    await buildForm(questionnaire, questionnaireResponse);
+  }
 
   return (
     <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
-      <Tooltip title="Validate form" placement="right">
-        <IconButton onClick={onValidate} size="small" color="primary">
-          <Iconify icon="material-symbols:data-check" sx={{ mb: 0.5 }} />
+      <Tooltip title="Build form with questionnaire response" placement="right">
+        <IconButton onClick={handleBuildForm} size="small" color="primary">
+          <Iconify icon="ph:hammer" sx={{ mb: 0.5 }} />
         </IconButton>
       </Tooltip>
     </Box>
   );
 }
 
-export default ValidationFormButtonForStorybook;
+export default BuildFormButtonForStorybook;

@@ -21,15 +21,15 @@ import {
   qBooleanCalculation,
   qrBooleanBasicResponse
 } from '../assets/questionnaires';
-import BuildFormWrapper from '../BuildFormWrapper'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+import BuildFormWrapperForStorybook from '../StorybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'Component/ItemType/Boolean',
-  component: BuildFormWrapper,
+  component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
-} satisfies Meta<typeof BuildFormWrapper>;
+} satisfies Meta<typeof BuildFormWrapperForStorybook>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

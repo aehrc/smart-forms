@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import ValidationFormTesterWrapper from '../FormValidationTesterWrapper';
+import ValidationFormTesterWrapper from '../StorybookWrappers/FormValidationTesterWrapperForStorybook';
 import { qValidateFormButtonTester } from '../assets/questionnaires/QValidateFormButtonTester';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

@@ -18,24 +18,23 @@
 // @ts-ignore
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { BaseRenderer } from '../components';
+import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { RendererThemeProvider } from '../theme';
-import { useBuildForm, useRendererQueryClient } from '../hooks';
-import { Grid } from '@mui/material';
-import FormValidationViewerForStorybook from './FormValidationViewerForStorybook';
+import { RendererThemeProvider } from '../../theme';
+import { useBuildForm, useRendererQueryClient } from '../../hooks';
+import BuildFormButtonForStorybook from './BuildFormButtonForStorybook';
 
-interface FormValidationTesterWrapperProps {
+interface FullCoverageTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
 }
 
-function FormValidationTesterWrapper(props: FormValidationTesterWrapperProps) {
+function FullCoverageTesterWrapperForStorybook(props: FullCoverageTesterWrapperForStorybookProps) {
   const { questionnaire, questionnaireResponse } = props;
 
-  const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
-
   const queryClient = useRendererQueryClient();
+
+  const isBuilding = useBuildForm(questionnaire);
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -45,18 +44,15 @@ function FormValidationTesterWrapper(props: FormValidationTesterWrapperProps) {
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <Grid container>
-            <Grid item xs={6}>
-              <BaseRenderer />
-            </Grid>
-            <Grid item xs={6}>
-              <FormValidationViewerForStorybook />
-            </Grid>
-          </Grid>
+          <BuildFormButtonForStorybook
+            questionnaire={questionnaire}
+            questionnaireResponse={questionnaireResponse}
+          />
+          <BaseRenderer />
         </div>
       </QueryClientProvider>
     </RendererThemeProvider>
   );
 }
 
-export default FormValidationTesterWrapper;
+export default FullCoverageTesterWrapperForStorybook;

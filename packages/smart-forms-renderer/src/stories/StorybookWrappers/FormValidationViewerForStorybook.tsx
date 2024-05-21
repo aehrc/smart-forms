@@ -17,7 +17,7 @@
 
 // @ts-ignore
 import React from 'react';
-import { useQuestionnaireResponseStore } from '../stores';
+import { useQuestionnaireResponseStore } from '../../stores';
 
 function FormValidationViewerForStorybook() {
   const invalidItems = useQuestionnaireResponseStore.use.invalidItems();

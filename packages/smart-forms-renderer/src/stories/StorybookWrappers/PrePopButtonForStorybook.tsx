@@ -21,12 +21,12 @@ import { Box, CircularProgress, Fade, IconButton, Tooltip } from '@mui/material'
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import Typography from '@mui/material/Typography';
 
-interface PrePopButtonProps {
+interface PrePopButtonForStorybookProps {
   isPopulating: boolean;
   onPopulate: () => void;
 }
 
-function PrePopButtonForStorybook(props: PrePopButtonProps) {
+function PrePopButtonForStorybook(props: PrePopButtonForStorybookProps) {
   const { isPopulating, onPopulate } = props;
 
   return (

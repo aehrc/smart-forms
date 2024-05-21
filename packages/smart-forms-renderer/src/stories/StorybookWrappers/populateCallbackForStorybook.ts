@@ -20,7 +20,7 @@ import axios from 'axios';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-export interface RequestConfig {
+interface RequestConfig {
   clientEndpoint: string;
   authToken: string | null;
 }

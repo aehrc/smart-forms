@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import BuildFormWrapper from '../BuildFormWrapper';
+import BuildFormWrapperForStorybook from '../StorybookWrappers/BuildFormWrapperForStorybook';
 import {
   qMaxDecimalPlaces,
   qMaxLength,
@@ -35,10 +35,10 @@ import {
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'Component/SDC/9.1.1 Form Behavior Value Constraints',
-  component: BuildFormWrapper,
+  component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
-} satisfies Meta<typeof BuildFormWrapper>;
+} satisfies Meta<typeof BuildFormWrapperForStorybook>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
