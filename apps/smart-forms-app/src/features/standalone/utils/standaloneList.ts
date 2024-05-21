@@ -33,27 +33,31 @@ export const rendererPropsList: RendererPropsState[] = [
     questionnaire: Q715Json as Questionnaire,
     response: R715Json as QuestionnaireResponse,
     additionalVars: null,
-    terminologyServerUrl: null
+    terminologyServerUrl: null,
+    readOnly: false
   },
   {
     id: 'TestGrid',
     questionnaire: QTestGridJson as Questionnaire,
     response: RTestGridJson as QuestionnaireResponse,
     additionalVars: AddVarsTestGridJson,
-    terminologyServerUrl: null
+    terminologyServerUrl: null,
+    readOnly: false
   },
   {
     id: 'CVDRiskCalculator',
     questionnaire: QCVDRiskJson as Questionnaire,
     response: RCVDRiskJson as QuestionnaireResponse,
     additionalVars: null,
-    terminologyServerUrl: null
+    terminologyServerUrl: null,
+    readOnly: false
   },
   {
     id: 'DemoAnswerExpression',
     questionnaire: QDemoAnsExp as Questionnaire,
     response: RDemoAnsExp as QuestionnaireResponse,
     additionalVars: null,
-    terminologyServerUrl: 'http://hapi.fhir.org/baseR4'
+    terminologyServerUrl: 'http://hapi.fhir.org/baseR4',
+    readOnly: false
   }
 ];

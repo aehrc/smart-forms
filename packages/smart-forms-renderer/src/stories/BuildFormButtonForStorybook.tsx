@@ -17,20 +17,27 @@
 
 // @ts-ignore
 import React from 'react';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import Iconify from '../components/Iconify/Iconify';
+import { buildForm } from '../utils';
 
 interface BuildFormButtonProps {
-  onBuild: () => void;
+  questionnaire: Questionnaire;
+  questionnaireResponse: QuestionnaireResponse;
 }
 
 function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
-  const { onBuild } = props;
+  const { questionnaire, questionnaireResponse } = props;
+
+  async function handleBuildForm() {
+    await buildForm(questionnaire, questionnaireResponse);
+  }
 
   return (
     <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
-      <Tooltip title="Build form" placement="right">
-        <IconButton onClick={onBuild} size="small" color="primary">
+      <Tooltip title="Build form with questionnaire response" placement="right">
+        <IconButton onClick={handleBuildForm} size="small" color="primary">
           <Iconify icon="ph:hammer" sx={{ mb: 0.5 }} />
         </IconButton>
       </Tooltip>

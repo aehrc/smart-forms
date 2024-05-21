@@ -64,15 +64,17 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
       <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
       <Fade in={valueBoolean !== undefined} timeout={100}>
         <Tooltip title="Set question as unanswered">
-          <Button
-            sx={{
-              color: grey['500'],
-              '&:hover': { backgroundColor: grey['200'] }
-            }}
-            disabled={readOnly}
-            onClick={onClear}>
-            Clear
-          </Button>
+          <span>
+            <Button
+              sx={{
+                color: grey['500'],
+                '&:hover': { backgroundColor: grey['200'] }
+              }}
+              disabled={readOnly}
+              onClick={onClear}>
+              Clear
+            </Button>
+          </span>
         </Tooltip>
       </Fade>
     </Box>

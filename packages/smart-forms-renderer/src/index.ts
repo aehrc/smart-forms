@@ -15,6 +15,12 @@ export {
 } from './components';
 
 // state management store exports
+export type {
+  QuestionnaireStoreType,
+  QuestionnaireResponseStoreType,
+  SmartConfigStoreType,
+  TerminologyServerStoreType
+} from './stores';
 export {
   questionnaireStore,
   useQuestionnaireStore,
@@ -27,7 +33,7 @@ export {
 } from './stores';
 
 // hooks exports
-export { useHidden, useBuildForm } from './hooks';
+export { useHidden, useBuildForm, useRendererQueryClient } from './hooks';
 
 // utils exports
 export type { ItemToRepopulate } from './utils';

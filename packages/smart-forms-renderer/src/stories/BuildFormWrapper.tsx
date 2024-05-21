@@ -22,7 +22,7 @@ import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import RendererThemeProvider from '../theme/Theme';
 import { useBuildForm } from '../hooks';
-import useRendererQueryClient from '../hooks/useQueryClient';
+import useRendererQueryClient from '../hooks/useRendererQueryClient';
 
 interface BuildFormWrapperProps {
   questionnaire: Questionnaire;

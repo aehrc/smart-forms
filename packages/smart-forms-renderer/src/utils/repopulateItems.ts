@@ -30,6 +30,18 @@ import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enabl
 import { isHiddenByEnableWhen } from './qItem';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
 
+/**
+ * ItemToRepopulate interface
+ *
+ * @property qItem - The QuestionnaireItem to repopulate
+ * @property heading - The heading of the group to repopulate
+ * @property newQRItem - The new QuestionnaireResponseItem to replace the old one
+ * @property oldQRItem - The old QuestionnaireResponseItem to be replaced
+ * @property newQRItems - The new QuestionnaireResponseItems to replace the old ones
+ * @property oldQRItems - The old QuestionnaireResponseItems to be replaced
+ *
+ * @author Sean Fong
+ */
 export interface ItemToRepopulate {
   qItem: QuestionnaireItem | null;
   heading: string | null;
@@ -54,7 +66,7 @@ interface getItemsToRepopulateParams {
 }
 
 /**
- * Compare latest data from the server with the current QuestionnaireResponse and decide items to re-populate.
+ * Compare latest data from the server with the current QuestionnaireResponse and decide items to re-populate
  *
  * @author Sean Fong
  */

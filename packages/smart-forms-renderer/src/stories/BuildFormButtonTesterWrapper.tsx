@@ -20,10 +20,8 @@ import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import RendererThemeProvider from '../theme/Theme';
-import useQueryClient from '../hooks/useQueryClient';
-import useBuildForm from '../hooks/useBuildForm';
-import { buildForm } from '../utils';
+import { RendererThemeProvider } from '../theme';
+import { useBuildForm, useRendererQueryClient } from '../hooks';
 import BuildFormButtonForStorybook from './BuildFormButtonForStorybook';
 
 interface BuildFormButtonTesterWrapperProps {
@@ -34,13 +32,9 @@ interface BuildFormButtonTesterWrapperProps {
 function BuildFormButtonTesterWrapper(props: BuildFormButtonTesterWrapperProps) {
   const { questionnaire, questionnaireResponse } = props;
 
-  const queryClient = useQueryClient();
+  const queryClient = useRendererQueryClient();
 
   const isBuilding = useBuildForm(questionnaire);
-
-  async function handleBuildForm() {
-    await buildForm(questionnaire, questionnaireResponse);
-  }
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -50,7 +44,10 @@ function BuildFormButtonTesterWrapper(props: BuildFormButtonTesterWrapperProps) 
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <BuildFormButtonForStorybook onBuild={handleBuildForm} />
+          <BuildFormButtonForStorybook
+            questionnaire={questionnaire}
+            questionnaireResponse={questionnaireResponse}
+          />
           <BaseRenderer />
         </div>
       </QueryClientProvider>

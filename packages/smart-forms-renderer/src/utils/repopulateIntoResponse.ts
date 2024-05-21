@@ -10,7 +10,7 @@ import { isSpecificItemControl } from './itemControl';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
 
 /**
- * Re-populate checked items in the re-population dialog into the current QuestionnaireResponse.
+ * Re-populate checked items in the re-population dialog into the current QuestionnaireResponse
  *
  * @author Sean Fong
  */

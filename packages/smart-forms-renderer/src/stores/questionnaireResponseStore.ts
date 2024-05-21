@@ -31,7 +31,28 @@ import { validateQuestionnaire } from '../utils/validateQuestionnaire';
 import { questionnaireStore } from './questionnaireStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 
-interface QuestionnaireResponseStoreType {
+/**
+ * QuestionnaireResponseStore properties and methods
+ * Properties can be accessed for fine-grain details.
+ * Methods are usually used internally, using them from an external source is not recommended.
+ *
+ * @property sourceResponse - The original response created when the form is first initialised i.e. empty, pre-populated, opened saved draft
+ * @property updatableResponse - The current state of the response that is being updated via form fields
+ * @property updatableResponseItems - Key-value pair of updatableResponse items <linkId, QR.item(s)>
+ * @property formChangesHistory - Array of form changes history in the form of deep-diff objects
+ * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire <linkId, OperationOutcome>
+ * @property responseIsValid - Whether there are any invalid items in the response
+ * @method validateQuestionnaire - Used to validate the questionnaire response based on the questionnaire
+ * @method buildSourceResponse - Used to build the source response when the form is first initialised
+ * @method setUpdatableResponseAsPopulated - Used to set a pre-populated response as the current response
+ * @method updateResponse - Used to update the current response
+ * @method setUpdatableResponseAsSaved - Used to set a saved response as the current response
+ * @method setUpdatableResponseAsEmpty - Used to set an empty response as the current response
+ * @method destroySourceResponse - Used to destroy the source response  and reset all properties
+ *
+ * @author Sean Fong
+ */
+export interface QuestionnaireResponseStoreType {
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
   updatableResponseItems: Record<string, QuestionnaireResponseItem[]>;
@@ -50,6 +71,13 @@ interface QuestionnaireResponseStoreType {
   destroySourceResponse: () => void;
 }
 
+/**
+ * QuestionnaireResponse state management store which contains all properties and methods to manage the state of the questionnaireResponse.
+ * This is the vanilla version of the store which can be used in non-React environments.
+ * @see {QuestionnaireResponseStoreType} for available properties and methods.
+ *
+ * @author Sean Fong
+ */
 export const questionnaireResponseStore = createStore<QuestionnaireResponseStoreType>()(
   (set, get) => ({
     sourceResponse: cloneDeep(emptyResponse),
@@ -125,4 +153,12 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
   })
 );
 
+/**
+ * QuestionnaireResponse state management store which contains all properties and methods to manage the state of the questionnaire.
+ * This is the React version of the store which can be used as React hooks in React functional components.
+ * @see {QuestionnaireResponseStoreType} for available properties and methods.
+ * @see {questionnaireResponseStore} for the vanilla store.
+ *
+ * @author Sean Fong
+ */
 export const useQuestionnaireResponseStore = createSelectors(questionnaireResponseStore);

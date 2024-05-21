@@ -107,6 +107,23 @@ function StandalonePropsPicker(props: StandalonePropsPickerProps) {
               label="Terminology server url"
             />
           ) : null}
+
+          {rendererPropsSingle.readOnly !== null ? (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={state.readOnly}
+                  onChange={() => {
+                    dispatch({
+                      type: 'SET_READ_ONLY',
+                      payload: !state.readOnly
+                    });
+                  }}
+                />
+              }
+              label="Read only"
+            />
+          ) : null}
         </FormGroup>
       </FormControl>
       <Box display="flex" alignItems="center" columnGap={1}>

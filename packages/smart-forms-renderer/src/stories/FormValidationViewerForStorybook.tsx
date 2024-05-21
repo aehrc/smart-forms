@@ -15,17 +15,14 @@
  * limitations under the License.
  */
 
-import { QueryClient } from '@tanstack/react-query';
+// @ts-ignore
+import React from 'react';
+import { useQuestionnaireResponseStore } from '../stores';
 
-function useQueryClient() {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        keepPreviousData: true
-      }
-    }
-  });
+function FormValidationViewerForStorybook() {
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
+
+  return <pre style={{ fontSize: 9 }}>{JSON.stringify(invalidItems, null, 2)}</pre>;
 }
 
-export default useQueryClient;
+export default FormValidationViewerForStorybook;
