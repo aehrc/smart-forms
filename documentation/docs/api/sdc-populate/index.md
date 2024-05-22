@@ -1,30 +1,28 @@
-# SDC-Populate
+# @aehrc/sdc-populate
 
-A Typescript reference implementation of the [$populate](http://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-populate.html) operation from the [HL7 FHIR Structured Data Capture Specification](http://hl7.org/fhir/uv/sdc/ImplementationGuide/hl7.fhir.uv.sdc) designed for [Form Population](http://hl7.org/fhir/uv/sdc/populate.html).
+## Interfaces
 
-## Usage
-Not written yet...
+| Interface | Description |
+| :------ | :------ |
+| [CustomContextResultParameter](interfaces/CustomContextResultParameter.md) | - |
+| [FetchResourceCallback](interfaces/FetchResourceCallback.md) | - |
+| [IdentifierParameter](interfaces/IdentifierParameter.md) | - |
+| [InputParameters](interfaces/InputParameters.md) | Input parameters for the $populate operation |
+| [IssuesParameter](interfaces/IssuesParameter.md) | - |
+| [OutputParameters](interfaces/OutputParameters.md) | Output parameters for the $populate operation |
+| [PopulateQuestionnaireParams](interfaces/PopulateQuestionnaireParams.md) | - |
+| [PopulateResult](interfaces/PopulateResult.md) | - |
+| [QuestionnaireRefParameter](interfaces/QuestionnaireRefParameter.md) | - |
+| [ResponseParameter](interfaces/ResponseParameter.md) | - |
 
-### Note for Vite users (or if you facing CommonJS/ESM issues)
-If you are using Vite, you might need to add the following to your ```vite.config.ts``` file:
-This package is a CommonJS module for backwards compatibility with Node.js, so this configuration is required so that Vite can correctly bundle the module.
-```ts
-export default defineConfig({
-  // ...
-  optimizeDeps: {
-    include: [
-      '@aehrc/sdc-populate',
-      // other modules as required...
-    ],
-  },
-  build: {
-    commonjsOptions: {
-      include: [
-        /node_modules/, 
-        '@aehrc/sdc-populate',
-        // other modules as required...
-      ]
-    }
-  }
-});
-```
+## Functions
+
+| Function | Description |
+| :------ | :------ |
+| [isCanonicalParameter](functions/isCanonicalParameter.md) | - |
+| [isContextParameter](functions/isContextParameter.md) | - |
+| [isInputParameters](functions/isInputParameters.md) | Checks if the parameters passed satisfies the conditions of populateInputParameters. |
+| [isOutputParameters](functions/isOutputParameters.md) | - |
+| [isSubjectParameter](functions/isSubjectParameter.md) | - |
+| [populate](functions/populate.md) | Executes the SDC Populate Questionnaire operation - $populate. |
+| [populateQuestionnaire](functions/populateQuestionnaire.md) | Performs an in-app population of the provided questionnaire. |

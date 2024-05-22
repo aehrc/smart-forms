@@ -184,7 +184,8 @@ const config: Config = {
         indexFormat: 'table',
         disableSources: true,
         parametersFormat: 'table',
-        enumMembersFormat: 'table'
+        enumMembersFormat: 'table',
+        readme: 'none'
       }
     ],
     [
@@ -204,7 +205,8 @@ const config: Config = {
         indexFormat: 'table',
         disableSources: true,
         parametersFormat: 'table',
-        enumMembersFormat: 'table'
+        enumMembersFormat: 'table',
+        readme: 'none'
       }
     ]
   ]
