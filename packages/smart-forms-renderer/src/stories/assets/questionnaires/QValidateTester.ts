@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
-export const qValidateFormButtonTester: Questionnaire = {
+export const qValidateTester: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ValidateFormButtonTester',
-  name: 'ValidateFormButtonTester',
-  title: 'ValidateForm Button Tester',
+  id: 'ValidateTester',
+  name: 'ValidateTester',
+  title: 'Validate Tester',
   version: '0.1.0',
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/tester/validate-form-button',
+  url: 'https://smartforms.csiro.au/docs/tester/validate',
   item: [
     {
       linkId: 'required',
@@ -115,75 +115,4 @@ export const qValidateFormButtonTester: Questionnaire = {
       repeats: false
     }
   ]
-};
-
-export const qrValidateFormButtonTesterResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress',
-  item: [
-    {
-      linkId: 'required',
-      text: 'Required',
-      answer: [
-        {
-          valueBoolean: true
-        }
-      ]
-    },
-    {
-      linkId: 'maxlength',
-      text: 'Max Length (10)',
-      answer: [
-        {
-          valueInteger: 10
-        }
-      ]
-    },
-    {
-      linkId: 'minlength',
-      text: 'Min Length (10)',
-      answer: [
-        {
-          valueInteger: 9
-        }
-      ]
-    },
-    {
-      linkId: 'regex',
-      text: 'Regex (####)',
-      answer: [
-        {
-          valueString: '32452'
-        }
-      ]
-    },
-    {
-      linkId: 'maxvalue',
-      text: 'Max Value (<=65)',
-      answer: [
-        {
-          valueInteger: 70
-        }
-      ]
-    },
-    {
-      linkId: 'minvalue',
-      text: 'Min Value (>=18)',
-      answer: [
-        {
-          valueInteger: 15
-        }
-      ]
-    },
-    {
-      linkId: 'maxdecimalplaces',
-      text: 'Max Decimal Places (2)',
-      answer: [
-        {
-          valueDecimal: 72.456
-        }
-      ]
-    }
-  ],
-  questionnaire: 'https://smartforms.csiro.au/docs/tester/validate-form-button|0.1.0'
 };

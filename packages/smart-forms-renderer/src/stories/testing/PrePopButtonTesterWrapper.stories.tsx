@@ -16,24 +16,30 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import ValidationFormTesterWrapper from '../StorybookWrappers/FormValidationTesterWrapperForStorybook';
-import { qValidateTester } from '../assets/questionnaires/QValidateTester';
+import PrePopWrapperForStorybook from '../StorybookWrappers/PrePopWrapperForStorybook';
+import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
+import { patSmartForm } from '../assets/patients/PatSmartForm';
+import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
+import { qButtonTester } from '../assets/questionnaires/QButtonTester';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Testing/Validate Tester',
-  component: ValidationFormTesterWrapper,
+  title: 'Component/Testing/Pre Pop Button Tester',
+  component: PrePopWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
-} satisfies Meta<typeof ValidationFormTesterWrapper>;
+} satisfies Meta<typeof PrePopWrapperForStorybook>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const ValidateTester: Story = {
+export const PrePopButtonTester: Story = {
   args: {
-    questionnaire: qValidateTester
+    questionnaire: qButtonTester,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
   }
 };

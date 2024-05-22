@@ -18,7 +18,7 @@
 // @ts-ignore
 import React from 'react';
 import { Box, CircularProgress, Fade, IconButton, Tooltip } from '@mui/material';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import Typography from '@mui/material/Typography';
 
 interface PrePopButtonForStorybookProps {
@@ -37,7 +37,7 @@ function PrePopButtonForStorybook(props: PrePopButtonForStorybookProps) {
             {isPopulating ? (
               <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
             ) : (
-              <PlayCircleIcon />
+              <CloudDownloadIcon />
             )}
           </IconButton>
         </span>

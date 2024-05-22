@@ -23,10 +23,10 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { RendererThemeProvider } from '../../theme';
 import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import type Client from 'fhirclient/lib/Client';
-import { buildForm } from '../../utils';
 import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './populateCallbackForStorybook';
+import { buildForm } from '../../utils';
 
 interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -64,8 +64,7 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
 
       const { populatedResponse } = populateResult;
 
-      // buildForm is used here because there is a really bizarre bug - using the store hooks directly doesn't update the baseRenderer
-      // could be the fact that it doesn't play well with storybook
+      // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
       await buildForm(questionnaire, populatedResponse);
 
       setIsPopulating(false);
