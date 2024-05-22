@@ -85,6 +85,12 @@ const config: Config = {
           label: 'Developer Usage'
         },
         {
+          type: 'docSidebar',
+          sidebarId: 'apiSidebar',
+          position: 'left',
+          label: 'API'
+        },
+        {
           href: 'https://smartforms.csiro.au/ig/',
           label: 'FHIR IG',
           position: 'right'
@@ -168,7 +174,7 @@ const config: Config = {
         id: 'smart-forms-renderer',
         entryPoints: '../packages/smart-forms-renderer/src/index.ts',
         tsconfig: '../packages/smart-forms-renderer/tsconfig.json',
-        out: 'docs/devUsage/smart-forms-renderer',
+        out: 'docs/api/smart-forms-renderer',
         excludeTags: ['@author'],
         sidebar: {
           autoConfiguration: true,
@@ -188,7 +194,7 @@ const config: Config = {
         id: 'sdc-populate',
         entryPoints: '../packages/sdc-populate/src/index.ts',
         tsconfig: '../packages/sdc-populate/tsconfig.json',
-        out: 'docs/devUsage/sdc-populate',
+        out: 'docs/api/sdc-populate',
         excludeTags: ['@author'],
         sidebar: {
           autoConfiguration: true,
