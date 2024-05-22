@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import BuildFormWrapperForStorybook from '../StorybookWrappers/BuildFormWrapperForStorybook';
+import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qGroupBasic } from '../assets/questionnaires/QGroup';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
