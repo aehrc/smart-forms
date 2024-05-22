@@ -35,14 +35,14 @@ type Story = StoryObj<typeof meta>;
 
 export const BuildFormButtonTester: Story = {
   args: {
-    questionnaire: qBooleanBasic,
-    questionnaireResponse: qrBooleanBasicResponse
+    questionnaire: qButtonTester,
+    questionnaireResponse: qrButtonTesterResponse
   }
 };
 
 export const BuildFormButtonTesterBoolean: Story = {
   args: {
-    questionnaire: qButtonTester,
-    questionnaireResponse: qrButtonTesterResponse
+    questionnaire: qBooleanBasic,
+    questionnaireResponse: qrBooleanBasicResponse
   }
 };
