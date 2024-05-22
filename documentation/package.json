@@ -15,7 +15,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@aehrc/smart-forms-renderer": "^0.31.0",
+    "@aehrc/smart-forms-renderer": "^0.31.4",
     "@docusaurus/core": "3.3.2",
     "@docusaurus/preset-classic": "3.3.2",
     "@emotion/react": "^11.11.4",
@@ -33,6 +33,7 @@
     "@docusaurus/tsconfig": "3.3.2",
     "@docusaurus/types": "3.3.2",
     "docusaurus-plugin-typedoc": "^1.0.1",
+    "docusaurus-plugin-typedoc-api": "^4.2.0",
     "typedoc": "^0.25.13",
     "typedoc-plugin-markdown": "^4.0.2",
     "typescript": "~5.2.2"

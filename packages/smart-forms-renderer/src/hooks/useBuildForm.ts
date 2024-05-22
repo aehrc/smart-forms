@@ -21,7 +21,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 /**
  * React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse.
- * @see {buildForm} for more information.
+ * @see buildForm() for more information.
  *
  * @param questionnaire - Questionnaire to be rendered
  * @param questionnaireResponse - Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional)

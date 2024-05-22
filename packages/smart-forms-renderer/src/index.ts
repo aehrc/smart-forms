@@ -51,3 +51,6 @@ export {
 
 // theme provider exports
 export { RendererThemeProvider } from './theme';
+
+// wrapper exports - only for smartforms.csiro.au/standalone use
+export { InitialiseFormWrapperForStorybook } from './stories/storybookWrappers';
