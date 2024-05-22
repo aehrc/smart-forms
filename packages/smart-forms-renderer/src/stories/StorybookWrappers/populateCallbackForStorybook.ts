@@ -25,6 +25,12 @@ interface RequestConfig {
   authToken: string | null;
 }
 
+/**
+ * Sample callback function to fetch resources from your source server when using populate() or populateQuestionnaire() from @aehrc/sdc-populate.
+ * See https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopWrapperForStorybook.tsx#L50-L59 for usage.
+ *
+ * @author Sean Fong
+ */
 export const fetchResourceCallback: FetchResourceCallback = (
   query: string,
   requestConfig: RequestConfig

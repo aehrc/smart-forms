@@ -29,6 +29,16 @@ interface BuildFormButtonTesterWrapperForStorybookProps {
   questionnaireResponse?: QuestionnaireResponse;
 }
 
+/**
+ * This is a demo wrapper which initialises the BaseRenderer with the passed in questionnaire using useBuildForm.
+ * It also provides a button to build the form with the passed in questionnaire + questionnaireResponse.
+ * It was done as a two-step process for demo purposes.
+ *
+ * Use this pattern if you already have a pre-populated/pre-filled/draft response.
+ * If you want to pre-pop on the fly, see https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopWrapperForStorybook.tsx instead
+ *
+ * @author Sean Fong
+ */
 function BuildFormButtonTesterWrapperForStorybook(
   props: BuildFormButtonTesterWrapperForStorybookProps
 ) {

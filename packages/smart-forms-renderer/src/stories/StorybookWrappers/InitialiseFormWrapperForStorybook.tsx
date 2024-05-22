@@ -48,8 +48,10 @@ interface InitialiseFormWrapperProps {
  * - The initialised FHIRClient is only used for further FHIR calls. It does not provide pre-population capabilities.
  *
  * For button click usage examples of buildForm(), see:
- * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonTesterWrapper.tsx#L47
- * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonForStorybook.tsx
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonForStorybook.tsx
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopWrapperForStorybook.tsx
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopButtonForStorybook.tsx
  *
  * @author Sean Fong
  */

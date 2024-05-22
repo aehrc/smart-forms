@@ -35,6 +35,16 @@ interface PrePopWrapperForStorybookProps {
   user: Practitioner;
 }
 
+/**
+ * This is a demo wrapper which initialises the BaseRenderer with the passed in questionnaire using useBuildForm.
+ * It also provides a button to pre-populate the questionnaire on the fly using populateQuestionnaire() from '@aehrc/sdc-populate'.
+ * This does in-app population and you have to define your own callback function to retrieve resources from your source server.
+ *
+ * Use this pattern if you do not have a pre-populated/pre-filled/draft response and want to pre-populate on the fly.
+ * If you already have a questionnaireResponse, see https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx instead
+ *
+ * @author Sean Fong
+ */
 function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
   const { questionnaire, fhirClient, patient, user } = props;
 
