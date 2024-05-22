@@ -17,25 +17,12 @@
 
 // @ts-ignore
 import React from 'react';
-import { Box, IconButton, Tooltip } from '@mui/material';
-import Iconify from '../components/Iconify/Iconify';
+import { useQuestionnaireResponseStore } from '../../stores';
 
-interface ValidationFormButtonProps {
-  onValidate: () => void;
+function FormValidationViewerForStorybook() {
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
+
+  return <pre style={{ fontSize: 9 }}>{JSON.stringify(invalidItems, null, 2)}</pre>;
 }
 
-function ValidationFormButtonForStorybook(props: ValidationFormButtonProps) {
-  const { onValidate } = props;
-
-  return (
-    <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
-      <Tooltip title="Validate form" placement="right">
-        <IconButton onClick={onValidate} size="small" color="primary">
-          <Iconify icon="material-symbols:data-check" sx={{ mb: 0.5 }} />
-        </IconButton>
-      </Tooltip>
-    </Box>
-  );
-}
-
-export default ValidationFormButtonForStorybook;
+export default FormValidationViewerForStorybook;

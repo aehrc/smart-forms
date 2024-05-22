@@ -39,6 +39,7 @@ import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { parseDecimalStringToFloat } from './parseInputs';
 import dayjs from 'dayjs';
+import { questionnaireStore } from '../stores';
 
 export enum ValidationResult {
   unknown = 'unknown', // Unknown validation result
@@ -85,9 +86,6 @@ export enum ValidationResult {
 interface ValidateQuestionnaireParams {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
-  enableWhenIsActivated: boolean;
-  enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: EnableWhenExpressions;
 }
 
 /**
@@ -99,21 +97,18 @@ interface ValidateQuestionnaireParams {
 export function validateQuestionnaire(
   params: ValidateQuestionnaireParams
 ): Record<string, OperationOutcome> {
-  const {
-    questionnaire,
-    questionnaireResponse,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  } = params;
+  const { questionnaire, questionnaireResponse } = params;
 
-  if (
-    !questionnaire.item ||
-    questionnaire.item.length === 0 ||
-    !questionnaireResponse.item ||
-    questionnaireResponse.item.length === 0
-  ) {
+  const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
+  const enableWhenItems = questionnaireStore.getState().enableWhenItems;
+  const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
+
+  if (!questionnaire.item || questionnaire.item.length === 0) {
     return {};
+  }
+
+  if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) {
+    questionnaireResponse.item = [];
   }
 
   const qItemsIndexMap = mapQItemsIndex(questionnaire);

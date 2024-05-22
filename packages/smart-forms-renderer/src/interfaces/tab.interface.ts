@@ -25,6 +25,6 @@
 export type Tab = { tabIndex: number; isComplete: boolean; isHidden: boolean };
 
 /**
- * Key-value pair of tabs <linkId, Tab>
+ * Key-value pair of tabs `Record<linkId, Tab>`
  */
 export type Tabs = Record<string, Tab>;

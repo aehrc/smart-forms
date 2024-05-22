@@ -18,12 +18,12 @@
 // @ts-ignore
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { BaseRenderer } from '../components';
+import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import RendererThemeProvider from '../theme/Theme';
-import useRendererQueryClient from '../hooks/useRendererQueryClient';
+import RendererThemeProvider from '../../theme/Theme';
+import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 import type Client from 'fhirclient/lib/Client';
-import useInitialiseForm from '../hooks/useInitialiseForm';
+import useInitialiseForm from '../../hooks/useInitialiseForm';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -47,6 +47,10 @@ interface InitialiseFormWrapperProps {
  * - Make your own initialiseFhirClient() call in a button click or other event handler. Alternatively, you can use the useInitialiseForm hook to initialise the form.
  * - The initialised FHIRClient is only used for further FHIR calls. It does not provide pre-population capabilities.
  *
+ * For button click usage examples of buildForm(), see:
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonTesterWrapper.tsx#L47
+ * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonForStorybook.tsx
+ *
  * @author Sean Fong
  */
 function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
@@ -66,8 +70,7 @@ function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
    * The useInitialiseForm hook provides initialisation logic for the form
    * Alternatively (and recommended to do so), you can initialise your form via a button click or other event handler.
    *
-   * // FIXME add github link
-   * @see BuildFormButtonTesterWrapper for button click usage examples.
+   * @see {@link https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/BuildFormButtonForStorybook.tsx} for button click usage examples.
    */
   const isInitialising = useInitialiseForm(
     questionnaire,

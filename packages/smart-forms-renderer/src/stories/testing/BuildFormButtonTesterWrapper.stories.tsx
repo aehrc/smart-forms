@@ -16,19 +16,16 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import BuildFormButtonTesterWrapper from '../BuildFormButtonTesterWrapper';
-import {
-  qBuildFormButtonTester,
-  qrBuildFormTesterResponse
-} from '../assets/questionnaires/QBuildFormButtonTester';
+import BuildFormButtonTesterWrapperForStorybook from '../StorybookWrappers/BuildFormButtonTesterWrapperForStorybook';
+import { qButtonTester, qrButtonTesterResponse } from '../assets/questionnaires/QButtonTester';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'Component/Testing/Build Form Button Tester',
-  component: BuildFormButtonTesterWrapper,
+  component: BuildFormButtonTesterWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
-} satisfies Meta<typeof BuildFormButtonTesterWrapper>;
+} satisfies Meta<typeof BuildFormButtonTesterWrapperForStorybook>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -37,7 +34,7 @@ type Story = StoryObj<typeof meta>;
 
 export const BuildFormButtonTester: Story = {
   args: {
-    questionnaire: qBuildFormButtonTester,
-    questionnaireResponse: qrBuildFormTesterResponse
+    questionnaire: qButtonTester,
+    questionnaireResponse: qrButtonTesterResponse
   }
 };

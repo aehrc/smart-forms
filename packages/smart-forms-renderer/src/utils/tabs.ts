@@ -106,7 +106,7 @@ export function isTab(item: QuestionnaireItem) {
 }
 
 /**
- * Create a <linkId, {isComplete: boolean}> key-value pair for all tabbed items in a qItem array
+ * Create a `Record<linkId, {isComplete: boolean}>` key-value pair for all tabbed items in a qItem array
  *
  * @author Sean Fong
  */

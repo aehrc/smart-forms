@@ -27,7 +27,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
  * @param questionnaireResponse - Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional)
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
- * @param additionalVariables - Additional key-value pair of SDC variables <name, variable extension> for testing (optional)
+ * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
  *
  * @author Sean Fong
  */

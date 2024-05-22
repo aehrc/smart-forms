@@ -18,24 +18,22 @@
 // @ts-ignore
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { BaseRenderer } from '../components';
+import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { RendererThemeProvider } from '../theme';
-import { useBuildForm, useRendererQueryClient } from '../hooks';
-import { Grid } from '@mui/material';
-import FormValidationViewerForStorybook from './FormValidationViewerForStorybook';
+import RendererThemeProvider from '../../theme/Theme';
+import { useBuildForm } from '../../hooks';
+import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 
-interface FormValidationTesterWrapperProps {
+interface BuildFormWrapperForStorybookProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
 }
 
-function FormValidationTesterWrapper(props: FormValidationTesterWrapperProps) {
+function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) {
   const { questionnaire, questionnaireResponse } = props;
 
-  const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
-
   const queryClient = useRendererQueryClient();
+  const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -44,19 +42,10 @@ function FormValidationTesterWrapper(props: FormValidationTesterWrapperProps) {
   return (
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <div>
-          <Grid container>
-            <Grid item xs={6}>
-              <BaseRenderer />
-            </Grid>
-            <Grid item xs={6}>
-              <FormValidationViewerForStorybook />
-            </Grid>
-          </Grid>
-        </div>
+        <BaseRenderer />
       </QueryClientProvider>
     </RendererThemeProvider>
   );
 }
 
-export default FormValidationTesterWrapper;
+export default BuildFormWrapperForStorybook;

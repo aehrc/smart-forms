@@ -19,12 +19,12 @@
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import Iconify from '../components/Iconify/Iconify';
-import { buildForm } from '../utils';
+import Iconify from '../../components/Iconify/Iconify';
+import { buildForm } from '../../utils';
 
 interface BuildFormButtonProps {
   questionnaire: Questionnaire;
-  questionnaireResponse: QuestionnaireResponse;
+  questionnaireResponse?: QuestionnaireResponse;
 }
 
 function BuildFormButtonForStorybook(props: BuildFormButtonProps) {

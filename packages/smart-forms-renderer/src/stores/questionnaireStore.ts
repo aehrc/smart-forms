@@ -53,22 +53,22 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
  * Methods are usually used internally, using them from an external source is not recommended.
  *
  * @property sourceQuestionnaire - FHIR R4 Questionnaire to render
- * @property itemTypes - Key-value pair of item types <linkId, item.type>
- * @property tabs - Key-value pair of tabs <linkId, Tab>
+ * @property itemTypes - Key-value pair of item types `Record<linkId, item.type>`
+ * @property tabs - Key-value pair of tabs `Record<linkId, Tab>`
  * @property currentTabIndex - Index of the current tab
  * @property variables - Questionnaire variables object containing FHIRPath and x-fhir-query variables
- * @property launchContexts - Key-value pair of launch contexts <launch context name, launch context properties>
+ * @property launchContexts - Key-value pair of launch contexts `Record<launch context name, launch context properties>`
  * @property enableWhenItems - EnableWhenItems object containing enableWhen items and their linked questions
- * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items <linkId, linkIds of linked questions>
+ * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items `Record<linkId, linkIds of linked questions>`
  * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
  * @property enableWhenExpressions - EnableWhenExpressions object containing enableWhen expressions
- * @property calculatedExpressions - Key-value pair of calculated expressions <linkId, array of calculated expression properties>
- * @property answerExpressions - Key-value pair of answer expressions <linkId, answer expression properties>
- * @property processedValueSetCodings - Key-value pair of processed value set codings <valueSetUrl, codings>
- * @property processedValueSetUrls - Key-value pair of contained value set urls <valueSetName, valueSetUrl>
- * @property cachedValueSetCodings - Key-value pair of cached value set codings <valueSetUrl, codings>
- * @property fhirPathContext - Key-value pair of evaluated FHIRPath values <variable name, evaluated value(s)>
- * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values <variable/launchContext/sourceQueries batch name, evaluated value(s)>
+ * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
+ * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
+ * @property processedValueSetCodings - Key-value pair of processed value set codings `Record<valueSetUrl, codings>`
+ * @property processedValueSetUrls - Key-value pair of contained value set urls `Record<valueSetName, valueSetUrl>`
+ * @property cachedValueSetCodings - Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
+ * @property fhirPathContext - Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated value(s)>`
+ * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
  * @property focusedLinkId - LinkId of the currently focused item
  * @property readOnly - Flag to set the form to read-only mode
  * @method buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag

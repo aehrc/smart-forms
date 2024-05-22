@@ -34,12 +34,12 @@ Note: The SmartFormsRenderer component trades customisability for simplicity. If
 ### SmartFormsRenderer Props 
 
 
-| Name                  | Type                          | Description                                                                                                  | Required? |
-|-----------------------|-------------------------------|--------------------------------------------------------------------------------------------------------------|-----------|
-| questionnaire         | FHIR R4.Questionnaire         | Questionnaire to be rendered                                                                                 | Required  |
-| questionnaireResponse | FHIR R4.QuestionnaireResponse | Pre-populated QuestionnaireResponse to be rendered                                                           | Optional  |
-| additionalVariables   | Record<string, Extension>     | Key-value pair of [SDC variables](http://hl7.org/fhir/R4/extension-variable.html) <name, variable extension> | Optional  |
-| terminologyServerUrl  | string                        | Terminology server url to fetch terminology                                                        | Optional  |
+| Name                  | Type                          | Description                                                                                                         | Required? |
+|-----------------------|-------------------------------|---------------------------------------------------------------------------------------------------------------------|-----------|
+| questionnaire         | FHIR R4.Questionnaire         | Questionnaire to be rendered                                                                                        | Required  |
+| questionnaireResponse | FHIR R4.QuestionnaireResponse | Pre-populated QuestionnaireResponse to be rendered                                                                  | Optional  |
+| additionalVariables   | `Record<string, Extension>`     | Key-value pair of [SDC variables](http://hl7.org/fhir/R4/extension-variable.html) `Record<name, variable extension>` | Optional  |
+| terminologyServerUrl  | string                        | Terminology server url to fetch terminology                                                                         | Optional  |
 
 The below props are not supported at the moment, but will be in the future.
 

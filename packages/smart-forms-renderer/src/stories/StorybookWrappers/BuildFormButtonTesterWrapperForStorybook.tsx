@@ -18,18 +18,20 @@
 // @ts-ignore
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { BaseRenderer } from '../components';
+import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { RendererThemeProvider } from '../theme';
-import { useBuildForm, useRendererQueryClient } from '../hooks';
+import { RendererThemeProvider } from '../../theme';
+import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import BuildFormButtonForStorybook from './BuildFormButtonForStorybook';
 
-interface BuildFormButtonTesterWrapperProps {
+interface BuildFormButtonTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
 }
 
-function BuildFormButtonTesterWrapper(props: BuildFormButtonTesterWrapperProps) {
+function BuildFormButtonTesterWrapperForStorybook(
+  props: BuildFormButtonTesterWrapperForStorybookProps
+) {
   const { questionnaire, questionnaireResponse } = props;
 
   const queryClient = useRendererQueryClient();
@@ -55,4 +57,4 @@ function BuildFormButtonTesterWrapper(props: BuildFormButtonTesterWrapperProps) 
   );
 }
 
-export default BuildFormButtonTesterWrapper;
+export default BuildFormButtonTesterWrapperForStorybook;
