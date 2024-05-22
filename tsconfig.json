@@ -1,0 +1,15 @@
+//{
+//  "$schema": "https://json.schemastore.org/tsconfig",
+//  "files": [],
+//  "references": [
+//    {
+//      "path": "packages/smart-forms-renderer"
+//    },
+//    {
+//      "path": "packages/sdc-populate"
+//    },
+//    {
+//      "path": "packages/sdc-assemble"
+//    }
+//  ]
+//}

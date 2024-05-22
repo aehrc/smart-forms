@@ -90,6 +90,11 @@ const config: Config = {
           position: 'right'
         },
         {
+          href: 'https://smartforms.csiro.au/storybook/',
+          label: 'Storybook',
+          position: 'right'
+        },
+        {
           href: 'https://github.com/aehrc/smart-forms',
           label: 'GitHub',
           position: 'right'
@@ -160,10 +165,40 @@ const config: Config = {
       'docusaurus-plugin-typedoc',
       // Options
       {
-        excludeTags: ['@author'],
-        entryPoints: ['../packages/smart-forms-renderer/src/index.ts'],
+        id: 'smart-forms-renderer',
+        entryPoints: '../packages/smart-forms-renderer/src/index.ts',
         tsconfig: '../packages/smart-forms-renderer/tsconfig.json',
-        out: 'docs/devUsage/api'
+        out: 'docs/devUsage/smart-forms-renderer',
+        excludeTags: ['@author'],
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true
+        },
+        plugin: ['typedoc-plugin-frontmatter'],
+        indexFormat: 'table',
+        disableSources: true,
+        parametersFormat: 'table',
+        enumMembersFormat: 'table'
+      }
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      // Options
+      {
+        id: 'sdc-populate',
+        entryPoints: '../packages/sdc-populate/src/index.ts',
+        tsconfig: '../packages/sdc-populate/tsconfig.json',
+        out: 'docs/devUsage/sdc-populate',
+        excludeTags: ['@author'],
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true
+        },
+        plugin: ['typedoc-plugin-frontmatter'],
+        indexFormat: 'table',
+        disableSources: true,
+        parametersFormat: 'table',
+        enumMembersFormat: 'table'
       }
     ]
   ]

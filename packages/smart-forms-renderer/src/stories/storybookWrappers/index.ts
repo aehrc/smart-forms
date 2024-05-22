@@ -15,4 +15,5 @@
  * limitations under the License.
  */
 
+export type { InitialiseFormWrapperProps } from './InitialiseFormWrapperForStorybook';
 export { default as InitialiseFormWrapperForStorybook } from './InitialiseFormWrapperForStorybook';

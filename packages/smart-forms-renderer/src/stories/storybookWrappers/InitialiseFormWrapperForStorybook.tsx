@@ -28,7 +28,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
-interface InitialiseFormWrapperProps {
+export interface InitialiseFormWrapperProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   readOnly?: boolean;
