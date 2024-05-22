@@ -32,7 +32,7 @@ export const fetchResourceCallback: FetchResourceCallback = (
   let { clientEndpoint } = requestConfig;
   const { authToken } = requestConfig;
 
-  const headers = {
+  const headers: any = {
     Accept: 'application/json;charset=utf-8'
   };
 

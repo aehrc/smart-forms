@@ -54,5 +54,6 @@ export { RendererThemeProvider } from './theme';
 
 export {
   InitialiseFormWrapperForStorybook,
-  FullCoverageTesterWrapperForStorybook
+  BuildFormButtonTesterWrapperForStorybook,
+  PrePopWrapperForStorybook
 } from './stories/StorybookWrappers';
