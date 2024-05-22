@@ -90,16 +90,9 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       questionnaire: Questionnaire,
       updatedResponse: QuestionnaireResponse
     ) => {
-      const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
-      const enableWhenItems = questionnaireStore.getState().enableWhenItems;
-      const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
-
       const updatedInvalidItems = validateQuestionnaire({
         questionnaire,
-        questionnaireResponse: updatedResponse,
-        enableWhenIsActivated,
-        enableWhenItems,
-        enableWhenExpressions
+        questionnaireResponse: updatedResponse
       });
 
       set(() => ({
@@ -108,47 +101,89 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       }));
     },
     buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
+      const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
+      const initialInvalidItems = validateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: questionnaireResponse
+      });
+
       set(() => ({
         sourceResponse: questionnaireResponse,
         updatableResponse: questionnaireResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(questionnaireResponse)
+        updatableResponseItems: createQuestionnaireResponseItemMap(questionnaireResponse),
+        invalidItems: initialInvalidItems,
+        responseIsValid: Object.keys(initialInvalidItems).length === 0
       }));
     },
     setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
+      const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       const formChanges = diff(get().updatableResponse, populatedResponse) ?? null;
+      const updatedInvalidItems = validateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: populatedResponse
+      });
       set(() => ({
         updatableResponse: populatedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(populatedResponse),
-        formChangesHistory: [...get().formChangesHistory, formChanges]
+        formChangesHistory: [...get().formChangesHistory, formChanges],
+        invalidItems: updatedInvalidItems,
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
     updateResponse: (updatedResponse: QuestionnaireResponse) => {
+      const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
+      const updatedInvalidItems = validateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: updatedResponse
+      });
       set(() => ({
         updatableResponse: updatedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(updatedResponse),
-        formChangesHistory: [...get().formChangesHistory, formChanges]
+        formChangesHistory: [...get().formChangesHistory, formChanges],
+        invalidItems: updatedInvalidItems,
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
-    setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) =>
+    setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => {
+      const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
+      const updatedInvalidItems = validateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: savedResponse
+      });
+
       set(() => ({
         sourceResponse: savedResponse,
         updatableResponse: savedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(savedResponse),
-        formChangesHistory: []
-      })),
-    setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) =>
+        formChangesHistory: [],
+        invalidItems: updatedInvalidItems,
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0
+      }));
+    },
+    setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => {
+      const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
+      const updatedInvalidItems = validateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: clearedResponse
+      });
+
       set(() => ({
         updatableResponse: clearedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(clearedResponse),
-        formChangesHistory: []
-      })),
+        formChangesHistory: [],
+        invalidItems: updatedInvalidItems,
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0
+      }));
+    },
     destroySourceResponse: () =>
       set(() => ({
         sourceResponse: cloneDeep(emptyResponse),
         updatableResponse: cloneDeep(emptyResponse),
         updatableResponseItems: createQuestionnaireResponseItemMap(cloneDeep(emptyResponse)),
-        formChangesHistory: []
+        formChangesHistory: [],
+        invalidItems: {},
+        responseIsValid: true
       }))
   })
 );
