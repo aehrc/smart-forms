@@ -8,4 +8,20 @@ The TerminologyServerStore exposes the following properties:
 
 - **url**
 
+Here's how you use the store hook in your React functional component:
+
+```
+import { useTerminologyStore } from '@aehrc/smart-forms-renderer';
+
+function App() {
+  const storeProperty = useTerminologyStore.use.{insert_property_name_here}();
+
+  return (
+    <div>{storeProperty}</div>
+  );
+}
+```
+
+There are some live examples on the following pages that demonstrate how to use the hooks.
+
 Refer to the [API Reference](/smart-forms/docs/api/smart-forms-renderer/interfaces/TerminologyServerStoreType) for more information on each property.

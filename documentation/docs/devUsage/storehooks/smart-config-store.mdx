@@ -11,6 +11,20 @@ The SmartConfigStore exposes the following properties:
 - **user**
 - **encounter**
 
+Here's how you use the store hook in your React functional component:
+
+```
+import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
+
+function App() {
+  const storeProperty = useSmartConfigStore.use.{insert_property_name_here}();
+
+  return (
+    <div>{storeProperty}</div>
+  );
+}
+```
+
 Refer to the [API Reference](/smart-forms/docs/api/smart-forms-renderer/interfaces/SmartConfigStoreType) for more information on each property.
 
 :::warning

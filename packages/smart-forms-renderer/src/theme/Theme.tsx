@@ -90,7 +90,7 @@ export const themeOptions: ThemeOptions = {
 };
 
 /**
- * Default Material UI theme used by the renderer. You can customise your own theme by defining a new ThemeProvider.
+ * Default theme used by the renderer using Material UI. You can customise your own theme by defining a new ThemeProvider.
  * @see {@link https://mui.com/material-ui/customization/theming/}
  *
  * @author Sean Fong
