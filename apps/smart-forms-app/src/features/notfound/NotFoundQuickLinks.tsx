@@ -23,6 +23,7 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import StorageIcon from '@mui/icons-material/Storage';
 import DataSaverOnIcon from '@mui/icons-material/DataSaverOn';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 interface QuickLinkCardProps {
   title: string;
@@ -61,6 +62,12 @@ const quickLinkCards: QuickLinkCardProps[] = [
     description: 'View the GitHub page for this open-source project.',
     link: 'https://github.com/aehrc/smart-forms',
     icon: <GitHubIcon fontSize="large" color="primary" />
+  },
+  {
+    title: 'Documentation',
+    description: 'Showcases Questionnaire components, SDC extensions and developer usage.',
+    link: 'https://smartforms.csiro.au/docs',
+    icon: <MenuBookIcon fontSize="large" color="primary" />
   }
 ];
 
