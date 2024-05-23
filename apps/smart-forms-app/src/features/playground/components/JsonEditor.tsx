@@ -19,7 +19,10 @@ import Editor, { useMonaco } from '@monaco-editor/react';
 import { useState } from 'react';
 import type { editor } from 'monaco-editor';
 import { Box, Button, Divider, Stack } from '@mui/material';
-import Iconify from '../../../components/Iconify/Iconify.tsx';
+import type { StateStore } from './StoreStateViewer.tsx';
+import StoreStateViewer from './StoreStateViewer.tsx';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 
 interface Props {
   jsonString: string;
@@ -32,6 +35,8 @@ interface Props {
 function JsonEditor(props: Props) {
   const { jsonString, onJsonStringChange, buildingState, onBuildForm, onDestroyForm } = props;
 
+  const [view, setView] = useState<'editor' | 'storeState'>('editor');
+  const [selectedStore, setSelectedStore] = useState<StateStore>('questionnaireResponseStore');
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   function handleEditorChange(value: string | undefined) {
@@ -50,9 +55,8 @@ function JsonEditor(props: Props) {
 
   return (
     <Box height="100%">
-      <Stack direction="row" gap={2} sx={{ py: 0.75, px: 1.5 }}>
+      <Stack direction="row" gap={0.5} sx={{ py: 0.25, px: 1, overflowX: 'auto' }}>
         <Button
-          startIcon={<Iconify icon="ph:hammer" />}
           disabled={errorMessages.length > 0 || jsonString === ''}
           onClick={() => onBuildForm(jsonString)}>
           {buildingState === 'built' ? 'Rebuild form' : 'Build form'}
@@ -60,12 +64,40 @@ function JsonEditor(props: Props) {
 
         {buildingState !== 'idle' ? (
           <>
-            <Button color="error" startIcon={<Iconify icon="mdi:nuke" />} onClick={onDestroyForm}>
+            <Button color="error" onClick={onDestroyForm}>
               Destroy Form
             </Button>
+            {view === 'editor' ? (
+              <Button
+                onClick={() => {
+                  setView('storeState');
+                }}>
+                See store state
+              </Button>
+            ) : (
+              <Stack direction="row" alignItems="center" gap={0.55}>
+                <Button
+                  onClick={() => {
+                    setView('editor');
+                  }}>
+                  Show editor
+                </Button>
+                <ToggleButtonGroup
+                  size="small"
+                  color="primary"
+                  value={selectedStore}
+                  sx={{ height: 32 }}
+                  exclusive
+                  onChange={(_, newSelectedStore) => setSelectedStore(newSelectedStore)}>
+                  <ToggleButton value="questionnaireStore">Q</ToggleButton>
+                  <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>
+                  <ToggleButton value="smartConfigStore">SMART</ToggleButton>
+                  <ToggleButton value="terminologyServerStore">Terminology</ToggleButton>
+                </ToggleButtonGroup>
+              </Stack>
+            )}
             <Box flexGrow={1} />
             <Button
-              startIcon={<Iconify icon="gg:format-left" />}
               disabled={errorMessages.length > 0 || jsonString === ''}
               onClick={() => {
                 if (monaco) {
@@ -80,15 +112,18 @@ function JsonEditor(props: Props) {
         ) : null}
       </Stack>
       <Divider />
-
-      <Editor
-        height="100%"
-        defaultLanguage="json"
-        defaultValue="// alternatively, paste questionnaire JSON string here (only JSON is supported at the moment!)"
-        onChange={handleEditorChange}
-        value={jsonString}
-        onValidate={handleEditorValidation}
-      />
+      {view === 'editor' ? (
+        <Editor
+          height="100%"
+          defaultLanguage="json"
+          defaultValue="// alternatively, paste questionnaire JSON string here (only JSON is supported at the moment!)"
+          onChange={handleEditorChange}
+          value={jsonString}
+          onValidate={handleEditorValidation}
+        />
+      ) : (
+        <StoreStateViewer selectedStore={selectedStore} />
+      )}
     </Box>
   );
 }
