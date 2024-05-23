@@ -43,7 +43,7 @@
 | [GridGroup](functions/GridGroup.md) | Main component to render a Group Grid (grid) Questionnaire item. |
 | [GroupTable](functions/GroupTable.md) | Main component to render a Group Table (gtable) Questionnaire item. |
 | [InitialiseFormWrapperForStorybook](functions/InitialiseFormWrapperForStorybook.md) | This is a one-to-one replacement for the SmartFormsRenderer for demo purposes. |
-| [RendererThemeProvider](functions/RendererThemeProvider.md) | Default Material UI theme used by the renderer. You can customise your own theme by defining a new ThemeProvider. |
+| [RendererThemeProvider](functions/RendererThemeProvider.md) | Default theme used by the renderer using Material UI. You can customise your own theme by defining a new ThemeProvider. |
 | [RepeatGroup](functions/RepeatGroup.md) | Main component to render a repeating, group Questionnaire item. |
 | [RepeatItem](functions/RepeatItem.md) | Main component to render a repeating, non-group Questionnaire item. |
 | [SingleItem](functions/SingleItem.md) | Main component to render a repeating, non-group Questionnaire item. |
@@ -56,7 +56,7 @@
 | [isRepeatItemAndNotCheckbox](functions/isRepeatItemAndNotCheckbox.md) | Check if qItem is a repeat item AND if it isn't a checkbox item |
 | [isSpecificItemControl](functions/isSpecificItemControl.md) | Check if the extension has an itemControl code equal to the given itemControlCode |
 | [parseFhirDateToDisplayDate](functions/parseFhirDateToDisplayDate.md) | Parse a FHIR date string to a date to be consumed and displayed by the DateItem component. |
-| [removeEmptyAnswersFromResponse](functions/removeEmptyAnswersFromResponse.md) | Remove all hidden answers from the filled QuestionnaireResponse. |
+| [removeEmptyAnswersFromResponse](functions/removeEmptyAnswersFromResponse.md) | Remove all empty/hidden answers from the filled QuestionnaireResponse. |
 | [repopulateResponse](functions/repopulateResponse.md) | Re-populate checked items in the re-population dialog into the current QuestionnaireResponse |
 | [useBuildForm](functions/useBuildForm.md) | React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse. |
 | [useHidden](functions/useHidden.md) | React hook to determine if a QuestionnaireItem is hidden via item.hidden, enableWhens, enableWhenExpressions. |
