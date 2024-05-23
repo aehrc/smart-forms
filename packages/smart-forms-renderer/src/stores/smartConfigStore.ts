@@ -29,10 +29,10 @@ import { createSelectors } from './selector';
  * @property patient - The patient resource in context
  * @property user - The user resource in context
  * @property encounter - The encounter resource in context
- * @method setClient - Set the FHIRClient object when launching via SMART App Launch
- * @method setPatient - Set the patient resource in context
- * @method setUser - Set the user resource in context
- * @method setEncounter - Set the encounter resource in context
+ * @property setClient - Set the FHIRClient object when launching via SMART App Launch
+ * @property setPatient - Set the patient resource in context
+ * @property setUser - Set the user resource in context
+ * @property setEncounter - Set the encounter resource in context
  *
  * @author Sean Fong
  */

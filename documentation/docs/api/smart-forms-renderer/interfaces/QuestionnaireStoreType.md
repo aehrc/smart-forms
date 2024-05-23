@@ -4,63 +4,13 @@ QuestionnaireStore properties and methods
 Properties can be accessed for fine-grain details.
 Methods are usually used internally, using them from an external source is not recommended.
 
-## Method
-
-buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
-
-## Method
-
-destroySourceQuestionnaire - Used to destroy the source questionnaire and reset all properties
-
-## Method
-
-switchTab - Used to switch the current tab index
-
-## Method
-
-markTabAsComplete - Used to mark a tab index as complete
-
-## Method
-
-updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
-
-## Method
-
-mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
-
-## Method
-
-toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
-
-## Method
-
-updateExpressions - Used to update all SDC expressions based on the updated questionnaire response
-
-## Method
-
-addCodingToCache - Used to add a coding to the cached value set codings
-
-## Method
-
-updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
-
-## Method
-
-onFocusLinkId - Used to set the focused linkId
-
-## Method
-
-setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
-
-## Method
-
-setFormAsReadOnly - Used to set the form as read-only
-
 ## Properties
 
 ### addCodingToCache()
 
 > **addCodingToCache**: (`valueSetUrl`, `codings`) => `void`
+
+Used to add a coding to the cached value set codings
 
 #### Parameters
 
@@ -86,6 +36,8 @@ Key-value pair of answer expressions `Record<linkId, answer expression propertie
 ### buildSourceQuestionnaire()
 
 > **buildSourceQuestionnaire**: (`questionnaire`, `questionnaireResponse`?, `additionalVariables`?, `terminologyServerUrl`?, `readOnly`?) => `Promise`\<`void`\>
+
+Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
 
 #### Parameters
 
@@ -130,6 +82,8 @@ Index of the current tab
 ### destroySourceQuestionnaire()
 
 > **destroySourceQuestionnaire**: () => `void`
+
+Used to destroy the source questionnaire and reset all properties
 
 #### Returns
 
@@ -205,6 +159,8 @@ Key-value pair of launch contexts `Record<launch context name, launch context pr
 
 > **markTabAsComplete**: (`tabLinkId`) => `void`
 
+Used to mark a tab index as complete
+
 #### Parameters
 
 | Parameter | Type |
@@ -220,6 +176,8 @@ Key-value pair of launch contexts `Record<launch context name, launch context pr
 ### mutateRepeatEnableWhenItems()
 
 > **mutateRepeatEnableWhenItems**: (`parentRepeatGroupLinkId`, `parentRepeatGroupIndex`, `actionType`) => `void`
+
+Used to add or remove instances of repeating enableWhen items
 
 #### Parameters
 
@@ -238,6 +196,8 @@ Key-value pair of launch contexts `Record<launch context name, launch context pr
 ### onFocusLinkId()
 
 > **onFocusLinkId**: (`linkId`) => `void`
+
+Used to set the focused linkId
 
 #### Parameters
 
@@ -287,6 +247,8 @@ Flag to set the form to read-only mode
 
 > **setFormAsReadOnly**: (`readOnly`) => `void`
 
+Used to set the form as read-only
+
 #### Parameters
 
 | Parameter | Type |
@@ -302,6 +264,8 @@ Flag to set the form to read-only mode
 ### setPopulatedContext()
 
 > **setPopulatedContext**: (`newPopulatedContext`) => `void`
+
+Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
 
 #### Parameters
 
@@ -327,6 +291,8 @@ FHIR R4 Questionnaire to render
 
 > **switchTab**: (`newTabIndex`) => `void`
 
+Used to switch the current tab index
+
 #### Parameters
 
 | Parameter | Type |
@@ -351,6 +317,8 @@ Key-value pair of tabs `Record<linkId, Tab>`
 
 > **toggleEnableWhenActivation**: (`isActivated`) => `void`
 
+Used to toggle enableWhen checks on/off
+
 #### Parameters
 
 | Parameter | Type |
@@ -366,6 +334,8 @@ Key-value pair of tabs `Record<linkId, Tab>`
 ### updateEnableWhenItem()
 
 > **updateEnableWhenItem**: (`linkId`, `newAnswer`, `parentRepeatGroupIndex`) => `void`
+
+Used to update linked enableWhen items by updating a question with a new answer
 
 #### Parameters
 
@@ -385,6 +355,8 @@ Key-value pair of tabs `Record<linkId, Tab>`
 
 > **updateExpressions**: (`updatedResponse`) => `void`
 
+Used to update all SDC expressions based on the updated questionnaire response
+
 #### Parameters
 
 | Parameter | Type |
@@ -400,6 +372,8 @@ Key-value pair of tabs `Record<linkId, Tab>`
 ### updatePopulatedProperties()
 
 > **updatePopulatedProperties**: (`populatedResponse`, `populatedContext`?, `persistTabIndex`?) => `QuestionnaireResponse`
+
+Used to update all SDC expressions based on a pre-populated questionnaire response
 
 #### Parameters
 

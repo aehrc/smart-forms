@@ -42,13 +42,13 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
  * @property formChangesHistory - Array of form changes history in the form of deep-diff objects
  * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire `Record<linkId, OperationOutcome>`
  * @property responseIsValid - Whether there are any invalid items in the response
- * @method validateQuestionnaire - Used to validate the questionnaire response based on the questionnaire
- * @method buildSourceResponse - Used to build the source response when the form is first initialised
- * @method setUpdatableResponseAsPopulated - Used to set a pre-populated response as the current response
- * @method updateResponse - Used to update the current response
- * @method setUpdatableResponseAsSaved - Used to set a saved response as the current response
- * @method setUpdatableResponseAsEmpty - Used to set an empty response as the current response
- * @method destroySourceResponse - Used to destroy the source response  and reset all properties
+ * @property validateQuestionnaire - Used to validate the questionnaire response based on the questionnaire
+ * @property buildSourceResponse - Used to build the source response when the form is first initialised
+ * @property setUpdatableResponseAsPopulated - Used to set a pre-populated response as the current response
+ * @property updateResponse - Used to update the current response
+ * @property setUpdatableResponseAsSaved - Used to set a saved response as the current response
+ * @property setUpdatableResponseAsEmpty - Used to set an empty response as the current response
+ * @property destroySourceResponse - Used to destroy the source response  and reset all properties
  *
  * @author Sean Fong
  */

@@ -1,0 +1,20 @@
+---
+sidebar_position: 7
+---
+
+# ResponseIsValid Usage
+
+The responseIsValid property checks if any `invalidItems` are present and returns a boolean value.
+
+```tsx live
+function App() {
+  const responseIsValid = useQuestionnaireResponseStore.use.responseIsValid();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="responseIsValid" data={responseIsValid} />
+    </>
+  );
+}
+```

@@ -4,19 +4,13 @@ TerminologyServerStore properties and methods
 Properties can be accessed for fine-grain details.
 Methods are usually used internally, using them from an external source is not recommended.
 
-## Method
-
-setUrl - Set the terminology server URL
-
-## Method
-
-resetUrl - Reset the terminology server URL to the default
-
 ## Properties
 
 ### resetUrl()
 
 > **resetUrl**: () => `void`
+
+Reset the terminology server URL to the default
 
 #### Returns
 
@@ -27,6 +21,8 @@ resetUrl - Reset the terminology server URL to the default
 ### setUrl()
 
 > **setUrl**: (`newUrl`) => `void`
+
+Set the terminology server URL
 
 #### Parameters
 

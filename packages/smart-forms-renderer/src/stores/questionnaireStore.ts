@@ -71,19 +71,19 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
  * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
  * @property focusedLinkId - LinkId of the currently focused item
  * @property readOnly - Flag to set the form to read-only mode
- * @method buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
- * @method destroySourceQuestionnaire - Used to destroy the source questionnaire and reset all properties
- * @method switchTab - Used to switch the current tab index
- * @method markTabAsComplete - Used to mark a tab index as complete
- * @method updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
- * @method mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
- * @method toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
- * @method updateExpressions - Used to update all SDC expressions based on the updated questionnaire response
- * @method addCodingToCache - Used to add a coding to the cached value set codings
- * @method updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
- * @method onFocusLinkId - Used to set the focused linkId
- * @method setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
- * @method setFormAsReadOnly - Used to set the form as read-only
+ * @property buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
+ * @property destroySourceQuestionnaire - Used to destroy the source questionnaire and reset all properties
+ * @property switchTab - Used to switch the current tab index
+ * @property markTabAsComplete - Used to mark a tab index as complete
+ * @property updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
+ * @property mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
+ * @property toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
+ * @property updateExpressions - Used to update all SDC expressions based on the updated questionnaire response
+ * @property addCodingToCache - Used to add a coding to the cached value set codings
+ * @property updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
+ * @property onFocusLinkId - Used to set the focused linkId
+ * @property setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
+ * @property setFormAsReadOnly - Used to set the form as read-only
  *
  * @author Sean Fong
  */

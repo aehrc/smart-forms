@@ -4,22 +4,6 @@ SmartConfigStore properties and methods
 Properties can be accessed for fine-grain details.
 Methods are usually used internally, using them from an external source is not recommended.
 
-## Method
-
-setClient - Set the FHIRClient object when launching via SMART App Launch
-
-## Method
-
-setPatient - Set the patient resource in context
-
-## Method
-
-setUser - Set the user resource in context
-
-## Method
-
-setEncounter - Set the encounter resource in context
-
 ## Properties
 
 ### client
@@ -50,6 +34,8 @@ The patient resource in context
 
 > **setClient**: (`client`) => `void`
 
+Set the FHIRClient object when launching via SMART App Launch
+
 #### Parameters
 
 | Parameter | Type |
@@ -65,6 +51,8 @@ The patient resource in context
 ### setEncounter()
 
 > **setEncounter**: (`encounter`) => `void`
+
+Set the encounter resource in context
 
 #### Parameters
 
@@ -82,6 +70,8 @@ The patient resource in context
 
 > **setPatient**: (`patient`) => `void`
 
+Set the patient resource in context
+
 #### Parameters
 
 | Parameter | Type |
@@ -97,6 +87,8 @@ The patient resource in context
 ### setUser()
 
 > **setUser**: (`user`) => `void`
+
+Set the user resource in context
 
 #### Parameters
 

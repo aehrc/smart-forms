@@ -1,0 +1,22 @@
+---
+sidebar_position: 6
+---
+
+# InvalidItems Usage
+
+The invalidItems object is a `Record<linkId, OperationOutcome>` of the items that has a specified value constraint that is not satisfied.
+
+For all supported value constraints, refer to the [Value Constraints](/smart-forms/docs/sdc/advanced/constraint) section.
+
+```tsx live
+function App() {
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="invalidItems" data={invalidItems} />
+    </>
+  );
+}
+```

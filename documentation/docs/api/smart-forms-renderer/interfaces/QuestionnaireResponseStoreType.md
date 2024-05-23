@@ -4,39 +4,13 @@ QuestionnaireResponseStore properties and methods
 Properties can be accessed for fine-grain details.
 Methods are usually used internally, using them from an external source is not recommended.
 
-## Method
-
-validateQuestionnaire - Used to validate the questionnaire response based on the questionnaire
-
-## Method
-
-buildSourceResponse - Used to build the source response when the form is first initialised
-
-## Method
-
-setUpdatableResponseAsPopulated - Used to set a pre-populated response as the current response
-
-## Method
-
-updateResponse - Used to update the current response
-
-## Method
-
-setUpdatableResponseAsSaved - Used to set a saved response as the current response
-
-## Method
-
-setUpdatableResponseAsEmpty - Used to set an empty response as the current response
-
-## Method
-
-destroySourceResponse - Used to destroy the source response  and reset all properties
-
 ## Properties
 
 ### buildSourceResponse()
 
 > **buildSourceResponse**: (`response`) => `void`
+
+Used to build the source response when the form is first initialised
 
 #### Parameters
 
@@ -53,6 +27,8 @@ destroySourceResponse - Used to destroy the source response  and reset all prope
 ### destroySourceResponse()
 
 > **destroySourceResponse**: () => `void`
+
+Used to destroy the source response  and reset all properties
 
 #### Returns
 
@@ -88,6 +64,8 @@ Whether there are any invalid items in the response
 
 > **setUpdatableResponseAsEmpty**: (`clearedResponse`) => `void`
 
+Used to set an empty response as the current response
+
 #### Parameters
 
 | Parameter | Type |
@@ -104,6 +82,8 @@ Whether there are any invalid items in the response
 
 > **setUpdatableResponseAsPopulated**: (`populatedResponse`) => `void`
 
+Used to set a pre-populated response as the current response
+
 #### Parameters
 
 | Parameter | Type |
@@ -119,6 +99,8 @@ Whether there are any invalid items in the response
 ### setUpdatableResponseAsSaved()
 
 > **setUpdatableResponseAsSaved**: (`savedResponse`) => `void`
+
+Used to set a saved response as the current response
 
 #### Parameters
 
@@ -160,6 +142,8 @@ Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
 
 > **updateResponse**: (`updatedResponse`) => `void`
 
+Used to update the current response
+
 #### Parameters
 
 | Parameter | Type |
@@ -175,6 +159,8 @@ Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
 ### validateQuestionnaire()
 
 > **validateQuestionnaire**: (`questionnaire`, `updatedResponse`) => `void`
+
+Used to validate the questionnaire response based on the questionnaire
 
 #### Parameters
 

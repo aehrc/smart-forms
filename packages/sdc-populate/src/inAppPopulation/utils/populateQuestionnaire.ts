@@ -49,12 +49,12 @@ export interface PopulateResult {
 }
 
 /**
- * @param questionnaire - Questionnaire to populate
- * @param fetchResourceCallback - A callback function to fetch resources
- * @param requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
- * @param patient - Patient resource as patient in context
- * @param user - Practitioner resource as user in context
- * @param encounter - Encounter resource as encounter in context, optional
+ * @property questionnaire - Questionnaire to populate
+ * @property fetchResourceCallback - A callback function to fetch resources
+ * @property requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
+ * @property patient - Patient resource as patient in context
+ * @property user - Practitioner resource as user in context
+ * @property encounter - Encounter resource as encounter in context, optional
  *
  * @author Sean Fong
  */

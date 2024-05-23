@@ -1,0 +1,22 @@
+---
+sidebar_position: 3
+---
+
+# UpdatableResponse Usage
+
+The updatableResponse is the current state of the response while the form is filled.
+
+Try filling in the form to see the updatableResponse change.
+
+```tsx live
+function App() {
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="updatableResponse" data={updatableResponse} />
+    </>
+  );
+}
+```

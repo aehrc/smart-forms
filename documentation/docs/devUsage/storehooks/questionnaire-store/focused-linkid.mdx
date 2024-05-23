@@ -1,0 +1,22 @@
+---
+sidebar_position: 7
+---
+
+# FocusedLinkId Usage
+
+The focusedLinkId is the linkId of the item that is currently focused on.
+
+Try clicking anywhere on an item to see the focusedLinkId change.
+
+```tsx live
+function App() {
+  const focusedLinkId = useQuestionnaireStore.use.focusedLinkId();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="focusedLinkId" data={focusedLinkId} />
+    </>
+  );
+}
+```

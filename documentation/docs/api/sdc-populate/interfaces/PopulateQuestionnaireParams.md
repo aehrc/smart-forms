@@ -1,34 +1,12 @@
 # Interface: PopulateQuestionnaireParams
 
-## Param
-
-Questionnaire to populate
-
-## Param
-
-A callback function to fetch resources
-
-## Param
-
-Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
-
-## Param
-
-Patient resource as patient in context
-
-## Param
-
-Practitioner resource as user in context
-
-## Param
-
-Encounter resource as encounter in context, optional
-
 ## Properties
 
 ### encounter?
 
 > `optional` **encounter**: `Encounter`
+
+Encounter resource as encounter in context, optional
 
 ***
 
@@ -36,11 +14,15 @@ Encounter resource as encounter in context, optional
 
 > **fetchResourceCallback**: [`FetchResourceCallback`](FetchResourceCallback.md)
 
+A callback function to fetch resources
+
 ***
 
 ### patient
 
 > **patient**: `Patient`
+
+Patient resource as patient in context
 
 ***
 
@@ -48,14 +30,20 @@ Encounter resource as encounter in context, optional
 
 > **questionnaire**: `Questionnaire`
 
+Questionnaire to populate
+
 ***
 
 ### requestConfig
 
 > **requestConfig**: `any`
 
+Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
+
 ***
 
 ### user?
 
 > `optional` **user**: `Practitioner`
+
+Practitioner resource as user in context

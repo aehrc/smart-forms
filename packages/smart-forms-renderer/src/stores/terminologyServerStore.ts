@@ -26,8 +26,8 @@ const ONTOSERVER_R4 = 'https://r4.ontoserver.csiro.au/fhir';
  * Methods are usually used internally, using them from an external source is not recommended.
  *
  * @property url - The current terminology server URL
- * @method setUrl - Set the terminology server URL
- * @method resetUrl - Reset the terminology server URL to the default
+ * @property setUrl - Set the terminology server URL
+ * @property resetUrl - Reset the terminology server URL to the default
  *
  * @author Sean Fong
  */

@@ -1,0 +1,28 @@
+---
+sidebar_position: 4
+---
+
+# Variables Usage
+
+Smart Forms supports the `fhirpath` and `x-fhir-query` variable extensions. Each key contains a `Record<linkId, variable>`.
+
+Since the root level (the Questionnaire itself) does not have a linkId, extensions at the root level have a key of `QuestionnaireLevel`.
+
+:::warning
+
+Smart Forms having the `QuestionnaireLevel` key for root-level extensions might actually clash with items that have the same linkId. This is a known issue and will be addressed in the future.
+
+:::
+
+```tsx live
+function App() {
+  const variables = useQuestionnaireStore.use.variables();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="variables" data={variables} />
+    </>
+  );
+}
+```
