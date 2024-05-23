@@ -1,0 +1,22 @@
+---
+sidebar_position: 4
+---
+
+# UpdatableResponseItems Usage
+
+The updatableResponseItems object is a `Record<linkId, QuestionnaireResponseItem>`.
+
+While this might seem slightly redundant with the `updatableResponse`, it is useful when debugging a specific linkId.
+
+```tsx live
+function App() {
+  const updatableResponseItems = useQuestionnaireResponseStore.use.updatableResponseItems();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="updatableResponseItems" data={updatableResponseItems} />
+    </>
+  );
+}
+```

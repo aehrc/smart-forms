@@ -1,0 +1,714 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import IframeContainer from '../../src/react/IframeContainer';
+
+# Renderer Overview
+
+## Installation
+
+Prerequisites:
+
+- Node.js 16 or later
+- React 17 or later
+- Have @tanstack/react-query v4.x.x installed in your React project
+
+To install, run this command:
+
+```bash
+npm install @aehrc/smart-forms-renderer
+```
+
+## Usage
+
+### Basic Usage
+
+The `BaseRenderer` component is the main component that renders the form.
+The most basic way to use it is to wrap it with a parent component which contains the `useBuildForm()` hook to initialise it.
+
+```tsx title="YourBaseRendererWrapper.tsx"
+import React from 'react';
+import {
+  BaseRenderer,
+  RendererThemeProvider,
+  useBuildForm,
+  useRendererQueryClient
+} from '@aehrc/smart-forms-renderer';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Questionnaire } from 'fhir/r4';
+
+// Pass in your FHIR R4.Questionnaire
+interface YourBaseRendererWrapperProps {
+  questionnaire: Questionnaire;
+}
+
+function YourBaseRendererWrapper(props: YourBaseRendererWrapperProps) {
+  const { questionnaire } = props;
+
+  // The renderer needs a query client to make API calls
+  const queryClient = useRendererQueryClient();
+
+  // This hook builds the form based on the questionnaire
+  const isBuilding = useBuildForm(questionnaire);
+
+  if (isBuilding) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    // The RendererThemeProvider provides the default renderer theme based on Material UI
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BaseRenderer />
+      </QueryClientProvider>
+    </RendererThemeProvider>
+  );
+}
+```
+
+Here's the output of the above code. Click on the "Input Questionnaire" tab to see the JSON representation of the questionnaire.
+
+<Tabs
+  defaultValue="output"
+  values={[
+    { label: 'Output', value: 'output' },
+    { label: 'Input Questionnaire', value: 'questionnaire' }
+  ]}>
+  <TabItem value="output">
+    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-boolean--boolean-basic">
+      <iframe
+        src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-boolean--boolean-basic"
+        width="100%"
+        height="100"
+      />
+    </IframeContainer>
+  </TabItem>
+  <TabItem value="questionnaire">
+    ```json
+    {
+      "resourceType": "Questionnaire",
+      "id": "BooleanBasic",
+      "name": "BooleanBasic",
+      "title": "Boolean Basic",
+      "version": "0.1.0",
+      "status": "draft",
+      "publisher": "AEHRC CSIRO",
+      "date": "2024-05-01",
+      "url": "https://smartforms.csiro.au/docs/components/boolean/basic",
+      "item": [
+        {
+          "linkId": "eaten",
+          "type": "boolean",
+          "repeats": false,
+          "text": "Have you eaten yet?"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+Now let's say you have a pre-populated or pre-filled QuestionnaireResponse resource that you want to render alongside your Questionnaire. You can modify your wrapper to pass in your QuestionnaireResponse as a prop, and subsequently into `useBuildForm()`.
+
+```tsx title="YourBaseRendererWrapper.tsx"
+import React from 'react';
+import {
+  BaseRenderer,
+  RendererThemeProvider,
+  useBuildForm,
+  useRendererQueryClient
+} from '@aehrc/smart-forms-renderer';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+
+// Pass in your FHIR R4.Questionnaire
+interface YourBaseRendererWrapperProps {
+  questionnaire: Questionnaire;
+  questionnaireResponse?: QuestionnaireResponse;
+}
+
+function YourBaseRendererWrapper(props: YourBaseRendererWrapperProps) {
+  const { questionnaire, questionnaireResponse } = props;
+
+  // The renderer needs a query client to make API calls
+  const queryClient = useRendererQueryClient();
+
+  // This hook builds the form based on the questionnaire
+  const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
+
+  if (isBuilding) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    // The RendererThemeProvider provides the default renderer theme based on Material UI
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BaseRenderer />
+      </QueryClientProvider>
+    </RendererThemeProvider>
+  );
+}
+```
+
+Here's the output of the above code after adding the QuestionnaireResponse prop.
+
+<Tabs
+  defaultValue="output"
+  values={[
+    { label: 'Output', value: 'output' },
+    { label: 'Input Questionnaire', value: 'questionnaire' },
+    { label: 'Input QuestionnaireResponse', value: 'questionnaireResponse' }
+  ]}>
+  <TabItem value="output">
+    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-boolean--boolean-basic-response">
+      <iframe
+        src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-boolean--boolean-basic-response"
+        width="100%"
+        height="100"
+      />
+    </IframeContainer>
+  </TabItem>
+  <TabItem value="questionnaire">
+    ```json
+    {
+      "resourceType": "Questionnaire",
+      "id": "BooleanBasic",
+      "name": "BooleanBasic",
+      "title": "Boolean Basic",
+      "version": "0.1.0",
+      "status": "draft",
+      "publisher": "AEHRC CSIRO",
+      "date": "2024-05-01",
+      "url": "https://smartforms.csiro.au/docs/components/boolean/basic",
+      "item": [
+        {
+          "linkId": "eaten",
+          "type": "boolean",
+          "repeats": false,
+          "text": "Have you eaten yet?"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+  <TabItem value="questionnaireResponse">
+    ```json
+    {
+      "resourceType": "QuestionnaireResponse",
+      "status": "in-progress",
+      "item": [
+        {
+          "linkId": "eaten",
+          "text": "Have you eaten yet?",
+          "answer": [
+            {
+              "valueBoolean": true
+            }
+          ]
+        }
+      ],
+      "questionnaire": "https://smartforms.csiro.au/docs/components/boolean/basic"
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+_Source code used in Storybook: [BuildFormWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormWrapperForStorybook.tsx)_
+
+### Basic Button Usage
+
+The `useBuildForm()` hook used above is a wrapper around the `buildForm()` function.
+You can actually use the `buildForm()` function directly via a button click or any other event.
+
+Below shows an example of the above code modified to contain a `BuildFormButton` component that initialises the form on click.
+
+```tsx title="YourBaseRendererWrapperWithButton.tsx"
+import React from 'react';
+import {
+  BaseRenderer,
+  RendererThemeProvider,
+  useBuildForm,
+  useRendererQueryClient
+} from '@aehrc/smart-forms-renderer';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import BuildFormButton from './BuildFormButton';
+
+// Pass in your FHIR R4.Questionnaire and optional FHIR R4.QuestionnaireResponse as props
+interface YourBaseRendererWrapperWithButtonProps {
+  questionnaire: Questionnaire;
+  questionnaireResponse?: QuestionnaireResponse;
+}
+
+function YourBaseRendererWrapperWithButton(props: YourBaseRendererWrapperWithButtonProps) {
+  const { questionnaire, questionnaireResponse } = props;
+
+  const queryClient = useRendererQueryClient();
+
+  // This time, we are passing only the questionnaire in here to demonstrate the use of the buildForm function
+  const isBuilding = useBuildForm(questionnaire);
+
+  if (isBuilding) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <>
+          {/* Additional button here for building the form*/}
+          <BuildFormButton
+            questionnaire={questionnaire}
+            questionnaireResponse={questionnaireResponse}
+          />
+          <BaseRenderer />
+        </>
+      </QueryClientProvider>
+    </RendererThemeProvider>
+  );
+}
+```
+
+```tsx title="BuildFormButton.tsx"
+import React from 'react';
+import { buildForm } from '@aehrc/smart-forms-renderer';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+
+interface BuildFormButtonProps {
+  questionnaire: Questionnaire;
+  questionnaireResponse?: QuestionnaireResponse;
+}
+
+function BuildFormButton(props: BuildFormButtonProps) {
+  const { questionnaire, questionnaireResponse } = props;
+
+  async function handleBuildForm() {
+    await buildForm(questionnaire, questionnaireResponse);
+  }
+
+  return <button onClick={handleBuildForm}>Build Form</button>;
+}
+
+export default BuildFormButton;
+```
+
+This example is actually a bit counterintuitive since we are deliberately not passing the `questionnaireResponse` to `useBuildForm()` hook.
+It exists mainly to demonstrate how you can use the `buildForm()` function. In a real-world scenario, your button might be somewhere else within your application.
+
+Below is the output of the above modified code. This time, you need to click on the "Build Form" button to see the questionnaireResponse rendered.
+The button will look different in the output, but it still functions the same way.
+
+<Tabs
+  defaultValue="output"
+  values={[
+    { label: 'Output', value: 'output' },
+    { label: 'Input Questionnaire', value: 'questionnaire' },
+    { label: 'Input QuestionnaireResponse', value: 'questionnaireResponse' }
+  ]}>
+  <TabItem value="output">
+    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-testing-build-form-button-tester--build-form-button-tester">
+      <iframe
+        src="http://localhost:6006/iframe.html?args=&id=component-testing-build-form-button-tester--build-form-button-tester"
+        width="100%"
+        height="130"
+      />
+    </IframeContainer>
+  </TabItem>
+  <TabItem value="questionnaire">
+    ```json
+    {
+      "resourceType": "Questionnaire",
+      "id": "BooleanBasic",
+      "name": "BooleanBasic",
+      "title": "Boolean Basic",
+      "version": "0.1.0",
+      "status": "draft",
+      "publisher": "AEHRC CSIRO",
+      "date": "2024-05-01",
+      "url": "https://smartforms.csiro.au/docs/components/boolean/basic",
+      "item": [
+        {
+          "linkId": "eaten",
+          "type": "boolean",
+          "repeats": false,
+          "text": "Have you eaten yet?"
+        }
+      ]
+    }
+    ```
+  </TabItem>
+  <TabItem value="questionnaireResponse">
+  ```json
+  {
+    "resourceType": "QuestionnaireResponse",
+    "status": "in-progress",
+    "item": [
+      {
+        "linkId": "eaten",
+        "text": "Have you eaten yet?",
+        "answer": [
+          {
+            "valueBoolean": true
+          }
+        ]
+      }
+    ],
+    "questionnaire": "https://smartforms.csiro.au/docs/components/boolean/basic"
+  }
+  ```
+  </TabItem>
+</Tabs>
+_Source code used in Storybook: [BuildFormButtonTesterWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx) and [BuildFormButtonForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonForStorybook.tsx)_
+
+### Pre-Population Usage
+
+You can bring the pre-population capabilities of `@aehrc/sdc-populate` into the mix by further modifying the above code.
+
+```tsx title="YourBaseRendererWrapperWithPrePop.tsx"
+import React, { useState } from 'react';
+import {
+  BaseRenderer,
+  buildForm,
+  RendererThemeProvider,
+  useBuildForm,
+  useRendererQueryClient
+} from '@aehrc/smart-forms-renderer';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Encounter, Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import Client from 'fhirclient/lib/Client';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { fetchResourceCallback } from './populateCallback';
+
+// Pass in your FHIR R4.Questionnaire, FHIRClient, FHIR R4.Patient, optional FHIR R4.Practitioner, and optional FHIR R4.Encounter as props
+interface YourBaseRendererWrapperWithPrePopProps {
+  questionnaire: Questionnaire;
+  fhirClient: Client;
+  patient: Patient;
+  user?: Practitioner;
+  encounter?: Encounter;
+}
+
+function YourBaseRendererWrapperWithPrePop(props: YourBaseRendererWrapperWithPrePopProps) {
+  const { questionnaire, fhirClient, patient, user, encounter } = props;
+
+  const [isPopulating, setIsPopulating] = useState(false);
+
+  const isBuilding = useBuildForm(questionnaire);
+
+  const queryClient = useRendererQueryClient();
+
+  // Event handler for the pre-population
+  function handlePrepopulate() {
+    setIsPopulating(true);
+
+    populateQuestionnaire({
+      questionnaire: questionnaire,
+      fetchResourceCallback: fetchResourceCallback,
+      requestConfig: {
+        clientEndpoint: fhirClient.state.serverUrl
+      },
+      patient: patient,
+      user: user
+    }).then(async ({ populateSuccess, populateResult }) => {
+      if (!populateSuccess || !populateResult) {
+        setIsPopulating(false);
+        return;
+      }
+
+      const { populatedResponse } = populateResult;
+
+      // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
+      await buildForm(questionnaire, populatedResponse);
+
+      setIsPopulating(false);
+    });
+  }
+
+  if (isBuilding) {
+    return <div>Building form...</div>;
+  }
+
+  if (isPopulating) {
+    return <div>Pre-populating form...</div>;
+  }
+
+  return (
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <>
+          <PrePopButton isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+          <BaseRenderer />
+        </>
+      </QueryClientProvider>
+    </RendererThemeProvider>
+  );
+}
+```
+
+You would need to further define `fetchResourceCallback` and `PrePopButton` but we will skip those for brevity.
+
+- `fetchResourceCallback` is a callback function to fetch resources from your FHIR server defined as an argument to the `populateQuestionnaire()` function.
+
+- `PrePopButton` is a button component similar to the BuildFormButton above, but it uses a callback to `handlePrepopulate()` defined in the wrapper component.
+
+Again, this example is only for demo purposes. Your wrapper component props might be entirely different from the ones used here, or you might have your own custom pre-population logic.
+If you are interested if using the `@aehrc/sdc-populate` library, you can refer to the [API](/smart-forms/docs/api/sdc-populate) for more details.
+
+Below is the output of the above modified code.
+
+<Tabs
+  defaultValue="output"
+  values={[
+    { label: 'Output', value: 'output' },
+    { label: 'Input Questionnaire', value: 'questionnaire' }
+  ]}>
+  <TabItem value="output">
+    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-12-form-population--calculated-expression-bmi-calculator-prepop">
+      <iframe
+        src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-12-form-population--calculated-expression-bmi-calculator-prepop"
+        width="100%"
+        height="310"
+      />
+    </IframeContainer>
+  </TabItem>
+  <TabItem value="questionnaire">
+    ```json
+    {
+      "resourceType": "Questionnaire",
+      "id": "CalculatedExpressionBMICalculatorPrepop",
+      "name": "CalculatedExpressionBMICalculatorPrepop",
+      "title": "CalculatedExpression BMI Calculator - Pre-population",
+      "version": "0.1.0",
+      "status": "draft",
+      "publisher": "AEHRC CSIRO",
+      "date": "2024-05-15",
+      "url": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+          "name": "ObsBodyHeight",
+          "language": "application/x-fhir-query",
+          "expression": "Observation?code=8302-2&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+          "name": "ObsBodyWeight",
+          "language": "application/x-fhir-query",
+          "expression": "Observation?code=29463-7&_count=1&_sort=-date&patient={{%patient.id}}"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+          "extension": [
+            {
+              "url": "name",
+              "valueCoding": {
+              "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+              "code": "patient"
+              }
+            },
+            {
+              "url": "type",
+              "valueCode": "Patient"
+            },
+            {
+              "url": "description",
+              "valueString": "The patient that is to be used to pre-populate the form"
+            }
+          ]
+        }
+      ],
+      "item": [
+        {
+          "linkId": "bmi-calculation",
+          "text": "BMI Calculation",
+          "type": "group",
+          "repeats": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "height",
+                "language": "text/fhirpath",
+                "expression": "item.where(linkId='patient-height').answer.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "weight",
+                "language": "text/fhirpath",
+                "expression": "item.where(linkId='patient-weight').answer.value"
+              }
+            }
+          ],
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ObsBodyHeight.entry.resource.value.value"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "cm",
+                    "display": "cm"
+                  }
+                }
+              ],
+              "linkId": "patient-height",
+              "text": "Height",
+              "type": "decimal",
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                    "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ObsBodyWeight.entry.resource.value.value"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg",
+                    "display": "kg"
+                  }
+                }
+              ],
+              "linkId": "patient-weight",
+              "text": "Weight",
+              "type": "decimal",
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                  "valueExpression": {
+                    "description": "BMI calculation",
+                    "language": "text/fhirpath",
+                    "expression": "(%weight/((%height/100).power(2))).round(1)"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg/m2",
+                    "display": "kg/m2"
+                  }
+                }
+              ],
+              "linkId": "bmi-result",
+              "text": "Value",
+              "type": "decimal",
+              "repeats": false,
+              "readOnly": true
+            }
+          ]
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+_Source code used in Storybook:
+[PrePopWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopWrapperForStorybook.tsx), [PrePopButtonForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopButtonForStorybook.tsx) and [populateCallbackForStorybook.ts](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/populateCallbackForStorybook.ts)_
+
+### Retrieving the QuestionnaireResponse
+
+Now that you have built and pre-populated the form, the next step is to edit the form and retrieve the filled `QuestionnaireResponse` resource from the renderer.
+
+```tsx live
+function YourBaseRendererWrapper() {
+  const [response, setResponse] = useState<QuestionnaireResponse | null>(null);
+
+  const questionnaire = qBooleanBasic;
+
+  const queryClient = useRendererQueryClient();
+
+  const isBuilding = useBuildForm(questionnaire);
+
+  if (isBuilding) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <BaseRenderer />
+      </QueryClientProvider>
+      <button
+        onClick={() => {
+          // A getResponse() function is exposed by the renderer
+          const questionnaireResponse = getResponse();
+          setResponse(questionnaireResponse);
+        }}>
+        Retrieve QuestionnaireResponse
+      </button>
+
+      {/* Retrieved questionnaireResponse will be printed here */}
+      {response ? (
+        <div style={{ border: `1px solid #EBEDF0`, borderRadius: '8px' }}>
+          <pre style={{ fontSize: '11px' }}>{JSON.stringify(response, null, 2)}</pre>
+        </div>
+      ) : null}
+    </>
+  );
+}
+```
+
+Click on the "Retrieve QuestionnaireResponse" button to see the output QuestionnaireResponse resource.
+
+Alternatively, you can use store hooks exposed by the renderer to dynamically retrieve the QuestionnaireResponse resource as it updates.
+For more information on store hooks or stores in general, refer to ...
+
+```tsx live
+function YourBaseRendererWrapper() {
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+
+  const questionnaire = qBooleanBasic;
+
+  const queryClient = useRendererQueryClient();
+
+  const isBuilding = useBuildForm(questionnaire);
+
+  if (isBuilding) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <BaseRenderer />
+      </QueryClientProvider>
+
+      {/* Dynamically retrieved questionnaireResponse will be printed here */}
+      {updatableResponse ? (
+        <div style={{ border: `1px solid #EBEDF0`, borderRadius: '8px' }}>
+          <pre style={{ fontSize: '11px' }}>{JSON.stringify(updatableResponse, null, 2)}</pre>
+        </div>
+      ) : null}
+    </>
+  );
+}
+```

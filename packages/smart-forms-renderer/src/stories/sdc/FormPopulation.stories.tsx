@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import PrePopWrapperForStorybook from '../StorybookWrappers/PrePopWrapperForStorybook';
+import PrePopWrapperForStorybook from '../storybookWrappers/PrePopWrapperForStorybook';
 import {
   qCalculatedExpressionBMICalculatorPrepop,
   qCalculatedExpressionCvdRiskCalculatorPrepop,

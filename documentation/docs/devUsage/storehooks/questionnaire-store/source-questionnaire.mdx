@@ -1,0 +1,20 @@
+---
+sidebar_position: 2
+---
+
+# SourceQuestionnaire Usage
+
+The sourceQuestionnaire is the input questionnaire passed to the renderer.
+
+```tsx live
+function App() {
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="sourceQuestionnaire" data={sourceQuestionnaire} />
+    </>
+  );
+}
+```

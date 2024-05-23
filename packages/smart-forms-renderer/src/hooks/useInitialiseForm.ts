@@ -34,7 +34,7 @@ import { initialiseFhirClient } from '../utils/manageForm';
  * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
  * @param fhirClient - FHIRClient object to perform further FHIR calls. At the moment it's only used in answerExpressions (optional)
  *
- * @see {buildForm} for more information.
+ * @see buildForm() for more information.
  *
  * @author Sean Fong
  */

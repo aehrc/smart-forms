@@ -1,0 +1,140 @@
+---
+sidebar_position: 3
+---
+
+# Renderer Utilities
+
+The renderer provides a set of utilities to build and interact with the form.
+
+#### Functions
+
+- [buildForm](/smart-forms/docs/devUsage/renderer-utilities#buildform)
+- [destroyForm](/smart-forms/docs/devUsage/renderer-utilities#destroyform)
+- [getResponse](/smart-forms/docs/devUsage/renderer-utilities#getresponse)
+- [removeEmptyAnswersFromResponse](/smart-forms/docs/devUsage/renderer-utilities#removeemptyanswersfromresponse)
+
+#### Components
+
+- [BaseRenderer](/smart-forms/docs/devUsage/renderer-utilities#baserenderer)
+- [SmartFormsRenderer](/smart-forms/docs/devUsage/renderer-utilities#smartformsrenderer) (to be deprecated)
+- [RendererThemeProvider](/smart-forms/docs/devUsage/renderer-utilities#rendererthemeprovider)
+
+#### Hooks
+
+- [useBuildForm](/smart-forms/docs/devUsage/renderer-utilities#usebuildform)
+- [useRendererQueryClient](/smart-forms/docs/devUsage/renderer-utilities#userendererqueryclient)
+- [**QuestionnaireStore** state management hooks](/smart-forms/docs/devUsage/storehooks/questionnaire-store)
+- [**QuestionnaireResponseStore** state management properties](/smart-forms/docs/devUsage/storehooks/questionnaire-response-store)
+- [**SmartConfigStore state** management properties](/smart-forms/docs/devUsage/storehooks/smart-config-store)
+- [**TerminologyServerStore** state management properties](/smart-forms/docs/devUsage/storehooks/terminology-server-store)
+
+:::note
+
+There are other utilities exposed by the renderer but are not intended for direct use, i.e internal UI components and controls which requires advanced setup.
+These are used in the Smart Forms app for it's re-population mechanism.
+
+If you are interested, refer to the [API Reference](/smart-forms/docs/api/smart-forms-renderer) section.
+
+:::
+
+### BuildForm
+
+The `buildForm()` function is used to build the form. It takes a `Questionnaire` resource and other optional properties as arguments.
+If a QuestionnaireResponse is not provided, an empty QuestionnaireResponse is set as the initial QuestionnaireResponse.
+
+| Parameter             | Type                          | Description                                                                                                | Required? |
+| --------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
+| questionnaire         | FHIR R4.Questionnaire         | Questionnaire to be rendered                                                                               | Required  |
+| questionnaireResponse | FHIR R4.QuestionnaireResponse | Pre-populated/draft/loaded QuestionnaireResponse to be rendered                                            | Optional  |
+| readOnly              | boolean                       | Applies read-only mode to all items in the form view                                                       | Optional  |
+| terminologyServerUrl  | string                        | Terminology server url to fetch terminology. If not provided, the default terminology server will be used. | Optional  |
+| additionalVariables   | `Record<string, object>`      | Additional key-value pair of SDC variables `Record<name, variable extension>` for testing                  | Optional  |
+
+### DestroyForm
+
+The `destroyForm()` function is used to clear the form to a clean state. Under the hood, it cleans up the questionnaire and QuestionnaireResponse state management stores.
+
+### GetResponse
+
+The `getResponse()` function is used to get the QuestionnaireResponse at its current state.
+If no changes have been made to the form, the initial QuestionnaireResponse is returned.
+
+Use this if you are planning to use a button click to get the QuestionnaireResponse.
+
+If you want to get the latest QuestionnaireResponse every time the form is changed, use the [QuestionnaireResponseStore `updatableResponse`](/smart-forms/docs/devUsage/storehooks/questionnaire-response-store/updatable-response) hook.
+
+### RemoveEmptyAnswersFromResponse
+
+The `removeEmptyAnswersFromResponse()` function is used to remove empty/hidden answers from a passed QuestionnaireResponse.
+
+This takes into account `enableWhen`, `enableWhenExpression` extensions, items without `item.answer`, empty `item.answer` arrays and empty strings.
+This does not remove items that are hidden by the http://hl7.org/fhir/StructureDefinition/questionnaire-hidden extension.
+
+This function is generally used before saving, printing or exporting the QuestionnaireResponse to ensure the response is clean.
+
+| Parameter             | Type                          | Description                                                | Required? |
+| --------------------- | ----------------------------- | ---------------------------------------------------------- | --------- |
+| questionnaire         | FHIR R4.Questionnaire         | Source Questionnaire of the provided QuestionnaireResponse | Required  |
+| questionnaireResponse | FHIR R4.QuestionnaireResponse | Filled QuestionnaireResponse                               | Required  |
+
+### BaseRenderer
+
+The `BaseRenderer` component is the main component that renders the form.
+
+It renders the Questionnaire and QuestionnaireResponse defined in the QuestionnaireStore and QuestionnaireResponseStore state management stores respectively.
+
+[`buildForm()`](/smart-forms/docs/devUsage/renderer-utilities#buildform) used be used in your wrapping component or in an event handler to initialise the form before React renders the `BaseRenderer`.
+
+### SmartFormsRenderer
+
+:::warning
+
+The `SmartFormsRenderer` component is planned for deprecation in the future. As a replacement, library users should create their own wrapper around `BaseRenderer` which includes the `useBuildForm()` hook.
+
+`SmartFormsRenderer` provides a fast and easy way to get started with the renderer, but there is a trade-off around customisation and future extensibility. Using your own wrapper provides the following benefits:
+
+- Allows you to customise your own `@tanstack/react-query` query client if needed. A `useRendererQueryClient()` hook is provided if you want to stick to the default.
+- Allows you to customise your own theme using [Material UI Theming](https://mui.com/material-ui/customization/theming/). A `RendererThemeProvider` component is provided if you want to stick to the default.
+- Allows you to customise your own loading animation.
+- In the future if any additional functionalities are exposed via hooks, they can be easily plugged in to your own wrapper.
+
+See [here](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/InitialiseFormWrapperForStorybook.tsx#L40-L55) for replacement options.
+:::
+
+The `SmartFormsRenderer` component is a self-initialising wrapper around the `BaseRenderer` component.
+If a QuestionnaireResponse is not provided, an empty QuestionnaireResponse is set as the initial QuestionnaireResponse.
+
+| Parameter             | Type                                                     | Description                                                                                                | Required? |
+| --------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------- |
+| questionnaire         | FHIR R4.Questionnaire                                    | Questionnaire to be rendered                                                                               | Required  |
+| questionnaireResponse | FHIR R4.QuestionnaireResponse                            | Pre-populated/draft/loaded QuestionnaireResponse to be rendered                                            | Optional  |
+| additionalVariables   | `Record<string, object>`                                 | Additional key-value pair of SDC variables `Record<name, variable extension>` for testing                  | Optional  |
+| terminologyServerUrl  | string                                                   | Terminology server url to fetch terminology. If not provided, the default terminology server will be used. | Optional  |
+| fhirClient            | [FHIRClient](https://github.com/smart-on-fhir/client-js) | FHIRClient to perform further FHIR calls (not actually being used in the renderer)                         | Optional  |
+| readOnly              | boolean                                                  | Applies read-only mode to all items in the form view                                                       | Optional  |
+
+### RendererThemeProvider
+
+The `RendererThemeProvider` component provides the default renderer theme based on Material UI. It should be wrapped around the `BaseRenderer` component.
+
+If you want to customise the renderer to use your own theme, refer to the [Material UI Theming](https://mui.com/material-ui/customization/theming/) documentation.
+
+### UseBuildForm
+
+The `useBuildForm()` hook wraps around the `buildForm()` function and provides self-initialisation of the form via [useLayoutEffect](https://react.dev/reference/react/useLayoutEffect).
+
+The reason why `useLayoutEffect` is used over `useEffect` is because the form needs to be initialised before React renders the `BaseRenderer` component.
+
+This is generally the recommended way to initialise the form in your wrapping component. If you want to initialise the form in an event handler, you can use the `buildForm()` function directly.
+
+### UseRendererQueryClient
+
+The `useRendererQueryClient()` hook provides the default renderer `@tanstack/react-query` query client to perform API calls i.e. fetching terminology.
+
+Note that the renderer uses `@tanstack/react-query` version 4.x.x.
+
+If you want to customise the renderer to use your own query client, refer to the [TanStack Query v4](https://tanstack.com/query/v4/docs/reference/QueryClient) documentation.
+
+### State Management Hooks
+
+Refer to the [Renderer Store Hooks](/smart-forms/docs/devUsage/storehooks) section for more information on the state management hooks provided by the renderer.

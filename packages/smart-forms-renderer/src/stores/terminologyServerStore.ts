@@ -26,8 +26,8 @@ const ONTOSERVER_R4 = 'https://r4.ontoserver.csiro.au/fhir';
  * Methods are usually used internally, using them from an external source is not recommended.
  *
  * @property url - The current terminology server URL
- * @method setUrl - Set the terminology server URL
- * @method resetUrl - Reset the terminology server URL to the default
+ * @property setUrl - Set the terminology server URL
+ * @property resetUrl - Reset the terminology server URL to the default
  *
  * @author Sean Fong
  */
@@ -41,7 +41,7 @@ export interface TerminologyServerStoreType {
  * Terminology server state management store. This is used for resolving valueSets externally.
  * Defaults to use https://r4.ontoserver.csiro.au/fhir.
  * This is the vanilla version of the store which can be used in non-React environments.
- * @see {TerminologyServerStoreType} for available properties and methods.
+ * @see TerminologyServerStoreType for available properties and methods.
  *
  * @author Sean Fong
  */
@@ -55,7 +55,7 @@ export const terminologyServerStore = createStore<TerminologyServerStoreType>()(
  * Terminology server state management store. This is used for resolving valueSets externally.
  * Defaults to use https://r4.ontoserver.csiro.au/fhir.
  * This is the React version of the store which can be used as React hooks in React functional components.
- * @see {TerminologyServerStoreType} for available properties and methods.
+ * @see TerminologyServerStoreType for available properties and methods.
  *
  * @author Sean Fong
  */

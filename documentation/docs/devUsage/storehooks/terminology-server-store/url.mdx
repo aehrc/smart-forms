@@ -1,0 +1,26 @@
+---
+sidebar_position: 2
+---
+
+# Url Usage
+
+This hook is used to get the url of the terminology server.
+The `YourBaseRendererWrapper` wraper passes the `terminologyServerUrl` alongside the questionnaire to the `buildForm()` function, which initialises the terminology server store with the provided url.
+
+Try removing the `terminologyServerUrl` prop from the `YourBaseRendererWrapper` and see the `url` value revert to the renderer's default terminology server url.
+
+```tsx live
+function App() {
+  const url = useTerminologyServerStore.use.url();
+
+  return (
+    <>
+      <YourBaseRendererWrapper
+        questionnaire={qChoiceAnswerValueSetBasic}
+        terminologyServerUrl="https://tx.ontoserver.csiro.au/fhir"
+      />
+      <JsonViewer hookName="url" data={url} />
+    </>
+  );
+}
+```

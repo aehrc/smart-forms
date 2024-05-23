@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import ReactJson from '@microlink/react-json-view';
 
 interface DebugResponseViewProps {
-  displayObject: Questionnaire | QuestionnaireResponse | Record<string, any> | null;
+  displayObject: any;
   showJsonTree: boolean;
 }
 

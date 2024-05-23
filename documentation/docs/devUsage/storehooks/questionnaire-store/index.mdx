@@ -1,0 +1,51 @@
+---
+sidebar_position: 2
+---
+
+# QuestionnaireStore
+
+The QuestionnaireStore exposes the following properties:
+
+- **sourceQuestionnaire**
+- **itemTypes**
+- **tabs**
+- **currentTabIndex**
+- **variables**
+- **launchContexts**
+- **enableWhenItems**
+- **enableWhenLinkedQuestions**
+- **enableWhenIsActivated**
+- **enableWhenExpressions**
+- **calculatedExpressions**
+- **answerExpressions**
+- **processedValueSetCodings**
+- **processedValueSetUrls**
+- **cachedValueSetCodings**
+- **fhirPathContext**
+- **populatedContext**
+- **focusedLinkId**
+- **readOnly**
+
+Here's how you use the store hook in your React functional component:
+
+```
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+
+function App() {
+  const storeProperty = useQuestionnaireStore.use.{insert_property_name_here}();
+
+  return (
+    <div>{storeProperty}</div>
+  );
+}
+```
+
+There are some live examples on the following pages that demonstrate how to use the hooks.
+
+Refer to the [API Reference](/smart-forms/docs/api/smart-forms-renderer/interfaces/QuestionnaireStoreType) for more information on each property.
+
+:::note
+
+Do note that while filling the example forms in this section, the page might move around as the outputs of all examples are updated in real-time.
+
+:::

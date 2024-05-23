@@ -1,0 +1,20 @@
+---
+sidebar_position: 3
+---
+
+# ItemTypes Usage
+
+There are three items in this questionnaire, therefore the itemTypes `Record<linkId, item.type>` will have three items and their respective item types.
+
+```tsx live
+function App() {
+  const itemTypes = useQuestionnaireStore.use.itemTypes();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="itemTypes" data={itemTypes} />
+    </>
+  );
+}
+```

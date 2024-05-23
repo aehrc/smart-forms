@@ -29,10 +29,10 @@ import { createSelectors } from './selector';
  * @property patient - The patient resource in context
  * @property user - The user resource in context
  * @property encounter - The encounter resource in context
- * @method setClient - Set the FHIRClient object when launching via SMART App Launch
- * @method setPatient - Set the patient resource in context
- * @method setUser - Set the user resource in context
- * @method setEncounter - Set the encounter resource in context
+ * @property setClient - Set the FHIRClient object when launching via SMART App Launch
+ * @property setPatient - Set the patient resource in context
+ * @property setUser - Set the user resource in context
+ * @property setEncounter - Set the encounter resource in context
  *
  * @author Sean Fong
  */
@@ -53,7 +53,7 @@ export interface SmartConfigStoreType {
  * Will be deprecated in version 1.0.0.
  *
  * This is the vanilla version of the store which can be used in non-React environments.
- * @see {SmartConfigStoreType} for available properties and methods.
+ * @see SmartConfigStoreType for available properties and methods.
  *
  * @author Sean Fong
  */
@@ -74,8 +74,8 @@ export const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
  * Will be deprecated in version 1.0.0.
  *
  * This is the React version of the store which can be used as React hooks in React functional components.
- * @see {SmartConfigStoreType} for available properties and methods.
- * @see {smartConfigStore} for the vanilla store.
+ * @see SmartConfigStoreType for available properties and methods.
+ * @see smartConfigStore for the vanilla store.
  *
  * @author Sean Fong
  */

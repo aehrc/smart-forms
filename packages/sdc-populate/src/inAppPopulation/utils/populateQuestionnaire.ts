@@ -49,12 +49,12 @@ export interface PopulateResult {
 }
 
 /**
- * @param questionnaire - Questionnaire to populate
- * @param fetchResourceCallback - A callback function to fetch resources
- * @param requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
- * @param patient - Patient resource as patient in context
- * @param user - Practitioner resource as user in context
- * @param encounter - Encounter resource as encounter in context, optional
+ * @property questionnaire - Questionnaire to populate
+ * @property fetchResourceCallback - A callback function to fetch resources
+ * @property requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
+ * @property patient - Patient resource as patient in context
+ * @property user - Practitioner resource as user in context
+ * @property encounter - Encounter resource as encounter in context, optional
  *
  * @author Sean Fong
  */
@@ -69,7 +69,9 @@ export interface PopulateQuestionnaireParams {
 
 /**
  * Performs an in-app population of the provided questionnaire.
- * By in-app, it means that a callback function is provided to fetch resources.
+ * By in-app, it means that a callback function is provided to fetch resources instead of it calling to a $populate service.
+ * This function helps to you create a nice set of populate input parameters from the provided params.
+ * If you already have them, use https://github.com/aehrc/smart-forms/blob/main/packages/sdc-populate/src/SDCPopulateQuestionnaireOperation/utils/populate.ts#L842 instead.
  *
  * @param params - Refer to PopulateQuestionnaireParams interface
  * @returns populateSuccess - A boolean indicating if the population was successful

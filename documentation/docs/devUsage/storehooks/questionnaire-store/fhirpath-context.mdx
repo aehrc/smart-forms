@@ -1,0 +1,22 @@
+---
+sidebar_position: 6
+---
+
+# FhirPathContext Usage
+
+The fhirPathContext object contains all the FHIRPath variables and their evaluated values. On top of that, it also contains [`%resource`](https://hl7.org/fhir/fhirpath.html#variables) as the resource containing the original code in the context.
+
+Refer to the [FHIRPath](https://hl7.org/fhir/fhirpath.html) spec for more information on FHIRPath.
+
+```tsx live
+function App() {
+  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="fhirPathContext" data={fhirPathContext} />
+    </>
+  );
+}
+```

@@ -1,0 +1,22 @@
+---
+sidebar_position: 5
+---
+
+# FormChangesHistory Usage
+
+The formChangesHistory is an array of all the changes made to the form. It can be really powerful when you are implementing an undo/redo feature.
+
+It uses the [deep-diff](https://github.com/flitbit/diff) library to calculate changes.
+
+```tsx live
+function App() {
+  const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="formChangesHistory" data={formChangesHistory} />
+    </>
+  );
+}
+```

@@ -1,5 +1,10 @@
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { questionnaireResponseStore, questionnaireStore, smartConfigStore } from '../stores';
+import {
+  questionnaireResponseStore,
+  questionnaireStore,
+  smartConfigStore,
+  terminologyServerStore
+} from '../stores';
 import { initialiseQuestionnaireResponse } from './initialise';
 import { removeEmptyAnswers } from './removeEmptyAnswers';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
@@ -25,6 +30,12 @@ export async function buildForm(
   terminologyServerUrl?: string,
   additionalVariables?: Record<string, object>
 ): Promise<void> {
+  if (terminologyServerUrl) {
+    terminologyServerStore.getState().setUrl(terminologyServerUrl);
+  } else {
+    terminologyServerStore.getState().resetUrl();
+  }
+
   // QR is set to undefined here to prevent it from being initialised twice. This is defined like that for backward compatibility purposes.
   await questionnaireStore
     .getState()
@@ -87,8 +98,9 @@ export function getResponse(): QuestionnaireResponse {
 }
 
 /**
- * Remove all hidden answers from the filled QuestionnaireResponse.
+ * Remove all empty/hidden answers from the filled QuestionnaireResponse.
  * This takes into account enableWhens, enableWhenExpressions, items without item.answer, empty item.answer arrays and empty strings.
+ * This does not remove items that are hidden by the http://hl7.org/fhir/StructureDefinition/questionnaire-hidden extension.
  *
  * @author Sean Fong
  */

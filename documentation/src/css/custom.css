@@ -28,3 +28,9 @@
   --ifm-color-primary-lightest: #7eb2e6;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Custom CSS for code blocks */
+code, pre {
+  font-size: 0.875em; /* Adjust the font size as needed */
+}
+

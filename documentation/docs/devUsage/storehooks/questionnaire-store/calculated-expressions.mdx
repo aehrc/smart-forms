@@ -1,0 +1,22 @@
+---
+sidebar_position: 5
+---
+
+# CalculatedExpressions Usage
+
+The calculatedExpressions object is a `Record<linkId, CalculatedExpression>`.
+
+It contains the expression string itself, a `from` identifier to determine where the expression is coming from, and the result of the expression.
+
+```tsx live
+function App() {
+  const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="calculatedExpressions" data={calculatedExpressions} />
+    </>
+  );
+}
+```

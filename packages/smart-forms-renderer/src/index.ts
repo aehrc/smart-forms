@@ -52,8 +52,6 @@ export {
 // theme provider exports
 export { RendererThemeProvider } from './theme';
 
-export {
-  InitialiseFormWrapperForStorybook,
-  BuildFormButtonTesterWrapperForStorybook,
-  PrePopWrapperForStorybook
-} from './stories/StorybookWrappers';
+// wrapper exports - only for smartforms.csiro.au/standalone use
+export type { InitialiseFormWrapperProps } from './stories/storybookWrappers';
+export { InitialiseFormWrapperForStorybook } from './stories/storybookWrappers';

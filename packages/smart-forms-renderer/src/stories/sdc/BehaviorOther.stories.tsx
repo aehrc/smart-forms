@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import BuildFormWrapperForStorybook from '../StorybookWrappers/BuildFormWrapperForStorybook';
+import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qEnableBehaviorAll,
   qEnableBehaviorAny,
