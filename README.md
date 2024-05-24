@@ -3,7 +3,9 @@
 <h4>
 Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to easily integrate forms into your existing healthcare system.
 </h4>
-<h3><a href="https://smartforms.csiro.au">Show me the app ➡️</a></h3>
+<h4><a href="https://smartforms.csiro.au">Show me the app ➡️</a></h4>
+
+<h4><a href="https://smartforms.csiro.au/docs">Check out the documentation 📚</a></h4>
 
 ---
 Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web application currently ongoing development by [CSIRO's Australian e-Health Research Centre](https://aehrc.csiro.au/) as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
@@ -13,8 +15,7 @@ The web app is intended to demonstrate the use of [HL7 FHIR](https://hl7.org/fhi
 This project was bootstrapped with [Vite](https://vitejs.dev/).
 <br/>
 
-**If you are interested in using the rendering engine in your projects, a standalone package is published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).**
-
+**If you are interested in using the form renderer in your React app, a standalone package is published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).**
 
 ## Functionalities
 
@@ -46,7 +47,7 @@ NOTE: The patients featured in the screenshots are synthetic and do not represen
 2. Implemented operations from the [Structured Data Capture (SDC)](http://hl7.org/fhir/uv/sdc/) specification:
  - [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
  - [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
-3. A standalone component of the questionnaire-rendering engine published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).
+3. A standalone component of the questionnaire renderer published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).
 
 ## Conformance
 
@@ -134,7 +135,7 @@ We are also accepting contributions to make the product better! Please read [CON
 
 ## Discussions
 
-We encourage having discussions on [chat.fhir.org](chat.fhir.org).
+We encourage having discussions on [chat.fhir.org](https://chat.fhir.org/).
 
 Smart Forms-related discussions can be raised in the Smart Forms's stream: https://chat.fhir.org/#narrow/stream/425534-smart-forms.
 
