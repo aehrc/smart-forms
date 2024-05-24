@@ -1,12 +1,24 @@
-import React, { Suspense } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Props } from '@theme/NotFound/Content';
-import NotFoundWithTimeout from '@site/src/theme/NotFound/Content/NotFoundWithTimeout';
-import LoadingForNotFound from '@site/src/theme/NotFound/Content/LoadingForNotFound';
+import NotFoundPage from '@site/src/theme/NotFound/Content/NotFoundPage';
+import LoadingPage from '@site/src/theme/NotFound/Content/LoadingPage';
 
 export default function NotFoundContent({ className }: Props): JSX.Element {
-  return (
-    <Suspense fallback={<LoadingForNotFound className={className} />}>
-      <NotFoundWithTimeout className={className} />
-    </Suspense>
-  );
+  const [showLoadingPage, setShowLoadingPage] = useState(true);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowLoadingPage(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  if (showLoadingPage) {
+    return <LoadingPage className={className} />;
+  }
+
+  return <NotFoundPage className={className} />;
 }

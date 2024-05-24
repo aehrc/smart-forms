@@ -4,9 +4,7 @@ import Translate from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import type { Props } from '@theme/NotFound/Content';
 
-function NotFoundWithTimeout({ className }: Props) {
-  useTimeout(500);
-
+function NotFoundPage({ className }: Props) {
   return (
     <main className={clsx('container margin-vert--xl', className)}>
       <div className="row">
@@ -33,18 +31,4 @@ function NotFoundWithTimeout({ className }: Props) {
   );
 }
 
-let fullfilled = false;
-let promise: Promise<void> | null = null;
-
-const useTimeout = (ms: number) => {
-  if (!fullfilled) {
-    throw (promise ||= new Promise((res) => {
-      setTimeout(() => {
-        fullfilled = true;
-        res();
-      }, ms);
-    }));
-  }
-};
-
-export default NotFoundWithTimeout;
+export default NotFoundPage;
