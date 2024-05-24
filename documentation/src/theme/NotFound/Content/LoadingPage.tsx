@@ -4,7 +4,7 @@ import Translate from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import type { Props } from '@theme/NotFound/Content';
 
-function LoadingForNotFound({ className }: Props) {
+function LoadingPage({ className }: Props) {
   return (
     <main className={clsx('container margin-vert--xl', className)}>
       <div className="row">
@@ -20,4 +20,4 @@ function LoadingForNotFound({ className }: Props) {
   );
 }
 
-export default LoadingForNotFound;
+export default LoadingPage;
