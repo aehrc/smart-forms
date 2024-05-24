@@ -18,7 +18,7 @@ const config: Config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'aehrc', // Usually your GitHub org/user name.
   projectName: 'smart-forms', // Usually your repo name.\
-  trailingSlash: true,
+  trailingSlash: false,
 
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
