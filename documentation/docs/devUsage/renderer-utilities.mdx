@@ -8,32 +8,32 @@ The renderer provides a set of utilities to build and interact with the form.
 
 #### Functions
 
-- [buildForm](/smart-forms/docs/devUsage/renderer-utilities#buildform)
-- [destroyForm](/smart-forms/docs/devUsage/renderer-utilities#destroyform)
-- [getResponse](/smart-forms/docs/devUsage/renderer-utilities#getresponse)
-- [removeEmptyAnswersFromResponse](/smart-forms/docs/devUsage/renderer-utilities#removeemptyanswersfromresponse)
+- [buildForm](/docs/devUsage/renderer-utilities#buildform)
+- [destroyForm](/docs/devUsage/renderer-utilities#destroyform)
+- [getResponse](/docs/devUsage/renderer-utilities#getresponse)
+- [removeEmptyAnswersFromResponse](/docs/devUsage/renderer-utilities#removeemptyanswersfromresponse)
 
 #### Components
 
-- [BaseRenderer](/smart-forms/docs/devUsage/renderer-utilities#baserenderer)
-- [SmartFormsRenderer](/smart-forms/docs/devUsage/renderer-utilities#smartformsrenderer) (to be deprecated)
-- [RendererThemeProvider](/smart-forms/docs/devUsage/renderer-utilities#rendererthemeprovider)
+- [BaseRenderer](/docs/devUsage/renderer-utilities#baserenderer)
+- [SmartFormsRenderer](/docs/devUsage/renderer-utilities#smartformsrenderer) (to be deprecated)
+- [RendererThemeProvider](/docs/devUsage/renderer-utilities#rendererthemeprovider)
 
 #### Hooks
 
-- [useBuildForm](/smart-forms/docs/devUsage/renderer-utilities#usebuildform)
-- [useRendererQueryClient](/smart-forms/docs/devUsage/renderer-utilities#userendererqueryclient)
-- [**QuestionnaireStore** state management hooks](/smart-forms/docs/devUsage/storehooks/questionnaire-store)
-- [**QuestionnaireResponseStore** state management properties](/smart-forms/docs/devUsage/storehooks/questionnaire-response-store)
-- [**SmartConfigStore state** management properties](/smart-forms/docs/devUsage/storehooks/smart-config-store)
-- [**TerminologyServerStore** state management properties](/smart-forms/docs/devUsage/storehooks/terminology-server-store)
+- [useBuildForm](/docs/devUsage/renderer-utilities#usebuildform)
+- [useRendererQueryClient](/docs/devUsage/renderer-utilities#userendererqueryclient)
+- [**QuestionnaireStore** state management hooks](/docs/devUsage/storehooks/questionnaire-store)
+- [**QuestionnaireResponseStore** state management properties](/docs/devUsage/storehooks/questionnaire-response-store)
+- [**SmartConfigStore state** management properties](/docs/devUsage/storehooks/smart-config-store)
+- [**TerminologyServerStore** state management properties](/docs/devUsage/storehooks/terminology-server-store)
 
 :::note
 
 There are other utilities exposed by the renderer but are not intended for direct use, i.e internal UI components and controls which requires advanced setup.
 These are used in the Smart Forms app for it's re-population mechanism.
 
-If you are interested, refer to the [API Reference](/smart-forms/docs/api/smart-forms-renderer) section.
+If you are interested, refer to the [API Reference](/docs/api/smart-forms-renderer) section.
 
 :::
 
@@ -61,7 +61,7 @@ If no changes have been made to the form, the initial QuestionnaireResponse is r
 
 Use this if you are planning to use a button click to get the QuestionnaireResponse.
 
-If you want to get the latest QuestionnaireResponse every time the form is changed, use the [QuestionnaireResponseStore `updatableResponse`](/smart-forms/docs/devUsage/storehooks/questionnaire-response-store/updatable-response) hook.
+If you want to get the latest QuestionnaireResponse every time the form is changed, use the [QuestionnaireResponseStore `updatableResponse`](/docs/devUsage/storehooks/questionnaire-response-store/updatable-response) hook.
 
 ### RemoveEmptyAnswersFromResponse
 
@@ -83,7 +83,7 @@ The `BaseRenderer` component is the main component that renders the form.
 
 It renders the Questionnaire and QuestionnaireResponse defined in the QuestionnaireStore and QuestionnaireResponseStore state management stores respectively.
 
-[`buildForm()`](/smart-forms/docs/devUsage/renderer-utilities#buildform) used be used in your wrapping component or in an event handler to initialise the form before React renders the `BaseRenderer`.
+[`buildForm()`](/docs/devUsage/renderer-utilities#buildform) used be used in your wrapping component or in an event handler to initialise the form before React renders the `BaseRenderer`.
 
 ### SmartFormsRenderer
 
@@ -137,4 +137,4 @@ If you want to customise the renderer to use your own query client, refer to the
 
 ### State Management Hooks
 
-Refer to the [Renderer Store Hooks](/smart-forms/docs/devUsage/storehooks) section for more information on the state management hooks provided by the renderer.
+Refer to the [Renderer Store Hooks](/docs/devUsage/storehooks) section for more information on the state management hooks provided by the renderer.
