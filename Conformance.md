@@ -1,6 +1,8 @@
-# Smart Forms Questionnaire & SDC conformance
+# Questionnaire & SDC conformance
 
-Smart Forms is based on FHIR R4.
+Smart Forms is based on FHIR R4. The checklist below is a summary of the Questionnaire item types and SDC extensions supported by Smart Forms.
+
+For specific details of each item types/extensions, refer to the [docs](https://smartforms.csiro.au/docs).
 
 ## Supported item types 
 The list can be found here: http://hl7.org/fhir/R4/valueset-item-type.html
@@ -157,16 +159,7 @@ View the source here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [x] initialExpression
 - [x] calculatedExpression
 - [ ] cqf-calculatedValue
-- [ ] cqf-expression
-
-| Item types that support calculations <br/>(refer https://www.hl7.org/fhir/r4/codesystem-item-type.html) |
-|---------------------------------------------------------------------------------------------------------|
-| integer                                                                                                 |
-| decimal                                                                                                 |
-| string                                                                                                  |
-| text                                                                                                    |
-| boolean                                                                                                 |
-| choice (limited to the below) <br/>- radio item control <br/> - dropdown    item control                |
+- [x] cqf-expression
 
 #### [Other Control](http://hl7.org/fhir/uv/sdc/behavior.html#other-control)
 

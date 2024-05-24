@@ -2,8 +2,7 @@
 
 A Typescript reference implementation of the [$populate](http://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-populate.html) operation from the [HL7 FHIR Structured Data Capture Specification](http://hl7.org/fhir/uv/sdc/ImplementationGuide/hl7.fhir.uv.sdc) designed for [Form Population](http://hl7.org/fhir/uv/sdc/populate.html).
 
-## Usage
-Not written yet...
+Check out the [API Reference](https://smartforms.csiro.au/docs/api/sdc-populate) for technical specifications. 
 
 ### Note for Vite users (or if you facing CommonJS/ESM issues)
 If you are using Vite, you might need to add the following to your ```vite.config.ts``` file:
