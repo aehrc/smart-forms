@@ -11,11 +11,14 @@ Things to note:
 - Make your own initialiseFhirClient() call in a button click or other event handler. Alternatively, you can use the useInitialiseForm hook to initialise the form.
 - The initialised FHIRClient is only used for further FHIR calls. It does not provide pre-population capabilities.
 
+For basic examples of buildForm() wrappers, see:
+- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormWrapperForStorybook.tsx
+
 For button click usage examples of buildForm(), see:
-- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx
-- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonForStorybook.tsx
-- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopWrapperForStorybook.tsx
-- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopButtonForStorybook.tsx
+- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx
+- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonForStorybook.tsx
+- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/PrePopWrapperForStorybook.tsx
+- https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/PrePopButtonForStorybook.tsx
 
 ## Parameters
 

@@ -35,7 +35,7 @@ interface BuildFormButtonTesterWrapperForStorybookProps {
  * It was done as a two-step process for demo purposes.
  *
  * Use this pattern if you already have a pre-populated/pre-filled/draft response.
- * If you want to pre-pop on the fly, see https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/PrePopWrapperForStorybook.tsx instead
+ * If you want to pre-pop on the fly, see https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/PrePopWrapperForStorybook.tsx instead
  *
  * @author Sean Fong
  */

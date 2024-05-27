@@ -41,7 +41,7 @@ interface PrePopWrapperForStorybookProps {
  * This does in-app population and you have to define your own callback function to retrieve resources from your source server.
  *
  * Use this pattern if you do not have a pre-populated/pre-filled/draft response and want to pre-populate on the fly.
- * If you already have a questionnaireResponse, see https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/StorybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx instead
+ * If you already have a questionnaireResponse, see https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx instead
  *
  * @author Sean Fong
  */
