@@ -134,8 +134,8 @@ export async function constructResponse(
   // const profiles: string[] = [
   //   'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaireresponse'
   // ];
-  // questionnaireResponse.meta = questionnaireResponse.meta || {};
-  // questionnaireResponse.meta.profile = profiles;
+  questionnaireResponse.meta = questionnaireResponse.meta || {};
+  questionnaireResponse.meta.source = 'https://smartforms.csiro.au';
 
   return questionnaireResponse;
 }

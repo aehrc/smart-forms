@@ -94,6 +94,10 @@ export async function saveQuestionnaireResponse(
 
   questionnaireResponseToSave = {
     ...questionnaireResponseToSave,
+    meta: {
+      ...questionnaireResponseToSave.meta,
+      source: 'https://smartforms.csiro.au'
+    },
     text: {
       status: 'generated',
       div: qrToHTML(questionnaire, questionnaireResponseToSave)
