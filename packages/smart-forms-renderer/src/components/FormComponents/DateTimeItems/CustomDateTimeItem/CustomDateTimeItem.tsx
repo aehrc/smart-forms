@@ -130,7 +130,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     }
 
     const { timeIsValid, is24HourNotation } = validateTimeInput(newTimeInput, newPeriodInput);
-    if (!validateDateInput(dateInput) && !timeIsValid) {
+    if (!validateDateInput(dateInput) || !timeIsValid) {
       return;
     }
 
