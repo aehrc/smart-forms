@@ -31,6 +31,8 @@ import ResponsesPage from '../features/dashboard/components/DashboardPages/Respo
 import NotFound from '../features/notfound/NotFound.tsx';
 import ExistingResponsesPage from '../features/renderer/components/ExistingResponses/ExistingResponsesPage.tsx';
 import Standalone from '../features/standalone/components/Standalone.tsx';
+import SdcIdeLayout from '../features/sdcide/SdcIdeLayout.tsx';
+import SdcIde from '../features/sdcide/SdcIde.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -64,6 +66,11 @@ export default function Router() {
       path: '/playground',
       element: <PlaygroundLayout />,
       children: [{ path: '', element: <Playground /> }]
+    },
+    {
+      path: '/sdc-ide',
+      element: <SdcIdeLayout />,
+      children: [{ path: '', element: <SdcIde /> }]
     },
     {
       path: '/standalone',

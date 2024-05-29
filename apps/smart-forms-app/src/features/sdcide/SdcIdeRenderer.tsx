@@ -1,6 +1,6 @@
 /*
  * Copyright 2024 Commonwealth Scientific and Industrial Research
- * Organisation (CSIRO) ABN 41 687 119 230.
+ * Organisation (CSIRO) ABN 41 687 10.59 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,15 @@
  * limitations under the License.
  */
 
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
+import { BaseRenderer } from '@aehrc/smart-forms-renderer';
 
-export const QGroupContainerBox = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'cardElevation' && prop !== 'isRepeated'
-})<{ cardElevation: number; isRepeated: boolean }>(({ cardElevation, isRepeated }) => ({
-  marginTop: cardElevation === 1 || isRepeated ? 0 : 18,
-  marginBottom: cardElevation === 1 || isRepeated ? 0 : 18
-}));
+function SdcIdeRenderer() {
+  return (
+    <Box p={2}>
+      <BaseRenderer />
+    </Box>
+  );
+}
 
-export const FullWidthFormComponentBox = styled(Box)(() => ({
-  marginBottom: 14
-}));
-
-export const FormTitleWrapper = styled(Box)(() => ({
-  marginTop: 12
-}));
+export default SdcIdeRenderer;
