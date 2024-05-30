@@ -37,11 +37,12 @@ import { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 
 function Playground() {
-  const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
-  const [practitioner, setPractitioner] = useLocalStorage<Practitioner | null>(
-    'playgroundLaunchPractitioner',
-    null
+  const [sourceFhirEndpoint, setSourceFhirEndpoint] = useLocalStorage<string | null>(
+    'playgroundSourceFhirEndpoint',
+    'https://proxy.smartforms.io/v/r4/fhir'
   );
+  const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
+  const [user, setUser] = useLocalStorage<Practitioner | null>('playgroundLaunchUser', null);
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
@@ -131,19 +132,19 @@ function Playground() {
     <>
       <PlaygroundHeader
         patient={patient}
-        practitioner={practitioner}
+        user={user}
         onPatientChange={(patient) => {
           setPatient(patient);
         }}
-        onPractitionerChange={(practitioner) => {
-          setPractitioner(practitioner);
+        onUserChange={(user) => {
+          setUser(user);
         }}
       />
       <DndProvider backend={HTML5Backend} context={window}>
         <Allotment defaultSizes={[40, 60]}>
           <Box sx={{ height: '100%', overflow: 'auto' }}>
             {buildingState === 'built' ? (
-              <PlaygroundRenderer />
+              <PlaygroundRenderer endpointUrl={sourceFhirEndpoint} patient={patient} user={user} />
             ) : buildingState === 'building' ? (
               <PopulationProgressSpinner message={'Building form'} />
             ) : (

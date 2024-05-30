@@ -27,18 +27,16 @@ export interface Props {
   open: boolean;
   closeDialog: () => unknown;
   patient: Patient | null;
-  practitioner: Practitioner | null;
+  user: Practitioner | null;
   onPatientChange: (patient: Patient | null) => unknown;
-  onPractitionerChange: (practitioner: Practitioner | null) => unknown;
+  onUserChange: (practitioner: Practitioner | null) => unknown;
 }
 
 function PlaygroundSettingsDialog(props: Props) {
-  const { open, closeDialog, patient, practitioner, onPatientChange, onPractitionerChange } = props;
+  const { open, closeDialog, patient, user, onPatientChange, onUserChange } = props;
 
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(patient);
-  const [selectedPractitioner, setSelectedPractitioner] = useState<Practitioner | null>(
-    practitioner
-  );
+  const [selectedUser, setSelectedUser] = useState<Practitioner | null>(user);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -47,12 +45,12 @@ function PlaygroundSettingsDialog(props: Props) {
   function handleCancel() {
     closeDialog();
     setSelectedPatient(patient);
-    setSelectedPractitioner(practitioner);
+    setSelectedUser(user);
   }
 
   function handleSave() {
     onPatientChange(selectedPatient);
-    onPractitionerChange(selectedPractitioner);
+    onUserChange(selectedUser);
 
     enqueueSnackbar('Changes made successfully', {
       variant: 'success',
@@ -63,8 +61,7 @@ function PlaygroundSettingsDialog(props: Props) {
   }
 
   // Patient or Practitioner has changed
-  const changesMade =
-    selectedPatient?.id !== patient?.id || selectedPractitioner?.id !== practitioner?.id;
+  const changesMade = selectedPatient?.id !== patient?.id || selectedUser?.id !== user?.id;
 
   return (
     <Dialog open={open}>
@@ -78,8 +75,8 @@ function PlaygroundSettingsDialog(props: Props) {
         <Box my={2} />
         <PlaygroundPractitionerPicker
           endpointUrl={endpointUrl}
-          selectedPractitioner={selectedPractitioner}
-          onSelectPractitioner={(practitioner) => setSelectedPractitioner(practitioner)}
+          selectedPractitioner={selectedUser}
+          onSelectPractitioner={(practitioner) => setSelectedUser(practitioner)}
         />
       </DialogContent>
       <DialogActions>

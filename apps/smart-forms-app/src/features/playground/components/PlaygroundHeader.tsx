@@ -30,13 +30,13 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 interface PlaygroundHeaderProps {
   patient: Patient | null;
-  practitioner: Practitioner | null;
+  user: Practitioner | null;
   onPatientChange: (patient: Patient | null) => void;
-  onPractitionerChange: (practitioner: Practitioner | null) => void;
+  onUserChange: (practitioner: Practitioner | null) => void;
 }
 
 const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderProps) {
-  const { patient, practitioner, onPatientChange, onPractitionerChange } = props;
+  const { patient, user, onPatientChange, onUserChange } = props;
 
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
@@ -93,9 +93,9 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
             setSettingsDialogOpen(false);
           }}
           patient={patient}
-          practitioner={practitioner}
+          user={user}
           onPatientChange={onPatientChange}
-          onPractitionerChange={onPractitionerChange}
+          onUserChange={onUserChange}
         />
       </StyledToolbar>
     </StyledRoot>

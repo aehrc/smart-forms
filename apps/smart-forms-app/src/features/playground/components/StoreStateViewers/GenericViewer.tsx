@@ -50,7 +50,7 @@ function GenericViewer(props: GenericViewerProps) {
       </Stack>
       <Box display="flex" columnGap={1}></Box>
 
-      <Box p={1}>
+      <Box p={1} pb={100}>
         <Typography color="text.secondary" pb={1}>
           {showJsonTree
             ? 'Use JSON Tree for selective debugging. For more detailed debugging, copy tree nodes to a text editor.'
