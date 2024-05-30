@@ -24,8 +24,7 @@ import 'allotment/dist/style.css';
 import { useState } from 'react';
 import { useSnackbar } from 'notistack';
 import PlaygroundRenderer from './PlaygroundRenderer.tsx';
-import { Box, Stack } from '@mui/material';
-import FileCollector from './FileCollector.tsx';
+import { Box } from '@mui/material';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
@@ -33,8 +32,16 @@ import { useLocalStorage } from 'usehooks-ts';
 import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
 import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import PlaygroundPicker from './PlaygroundPicker.tsx';
+import { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import PlaygroundHeader from './PlaygroundHeader.tsx';
 
 function Playground() {
+  const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
+  const [practitioner, setPractitioner] = useLocalStorage<Practitioner | null>(
+    'playgroundLaunchPractitioner',
+    null
+  );
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
@@ -71,6 +78,13 @@ function Playground() {
       });
       setBuildingState('idle');
     }
+  }
+
+  async function handleBuildQuestionnaireFromResource(questionnaire: Questionnaire) {
+    setBuildingState('building');
+    setJsonString(JSON.stringify(questionnaire, null, 2));
+    await buildForm(questionnaire);
+    setBuildingState('built');
   }
 
   function handleBuildQuestionnaireFromFile(jsonFile: File) {
@@ -114,31 +128,42 @@ function Playground() {
   }
 
   return (
-    <DndProvider backend={HTML5Backend} context={window}>
-      <Allotment defaultSizes={[40, 60]}>
-        <Box sx={{ height: '100%', overflow: 'auto' }}>
-          {buildingState === 'built' ? (
-            <PlaygroundRenderer />
-          ) : buildingState === 'building' ? (
-            <PopulationProgressSpinner message={'Building form'} />
-          ) : (
-            <Box display="flex" justifyContent="center">
-              <Stack gap={3} sx={{ my: 5 }}>
-                <FileCollector onBuild={handleBuildQuestionnaireFromFile} />
-              </Stack>
-            </Box>
-          )}
-        </Box>
-        <JsonEditor
-          jsonString={jsonString}
-          onJsonStringChange={(jsonString: string) => setJsonString(jsonString)}
-          buildingState={buildingState}
-          onBuildForm={handleBuildQuestionnaireFromString}
-          onDestroyForm={handleDestroyForm}
-        />
-      </Allotment>
-      <RendererDebugFooter />
-    </DndProvider>
+    <>
+      <PlaygroundHeader
+        patient={patient}
+        practitioner={practitioner}
+        onPatientChange={(patient) => {
+          setPatient(patient);
+        }}
+        onPractitionerChange={(practitioner) => {
+          setPractitioner(practitioner);
+        }}
+      />
+      <DndProvider backend={HTML5Backend} context={window}>
+        <Allotment defaultSizes={[40, 60]}>
+          <Box sx={{ height: '100%', overflow: 'auto' }}>
+            {buildingState === 'built' ? (
+              <PlaygroundRenderer />
+            ) : buildingState === 'building' ? (
+              <PopulationProgressSpinner message={'Building form'} />
+            ) : (
+              <PlaygroundPicker
+                onBuildQuestionnaireFromFile={handleBuildQuestionnaireFromFile}
+                onBuildQuestionnaireFromResource={handleBuildQuestionnaireFromResource}
+              />
+            )}
+          </Box>
+          <JsonEditor
+            jsonString={jsonString}
+            onJsonStringChange={(jsonString: string) => setJsonString(jsonString)}
+            buildingState={buildingState}
+            onBuildForm={handleBuildQuestionnaireFromString}
+            onDestroyForm={handleDestroyForm}
+          />
+        </Allotment>
+        <RendererDebugFooter />
+      </DndProvider>
+    </>
   );
 }
 
