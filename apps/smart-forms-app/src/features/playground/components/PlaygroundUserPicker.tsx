@@ -19,32 +19,37 @@ import { Box, CircularProgress, Fade, Grid, Stack, Typography } from '@mui/mater
 import type { Practitioner } from 'fhir/r4';
 import { StyledAlert } from '../../../components/Nav/Nav.styles.ts';
 import MenuItem from '@mui/material/MenuItem';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import Select from '@mui/material/Select';
 import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import useFetchPractitioners from '../hooks/useFetchPractitioners.ts';
+import Button from '@mui/material/Button';
 
 interface PlaygroundPractitionerPickerProps {
-  endpointUrl: string;
-  selectedPractitioner: Practitioner | null;
-  onSelectPractitioner: (practitioner: Practitioner | null) => void;
+  fhirServerUrl: string;
+  selectedUser: Practitioner | null;
+  onSelectUser: (user: Practitioner | null) => void;
 }
 
-function PlaygroundPractitionerPicker(props: PlaygroundPractitionerPickerProps) {
-  const { endpointUrl, selectedPractitioner, onSelectPractitioner } = props;
+function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
+  const { fhirServerUrl, selectedUser, onSelectUser } = props;
 
-  const { practitioners, isInitialLoading } = useFetchPractitioners(endpointUrl);
+  const { practitioners, isInitialLoading } = useFetchPractitioners(fhirServerUrl);
 
-  const selectedPractitionerId = useMemo(
-    () => practitioners.find((p) => p.id === selectedPractitioner?.id)?.id,
-    [selectedPractitioner?.id, practitioners]
+  const selectedUserId = useMemo(
+    () => practitioners.find((p) => p.id === selectedUser?.id)?.id,
+    [selectedUser?.id, practitioners]
   );
 
-  function handleSelectPatient(newSelectedPatientId: string) {
-    const selectedPractitioner = practitioners.find(
+  function handleSelectUser(newSelectedPatientId: string) {
+    const selectedUser = practitioners.find(
       (practitioner) => practitioner.id === newSelectedPatientId
     );
-    onSelectPractitioner(selectedPractitioner ?? null);
+    onSelectUser(selectedUser ?? null);
+  }
+
+  function handleClear() {
+    onSelectUser(null);
   }
 
   if (isInitialLoading) {
@@ -78,39 +83,41 @@ function PlaygroundPractitionerPicker(props: PlaygroundPractitionerPickerProps) 
         Selected User (Practitioner)
       </Typography>
       <Select
-        value={selectedPractitionerId ?? ''}
+        value={selectedUserId ?? ''}
         size="small"
         fullWidth={true}
-        onChange={(e) => handleSelectPatient(e.target.value)}>
+        onChange={(e) => handleSelectUser(e.target.value)}>
         {practitioners.map((patient) => (
           <MenuItem key={patient.id} value={`${patient.id}`}>
             {patient.name ? constructName(patient.name) : `Patient ${patient.id}`}
           </MenuItem>
         ))}
       </Select>
-      <Box pt={1} px={0.5}>
-        {selectedPractitioner ? (
+      <Box display="flex" pt={1} px={0.5} alignItems="center">
+        {selectedUser ? (
           <>
             <Grid container>
               <Grid item xs={2}>
                 ID:
               </Grid>
               <Grid item xs={10}>
-                <Typography mb={1}>{selectedPractitioner.id}</Typography>
+                <Typography mb={1}>{selectedUser.id}</Typography>
               </Grid>
 
               <Grid item xs={2}>
                 Name:
               </Grid>
               <Grid item xs={10}>
-                <Typography mb={1}>{constructName(selectedPractitioner.name)}</Typography>
+                <Typography mb={1}>{constructName(selectedUser.name)}</Typography>
               </Grid>
             </Grid>
+
+            <Button onClick={handleClear}>Clear</Button>
           </>
         ) : (
-          <StyledAlert color="info">
+          <StyledAlert color="info" width="100%">
             <Typography variant="body2" sx={{ mt: '0.5' }}>
-              No practitioner selected
+              No user selected
             </Typography>
           </StyledAlert>
         )}
@@ -119,4 +126,4 @@ function PlaygroundPractitionerPicker(props: PlaygroundPractitionerPickerProps) 
   );
 }
 
-export default PlaygroundPractitionerPicker;
+export default PlaygroundUserPicker;

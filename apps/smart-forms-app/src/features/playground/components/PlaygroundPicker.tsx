@@ -18,19 +18,36 @@
 // @ts-ignore
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import FileCollector from './FileCollector.tsx';
-import { Questionnaire } from 'fhir/r4';
+import { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundQuestionnairePicker from './PlaygroundQuestionnairePicker.tsx';
+import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 
 interface PlaygroundPickerProps {
+  patient: Patient | null;
+  user: Practitioner | null;
   onBuildQuestionnaireFromFile: (file: File) => void;
   onBuildQuestionnaireFromResource: (questionnaire: Questionnaire) => void;
 }
 
 function PlaygroundPicker(props: PlaygroundPickerProps) {
-  const { onBuildQuestionnaireFromFile, onBuildQuestionnaireFromResource } = props;
+  const { patient, user, onBuildQuestionnaireFromFile, onBuildQuestionnaireFromResource } = props;
+
+  const { patientName, userName } = useLaunchContextNames(patient, user);
 
   return (
     <>
+      <Stack direction="row" justifyContent="end" gap={2} m={1}>
+        {patientName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            Patient: {patientName}
+          </Typography>
+        ) : null}
+        {patientName && userName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            User: {userName}
+          </Typography>
+        ) : null}
+      </Stack>
       <Stack justifyContent="center" alignItems="center">
         <Stack gap={2} m={2}>
           <Stack alignItems="center">

@@ -29,14 +29,17 @@ import PlaygroundSettingsDialog from './PlaygroundSettingsDialog.tsx';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 interface PlaygroundHeaderProps {
+  fhirServerUrl: string;
   patient: Patient | null;
   user: Practitioner | null;
+  onFhirServerUrlChange: (url: string) => void;
   onPatientChange: (patient: Patient | null) => void;
   onUserChange: (practitioner: Practitioner | null) => void;
 }
 
 const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderProps) {
-  const { patient, user, onPatientChange, onUserChange } = props;
+  const { fhirServerUrl, patient, user, onFhirServerUrlChange, onPatientChange, onUserChange } =
+    props;
 
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
@@ -92,8 +95,10 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
           closeDialog={() => {
             setSettingsDialogOpen(false);
           }}
+          fhirServerUrl={fhirServerUrl}
           patient={patient}
           user={user}
+          onFhirServerUrlChange={onFhirServerUrlChange}
           onPatientChange={onPatientChange}
           onUserChange={onUserChange}
         />

@@ -36,10 +36,12 @@ import PlaygroundPicker from './PlaygroundPicker.tsx';
 import { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 
+const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
+
 function Playground() {
-  const [sourceFhirEndpoint, setSourceFhirEndpoint] = useLocalStorage<string | null>(
-    'playgroundSourceFhirEndpoint',
-    'https://proxy.smartforms.io/v/r4/fhir'
+  const [fhirServerUrl, setFhirServerUrl] = useLocalStorage<string>(
+    'playgroundSourceFhirServerUrl',
+    defaultFhirServerUrl
   );
   const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
   const [user, setUser] = useLocalStorage<Practitioner | null>('playgroundLaunchUser', null);
@@ -131,8 +133,12 @@ function Playground() {
   return (
     <>
       <PlaygroundHeader
+        fhirServerUrl={fhirServerUrl}
         patient={patient}
         user={user}
+        onFhirServerUrlChange={(url) => {
+          setFhirServerUrl(url);
+        }}
         onPatientChange={(patient) => {
           setPatient(patient);
         }}
@@ -144,11 +150,13 @@ function Playground() {
         <Allotment defaultSizes={[40, 60]}>
           <Box sx={{ height: '100%', overflow: 'auto' }}>
             {buildingState === 'built' ? (
-              <PlaygroundRenderer endpointUrl={sourceFhirEndpoint} patient={patient} user={user} />
+              <PlaygroundRenderer endpointUrl={fhirServerUrl} patient={patient} user={user} />
             ) : buildingState === 'building' ? (
               <PopulationProgressSpinner message={'Building form'} />
             ) : (
               <PlaygroundPicker
+                patient={patient}
+                user={user}
                 onBuildQuestionnaireFromFile={handleBuildQuestionnaireFromFile}
                 onBuildQuestionnaireFromResource={handleBuildQuestionnaireFromResource}
               />

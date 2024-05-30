@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { BaseRenderer, buildForm, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
 import { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
-import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
+import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;
@@ -37,15 +37,9 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
   const [isPopulating, setIsPopulating] = useState(false);
 
-  const patientName = useMemo(() => {
-    return constructName(patient?.name);
-  }, [patient]);
+  const { patientName, userName } = useLaunchContextNames(patient, user);
 
-  const userName = useMemo(() => {
-    return constructName(user?.name);
-  }, [user]);
-
-  const prePopEnabled = endpointUrl !== null && patient !== null && user !== null;
+  const prePopEnabled = endpointUrl !== null && patient !== null;
 
   function handlePrepopulate() {
     if (!prePopEnabled) {
@@ -81,16 +75,20 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   return (
     <>
       {prePopEnabled ? (
-        <Box display="flex" alignItems="center" columnGap={3} mx={1}>
+        <Box display="flex" alignItems="center" columnGap={2} mx={1}>
           <PrePopButtonForPlayground isPopulating={isPopulating} onPopulate={handlePrepopulate} />
           <Box flexGrow={1} />
 
-          <Typography variant="subtitle2" color="text.secondary">
-            Patient: {patientName}
-          </Typography>
-          <Typography variant="subtitle2" color="text.secondary">
-            User: {userName}
-          </Typography>
+          {patientName ? (
+            <Typography variant="subtitle2" color="text.secondary">
+              Patient: {patientName}
+            </Typography>
+          ) : null}
+          {userName ? (
+            <Typography variant="subtitle2" color="text.secondary">
+              User: {userName}
+            </Typography>
+          ) : null}
         </Box>
       ) : null}
       {isPopulating ? null : <BaseRenderer />}

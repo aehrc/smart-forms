@@ -19,64 +19,104 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '
 import PlaygroundPatientPicker from './PlaygroundPatientPicker.tsx';
 import { Patient, Practitioner } from 'fhir/r4';
 import { useState } from 'react';
-import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
-import { useSnackbar } from 'notistack';
-import PlaygroundPractitionerPicker from './PlaygroundPractitionerPicker.tsx';
+import PlaygroundUserPicker from './PlaygroundUserPicker.tsx';
+import PlaygroundFhirServerUrlInput from './PlaygroundSourceFhirServerInput.tsx';
 
 export interface Props {
   open: boolean;
   closeDialog: () => unknown;
+  fhirServerUrl: string;
   patient: Patient | null;
   user: Practitioner | null;
+  onFhirServerUrlChange: (url: string) => unknown;
   onPatientChange: (patient: Patient | null) => unknown;
   onUserChange: (practitioner: Practitioner | null) => unknown;
 }
 
 function PlaygroundSettingsDialog(props: Props) {
-  const { open, closeDialog, patient, user, onPatientChange, onUserChange } = props;
+  const {
+    open,
+    closeDialog,
+    fhirServerUrl,
+    patient,
+    user,
+    onFhirServerUrlChange,
+    onPatientChange,
+    onUserChange
+  } = props;
+
+  const [fhirServerUrlInput, setFhirServerUrlInput] = useState(fhirServerUrl);
+  const [fhirServerUrlInputValid, setFhirServerUrlInputValid] = useState<boolean | 'unchecked'>(
+    true
+  );
 
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(patient);
   const [selectedUser, setSelectedUser] = useState<Practitioner | null>(user);
 
-  const { enqueueSnackbar } = useSnackbar();
-
-  const endpointUrl = 'https://proxy.smartforms.io/v/r4/fhir';
   // Event handlers
   function handleCancel() {
     closeDialog();
+    setFhirServerUrlInput(fhirServerUrl);
     setSelectedPatient(patient);
     setSelectedUser(user);
   }
 
   function handleSave() {
+    // Set FHIR Server URL to the input value if it is valid, otherwise use the current value
+    onFhirServerUrlChange(fhirServerUrlInputValid === true ? fhirServerUrlInput : fhirServerUrl);
+
     onPatientChange(selectedPatient);
     onUserChange(selectedUser);
 
-    enqueueSnackbar('Changes made successfully', {
-      variant: 'success',
-      preventDuplicate: true,
-      action: <CloseSnackbar />
-    });
     closeDialog();
   }
 
-  // Patient or Practitioner has changed
-  const changesMade = selectedPatient?.id !== patient?.id || selectedUser?.id !== user?.id;
+  function handleSetFhirServerUrl() {
+    onFhirServerUrlChange(fhirServerUrlInput);
+    setSelectedPatient(null);
+    setSelectedUser(null);
+  }
+
+  function handleValidateFhirServerUrl(isValid: boolean | 'unchecked') {
+    setFhirServerUrlInputValid(isValid);
+  }
+
+  // SourceFhirServerEndpoint, Patient or Practitioner has changed
+  const changesMade =
+    fhirServerUrlInput !== fhirServerUrl ||
+    selectedPatient?.id !== patient?.id ||
+    selectedUser?.id !== user?.id;
+
+  const setFhirServerButtonIsEnabled =
+    fhirServerUrlInput !== fhirServerUrl && fhirServerUrlInputValid === true;
 
   return (
     <Dialog open={open}>
       <DialogTitle variant="h5">Launch Context Settings</DialogTitle>
       <DialogContent>
+        <PlaygroundFhirServerUrlInput
+          fhirServerUrlInput={fhirServerUrlInput}
+          fhirServerUrlInputValid={fhirServerUrlInputValid}
+          onFhirServerUrlInputChange={(changedInput) => setFhirServerUrlInput(changedInput)}
+          onValidateFhirServerUrlInput={handleValidateFhirServerUrl}
+        />
+        <Box display="flex" justifyContent="right" mt={0.5}>
+          <Button disabled={!setFhirServerButtonIsEnabled} onClick={handleSetFhirServerUrl}>
+            Save URL as FHIR Server
+          </Button>
+        </Box>
+
+        <Box my={4} />
         <PlaygroundPatientPicker
-          endpointUrl={endpointUrl}
+          fhirServerUrl={fhirServerUrl}
           selectedPatient={selectedPatient}
           onSelectPatient={(patient) => setSelectedPatient(patient)}
         />
-        <Box my={2} />
-        <PlaygroundPractitionerPicker
-          endpointUrl={endpointUrl}
-          selectedPractitioner={selectedUser}
-          onSelectPractitioner={(practitioner) => setSelectedUser(practitioner)}
+        <Box my={4} />
+        <PlaygroundUserPicker
+          fhirServerUrl={fhirServerUrl}
+          selectedUser={selectedUser}
+          onSelectUser={(practitioner) => setSelectedUser(practitioner)}
         />
       </DialogContent>
       <DialogActions>

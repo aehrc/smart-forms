@@ -23,17 +23,18 @@ import MenuItem from '@mui/material/MenuItem';
 import { useMemo } from 'react';
 import Select from '@mui/material/Select';
 import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
+import Button from '@mui/material/Button';
 
 interface PlaygroundPatientPickerProps {
-  endpointUrl: string;
+  fhirServerUrl: string;
   selectedPatient: Patient | null;
   onSelectPatient: (patient: Patient | null) => void;
 }
 
 function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
-  const { endpointUrl, selectedPatient, onSelectPatient } = props;
+  const { fhirServerUrl, selectedPatient, onSelectPatient } = props;
 
-  const { patients, isInitialLoading } = useFetchPatients(endpointUrl);
+  const { patients, isInitialLoading } = useFetchPatients(fhirServerUrl);
 
   const selectedPatientId = useMemo(
     () => patients.find((p) => p.id === selectedPatient?.id)?.id,
@@ -43,6 +44,10 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
   function handleSelectPatient(newSelectedPatientId: string) {
     const selectedPatient = patients.find((patient) => patient.id === newSelectedPatientId);
     onSelectPatient(selectedPatient ?? null);
+  }
+
+  function handleClear() {
+    onSelectPatient(null);
   }
 
   if (isInitialLoading) {
@@ -86,7 +91,7 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
           </MenuItem>
         ))}
       </Select>
-      <Box pt={1} px={0.5}>
+      <Box display="flex" pt={1} px={0.5} alignItems="center">
         {selectedPatient ? (
           <>
             <Grid container>
@@ -118,9 +123,11 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
                 <Typography mb={1}>{selectedPatient.birthDate}</Typography>
               </Grid>
             </Grid>
+
+            <Button onClick={handleClear}>Clear</Button>
           </>
         ) : (
-          <StyledAlert color="info">
+          <StyledAlert color="info" width="100%">
             <Typography variant="body2" sx={{ mt: '0.5' }}>
               No patient selected
             </Typography>
