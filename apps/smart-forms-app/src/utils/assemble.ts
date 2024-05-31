@@ -20,8 +20,7 @@ import { isInputParameters } from '@aehrc/sdc-assemble';
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../api/headers.ts';
 import { getFormsServerAssembledBundlePromise } from '../features/dashboard/utils/dashboard.ts';
-
-const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
+import { FORMS_SERVER_URL } from '../globals.ts';
 
 export function assemblyIsRequired(questionnaire: Questionnaire): boolean {
   return !!questionnaire.extension?.find(
@@ -49,7 +48,7 @@ export async function assembleQuestionnaire(
 ): Promise<Questionnaire | OperationOutcome> {
   const parameters = defineAssembleParameters(questionnaire);
   if (isInputParameters(parameters)) {
-    const outputAssembleParams = await FHIR.client(endpointUrl).request({
+    const outputAssembleParams = await FHIR.client(FORMS_SERVER_URL).request({
       url: 'Questionnaire/$assemble',
       method: 'POST',
       body: JSON.stringify(parameters),
@@ -67,7 +66,7 @@ export async function assembleQuestionnaire(
 }
 
 export function updateAssembledQuestionnaire(questionnaire: Questionnaire) {
-  return FHIR.client(endpointUrl).request({
+  return FHIR.client(FORMS_SERVER_URL).request({
     url: `Questionnaire/${questionnaire.id}`,
     method: 'PUT',
     body: JSON.stringify(questionnaire),

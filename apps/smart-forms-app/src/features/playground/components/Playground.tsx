@@ -32,6 +32,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
 import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
 import { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
@@ -62,7 +63,7 @@ function Playground() {
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
-        await buildForm(parsedQuestionnaire);
+        await buildForm(parsedQuestionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
         setBuildingState('built');
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
@@ -86,7 +87,7 @@ function Playground() {
   async function handleBuildQuestionnaireFromResource(questionnaire: Questionnaire) {
     setBuildingState('building');
     setJsonString(JSON.stringify(questionnaire, null, 2));
-    await buildForm(questionnaire);
+    await buildForm(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
     setBuildingState('built');
   }
 
@@ -109,7 +110,7 @@ function Playground() {
         const jsonString = event.target?.result;
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
-          await buildForm(JSON.parse(jsonString));
+          await buildForm(JSON.parse(jsonString), undefined, undefined, TERMINOLOGY_SERVER_URL);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {

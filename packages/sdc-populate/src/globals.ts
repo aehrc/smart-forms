@@ -14,7 +14,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const FORMS_SERVER_ENDPOINT =
-  import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
 
-export const IS_IN_APP_POPULATE = import.meta.env.VITE_IN_APP_POPULATE ?? true;
+export const TERMINOLOGY_SERVER_URL = 'https://tx.ontoserver.csiro.au/fhir';

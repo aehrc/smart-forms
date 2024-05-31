@@ -23,6 +23,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import { buildForm } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
+import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
 
 function CreateNewResponseButton() {
   const { smartClient, launchQuestionnaire } = useSmartClient();
@@ -45,7 +46,7 @@ function CreateNewResponseButton() {
       postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
 
-    await buildForm(questionnaire);
+    await buildForm(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
 
     navigate('/renderer');
     setIsLoading(false);

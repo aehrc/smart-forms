@@ -31,6 +31,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { buildForm } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
+import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
 
 interface Props {
   selectedResponse: QuestionnaireResponse | null;
@@ -112,7 +113,7 @@ function OpenResponseButton(props: Props) {
       postQuestionnaireToSMARTHealthIT(smartClient, referencedQuestionnaire);
     }
 
-    await buildForm(referencedQuestionnaire, selectedResponse);
+    await buildForm(referencedQuestionnaire, selectedResponse, undefined, TERMINOLOGY_SERVER_URL);
 
     navigate('/viewer');
     setIsLoading(false);

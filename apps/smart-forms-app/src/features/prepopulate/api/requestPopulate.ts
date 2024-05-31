@@ -15,26 +15,36 @@
  * limitations under the License.
  */
 
-import { IS_IN_APP_POPULATE } from '../../../utils/env.ts';
 import type { InputParameters, OutputParameters } from '@aehrc/sdc-populate';
 import { isOutputParameters, populate } from '@aehrc/sdc-populate';
 import type { RequestConfig } from '../utils/callback.ts';
-import { fetchResourceCallback } from '../utils/callback.ts';
+import { fetchResourceCallback, terminologyCallback } from '../utils/callback.ts';
 import { HEADERS } from '../../../api/headers.ts';
 import type Client from 'fhirclient/lib/Client';
 import type { OperationOutcome } from 'fhir/r4';
+import { IN_APP_POPULATE, TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 
 export async function requestPopulate(
   fhirClient: Client,
   inputParameters: InputParameters
 ): Promise<OutputParameters | OperationOutcome> {
-  const requestConfig: RequestConfig = {
+  const fetchResourceRequestConfig: RequestConfig = {
     clientEndpoint: fhirClient.state.serverUrl,
     authToken: fhirClient.state.tokenResponse!.access_token!
   };
 
-  const populatePromise: Promise<any> = IS_IN_APP_POPULATE
-    ? populate(inputParameters, fetchResourceCallback, requestConfig)
+  const terminologyRequestConfig: RequestConfig = {
+    clientEndpoint: TERMINOLOGY_SERVER_URL
+  };
+
+  const populatePromise: Promise<any> = IN_APP_POPULATE
+    ? populate(
+        inputParameters,
+        fetchResourceCallback,
+        fetchResourceRequestConfig,
+        terminologyCallback,
+        terminologyRequestConfig
+      )
     : fhirClient.request({
         url: 'Questionnaire/$populate',
         method: 'POST',
@@ -42,7 +52,7 @@ export async function requestPopulate(
         headers: {
           ...HEADERS,
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${requestConfig.authToken}`
+          Authorization: `Bearer ${fetchResourceRequestConfig.authToken}`
         }
       });
 

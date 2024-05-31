@@ -41,6 +41,7 @@ import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueset';
+import type { FetchResourceCallback } from '../interfaces';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -49,6 +50,8 @@ import { getValueSetPromise } from '../api/expandValueset';
  * @param subject - A subject reference to form the subject within the response
  * @param populationExpressions - expressions used for pre-population i.e. initialExpressions, itemPopulationContexts
  * @param encounter - An optional encounter resource to form the questionnaireResponse.encounter property
+ * @param terminologyCallback - An optional callback function to fetch terminology resources
+ * @param terminologyRequestConfig - An optional configuration object to pass to the terminologyCallback
  * @returns A populated questionnaire response wrapped within a Promise
  *
  * @author Sean Fong
@@ -57,7 +60,9 @@ export async function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
   populationExpressions: PopulationExpressions,
-  encounter?: Encounter
+  encounter?: Encounter,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ): Promise<QuestionnaireResponse> {
   const questionnaireResponse: QuestionnaireResponse = {
     resourceType: 'QuestionnaireResponse',
@@ -89,7 +94,9 @@ export async function constructResponse(
       populationExpressions,
       valueSetPromises,
       answerOptions,
-      containedValueSets
+      containedValueSets,
+      terminologyCallback,
+      terminologyRequestConfig
     });
 
     if (Array.isArray(newTopLevelQRItem)) {
@@ -148,6 +155,8 @@ interface ConstructResponseItemRecursiveParams {
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
+  terminologyCallback?: FetchResourceCallback | undefined;
+  terminologyRequestConfig?: any;
 }
 
 /**
@@ -165,7 +174,9 @@ function constructResponseItemRecursive(
     populationExpressions,
     valueSetPromises,
     answerOptions,
-    containedValueSets
+    containedValueSets,
+    terminologyCallback,
+    terminologyRequestConfig
   } = params;
 
   const items = qItem.item;
@@ -183,7 +194,9 @@ function constructResponseItemRecursive(
         populationExpressions,
         valueSetPromises,
         answerOptions,
-        containedValueSets
+        containedValueSets,
+        terminologyCallback,
+        terminologyRequestConfig
       );
     }
 
@@ -196,7 +209,9 @@ function constructResponseItemRecursive(
         populationExpressions,
         valueSetPromises,
         answerOptions,
-        containedValueSets
+        containedValueSets,
+        terminologyCallback,
+        terminologyRequestConfig
       });
 
       if (Array.isArray(newQrItem)) {
@@ -215,7 +230,9 @@ function constructResponseItemRecursive(
       populationExpressions,
       valueSetPromises,
       answerOptions,
-      containedValueSets
+      containedValueSets,
+      terminologyCallback,
+      terminologyRequestConfig
     });
   }
 
@@ -225,7 +242,9 @@ function constructResponseItemRecursive(
     populationExpressions,
     valueSetPromises,
     answerOptions,
-    containedValueSets
+    containedValueSets,
+    terminologyCallback,
+    terminologyRequestConfig
   });
 }
 
@@ -237,6 +256,8 @@ interface ConstructGroupItemParams {
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
+  terminologyCallback?: FetchResourceCallback | undefined;
+  terminologyRequestConfig?: any;
 }
 
 function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResponseItem | null {
@@ -247,7 +268,9 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
     populationExpressions,
     valueSetPromises,
     answerOptions,
-    containedValueSets
+    containedValueSets,
+    terminologyCallback,
+    terminologyRequestConfig
   } = params;
 
   const { initialExpressions } = populationExpressions;
@@ -263,7 +286,12 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
       populatedAnswers = newValues;
 
       if (expandRequired) {
-        recordAnswerValueSet(qItem, valueSetPromises);
+        recordAnswerValueSet(
+          qItem,
+          valueSetPromises,
+          terminologyCallback,
+          terminologyRequestConfig
+        );
       }
 
       recordAnswerOption(qItem, answerOptions);
@@ -305,6 +333,8 @@ interface ConstructSingleItemParams {
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
+  terminologyCallback?: FetchResourceCallback | undefined;
+  terminologyRequestConfig?: any;
 }
 
 function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireResponseItem | null {
@@ -314,7 +344,9 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
     populationExpressions,
     valueSetPromises,
     answerOptions,
-    containedValueSets
+    containedValueSets,
+    terminologyCallback,
+    terminologyRequestConfig
   } = params;
 
   const { initialExpressions } = populationExpressions;
@@ -328,7 +360,12 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
       const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
 
       if (expandRequired) {
-        recordAnswerValueSet(qItem, valueSetPromises);
+        recordAnswerValueSet(
+          qItem,
+          valueSetPromises,
+          terminologyCallback,
+          terminologyRequestConfig
+        );
       }
 
       recordAnswerOption(qItem, answerOptions);
@@ -358,10 +395,18 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
 
 function recordAnswerValueSet(
   qItem: QuestionnaireItem,
-  valueSetPromises: Record<string, ValueSetPromise>
+  valueSetPromises: Record<string, ValueSetPromise>,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ) {
   if (qItem.answerValueSet) {
-    getValueSetPromise(qItem, qItem.answerValueSet, valueSetPromises);
+    getValueSetPromise(
+      qItem,
+      qItem.answerValueSet,
+      valueSetPromises,
+      terminologyCallback,
+      terminologyRequestConfig
+    );
   }
 }
 
@@ -461,7 +506,9 @@ function constructRepeatGroupInstances(
   populationExpressions: PopulationExpressions,
   valueSetPromises: Record<string, ValueSetPromise>,
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
-  containedValueSets: Record<string, ValueSet>
+  containedValueSets: Record<string, ValueSet>,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ): QuestionnaireResponseItem[] {
   if (!qRepeatGroupParent.item || !qRepeatGroupParent.item[0]) {
     return [];
@@ -529,7 +576,12 @@ function constructRepeatGroupInstances(
             const { newValues, expandRequired } = getAnswerValues(initialValues, childItem);
 
             if (expandRequired) {
-              recordAnswerValueSet(childItem, valueSetPromises);
+              recordAnswerValueSet(
+                childItem,
+                valueSetPromises,
+                terminologyCallback,
+                terminologyRequestConfig
+              );
             }
 
             recordAnswerOption(childItem, answerOptions);
