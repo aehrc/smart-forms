@@ -55,6 +55,8 @@ export interface PopulateResult {
  * @property patient - Patient resource as patient in context
  * @property user - Practitioner resource as user in context
  * @property encounter - Encounter resource as encounter in context, optional
+ * @property terminologyCallback - A callback function to fetch terminology resources, optional
+ * @property terminologyRequestConfig - Any request configuration to be passed to the terminologyCallback i.e. headers, auth etc., optional
  *
  * @author Sean Fong
  */
@@ -65,6 +67,8 @@ export interface PopulateQuestionnaireParams {
   patient: Patient;
   user?: Practitioner;
   encounter?: Encounter;
+  terminologyCallback?: FetchResourceCallback;
+  terminologyRequestConfig?: any;
 }
 
 /**
@@ -83,7 +87,16 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   populateSuccess: boolean;
   populateResult: PopulateResult | null;
 }> {
-  const { questionnaire, fetchResourceCallback, requestConfig, patient, user, encounter } = params;
+  const {
+    questionnaire,
+    fetchResourceCallback,
+    requestConfig,
+    patient,
+    user,
+    encounter,
+    terminologyCallback,
+    terminologyRequestConfig
+  } = params;
 
   const context: Record<string, any> = {};
 
@@ -133,7 +146,9 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   const outputParameters = await performInAppPopulation(
     inputParameters,
     fetchResourceCallback,
-    requestConfig
+    requestConfig,
+    terminologyCallback,
+    terminologyRequestConfig
   );
 
   if (outputParameters.resourceType === 'OperationOutcome') {
@@ -171,9 +186,17 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
 async function performInAppPopulation(
   inputParameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any
+  requestConfig: any,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ): Promise<OutputParameters | OperationOutcome> {
-  const populatePromise = populate(inputParameters, fetchResourceCallback, requestConfig);
+  const populatePromise = populate(
+    inputParameters,
+    fetchResourceCallback,
+    requestConfig,
+    terminologyCallback,
+    terminologyRequestConfig
+  );
 
   try {
     const promiseResult = await addTimeoutToPromise(populatePromise, 10000);
