@@ -194,7 +194,9 @@ function constructResponseItemRecursive(
         populationExpressions,
         valueSetPromises,
         answerOptions,
-        containedValueSets
+        containedValueSets,
+        terminologyCallback,
+        terminologyRequestConfig
       );
     }
 
@@ -240,7 +242,9 @@ function constructResponseItemRecursive(
     populationExpressions,
     valueSetPromises,
     answerOptions,
-    containedValueSets
+    containedValueSets,
+    terminologyCallback,
+    terminologyRequestConfig
   });
 }
 
@@ -329,7 +333,7 @@ interface ConstructSingleItemParams {
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
-  terminologyCallback?: FetchResourceCallback;
+  terminologyCallback?: FetchResourceCallback | undefined;
   terminologyRequestConfig?: any;
 }
 
