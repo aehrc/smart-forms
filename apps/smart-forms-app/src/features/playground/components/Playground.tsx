@@ -34,7 +34,7 @@ import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/R
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
-import { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';

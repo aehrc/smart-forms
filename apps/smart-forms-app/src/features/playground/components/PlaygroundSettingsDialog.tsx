@@ -106,7 +106,7 @@ function PlaygroundSettingsDialog(props: Props) {
           </Button>
         </Box>
 
-        <Box my={4} />
+        <Box my={3} />
         <PlaygroundPatientPicker
           fhirServerUrl={fhirServerUrl}
           selectedPatient={selectedPatient}

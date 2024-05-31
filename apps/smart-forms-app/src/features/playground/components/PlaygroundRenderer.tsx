@@ -23,6 +23,7 @@ import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
 import { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
+import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;
@@ -56,7 +57,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         authToken: null
       },
       patient: patient,
-      user: user
+      user: user ?? undefined
     }).then(async ({ populateSuccess, populateResult }) => {
       if (!populateSuccess || !populateResult) {
         setIsPopulating(false);
@@ -66,7 +67,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
       const { populatedResponse } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildForm(sourceQuestionnaire, populatedResponse);
+      await buildForm(sourceQuestionnaire, populatedResponse, undefined, TERMINOLOGY_SERVER_URL);
 
       setIsPopulating(false);
     });

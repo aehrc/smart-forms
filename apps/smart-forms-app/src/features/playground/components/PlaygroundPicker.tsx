@@ -16,9 +16,9 @@
  */
 
 // @ts-ignore
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import FileCollector from './FileCollector.tsx';
-import { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundQuestionnairePicker from './PlaygroundQuestionnairePicker.tsx';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 

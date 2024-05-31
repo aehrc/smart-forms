@@ -64,7 +64,12 @@ function JsonEditor(props: Props) {
 
         {buildingState !== 'idle' ? (
           <>
-            <Button color="error" onClick={onDestroyForm}>
+            <Button
+              color="error"
+              onClick={() => {
+                setView('editor');
+                onDestroyForm();
+              }}>
               Destroy Form
             </Button>
             {view === 'editor' ? (
