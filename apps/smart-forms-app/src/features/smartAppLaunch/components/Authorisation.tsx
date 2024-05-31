@@ -35,6 +35,7 @@ import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {
@@ -130,7 +131,12 @@ function Authorisation() {
                       postQuestionnaireToSMARTHealthIT(client, questionnaire);
                     }
 
-                    await buildSourceQuestionnaire(questionnaire);
+                    await buildSourceQuestionnaire(
+                      questionnaire,
+                      undefined,
+                      undefined,
+                      TERMINOLOGY_SERVER_URL
+                    );
                     setQuestionnaireLaunchContext(questionnaire);
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                   } else {

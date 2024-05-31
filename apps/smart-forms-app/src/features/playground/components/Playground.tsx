@@ -33,6 +33,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
 import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 
 function Playground() {
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
@@ -52,7 +53,7 @@ function Playground() {
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
-        await buildForm(parsedQuestionnaire);
+        await buildForm(parsedQuestionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
         setBuildingState('built');
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
@@ -92,7 +93,7 @@ function Playground() {
         const jsonString = event.target?.result;
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
-          await buildForm(JSON.parse(jsonString));
+          await buildForm(JSON.parse(jsonString), undefined, undefined, TERMINOLOGY_SERVER_URL);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {
