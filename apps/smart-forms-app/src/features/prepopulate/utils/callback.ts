@@ -22,7 +22,7 @@ const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
 export interface RequestConfig {
   clientEndpoint: string;
-  authToken: string;
+  authToken?: string;
 }
 
 export const fetchResourceCallback: FetchResourceCallback = (
@@ -35,6 +35,27 @@ export const fetchResourceCallback: FetchResourceCallback = (
   const headers = {
     Accept: 'application/json;charset=utf-8',
     Authorization: `Bearer ${authToken}`
+  };
+
+  if (!clientEndpoint.endsWith('/')) {
+    clientEndpoint += '/';
+  }
+
+  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : clientEndpoint + query;
+
+  return axios.get(queryUrl, {
+    headers: headers
+  });
+};
+
+export const terminologyCallback: FetchResourceCallback = (
+  query: string,
+  requestConfig: RequestConfig
+) => {
+  let { clientEndpoint } = requestConfig;
+
+  const headers = {
+    Accept: 'application/json;charset=utf-8'
   };
 
   if (!clientEndpoint.endsWith('/')) {

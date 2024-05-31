@@ -82,7 +82,7 @@ The default configuration is set to:
 ```
 # Ontoserver endpoint for $expand operations
 # To run your own Ontoserver instance, contact us at https://ontoserver.csiro.au/site/contact-us/ontoserver-contact-form/
-VITE_ONTOSERVER_URL=https://r4.ontoserver.csiro.au/fhir
+VITE_ONTOSERVER_URL=https://tx.ontoserver.csiro.au/fhir
 
 # Questionnaire-hosting FHIR server
 VITE_FORMS_SERVER_URL=https://smartforms.csiro.au/api/fhir

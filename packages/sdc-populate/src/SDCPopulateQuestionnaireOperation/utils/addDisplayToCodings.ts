@@ -21,9 +21,12 @@ import type {
 } from '../interfaces/expressions.interface';
 import type { Coding } from 'fhir/r4';
 import { getCodeSystemLookupPromise, lookupResponseIsValid } from '../api/lookupCodeSystem';
+import type { FetchResourceCallback } from '../interfaces';
 
 export async function addDisplayToInitialExpressionsCodings(
-  initialExpressions: Record<string, InitialExpression>
+  initialExpressions: Record<string, InitialExpression>,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ): Promise<Record<string, InitialExpression>> {
   // Store code system lookup promises for codings without displays
   const codeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
@@ -36,7 +39,12 @@ export async function addDisplayToInitialExpressionsCodings(
     for (const value of initialExpression.value) {
       if (valueIsCoding(value)) {
         if (!value.display) {
-          getCodeSystemLookupPromise(value, codeSystemLookupPromises);
+          getCodeSystemLookupPromise(
+            value,
+            codeSystemLookupPromises,
+            terminologyCallback,
+            terminologyRequestConfig
+          );
         }
       }
     }

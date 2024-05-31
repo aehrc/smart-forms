@@ -28,8 +28,7 @@ import type {
 import type { fhirclient } from 'fhirclient/lib/types';
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../../../api/headers.ts';
-
-const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
+import { FORMS_SERVER_URL } from '../../../globals.ts';
 
 export async function readCommonLaunchContexts(
   client: Client
@@ -117,7 +116,7 @@ export function readQuestionnaireContext(
 
     canonical = canonical.replace('|', '&version=');
 
-    return FHIR.client(endpointUrl).request({
+    return FHIR.client(FORMS_SERVER_URL).request({
       url: 'Questionnaire?url=' + canonical + '&_sort=_lastUpdated',
       method: 'GET',
       headers: HEADERS

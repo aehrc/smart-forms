@@ -19,6 +19,7 @@ import { useSearchParams } from 'react-router-dom';
 import { oauth2 } from 'fhirclient';
 import { useState } from 'react';
 import LaunchView from './LaunchView.tsx';
+import { LAUNCH_CLIENT_ID, LAUNCH_SCOPE } from '../../../globals.ts';
 
 export type LaunchState = 'loading' | 'error' | 'success';
 
@@ -29,8 +30,8 @@ function Launch() {
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
 
-  const clientId = import.meta.env.VITE_LAUNCH_CLIENT_ID;
-  const scope = import.meta.env.VITE_LAUNCH_SCOPE;
+  const clientId = LAUNCH_CLIENT_ID;
+  const scope = LAUNCH_SCOPE;
 
   if (iss && launch) {
     // oauth2.authorize triggers a redirect to EHR
