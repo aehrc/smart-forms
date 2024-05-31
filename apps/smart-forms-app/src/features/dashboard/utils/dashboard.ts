@@ -30,13 +30,12 @@ import type Client from 'fhirclient/lib/Client';
 import type { QuestionnaireListItem, ResponseListItem } from '../types/list.interface.ts';
 import { HEADERS } from '../../../api/headers.ts';
 import { nanoid } from 'nanoid';
-
-const endpointUrl = import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
+import { FORMS_SERVER_URL } from '../../../globals.ts';
 
 export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
   queryUrl = queryUrl.replace('|', '&version=');
 
-  return FHIR.client(endpointUrl).request({
+  return FHIR.client(FORMS_SERVER_URL).request({
     url: queryUrl,
     headers: HEADERS
   });
@@ -45,7 +44,7 @@ export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
 export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<Bundle> {
   queryUrl = queryUrl.replace('|', '&version=');
 
-  return FHIR.client(endpointUrl).request({
+  return FHIR.client(FORMS_SERVER_URL).request({
     url: queryUrl,
     headers: HEADERS
   });
@@ -68,7 +67,7 @@ export function getFormsServerBundleOrQuestionnairePromise(
     queryUrl = queryUrl.substring(0, queryUrl.lastIndexOf('-SMARTcopy')) + '';
   }
 
-  return FHIR.client(endpointUrl).request({
+  return FHIR.client(FORMS_SERVER_URL).request({
     url: queryUrl,
     headers: HEADERS
   });

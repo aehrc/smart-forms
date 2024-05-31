@@ -16,20 +16,24 @@
  */
 
 import type { Coding } from 'fhir/r4';
-import * as FHIR from 'fhirclient';
-import { ONTOSERVER_ENDPOINT } from './expandValueset';
 import type { CodeSystemLookupPromise } from '../interfaces/expressions.interface';
+import type { FetchResourceCallback } from '../interfaces';
+import { defaultTerminologyRequest } from './expandValueset';
 
 export function getCodeSystemLookupPromise(
   coding: Coding,
-  codeSystemLookupPromiseMap: Record<string, CodeSystemLookupPromise>
+  codeSystemLookupPromiseMap: Record<string, CodeSystemLookupPromise>,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ) {
-  const query = `system=${coding.system}&code=${coding.code}`;
+  const query = `CodeSystem/$lookup?system=${coding.system}&code=${coding.code}`;
+
+  const lookupPromise = terminologyCallback
+    ? terminologyCallback(query, terminologyRequestConfig)
+    : defaultTerminologyRequest(query);
 
   codeSystemLookupPromiseMap[query] = {
-    promise: FHIR.client({ serverUrl: ONTOSERVER_ENDPOINT }).request({
-      url: `CodeSystem/$lookup?${query}`
-    }),
+    promise: lookupPromise,
     oldCoding: coding
   };
 }

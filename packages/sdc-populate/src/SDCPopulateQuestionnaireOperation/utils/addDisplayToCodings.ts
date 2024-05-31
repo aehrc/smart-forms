@@ -21,9 +21,12 @@ import type {
 } from '../interfaces/expressions.interface';
 import type { Coding } from 'fhir/r4';
 import { getCodeSystemLookupPromise, lookupResponseIsValid } from '../api/lookupCodeSystem';
+import type { FetchResourceCallback } from '../interfaces';
 
 export async function addDisplayToInitialExpressionsCodings(
-  initialExpressions: Record<string, InitialExpression>
+  initialExpressions: Record<string, InitialExpression>,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ): Promise<Record<string, InitialExpression>> {
   // Store code system lookup promises for codings without displays
   const codeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
@@ -36,7 +39,12 @@ export async function addDisplayToInitialExpressionsCodings(
     for (const value of initialExpression.value) {
       if (valueIsCoding(value)) {
         if (!value.display) {
-          getCodeSystemLookupPromise(value, codeSystemLookupPromises);
+          getCodeSystemLookupPromise(
+            value,
+            codeSystemLookupPromises,
+            terminologyCallback,
+            terminologyRequestConfig
+          );
         }
       }
     }
@@ -74,9 +82,14 @@ export async function resolveLookupPromises(
   const lookupPromiseValues = Object.values(codeSystemLookupPromises);
 
   const promises = lookupPromiseValues.map((lookupPromise) => lookupPromise.promise);
-  const lookupResults = await Promise.all(promises);
+  const settledPromises = await Promise.allSettled(promises);
 
-  for (const [i, lookupResult] of lookupResults.entries()) {
+  for (const [i, settledPromise] of settledPromises.entries()) {
+    if (settledPromise.status === 'rejected') {
+      continue;
+    }
+
+    const lookupResult = settledPromise.value;
     if (!lookupResponseIsValid(lookupResult)) {
       continue;
     }

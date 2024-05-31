@@ -17,8 +17,8 @@
 
 import { StyledRoot } from '../../../../components/DebugFooter/DebugFooter.styles.ts';
 import { Box, Typography } from '@mui/material';
-import { FORMS_SERVER_ENDPOINT } from '../../../../utils/env.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import { FORMS_SERVER_URL, LAUNCH_CLIENT_ID } from '../../../../globals.ts';
 
 function DashboardDebugFooter() {
   const { smartClient } = useSmartClient();
@@ -32,13 +32,10 @@ function DashboardDebugFooter() {
           </Typography>
           <Typography variant="overline">
             {`Forms server: ${
-              FORMS_SERVER_ENDPOINT ??
-              'Undefined. Defaulting to https://smartforms.csiro.au/api/fhir'
+              FORMS_SERVER_URL ?? 'Undefined. Defaulting to https://smartforms.csiro.au/api/fhir'
             }`}
           </Typography>
-          <Typography variant="overline">
-            {`Client ID: ${import.meta.env.VITE_LAUNCH_CLIENT_ID}`}
-          </Typography>
+          <Typography variant="overline">{`Client ID: ${LAUNCH_CLIENT_ID}`}</Typography>
         </Box>
       </StyledRoot>
     </>

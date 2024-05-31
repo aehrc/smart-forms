@@ -42,11 +42,17 @@ import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
 export async function populate(
   parameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any
+  fetchResourceRequestConfig: any,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ): Promise<OutputParameters | OperationOutcome> {
   const issues: OperationOutcomeIssue[] = [];
 
-  const questionnaire = await fetchQuestionnaire(parameters, fetchResourceCallback, requestConfig);
+  const questionnaire = await fetchQuestionnaire(
+    parameters,
+    fetchResourceCallback,
+    fetchResourceRequestConfig
+  );
   if (questionnaire.resourceType === 'OperationOutcome') {
     return questionnaire;
   }
@@ -61,7 +67,7 @@ export async function populate(
     parameters,
     questionnaire,
     fetchResourceCallback,
-    requestConfig,
+    fetchResourceRequestConfig,
     issues
   );
 
@@ -86,7 +92,9 @@ export async function populate(
 
   // In evaluatedInitialExpressions, add display values to codings lacking them
   const completeInitialExpressions = await addDisplayToInitialExpressionsCodings(
-    evaluatedInitialExpressions
+    evaluatedInitialExpressions,
+    terminologyCallback,
+    terminologyRequestConfig
   );
 
   // Construct response from initialExpressions
@@ -97,7 +105,9 @@ export async function populate(
       initialExpressions: completeInitialExpressions,
       itemPopulationContexts: evaluatedItemPopulationContexts
     },
-    encounter
+    encounter,
+    terminologyCallback,
+    terminologyRequestConfig
   );
 
   const cleanQuestionnaireResponse = removeEmptyAnswersFromResponse(

@@ -18,13 +18,15 @@
 import * as FHIR from 'fhirclient';
 import type { ValueSetPromise } from '../interfaces/expressions.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
-
-export const ONTOSERVER_ENDPOINT = 'https://r4.ontoserver.csiro.au/fhir/';
+import type { FetchResourceCallback } from '../interfaces';
+import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 export function getValueSetPromise(
   qItem: QuestionnaireItem,
   fullUrl: string,
-  valueSetPromiseMap: Record<string, ValueSetPromise>
+  valueSetPromiseMap: Record<string, ValueSetPromise>,
+  terminologyCallback?: FetchResourceCallback,
+  terminologyRequestConfig?: any
 ) {
   let valueSetUrl = fullUrl;
   if (fullUrl.includes('ValueSet/$expand?url=')) {
@@ -35,10 +37,19 @@ export function getValueSetPromise(
   }
 
   valueSetUrl = valueSetUrl.replace('|', '&version=');
+  const query = `ValueSet/$expand?url=${valueSetUrl}`;
+
+  const valueSetPromise = terminologyCallback
+    ? terminologyCallback(query, terminologyRequestConfig)
+    : defaultTerminologyRequest(query);
 
   valueSetPromiseMap[qItem.linkId] = {
-    promise: FHIR.client({ serverUrl: ONTOSERVER_ENDPOINT }).request({
-      url: 'ValueSet/$expand?url=' + valueSetUrl
-    })
+    promise: valueSetPromise
   };
+}
+
+export function defaultTerminologyRequest(query: string) {
+  return FHIR.client({ serverUrl: TERMINOLOGY_SERVER_URL }).request({
+    url: query
+  });
 }

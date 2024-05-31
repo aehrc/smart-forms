@@ -99,7 +99,7 @@ function ResourceViewSwitcher(props: ResourceViewSwitcherProps) {
     return (
       <>
         <Typography variant="subtitle2">
-          Defaults to https://r4.ontoserver.csiro.au if null
+          Defaults to https://tx.ontoserver.csiro.au if null
         </Typography>
         <pre>{JSON.stringify(state.terminologyServerUrl, null, 2)}</pre>
       </>
