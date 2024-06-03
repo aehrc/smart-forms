@@ -42,6 +42,22 @@ Any request configuration to be passed to the fetchResourceCallback i.e. headers
 
 ***
 
+### terminologyCallback?
+
+> `optional` **terminologyCallback**: [`FetchResourceCallback`](FetchResourceCallback.md)
+
+A callback function to fetch terminology resources, optional
+
+***
+
+### terminologyRequestConfig?
+
+> `optional` **terminologyRequestConfig**: `any`
+
+Any request configuration to be passed to the terminologyCallback i.e. headers, auth etc., optional
+
+***
+
 ### user?
 
 > `optional` **user**: `Practitioner`

@@ -1,5 +1,34 @@
 import type { Questionnaire } from 'fhir/r4';
 
+export const qRenderingStyleBooleanCheckboxItem: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'RenderingStyle-1',
+  name: 'RenderingStyle-1',
+  title: 'Rendering Style 1',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-style-1',
+  item: [
+    {
+      linkId: 'mark-complete',
+      text: 'Mark section as complete',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+            valueString:
+              'padding: 0.75rem; margin-bottom: 1rem; font-size: 0.875rem; color: #2E7D32; border-radius: 0.5rem; background-color: #d5e5d6; font-weight: 700;'
+          }
+        ]
+      },
+      type: 'boolean',
+      repeats: false
+    }
+  ]
+};
+
 export const qRenderingXhtmlBooleanCheckboxItem: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RenderingXhtml-1',

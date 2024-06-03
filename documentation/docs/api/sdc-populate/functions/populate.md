@@ -1,6 +1,6 @@
 # Function: populate()
 
-> **populate**(`parameters`, `fetchResourceCallback`, `requestConfig`): `Promise` \<[`OutputParameters`](../interfaces/OutputParameters.md) \| `OperationOutcome`\>
+> **populate**(`parameters`, `fetchResourceCallback`, `fetchResourceRequestConfig`, `terminologyCallback`?, `terminologyRequestConfig`?): `Promise` \<[`OutputParameters`](../interfaces/OutputParameters.md) \| `OperationOutcome`\>
 
 Executes the SDC Populate Questionnaire operation - $populate.
 Input and output specific parameters conformant to the SDC populate specification. Can be deployed as a $populate microservice.
@@ -13,7 +13,9 @@ This function expects a nice set of populate input parameters to go. If you do y
 | :------ | :------ |
 | `parameters` | [`InputParameters`](../interfaces/InputParameters.md) |
 | `fetchResourceCallback` | [`FetchResourceCallback`](../interfaces/FetchResourceCallback.md) |
-| `requestConfig` | `any` |
+| `fetchResourceRequestConfig` | `any` |
+| `terminologyCallback`? | [`FetchResourceCallback`](../interfaces/FetchResourceCallback.md) |
+| `terminologyRequestConfig`? | `any` |
 
 ## Returns
 
