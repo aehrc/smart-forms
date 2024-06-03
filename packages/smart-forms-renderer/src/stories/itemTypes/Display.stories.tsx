@@ -17,7 +17,11 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qDisplayBasic, qDisplayCalculation } from '../assets/questionnaires/QDisplay';
+import {
+  qDisplayBasic,
+  qDisplayCalculation,
+  qDisplayCalculationStyled
+} from '../assets/questionnaires/QDisplay';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -41,5 +45,11 @@ export const DisplayBasic: Story = {
 export const DisplayCalculation: Story = {
   args: {
     questionnaire: qDisplayCalculation
+  }
+};
+
+export const DisplayCalculationStyled: Story = {
+  args: {
+    questionnaire: qDisplayCalculationStyled
   }
 };
