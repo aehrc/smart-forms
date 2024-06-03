@@ -17,7 +17,7 @@
 
 import { Box, styled } from '@mui/material';
 
-export const SdcIdeMain = styled(Box)(({ theme }) => ({
+export const SdcIdeMain = styled(Box)(() => ({
   flexGrow: 1,
   overflow: 'auto',
   minHeight: '100%'

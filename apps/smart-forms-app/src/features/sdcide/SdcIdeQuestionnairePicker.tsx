@@ -60,7 +60,7 @@ function SdcIdeQuestionnairePicker() {
         options={questionnaireIds}
         getOptionLabel={(option) => `${option}`}
         value={selectedQuestionnaireId ?? null}
-        onChange={(_, newValue) => setSelectedQuestionnaireId(newValue)}
+        onChange={(_, newValue) => setSelectedQuestionnaireId(newValue ?? '')}
         openOnFocus
         autoHighlight
         size="small"
