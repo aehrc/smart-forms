@@ -18,11 +18,13 @@
 import React, { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getMarkdownString, getXHtmlString } from '../../../utils/itemControl';
-import parse from 'html-react-parser';
+import { default as htmlParse } from 'html-react-parser';
 import Box from '@mui/material/Box';
 import ReactMarkdown from 'react-markdown';
 import Typography from '@mui/material/Typography';
 import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAndCalculatedExpression';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { default as styleParse } from 'style-to-js';
 
 interface ItemLabelTextProps {
   qItem: QuestionnaireItem;
@@ -32,21 +34,18 @@ interface ItemLabelTextProps {
 const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   const { qItem, readOnly } = props;
 
+  let labelText = qItem.text ?? '';
+
   // Use calculatedExpressionString if available
-  const calculatedExpressionString = useDisplayCqfAndCalculatedExpression(qItem);
+  const calculatedExpressionString = useDisplayCqfAndCalculatedExpression(qItem) ?? '';
   if (calculatedExpressionString) {
-    return (
-      <Typography color={readOnly ? 'text.disabled' : 'text.primary'} sx={{ mt: 0.25 }}>
-        {calculatedExpressionString}
-      </Typography>
-    );
+    labelText = calculatedExpressionString;
   }
 
   // parse xHTML if found
   const xHtmlString = getXHtmlString(qItem);
-
   if (xHtmlString) {
-    return <Box>{parse(xHtmlString)}</Box>;
+    return <Box>{htmlParse(xHtmlString)}</Box>;
   }
 
   // parse markdown if found
@@ -59,14 +58,26 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
     );
   }
 
+  // labelText is empty, return null
+  if (!labelText) {
+    return null;
+  }
+
+  // parse styles if found
+  const stylesString = structuredDataCapture.getStyle(qItem._text);
+  if (stylesString) {
+    const styles = styleParse(stylesString);
+    return <div style={styles}>{labelText}</div>;
+  }
+
   if (qItem.type === 'group') {
-    return <>{qItem.text}</>;
+    return <>{labelText}</>;
   }
 
   // parse regular text
   return (
     <Typography color={readOnly ? 'text.disabled' : 'text.primary'} sx={{ mt: 0.25 }}>
-      {qItem.text}
+      {labelText}
     </Typography>
   );
 });

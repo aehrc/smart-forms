@@ -21,6 +21,7 @@ import {
   qDisplayCategoryInstructions,
   qHidden,
   qOpenLabel,
+  qRenderingStyleBooleanCheckboxItem,
   qRenderingXhtmlBooleanCheckboxItem,
   qRenderingXhtmlDisplayBase64ImageItem,
   qRenderingXhtmlDisplayListItem
@@ -38,6 +39,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+export const RenderingStyleBooleanCheckbox: Story = {
+  args: {
+    questionnaire: qRenderingStyleBooleanCheckboxItem
+  }
+};
 
 export const RenderingXHTMLBooleanCheckbox: Story = {
   args: {
