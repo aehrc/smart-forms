@@ -88,11 +88,11 @@ const FileCollector = memo(function FileCollector(props: FileCollectorProps) {
           </Tooltip>
         </Box>
 
-        <Tooltip title="Build Form">
+        <Tooltip title="Build Form from file">
           <span>
             <IconButton
               disabled={!uploadedFile}
-              color="success"
+              color="primary"
               onClick={() => {
                 if (uploadedFile) {
                   onBuild(uploadedFile);

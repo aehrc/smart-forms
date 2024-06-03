@@ -15,23 +15,15 @@
  * limitations under the License.
  */
 
-import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
-import { PlaygroundMain } from './PlaygroundLayout.styles.tsx';
-import { Outlet } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Bundle } from 'fhir/r4';
+import * as FHIR from 'fhirclient';
+import { HEADERS } from '../../../api/headers.ts';
 
-function PlaygroundLayout() {
-  return (
-    <StyledRoot>
-      <Helmet>
-        <title>Playground</title>
-      </Helmet>
+export function fetchFhirResources(endpointUrl: string, queryUrl: string): Promise<Bundle> {
+  queryUrl = queryUrl.replace('|', '&version=');
 
-      <PlaygroundMain>
-        <Outlet />
-      </PlaygroundMain>
-    </StyledRoot>
-  );
+  return FHIR.client(endpointUrl).request({
+    url: queryUrl,
+    headers: HEADERS
+  });
 }
-
-export default PlaygroundLayout;

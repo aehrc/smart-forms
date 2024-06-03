@@ -21,11 +21,28 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LogoWrapper } from '../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../components/Header/Header.styles.ts';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
+import { Patient, Practitioner } from 'fhir/r4';
+import PlaygroundSettingsDialog from './PlaygroundSettingsDialog.tsx';
+import SettingsIcon from '@mui/icons-material/Settings';
 
-const PlaygroundHeader = memo(function PlaygroundHeader() {
+interface PlaygroundHeaderProps {
+  fhirServerUrl: string;
+  patient: Patient | null;
+  user: Practitioner | null;
+  onFhirServerUrlChange: (url: string) => void;
+  onPatientChange: (patient: Patient | null) => void;
+  onUserChange: (practitioner: Practitioner | null) => void;
+}
+
+const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderProps) {
+  const { fhirServerUrl, patient, user, onFhirServerUrlChange, onPatientChange, onUserChange } =
+    props;
+
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+
   const theme = useTheme();
 
   const { launchQuestionnaire } = useSmartClient();
@@ -53,15 +70,38 @@ const PlaygroundHeader = memo(function PlaygroundHeader() {
 
         <Box color="text.primary">
           <LogoWrapper>
-            <Logo />
+            <Logo isRendererHeader />
           </LogoWrapper>
         </Box>
+        <Typography variant="h6" color="text.primary" sx={{ mx: 0.5 }}>
+          Playground
+        </Typography>
 
         <Box flexGrow={1} />
 
-        <Typography variant="h6" color="text.primary">
-          Playground
-        </Typography>
+        <Tooltip title="Change launch context settings" placement="left">
+          <span>
+            <IconButton
+              onClick={() => {
+                setSettingsDialogOpen(true);
+              }}>
+              <SettingsIcon fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+
+        <PlaygroundSettingsDialog
+          open={settingsDialogOpen}
+          closeDialog={() => {
+            setSettingsDialogOpen(false);
+          }}
+          fhirServerUrl={fhirServerUrl}
+          patient={patient}
+          user={user}
+          onFhirServerUrlChange={onFhirServerUrlChange}
+          onPatientChange={onPatientChange}
+          onUserChange={onUserChange}
+        />
       </StyledToolbar>
     </StyledRoot>
   );

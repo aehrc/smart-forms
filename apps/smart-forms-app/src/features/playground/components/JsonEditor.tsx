@@ -64,7 +64,12 @@ function JsonEditor(props: Props) {
 
         {buildingState !== 'idle' ? (
           <>
-            <Button color="error" onClick={onDestroyForm}>
+            <Button
+              color="error"
+              onClick={() => {
+                setView('editor');
+                onDestroyForm();
+              }}>
               Destroy Form
             </Button>
             {view === 'editor' ? (
@@ -91,7 +96,6 @@ function JsonEditor(props: Props) {
                   onChange={(_, newSelectedStore) => setSelectedStore(newSelectedStore)}>
                   <ToggleButton value="questionnaireStore">Q</ToggleButton>
                   <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>
-                  <ToggleButton value="smartConfigStore">SMART</ToggleButton>
                   <ToggleButton value="terminologyServerStore">Terminology</ToggleButton>
                 </ToggleButtonGroup>
               </Stack>
@@ -122,7 +126,9 @@ function JsonEditor(props: Props) {
           onValidate={handleEditorValidation}
         />
       ) : (
-        <StoreStateViewer selectedStore={selectedStore} />
+        <Box sx={{ height: '100%', overflow: 'auto' }}>
+          <StoreStateViewer selectedStore={selectedStore} />
+        </Box>
       )}
     </Box>
   );

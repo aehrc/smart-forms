@@ -15,23 +15,10 @@
  * limitations under the License.
  */
 
-import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
-import { PlaygroundMain } from './PlaygroundLayout.styles.tsx';
-import { Outlet } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Box, styled } from '@mui/material';
 
-function PlaygroundLayout() {
-  return (
-    <StyledRoot>
-      <Helmet>
-        <title>Playground</title>
-      </Helmet>
-
-      <PlaygroundMain>
-        <Outlet />
-      </PlaygroundMain>
-    </StyledRoot>
-  );
-}
-
-export default PlaygroundLayout;
+export const SdcIdeMain = styled(Box)(() => ({
+  flexGrow: 1,
+  overflow: 'auto',
+  minHeight: '100%'
+}));

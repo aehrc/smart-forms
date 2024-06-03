@@ -15,23 +15,30 @@
  * limitations under the License.
  */
 
-import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
-import { PlaygroundMain } from './PlaygroundLayout.styles.tsx';
-import { Outlet } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Stack, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
-function PlaygroundLayout() {
+interface SdcIdeScreenProps {
+  screenTitle: string;
+  children: ReactNode;
+}
+
+function GenericScreen(props: SdcIdeScreenProps) {
+  const { screenTitle, children } = props;
+
+  // const [editorString, setEditorString] = useState('');
+  //
+  // function handleEditorChange(value: string | undefined) {
+  //   setEditorString(value ?? '');
+  // }
+
   return (
-    <StyledRoot>
-      <Helmet>
-        <title>Playground</title>
-      </Helmet>
-
-      <PlaygroundMain>
-        <Outlet />
-      </PlaygroundMain>
-    </StyledRoot>
+    <Stack height="100%" width="100%" sx={{ overflow: 'auto', p: 0.5 }}>
+      <Typography variant="subtitle1">{screenTitle}</Typography>
+      {children}
+      {/*<SdcIdeQuestionnairePicker />*/}
+    </Stack>
   );
 }
 
-export default PlaygroundLayout;
+export default GenericScreen;

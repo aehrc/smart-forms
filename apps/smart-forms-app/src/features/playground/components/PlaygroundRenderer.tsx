@@ -15,10 +15,86 @@
  * limitations under the License.
  */
 
-import FormWrapper from '../../renderer/components/FormPage/FormRenderer/FormWrapper.tsx';
+import { useState } from 'react';
+import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { BaseRenderer, buildForm, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
+import { Patient, Practitioner } from 'fhir/r4';
+import { Box, Typography } from '@mui/material';
+import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
+import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 
-function PlaygroundRenderer() {
-  return <FormWrapper />;
+interface PlaygroundRendererProps {
+  endpointUrl: string | null;
+  patient: Patient | null;
+  user: Practitioner | null;
+}
+
+function PlaygroundRenderer(props: PlaygroundRendererProps) {
+  const { endpointUrl, patient, user } = props;
+
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+
+  const [isPopulating, setIsPopulating] = useState(false);
+
+  const { patientName, userName } = useLaunchContextNames(patient, user);
+
+  const prePopEnabled = endpointUrl !== null && patient !== null;
+
+  function handlePrepopulate() {
+    if (!prePopEnabled) {
+      return;
+    }
+
+    setIsPopulating(true);
+
+    populateQuestionnaire({
+      questionnaire: sourceQuestionnaire,
+      fetchResourceCallback: fetchResourceCallback,
+      requestConfig: {
+        clientEndpoint: endpointUrl,
+        authToken: null
+      },
+      patient: patient,
+      user: user ?? undefined
+    }).then(async ({ populateSuccess, populateResult }) => {
+      if (!populateSuccess || !populateResult) {
+        setIsPopulating(false);
+        return;
+      }
+
+      const { populatedResponse } = populateResult;
+
+      // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
+      await buildForm(sourceQuestionnaire, populatedResponse, undefined, TERMINOLOGY_SERVER_URL);
+
+      setIsPopulating(false);
+    });
+  }
+
+  return (
+    <>
+      {prePopEnabled ? (
+        <Box display="flex" alignItems="center" columnGap={2} mx={1}>
+          <PrePopButtonForPlayground isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+          <Box flexGrow={1} />
+
+          {patientName ? (
+            <Typography variant="subtitle2" color="text.secondary">
+              Patient: {patientName}
+            </Typography>
+          ) : null}
+          {userName ? (
+            <Typography variant="subtitle2" color="text.secondary">
+              User: {userName}
+            </Typography>
+          ) : null}
+        </Box>
+      ) : null}
+      {isPopulating ? null : <BaseRenderer />}
+    </>
+  );
 }
 
 export default PlaygroundRenderer;

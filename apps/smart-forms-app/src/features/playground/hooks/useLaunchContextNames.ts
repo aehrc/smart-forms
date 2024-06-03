@@ -15,23 +15,28 @@
  * limitations under the License.
  */
 
-import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
-import { PlaygroundMain } from './PlaygroundLayout.styles.tsx';
-import { Outlet } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { useMemo } from 'react';
+import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
+import type { Patient, Practitioner } from 'fhir/r4';
 
-function PlaygroundLayout() {
-  return (
-    <StyledRoot>
-      <Helmet>
-        <title>Playground</title>
-      </Helmet>
+function useLaunchContextNames(patient: Patient | null, user: Practitioner | null) {
+  const patientName = useMemo(() => {
+    if (patient?.name) {
+      return constructName(patient.name);
+    }
 
-      <PlaygroundMain>
-        <Outlet />
-      </PlaygroundMain>
-    </StyledRoot>
-  );
+    return patient?.id ?? null;
+  }, [patient]);
+
+  const userName = useMemo(() => {
+    if (user?.name) {
+      return constructName(user.name);
+    }
+
+    return user?.id ?? null;
+  }, [user]);
+
+  return { patientName, userName };
 }
 
-export default PlaygroundLayout;
+export default useLaunchContextNames;

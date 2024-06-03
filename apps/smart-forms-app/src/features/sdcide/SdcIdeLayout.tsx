@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
-import { PlaygroundMain } from './PlaygroundLayout.styles.tsx';
 import { Outlet } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { StyledRoot } from '../../components/Layout/Layout.styles.ts';
+import { SdcIdeMain } from './SdcIdeMain.ts';
 
-function PlaygroundLayout() {
+function SdcIdeLayout() {
   return (
     <StyledRoot>
       <Helmet>
-        <title>Playground</title>
+        <title>SDC IDE</title>
       </Helmet>
 
-      <PlaygroundMain>
+      <SdcIdeMain>
         <Outlet />
-      </PlaygroundMain>
+      </SdcIdeMain>
     </StyledRoot>
   );
 }
 
-export default PlaygroundLayout;
+export default SdcIdeLayout;
