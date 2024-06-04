@@ -17,7 +17,13 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qChoiceOrientation, qItemControl, qSliderStepValue } from '../assets/questionnaires';
+import {
+  qChoiceOrientation,
+  qCollapsibleDefaultClosed,
+  qCollapsibleDefaultOpen,
+  qItemControl,
+  qSliderStepValue
+} from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -47,5 +53,17 @@ export const ChoiceOrientation: Story = {
 export const SliderStepValue: Story = {
   args: {
     questionnaire: qSliderStepValue
+  }
+};
+
+export const CollapsibleDefaultOpen: Story = {
+  args: {
+    questionnaire: qCollapsibleDefaultOpen
+  }
+};
+
+export const CollapsibleDefaultClosed: Story = {
+  args: {
+    questionnaire: qCollapsibleDefaultClosed
   }
 };

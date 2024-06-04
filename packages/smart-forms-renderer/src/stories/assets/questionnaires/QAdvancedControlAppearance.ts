@@ -26,7 +26,7 @@ export const qItemControl: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/item-control',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control',
   item: [
     {
       linkId: 'item-control-instructions',
@@ -55,7 +55,7 @@ export const qChoiceOrientation: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/choice-orientation',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/choice-orientation',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -219,7 +219,7 @@ export const qSliderStepValue: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/slider-step-value',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/slider-step-value',
   item: [
     {
       extension: [
@@ -287,6 +287,212 @@ export const qSliderStepValue: Questionnaire = {
           linkId: 'pain-measure-upper',
           text: 'Unbearable pain',
           type: 'display'
+        }
+      ]
+    }
+  ]
+};
+
+export const qCollapsibleDefaultOpen: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'CollapsibleDefaultOpen',
+  name: 'CollapsibleDefaultOpen',
+  title: 'CollapsibleDefaultOpen',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-08',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-1',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+          valueCode: 'default-open'
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'height',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-height').answer.value"
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'weight',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-weight').answer.value"
+          }
+        }
+      ],
+      linkId: 'bmi-collapsible',
+      text: 'BMI Calculation',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'cm',
+                display: 'cm'
+              }
+            }
+          ],
+          linkId: 'patient-height',
+          text: 'Height',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg',
+                display: 'kg'
+              }
+            }
+          ],
+          linkId: 'patient-weight',
+          text: 'Weight',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                description: 'BMI calculation',
+                language: 'text/fhirpath',
+                expression: '(%weight/((%height/100).power(2))).round(1)'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg/m2',
+                display: 'kg/m2'
+              }
+            }
+          ],
+          linkId: 'bmi-result',
+          text: 'Value',
+          type: 'decimal',
+          repeats: false,
+          readOnly: true
+        }
+      ]
+    }
+  ]
+};
+
+export const qCollapsibleDefaultClosed: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'CollapsibleDefaultClosed',
+  name: 'CollapsibleDefaultClosed',
+  title: 'CollapsibleDefaultClosed',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-08',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-2',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+          valueCode: 'default-closed'
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'height',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-height').answer.value"
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'weight',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-weight').answer.value"
+          }
+        }
+      ],
+      linkId: 'bmi-collapsible',
+      text: 'BMI Calculation',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'cm',
+                display: 'cm'
+              }
+            }
+          ],
+          linkId: 'patient-height',
+          text: 'Height',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg',
+                display: 'kg'
+              }
+            }
+          ],
+          linkId: 'patient-weight',
+          text: 'Weight',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                description: 'BMI calculation',
+                language: 'text/fhirpath',
+                expression: '(%weight/((%height/100).power(2))).round(1)'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg/m2',
+                display: 'kg/m2'
+              }
+            }
+          ],
+          linkId: 'bmi-result',
+          text: 'Value',
+          type: 'decimal',
+          repeats: false,
+          readOnly: true
         }
       ]
     }
