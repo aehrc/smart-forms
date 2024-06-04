@@ -19,6 +19,20 @@ import type { Coding, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
+function hasItemControl(qItem: QuestionnaireItem): boolean {
+  return !!qItem.extension?.some(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
+  );
+}
+
+// If all nested items are of type display and have itemControl, then they should not be rendered
+export function shouldRenderNestedItems(qItem: QuestionnaireItem): boolean {
+  return !qItem.item?.every(
+    (childItem) => childItem.type === 'display' && hasItemControl(childItem)
+  );
+}
+
 /**
  * Check if the extension has an itemControl code equal to the given itemControlCode
  *

@@ -25,6 +25,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
+import Box from '@mui/material/Box';
 
 interface SingleNestedItemsProps
   extends PropsWithQrItemChangeHandler,
@@ -63,27 +64,31 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
   return (
-    <>
-      {qItems.map((qItem: QuestionnaireItem, i) => {
-        const qrItemOrItems = qrItemsByIndex[i];
+    <Box display="flex">
+      <Box ml={1.5} />
+      <Box flexGrow={1}>
+        {qItems.map((qItem: QuestionnaireItem, i) => {
+          const qrItemOrItems = qrItemsByIndex[i];
 
-        if (qItem.type === 'display') {
-          return null;
-        }
+          if (qItem.type === 'display') {
+            return null;
+          }
 
-        return (
-          <GroupItemSwitcher
-            key={qItem.linkId}
-            qItem={qItem}
-            qrItemOrItems={qrItemOrItems}
-            groupCardElevation={groupCardElevation}
-            parentIsReadOnly={parentIsReadOnly}
-            onQrItemChange={handleQrItemChange}
-            onQrRepeatGroupChange={handleQrRepeatGroupChange}
-          />
-        );
-      })}
-    </>
+          return (
+            <GroupItemSwitcher
+              key={qItem.linkId}
+              qItem={qItem}
+              qrItemOrItems={qrItemOrItems}
+              groupCardElevation={groupCardElevation}
+              parentIsReadOnly={parentIsReadOnly}
+              onQrItemChange={handleQrItemChange}
+              onQrRepeatGroupChange={handleQrRepeatGroupChange}
+            />
+          );
+        })}
+      </Box>
+      <Box mr={2.25}></Box>
+    </Box>
   );
 }
 

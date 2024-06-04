@@ -18,10 +18,10 @@
 import React from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithParentIsRepeatGroupAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../../utils';
 import GroupTable from '../Tables/GroupTable';
@@ -101,7 +101,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <GridGroup
         qItem={qItem}
         qrItem={qrItem ?? null}
-        groupCardElevation={groupCardElevation}
+        groupCardElevation={groupCardElevation + 1}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
       />
