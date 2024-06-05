@@ -81,6 +81,34 @@ export function findInAnswerOptions(
 }
 
 /**
+ * Compare answer option value with selected value via valueString, valueInteger, or valueCoding.code
+ *
+ * @author Sean Fong
+ */
+export function compareAnswerOptionValue(
+  option: QuestionnaireItemAnswerOption,
+  value: QuestionnaireItemAnswerOption
+): boolean {
+  if (!value) {
+    return false;
+  }
+
+  if (value.valueString) {
+    return option.valueString === value.valueString;
+  }
+
+  if (value.valueInteger) {
+    return option.valueInteger === value.valueInteger;
+  }
+
+  if (value.valueCoding && value.valueCoding.code) {
+    return option.valueCoding?.code === value.valueCoding.code;
+  }
+
+  return false;
+}
+
+/**
  * Get choice control type based on certain criteria in choice items
  *
  * @author Sean Fong
@@ -103,22 +131,6 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
   }
 
   return ChoiceItemControl.Select;
-}
-
-/**
- * Find and return corresponding coding from AnswerValueSet based on selected answer in form
- *
- * @author Sean Fong
- */
-export function findInAnswerValueSetCodings(
-  codings: Coding[],
-  selected: string
-): QuestionnaireResponseItemAnswer | undefined {
-  for (const coding of codings) {
-    if (selected === coding.code) {
-      return coding;
-    }
-  }
 }
 
 /**

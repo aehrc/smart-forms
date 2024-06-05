@@ -235,7 +235,9 @@ function createReferenceContextTuple(
       referenceContext,
       Promise.resolve(
         createWarningIssue(
-          `Reference Context ${referenceContext.part[0]?.valueString ?? ''} does not contain a reference`
+          `Reference Context ${
+            referenceContext.part[0]?.valueString ?? ''
+          } does not contain a reference`
         )
       ),
       null
@@ -259,7 +261,9 @@ function createResourceContextTuple(
       resourceContext,
       Promise.resolve(
         createWarningIssue(
-          `${resourceContextName} bundle entry ${bundleEntry.fullUrl ?? ''} does not contain a request`
+          `${resourceContextName} bundle entry ${
+            bundleEntry.fullUrl ?? ''
+          } does not contain a request`
         )
       ),
       null

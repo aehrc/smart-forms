@@ -26,10 +26,18 @@ function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
   );
 }
 
+function hasItemControl(qItem: QuestionnaireItem): boolean {
+  return !!qItem.extension?.some(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
+  );
+}
+
 // If all nested items are of type display and have itemControl, then they should not be rendered
 export function shouldRenderNestedItems(qItem: QuestionnaireItem): boolean {
   return !qItem.item?.every(
-    (childItem) => childItem.type === 'display' && hasDisplayCategory(childItem)
+    (childItem) =>
+      childItem.type === 'display' && (hasDisplayCategory(childItem) || hasItemControl(childItem))
   );
 }
 

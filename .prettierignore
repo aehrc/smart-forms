@@ -1,5 +1,9 @@
 lib
 dist
 coverage
+build
 *.md
 *.stories.*
+*.cjs
+*.js
+*.config.*

@@ -21,6 +21,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import Iconify from '../../components/Iconify/Iconify';
 import { buildForm } from '../../utils';
+import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 
 interface BuildFormButtonProps {
   questionnaire: Questionnaire;
@@ -31,7 +32,12 @@ function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
   const { questionnaire, questionnaireResponse } = props;
 
   async function handleBuildForm() {
-    await buildForm(questionnaire, questionnaireResponse);
+    await buildForm(
+      questionnaire,
+      questionnaireResponse,
+      undefined,
+      STORYBOOK_TERMINOLOGY_SERVER_URL
+    );
   }
 
   return (

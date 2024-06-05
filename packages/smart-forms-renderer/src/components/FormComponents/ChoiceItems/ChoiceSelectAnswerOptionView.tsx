@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type {
@@ -23,6 +23,7 @@ import type {
   PropsWithIsTabledAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { findInAnswerOptions } from '../../../utils/choice';
 import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 
 interface ChoiceSelectAnswerOptionViewProps
@@ -33,9 +34,8 @@ interface ChoiceSelectAnswerOptionViewProps
   valueChoice: string | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  onSelectChange: (linkId: string) => void;
+  onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
   onFocusLinkId: () => void;
-  onClear: () => void;
 }
 
 function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) {
@@ -48,16 +48,20 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     readOnly,
     calcExpUpdated,
     onFocusLinkId,
-    onSelectChange,
-    onClear
+    onSelectChange
   } = props;
+
+  const valueSelect: QuestionnaireItemAnswerOption | null = useMemo(
+    () => findInAnswerOptions(options, valueChoice ?? '') ?? null,
+    [options, valueChoice]
+  );
 
   if (isRepeated) {
     return (
       <ChoiceSelectAnswerOptionFields
         qItem={qItem}
         options={options}
-        valueSelect={valueChoice ?? ''}
+        valueSelect={valueSelect}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
@@ -75,7 +79,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         <ChoiceSelectAnswerOptionFields
           qItem={qItem}
           options={options}
-          valueSelect={valueChoice ?? ''}
+          valueSelect={valueSelect}
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}

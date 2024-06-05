@@ -23,6 +23,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { RendererThemeProvider } from '../../theme';
 import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import BuildFormButtonForStorybook from './BuildFormButtonForStorybook';
+import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 
 interface BuildFormButtonTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -46,7 +47,12 @@ function BuildFormButtonTesterWrapperForStorybook(
 
   const queryClient = useRendererQueryClient();
 
-  const isBuilding = useBuildForm(questionnaire);
+  const isBuilding = useBuildForm(
+    questionnaire,
+    undefined,
+    undefined,
+    STORYBOOK_TERMINOLOGY_SERVER_URL
+  );
 
   if (isBuilding) {
     return <div>Loading...</div>;

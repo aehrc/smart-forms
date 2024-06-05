@@ -17,7 +17,11 @@
 
 import React from 'react';
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import type {
@@ -66,21 +70,26 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     }
   });
 
-  // Event handlers
-  function handleChange(newValue: string) {
-    if (options.length === 0) {
+  function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
+    // No options present or newValue is type null
+    if (options.length === 0 || newValue === null) {
       onQrItemChange(createEmptyQrItem(qItem));
       return;
     }
 
-    const qrAnswer = findInAnswerOptions(options, newValue);
-    onQrItemChange(
-      qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
-    );
-  }
+    // newValue is type string
+    if (typeof newValue === 'string') {
+      const qrAnswer = findInAnswerOptions(options, newValue);
+      onQrItemChange(
+        qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
+      );
+      return;
+    }
 
-  function handleClear() {
-    onQrItemChange(createEmptyQrItem(qItem));
+    // newValue is type QuestionnaireItemAnswerOption
+    onQrItemChange(
+      newValue ? { ...createEmptyQrItem(qItem), answer: [newValue] } : createEmptyQrItem(qItem)
+    );
   }
 
   return (
@@ -94,7 +103,6 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       isTabled={isTabled}
       onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
       onSelectChange={handleChange}
-      onClear={handleClear}
     />
   );
 }
