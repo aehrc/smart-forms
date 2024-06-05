@@ -23,7 +23,6 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -36,14 +35,13 @@ import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExp
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -95,7 +93,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         terminologyError={terminologyError}
-        isTabled={isTabled}
         onCheckedChange={handleChange}
         onClear={handleClear}
       />
@@ -115,7 +112,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           terminologyError={terminologyError}
-          isTabled={isTabled}
           onCheckedChange={handleChange}
           onClear={handleClear}
         />

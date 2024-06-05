@@ -23,7 +23,6 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -37,7 +36,6 @@ import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -49,7 +47,6 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     qItem,
     qrItem,
     isRepeated,
-    isTabled,
     showMinimalView = false,
     parentIsReadOnly,
     onQrItemChange

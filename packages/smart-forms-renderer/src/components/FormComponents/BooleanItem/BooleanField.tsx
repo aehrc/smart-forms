@@ -16,7 +16,6 @@
  */
 
 import React, { memo } from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
@@ -29,7 +28,7 @@ import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 
-interface BooleanFieldProps extends PropsWithIsTabledAttribute {
+interface BooleanFieldProps {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   valueBoolean: boolean | undefined;
@@ -39,8 +38,7 @@ interface BooleanFieldProps extends PropsWithIsTabledAttribute {
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, calcExpUpdated, isTabled, onCheckedChange, onClear } =
-    props;
+  const { qItem, readOnly, valueBoolean, calcExpUpdated, onCheckedChange, onClear } = props;
 
   // defaults to horizontal, only set to vertical if explicitly set
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Horizontal;

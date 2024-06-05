@@ -17,7 +17,7 @@
 
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import PlaygroundPatientPicker from './PlaygroundPatientPicker.tsx';
-import { Patient, Practitioner } from 'fhir/r4';
+import type { Patient, Practitioner } from 'fhir/r4';
 import { useState } from 'react';
 import PlaygroundUserPicker from './PlaygroundUserPicker.tsx';
 import PlaygroundFhirServerUrlInput from './PlaygroundSourceFhirServerInput.tsx';

@@ -96,7 +96,6 @@ function BooleanItem(props: BooleanItemProps) {
         <BooleanField
           qItem={qItem}
           readOnly={readOnly}
-          isTabled={isTabled}
           valueBoolean={valueBoolean}
           calcExpUpdated={calcExpUpdated}
           onCheckedChange={handleValueChange}
@@ -111,7 +110,6 @@ function BooleanItem(props: BooleanItemProps) {
       <BooleanField
         qItem={qItem}
         readOnly={readOnly}
-        isTabled={isTabled}
         valueBoolean={valueBoolean}
         calcExpUpdated={calcExpUpdated}
         onCheckedChange={handleValueChange}
@@ -128,7 +126,6 @@ function BooleanItem(props: BooleanItemProps) {
         <BooleanField
           qItem={qItem}
           readOnly={readOnly}
-          isTabled={isTabled}
           valueBoolean={valueBoolean}
           calcExpUpdated={calcExpUpdated}
           onCheckedChange={handleValueChange}

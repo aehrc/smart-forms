@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Bundle } from 'fhir/r4';
+import type { Bundle } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../../../api/headers.ts';
 

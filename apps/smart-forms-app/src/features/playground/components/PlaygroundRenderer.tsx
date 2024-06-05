@@ -20,7 +20,7 @@ import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { BaseRenderer, buildForm, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
-import { Patient, Practitioner } from 'fhir/r4';
+import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';

@@ -16,7 +16,8 @@
  */
 
 import { IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import { useState } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { verifyFhirServer } from '../api/verifyFhirServer.ts';

@@ -24,7 +24,7 @@ import type {
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/renderProps.interface';
+import type { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/renderProps.interface';
 import type { Tabs } from '../../../interfaces/tab.interface';
 import GroupHeading from './GroupHeading';
 import { GroupCard } from './GroupItem.styles';

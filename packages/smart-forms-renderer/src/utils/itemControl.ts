@@ -19,17 +19,17 @@ import type { Coding, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
-function hasItemControl(qItem: QuestionnaireItem): boolean {
+function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
   return !!qItem.extension?.some(
     (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory'
   );
 }
 
 // If all nested items are of type display and have itemControl, then they should not be rendered
 export function shouldRenderNestedItems(qItem: QuestionnaireItem): boolean {
   return !qItem.item?.every(
-    (childItem) => childItem.type === 'display' && hasItemControl(childItem)
+    (childItem) => childItem.type === 'display' && hasDisplayCategory(childItem)
   );
 }
 
