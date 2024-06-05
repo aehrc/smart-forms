@@ -24,21 +24,11 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
-import { QGroupContainerBox } from '../../Box.styles';
-import Card from '@mui/material/Card';
-import Collapse from '@mui/material/Collapse';
-import Divider from '@mui/material/Divider';
-import { TransitionGroup } from 'react-transition-group';
-import { createEmptyQrItem } from '../../../utils/qrItem';
 import { nanoid } from 'nanoid';
-import RepeatGroupItem from './RepeatGroupItem';
-import AddItemButton from './AddItemButton';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import cloneDeep from 'lodash.clonedeep';
-import useReadOnly from '../../../hooks/useReadOnly';
-import Typography from '@mui/material/Typography';
 import { useQuestionnaireStore } from '../../../stores';
 import useRepeatGroups from '../../../hooks/useRepeatGroups';
+import RepeatGroupView from './RepeatGroupView';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -67,8 +57,6 @@ function RepeatGroup(props: RepeatGroupProps) {
   } = props;
 
   const mutateRepeatEnableWhenItems = useQuestionnaireStore.use.mutateRepeatEnableWhenItems();
-
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const initialRepeatGroups = useInitialiseRepeatGroups(qItem, qrItems);
 
@@ -122,76 +110,17 @@ function RepeatGroup(props: RepeatGroupProps) {
     ]);
   }
 
-  if (showMinimalView) {
-    return (
-      <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
-        <Card elevation={groupCardElevation} sx={{ p: 2 }}>
-          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-            const answeredQrItem = createEmptyQrItem(qItem);
-            if (nullableQrItem) {
-              answeredQrItem.item = nullableQrItem.item;
-            }
-
-            return (
-              <RepeatGroupItem
-                key={nanoId}
-                qItem={qItem}
-                repeatGroupIndex={index}
-                answeredQrItem={answeredQrItem}
-                nullableQrItem={nullableQrItem}
-                numOfRepeatGroups={repeatGroups.length}
-                groupCardElevation={groupCardElevation + 1}
-                showMinimalView={showMinimalView}
-                parentIsReadOnly={parentIsReadOnly}
-                onDeleteItem={() => handleDeleteItem(index)}
-                onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
-              />
-            );
-          })}
-        </Card>
-      </QGroupContainerBox>
-    );
-  }
-
   return (
-    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
-      <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
-        {qItem.text ? (
-          <>
-            <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
-              <LabelWrapper qItem={qItem} readOnly={readOnly} />
-            </Typography>
-            <Divider sx={{ mt: 1, mb: 1.5 }} light />
-          </>
-        ) : null}
-        <TransitionGroup>
-          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-            const answeredQrItem = createEmptyQrItem(qItem);
-            if (nullableQrItem) {
-              answeredQrItem.item = nullableQrItem.item;
-            }
-
-            return (
-              <Collapse key={nanoId} timeout={200}>
-                <RepeatGroupItem
-                  qItem={qItem}
-                  repeatGroupIndex={index}
-                  answeredQrItem={answeredQrItem}
-                  nullableQrItem={nullableQrItem}
-                  numOfRepeatGroups={repeatGroups.length}
-                  groupCardElevation={groupCardElevation + 1}
-                  parentIsReadOnly={parentIsReadOnly}
-                  onDeleteItem={() => handleDeleteItem(index)}
-                  onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
-                />
-              </Collapse>
-            );
-          })}
-        </TransitionGroup>
-
-        <AddItemButton repeatGroups={repeatGroups} readOnly={readOnly} onAddItem={handleAddItem} />
-      </Card>
-    </QGroupContainerBox>
+    <RepeatGroupView
+      qItem={qItem}
+      repeatGroups={repeatGroups}
+      groupCardElevation={groupCardElevation}
+      showMinimalView={showMinimalView}
+      parentIsReadOnly={parentIsReadOnly}
+      onAnswerChange={handleAnswerChange}
+      onAddItem={handleAddItem}
+      onDeleteItem={handleDeleteItem}
+    />
   );
 }
 

@@ -19,7 +19,6 @@ import React, { useMemo } from 'react';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
-import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -29,11 +28,7 @@ import type {
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';
-import GroupHeading from './GroupHeading';
-import { GroupCard } from './GroupItem.styles';
-import TabButtonsWrapper from './TabButtonsWrapper';
-import GroupItemSwitcher from './GroupItemSwitcher';
-import useReadOnly from '../../../hooks/useReadOnly';
+import GroupItemView from './GroupItemView';
 
 interface GroupItemProps
   extends PropsWithQrItemChangeHandler,
@@ -65,7 +60,6 @@ function GroupItem(props: GroupItemProps) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
   if (itemIsHidden) {
     return null;
@@ -96,39 +90,21 @@ function GroupItem(props: GroupItemProps) {
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
   return (
-    <QGroupContainerBox
-      cardElevation={groupCardElevation}
+    <GroupItemView
+      qItem={qItem}
+      childQItems={qItems}
+      qrItemsByIndex={qrItemsByIndex}
       isRepeated={isRepeated}
-      data-test="q-item-group-box">
-      <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
-        <GroupHeading
-          qItem={qItem}
-          readOnly={readOnly}
-          tabIsMarkedAsComplete={tabIsMarkedAsComplete}
-          isRepeated={isRepeated}
-        />
-        {qItems.map((qItem: QuestionnaireItem, i) => {
-          const qrItemOrItems = qrItemsByIndex[i];
-
-          return (
-            <GroupItemSwitcher
-              key={qItem.linkId}
-              qItem={qItem}
-              qrItemOrItems={qrItemOrItems}
-              groupCardElevation={groupCardElevation}
-              parentIsReadOnly={readOnly}
-              parentIsRepeatGroup={parentIsRepeatGroup}
-              parentRepeatGroupIndex={parentRepeatGroupIndex}
-              onQrItemChange={handleQrItemChange}
-              onQrRepeatGroupChange={handleQrRepeatGroupChange}
-            />
-          );
-        })}
-
-        {/* Next tab button at the end of each tab group */}
-        <TabButtonsWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
-      </GroupCard>
-    </QGroupContainerBox>
+      groupCardElevation={groupCardElevation}
+      tabIsMarkedAsComplete={tabIsMarkedAsComplete}
+      tabs={tabs}
+      currentTabIndex={currentTabIndex}
+      parentIsReadOnly={parentIsReadOnly}
+      parentIsRepeatGroup={parentIsRepeatGroup}
+      parentRepeatGroupIndex={parentRepeatGroupIndex}
+      onQrItemChange={handleQrItemChange}
+      onQrRepeatGroupChange={handleQrRepeatGroupChange}
+    />
   );
 }
 

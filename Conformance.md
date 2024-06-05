@@ -51,11 +51,11 @@ View the source here: http://hl7.org/fhir/uv/sdc/expressions.html
 View the source here: http://hl7.org/fhir/uv/sdc/rendering.html
 
 #### [Text Appearance](http://hl7.org/fhir/uv/sdc/rendering.html#extension-overview)
-- [ ] rendering-style
+- [x] rendering-style
 - [x] rendering-xhtml
 - [x] displayCategory
 - [x] openLabel
-- [x] hidden
+- [x] hidden  
 - [ ] itemMedia
 - [ ] itemAnswerMedia
 
@@ -64,7 +64,7 @@ View the source here: http://hl7.org/fhir/uv/sdc/rendering.html
 - [x] choiceOrientation
 - [x] sliderStepValue
 - [ ] width
-- [ ] collapsible
+- [x] collapsible
 
 **Questionnaire `itemControl` Checklist**
 

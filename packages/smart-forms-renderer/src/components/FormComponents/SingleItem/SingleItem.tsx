@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
@@ -30,6 +30,9 @@ import SingleItemSwitcher from './SingleItemSwitcher';
 import useHidden from '../../../hooks/useHidden';
 import useReadOnly from '../../../hooks/useReadOnly';
 import SingleNestedItems from './SingleNestedItems';
+import { GroupCard } from '../GroupItem/GroupItem.styles';
+import { QGroupContainerBox } from '../../Box.styles';
+import { shouldRenderNestedItems } from '../../../utils/itemControl';
 
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler,
@@ -97,12 +100,47 @@ function SingleItem(props: SingleItemProps) {
     [qrItem, onQrItemChange]
   );
 
-  const qItemHasNestedItems = !!qItem.item && qItem.item.length > 0;
+  const qItemHasNestedItems = useMemo(
+    () => !!qItem.item && qItem.item.length > 0 && shouldRenderNestedItems(qItem),
+    [qItem]
+  );
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
   if (itemIsHidden) {
     return null;
+  }
+
+  if (qItemHasNestedItems) {
+    return (
+      <QGroupContainerBox
+        cardElevation={groupCardElevation}
+        isRepeated={isRepeated}
+        data-test="q-item-group-box">
+        <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
+          <SingleItemSwitcher
+            qItem={qItem}
+            qrItem={qrItem}
+            isRepeated={isRepeated}
+            isTabled={isTabled}
+            showMinimalView={showMinimalView}
+            parentIsReadOnly={readOnly}
+            onQrItemChange={handleQrItemChange}
+          />
+          {qItemHasNestedItems ? (
+            <>
+              <SingleNestedItems
+                qItem={qItem}
+                qrItem={qrItem}
+                groupCardElevation={groupCardElevation}
+                parentIsReadOnly={readOnly}
+                onQrItemChange={handleQrItemChangeWithNestedItems}
+              />
+            </>
+          ) : null}
+        </GroupCard>
+      </QGroupContainerBox>
+    );
   }
 
   return (
@@ -116,15 +154,6 @@ function SingleItem(props: SingleItemProps) {
         parentIsReadOnly={readOnly}
         onQrItemChange={handleQrItemChange}
       />
-      {qItemHasNestedItems ? (
-        <SingleNestedItems
-          qItem={qItem}
-          qrItem={qrItem}
-          groupCardElevation={groupCardElevation}
-          parentIsReadOnly={readOnly}
-          onQrItemChange={handleQrItemChangeWithNestedItems}
-        />
-      ) : null}
     </>
   );
 }

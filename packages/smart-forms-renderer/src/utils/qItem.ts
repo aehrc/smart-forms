@@ -123,3 +123,27 @@ export function getLinkIdTypeTuplesFromItemRecursive(qItem: QuestionnaireItem): 
 
   return linkIds;
 }
+
+export type CollapsibleType = 'default-open' | 'default-closed';
+
+function valueCodeIsCollapsibleType(valueCode: string): valueCode is CollapsibleType {
+  return valueCode === 'default-open' || valueCode === 'default-closed';
+}
+
+export function getGroupCollapsible(qItem: QuestionnaireItem): CollapsibleType | null {
+  const collapsibleExtension = qItem.extension?.find(
+    (ext) =>
+      ext.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible'
+  );
+
+  if (collapsibleExtension) {
+    if (
+      collapsibleExtension.valueCode &&
+      valueCodeIsCollapsibleType(collapsibleExtension.valueCode)
+    ) {
+      return collapsibleExtension.valueCode;
+    }
+  }
+
+  return null;
+}

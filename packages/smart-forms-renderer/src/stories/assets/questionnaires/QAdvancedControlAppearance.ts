@@ -26,7 +26,7 @@ export const qItemControl: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/item-control',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control',
   item: [
     {
       linkId: 'item-control-instructions',
@@ -55,7 +55,7 @@ export const qChoiceOrientation: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/choice-orientation',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/choice-orientation',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -219,7 +219,7 @@ export const qSliderStepValue: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/slider-step-value',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/slider-step-value',
   item: [
     {
       extension: [
@@ -287,6 +287,336 @@ export const qSliderStepValue: Questionnaire = {
           linkId: 'pain-measure-upper',
           text: 'Unbearable pain',
           type: 'display'
+        }
+      ]
+    }
+  ]
+};
+
+export const qCollapsibleDefaultOpen: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'CollapsibleDefaultOpen',
+  name: 'CollapsibleDefaultOpen',
+  title: 'CollapsibleDefaultOpen',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-08',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-1',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+          valueCode: 'default-open'
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'height',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-height').answer.value"
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'weight',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-weight').answer.value"
+          }
+        }
+      ],
+      linkId: 'bmi-collapsible',
+      text: 'BMI Calculation',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'cm',
+                display: 'cm'
+              }
+            }
+          ],
+          linkId: 'patient-height',
+          text: 'Height',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg',
+                display: 'kg'
+              }
+            }
+          ],
+          linkId: 'patient-weight',
+          text: 'Weight',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                description: 'BMI calculation',
+                language: 'text/fhirpath',
+                expression: '(%weight/((%height/100).power(2))).round(1)'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg/m2',
+                display: 'kg/m2'
+              }
+            }
+          ],
+          linkId: 'bmi-result',
+          text: 'Value',
+          type: 'decimal',
+          repeats: false,
+          readOnly: true
+        }
+      ]
+    }
+  ]
+};
+
+export const qCollapsibleDefaultClosed: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'CollapsibleDefaultClosed',
+  name: 'CollapsibleDefaultClosed',
+  title: 'CollapsibleDefaultClosed',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-08',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-2',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+          valueCode: 'default-closed'
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'height',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-height').answer.value"
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'weight',
+            language: 'text/fhirpath',
+            expression: "item.where(linkId='patient-weight').answer.value"
+          }
+        }
+      ],
+      linkId: 'bmi-collapsible',
+      text: 'BMI Calculation',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'cm',
+                display: 'cm'
+              }
+            }
+          ],
+          linkId: 'patient-height',
+          text: 'Height',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg',
+                display: 'kg'
+              }
+            }
+          ],
+          linkId: 'patient-weight',
+          text: 'Weight',
+          type: 'decimal',
+          repeats: false,
+          readOnly: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                description: 'BMI calculation',
+                language: 'text/fhirpath',
+                expression: '(%weight/((%height/100).power(2))).round(1)'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'kg/m2',
+                display: 'kg/m2'
+              }
+            }
+          ],
+          linkId: 'bmi-result',
+          text: 'Value',
+          type: 'decimal',
+          repeats: false,
+          readOnly: true
+        }
+      ]
+    }
+  ]
+};
+
+export const qCollapsibleNested: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'CollapsibleNested',
+  name: 'CollapsibleNested',
+  title: 'CollapsibleNested',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-08',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-3',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+          valueCode: 'default-open'
+        }
+      ],
+      linkId: 'f1262ade-843c-4eba-a86d-51a9c97d134b',
+      text: 'Home address',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'check-box'
+                  }
+                ]
+              }
+            }
+          ],
+          linkId: '311d83bb-f22e-4f60-9b50-b6e38dd2059b',
+          definition:
+            'http://hl7.org.au/fhir/StructureDefinition/au-address#Address.extension:noFixedAddress',
+          text: 'No fixed address',
+          type: 'boolean',
+          repeats: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+              valueCode: 'default-open'
+            }
+          ],
+          linkId: '4e0dc185-f83e-4027-b7a8-ecb543d42c6d',
+          type: 'group',
+          text: 'Address',
+          enableWhen: [
+            {
+              question: '311d83bb-f22e-4f60-9b50-b6e38dd2059b',
+              operator: '!=',
+              answerBoolean: true
+            }
+          ],
+          repeats: true,
+          item: [
+            {
+              linkId: '2fee2d51-7828-4178-b8c1-35edd32ba338',
+              definition: 'http://hl7.org.au/fhir/StructureDefinition/au-address#Address.line',
+              text: 'Street address',
+              type: 'string',
+              repeats: false
+            },
+            {
+              linkId: 'ddb65ed1-f4b2-4730-af2a-2f98bc73c76f',
+              definition: 'http://hl7.org.au/fhir/StructureDefinition/au-address#Address.city',
+              text: 'City',
+              type: 'string',
+              repeats: false
+            },
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'drop-down'
+                      }
+                    ]
+                  }
+                }
+              ],
+              linkId: 'd9a1236c-8d6e-4f20-a12a-9d5de5a1d0f6',
+              definition: 'http://hl7.org.au/fhir/StructureDefinition/au-address#Address.state',
+              text: 'State',
+              type: 'choice',
+              repeats: false,
+              answerValueSet:
+                'https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2'
+            },
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/regex',
+                  valueString: "matches('^[0-9]{4}$')"
+                },
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
+                  valueString: '####'
+                }
+              ],
+              linkId: '3f61a1ea-1c74-4f52-8519-432ce861a74f',
+              definition:
+                'http://hl7.org.au/fhir/StructureDefinition/au-address#Address.postalCode',
+              text: 'Postcode',
+              type: 'string',
+              repeats: false
+            }
+          ]
         }
       ]
     }

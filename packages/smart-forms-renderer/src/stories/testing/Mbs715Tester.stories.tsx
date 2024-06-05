@@ -16,61 +16,42 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
+import PrePopWrapperForStorybook from '../storybookWrappers/PrePopWrapperForStorybook';
 import {
-  qChoiceOrientation,
-  qCollapsibleDefaultClosed,
-  qCollapsibleDefaultOpen,
-  qCollapsibleNested,
-  qItemControl,
-  qSliderStepValue
-} from '../assets/questionnaires';
+  qBasicMbs715,
+  qModifiedMbs715WithCollapsible
+} from '../assets/questionnaires/QMbs715Tester';
+import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
+import { patSmartForm } from '../assets/patients/PatSmartForm';
+import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/SDC/8.1.2 Advanced Control Appearance',
-  component: BuildFormWrapperForStorybook,
+  title: 'Component/Testing/MBS 715 Tester',
+  component: PrePopWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
-} satisfies Meta<typeof BuildFormWrapperForStorybook>;
+} satisfies Meta<typeof PrePopWrapperForStorybook>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const ItemControl: Story = {
+export const BasicMBS715: Story = {
   args: {
-    questionnaire: qItemControl
+    questionnaire: qBasicMbs715,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
   }
 };
 
-export const ChoiceOrientation: Story = {
+export const ModifiedMBS715WithCollapsible: Story = {
   args: {
-    questionnaire: qChoiceOrientation
-  }
-};
-
-export const SliderStepValue: Story = {
-  args: {
-    questionnaire: qSliderStepValue
-  }
-};
-
-export const CollapsibleDefaultOpen: Story = {
-  args: {
-    questionnaire: qCollapsibleDefaultOpen
-  }
-};
-
-export const CollapsibleDefaultClosed: Story = {
-  args: {
-    questionnaire: qCollapsibleDefaultClosed
-  }
-};
-
-export const CollapsibleNested: Story = {
-  args: {
-    questionnaire: qCollapsibleNested
+    questionnaire: qModifiedMbs715WithCollapsible,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
   }
 };

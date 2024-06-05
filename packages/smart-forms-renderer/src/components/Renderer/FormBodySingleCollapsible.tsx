@@ -21,7 +21,6 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getContextDisplays } from '../../utils/tabs';
@@ -46,17 +45,16 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
 
   const collapsibleLabel = getShortText(qItem) ?? qItem.text ?? '';
 
+  const isExpanded = selectedIndex === index;
+
   return (
     <Accordion
-      expanded={selectedIndex === index}
-      TransitionProps={{ unmountOnExit: true, timeout: 250 }}
+      expanded={isExpanded}
+      slotProps={{
+        transition: { unmountOnExit: true, timeout: 250 }
+      }}
       onChange={() => onToggleExpand(index)}>
-      <AccordionSummary
-        expandIcon={
-          <Tooltip title={'Expand'}>
-            <ExpandMoreIcon />
-          </Tooltip>
-        }>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" mr={3}>
           <Typography variant="subtitle2">{collapsibleLabel}</Typography>
           <Box display="flex" columnGap={0.5}>

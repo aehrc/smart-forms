@@ -44,15 +44,15 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
 
   return (
     <>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Box display="flex" alignItems="center" width="100%">
         <Typography
           variant="h6"
           fontSize={isTabHeading ? 16 : 15}
           color={readOnly && !isTabHeading ? 'text.secondary' : 'text.primary'}>
           <ItemLabelText qItem={qItem} />
         </Typography>
-
-        <Box display="flex" columnGap={0.5}>
+        <Box flexGrow={1} />
+        <Box display="flex" columnGap={0.5} mx={1}>
           {contextDisplayItems.map((item) => {
             return <ContextDisplayItem key={item.linkId} displayItem={item} />;
           })}
