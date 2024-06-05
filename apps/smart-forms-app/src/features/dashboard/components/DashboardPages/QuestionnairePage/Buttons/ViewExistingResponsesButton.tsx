@@ -46,6 +46,15 @@ function ViewExistingResponsesButton() {
     navigate('/dashboard/responses');
   }
 
+  let responseMessage;
+  if (isFetching && selectedQuestionnaire) {
+    responseMessage = 'Loading responses';
+  } else if (existingResponses.length === 0) {
+    responseMessage = 'No responses found';
+  } else {
+    responseMessage = 'View responses';
+  }
+
   const buttonIsDisabled = !selectedQuestionnaire || existingResponses.length === 0 || isFetching;
 
   return (
@@ -70,11 +79,7 @@ function ViewExistingResponsesButton() {
         color={buttonIsDisabled ? 'text.disabled' : 'primary'}
         textAlign="center"
         sx={{ mt: -0.5, mb: 0.5 }}>
-        {isFetching && selectedQuestionnaire
-          ? 'Loading responses'
-          : existingResponses.length === 0
-            ? 'No responses found'
-            : 'View responses'}
+        {responseMessage}
       </Typography>
     </Stack>
   );

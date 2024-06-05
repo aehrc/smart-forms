@@ -65,19 +65,21 @@ export function getResponseToolBarColors(
   selectedQuestionnaire: Questionnaire | null,
   existingResponses: QuestionnaireResponse[]
 ) {
-  return {
-    ...(selected
-      ? {
-          color: 'primary.main',
-          bgcolor: 'pale.primary'
-        }
-      : selectedQuestionnaire && existingResponses.length > 0
-        ? {
-            color: 'secondary.main',
-            bgcolor: 'pale.secondary'
-          }
-        : null)
-  };
+  if (selected) {
+    return {
+      color: 'primary.main',
+      bgcolor: 'pale.primary'
+    };
+  }
+
+  if (selectedQuestionnaire && existingResponses.length > 0) {
+    return {
+      color: 'secondary.main',
+      bgcolor: 'pale.secondary'
+    };
+  }
+
+  return {};
 }
 
 export function getQuestionnaireToolBarColors(selected: Questionnaire | null) {
