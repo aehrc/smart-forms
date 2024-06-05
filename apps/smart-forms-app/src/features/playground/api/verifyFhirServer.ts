@@ -17,7 +17,7 @@
 
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../../../api/headers.ts';
-import { CapabilityStatement } from 'fhir/r4';
+import type { CapabilityStatement } from 'fhir/r4';
 
 export async function verifyFhirServer(
   endpointUrl: string

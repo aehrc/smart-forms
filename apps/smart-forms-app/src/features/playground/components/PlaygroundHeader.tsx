@@ -24,7 +24,7 @@ import { StyledRoot, StyledToolbar } from '../../../components/Header/Header.sty
 import { memo, useState } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import { Patient, Practitioner } from 'fhir/r4';
+import type { Patient, Practitioner } from 'fhir/r4';
 import PlaygroundSettingsDialog from './PlaygroundSettingsDialog.tsx';
 import SettingsIcon from '@mui/icons-material/Settings';
 
