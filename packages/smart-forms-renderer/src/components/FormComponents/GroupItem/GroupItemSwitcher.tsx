@@ -101,7 +101,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <GridGroup
         qItem={qItem}
         qrItem={qrItem ?? null}
-        groupCardElevation={groupCardElevation + 1}
+        groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
       />
