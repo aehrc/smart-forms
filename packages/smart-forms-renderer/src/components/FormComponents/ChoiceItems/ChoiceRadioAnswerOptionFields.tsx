@@ -21,7 +21,6 @@ import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import RadioOptionList from '../ItemParts/RadioOptionList';
 import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Fade from '@mui/material/Fade';
@@ -29,7 +28,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 
-interface ChoiceRadioAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
+interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
@@ -40,16 +39,7 @@ interface ChoiceRadioAnswerOptionFieldsProps extends PropsWithIsTabledAttribute 
 }
 
 function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps) {
-  const {
-    qItem,
-    options,
-    valueRadio,
-    readOnly,
-    calcExpUpdated,
-    isTabled,
-    onCheckedChange,
-    onClear
-  } = props;
+  const { qItem, options, valueRadio, readOnly, calcExpUpdated, onCheckedChange, onClear } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 

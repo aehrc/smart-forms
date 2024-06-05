@@ -95,7 +95,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         terminologyError={terminologyError}
-        isTabled={isTabled}
         onCheckedChange={handleChange}
         onClear={handleClear}
       />
@@ -115,7 +114,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           terminologyError={terminologyError}
-          isTabled={isTabled}
           onCheckedChange={handleChange}
           onClear={handleClear}
         />

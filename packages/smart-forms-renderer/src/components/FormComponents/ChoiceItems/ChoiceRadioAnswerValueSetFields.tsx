@@ -25,7 +25,6 @@ import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
 import RadioOptionList from '../ItemParts/RadioOptionList';
 import Tooltip from '@mui/material/Tooltip';
@@ -33,7 +32,7 @@ import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import Fade from '@mui/material/Fade';
 
-interface ChoiceRadioAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
+interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
@@ -52,7 +51,6 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     readOnly,
     calcExpUpdated,
     terminologyError,
-    isTabled,
     onCheckedChange,
     onClear
   } = props;

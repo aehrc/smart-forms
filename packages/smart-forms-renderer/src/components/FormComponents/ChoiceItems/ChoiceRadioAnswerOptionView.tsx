@@ -58,7 +58,6 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
         qItem={qItem}
         options={options}
         valueRadio={valueChoice}
-        isTabled={isTabled}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onCheckedChange={onCheckedChange}
@@ -78,7 +77,6 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
           options={options}
           valueRadio={valueChoice}
           readOnly={readOnly}
-          isTabled={isTabled}
           calcExpUpdated={calcExpUpdated}
           onCheckedChange={onCheckedChange}
           onClear={onClear}
