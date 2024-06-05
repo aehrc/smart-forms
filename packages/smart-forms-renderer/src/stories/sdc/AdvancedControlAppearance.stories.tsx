@@ -21,6 +21,7 @@ import {
   qChoiceOrientation,
   qCollapsibleDefaultClosed,
   qCollapsibleDefaultOpen,
+  qCollapsibleNested,
   qItemControl,
   qSliderStepValue
 } from '../assets/questionnaires';
@@ -65,5 +66,11 @@ export const CollapsibleDefaultOpen: Story = {
 export const CollapsibleDefaultClosed: Story = {
   args: {
     questionnaire: qCollapsibleDefaultClosed
+  }
+};
+
+export const CollapsibleNested: Story = {
+  args: {
+    questionnaire: qCollapsibleNested
   }
 };

@@ -19526,7 +19526,7 @@ export const qModifiedMbs715WithCollapsible: Questionnaire = {
               extension: [
                 {
                   url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
-                  valueCode: 'default-closed'
+                  valueCode: 'default-open'
                 },
                 {
                   url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext',
@@ -19573,6 +19573,12 @@ export const qModifiedMbs715WithCollapsible: Questionnaire = {
                   repeats: false
                 },
                 {
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+                      valueCode: 'default-open'
+                    }
+                  ],
                   linkId: '4e0dc185-f83e-4027-b7a8-ecb543d42c6d',
                   type: 'group',
                   enableWhen: [

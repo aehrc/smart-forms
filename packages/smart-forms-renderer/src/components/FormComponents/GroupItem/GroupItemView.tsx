@@ -72,8 +72,10 @@ function GroupItemView(props: GroupItemViewProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  // Render collapsible group item
+  // If group item is a repeating instance, do not render group item as collapsible
   const groupIsCollapsible = getGroupCollapsible(qItem);
-  if (groupIsCollapsible) {
+  if (groupIsCollapsible && !isRepeated) {
     const isDefaultOpen = groupIsCollapsible === 'default-open';
     return (
       <GroupAccordion
@@ -84,7 +86,7 @@ function GroupItemView(props: GroupItemViewProps) {
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
         }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
           <GroupHeading
             qItem={qItem}
             readOnly={readOnly}

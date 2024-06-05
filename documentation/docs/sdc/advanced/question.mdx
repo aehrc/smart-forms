@@ -22,6 +22,7 @@ The extensions that fall under this subsection are:
 
 - [choiceOrientation](http://hl7.org/fhir/uv/sdc/rendering.html#choiceOrientation)
 - [sliderStepValue](http://hl7.org/fhir/uv/sdc/rendering.html#sliderStepValue)
+- [collapsible](http://hl7.org/fhir/uv/sdc/rendering.html#collapsible)
 - [entryFormat](http://hl7.org/fhir/uv/sdc/rendering.html#entryFormat)
 - [questionnaire-unit](https://hl7.org/fhir/extensions/StructureDefinition-questionnaire-unit.html)
 
@@ -208,6 +209,49 @@ SliderStepValue is only supported on the [itemControl](https://hl7.org/fhir/exte
     height="110"
   />
 </IframeContainer>
+
+### Collapsible
+
+Allows the child items of a group to be displayed in a collapsible form where items can be shown and hidden from the view. It is useful for particularly long questionnaires.
+
+Collapsible is only supported on **group** items.
+
+#### Default Open Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/?path=/story/component-sdc-8-1-2-advanced-control-appearance--collapsible-default-open">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance--collapsible-default-open"
+    width="100%"
+    height="260"
+  />
+</IframeContainer>
+
+#### Default Closed Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/?path=/story/component-sdc-8-1-2-advanced-control-appearance--collapsible-default-closed">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance--collapsible-default-closed"
+    width="100%"
+    height="260"
+  />
+</IframeContainer>
+
+#### Nested Usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/?path=/story/component-sdc-8-1-2-advanced-control-appearance--collapsible-nested">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-2-advanced-control-appearance--collapsible-nested"
+    width="100%"
+    height="760"
+  />
+</IframeContainer>
+
+:::note
+
+When a parent of a child collapsible item is collapsed, its child items effectively stopped being rendered by React.
+This means the collapsible status of any child collapsible groups will return to the default values ("default-open" or "default-closed") as defined in the Questionnaire.
+
+:::
 
 ### EntryFormat
 
