@@ -24,6 +24,7 @@ import { RendererThemeProvider } from '../../theme';
 import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import { Grid } from '@mui/material';
 import FormValidationViewerForStorybook from './FormValidationViewerForStorybook';
+import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 
 interface FormValidationTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -35,7 +36,12 @@ function FormValidationTesterWrapperForStorybook(
 ) {
   const { questionnaire, questionnaireResponse } = props;
 
-  const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
+  const isBuilding = useBuildForm(
+    questionnaire,
+    questionnaireResponse,
+    undefined,
+    STORYBOOK_TERMINOLOGY_SERVER_URL
+  );
 
   const queryClient = useRendererQueryClient();
 

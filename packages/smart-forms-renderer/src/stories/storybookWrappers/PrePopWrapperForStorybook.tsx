@@ -27,6 +27,7 @@ import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './populateCallbackForStorybook';
 import { buildForm } from '../../utils';
+import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 
 interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -75,7 +76,12 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
       const { populatedResponse } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildForm(questionnaire, populatedResponse);
+      await buildForm(
+        questionnaire,
+        populatedResponse,
+        undefined,
+        STORYBOOK_TERMINOLOGY_SERVER_URL
+      );
 
       setIsPopulating(false);
     });
