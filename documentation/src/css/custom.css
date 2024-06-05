@@ -30,7 +30,7 @@
 }
 
 /* Custom CSS for code blocks */
-code, pre {
+code,
+pre {
   font-size: 0.875em; /* Adjust the font size as needed */
 }
-
