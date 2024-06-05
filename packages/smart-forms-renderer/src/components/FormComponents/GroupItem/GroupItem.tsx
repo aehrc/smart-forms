@@ -28,7 +28,6 @@ import type {
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';
-import useReadOnly from '../../../hooks/useReadOnly';
 import GroupItemView from './GroupItemView';
 
 interface GroupItemProps
@@ -61,7 +60,6 @@ function GroupItem(props: GroupItemProps) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
   if (itemIsHidden) {
     return null;
