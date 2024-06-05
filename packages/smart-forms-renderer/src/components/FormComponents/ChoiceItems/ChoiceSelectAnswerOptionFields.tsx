@@ -16,21 +16,22 @@
  */
 
 import React, { Fragment } from 'react';
-import InputAdornment from '@mui/material/InputAdornment';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import Autocomplete from '@mui/material/Autocomplete';
+import { getAnswerOptionLabel } from '../../../utils/openChoice';
+import { compareAnswerOptionValue } from '../../../utils/choice';
 
 interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
-  valueSelect: string;
+  valueSelect: QuestionnaireItemAnswerOption | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  onSelectChange: (newValue: string) => void;
+  onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
 
 function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsProps) {
@@ -38,49 +39,39 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
-  // TODO use calcExpUpdated as updated feedback
-
   return (
-    <Select
+    <Autocomplete
       id={qItem.id}
-      name={qItem.text}
-      value={valueSelect}
-      disabled={readOnly}
-      fullWidth
-      placeholder={entryFormat}
-      label={displayPrompt}
-      endAdornment={<InputAdornment position="end">{displayUnit}</InputAdornment>}
-      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
+      value={valueSelect ?? null}
+      options={options}
+      getOptionLabel={(option) => getAnswerOptionLabel(option)}
+      isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
+      onChange={(_, newValue) => onSelectChange(newValue)}
+      openOnFocus
+      autoHighlight
+      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
       size="small"
-      onChange={(e) => onSelectChange(e.target.value)}>
-      {options.map((option, index) => {
-        if (option['valueCoding']) {
-          return (
-            <MenuItem key={option.valueCoding.code} value={option.valueCoding.code}>
-              {option.valueCoding.display ?? option.valueCoding.code}
-            </MenuItem>
-          );
-        }
-
-        if (option['valueString']) {
-          return (
-            <MenuItem key={option.valueString} value={option.valueString}>
-              {option.valueString}
-            </MenuItem>
-          );
-        }
-
-        if (option['valueInteger']) {
-          return (
-            <MenuItem key={option.valueInteger} value={option.valueInteger.toString()}>
-              {option.valueInteger}
-            </MenuItem>
-          );
-        }
-
-        return <Fragment key={index} />;
-      })}
-    </Select>
+      disabled={readOnly}
+      renderInput={(params) => (
+        <StandardTextField
+          isTabled={isTabled}
+          label={displayPrompt}
+          placeholder={entryFormat}
+          {...params}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {params.InputProps.endAdornment}
+                <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                {displayUnit}
+              </>
+            )
+          }}
+          data-test="q-item-choice-dropdown-answer-value-set-field"
+        />
+      )}
+    />
   );
 }
 
