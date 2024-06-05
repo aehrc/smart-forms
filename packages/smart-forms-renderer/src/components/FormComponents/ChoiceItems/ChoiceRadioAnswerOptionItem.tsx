@@ -96,7 +96,6 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           options={options}
           valueChoice={valueChoice}
           isRepeated={isRepeated}
-          isTabled={isTabled}
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
