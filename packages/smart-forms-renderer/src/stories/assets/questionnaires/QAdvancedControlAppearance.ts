@@ -293,16 +293,257 @@ export const qSliderStepValue: Questionnaire = {
   ]
 };
 
-export const qCollapsibleDefaultOpen: Questionnaire = {
+export const qCollapsibleSingleDefaultOpen: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleDefaultOpen',
-  name: 'CollapsibleDefaultOpen',
-  title: 'CollapsibleDefaultOpen',
+  id: 'CollapsibleSingleDefaultOpen',
+  name: 'CollapsibleSingleDefaultOpen',
+  title: 'Collapsible Single - Default Open',
   version: '0.1.0',
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-1',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-single-1',
+  contained: [
+    {
+      resourceType: 'ValueSet',
+      id: 'YesNoNA',
+      url: 'https://smartforms.csiro.au/ig/ValueSet/YesNoNA',
+      name: 'YesNoNA',
+      title: 'Yes/No/NA',
+      status: 'draft',
+      experimental: false,
+      description: 'Concepts for Yes, No and Not applicable',
+      compose: {
+        include: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            concept: [
+              {
+                code: 'Y',
+                display: 'Yes'
+              },
+              {
+                code: 'N',
+                display: 'No'
+              },
+              {
+                code: 'NA',
+                display: 'N/A'
+              }
+            ]
+          }
+        ]
+      },
+      expansion: {
+        identifier: 'urn:uuid:5baa5444-e553-4412-a08c-9ce93d3271e0',
+        timestamp: '2023-09-01T11:16:50+10:00',
+        total: 3,
+        parameter: [
+          {
+            name: 'version',
+            valueUri: 'http://terminology.hl7.org/CodeSystem/v2-0532|2.1.0'
+          },
+          {
+            name: 'used-codesystem',
+            valueUri: 'http://terminology.hl7.org/CodeSystem/v2-0532|2.1.0'
+          }
+        ],
+        contains: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            code: 'Y',
+            display: 'Yes'
+          },
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            code: 'N',
+            display: 'No'
+          },
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            code: 'NA',
+            display: 'N/A'
+          }
+        ]
+      }
+    }
+  ],
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
+          valueCode: 'horizontal'
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+          valueCode: 'default-open'
+        }
+      ],
+      linkId: 'working-collapsible',
+      text: 'Are you working?',
+      type: 'choice',
+      repeats: false,
+      answerValueSet: '#YesNoNA',
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText',
+              valueString: 'Details'
+            }
+          ],
+          linkId: 'details-working',
+          text: 'Details (occupation including occupational hazards, study, training, disability, etc)',
+          type: 'text',
+          repeats: false
+        }
+      ]
+    }
+  ]
+};
+export const qCollapsibleSingleDefaultClosed: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'CollapsibleSingleDefaultClosed',
+  name: 'CollapsibleSingleDefaultClosed',
+  title: 'Collapsible Single - Default Closed',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-08',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-single-2',
+  contained: [
+    {
+      resourceType: 'ValueSet',
+      id: 'YesNoNA',
+      url: 'https://smartforms.csiro.au/ig/ValueSet/YesNoNA',
+      name: 'YesNoNA',
+      title: 'Yes/No/NA',
+      status: 'draft',
+      experimental: false,
+      description: 'Concepts for Yes, No and Not applicable',
+      compose: {
+        include: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            concept: [
+              {
+                code: 'Y',
+                display: 'Yes'
+              },
+              {
+                code: 'N',
+                display: 'No'
+              },
+              {
+                code: 'NA',
+                display: 'N/A'
+              }
+            ]
+          }
+        ]
+      },
+      expansion: {
+        identifier: 'urn:uuid:5baa5444-e553-4412-a08c-9ce93d3271e0',
+        timestamp: '2023-09-01T11:16:50+10:00',
+        total: 3,
+        parameter: [
+          {
+            name: 'version',
+            valueUri: 'http://terminology.hl7.org/CodeSystem/v2-0532|2.1.0'
+          },
+          {
+            name: 'used-codesystem',
+            valueUri: 'http://terminology.hl7.org/CodeSystem/v2-0532|2.1.0'
+          }
+        ],
+        contains: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            code: 'Y',
+            display: 'Yes'
+          },
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            code: 'N',
+            display: 'No'
+          },
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0532',
+            code: 'NA',
+            display: 'N/A'
+          }
+        ]
+      }
+    }
+  ],
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
+          valueCode: 'horizontal'
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible',
+          valueCode: 'default-closed'
+        }
+      ],
+      linkId: 'working-collapsible',
+      text: 'Are you working?',
+      type: 'choice',
+      repeats: false,
+      answerValueSet: '#YesNoNA',
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText',
+              valueString: 'Details'
+            }
+          ],
+          linkId: 'details-working',
+          text: 'Details (occupation including occupational hazards, study, training, disability, etc)',
+          type: 'text',
+          repeats: false
+        }
+      ]
+    }
+  ]
+};
+
+export const qCollapsibleGroupDefaultOpen: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'CollapsibleGroupDefaultOpen',
+  name: 'CollapsibleGroupDefaultOpen',
+  title: 'Collapsible Group - Default Open',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-08',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-group-1',
   item: [
     {
       extension: [
@@ -396,16 +637,16 @@ export const qCollapsibleDefaultOpen: Questionnaire = {
   ]
 };
 
-export const qCollapsibleDefaultClosed: Questionnaire = {
+export const qCollapsibleGroupDefaultClosed: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleDefaultClosed',
-  name: 'CollapsibleDefaultClosed',
-  title: 'CollapsibleDefaultClosed',
+  id: 'CollapsibleGroupDefaultClosed',
+  name: 'CollapsibleGroupDefaultClosed',
+  title: 'Collapsible Group - Default Closed',
   version: '0.1.0',
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-2',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-group-2',
   item: [
     {
       extension: [
@@ -499,16 +740,16 @@ export const qCollapsibleDefaultClosed: Questionnaire = {
   ]
 };
 
-export const qCollapsibleNested: Questionnaire = {
+export const qCollapsibleGroupNested: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleNested',
-  name: 'CollapsibleNested',
-  title: 'CollapsibleNested',
+  id: 'CollapsibleGroupNested',
+  name: 'CollapsibleGroupNested',
+  title: 'Collapsible Group - Nested',
   version: '0.1.0',
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-3',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-group-3',
   item: [
     {
       extension: [

@@ -22,9 +22,9 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { PropsWithQrRepeatGroupChangeHandler } from '../../../interfaces/renderProps.interface';
 import type { Tabs } from '../../../interfaces/tab.interface';
 import GroupHeading from './GroupHeading';
 import { GroupCard } from './GroupItem.styles';
@@ -74,9 +74,9 @@ function GroupItemView(props: GroupItemViewProps) {
 
   // Render collapsible group item
   // If group item is a repeating instance, do not render group item as collapsible
-  const groupIsCollapsible = getGroupCollapsible(qItem);
-  if (groupIsCollapsible && !isRepeated) {
-    const isDefaultOpen = groupIsCollapsible === 'default-open';
+  const groupCollapsibleValue = getGroupCollapsible(qItem);
+  if (groupCollapsibleValue && !isRepeated) {
+    const isDefaultOpen = groupCollapsibleValue === 'default-open';
     return (
       <GroupAccordion
         disableGutters

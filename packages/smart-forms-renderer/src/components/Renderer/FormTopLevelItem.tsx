@@ -123,7 +123,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // Otherwise, it is rendered as a non-group item
   return (
-    <Box pt={1}>
+    <Box mt={1}>
       <SingleItem
         key={topLevelQItem.linkId}
         qItem={topLevelQItem}
