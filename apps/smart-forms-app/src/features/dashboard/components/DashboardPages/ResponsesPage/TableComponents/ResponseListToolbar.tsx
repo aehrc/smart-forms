@@ -21,8 +21,7 @@ import {
   StyledRoot
 } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
 import ResponseListToolbarButtons from './ResponseListToolbarButtons.tsx';
-import type { QuestionnaireResponse } from 'fhir/r4';
-import type { Questionnaire } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import ResponseListToolbarLeftSection from './ResponseListToolbarLeftSection.tsx';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 

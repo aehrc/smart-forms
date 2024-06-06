@@ -19,9 +19,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qChoiceOrientation,
-  qCollapsibleDefaultClosed,
-  qCollapsibleDefaultOpen,
-  qCollapsibleNested,
+  qCollapsibleGroupDefaultClosed,
+  qCollapsibleGroupDefaultOpen,
+  qCollapsibleGroupNested,
+  qCollapsibleSingleDefaultClosed,
+  qCollapsibleSingleDefaultOpen,
   qItemControl,
   qSliderStepValue
 } from '../assets/questionnaires';
@@ -57,20 +59,32 @@ export const SliderStepValue: Story = {
   }
 };
 
-export const CollapsibleDefaultOpen: Story = {
+export const CollapsibleSingleDefaultOpen: Story = {
   args: {
-    questionnaire: qCollapsibleDefaultOpen
+    questionnaire: qCollapsibleSingleDefaultOpen
   }
 };
 
-export const CollapsibleDefaultClosed: Story = {
+export const CollapsibleSingleDefaultClosed: Story = {
   args: {
-    questionnaire: qCollapsibleDefaultClosed
+    questionnaire: qCollapsibleSingleDefaultClosed
   }
 };
 
-export const CollapsibleNested: Story = {
+export const CollapsibleGroupDefaultOpen: Story = {
   args: {
-    questionnaire: qCollapsibleNested
+    questionnaire: qCollapsibleGroupDefaultOpen
+  }
+};
+
+export const CollapsibleGroupDefaultClosed: Story = {
+  args: {
+    questionnaire: qCollapsibleGroupDefaultClosed
+  }
+};
+
+export const CollapsibleGroupNested: Story = {
+  args: {
+    questionnaire: qCollapsibleGroupNested
   }
 };

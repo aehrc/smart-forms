@@ -112,6 +112,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
     if (newDateInput === '') {
       onQrItemChange(createEmptyQrItem(qItem));
+      return;
     }
 
     if (!validateDateInput(newDateInput)) {
@@ -126,7 +127,8 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     setPeriodInput(newPeriodInput);
 
     if (newTimeInput === '') {
-      onQrItemChange(createEmptyQrItem(qItem));
+      updateQRDateTime(dateInput, '', '', false);
+      return;
     }
 
     const { timeIsValid, is24HourNotation } = validateTimeInput(newTimeInput, newPeriodInput);

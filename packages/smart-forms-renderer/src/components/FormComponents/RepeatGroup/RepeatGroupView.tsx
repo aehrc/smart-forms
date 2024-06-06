@@ -103,9 +103,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
     );
   }
 
-  const groupIsCollapsible = getGroupCollapsible(qItem);
-  if (groupIsCollapsible) {
-    const isDefaultOpen = groupIsCollapsible === 'default-open';
+  const groupCollapsibleValue = getGroupCollapsible(qItem);
+  if (groupCollapsibleValue) {
+    const isDefaultOpen = groupCollapsibleValue === 'default-open';
     return (
       <GroupAccordion
         disableGutters
