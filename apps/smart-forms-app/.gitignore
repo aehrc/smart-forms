@@ -27,3 +27,7 @@ yarn-error.log*
 cypress/screenshots
 cypress/videos
 temp
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
