@@ -101,9 +101,14 @@ export async function resolveLookupPromises(
   const lookupPromiseValues = Object.values(codeSystemLookupPromises);
 
   const promises = lookupPromiseValues.map((lookupPromise) => lookupPromise.promise);
-  const lookupResults = await Promise.all(promises);
+  const settledPromises = await Promise.allSettled(promises);
 
-  for (const [i, lookupResult] of lookupResults.entries()) {
+  for (const [i, settledPromise] of settledPromises.entries()) {
+    if (settledPromise.status === 'rejected') {
+      continue;
+    }
+
+    const lookupResult = settledPromise.value;
     if (!lookupResponseIsValid(lookupResult)) {
       continue;
     }

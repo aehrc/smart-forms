@@ -36,7 +36,7 @@ export interface PopulationExpressions {
 }
 
 export interface ValueSetPromise {
-  promise: Promise<ValueSet>;
+  promise: Promise<any>;
   valueSet?: ValueSet;
 }
 
