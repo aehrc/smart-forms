@@ -35,9 +35,6 @@ function QuestionnaireListToolbarButtons(props: QuestionnaireListToolbarButtonsP
 
   const isNotLaunched = !smartClient;
 
-  console.log(isNotLaunched);
-  console.log(debugModeEnabled);
-
   return (
     <Box display="flex" alignItems="center" columnGap={2}>
       {isNotLaunched && debugModeEnabled ? <GoToSdcIdeButton /> : null}
