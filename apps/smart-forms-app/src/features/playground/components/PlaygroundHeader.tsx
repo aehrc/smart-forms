@@ -27,6 +27,7 @@ import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { Patient, Practitioner } from 'fhir/r4';
 import PlaygroundSettingsDialog from './PlaygroundSettingsDialog.tsx';
 import SettingsIcon from '@mui/icons-material/Settings';
+import UpdatingIndicator from '../../renderer/components/RendererHeader/UpdatingIndicator.tsx';
 
 interface PlaygroundHeaderProps {
   fhirServerUrl: string;
@@ -78,6 +79,8 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
         </Typography>
 
         <Box flexGrow={1} />
+
+        <UpdatingIndicator />
 
         <Tooltip title="Change launch context settings" placement="left">
           <span>

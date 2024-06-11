@@ -26,7 +26,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   return (
     <Autocomplete
-      id={qItem.id}
+      id={qItem.linkId}
       value={valueSelect ?? null}
       options={options}
       getOptionLabel={(option) => getAnswerOptionLabel(option)}

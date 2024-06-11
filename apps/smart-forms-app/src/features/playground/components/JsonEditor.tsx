@@ -74,6 +74,7 @@ function JsonEditor(props: Props) {
             </Button>
             {view === 'editor' ? (
               <Button
+                data-test="see-store-state-button-playground"
                 onClick={() => {
                   setView('storeState');
                 }}>
@@ -93,6 +94,7 @@ function JsonEditor(props: Props) {
                   value={selectedStore}
                   sx={{ height: 32 }}
                   exclusive
+                  data-test="store-state-toggle-playground"
                   onChange={(_, newSelectedStore) => setSelectedStore(newSelectedStore)}>
                   <ToggleButton value="questionnaireStore">Q</ToggleButton>
                   <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>

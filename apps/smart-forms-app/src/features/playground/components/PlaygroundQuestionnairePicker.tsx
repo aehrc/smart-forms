@@ -96,11 +96,12 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
         openOnFocus
         autoHighlight
         size="small"
+        data-test="questionnaire-picker-playground"
         renderInput={(params) => <TextField {...params} />}
       />
 
       {/* Questionnaire details */}
-      <Box pt={1}>
+      <Box pt={1} data-test="questionnaire-details-playground">
         {selectedQuestionnaire ? (
           <>
             <Grid container>
@@ -134,7 +135,11 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
             </Grid>
             <Box display="flex">
               <Box flexGrow={1} />
-              <Button onClick={() => onBuild(selectedQuestionnaire)}>Build Form</Button>
+              <Button
+                data-test="picker-build-form-button-playground"
+                onClick={() => onBuild(selectedQuestionnaire)}>
+                Build Form
+              </Button>
             </Box>
           </>
         ) : (

@@ -36,6 +36,7 @@ function GenericStatePropertyPicker(props: GenericStatePropertyPickerProps) {
         value={selectedProperty}
         sx={{ height: 28 }}
         exclusive
+        data-test="specific-state-picker-playground"
         onChange={(_, newSelectedProperty) => onSelectProperty(newSelectedProperty)}>
         {statePropertyNames.map((property) => (
           <ToggleButton
