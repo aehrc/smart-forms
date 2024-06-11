@@ -17,7 +17,7 @@
   "dependencies": {
     "@aehrc/smart-forms-renderer": "^0.35.0",
     "@docusaurus/core": "3.3.2",
-    "@docusaurus/preset-classic": "3.3.2",
+    "@docusaurus/preset-classic": "3.4.0",
     "@docusaurus/theme-live-codeblock": "^3.3.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
