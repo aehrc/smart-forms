@@ -101,7 +101,10 @@ function PlaygroundSettingsDialog(props: Props) {
           onValidateFhirServerUrlInput={handleValidateFhirServerUrl}
         />
         <Box display="flex" justifyContent="right" mt={0.5}>
-          <Button disabled={!setFhirServerButtonIsEnabled} onClick={handleSetFhirServerUrl}>
+          <Button
+            disabled={!setFhirServerButtonIsEnabled}
+            data-test="set-fhir-server-button-playground"
+            onClick={handleSetFhirServerUrl}>
             Save URL as FHIR Server
           </Button>
         </Box>
@@ -121,7 +124,10 @@ function PlaygroundSettingsDialog(props: Props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel}>Cancel</Button>
-        <Button disabled={!changesMade} onClick={handleSave}>
+        <Button
+          disabled={!changesMade}
+          data-test="save-launch-settings-button-playground"
+          onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

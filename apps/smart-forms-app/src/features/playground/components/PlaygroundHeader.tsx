@@ -85,6 +85,7 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
         <Tooltip title="Change launch context settings" placement="left">
           <span>
             <IconButton
+              data-test="launch-settings-button-playground"
               onClick={() => {
                 setSettingsDialogOpen(true);
               }}>
