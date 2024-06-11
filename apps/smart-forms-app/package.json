@@ -12,7 +12,9 @@
     "preview": "vite preview --port 4173",
     "cypress": "cypress open",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "playwright": "npx playwright test",
+    "playwright-ui": "npx playwright test --ui"
   },
   "repository": {
     "type": "git",
