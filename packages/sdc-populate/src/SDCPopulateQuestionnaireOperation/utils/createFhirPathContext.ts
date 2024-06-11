@@ -89,10 +89,19 @@ async function populateReferenceContextsIntoContextMap(
   try {
     // Resolve promises for referenceContextsTuple
     const promises: Promise<any>[] = referenceContextTuples.map(([, promise]) => promise);
-    const responses = await Promise.all(promises);
-    const resources: (FhirResource | null)[] = responses.map((response) =>
-      responseDataIsFhirResource(response?.data) ? (response.data as FhirResource) : null
-    );
+    const settledPromises = await Promise.allSettled(promises);
+    const resources: (FhirResource | null)[] = settledPromises.map((settledPromise) => {
+      if (settledPromise.status === 'rejected') {
+        return null;
+      }
+
+      const response = settledPromise.value;
+      if (responseDataIsFhirResource(response?.data)) {
+        return response.data as FhirResource;
+      }
+
+      return null;
+    });
 
     // Update referenceContextTuples with resolved resources
     referenceContextTuples = referenceContextTuples.map((tuple, i) => {
@@ -179,10 +188,19 @@ async function populateBatchContextsIntoContextMap(
 
       // Resolve promises for batchContextEntryTuples
       const promises: Promise<any>[] = batchContextEntryTuples.map(([, promise]) => promise);
-      const responses = await Promise.all(promises);
-      const resources: (FhirResource | null)[] = responses.map((response) =>
-        responseDataIsFhirResource(response?.data) ? (response.data as FhirResource) : null
-      );
+      const settledPromises = await Promise.allSettled(promises);
+      const resources: (FhirResource | null)[] = settledPromises.map((settledPromise) => {
+        if (settledPromise.status === 'rejected') {
+          return null;
+        }
+
+        const response = settledPromise.value;
+        if (responseDataIsFhirResource(response?.data)) {
+          return response.data as FhirResource;
+        }
+
+        return null;
+      });
 
       // Add resources to batch bundle
       for (let i = 0; i < resources.length; i++) {
