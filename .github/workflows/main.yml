@@ -35,22 +35,30 @@ jobs:
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
 
-  cypress-test:
-    name: Cypress Tests
+  playwright-test:
+    name: Playwright Tests
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v6
+      - uses: actions/setup-node@v4
         with:
-          browser: chrome
-          project: ./apps/smart-forms-app
+          node-version: 16
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npm run playwright -w apps/smart-forms-app
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
           build: npm run build -w apps/smart-forms-app
           start: npm run preview -w apps/smart-forms-app
-          record: true
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
   lint:
     name: Lint

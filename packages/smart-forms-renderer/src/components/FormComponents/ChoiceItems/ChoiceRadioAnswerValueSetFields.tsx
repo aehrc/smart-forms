@@ -61,9 +61,9 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     return (
       <Box display="flex" alignItems="center">
         <StyledRadioGroup
+          id={qItem.linkId}
           row={orientation === ChoiceItemOrientation.Horizontal}
           name={qItem.text}
-          id={qItem.id}
           onChange={(e) => onCheckedChange(e.target.value)}
           value={valueRadio}
           data-test="q-item-radio-group">

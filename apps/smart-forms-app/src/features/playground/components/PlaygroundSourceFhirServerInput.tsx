@@ -75,6 +75,7 @@ function PlaygroundSourceFhirServerInput(props: PlaygroundSourceFhirServerInputP
         helperText={feedbackMessage ?? ''}
         fullWidth
         sx={{ minWidth: 350 }}
+        data-test="source-fhir-server-url-field-playground"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -88,7 +89,9 @@ function PlaygroundSourceFhirServerInput(props: PlaygroundSourceFhirServerInputP
 
               {fhirServerUrlInputValid === 'unchecked' ? (
                 <Tooltip title="Validate URL">
-                  <IconButton onClick={handleVerifyFHIRServer}>
+                  <IconButton
+                    data-test="validate-url-button-playground"
+                    onClick={handleVerifyFHIRServer}>
                     <QuestionMarkIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>

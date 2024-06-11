@@ -41,7 +41,9 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
 
   return (
     <Box>
-      <Typography variant="body2">URL</Typography>
+      <Typography variant="body2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+        URL
+      </Typography>
       <Stack direction="row" alignItems="center">
         <StandardTextField
           fullWidth

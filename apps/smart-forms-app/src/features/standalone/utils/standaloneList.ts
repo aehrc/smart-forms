@@ -26,6 +26,7 @@ import QCVDRiskJson from '../data/QCVDRisk.json';
 import RCVDRiskJson from '../data/RCVDRisk.json';
 import QDemoAnsExp from '../data/QDemoAnsExp.json';
 import RDemoAnsExp from '../data/RDemoAnsExp.json';
+import QBitOfEverything from '../data/QBitOfEverything.json';
 
 export const rendererPropsList: RendererPropsState[] = [
   {
@@ -58,6 +59,14 @@ export const rendererPropsList: RendererPropsState[] = [
     response: RDemoAnsExp as QuestionnaireResponse,
     additionalVars: null,
     terminologyServerUrl: 'http://hapi.fhir.org/baseR4',
+    readOnly: false
+  },
+  {
+    id: 'BitOfEverything',
+    questionnaire: QBitOfEverything as Questionnaire,
+    response: null,
+    additionalVars: null,
+    terminologyServerUrl: 'https://sqlonfhir-r4.azurewebsites.net/fhir',
     readOnly: false
   }
 ];

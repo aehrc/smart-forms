@@ -33,7 +33,12 @@ function PrePopButtonForPlayground(props: PrePopButtonForPlaygroundProps) {
     <>
       <Tooltip title="Pre-populate form" placement="right">
         <span>
-          <IconButton disabled={isPopulating} onClick={onPopulate} size="small" color="primary">
+          <IconButton
+            disabled={isPopulating}
+            onClick={onPopulate}
+            size="small"
+            color="primary"
+            data-test="prepop-button-playground">
             {isPopulating ? (
               <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
             ) : (

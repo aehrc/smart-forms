@@ -42,6 +42,7 @@ function DebugResponseView(props: DebugResponseViewProps) {
 
   return (
     <pre
+      data-test="debug-viewer"
       style={{
         wordWrap: 'break-word',
         whiteSpace: 'pre-wrap',

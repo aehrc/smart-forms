@@ -48,9 +48,9 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   return (
     <Box display="flex" alignItems="center">
       <StyledRadioGroup
+        id={qItem.linkId}
         row={orientation === ChoiceItemOrientation.Horizontal}
         name={qItem.text}
-        id={qItem.id}
         onChange={(e) => onCheckedChange(e.target.value)}
         value={selection}>
         <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />

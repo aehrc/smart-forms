@@ -58,20 +58,22 @@ function StandalonePropsPicker(props: StandalonePropsPickerProps) {
             control={<Checkbox defaultChecked />}
             label="Questionnaire"
           />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.response !== null}
-                onChange={() => {
-                  dispatch({
-                    type: 'SET_RESPONSE',
-                    payload: state.response ? null : rendererPropsSingle.response
-                  });
-                }}
-              />
-            }
-            label="Questionnaire response"
-          />
+          {rendererPropsSingle.response ? (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={state.response !== null}
+                  onChange={() => {
+                    dispatch({
+                      type: 'SET_RESPONSE',
+                      payload: state.response ? null : rendererPropsSingle.response
+                    });
+                  }}
+                />
+              }
+              label="Questionnaire response"
+            />
+          ) : null}
           {rendererPropsSingle.additionalVars ? (
             <FormControlLabel
               control={

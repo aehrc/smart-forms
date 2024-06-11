@@ -26,17 +26,20 @@ export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
   file: File | null;
   onDrop: (item: { files: any[] }) => void;
   errorMessage: string;
+  readOnly: boolean;
 }
 
 function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
-  const { file, onDrop, errorMessage, isTabled } = props;
+  const { file, onDrop, errorMessage, readOnly, isTabled } = props;
 
   const { canDrop, isOver, dropTarget } = useFileDrop(onDrop);
 
   const isActive = canDrop && isOver;
 
   let boxMessage = 'No file selected';
-  if (isActive) {
+  if (readOnly) {
+    boxMessage = 'Item is read only';
+  } else if (isActive) {
     boxMessage = 'Release to drop file';
   } else if (errorMessage) {
     boxMessage = errorMessage;
@@ -51,7 +54,8 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
       isActive={isActive}
       isTabled={isTabled}>
       <Box p={1.5}>
-        <Typography>{boxMessage}</Typography>
+        <Typography color={readOnly ? 'text.disabled' : 'text.primary'}>{boxMessage}</Typography>
+
         {file ? (
           <Box pt={1}>
             <Typography fontSize={10}>Size: {getFileSize(file.size.toString() ?? '0')}</Typography>

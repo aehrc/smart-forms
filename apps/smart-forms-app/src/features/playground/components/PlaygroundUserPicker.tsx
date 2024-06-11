@@ -86,6 +86,7 @@ function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
         value={selectedUserId ?? ''}
         size="small"
         fullWidth={true}
+        data-test="user-picker-playground"
         onChange={(e) => handleSelectUser(e.target.value)}>
         {practitioners.map((patient) => (
           <MenuItem key={patient.id} value={`${patient.id}`}>

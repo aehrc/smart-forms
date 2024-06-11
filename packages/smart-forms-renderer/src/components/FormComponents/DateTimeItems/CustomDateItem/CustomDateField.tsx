@@ -58,7 +58,7 @@ function CustomDateField(props: CustomDateFieldProps) {
   return (
     <Tooltip title={isTabled ? feedback : ''}>
       <StandardTextField
-        id={linkId}
+        id={linkId + '-date'}
         ref={anchorRef}
         fullWidth
         isTabled={isTabled}

@@ -84,6 +84,7 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
         value={selectedPatientId ?? ''}
         size="small"
         fullWidth={true}
+        data-test="patient-picker-playground"
         onChange={(e) => handleSelectPatient(e.target.value)}>
         {patients.map((patient) => (
           <MenuItem key={patient.id} value={`${patient.id}`}>

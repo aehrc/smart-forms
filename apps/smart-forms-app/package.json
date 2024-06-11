@@ -12,7 +12,9 @@
     "preview": "vite preview --port 4173",
     "cypress": "cypress open",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "playwright": "npx playwright test",
+    "playwright-ui": "npx playwright test --ui"
   },
   "repository": {
     "type": "git",
@@ -27,7 +29,7 @@
   "dependencies": {
     "@aehrc/sdc-assemble": "^1.2.0",
     "@aehrc/sdc-populate": "^2.2.1",
-    "@aehrc/smart-forms-renderer": "^0.35.1",
+    "@aehrc/smart-forms-renderer": "^0.35.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/material-icons": "^5.0.16",
@@ -77,6 +79,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
+    "@playwright/test": "^1.44.1",
     "@sentry/cli": "^2.32.1",
     "@storybook/addon-essentials": "^8.0.6",
     "@storybook/addon-interactions": "^7.4.6",

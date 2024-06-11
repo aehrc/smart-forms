@@ -51,9 +51,9 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
 
   return (
     <StyledRadioGroup
+      id={qItem.linkId}
       row={orientation === ChoiceItemOrientation.Horizontal}
       name={qItem.text}
-      id={qItem.id}
       onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
       value={valueRadio}
       data-test="q-item-radio-group">

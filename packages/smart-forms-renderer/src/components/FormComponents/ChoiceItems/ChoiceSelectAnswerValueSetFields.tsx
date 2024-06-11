@@ -54,7 +54,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   if (codings.length > 0) {
     return (
       <Autocomplete
-        id={qItem.id}
+        id={qItem.linkId}
         options={codings}
         getOptionLabel={(option) => option.display ?? `${option.code}`}
         value={valueCoding ?? null}
@@ -80,7 +80,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 </>
               )
             }}
-            data-test="q-item-choice-dropdown-answer-value-set-field"
+            data-test="q-item-choice-select-answer-value-set-field"
           />
         )}
       />
