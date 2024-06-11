@@ -161,7 +161,7 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
   expect(debugViewerText.includes(`"valueBoolean": true`)).toBeTruthy();
 
   expect(debugViewerText.includes(`"valueDate": "2023-12-25"`)).toBeTruthy();
-  expect(debugViewerText.includes(`"valueDateTime": "2023-12-25T11:30:00+10:30"`)).toBeTruthy();
+  expect(debugViewerText.includes(`"valueDateTime": "2023-12-25T11:30:00"`)).toBeTruthy();
 
   expect(debugViewerText.includes(`"valueInteger": ${integerInput}`)).toBeTruthy();
   expect(debugViewerText.includes(`"valueDecimal": ${decimalInput}`)).toBeTruthy();
