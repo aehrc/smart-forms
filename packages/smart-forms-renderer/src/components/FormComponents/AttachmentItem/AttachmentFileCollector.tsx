@@ -24,16 +24,21 @@ import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps
 
 interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
   uploadedFile: File | null;
+  readOnly: boolean;
   onUploadFile: (file: File | null) => void;
 }
 
 const AttachmentFileCollector = memo(function AttachmentFileCollector(
   props: AttachmentFileCollectorProps
 ) {
-  const { uploadedFile, isTabled, onUploadFile } = props;
+  const { uploadedFile, readOnly, isTabled, onUploadFile } = props;
 
   const handleFileDrop = useCallback(
     (item: { files: any[] }) => {
+      if (readOnly) {
+        return;
+      }
+
       if (item) {
         const files = item.files;
 
@@ -61,12 +66,13 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
         onDrop={handleFileDrop}
         file={uploadedFile}
         errorMessage={''}
+        readOnly={readOnly}
         isTabled={isTabled}
       />
       <Stack direction="row" justifyContent="space-between" pt={0.5}>
         <Box>
           <Tooltip title="Attach file">
-            <IconButton component="label" size="small">
+            <IconButton component="label" size="small" disabled={readOnly}>
               <Iconify icon="fluent:attach-24-regular" />
               <input type="file" hidden onChange={handleAttachFile} />
             </IconButton>
@@ -74,7 +80,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
           <Tooltip title="Remove file">
             <span>
               <IconButton
-                disabled={!uploadedFile}
+                disabled={!uploadedFile || readOnly}
                 color="error"
                 size="small"
                 onClick={() => onUploadFile(null)}>

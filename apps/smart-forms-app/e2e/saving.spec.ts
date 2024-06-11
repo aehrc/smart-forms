@@ -55,9 +55,7 @@ test('Saving a response as draft then final', async ({ page }) => {
 
   // View response in viewer
   await expect(page).toHaveURL(`${PLAYWRIGHT_APP_URL}/viewer`);
-  await expect(page.getByTestId('response-preview-box')).toContainText(
-    'Aboriginal and Torres Strait Islander Health Check'
-  );
+  await expect(page.getByTestId('response-preview-box')).toContainText(questionnaireTitle);
 
   // Re-open the response
   await page.getByTestId('renderer-operation-item').getByText('Edit Response').click();
