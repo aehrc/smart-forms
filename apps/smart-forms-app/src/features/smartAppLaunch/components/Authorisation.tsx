@@ -31,7 +31,7 @@ import { StyledRoot } from './Authorisation.styles.tsx';
 import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
 import RenderAuthStatus from './RenderAuthStatus.tsx';
 import { assembleIfRequired } from '../../../utils/assemble.ts';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore, useTerminologyServerStore } from '@aehrc/smart-forms-renderer';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
@@ -75,6 +75,9 @@ function Authorisation() {
     useSmartClient();
 
   const buildSourceQuestionnaire = useQuestionnaireStore.use.buildSourceQuestionnaire();
+
+  const setTerminologyServerUrl = useTerminologyServerStore.use.setUrl();
+  const resetTerminologyServerUrl = useTerminologyServerStore.use.resetUrl();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -129,6 +132,13 @@ function Authorisation() {
                     ) {
                       questionnaire.id = questionnaire.id + '-SMARTcopy';
                       postQuestionnaireToSMARTHealthIT(client, questionnaire);
+                    }
+
+                    // Set terminology server url
+                    if (TERMINOLOGY_SERVER_URL) {
+                      setTerminologyServerUrl(TERMINOLOGY_SERVER_URL);
+                    } else {
+                      resetTerminologyServerUrl();
                     }
 
                     await buildSourceQuestionnaire(
