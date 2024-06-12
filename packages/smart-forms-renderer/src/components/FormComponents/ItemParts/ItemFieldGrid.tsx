@@ -35,11 +35,11 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   return (
-    <Grid container columnSpacing={6}>
-      <Grid item xs={5}>
+    <Grid container columnSpacing={4}>
+      <Grid item xs={4}>
         <LabelWrapper qItem={qItem} readOnly={readOnly} />
       </Grid>
-      <Grid item xs={7}>
+      <Grid item xs={8}>
         {children}
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
       </Grid>
