@@ -19,6 +19,7 @@ import type {
   Expression,
   Questionnaire,
   QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
   QuestionnaireItemEnableWhen
 } from 'fhir/r4';
 import type { CalculatedExpression } from '../../interfaces/calculatedExpression.interface';
@@ -55,6 +56,7 @@ interface ReturnParamsRecursive {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
 }
 
 export function extractOtherExtensions(
@@ -70,6 +72,7 @@ export function extractOtherExtensions(
   };
   const calculatedExpressions: Record<string, CalculatedExpression[]> = {};
   const answerExpressions: Record<string, AnswerExpression> = {};
+  const answerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {};
 
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return {
@@ -81,6 +84,7 @@ export function extractOtherExtensions(
       },
       calculatedExpressions: {},
       answerExpressions: {},
+      answerOptions: {},
       valueSetPromises: valueSetPromises
     };
   }
@@ -95,6 +99,7 @@ export function extractOtherExtensions(
       enableWhenExpressions,
       calculatedExpressions,
       answerExpressions,
+      answerOptions,
       valueSetPromises,
       defaultTerminologyServerUrl: terminologyServerUrl,
       parentRepeatGroupLinkId: isRepeatGroup ? topLevelItem.linkId : undefined
@@ -107,6 +112,7 @@ export function extractOtherExtensions(
     enableWhenExpressions,
     calculatedExpressions,
     answerExpressions,
+    answerOptions,
     valueSetPromises
   };
 }
@@ -119,6 +125,7 @@ interface extractExtensionsFromItemRecursiveParams {
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   answerExpressions: Record<string, AnswerExpression>;
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   valueSetPromises: Record<string, ValueSetPromise>;
   defaultTerminologyServerUrl: string;
   parentRepeatGroupLinkId?: string;
@@ -135,6 +142,7 @@ function extractExtensionsFromItemRecursive(
     enableWhenExpressions,
     calculatedExpressions,
     answerExpressions,
+    answerOptions,
     valueSetPromises,
     defaultTerminologyServerUrl,
     parentRepeatGroupLinkId
@@ -201,6 +209,12 @@ function extractExtensionsFromItemRecursive(
     };
   }
 
+  // Get answerOptions
+  const options = item.answerOption ?? null;
+  if (options) {
+    answerOptions[item.linkId] = options;
+  }
+
   const valueSetUrl = item.answerValueSet;
   if (valueSetUrl) {
     if (!valueSetPromises[valueSetUrl] && !valueSetUrl.startsWith('#')) {
@@ -229,6 +243,7 @@ function extractExtensionsFromItemRecursive(
     enableWhenExpressions,
     calculatedExpressions,
     answerExpressions,
+    answerOptions,
     valueSetPromises
   };
 }
