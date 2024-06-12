@@ -18,7 +18,7 @@
 import { expect, test } from '@playwright/test';
 import { PLAYWRIGHT_APP_URL, PLAYWRIGHT_EHR_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
 
-test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
+test.beforeEach(async ({ page }) => {
   // Go to playground
   const fetchQPromise = page.waitForResponse(
     `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
@@ -61,7 +61,9 @@ test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
   await page.getByTestId('user-picker-playground').click();
   await page.getByRole('option', { name: 'Dr Peter Primary', exact: true }).click();
   await page.getByTestId('save-launch-settings-button-playground').click();
+});
 
+test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
   // Select CVDRiskCalculator questionnaire
   await page
     .getByTestId('questionnaire-picker-playground')
@@ -100,4 +102,53 @@ test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
   await expect(
     page.getByTestId('q-item-integer-box').locator(`#${cvdRiskValueLinkId}`)
   ).toHaveValue('23');
+});
+
+test('pre-pop to test terminology resolving logic', async ({ page }) => {
+  // Select SelectivePrePopTester questionnaire
+  await page
+    .getByTestId('questionnaire-picker-playground')
+    .locator('input')
+    .fill('selectiveprepoptester');
+  await page.keyboard.press('Enter');
+  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
+    'SelectivePrePopTester'
+  );
+  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
+    'https://smartforms.csiro.au/docs/tester/prepop-1'
+  );
+
+  // Build SelectivePrePopTester questionnaire
+  await page.getByTestId('picker-build-form-button-playground').click();
+  await expect(page.getByText('"resourceType": "Questionnaire"')).toBeInViewport();
+  await expect(page.getByText('"id": "SelectivePrePopTester"')).toBeInViewport();
+
+  // Ensure questionnaire is built
+  await expect(page.getByTestId('q-item-display-box')).toContainText(
+    'This questionnaire is used by Playwright to do regression testing'
+  );
+
+  // Perform pre-population
+  const expandPromise = page.waitForResponse(
+    new RegExp(/^https:\/\/tx\.ontoserver\.csiro\.au\/fhir\/ValueSet\/\$expand\?.+$/)
+  );
+
+  await page.getByTestId('prepop-button-playground').click();
+  const expandResponse = await expandPromise;
+  expect(expandResponse.status()).toBe(200);
+
+  // Check pre-populated values
+  const genderAvsUrlValueLinkId = 'gender-avs-url';
+  await expect(
+    page
+      .getByTestId('q-item-choice-select-answer-value-set-box')
+      .locator(`#${genderAvsUrlValueLinkId}`)
+  ).toHaveValue('Female');
+
+  const genderAvsContainedValueLinkId = 'gender-avs-contained';
+  await expect(
+    page
+      .getByTestId('q-item-choice-select-answer-value-set-box')
+      .locator(`#${genderAvsContainedValueLinkId}`)
+  ).toHaveValue('Female');
 });
