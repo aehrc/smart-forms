@@ -21,10 +21,11 @@ import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
 import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
 import { qButtonTester } from '../assets/questionnaires/QButtonTester';
+import { qSelectivePrePopTester } from '../assets/questionnaires/QPrePopTester';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Testing/Pre Pop Button Tester',
+  title: 'Component/Testing/Pre Pop Tester',
   component: PrePopWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -35,9 +36,18 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const PrePopButtonTester: Story = {
+export const BasicPrePopTester: Story = {
   args: {
     questionnaire: qButtonTester,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const SelectivePrePopTester: Story = {
+  args: {
+    questionnaire: qSelectivePrePopTester,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter

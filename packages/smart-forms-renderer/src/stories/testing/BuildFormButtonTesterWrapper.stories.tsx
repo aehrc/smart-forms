@@ -18,7 +18,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormButtonTesterWrapperForStorybook from '../storybookWrappers/BuildFormButtonTesterWrapperForStorybook';
 import { qButtonTester, qrButtonTesterResponse } from '../assets/questionnaires/QButtonTester';
-import { qBooleanBasic, qrBooleanBasicResponse } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -37,12 +36,5 @@ export const BuildFormButtonTester: Story = {
   args: {
     questionnaire: qButtonTester,
     questionnaireResponse: qrButtonTesterResponse
-  }
-};
-
-export const BuildFormButtonTesterBoolean: Story = {
-  args: {
-    questionnaire: qBooleanBasic,
-    questionnaireResponse: qrBooleanBasicResponse
   }
 };
