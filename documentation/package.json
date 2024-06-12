@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@aehrc/smart-forms-renderer": "^0.35.0",
-    "@docusaurus/core": "3.3.2",
-    "@docusaurus/preset-classic": "3.4.0",
-    "@docusaurus/theme-live-codeblock": "^3.3.2",
+    "@docusaurus/core": "^3.4.0",
+    "@docusaurus/preset-classic": "^3.4.0",
+    "@docusaurus/theme-live-codeblock": "^3.4.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@iconify/react": "^4.1.1",
@@ -31,9 +31,9 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.3.2",
-    "@docusaurus/tsconfig": "3.3.2",
-    "@docusaurus/types": "3.3.2",
+    "@docusaurus/module-type-aliases": "^3.4.0",
+    "@docusaurus/tsconfig": "^3.4.0",
+    "@docusaurus/types": "^3.4.0",
     "docusaurus-plugin-typedoc": "^1.0.1",
     "docusaurus-plugin-typedoc-api": "^4.2.0",
     "typedoc": "^0.25.13",
