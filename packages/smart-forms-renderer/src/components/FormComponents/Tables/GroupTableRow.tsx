@@ -83,7 +83,7 @@ function GroupTableRow(props: GroupTableRowProps) {
           {...draggableProvided.draggableProps}>
           {showMinimalView ? null : (
             <>
-              <TableCell padding="checkbox">
+              <TableCell padding="none">
                 <Box
                   display="flex"
                   alignItems="center"

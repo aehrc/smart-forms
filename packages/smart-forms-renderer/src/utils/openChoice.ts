@@ -153,7 +153,7 @@ export function getAnswerOptionLabel(option: QuestionnaireItemAnswerOption | str
   }
 
   if (option['valueCoding']) {
-    return `${option.valueCoding.display}`;
+    return option.valueCoding.display ?? `${option.valueCoding.code}`;
   } else if (option['valueString']) {
     return option.valueString;
   } else if (option['valueInteger']) {

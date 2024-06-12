@@ -29,7 +29,7 @@ function SelectRowButton(props: SelectRowButtonProps) {
   const { isSelected, readOnly, onSelectItem } = props;
 
   return (
-    <TableCell padding="checkbox">
+    <TableCell padding="none">
       <Checkbox
         color="primary"
         size="small"

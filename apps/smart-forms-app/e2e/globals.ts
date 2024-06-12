@@ -18,4 +18,6 @@
 export const PLAYWRIGHT_EHR_URL = 'https://proxy.smartforms.io/v/r4/fhir';
 export const PLAYWRIGHT_FORMS_SERVER_URL = 'https://smartforms.csiro.au/api/fhir';
 
-export const PLAYWRIGHT_APP_URL = 'http://localhost:4173';
+export const PLAYWRIGHT_APP_URL = process.env.CI
+  ? 'http://localhost:4173'
+  : 'http://localhost:5173';

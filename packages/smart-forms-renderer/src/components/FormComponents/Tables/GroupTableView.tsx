@@ -139,8 +139,8 @@ function GroupTableView(props: GroupTableViewProps) {
           </caption>
           <TableHead>
             <TableRow>
-              <HeaderTableCell padding="checkbox" />
-              <HeaderTableCell padding="checkbox">
+              <HeaderTableCell padding="none" />
+              <HeaderTableCell padding="none">
                 <Checkbox
                   color="primary"
                   size="small"

@@ -26,10 +26,10 @@ export const HeaderTableCell = styled(TableCell)(() => ({
 }));
 
 export const StandardTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'numOfColumns' && prop !== 'isFirst'
-})<{ numOfColumns: number; isFirst: boolean }>(({ numOfColumns, isFirst }) => ({
+  shouldForwardProp: (prop) => prop !== 'numOfColumns'
+})<{ numOfColumns: number }>(({ numOfColumns }) => ({
   width: `${100 / numOfColumns}%`,
-  paddingLeft: isFirst ? 8 : 4,
+  paddingLeft: 4,
   paddingRight: 4
 }));
 

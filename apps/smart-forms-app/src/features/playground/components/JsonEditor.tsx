@@ -103,17 +103,19 @@ function JsonEditor(props: Props) {
               </Stack>
             )}
             <Box flexGrow={1} />
-            <Button
-              disabled={errorMessages.length > 0 || jsonString === ''}
-              onClick={() => {
-                if (monaco) {
-                  const formattedJson = JSON.stringify(JSON.parse(jsonString), null, 2);
-                  const editor = monaco.editor.getModels()[0];
-                  editor.setValue(formattedJson);
-                }
-              }}>
-              Format JSON
-            </Button>
+            {view === 'editor' ? (
+              <Button
+                disabled={errorMessages.length > 0 || jsonString === ''}
+                onClick={() => {
+                  if (monaco) {
+                    const formattedJson = JSON.stringify(JSON.parse(jsonString), null, 2);
+                    const editor = monaco.editor.getModels()[0];
+                    editor.setValue(formattedJson);
+                  }
+                }}>
+                Format JSON
+              </Button>
+            ) : null}
           </>
         ) : null}
       </Stack>
