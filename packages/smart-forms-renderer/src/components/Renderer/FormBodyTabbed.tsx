@@ -65,13 +65,13 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={1.5}>
       <TabContext value={currentTab.toString()}>
-        <Grid item xs={12} md={3.5} lg={3} xl={2.75}>
+        <Grid item xs={12} md={3} lg={2.75}>
           <FormBodyTabListWrapper topLevelItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
         </Grid>
 
-        <Grid item xs={12} md={8.5} lg={9} xl={9.25}>
+        <Grid item xs={12} md={9} lg={9.25}>
           {qItems.map((qItem, i) => {
             const qrItem = qrItemsByIndex[i];
 

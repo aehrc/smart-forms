@@ -63,7 +63,7 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
         }
 
         return (
-          <StandardTableCell key={index} numOfColumns={rowItems.length} isFirst={index === 0}>
+          <StandardTableCell key={index} numOfColumns={rowItems.length}>
             <SingleItem
               key={qItem.linkId}
               qItem={rowItem}
