@@ -21,7 +21,7 @@ import type { LaunchContext } from './populate.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from './enableWhen.interface';
 import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
-import type { Coding } from 'fhir/r4';
+import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
@@ -32,6 +32,7 @@ export interface QuestionnaireModel {
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   answerExpressions: Record<string, AnswerExpression>;
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
   fhirPathContext: Record<string, any>;

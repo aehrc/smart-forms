@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding } from 'fhir/r4';
+import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { CodeSystemLookupPromise } from '../../interfaces/lookup.interface';
 import * as FHIR from 'fhirclient';
 
@@ -54,6 +54,45 @@ export async function addDisplayToProcessedCodings(
   }
 
   return processedCodings;
+}
+
+// Use this for a Record<linkId, answerOption[]>
+export async function addDisplayToAnswerOptions(
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
+  terminologyServerUrl: string
+): Promise<Record<string, QuestionnaireItemAnswerOption[]>> {
+  // Store code system lookup promises for codings without displays
+  const codeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
+  for (const key in answerOptions) {
+    const options = answerOptions[key];
+    for (const option of options) {
+      if (option.valueCoding && !option.valueCoding.display) {
+        const query = `system=${option.valueCoding.system}&code=${option.valueCoding.code}`;
+        codeSystemLookupPromises[query] = {
+          promise: getCodeSystemLookupPromise(query, terminologyServerUrl),
+          oldCoding: option.valueCoding
+        };
+      }
+    }
+  }
+
+  // Resolves lookup promises in one go and assign newCodings to processedCodings
+  const resolvedCodeSystemLookupPromises = await resolveLookupPromises(codeSystemLookupPromises);
+  for (const key in answerOptions) {
+    const options = answerOptions[key];
+
+    for (const option of options) {
+      if (option.valueCoding) {
+        const lookUpKey = `system=${option.valueCoding.system}&code=${option.valueCoding.code}`;
+        const resolvedLookup = resolvedCodeSystemLookupPromises[lookUpKey];
+        if (resolvedLookup?.newCoding?.display) {
+          option.valueCoding.display = resolvedLookup.newCoding.display;
+        }
+      }
+    }
+  }
+
+  return answerOptions;
 }
 
 // Use this for an array of codings

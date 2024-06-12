@@ -28,7 +28,7 @@ import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
 import { addAdditionalVariables } from './addAdditionalVariables';
 import { getLinkIdTypeTuples } from '../qItem';
-import { addDisplayToProcessedCodings } from './addDisplayToCodings';
+import { addDisplayToAnswerOptions, addDisplayToProcessedCodings } from './addDisplayToCodings';
 
 export async function createQuestionnaireModel(
   questionnaire: Questionnaire,
@@ -62,8 +62,13 @@ export async function createQuestionnaireModel(
     terminologyServerUrl
   );
 
-  const { enableWhenItems, enableWhenExpressions, calculatedExpressions, answerExpressions } =
-    extractOtherExtensionsResult;
+  const {
+    enableWhenItems,
+    enableWhenExpressions,
+    calculatedExpressions,
+    answerExpressions,
+    answerOptions
+  } = extractOtherExtensionsResult;
   variables = extractOtherExtensionsResult.variables;
   valueSetPromises = extractOtherExtensionsResult.valueSetPromises;
 
@@ -83,6 +88,12 @@ export async function createQuestionnaireModel(
     terminologyServerUrl
   );
 
+  // In answerOptions, add display values to codings lacking them
+  const completeAnswerOptions = await addDisplayToAnswerOptions(
+    answerOptions,
+    terminologyServerUrl
+  );
+
   return {
     itemTypes,
     tabs,
@@ -92,6 +103,7 @@ export async function createQuestionnaireModel(
     enableWhenExpressions,
     calculatedExpressions,
     answerExpressions,
+    answerOptions: completeAnswerOptions,
     processedValueSetCodings,
     processedValueSetUrls,
     fhirPathContext: {}
@@ -107,6 +119,7 @@ function createEmptyModel(): QuestionnaireModel {
     calculatedExpressions: {},
     enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
     answerExpressions: {},
+    answerOptions: {},
     enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSetCodings: {},
     processedValueSetUrls: {},

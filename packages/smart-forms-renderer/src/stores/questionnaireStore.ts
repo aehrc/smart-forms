@@ -46,6 +46,7 @@ import { createSelectors } from './selector';
 import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
 import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
+import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 
 /**
  * QuestionnaireStore properties and methods
@@ -180,6 +181,13 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       terminologyServerUrl
     );
 
+    // Insert answerOptions with displays into questionnaire
+    questionnaire = insertCompleteAnswerOptionsIntoQuestionnaire(
+      questionnaire,
+      questionnaireModel.answerOptions
+    );
+
+    // Initialise form with questionnaire response and properties in questionnaire model
     const {
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
