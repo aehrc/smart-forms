@@ -1,15 +1,16 @@
 import type {
   CodeableConcept,
   Coding,
+  DomainResource,
   OperationOutcome,
   Parameters,
   Reference,
   Resource,
   ValueSet
 } from 'fhir/r4b';
-import type { UserInvocationTable } from 'fhirpath';
+import type { Model, Path, UserInvocationTable } from 'fhirpath';
 import fhirpath from 'fhirpath';
-import { CreateOperationOutcome, logMessage } from '~/utils/outcome-utils';
+import { CreateOperationOutcome, logMessage } from './outcome-utils';
 
 // --------------------------------------------------------------------------
 // From: https://github.com/brianpos/fhirpathjs-async-poc/commit/950475900d09bf399574c24f142f3eeae1552fe6
@@ -40,7 +41,7 @@ import { CreateOperationOutcome, logMessage } from '~/utils/outcome-utils';
 /** Global debug variable to permit the logger to write information messages
  to the OperationOutcome and console
  */
-export var debugAsyncFhirpath: boolean = true;
+export const debugAsyncFhirpath: boolean = true;
 
 /**
  * Evaluate a FHIRPath expression asynchronously
@@ -51,19 +52,18 @@ export var debugAsyncFhirpath: boolean = true;
  * @returns the result of the evaluation
  */
 export async function evaluateFhirpathAsync(
-  fhirData: fhir4b.DomainResource,
+  fhirData: DomainResource,
   path: string | Path,
-  context?: Context,
+  context?: Record<string, any>,
   model?: Model
 ): Promise<any[]> {
   let results = [];
-  let debug = false;
-  let outcome: OperationOutcome = {
+  const outcome: OperationOutcome = {
     resourceType: 'OperationOutcome',
     issue: []
   };
 
-  let asyncCallsRequired: Map<string, AsyncFunctionUserData> = new Map<
+  const asyncCallsRequired: Map<string, AsyncFunctionUserData> = new Map<
     string,
     AsyncFunctionUserData
   >();
@@ -88,7 +88,7 @@ export async function evaluateFhirpathAsync(
                 return asyncCallsRequired.get(key)?.result;
               }
 
-              let details: ExpandUserData = {
+              const details: ExpandUserData = {
                 evaluationCompleted: false,
                 asyncFunction: expandAsync,
                 value: value,
@@ -116,7 +116,7 @@ export async function evaluateFhirpathAsync(
                 logMessage(debugAsyncFhirpath, outcome, '  using cached result for: ', key);
                 return asyncCallsRequired.get(key)?.result;
               }
-              let details: ResolveUserData = {
+              const details: ResolveUserData = {
                 evaluationCompleted: false,
                 asyncFunction: resolveAsync,
                 value: reference
@@ -132,7 +132,7 @@ export async function evaluateFhirpathAsync(
     },
     memberOf: {
       fn: (inputs: any[], valueSet: string) => {
-        let output = inputs
+        const output = inputs
           .map((codeData: string | Coding | CodeableConcept) => {
             let key = createIndexKeyMemberOf(codeData, valueSet);
             if (key) {
@@ -141,7 +141,7 @@ export async function evaluateFhirpathAsync(
                 logMessage(debugAsyncFhirpath, outcome, '  using cached result for: ', key);
                 return asyncCallsRequired.get(key)?.result;
               }
-              let details: MemberOfUserData = {
+              const details: MemberOfUserData = {
                 evaluationCompleted: false,
                 asyncFunction: memberOfAsync,
                 value: codeData,
@@ -160,7 +160,7 @@ export async function evaluateFhirpathAsync(
     }
   };
 
-  let options = {
+  const options = {
     userInvocationTable: userInvocationTable
   };
 
@@ -171,9 +171,9 @@ export async function evaluateFhirpathAsync(
     // Perform the async calls required (none first time in)
     if (asyncCallsRequired.size > 0) {
       // resolve the async calls
-      let asyncPromises: Promise<void>[] = [];
-      for (let key of asyncCallsRequired.keys()) {
-        let details = asyncCallsRequired.get(key);
+      const asyncPromises: Promise<void>[] = [];
+      for (const key of asyncCallsRequired.keys()) {
+        const details = asyncCallsRequired.get(key);
         if (details && !details.evaluationCompleted) {
           // perform the async call to check for the memberOf status
           logMessage(debugAsyncFhirpath, outcome, '  performing async request for: ', key);
@@ -249,7 +249,7 @@ async function expandAsync(
   details: AsyncFunctionUserData
 ): Promise<void> {
   // perform the async call to check for the memberOf status
-  let typedData = details as ExpandUserData;
+  const typedData = details as ExpandUserData;
 
   try {
     const httpHeaders = {
@@ -264,7 +264,7 @@ async function expandAsync(
     const requestUrl = 'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand';
 
     let response;
-    let valueSet = typedData.valueSet as ValueSet;
+    const valueSet = typedData.valueSet as ValueSet;
     if (valueSet.resourceType === 'ValueSet') {
       const parameters: Parameters = {
         resourceType: 'Parameters',
@@ -293,13 +293,13 @@ async function expandAsync(
 
     if (response) {
       const resultJson = await response.json();
-      let valueSet = resultJson as ValueSet;
+      const valueSet = resultJson as ValueSet;
       if (valueSet.resourceType === 'ValueSet') {
         details.evaluationCompleted = true;
         details.result = valueSet;
       }
 
-      let outcomeResult = resultJson as OperationOutcome;
+      const outcomeResult = resultJson as OperationOutcome;
       if (outcomeResult && outcomeResult.issue) {
         details.evaluationCompleted = true;
         throw outcomeResult; // should we be throwing here?
@@ -335,10 +335,15 @@ interface ResolveUserData extends AsyncFunctionUserData {
  * @param value
  * @returns
  */
-function createIndexKeyResolve(value: string | Reference): string | undefined {
+function createIndexKeyResolve(value: string | Reference) {
   if (typeof value === 'string') return value;
-  if (value as Reference) return (value as Reference).reference;
+
+  if (valueIsReference(value)) return (value as Reference).reference;
   return value;
+}
+
+function valueIsReference(value: any): value is Reference {
+  return !!value.reference;
 }
 
 /**
@@ -350,7 +355,7 @@ async function resolveAsync(
   details: AsyncFunctionUserData
 ): Promise<void> {
   // perform the async call to check for the memberOf status
-  let typedData = details as ResolveUserData;
+  const typedData = details as ResolveUserData;
 
   const URL = createIndexKeyResolve(typedData.value);
   if (URL) {
@@ -359,8 +364,8 @@ async function resolveAsync(
         Accept: 'application/fhir+json; charset=utf-8'
       };
       const myHeaders = new Headers(httpHeaders);
-      let response = await fetch(URL, { headers: myHeaders });
-      let resultJson = await response.json();
+      const response = await fetch(URL, { headers: myHeaders });
+      const resultJson = await response.json();
       console.log(resultJson);
       details.result = resultJson;
       details.evaluationCompleted = true;
@@ -368,7 +373,7 @@ async function resolveAsync(
       console.log(err);
       details.result = undefined; // not found!
       details.evaluationCompleted = true;
-      let newOutcome = CreateOperationOutcome(
+      const newOutcome = CreateOperationOutcome(
         'error',
         'exception',
         'Failed to resolve reference: ' + URL,
@@ -401,11 +406,11 @@ function createIndexKeyMemberOf(
   if (typeof value === 'string') {
     return value + ' - ' + valueset;
   }
-  let coding = value as Coding;
+  const coding = value as Coding;
   if (coding.code) {
     return coding.system + '|' + coding.code + ' - ' + valueset;
   }
-  let cc = value as CodeableConcept;
+  const cc = value as CodeableConcept;
   if (cc.coding) {
     // return the same as for coding by joining each of the codings with a comma
     return cc.coding.map((c) => c.system + '|' + c.code).join(',') + ' - ' + valueset;
@@ -422,7 +427,7 @@ async function memberOfAsync(
   details: AsyncFunctionUserData
 ): Promise<void> {
   // perform the async call to check for the memberOf status
-  let typedData = details as MemberOfUserData;
+  const typedData = details as MemberOfUserData;
 
   try {
     const httpHeaders = {
@@ -465,7 +470,7 @@ async function memberOfAsync(
       });
       response = await fetch(`${requestUrl}?${queryParams.toString()}`, { headers: myHeaders });
     } else {
-      let coding = typedData.value as Coding;
+      const coding = typedData.value as Coding;
       if (coding.code) {
         const queryParams = new URLSearchParams({
           url: typedData.valueSet ?? '',
@@ -479,15 +484,15 @@ async function memberOfAsync(
     if (response) {
       const resultJson = await response.json();
       console.log(resultJson);
-      let params = resultJson as Parameters;
+      const params = resultJson as Parameters;
       if (params && params.parameter) {
-        let param = params.parameter.find((p) => p.name === 'result');
+        const param = params.parameter.find((p) => p.name === 'result');
         if (param) {
           details.evaluationCompleted = true;
           details.result = param.valueBoolean;
         }
       }
-      let outcomeResult = resultJson as OperationOutcome;
+      const outcomeResult = resultJson as OperationOutcome;
       if (outcomeResult && outcomeResult.issue) {
         details.evaluationCompleted = true;
         throw outcomeResult; // should we be throwing here?
