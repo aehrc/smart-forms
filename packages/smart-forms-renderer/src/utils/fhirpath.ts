@@ -97,7 +97,8 @@ export function createFhirPathContext(
   // Add latest resource to fhirPathContext
   let fhirPathContext: Record<string, any> = {
     ...existingFhirPathContext,
-    resource: questionnaireResponse
+    resource: questionnaireResponse,
+    rootResource: questionnaireResponse
   };
 
   // Exit early if there are no QR items
