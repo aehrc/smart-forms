@@ -28,8 +28,9 @@ import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import { generateItemsToRepopulate, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import RepopulateDialog from '../../../repopulate/components/RepopulateDialog.tsx';
 import { useState } from 'react';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 import { useMutation } from '@tanstack/react-query';
+import { readCommonLaunchContexts } from '../../../smartAppLaunch/utils/launch.ts';
 
 interface RepopulateActionProps extends SpeedDialActionProps {
   spinner: RendererSpinner;
@@ -40,7 +41,7 @@ interface RepopulateActionProps extends SpeedDialActionProps {
 function RepopulateAction(props: RepopulateActionProps) {
   const { spinner, isSpeedDial, onSpinnerChange, ...speedDialActionProps } = props;
 
-  const { smartClient, patient, user, encounter } = useSmartClient();
+  const { smartClient, patient, user } = useSmartClient();
 
   const [itemsToRepopulate, setItemsToRepopulate] = useState<Record<string, ItemToRepopulate>>({});
 
@@ -64,15 +65,19 @@ function RepopulateAction(props: RepopulateActionProps) {
     !!(sourceQuestionnaire.contained || sourceQuestionnaire.extension);
 
   const { mutate: repopulateMutation } = useMutation({
-    mutationFn: (params: { newPatient: Patient; newUser: Practitioner }) => {
-      const { newPatient, newUser } = params;
+    mutationFn: (params: {
+      newPatient: Patient;
+      newUser: Practitioner;
+      newEncounter: Encounter | null;
+    }) => {
+      const { newPatient, newUser, newEncounter } = params;
 
       return populateQuestionnaire(
         sourceQuestionnaire,
         smartClient!,
         newPatient,
         newUser,
-        encounter,
+        newEncounter,
         fhirPathContext
       );
     },
@@ -131,10 +136,14 @@ function RepopulateAction(props: RepopulateActionProps) {
       status: 'repopulate-fetch',
       message: 'Retrieving latest information'
     });
-    const newPatient = await smartClient.patient.read();
-    const newUser = (await smartClient.user.read()) as Practitioner;
 
-    repopulateMutation({ newPatient, newUser });
+    const { patient, user, encounter } = await readCommonLaunchContexts(smartClient);
+
+    repopulateMutation({
+      newPatient: patient as Patient,
+      newUser: user as Practitioner,
+      newEncounter: encounter
+    });
   }
 
   return (
