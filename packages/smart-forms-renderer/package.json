@@ -32,7 +32,7 @@
     "dayjs": "^1.11.10",
     "deep-diff": "^1.0.2",
     "fhirclient": "^2.5.2",
-    "fhirpath": "^3.7.1",
+    "fhirpath": "3.11.0",
     "html-react-parser": "4.2.10",
     "js-base64": "^3.7.7",
     "lodash.clonedeep": "^4.5.0",
