@@ -22,7 +22,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 interface RepopulateSingleItemProps {
   qItem: QuestionnaireItem;
   oldQRItem?: QuestionnaireResponseItem;
-  newQRItem: QuestionnaireResponseItem;
+  newQRItem?: QuestionnaireResponseItem;
 }
 
 function RepopulateSingleItem(props: RepopulateSingleItemProps) {
@@ -58,7 +58,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
           </Typography>
           <SingleItem
             qItem={qItem}
-            qrItem={newQRItem}
+            qrItem={newQRItem ?? null}
             isRepeated={true}
             isTabled={false}
             groupCardElevation={1}

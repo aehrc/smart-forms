@@ -15,33 +15,11 @@
  * limitations under the License.
  */
 
-import type { Coding, ValueSet } from 'fhir/r4';
-
+/**
+ * InitialExpression interface
+ *
+ * @property expression - InitialExpression FHIRPath expression
+ */
 export interface InitialExpression {
   expression: string;
-  value: any[] | undefined;
-  itemPopulationContextLinkId?: string;
-}
-
-export interface ItemPopulationContext {
-  linkId: string;
-  name: string;
-  expression: string;
-  value: any[] | undefined;
-}
-
-export interface PopulationExpressions {
-  initialExpressions: Record<string, InitialExpression>;
-  itemPopulationContexts: Record<string, ItemPopulationContext>;
-}
-
-export interface ValueSetPromise {
-  promise: Promise<any>;
-  valueSet?: ValueSet;
-}
-
-export interface CodeSystemLookupPromise {
-  promise: Promise<any>;
-  oldCoding: Coding;
-  newCoding?: Coding;
 }

@@ -21,7 +21,7 @@ import { GroupTable } from '@aehrc/smart-forms-renderer';
 
 interface RepopulateRepeatGroupProps {
   qItem: QuestionnaireItem;
-  newQRItems: QuestionnaireResponseItem[];
+  newQRItems?: QuestionnaireResponseItem[];
   oldQRItems?: QuestionnaireResponseItem[];
 }
 
@@ -49,7 +49,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
         </Typography>
         <GroupTable
           qItem={qItem}
-          qrItems={newQRItems}
+          qrItems={newQRItems ?? []}
           groupCardElevation={1}
           showMinimalView={true}
           parentIsReadOnly={true}

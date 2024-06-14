@@ -66,6 +66,7 @@ export async function createQuestionnaireModel(
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
+    initialExpressions,
     answerExpressions,
     answerOptions
   } = extractOtherExtensionsResult;
@@ -102,6 +103,7 @@ export async function createQuestionnaireModel(
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
+    initialExpressions,
     answerExpressions,
     answerOptions: completeAnswerOptions,
     processedValueSetCodings,
@@ -117,6 +119,7 @@ function createEmptyModel(): QuestionnaireModel {
     variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
     launchContexts: {},
     calculatedExpressions: {},
+    initialExpressions: {},
     enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
     answerExpressions: {},
     answerOptions: {},

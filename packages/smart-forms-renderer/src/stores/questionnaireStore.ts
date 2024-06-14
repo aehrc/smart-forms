@@ -47,6 +47,7 @@ import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenEx
 import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
+import type { InitialExpression } from '../interfaces/initialExpression.interface';
 
 /**
  * QuestionnaireStore properties and methods
@@ -100,6 +101,7 @@ export interface QuestionnaireStoreType {
   enableWhenIsActivated: boolean;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
+  initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
@@ -156,6 +158,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
   launchContexts: {},
   calculatedExpressions: {},
+  initialExpressions: {},
   enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
   answerExpressions: {},
   enableWhenItems: { singleItems: {}, repeatItems: {} },
@@ -216,6 +219,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
+      initialExpressions: questionnaireModel.initialExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
       processedValueSetUrls: questionnaireModel.processedValueSetUrls,
@@ -235,6 +239,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenLinkedQuestions: {},
       enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
       calculatedExpressions: {},
+      initialExpressions: {},
       answerExpressions: {},
       processedValueSetCodings: {},
       processedValueSetUrls: {},

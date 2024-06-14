@@ -127,9 +127,43 @@ export const qSelectivePrePopTester: Questionnaire = {
           }
         ]
       }
+    },
+    {
+      resourceType: 'ValueSet',
+      id: 'MedicalHistory',
+      url: 'https://smartforms.csiro.au/ig/ValueSet/MedicalHistory',
+      name: 'MedicalHistory',
+      title: 'Medical History',
+      status: 'draft',
+      experimental: false,
+      description:
+        'The Medical History value set includes values that may be used to represent medical history, operations and hospital admissions.',
+      compose: {
+        include: [
+          {
+            system: 'http://snomed.info/sct',
+            filter: [
+              {
+                property: 'constraint',
+                op: '=',
+                value:
+                  '^32570581000036105|Problem/Diagnosis reference set| OR ^32570141000036105|Procedure foundation reference set|'
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'Condition',
+        language: 'application/x-fhir-query',
+        expression: 'Condition?patient={{%patient.id}}'
+      }
+    },
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
       extension: [
@@ -196,6 +230,89 @@ export const qSelectivePrePopTester: Questionnaire = {
       type: 'choice',
       repeats: false,
       answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'gtable'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext',
+          valueExpression: {
+            name: 'ConditionRepeat',
+            language: 'text/fhirpath',
+            expression:
+              "%Condition.entry.resource.where(category.coding.exists(code='problem-list-item'))"
+          }
+        }
+      ],
+      linkId: 'medical-history',
+      text: 'Medical history and current problems list',
+      type: 'group',
+      repeats: true,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'autocomplete'
+                  }
+                ]
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression:
+                  "%ConditionRepeat.code.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
+              }
+            }
+          ],
+          linkId: 'medical-history-condition',
+          text: 'Condition',
+          type: 'open-choice',
+          answerValueSet: '#MedicalHistory'
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'drop-down'
+                  }
+                ]
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%ConditionRepeat.clinicalStatus.coding'
+              }
+            }
+          ],
+          linkId: 'medical-history-status',
+          text: 'Clinical Status',
+          type: 'choice',
+          answerValueSet: 'http://hl7.org/fhir/ValueSet/condition-clinical'
+        }
+      ]
     }
   ]
 };

@@ -22,7 +22,7 @@ import { RepeatItem } from '@aehrc/smart-forms-renderer';
 interface RepopulateRepeatItemProps {
   qItem: QuestionnaireItem;
   oldQRItem?: QuestionnaireResponseItem;
-  newQRItem: QuestionnaireResponseItem;
+  newQRItem?: QuestionnaireResponseItem;
 }
 
 function RepopulateRepeatItem(props: RepopulateRepeatItemProps) {
@@ -53,7 +53,7 @@ function RepopulateRepeatItem(props: RepopulateRepeatItemProps) {
         </Typography>
         <RepeatItem
           qItem={qItem}
-          qrItem={newQRItem}
+          qrItem={newQRItem ?? null}
           groupCardElevation={1}
           showMinimalView={true}
           onQrItemChange={() => void 0}

@@ -23,12 +23,17 @@ import type {
 } from 'fhir/r4';
 import type { Tabs } from '../interfaces/tab.interface';
 import _isEqual from 'lodash/isEqual';
+import _intersection from 'lodash/intersection';
+import _difference from 'lodash/difference';
 import { containsTabs, isTabContainer } from './tabs';
 import { getShortText, isSpecificItemControl } from './itemControl';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
+import cloneDeep from 'lodash.clonedeep';
+import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
+import { getQuestionnaireItem, getSectionHeading } from './misc';
 
 /**
  * ItemToRepopulate interface
@@ -47,11 +52,11 @@ export interface ItemToRepopulate {
   heading: string | null;
 
   // for non-repeat groups
-  newQRItem: QuestionnaireResponseItem;
+  newQRItem?: QuestionnaireResponseItem;
   oldQRItem?: QuestionnaireResponseItem;
 
   // for repeat groups
-  newQRItems: QuestionnaireResponseItem[];
+  newQRItems?: QuestionnaireResponseItem[];
   oldQRItems?: QuestionnaireResponseItem[];
 }
 
@@ -74,11 +79,14 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
   const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
   const tabs = questionnaireStore.getState().tabs;
   const updatableResponse = questionnaireResponseStore.getState().updatableResponse;
+  const updatableResponseItems = questionnaireResponseStore.getState().updatableResponseItems;
   const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
   const enableWhenItems = questionnaireStore.getState().enableWhenItems;
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
+  const initialExpressions = questionnaireStore.getState().initialExpressions;
 
-  return getItemsToRepopulate({
+  // This function is able to capture additions, however it is not able to capture deletions
+  const itemsToRepopulate = getItemsToRepopulate({
     sourceQuestionnaire,
     tabs,
     populatedResponse,
@@ -87,6 +95,29 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
     enableWhenItems,
     enableWhenExpressions
   });
+
+  // Get linkIds that are different between current QRItems and populated QRItems
+  // Doesn't work with repeat groups, but at the same time I'm not sure if it's needed, given you can't delete completely the first repeat group
+  const populatedResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
+  const diffLinkIds = _difference(
+    Object.keys(updatableResponseItems),
+    Object.keys(populatedResponseItemMap)
+  );
+  const diffLinkIdsWithInitialExpressions = _intersection(
+    Object.keys(initialExpressions),
+    diffLinkIds
+  );
+  for (const linkId of diffLinkIdsWithInitialExpressions) {
+    if (linkId in updatableResponseItems) {
+      itemsToRepopulate[linkId] = {
+        qItem: getQuestionnaireItem(sourceQuestionnaire, linkId),
+        heading: getSectionHeading(sourceQuestionnaire, linkId, tabs),
+        oldQRItem: updatableResponseItems[linkId][0]
+      };
+    }
+  }
+
+  return itemsToRepopulate;
 }
 
 export function getItemsToRepopulate(
@@ -283,6 +314,17 @@ function getSingleItemToRepopulate(
   heading: string | null,
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
+  if (qItem.linkId === 'encounter-reason') {
+    console.log(
+      cloneDeep({
+        qItem: qItem,
+        heading: heading,
+        newQRItem: qrItem,
+        newQRItems: []
+      })
+    );
+  }
+
   itemsToRepopulate[qItem.linkId] = {
     qItem: qItem,
     heading: heading,

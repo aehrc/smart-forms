@@ -26,9 +26,9 @@ import RepopulateItemSwitcher from './RepopulateItemSwitcher.tsx';
 interface RepopulateListItemProps {
   checkedIds: string[];
   qItem: QuestionnaireItem;
-  newQRItem: QuestionnaireResponseItem;
+  newQRItem?: QuestionnaireResponseItem;
   oldQRItem?: QuestionnaireResponseItem;
-  newQRItems: QuestionnaireResponseItem[];
+  newQRItems?: QuestionnaireResponseItem[];
   oldQRItems?: QuestionnaireResponseItem[];
   onCheckItem: () => void;
 }

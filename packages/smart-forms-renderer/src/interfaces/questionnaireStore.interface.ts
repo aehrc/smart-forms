@@ -22,6 +22,7 @@ import type { EnableWhenExpressions, EnableWhenItems } from './enableWhen.interf
 import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { InitialExpression } from './initialExpression.interface';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
@@ -31,6 +32,7 @@ export interface QuestionnaireModel {
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
+  initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   processedValueSetCodings: Record<string, Coding[]>;
