@@ -41,7 +41,7 @@ export interface ValueSetPromise {
 }
 
 export interface CodeSystemLookupPromise {
-  promise: Promise<Parameters<any>>;
+  promise: Promise<any>;
   oldCoding: Coding;
   newCoding?: Coding;
 }
