@@ -151,4 +151,16 @@ test('pre-pop to test terminology resolving logic', async ({ page }) => {
       .getByTestId('q-item-choice-select-answer-value-set-box')
       .locator(`#${genderAvsContainedValueLinkId}`)
   ).toHaveValue('Female');
+
+  const medicalHistoryConditionValueLinkId = 'medical-history-condition';
+
+  const elements = await page.locator(`#${medicalHistoryConditionValueLinkId}`).all();
+  for (const element of elements) {
+    const inputValue = await element.inputValue();
+
+    // Test if the input values contains at least one alphabetic character
+    // If it's fully numeric, it means the valueCoding.code is pre-populated instead of valueCoding.display
+    // the logic in sdc-populate, automatically $lookup and assigns display to codings that lack them, which means that part is failing in this case
+    expect(/^\d+$/.test(inputValue)).toBeFalsy();
+  }
 });

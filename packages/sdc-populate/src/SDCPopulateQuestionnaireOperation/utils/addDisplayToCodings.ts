@@ -20,6 +20,7 @@ import type {
   InitialExpression
 } from '../interfaces/expressions.interface';
 import type { Coding } from 'fhir/r4';
+import type { LookupResponse } from '../api/lookupCodeSystem';
 import { getCodeSystemLookupPromise, lookupResponseIsValid } from '../api/lookupCodeSystem';
 import type { FetchResourceCallback } from '../interfaces';
 
@@ -89,8 +90,22 @@ export async function resolveLookupPromises(
       continue;
     }
 
-    const lookupResult = settledPromise.value;
-    if (!lookupResponseIsValid(lookupResult)) {
+    let lookupResult: LookupResponse | null = null;
+
+    // Get lookupResult from response (fhirClient scenario)
+    if (lookupResponseIsValid(settledPromise.value)) {
+      lookupResult = settledPromise.value;
+    }
+    // Fallback to get valueSet from response.data (axios scenario)
+    if (
+      !lookupResult &&
+      settledPromise.value.data &&
+      lookupResponseIsValid(settledPromise.value.data)
+    ) {
+      lookupResult = settledPromise.value.data;
+    }
+
+    if (!lookupResult) {
       continue;
     }
 

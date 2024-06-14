@@ -26,13 +26,14 @@ export function getCodeSystemLookupPromise(
   terminologyCallback?: FetchResourceCallback,
   terminologyRequestConfig?: any
 ) {
-  const query = `CodeSystem/$lookup?system=${coding.system}&code=${coding.code}`;
+  const key = `system=${coding.system}&code=${coding.code}`;
+  const query = `CodeSystem/$lookup?${key}`;
 
   const lookupPromise = terminologyCallback
     ? terminologyCallback(query, terminologyRequestConfig)
     : defaultTerminologyRequest(query);
 
-  codeSystemLookupPromiseMap[query] = {
+  codeSystemLookupPromiseMap[key] = {
     promise: lookupPromise,
     oldCoding: coding
   };

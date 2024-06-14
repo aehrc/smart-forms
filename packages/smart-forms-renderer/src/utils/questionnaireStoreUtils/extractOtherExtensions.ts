@@ -46,14 +46,17 @@ import { evaluateEnableWhenRepeatExpressionInstance } from '../enableWhenExpress
 import {
   getAnswerExpression,
   getCalculatedExpressions,
-  getEnableWhenExpression
+  getEnableWhenExpression,
+  getInitialExpression
 } from '../getExpressionsFromItem';
+import type { InitialExpression } from '../../interfaces/initialExpression.interface';
 
 interface ReturnParamsRecursive {
   variables: Variables;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
+  initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
@@ -71,6 +74,7 @@ export function extractOtherExtensions(
     repeatExpressions: {}
   };
   const calculatedExpressions: Record<string, CalculatedExpression[]> = {};
+  const initialExpressions: Record<string, InitialExpression> = {};
   const answerExpressions: Record<string, AnswerExpression> = {};
   const answerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {};
 
@@ -83,6 +87,7 @@ export function extractOtherExtensions(
         repeatExpressions: {}
       },
       calculatedExpressions: {},
+      initialExpressions: {},
       answerExpressions: {},
       answerOptions: {},
       valueSetPromises: valueSetPromises
@@ -98,6 +103,7 @@ export function extractOtherExtensions(
       enableWhenItems,
       enableWhenExpressions,
       calculatedExpressions,
+      initialExpressions,
       answerExpressions,
       answerOptions,
       valueSetPromises,
@@ -111,6 +117,7 @@ export function extractOtherExtensions(
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
+    initialExpressions,
     answerExpressions,
     answerOptions,
     valueSetPromises
@@ -124,6 +131,7 @@ interface extractExtensionsFromItemRecursiveParams {
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
+  initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   valueSetPromises: Record<string, ValueSetPromise>;
@@ -141,6 +149,7 @@ function extractExtensionsFromItemRecursive(
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
+    initialExpressions,
     answerExpressions,
     answerOptions,
     valueSetPromises,
@@ -201,6 +210,14 @@ function extractExtensionsFromItemRecursive(
     calculatedExpressions[item.linkId] = calculatedExpressionsOfItem;
   }
 
+  // Get initialExpressions
+  const initialExpression = getInitialExpression(item);
+  if (initialExpression) {
+    initialExpressions[item.linkId] = {
+      expression: `${initialExpression.expression}`
+    };
+  }
+
   // Get answerExpressions
   const answerExpression = getAnswerExpression(item);
   if (answerExpression) {
@@ -242,6 +259,7 @@ function extractExtensionsFromItemRecursive(
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
+    initialExpressions,
     answerExpressions,
     answerOptions,
     valueSetPromises

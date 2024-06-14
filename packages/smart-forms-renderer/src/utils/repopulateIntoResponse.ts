@@ -163,6 +163,10 @@ function constructGroupItem(
     return null;
   }
 
+  if (!itemToRepopulate.newQRItem) {
+    return null;
+  }
+
   return {
     linkId: qItem.linkId,
     text: qItem.text,
@@ -181,11 +185,15 @@ function constructSingleItem(
     return qrItem ?? null;
   }
 
-  if (qrItem) {
+  if (qrItem && itemToRepopulate.newQRItem) {
     return {
       ...qrItem,
       answer: itemToRepopulate.newQRItem.answer
     };
+  }
+
+  if (!itemToRepopulate.newQRItem) {
+    return null;
   }
 
   return {
@@ -202,7 +210,7 @@ function constructGridGroup(
 ) {
   const itemToRepopulate = checkedItemsToRepopulate[qItem.linkId];
 
-  if (!itemToRepopulate) {
+  if (!itemToRepopulate || !itemToRepopulate.newQRItem) {
     return qrItem;
   }
 
@@ -253,7 +261,7 @@ function constructRepeatGroup(
 ): QuestionnaireResponseItem[] {
   const itemToRepopulate = checkedItemsToRepopulate[qItem.linkId];
 
-  if (!itemToRepopulate) {
+  if (!itemToRepopulate || !itemToRepopulate.newQRItems) {
     return qrItems;
   }
 

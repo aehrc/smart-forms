@@ -22,7 +22,7 @@ import cloneDeep from 'lodash.clonedeep';
 
 interface RepopulateGridGroupProps {
   qItem: QuestionnaireItem;
-  newQRItem: QuestionnaireResponseItem;
+  newQRItem?: QuestionnaireResponseItem;
   oldQRItem?: QuestionnaireResponseItem;
 }
 
@@ -34,7 +34,8 @@ function RepopulateGridGroup(props: RepopulateGridGroupProps) {
     oldQRItem ??
     cloneDeep({
       ...newQRItem,
-      item: newQRItem.item?.map((item) => ({
+      linkId: newQRItem?.linkId ?? '',
+      item: newQRItem?.item?.map((item) => ({
         ...item,
         item: item.item?.map((subItem) => ({
           ...subItem,
