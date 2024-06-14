@@ -23,6 +23,25 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
  *
  * @author Sean Fong
  */
+export function getInitialExpression(qItem: QuestionnaireItem): Expression | null {
+  const initialExpression = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression' &&
+      extension.valueExpression?.language === 'text/fhirpath'
+  );
+
+  if (initialExpression?.valueExpression) {
+    return initialExpression.valueExpression;
+  }
+  return null;
+}
+
+/**
+ * Get enableWhenExpression.valueExpression if its present in item
+ *
+ * @author Sean Fong
+ */
 export function getEnableWhenExpression(qItem: QuestionnaireItem): Expression | null {
   const enableWhenExpression = qItem.extension?.find(
     (extension: Extension) =>

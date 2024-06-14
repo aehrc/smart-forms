@@ -37,6 +37,8 @@
     "js-base64": "^3.7.7",
     "lodash.clonedeep": "^4.5.0",
     "lodash.debounce": "^4.0.8",
+    "lodash.difference": "^4.5.0",
+    "lodash.intersection": "^4.4.0",
     "nanoid": "^5.0.1",
     "react-beautiful-dnd": "^13.1.1",
     "react-dnd": "^16.0.1",

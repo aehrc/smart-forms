@@ -18,6 +18,8 @@
 // TODO to be imported into sdc-fhir-helpers
 
 import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type { Tabs } from '../interfaces';
+import { getShortText } from './itemControl';
 
 export function getQuestionnaireItem(
   questionnaire: Questionnaire,
@@ -156,5 +158,60 @@ function getRepeatGroupParentItemRecursive(
   }
 
   // No matching repeat group parent item found in the current item or its child items, return null
+  return null;
+}
+
+/*
+ Used for getting the tab section heading for Smart Form's re-population
+ */
+export function getSectionHeading(
+  questionnaire: Questionnaire,
+  targetLinkId: string,
+  tabs: Tabs
+): string | null {
+  // Search through the top level items recursively
+  const topLevelQItems = questionnaire.item;
+  if (topLevelQItems) {
+    for (const topLevelQItem of topLevelQItems) {
+      const heading = topLevelQItem.text ?? null;
+
+      const foundQItem = getSectionHeadingRecursive(topLevelQItem, targetLinkId, heading, tabs);
+      if (foundQItem) {
+        return foundQItem;
+      }
+    }
+  }
+
+  // No heading found in the questionnaire, return null
+  return null;
+}
+
+export function getSectionHeadingRecursive(
+  qItem: QuestionnaireItem,
+  targetLinkId: string,
+  heading: string | null,
+  tabs: Tabs
+): string | null {
+  // Target linkId found in current item
+  if (qItem.linkId === targetLinkId) {
+    return heading;
+  }
+
+  // Search through its child items recursively
+  const childQItems = qItem.item;
+  if (childQItems) {
+    const isTab = !!tabs[qItem.linkId];
+    if (isTab) {
+      heading = getShortText(qItem) ?? qItem.text ?? null;
+    }
+    for (const childQItem of childQItems) {
+      const foundHeading = getSectionHeadingRecursive(childQItem, targetLinkId, heading, tabs);
+      if (foundHeading) {
+        return foundHeading;
+      }
+    }
+  }
+
+  // No heading found in the current item or its child items, return null
   return null;
 }
