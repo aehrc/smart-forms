@@ -49,7 +49,7 @@ import {
   getEnableWhenExpression,
   getInitialExpression
 } from '../getExpressionsFromItem';
-import { InitialExpression } from '../../interfaces/initialExpression.interface';
+import type { InitialExpression } from '../../interfaces/initialExpression.interface';
 
 interface ReturnParamsRecursive {
   variables: Variables;

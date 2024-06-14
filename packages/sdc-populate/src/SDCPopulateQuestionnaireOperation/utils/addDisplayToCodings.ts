@@ -20,11 +20,8 @@ import type {
   InitialExpression
 } from '../interfaces/expressions.interface';
 import type { Coding } from 'fhir/r4';
-import {
-  getCodeSystemLookupPromise,
-  LookupResponse,
-  lookupResponseIsValid
-} from '../api/lookupCodeSystem';
+import type { LookupResponse } from '../api/lookupCodeSystem';
+import { getCodeSystemLookupPromise, lookupResponseIsValid } from '../api/lookupCodeSystem';
 import type { FetchResourceCallback } from '../interfaces';
 
 export async function addDisplayToInitialExpressionsCodings(

@@ -47,7 +47,7 @@ import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenEx
 import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
-import { InitialExpression } from '../interfaces/initialExpression.interface';
+import type { InitialExpression } from '../interfaces/initialExpression.interface';
 
 /**
  * QuestionnaireStore properties and methods

@@ -86,7 +86,7 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
   const initialExpressions = questionnaireStore.getState().initialExpressions;
 
   // This function is able to capture additions, however it is not able to capture deletions
-  let itemsToRepopulate = getItemsToRepopulate({
+  const itemsToRepopulate = getItemsToRepopulate({
     sourceQuestionnaire,
     tabs,
     populatedResponse,
