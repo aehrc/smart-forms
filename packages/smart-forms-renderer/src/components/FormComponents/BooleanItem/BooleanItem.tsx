@@ -48,7 +48,10 @@ function BooleanItem(props: BooleanItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const valueBoolean = qrItem?.answer && qrItem.answer[0].valueBoolean;
+  let valueBoolean: boolean | undefined = undefined;
+  if (qrItem?.answer?.[0]?.valueBoolean !== undefined) {
+    valueBoolean = qrItem.answer[0].valueBoolean;
+  }
 
   // Process calculated expressions
   const { calcExpUpdated } = useBooleanCalculatedExpression({

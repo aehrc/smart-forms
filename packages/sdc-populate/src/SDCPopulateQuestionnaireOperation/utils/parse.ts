@@ -26,35 +26,35 @@ import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './construct
 export function parseItemInitialToAnswer(
   initial: QuestionnaireItemInitial
 ): QuestionnaireResponseItemAnswer | null {
-  if (initial.valueBoolean) {
+  if (typeof initial.valueBoolean === 'boolean') {
     return { valueBoolean: initial.valueBoolean };
   }
 
-  if (initial.valueDecimal) {
+  if (typeof initial.valueDecimal === 'number') {
     return { valueDecimal: initial.valueDecimal };
   }
 
-  if (initial.valueInteger) {
+  if (typeof initial.valueInteger === 'number') {
     return { valueInteger: initial.valueInteger };
   }
 
-  if (initial.valueDate) {
+  if (typeof initial.valueDate === 'string') {
     return { valueDate: initial.valueDate };
   }
 
-  if (initial.valueDateTime) {
+  if (typeof initial.valueDateTime === 'string') {
     return { valueDateTime: initial.valueDateTime };
   }
 
-  if (initial.valueTime) {
+  if (typeof initial.valueTime === 'string') {
     return { valueTime: initial.valueTime };
   }
 
-  if (initial.valueString) {
+  if (typeof initial.valueString === 'string') {
     return { valueString: initial.valueString };
   }
 
-  if (initial.valueUri) {
+  if (typeof initial.valueUri === 'string') {
     return { valueUri: initial.valueUri };
   }
 
