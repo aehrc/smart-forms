@@ -29,6 +29,7 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
+import { DynamicValueSet } from '../interfaces/valueSet.interface';
 
 export interface TerminologyError {
   error: Error | null;
@@ -40,6 +41,7 @@ function useValueSetCodings(
   onDynamicValueSetCodingsChange: () => void
 ): {
   codings: Coding[];
+  isLoading: boolean;
   terminologyError: TerminologyError;
 } {
   const patient = useSmartConfigStore.use.patient();
@@ -56,14 +58,10 @@ function useValueSetCodings(
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   const valueSetUrl = qItem.answerValueSet;
+  const cleanValueSetUrl = valueSetUrl?.startsWith('#') ? valueSetUrl.slice(1) : valueSetUrl;
   let initialCodings = useMemo(() => {
     // set options from cached answer options if present
-    if (valueSetUrl) {
-      let cleanValueSetUrl = valueSetUrl;
-      if (valueSetUrl.startsWith('#')) {
-        cleanValueSetUrl = valueSetUrl.slice(1);
-      }
-
+    if (cleanValueSetUrl) {
       // attempt to get codings from value sets preprocessed when loading questionnaire
       if (processedValueSetCodings[cleanValueSetUrl]) {
         return processedValueSetCodings[cleanValueSetUrl];
@@ -135,68 +133,73 @@ function useValueSetCodings(
     xFhirQueryVariables
   ]);
 
+  const initialLoading = initialCodings.length === 0;
+
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
+  const [loading, setLoading] = useState<boolean>(initialLoading);
   const [serverError, setServerError] = useState<Error | null>(null);
 
+  let dynamicValueSet: DynamicValueSet | null = null;
+  if (cleanValueSetUrl) {
+    dynamicValueSet = dynamicValueSets[cleanValueSetUrl];
+  }
   useEffect(() => {
-    const valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl) return;
+    if (!cleanValueSetUrl || !dynamicValueSet) {
+      return;
+    }
 
     if (qItem.linkId === 'scenario-2-associated-site') {
       console.log(codings);
     }
 
     // Get ValueSet resource from dynamic value set
-    if (valueSetUrl.startsWith('#')) {
-      const dynamicValueSet = dynamicValueSets[valueSetUrl.slice(1)];
-      // dynamicValueSet does not exist
-      if (!dynamicValueSet) {
-        return;
-      }
 
-      // dynamicValueSet is not complete
-      if (!dynamicValueSet.isComplete || !dynamicValueSet.completeResource) {
-        return;
-      }
-
-      console.log(dynamicValueSet);
-      if (qItem.linkId === 'scenario-2-associated-site') {
-        console.log(codings);
-      }
-
-      // Assume answerValueSet is an expandable URL
-      const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
-      const promise = getValueSetPostPromise(
-        dynamicValueSet.completeResource,
-        terminologyServerUrl
-      );
-      if (promise) {
-        promise
-          .then(async (valueSet: ValueSet) => {
-            const codings = getValueSetCodings(valueSet);
-            addDisplayToCodingArray(codings, terminologyServerUrl)
-              .then((codingsWithDisplay) => {
-                if (codingsWithDisplay.length > 0) {
-                  addCodingToCache(
-                    `${valueSetUrl}-dynamic-v${dynamicValueSet.version}`,
-                    codingsWithDisplay
-                  );
-                  setCodings(codings);
-                  onDynamicValueSetCodingsChange();
-                }
-              })
-              .catch((error: Error) => {
-                setServerError(error);
-              });
-          })
-          .catch((error: Error) => {
-            setServerError(error);
-          });
-      }
-      // FIXME add expand here
+    // dynamicValueSet is not complete
+    if (!dynamicValueSet.isComplete || !dynamicValueSet.completeResource) {
+      setCodings([]);
+      onDynamicValueSetCodingsChange();
       return;
     }
-  }, [qItem, dynamicValueSets]);
+
+    if (qItem.linkId === 'scenario-2-associated-site') {
+      console.log(codings);
+      console.log(dynamicValueSet);
+    }
+
+    // Assume answerValueSet is an expandable URL
+    setLoading(true);
+    const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
+    const promise = getValueSetPostPromise(dynamicValueSet.completeResource, terminologyServerUrl);
+    if (promise) {
+      promise
+        .then(async (valueSet: ValueSet) => {
+          const codings = getValueSetCodings(valueSet);
+          addDisplayToCodingArray(codings, terminologyServerUrl)
+            .then((codingsWithDisplay) => {
+              if (codingsWithDisplay.length > 0 && dynamicValueSet) {
+                addCodingToCache(
+                  `${valueSetUrl}-dynamic-v${dynamicValueSet.version}`,
+                  codingsWithDisplay
+                );
+                console.log('why not in here');
+                setCodings(codings);
+                onDynamicValueSetCodingsChange();
+              }
+
+              // Set loading to false regardless of whether there are codings
+              setLoading(false);
+            })
+            .catch((error: Error) => {
+              setCodings([]);
+              onDynamicValueSetCodingsChange();
+              setServerError(error);
+            });
+        })
+        .catch((error: Error) => {
+          setServerError(error);
+        });
+    }
+  }, [qItem, dynamicValueSet?.version]);
 
   // get options from answerValueSet on render
   useEffect(() => {
@@ -227,7 +230,11 @@ function useValueSetCodings(
     }
   }, [qItem]);
 
-  return { codings, terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' } };
+  return {
+    codings,
+    isLoading: loading,
+    terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' }
+  };
 }
 
 export default useValueSetCodings;

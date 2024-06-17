@@ -64,7 +64,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+  const { codings, isLoading, terminologyError } = useValueSetCodings(qItem, () => {
     onQrItemChange(createEmptyQrItem(qItem));
   });
 

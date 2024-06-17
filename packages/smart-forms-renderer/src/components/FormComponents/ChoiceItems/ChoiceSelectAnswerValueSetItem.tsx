@@ -58,7 +58,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   }
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+  const { codings, isLoading, terminologyError } = useValueSetCodings(qItem, () => {
     onQrItemChange(createEmptyQrItem(qItem));
   });
 
@@ -118,6 +118,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     return (
       <ChoiceSelectAnswerValueSetFields
         qItem={qItem}
+        codingsLoading={isLoading}
         codings={codings}
         valueCoding={valueCoding}
         terminologyError={terminologyError}
@@ -136,6 +137,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <ChoiceSelectAnswerValueSetFields
           qItem={qItem}
+          codingsLoading={isLoading}
           codings={codings}
           valueCoding={valueCoding}
           terminologyError={terminologyError}

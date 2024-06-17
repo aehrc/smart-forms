@@ -26,9 +26,13 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Fade } from '@mui/material';
 
 interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
+  codingsLoading: boolean;
   codings: Coding[];
   valueCoding: Coding | null;
   terminologyError: TerminologyError;
@@ -40,6 +44,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribu
 function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetFieldsProps) {
   const {
     qItem,
+    codingsLoading,
     codings,
     valueCoding,
     terminologyError,
@@ -50,6 +55,17 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   } = props;
 
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+
+  if (codingsLoading) {
+    return (
+      <Fade in={codingsLoading} timeout={300}>
+        <Box display="flex" alignItems="center" columnGap={2}>
+          <CircularProgress size={24} />
+          <Typography>Loading options...</Typography>
+        </Box>
+      </Fade>
+    );
+  }
 
   if (codings.length > 0) {
     return (

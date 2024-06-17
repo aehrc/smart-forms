@@ -30,6 +30,9 @@ import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSe
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 interface OpenChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -55,7 +58,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   }
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+  const { codings, isLoading, terminologyError } = useValueSetCodings(qItem, () => {
     onQrItemChange(createEmptyQrItem(qItem));
   });
 
@@ -77,6 +80,15 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
     }
 
     onQrItemChange(createEmptyQrItem(qItem));
+  }
+
+  if (isLoading) {
+    return (
+      <Box display="flex" alignItems="center" columnGap={2}>
+        <CircularProgress />
+        <Typography>Loading options...</Typography>
+      </Box>
+    );
   }
 
   if (isRepeated) {

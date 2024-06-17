@@ -19,6 +19,7 @@ import { DynamicValueSet } from '../interfaces/valueSet.interface';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import cloneDeep from 'lodash.clonedeep';
+import _isEqual from 'lodash/isEqual';
 
 export function evaluateDynamicValueSets(
   fhirPathContext: Record<string, any>,
@@ -32,7 +33,8 @@ export function evaluateDynamicValueSets(
   let isUpdated = false;
   for (const linkId in updatedDynamicValueSets) {
     const dynamicValueSet = updatedDynamicValueSets[linkId];
-    const valueSetComposeInclude = dynamicValueSet.sourceResource.compose?.include;
+    const completeResource = dynamicValueSet.sourceResource;
+    const valueSetComposeInclude = completeResource.compose?.include;
     if (valueSetComposeInclude && valueSetComposeInclude.length > 0) {
       for (const include of valueSetComposeInclude) {
         if (!include.filter) {
@@ -44,7 +46,6 @@ export function evaluateDynamicValueSets(
         for (const filter of include.filter) {
           const filterValue = filter.value;
           if (filterValue.includes('{{') && filterValue.includes('}}')) {
-            // const pattern = new RegExp(`{{%${embedding}}}`, 'g');
             if (filterValue) {
               for (const embedding of readFhirPathEmbeddingsFromStr(filterValue)) {
                 if (embedding) {
@@ -60,34 +61,34 @@ export function evaluateDynamicValueSets(
           fhirPathContext
         );
 
-        const evaluatedFhirPathEmbeddingsTuple = Object.entries(evaluatedFhirPathEmbeddingsMap);
-        console.log(evaluatedFhirPathEmbeddingsTuple);
+        const evaluatedFhirPathEmbeddingsTuple = Object.entries(
+          evaluatedFhirPathEmbeddingsMap
+        ).filter(([embedding, value]) => value != '');
+
+        // console.log(evaluatedFhirPathEmbeddingsTuple);
         for (const filter of include.filter) {
           evaluatedFhirPathEmbeddingsTuple.forEach(([embedding, value]) => {
             const filterValue = filter.value;
             const pattern = new RegExp(`{{%${embedding}}}`, 'g');
             filter.value = filterValue.replace(pattern, value);
-            isUpdated = true;
           });
         }
       }
     }
 
-    // if (!_isEqual(dynamicValueSets[linkId].completeResource, updatedDynamicValueSets[linkId].completeResource)){
-    //   isUpdated = true;
+    // Complete resource has been updated, update the dynamicValueSet object
+    if (!_isEqual(dynamicValueSets[linkId].completeResource, completeResource)) {
+      isUpdated = true;
 
-    // ValueSet filter has been updated, update the dynamicValueSet object
-    if (isUpdated) {
+      // If source response same as the complete resource, embeddings are not replaced, therefore ValueSet is not complete
       updatedDynamicValueSets[linkId] = {
         sourceResource: dynamicValueSets[linkId].sourceResource,
         completeResource: dynamicValueSet.sourceResource,
         version: dynamicValueSet.version + 1,
-        isComplete: true
+        isComplete: !_isEqual(dynamicValueSets[linkId].sourceResource, completeResource)
       };
     }
   }
-
-  console.log(updatedDynamicValueSets);
 
   // after that we need to update the dynamicvalueset object - iscomplete so that we can use it in useMemo - or potentially updated the version of the dynamic updatedcount
 
@@ -104,12 +105,12 @@ function evaluateFhirPathEmbeddings(
   // evaluate fhirpath embeddings within map
   Object.keys(fhirPathEmbeddingsMap).forEach((embedding) => {
     try {
-      fhirPathEmbeddingsMap[embedding] = fhirpath.evaluate(
-        {},
-        `%${embedding}`,
-        fhirPathContext,
-        fhirpath_r4_model
-      )[0];
+      const result = fhirpath.evaluate({}, `%${embedding}`, fhirPathContext, fhirpath_r4_model)[0];
+
+      if (result !== undefined && result !== null) {
+        console.log(result);
+        fhirPathEmbeddingsMap[embedding] = result;
+      }
     } catch (e) {
       console.warn(e);
     }
