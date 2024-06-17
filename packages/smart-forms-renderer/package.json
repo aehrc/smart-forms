@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "0.35.6",
+  "version": "0.35.7",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
   "scripts": {
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "@aehrc/sdc-populate": "^2.2.2",
+    "@aehrc/sdc-populate": "^2.2.3",
     "@iconify/react": "^4.1.1",
     "dayjs": "^1.11.10",
     "deep-diff": "^1.0.2",
@@ -39,7 +39,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.difference": "^4.5.0",
     "lodash.intersection": "^4.4.0",
-    "nanoid": "^5.0.1",
+    "nanoid": "^5.0.7",
     "react-beautiful-dnd": "^13.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -87,7 +87,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "storybook": "^8.0.10",
     "ts-jest": "^29.1.1",
-    "tslib": "^2.6.2",
+    "tslib": "^2.6.3",
     "typescript": "^5.2.2"
   }
 }
