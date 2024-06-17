@@ -52,44 +52,6 @@
           }
         ]
       }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "TestFhirpathAsync2",
-      "status": "draft",
-      "compose": {
-        "include": [
-          {
-            "system": "http://snomed.info/sct",
-            "filter": [
-              {
-                "property": "constraint",
-                "op": "=",
-                "value": "<<{{%conditionResultSctCode2}}.<<363704007|Site|"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "TestFhirpathAsync3",
-      "status": "draft",
-      "compose": {
-        "include": [
-          {
-            "system": "http://snomed.info/sct",
-            "filter": [
-              {
-                "property": "constraint",
-                "op": "=",
-                "value": "<<{{%conditionResultSctCode3}}.<<363704007|Site|"
-              }
-            ]
-          }
-        ]
-      }
     }
   ],
   "url": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-2",
@@ -137,6 +99,22 @@
             "name": "conditionResult2",
             "language": "text/fhirpath",
             "expression": "item.where(linkId='scenario-2-condition').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "conditionResult2",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='scenario-2-condition').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "associatedSiteExpandCodings2",
+            "language": "text/fhirpath",
+            "expression": "expand('http://snomed.info/sct?fhir_vs%3Decl%2F%3C%3C' + iif(%conditionResultSctCode2.exists(), %conditionResultSctCode2, '') + '.%3C%3C363704007')"
           }
         },
         {
@@ -245,10 +223,19 @@
           "type": "string"
         },
         {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression",
+              "valueExpression": {
+                "name": "AssociatedSites",
+                "language": "text/fhirpath",
+                "expression": "%associatedSiteExpandCodings2.expansion.contains"
+              }
+            }
+          ],
           "linkId": "scenario-2-associated-site",
           "text": "Associated site",
           "type": "choice",
-          "answerValueSet": "#TestFhirpathAsync2",
           "enableWhen": [
             {
               "question": "scenario-2-condition",
@@ -268,176 +255,6 @@
             }
           ],
           "linkId": "scenario-2-laterality",
-          "text": "(Associated site laterality components is enabled)",
-          "type": "display"
-        }
-      ]
-    },
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "conditionResult3",
-            "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-3-condition').answer.value"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "conditionResultSctCode3",
-            "language": "text/fhirpath",
-            "expression": "%conditionResult3.code"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "conditionResult3",
-            "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-3-condition').answer.value"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "associatedSite3",
-            "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-3-associated-site').answer.value"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "procedureHasSiteBoolean",
-            "language": "text/fhirpath",
-            "expression": "expand('http://snomed.info/sct?fhir_vs%3Decl%2F%3C%3C' + iif(%conditionResultSctCode3.exists(), %conditionResultSctCode3, '363704007') + '.%3C%3C363704007').expansion.contains.count() > 0"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "enableAssociateSite3",
-            "language": "text/fhirpath",
-            "expression": "%conditionResult3.exists() and %procedureHasSiteBoolean"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "enableLateralityComponents3",
-            "language": "text/fhirpath",
-            "expression": "%associatedSite3.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') = true and %conditionResult3.exists()"
-          }
-        }
-      ],
-      "linkId": "scenario-3",
-      "text": "3. Request for MRI of Brain 'Procedure + Site'",
-      "type": "group",
-      "item": [
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/questionnaire-item-control",
-                    "code": "autocomplete"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "scenario-3-condition",
-          "text": "Procedure",
-          "type": "choice",
-          "answerValueSet": "#MedicalHistory"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result system",
-                "language": "text/fhirpath",
-                "expression": "%conditionResult3.system"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-2-condition-result-system",
-          "text": "Condition system",
-          "type": "string"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result code",
-                "language": "text/fhirpath",
-                "expression": "%conditionResultSctCode3"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-3-condition-result-code",
-          "text": "Condition code",
-          "type": "string"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result display",
-                "language": "text/fhirpath",
-                "expression": "%conditionResult3.display"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-3-condition-result-display",
-          "text": "Condition display",
-          "type": "string"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression",
-              "valueExpression": {
-                "language": "text/fhirpath",
-                "expression": "%enableAssociateSite3"
-              }
-            }
-          ],
-          "linkId": "scenario-3-associated-site",
-          "text": "Associated site",
-          "type": "choice",
-          "answerValueSet": "#TestFhirpathAsync3"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression",
-              "valueExpression": {
-                "language": "text/fhirpath",
-                "expression": "%enableLateralityComponents3"
-              }
-            }
-          ],
-          "linkId": "scenario-3-laterality",
           "text": "(Associated site laterality components is enabled)",
           "type": "display"
         }

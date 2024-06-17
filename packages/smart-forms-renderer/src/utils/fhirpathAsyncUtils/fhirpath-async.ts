@@ -185,7 +185,6 @@ export async function evaluateFhirpathAsync(
     }
 
     // Evaluate the expression
-    logMessage(debugAsyncFhirpath, outcome, 'performing iteration: ', iterations);
     try {
       results = fhirpath.evaluate(fhirData, path, context, model, options);
     } catch (err: any) {
@@ -198,7 +197,6 @@ export async function evaluateFhirpathAsync(
   if (iterations > 1) {
     logMessage(debugAsyncFhirpath, outcome, 'total iterations', iterations);
   }
-  console.log(outcome);
   return results;
 }
 

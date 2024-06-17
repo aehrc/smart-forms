@@ -77,12 +77,12 @@ function useValueSetCodings(
   }, [cachedValueSetCodings, processedValueSetCodings, valueSetUrl]);
 
   // Attempt to get codings from answer expression
-  const answerExpression = getAnswerExpression(qItem)?.expression;
+  const qItemAnswerExpression = getAnswerExpression(qItem)?.expression;
   initialCodings = useMemo(() => {
-    if (initialCodings.length === 0 && answerExpression) {
-      const variable = answerExpression.substring(
-        answerExpression.indexOf('%') + 1,
-        answerExpression.indexOf('.')
+    if (initialCodings.length === 0 && qItemAnswerExpression) {
+      const variable = qItemAnswerExpression.substring(
+        qItemAnswerExpression.indexOf('%') + 1,
+        qItemAnswerExpression.indexOf('.')
       );
       const contextMap: Record<string, FhirResource> = {};
 
@@ -104,7 +104,7 @@ function useValueSetCodings(
         try {
           const evaluated: any[] = fhirpath.evaluate(
             {},
-            answerExpression,
+            qItemAnswerExpression,
             contextMap,
             fhirpath_r4_model
           );
@@ -124,7 +124,7 @@ function useValueSetCodings(
 
     return initialCodings;
   }, [
-    answerExpression,
+    qItemAnswerExpression,
     encounter,
     initialCodings,
     launchContexts,
@@ -137,6 +137,7 @@ function useValueSetCodings(
   const [loading, setLoading] = useState<boolean>(false);
   const [serverError, setServerError] = useState<Error | null>(null);
 
+  // Use dynamic valueSet via embeddings in contained ValueSet
   let dynamicValueSet: DynamicValueSet | null = null;
   if (cleanValueSetUrl) {
     dynamicValueSet = dynamicValueSets[cleanValueSetUrl];
@@ -145,8 +146,6 @@ function useValueSetCodings(
     if (!cleanValueSetUrl || !dynamicValueSet) {
       return;
     }
-
-    // Get ValueSet resource from dynamic value set
 
     // dynamicValueSet is not complete
     if (!dynamicValueSet.isComplete || !dynamicValueSet.completeResource) {
@@ -196,6 +195,18 @@ function useValueSetCodings(
         });
     }
   }, [qItem, dynamicValueSet?.version]);
+
+  // Instead of using dynamic answerValueSets, use answerExpressions
+  // useEffect(() => {
+  //   const answerExpression = answerExpressions[qItem.linkId];
+  //
+  //   if (!answerExpression) {
+  //     return;
+  //   }
+  //
+  //   console.log('answerExpression____');
+  //   console.log(answerExpression);
+  // }, [answerExpressions]);
 
   // get options from answerValueSet on render
   useEffect(() => {
