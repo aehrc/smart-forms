@@ -8,7 +8,7 @@ import type {
   Resource,
   ValueSet
 } from 'fhir/r4b';
-import type { Model, Path, UserInvocationTable } from 'fhirpath';
+// import type { Model, Path, UserInvocationTable } from 'fhirpath';
 import fhirpath from 'fhirpath';
 import { CreateOperationOutcome, logMessage } from './outcome-utils';
 

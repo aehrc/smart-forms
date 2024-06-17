@@ -63,6 +63,21 @@ export function getValueSetPromise(url: string, terminologyServerUrl: string): P
   });
 }
 
+export function getValueSetPostPromise(
+  valueSet: ValueSet,
+  terminologyServerUrl: string
+): Promise<ValueSet> {
+  return FHIR.client({ serverUrl: terminologyServerUrl }).request({
+    url: 'ValueSet/$expand',
+    method: 'POST',
+    body: JSON.stringify(valueSet),
+    headers: {
+      'Content-Type': 'application/fhir+json;charset=utf-8',
+      Accept: 'application/json;charset=utf-8'
+    }
+  });
+}
+
 async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {

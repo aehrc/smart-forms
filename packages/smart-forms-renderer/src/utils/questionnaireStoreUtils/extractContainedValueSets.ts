@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+import { DynamicValueSet, ValueSetPromise } from '../../interfaces/valueSet.interface';
 import { getValueSetCodings, getValueSetPromise } from '../valueSet';
 import type { Coding, Questionnaire, ValueSet } from 'fhir/r4';
 
@@ -26,27 +26,50 @@ export function extractContainedValueSets(
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  dynamicValueSets: Record<string, DynamicValueSet>;
 } {
   if (!questionnaire.contained || questionnaire.contained.length === 0) {
-    return { processedValueSetCodings: {}, processedValueSetUrls: {}, valueSetPromises: {} };
+    return {
+      processedValueSetCodings: {},
+      processedValueSetUrls: {},
+      valueSetPromises: {},
+      dynamicValueSets: {}
+    };
   }
 
   // Process contained ValueSets
   const processedValueSetCodings: Record<string, Coding[]> = {};
   const processedValueSetUrls: Record<string, string> = {};
   const valueSetPromises: Record<string, ValueSetPromise> = {};
+  const dynamicValueSets: Record<string, DynamicValueSet> = {};
   for (const entry of questionnaire.contained) {
     if (entry.resourceType !== 'ValueSet' || !entry.id) {
       continue;
     }
 
+    // Expansion exists, save codings
     if (entry.expansion) {
       // Store contained valueSet codings
       processedValueSetCodings[entry.id] = getValueSetCodings(entry);
       continue;
     }
 
-    // Add unexpanded contained ValueSets to valueSetPromiseMap
+    // ValueSet is dynamic and can't be resolved now, save the ValueSet itself
+    const valueSetComposeInclude = entry.compose?.include;
+    if (valueSetComposeInclude) {
+      const jsonString = JSON.stringify(valueSetComposeInclude);
+
+      if (jsonString.includes('{{') && jsonString.includes('}}')) {
+        dynamicValueSets[entry.id] = {
+          sourceResource: entry,
+          isComplete: false,
+          version: 0
+        };
+        continue;
+      }
+    }
+
+    // ValueSet is both unexpanded and not dynamic, add unexpanded contained ValueSets to valueSetPromiseMap
     const valueSetUrl = getValueSetUrlFromContained(entry);
     if (valueSetUrl) {
       valueSetPromises[entry.id] = {
@@ -60,7 +83,7 @@ export function extractContainedValueSets(
     }
   }
 
-  return { processedValueSetCodings, processedValueSetUrls, valueSetPromises };
+  return { processedValueSetCodings, processedValueSetUrls, valueSetPromises, dynamicValueSets };
 }
 
 /**

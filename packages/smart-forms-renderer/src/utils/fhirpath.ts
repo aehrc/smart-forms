@@ -22,6 +22,8 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
 import type { EnableWhenExpressions } from '../interfaces/enableWhen.interface';
 import { evaluateEnableWhenExpressions } from './enableWhenExpression';
 import { evaluateCalculatedExpressions } from './calculatedExpression';
+import { DynamicValueSet } from '../interfaces/valueSet.interface';
+import { evaluateDynamicValueSets } from './dynamicValueSet';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
@@ -29,6 +31,7 @@ interface EvaluateUpdatedExpressionsParams {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
   variablesFhirPath: Record<string, Expression[]>;
+  dynamicValueSets: Record<string, DynamicValueSet>;
   existingFhirPathContext: Record<string, any>;
 }
 
@@ -36,6 +39,7 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
   isUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  updatedDynamicValueSets: Record<string, DynamicValueSet>;
   updatedFhirPathContext: Record<string, any>;
 } {
   const {
@@ -44,6 +48,7 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
     enableWhenExpressions,
     calculatedExpressions,
     variablesFhirPath,
+    dynamicValueSets,
     existingFhirPathContext
   } = params;
 
@@ -55,6 +60,7 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
       isUpdated: false,
       updatedEnableWhenExpressions: enableWhenExpressions,
       updatedCalculatedExpressions: calculatedExpressions,
+      updatedDynamicValueSets: dynamicValueSets,
       updatedFhirPathContext: existingFhirPathContext
     };
   }
@@ -78,12 +84,19 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
     calculatedExpressions
   );
 
-  const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated;
+  // Update dynamicValueSets
+  const { dynamicValueSetsIsUpdated, updatedDynamicValueSets } = evaluateDynamicValueSets(
+    updatedFhirPathContext,
+    dynamicValueSets
+  );
+
+  const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated || dynamicValueSetsIsUpdated;
 
   return {
     isUpdated,
     updatedEnableWhenExpressions,
     updatedCalculatedExpressions,
+    updatedDynamicValueSets,
     updatedFhirPathContext
   };
 }

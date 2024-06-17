@@ -51,9 +51,11 @@ export async function createQuestionnaireModel(
     questionnaire,
     terminologyServerUrl
   );
+
   let valueSetPromises = extractContainedValueSetsResult.valueSetPromises;
   let processedValueSetCodings = extractContainedValueSetsResult.processedValueSetCodings;
   const processedValueSetUrls = extractContainedValueSetsResult.processedValueSetUrls;
+  const dynamicValueSets = extractContainedValueSetsResult.dynamicValueSets;
 
   const extractOtherExtensionsResult = extractOtherExtensions(
     questionnaire,
@@ -108,6 +110,7 @@ export async function createQuestionnaireModel(
     answerOptions: completeAnswerOptions,
     processedValueSetCodings,
     processedValueSetUrls,
+    dynamicValueSets,
     fhirPathContext: {}
   };
 }
@@ -126,6 +129,7 @@ function createEmptyModel(): QuestionnaireModel {
     enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSetCodings: {},
     processedValueSetUrls: {},
+    dynamicValueSets: {},
     fhirPathContext: {}
   };
 }

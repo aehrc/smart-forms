@@ -21,3 +21,10 @@ export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   valueSet?: ValueSet;
 }
+
+export interface DynamicValueSet {
+  sourceResource: ValueSet;
+  isComplete: boolean;
+  version: number;
+  completeResource?: ValueSet;
+}

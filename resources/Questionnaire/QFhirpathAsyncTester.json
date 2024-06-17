@@ -1,0 +1,242 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "CalculatedExpressionCvdRiskCalculatorPrepop",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2024-06-11T10:15:22.026+00:00",
+    "source": "#CwlqsoGwV8CY9l7l"
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ValueSetFhirpathAsync",
+        "language": "application/x-fhir-query",
+        "expression": "ValueSet/TestFhirpathAsync"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "MedicalHistory",
+      "url": "https://smartforms.csiro.au/ig/ValueSet/MedicalHistory",
+      "name": "MedicalHistory",
+      "title": "Medical History",
+      "status": "draft",
+      "experimental": false,
+      "description": "The Medical History value set includes values that may be used to represent medical history, operations and hospital admissions.",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "filter": [
+              {
+                "property": "constraint",
+                "op": "=",
+                "value": "^32570581000036105|Problem/Diagnosis reference set| OR ^32570141000036105|Procedure foundation reference set|"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "TestFhirpathAsync",
+      "status": "draft",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "filter": [
+              {
+                "property": "constraint",
+                "op": "=",
+                "value": "<<{{%conditionResultSctCode}}.<<363704007|Site|"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "url": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-2",
+  "version": "0.1.0",
+  "name": "CalculatedExpressionCvdRiskCalculatorPrepop",
+  "title": "Calculated Expression CVD Risk Calculator - Pre-population",
+  "status": "draft",
+  "date": "2024-05-01",
+  "publisher": "AEHRC CSIRO",
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "conditionResult",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='scenario-2-condition').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "conditionResultSctCode",
+            "language": "text/fhirpath",
+            "expression": "%conditionResult.code"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "conditionResult",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='scenario-2-condition').answer.value"
+          }
+        }
+      ],
+      "linkId": "scenario-2",
+      "text": "Request for X-Ray Right Foot as 'Procedure + Laterality'",
+      "type": "group",
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-collapsible",
+              "valueCode": "default-open"
+            }
+          ],
+          "linkId": "scenario-2-condition",
+          "text": "Condition",
+          "type": "choice",
+          "answerValueSet": "#MedicalHistory",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                  "valueExpression": {
+                    "description": "Condition result system",
+                    "language": "text/fhirpath",
+                    "expression": "%conditionResult.system"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+                  "valueBoolean": true
+                }
+              ],
+              "linkId": "scenario-2-condition-result-system",
+              "text": "Condition system",
+              "type": "string"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                  "valueExpression": {
+                    "description": "Condition result code",
+                    "language": "text/fhirpath",
+                    "expression": "%conditionResultSctCode"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+                  "valueBoolean": true
+                }
+              ],
+              "linkId": "scenario-2-condition-result-code",
+              "text": "Condition code",
+              "type": "string"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+                  "valueExpression": {
+                    "description": "Condition result display",
+                    "language": "text/fhirpath",
+                    "expression": "%conditionResult.display"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+                  "valueBoolean": true
+                }
+              ],
+              "linkId": "scenario-2-condition-result-display",
+              "text": "Condition display",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "scenario-2-associated-site",
+          "text": "Associated site",
+          "type": "choice",
+          "answerValueSet": "#TestFhirpathAsync"
+        },
+        {
+          "linkId": "medical-history-ref-valueset-instructions",
+          "text": "The valueSet below is used by fhirpath to dynamically generate a valueSet.",
+          "type": "display"
+        },
+        {
+          "linkId": "medical-history-ref-valueset",
+          "text": "Reference Valueset",
+          "type": "reference",
+          "initial": [
+            {
+              "valueString": "ValueSet/123"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

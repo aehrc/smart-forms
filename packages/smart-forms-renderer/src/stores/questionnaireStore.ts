@@ -48,6 +48,7 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
+import { DynamicValueSet } from '../interfaces/valueSet.interface';
 
 /**
  * QuestionnaireStore properties and methods
@@ -65,6 +66,7 @@ import type { InitialExpression } from '../interfaces/initialExpression.interfac
  * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
  * @property enableWhenExpressions - EnableWhenExpressions object containing enableWhen expressions
  * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
+ * @property initialExpressions - Key-value pair of initial expressions `Record<linkId, initial expression properties>`
  * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
  * @property processedValueSetCodings - Key-value pair of processed value set codings `Record<valueSetUrl, codings>`
  * @property processedValueSetUrls - Key-value pair of contained value set urls `Record<valueSetName, valueSetUrl>`
@@ -106,6 +108,7 @@ export interface QuestionnaireStoreType {
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
   cachedValueSetCodings: Record<string, Coding[]>;
+  dynamicValueSets: Record<string, DynamicValueSet>;
   fhirPathContext: Record<string, any>;
   populatedContext: Record<string, any>;
   focusedLinkId: string;
@@ -167,6 +170,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   processedValueSetCodings: {},
   processedValueSetUrls: {},
   cachedValueSetCodings: {},
+  dynamicValueSets: {},
   fhirPathContext: {},
   populatedContext: {},
   focusedLinkId: '',
@@ -223,6 +227,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
       processedValueSetUrls: questionnaireModel.processedValueSetUrls,
+      dynamicValueSets: questionnaireModel.dynamicValueSets,
       fhirPathContext: updatedFhirPathContext,
       readOnly: readOnly
     });
@@ -322,6 +327,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       isUpdated,
       updatedEnableWhenExpressions,
       updatedCalculatedExpressions,
+      updatedDynamicValueSets,
       updatedFhirPathContext
     } = evaluateUpdatedExpressions({
       updatedResponse,
@@ -329,6 +335,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
+      dynamicValueSets: get().dynamicValueSets,
       existingFhirPathContext: get().fhirPathContext
     });
 
@@ -336,6 +343,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       set(() => ({
         enableWhenExpressions: updatedEnableWhenExpressions,
         calculatedExpressions: updatedCalculatedExpressions,
+        dynamicValueSets: updatedDynamicValueSets,
         fhirPathContext: updatedFhirPathContext
       }));
       return 0;

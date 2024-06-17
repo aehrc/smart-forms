@@ -56,7 +56,9 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   }
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+    onQrItemChange(createEmptyQrItem(qItem));
+  });
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 

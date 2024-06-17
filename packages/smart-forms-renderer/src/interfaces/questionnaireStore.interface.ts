@@ -23,6 +23,7 @@ import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { InitialExpression } from './initialExpression.interface';
+import { DynamicValueSet } from './valueSet.interface';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
@@ -37,5 +38,6 @@ export interface QuestionnaireModel {
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
+  dynamicValueSets: Record<string, DynamicValueSet>;
   fhirPathContext: Record<string, any>;
 }
