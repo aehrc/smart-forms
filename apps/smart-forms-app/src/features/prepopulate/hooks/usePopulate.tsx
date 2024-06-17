@@ -77,7 +77,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
 
   setIsPopulated(true);
   populateQuestionnaire(sourceQuestionnaire, smartClient, patient, user, encounter, fhirPathContext)
-    .then(({ populateSuccess, populateResult }) => {
+    .then(async ({ populateSuccess, populateResult }) => {
       if (!populateSuccess || !populateResult) {
         onStopSpinner();
         enqueueSnackbar('Form not populated', { action: <CloseSnackbar />, variant: 'warning' });
@@ -85,7 +85,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
       }
 
       const { populated, hasWarnings, populatedContext } = populateResult;
-      const updatedResponse = updatePopulatedProperties(populated, populatedContext);
+      const updatedResponse = await updatePopulatedProperties(populated, populatedContext);
       setUpdatableResponseAsPopulated(updatedResponse);
       onStopSpinner();
       if (hasWarnings) {

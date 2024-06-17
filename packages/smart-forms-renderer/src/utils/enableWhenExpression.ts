@@ -33,12 +33,12 @@ interface EvaluateInitialEnableWhenExpressionsParams {
   existingFhirPathContext: Record<string, any>;
 }
 
-export function evaluateInitialEnableWhenExpressions(
+export async function evaluateInitialEnableWhenExpressions(
   params: EvaluateInitialEnableWhenExpressionsParams
-): {
+): Promise<{
   initialEnableWhenExpressions: EnableWhenExpressions;
   updatedFhirPathContext: Record<string, any>;
-} {
+}> {
   const {
     initialResponse,
     initialResponseItemMap,
@@ -50,7 +50,7 @@ export function evaluateInitialEnableWhenExpressions(
   const initialEnableWhenExpressions: EnableWhenExpressions = {
     ...enableWhenExpressions
   };
-  const updatedFhirPathContext = createFhirPathContext(
+  const updatedFhirPathContext = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
     variablesFhirPath,
@@ -273,9 +273,9 @@ interface MutateRepeatEnableWhenExpressionInstancesParams {
   actionType: 'add' | 'remove';
 }
 
-export function mutateRepeatEnableWhenExpressionInstances(
+export async function mutateRepeatEnableWhenExpressionInstances(
   params: MutateRepeatEnableWhenExpressionInstancesParams
-): { updatedEnableWhenExpressions: EnableWhenExpressions; isUpdated: boolean } {
+): Promise<{ updatedEnableWhenExpressions: EnableWhenExpressions; isUpdated: boolean }> {
   const {
     questionnaireResponse,
     questionnaireResponseItemMap,
@@ -289,7 +289,7 @@ export function mutateRepeatEnableWhenExpressionInstances(
 
   const { repeatExpressions } = enableWhenExpressions;
 
-  const updatedFhirPathContext = createFhirPathContext(
+  const updatedFhirPathContext = await createFhirPathContext(
     questionnaireResponse,
     questionnaireResponseItemMap,
     variablesFhirPath,

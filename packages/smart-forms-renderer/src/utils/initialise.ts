@@ -330,14 +330,14 @@ export interface initialFormFromResponseParams {
   fhirPathContext: Record<string, any>;
 }
 
-export function initialiseFormFromResponse(params: initialFormFromResponseParams): {
+export async function initialiseFormFromResponse(params: initialFormFromResponseParams): Promise<{
   initialEnableWhenItems: EnableWhenItems;
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
   initialEnableWhenExpressions: EnableWhenExpressions;
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   firstVisibleTab: number;
   updatedFhirPathContext: Record<string, any>;
-} {
+}> {
   const {
     questionnaireResponse,
     enableWhenItems,
@@ -355,7 +355,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     questionnaireResponse
   );
 
-  const evaluateInitialEnableWhenExpressionsResult = evaluateInitialEnableWhenExpressions({
+  const evaluateInitialEnableWhenExpressionsResult = await evaluateInitialEnableWhenExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     enableWhenExpressions: enableWhenExpressions,
@@ -365,7 +365,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
 
-  const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
+  const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     calculatedExpressions: calculatedExpressions,

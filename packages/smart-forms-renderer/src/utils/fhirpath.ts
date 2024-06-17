@@ -24,6 +24,8 @@ import { evaluateEnableWhenExpressions } from './enableWhenExpression';
 import { evaluateCalculatedExpressions } from './calculatedExpression';
 import { DynamicValueSet } from '../interfaces/valueSet.interface';
 import { evaluateDynamicValueSets } from './dynamicValueSet';
+import { evaluateFhirpathAsync } from './fhirpathAsyncUtils/fhirpath-async';
+import { DomainResource } from 'fhir/r4b';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
@@ -35,13 +37,15 @@ interface EvaluateUpdatedExpressionsParams {
   existingFhirPathContext: Record<string, any>;
 }
 
-export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsParams): {
+export async function evaluateUpdatedExpressions(
+  params: EvaluateUpdatedExpressionsParams
+): Promise<{
   isUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedDynamicValueSets: Record<string, DynamicValueSet>;
   updatedFhirPathContext: Record<string, any>;
-} {
+}> {
   const {
     updatedResponse,
     updatedResponseItemMap,
@@ -65,12 +69,14 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
     };
   }
 
-  const updatedFhirPathContext = createFhirPathContext(
+  const updatedFhirPathContext = await createFhirPathContext(
     updatedResponse,
     updatedResponseItemMap,
     variablesFhirPath,
     existingFhirPathContext
   );
+
+  console.log(updatedFhirPathContext);
 
   // Update enableWhenExpressions
   const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } = evaluateEnableWhenExpressions(
@@ -101,12 +107,12 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
   };
 }
 
-export function createFhirPathContext(
+export async function createFhirPathContext(
   questionnaireResponse: QuestionnaireResponse,
   questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>,
   variablesFhirPath: Record<string, Expression[]>,
   existingFhirPathContext: Record<string, any>
-): Record<string, any> {
+): Promise<Record<string, any>> {
   // Add latest resource to fhirPathContext
   let fhirPathContext: Record<string, any> = {
     ...existingFhirPathContext,
@@ -131,7 +137,7 @@ export function createFhirPathContext(
     // For non-repeat groups, the same linkId will have only one item
     // For repeat groups, the same linkId will have multiple items
     for (const qrItem of questionnaireResponseItemMap[linkId]) {
-      fhirPathContext = evaluateLinkIdVariables(qrItem, variablesFhirPath, fhirPathContext);
+      fhirPathContext = await evaluateLinkIdVariables(qrItem, variablesFhirPath, fhirPathContext);
     }
   }
 
@@ -143,7 +149,7 @@ export function createFhirPathContext(
   return fhirPathContext;
 }
 
-export function evaluateLinkIdVariables(
+export async function evaluateLinkIdVariables(
   item: QuestionnaireResponseItem,
   variablesFhirPath: Record<string, Expression[]>,
   fhirPathContext: Record<string, any>
@@ -156,8 +162,8 @@ export function evaluateLinkIdVariables(
   for (const variable of linkIdVariables) {
     if (variable.expression && variable.name) {
       try {
-        fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
-          item,
+        fhirPathContext[`${variable.name}`] = await evaluateFhirpathAsync(
+          item as unknown as DomainResource,
           {
             base: 'QuestionnaireResponse.item',
             expression: variable.expression

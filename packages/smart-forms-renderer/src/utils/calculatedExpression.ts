@@ -43,12 +43,12 @@ interface EvaluateInitialCalculatedExpressionsParams {
   existingFhirPathContext: Record<string, any>;
 }
 
-export function evaluateInitialCalculatedExpressions(
+export async function evaluateInitialCalculatedExpressions(
   params: EvaluateInitialCalculatedExpressionsParams
-): {
+): Promise<{
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
-} {
+}> {
   const {
     initialResponse,
     initialResponseItemMap,
@@ -72,7 +72,7 @@ export function evaluateInitialCalculatedExpressions(
     ...calculatedExpressions
   };
 
-  const updatedFhirPathContext = createFhirPathContext(
+  const updatedFhirPathContext = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
     variablesFhirPath,

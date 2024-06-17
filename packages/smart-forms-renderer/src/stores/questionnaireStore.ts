@@ -140,7 +140,7 @@ export interface QuestionnaireStoreType {
     populatedResponse: QuestionnaireResponse,
     populatedContext?: Record<string, any>,
     persistTabIndex?: boolean
-  ) => QuestionnaireResponse;
+  ) => Promise<QuestionnaireResponse>;
   onFocusLinkId: (linkId: string) => void;
   setPopulatedContext: (newPopulatedContext: Record<string, any>) => void;
   setFormAsReadOnly: (readOnly: boolean) => void;
@@ -202,7 +202,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialCalculatedExpressions,
       firstVisibleTab,
       updatedFhirPathContext
-    } = initialiseFormFromResponse({
+    } = await initialiseFormFromResponse({
       questionnaireResponse,
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
@@ -284,7 +284,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenItems: updatedEnableWhenItems
     }));
   },
-  mutateRepeatEnableWhenItems: (
+  mutateRepeatEnableWhenItems: async (
     parentRepeatGroupLinkId: string,
     parentRepeatGroupIndex: number,
     actionType: 'add' | 'remove'
@@ -301,16 +301,17 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       actionType
     );
 
-    const { updatedEnableWhenExpressions, isUpdated } = mutateRepeatEnableWhenExpressionInstances({
-      questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
-      questionnaireResponseItemMap: questionnaireResponseStore.getState().updatableResponseItems,
-      variablesFhirPath: get().variables.fhirPathVariables,
-      existingFhirPathContext: get().fhirPathContext,
-      enableWhenExpressions: enableWhenExpressions,
-      parentRepeatGroupLinkId,
-      parentRepeatGroupIndex,
-      actionType
-    });
+    const { updatedEnableWhenExpressions, isUpdated } =
+      await mutateRepeatEnableWhenExpressionInstances({
+        questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
+        questionnaireResponseItemMap: questionnaireResponseStore.getState().updatableResponseItems,
+        variablesFhirPath: get().variables.fhirPathVariables,
+        existingFhirPathContext: get().fhirPathContext,
+        enableWhenExpressions: enableWhenExpressions,
+        parentRepeatGroupLinkId,
+        parentRepeatGroupIndex,
+        actionType
+      });
 
     if (isUpdated) {
       set(() => ({
@@ -321,7 +322,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   },
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => {
+  updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(updatedResponse);
     const {
       isUpdated,
@@ -329,7 +330,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       updatedCalculatedExpressions,
       updatedDynamicValueSets,
       updatedFhirPathContext
-    } = evaluateUpdatedExpressions({
+    } = await evaluateUpdatedExpressions({
       updatedResponse,
       updatedResponseItemMap,
       enableWhenExpressions: get().enableWhenExpressions,
@@ -360,14 +361,14 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         [valueSetUrl]: codings
       }
     })),
-  updatePopulatedProperties: (
+  updatePopulatedProperties: async (
     populatedResponse: QuestionnaireResponse,
     populatedContext?: Record<string, any>,
     persistTabIndex?: boolean
   ) => {
     const initialResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
 
-    const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
+    const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
       initialResponseItemMap: initialResponseItemMap,
       calculatedExpressions: get().calculatedExpressions,
@@ -388,7 +389,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
       firstVisibleTab
-    } = initialiseFormFromResponse({
+    } = await initialiseFormFromResponse({
       questionnaireResponse: updatedResponse,
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,

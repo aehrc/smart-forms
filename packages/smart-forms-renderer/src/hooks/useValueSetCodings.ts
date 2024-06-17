@@ -133,10 +133,8 @@ function useValueSetCodings(
     xFhirQueryVariables
   ]);
 
-  const initialLoading = initialCodings.length === 0;
-
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
-  const [loading, setLoading] = useState<boolean>(initialLoading);
+  const [loading, setLoading] = useState<boolean>(false);
   const [serverError, setServerError] = useState<Error | null>(null);
 
   let dynamicValueSet: DynamicValueSet | null = null;
@@ -148,10 +146,6 @@ function useValueSetCodings(
       return;
     }
 
-    if (qItem.linkId === 'scenario-2-associated-site') {
-      console.log(codings);
-    }
-
     // Get ValueSet resource from dynamic value set
 
     // dynamicValueSet is not complete
@@ -161,19 +155,20 @@ function useValueSetCodings(
       return;
     }
 
-    if (qItem.linkId === 'scenario-2-associated-site') {
-      console.log(codings);
-      console.log(dynamicValueSet);
-    }
-
     // Assume answerValueSet is an expandable URL
     setLoading(true);
     const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
     const promise = getValueSetPostPromise(dynamicValueSet.completeResource, terminologyServerUrl);
+    // console.log('promise', promise, dynamicValueSet.version)
     if (promise) {
       promise
         .then(async (valueSet: ValueSet) => {
           const codings = getValueSetCodings(valueSet);
+          if (qItem.linkId === 'scenario-3-associated-site') {
+            console.log('codings____');
+            console.log(codings);
+          }
+
           addDisplayToCodingArray(codings, terminologyServerUrl)
             .then((codingsWithDisplay) => {
               if (codingsWithDisplay.length > 0 && dynamicValueSet) {
@@ -181,22 +176,23 @@ function useValueSetCodings(
                   `${valueSetUrl}-dynamic-v${dynamicValueSet.version}`,
                   codingsWithDisplay
                 );
-                console.log('why not in here');
-                setCodings(codings);
-                onDynamicValueSetCodingsChange();
               }
-
-              // Set loading to false regardless of whether there are codings
+              onDynamicValueSetCodingsChange();
+              setCodings(codingsWithDisplay);
               setLoading(false);
             })
             .catch((error: Error) => {
-              setCodings([]);
+              setCodings(codings);
               onDynamicValueSetCodingsChange();
               setServerError(error);
+              setLoading(false);
             });
         })
         .catch((error: Error) => {
           setServerError(error);
+          setCodings([]);
+          onDynamicValueSetCodingsChange();
+          setLoading(false);
         });
     }
   }, [qItem, dynamicValueSet?.version]);
@@ -217,7 +213,7 @@ function useValueSetCodings(
             .then((codingsWithDisplay) => {
               if (codingsWithDisplay.length > 0) {
                 addCodingToCache(valueSetUrl, codingsWithDisplay);
-                setCodings(codings);
+                setCodings(codingsWithDisplay);
               }
             })
             .catch((error: Error) => {
