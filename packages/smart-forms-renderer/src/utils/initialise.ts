@@ -211,7 +211,7 @@ function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponse
   }
 
   return initialValues
-    .map((initialValue) => initialValueSwitcher(initialValue))
+    .map((initialValue) => parseItemInitialToAnswer(initialValue))
     .filter((item): item is QuestionnaireResponseItemAnswer => item !== null);
 }
 
@@ -231,55 +231,55 @@ function getInitialValueAnswersFromRepeatGroup(qItem: QuestionnaireItem) {
     .filter((childQRItem) => childQRItem.answer && childQRItem.answer.length > 0);
 }
 
-function initialValueSwitcher(
-  initialValue: QuestionnaireItemInitial
+export function parseItemInitialToAnswer(
+  initial: QuestionnaireItemInitial
 ): QuestionnaireResponseItemAnswer | null {
-  if (initialValue.valueBoolean) {
-    return { valueBoolean: initialValue.valueBoolean };
+  if (typeof initial.valueBoolean === 'boolean') {
+    return { valueBoolean: initial.valueBoolean };
   }
 
-  if (initialValue.valueDecimal) {
-    return { valueDecimal: initialValue.valueDecimal };
+  if (typeof initial.valueDecimal === 'number') {
+    return { valueDecimal: initial.valueDecimal };
   }
 
-  if (initialValue.valueInteger) {
-    return { valueInteger: initialValue.valueInteger };
+  if (typeof initial.valueInteger === 'number') {
+    return { valueInteger: initial.valueInteger };
   }
 
-  if (initialValue.valueDate) {
-    return { valueDate: initialValue.valueDate };
+  if (typeof initial.valueDate === 'string') {
+    return { valueDate: initial.valueDate };
   }
 
-  if (initialValue.valueDateTime) {
-    return { valueDateTime: initialValue.valueDateTime };
+  if (typeof initial.valueDateTime === 'string') {
+    return { valueDateTime: initial.valueDateTime };
   }
 
-  if (initialValue.valueTime) {
-    return { valueTime: initialValue.valueTime };
+  if (typeof initial.valueTime === 'string') {
+    return { valueTime: initial.valueTime };
   }
 
-  if (initialValue.valueString) {
-    return { valueString: initialValue.valueString };
+  if (typeof initial.valueString === 'string') {
+    return { valueString: initial.valueString };
   }
 
-  if (initialValue.valueUri) {
-    return { valueUri: initialValue.valueUri };
+  if (typeof initial.valueUri === 'string') {
+    return { valueUri: initial.valueUri };
   }
 
-  if (initialValue.valueAttachment) {
-    return { valueAttachment: initialValue.valueAttachment };
+  if (initial.valueAttachment) {
+    return { valueAttachment: initial.valueAttachment };
   }
 
-  if (initialValue.valueCoding) {
-    return { valueCoding: initialValue.valueCoding };
+  if (initial.valueCoding) {
+    return { valueCoding: initial.valueCoding };
   }
 
-  if (initialValue.valueQuantity) {
-    return { valueQuantity: initialValue.valueQuantity };
+  if (initial.valueQuantity) {
+    return { valueQuantity: initial.valueQuantity };
   }
 
-  if (initialValue.valueReference) {
-    return { valueReference: initialValue.valueReference };
+  if (initial.valueReference) {
+    return { valueReference: initial.valueReference };
   }
 
   return null;
