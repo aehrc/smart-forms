@@ -103,7 +103,7 @@
           "valueExpression": {
             "name": "associatedSite2",
             "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-2-associated-site').answer.value"
+            "expression": "iif(%procedureCode2.exists(), expand('http://snomed.info/sct?fhir_vs%3Decl%2F' + %procedureCode2 + '.%3C%3C363704007').expansion.contains[0], '' )"
           }
         },
         {
@@ -139,10 +139,18 @@
           "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/imaging-procedure-1"
         },
         {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%associatedSite2.display"
+              }
+            }
+          ],
           "linkId": "scenario-2-associated-site",
           "text": "Associated site",
-          "type": "choice",
-          "answerValueSet": "#AssociatedSite2",
+          "type": "string",
           "enableWhen": [
             {
               "question": "scenario-2-procedure",
@@ -201,6 +209,14 @@
             "language": "text/fhirpath",
             "expression": "%procedureCode3.exists() and %procedureHasSiteBoolean = false"
           }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "enableLateralityComponents3",
+            "language": "text/fhirpath",
+            "expression": "%associatedSite3.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') and %procedureCode3.exists()"
+          }
         }
       ],
       "linkId": "scenario-3",
@@ -240,6 +256,21 @@
           "text": "Associated site",
           "type": "choice",
           "answerValueSet": "#SubConceptsAssociatedSites3"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%enableLateralityComponents3"
+              }
+            }
+          ],
+          "linkId": "scenario-3-site-laterality",
+          "text": "Laterality",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/bodysite-laterality"
         }
       ]
     }
