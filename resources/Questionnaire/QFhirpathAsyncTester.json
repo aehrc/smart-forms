@@ -4,13 +4,8 @@
   "contained": [
     {
       "resourceType": "ValueSet",
-      "id": "MedicalHistory",
-      "url": "https://smartforms.csiro.au/ig/ValueSet/MedicalHistory",
-      "name": "MedicalHistory",
-      "title": "Medical History",
+      "id": "AssociatedSite2",
       "status": "draft",
-      "experimental": false,
-      "description": "The Medical History value set includes values that may be used to represent medical history, operations and hospital admissions.",
       "compose": {
         "include": [
           {
@@ -19,7 +14,7 @@
               {
                 "property": "constraint",
                 "op": "=",
-                "value": "^32570581000036105|Problem/Diagnosis reference set| OR ^32570141000036105|Procedure foundation reference set|"
+                "value": "{{%procedureCode2}}.<<363704007|Site|"
               }
             ]
           }
@@ -28,7 +23,7 @@
     },
     {
       "resourceType": "ValueSet",
-      "id": "TestFhirpathAsync2",
+      "id": "SubConceptsAssociatedSites3",
       "status": "draft",
       "compose": {
         "include": [
@@ -38,26 +33,7 @@
               {
                 "property": "constraint",
                 "op": "=",
-                "value": "<<{{%procedureCode2}}.<<363704007|Site|"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "TestFhirpathAsync3",
-      "status": "draft",
-      "compose": {
-        "include": [
-          {
-            "system": "http://snomed.info/sct",
-            "filter": [
-              {
-                "property": "constraint",
-                "op": "=",
-                "value": "<<{{%procedureCode3}}.<<363704007|Site|"
+                "value": "<{{%procedureCode3}}.<<363704007|Site|"
               }
             ]
           }
@@ -85,6 +61,32 @@
         ]
       },
       "type": "display"
+    },
+    {
+      "linkId": "scenario-1",
+      "text": "1. Request for X-Ray Left Hand as 'Single item'",
+      "type": "group",
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "scenario-1-procedure",
+          "text": "Procedure",
+          "type": "choice",
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/imaging-procedure-1"
+        }
+      ]
     },
     {
       "extension": [
@@ -134,13 +136,13 @@
           "linkId": "scenario-2-procedure",
           "text": "Procedure",
           "type": "choice",
-          "answerValueSet": "#MedicalHistory"
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/imaging-procedure-1"
         },
         {
           "linkId": "scenario-2-associated-site",
           "text": "Associated site",
           "type": "choice",
-          "answerValueSet": "#TestFhirpathAsync2",
+          "answerValueSet": "#AssociatedSite2",
           "enableWhen": [
             {
               "question": "scenario-2-procedure",
@@ -187,33 +189,17 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
-            "name": "dummyCode3",
-            "language": "text/fhirpath",
-            "expression": "363704007"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
             "name": "procedureHasSiteBoolean",
             "language": "text/fhirpath",
-            "expression": "expand('http://snomed.info/sct?fhir_vs%3Decl%2F%3C%3C' + iif(%procedureCode3.exists(), %procedureCode3, %dummyCode3) + '.%3C%3C363704007').expansion.contains.count() > 0"
+            "expression": "iif(%procedureCode3.exists(), expand('http://snomed.info/sct?fhir_vs%3Decl%2F' + %procedureCode3 + '.%3C%3C363704007').expansion.contains.count() > 0, false )"
           }
         },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
-            "name": "enableAssociateSite3",
+            "name": "enableSiteSelection3",
             "language": "text/fhirpath",
-            "expression": "%procedureCode3.exists() and %procedureHasSiteBoolean"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "enableLateralityComponents3",
-            "language": "text/fhirpath",
-            "expression": "%associatedSite3.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') = true and %procedureCode3.exists()"
+            "expression": "%procedureCode3.exists() and %procedureHasSiteBoolean = false"
           }
         }
       ],
@@ -238,7 +224,7 @@
           "linkId": "scenario-3-procedure",
           "text": "Procedure",
           "type": "choice",
-          "answerValueSet": "#MedicalHistory"
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/imaging-procedure-1"
         },
         {
           "extension": [
@@ -246,29 +232,14 @@
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression",
               "valueExpression": {
                 "language": "text/fhirpath",
-                "expression": "%enableAssociateSite3"
+                "expression": "%enableSiteSelection3"
               }
             }
           ],
           "linkId": "scenario-3-associated-site",
           "text": "Associated site",
           "type": "choice",
-          "answerValueSet": "#TestFhirpathAsync3"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression",
-              "valueExpression": {
-                "language": "text/fhirpath",
-                "expression": "%enableLateralityComponents3"
-              }
-            }
-          ],
-          "linkId": "scenario-3-site-laterality",
-          "text": "Laterality",
-          "type": "choice",
-          "answerValueSet": "http://hl7.org/fhir/ValueSet/bodysite-laterality"
+          "answerValueSet": "#SubConceptsAssociatedSites3"
         }
       ]
     }
