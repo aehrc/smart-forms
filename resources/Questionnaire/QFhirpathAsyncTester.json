@@ -1,33 +1,6 @@
 {
   "resourceType": "Questionnaire",
-  "id": "CalculatedExpressionCvdRiskCalculatorPrepop",
-  "meta": {
-    "versionId": "1",
-    "lastUpdated": "2024-06-11T10:15:22.026+00:00",
-    "source": "#CwlqsoGwV8CY9l7l"
-  },
-  "extension": [
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-      "extension": [
-        {
-          "url": "name",
-          "valueCoding": {
-            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
-            "code": "patient"
-          }
-        },
-        {
-          "url": "type",
-          "valueCode": "Patient"
-        },
-        {
-          "url": "description",
-          "valueString": "The patient that is to be used to pre-populate the form"
-        }
-      ]
-    }
-  ],
+  "id": "RadiologyScenarios",
   "contained": [
     {
       "resourceType": "ValueSet",
@@ -65,7 +38,7 @@
               {
                 "property": "constraint",
                 "op": "=",
-                "value": "<<{{%conditionResultSctCode2}}.<<363704007|Site|"
+                "value": "<<{{%procedureCode2}}.<<363704007|Site|"
               }
             ]
           }
@@ -84,7 +57,7 @@
               {
                 "property": "constraint",
                 "op": "=",
-                "value": "<<{{%conditionResultSctCode3}}.<<363704007|Site|"
+                "value": "<<{{%procedureCode3}}.<<363704007|Site|"
               }
             ]
           }
@@ -92,10 +65,10 @@
       }
     }
   ],
-  "url": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-2",
+  "url": "https://smartforms.csiro.au/docs/radiology-scenarios",
   "version": "0.1.0",
-  "name": "CalculatedExpressionCvdRiskCalculatorPrepop",
-  "title": "Calculated Expression CVD Risk Calculator - Pre-population",
+  "name": "RadiologyScenarios",
+  "title": "Radiology Scenarios",
   "status": "draft",
   "date": "2024-05-01",
   "publisher": "AEHRC CSIRO",
@@ -118,25 +91,9 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
-            "name": "conditionResult2",
+            "name": "procedureCode2",
             "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-2-condition').answer.value"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "conditionResultSctCode2",
-            "language": "text/fhirpath",
-            "expression": "%conditionResult2.code"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "conditionResult2",
-            "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-2-condition').answer.value"
+            "expression": "item.where(linkId='scenario-2-procedure').answer.value.code"
           }
         },
         {
@@ -150,22 +107,14 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
-            "name": "enableAssociateSite2",
-            "language": "text/fhirpath",
-            "expression": "%conditionResult2.exists()"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
             "name": "enableLateralityComponents2",
             "language": "text/fhirpath",
-            "expression": "%associatedSite2.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') = true and %conditionResult2.exists()"
+            "expression": "%associatedSite2.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') and %procedureCode2.exists()"
           }
         }
       ],
       "linkId": "scenario-2",
-      "text": "Request for X-Ray Right Foot as 'Procedure + Laterality'",
+      "text": "2. Request for X-Ray Right Foot as 'Procedure + Laterality'",
       "type": "group",
       "item": [
         {
@@ -182,67 +131,10 @@
               }
             }
           ],
-          "linkId": "scenario-2-condition",
+          "linkId": "scenario-2-procedure",
           "text": "Procedure",
           "type": "choice",
           "answerValueSet": "#MedicalHistory"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result system",
-                "language": "text/fhirpath",
-                "expression": "%conditionResult2.system"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-2-condition-result-system",
-          "text": "Condition system",
-          "type": "string"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result code",
-                "language": "text/fhirpath",
-                "expression": "%conditionResultSctCode2"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-2-condition-result-code",
-          "text": "Condition code",
-          "type": "string"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result display",
-                "language": "text/fhirpath",
-                "expression": "%conditionResult2.display"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-2-condition-result-display",
-          "text": "Condition display",
-          "type": "string"
         },
         {
           "linkId": "scenario-2-associated-site",
@@ -251,7 +143,7 @@
           "answerValueSet": "#TestFhirpathAsync2",
           "enableWhen": [
             {
-              "question": "scenario-2-condition",
+              "question": "scenario-2-procedure",
               "operator": "exists",
               "answerBoolean": true
             }
@@ -267,9 +159,10 @@
               }
             }
           ],
-          "linkId": "scenario-2-laterality",
-          "text": "(Associated site laterality components is enabled)",
-          "type": "display"
+          "linkId": "scenario-2-site-laterality",
+          "text": "Laterality",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/bodysite-laterality"
         }
       ]
     },
@@ -278,25 +171,9 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
-            "name": "conditionResult3",
+            "name": "procedureCode3",
             "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-3-condition').answer.value"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "conditionResultSctCode3",
-            "language": "text/fhirpath",
-            "expression": "%conditionResult3.code"
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "conditionResult3",
-            "language": "text/fhirpath",
-            "expression": "item.where(linkId='scenario-3-condition').answer.value"
+            "expression": "item.where(linkId='scenario-3-procedure').answer.value.code"
           }
         },
         {
@@ -310,9 +187,17 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
+            "name": "dummyCode3",
+            "language": "text/fhirpath",
+            "expression": "363704007"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
             "name": "procedureHasSiteBoolean",
             "language": "text/fhirpath",
-            "expression": "expand('http://snomed.info/sct?fhir_vs%3Decl%2F%3C%3C' + iif(%conditionResultSctCode3.exists(), %conditionResultSctCode3, '363704007') + '.%3C%3C363704007').expansion.contains.count() > 0"
+            "expression": "expand('http://snomed.info/sct?fhir_vs%3Decl%2F%3C%3C' + iif(%procedureCode3.exists(), %procedureCode3, %dummyCode3) + '.%3C%3C363704007').expansion.contains.count() > 0"
           }
         },
         {
@@ -320,7 +205,7 @@
           "valueExpression": {
             "name": "enableAssociateSite3",
             "language": "text/fhirpath",
-            "expression": "%conditionResult3.exists() and %procedureHasSiteBoolean"
+            "expression": "%procedureCode3.exists() and %procedureHasSiteBoolean"
           }
         },
         {
@@ -328,7 +213,7 @@
           "valueExpression": {
             "name": "enableLateralityComponents3",
             "language": "text/fhirpath",
-            "expression": "%associatedSite3.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') = true and %conditionResult3.exists()"
+            "expression": "%associatedSite3.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') = true and %procedureCode3.exists()"
           }
         }
       ],
@@ -350,67 +235,10 @@
               }
             }
           ],
-          "linkId": "scenario-3-condition",
+          "linkId": "scenario-3-procedure",
           "text": "Procedure",
           "type": "choice",
           "answerValueSet": "#MedicalHistory"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result system",
-                "language": "text/fhirpath",
-                "expression": "%conditionResult3.system"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-2-condition-result-system",
-          "text": "Condition system",
-          "type": "string"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result code",
-                "language": "text/fhirpath",
-                "expression": "%conditionResultSctCode3"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-3-condition-result-code",
-          "text": "Condition code",
-          "type": "string"
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
-              "valueExpression": {
-                "description": "Condition result display",
-                "language": "text/fhirpath",
-                "expression": "%conditionResult3.display"
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
-              "valueBoolean": true
-            }
-          ],
-          "linkId": "scenario-3-condition-result-display",
-          "text": "Condition display",
-          "type": "string"
         },
         {
           "extension": [
@@ -437,9 +265,10 @@
               }
             }
           ],
-          "linkId": "scenario-3-laterality",
-          "text": "(Associated site laterality components is enabled)",
-          "type": "display"
+          "linkId": "scenario-3-site-laterality",
+          "text": "Laterality",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/bodysite-laterality"
         }
       ]
     }
