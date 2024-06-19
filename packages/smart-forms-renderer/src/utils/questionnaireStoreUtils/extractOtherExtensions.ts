@@ -222,7 +222,8 @@ function extractExtensionsFromItemRecursive(
   const answerExpression = getAnswerExpression(item);
   if (answerExpression) {
     answerExpressions[item.linkId] = {
-      expression: `${answerExpression.expression}`
+      expression: `${answerExpression.expression}`,
+      version: 0
     };
   }
 

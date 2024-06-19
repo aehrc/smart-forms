@@ -63,7 +63,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
     valueInString: valueChoice ?? '',
-    onChangeByCalcExpressionString: (newValueString: string) => {
+    onChangeByCalcExpressionString: (newValueString: string | null) => {
       handleChange(newValueString);
     },
     onChangeByCalcExpressionNull: () => {

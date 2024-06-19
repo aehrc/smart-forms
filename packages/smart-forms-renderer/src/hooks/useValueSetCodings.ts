@@ -43,6 +43,7 @@ function useValueSetCodings(
   codings: Coding[];
   isLoading: boolean;
   terminologyError: TerminologyError;
+  setCodings: (codings: Coding[]) => void;
 } {
   const patient = useSmartConfigStore.use.patient();
   const user = useSmartConfigStore.use.user();
@@ -163,10 +164,6 @@ function useValueSetCodings(
       promise
         .then(async (valueSet: ValueSet) => {
           const codings = getValueSetCodings(valueSet);
-          if (qItem.linkId === 'scenario-3-associated-site') {
-            console.log('codings____');
-            console.log(codings);
-          }
 
           addDisplayToCodingArray(codings, terminologyServerUrl)
             .then((codingsWithDisplay) => {
@@ -195,18 +192,6 @@ function useValueSetCodings(
         });
     }
   }, [qItem, dynamicValueSet?.version]);
-
-  // Instead of using dynamic answerValueSets, use answerExpressions
-  // useEffect(() => {
-  //   const answerExpression = answerExpressions[qItem.linkId];
-  //
-  //   if (!answerExpression) {
-  //     return;
-  //   }
-  //
-  //   console.log('answerExpression____');
-  //   console.log(answerExpression);
-  // }, [answerExpressions]);
 
   // get options from answerValueSet on render
   useEffect(() => {
@@ -239,6 +224,7 @@ function useValueSetCodings(
 
   return {
     codings,
+    setCodings,
     isLoading: loading,
     terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' }
   };

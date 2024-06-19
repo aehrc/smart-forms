@@ -115,6 +115,17 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     );
   }
 
+  if (codings.length === 0) {
+    return (
+      <StyledAlert color="info">
+        <Typography variant="subtitle2">
+          There are no options available for {terminologyError.answerValueSet}
+        </Typography>
+      </StyledAlert>
+    );
+  }
+
+  // Fallback when something went wrong
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />

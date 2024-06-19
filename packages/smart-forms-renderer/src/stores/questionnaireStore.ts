@@ -134,7 +134,7 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
@@ -335,6 +335,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       updatedResponseItemMap,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
+      answerExpressions: get().answerExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
       dynamicValueSets: get().dynamicValueSets,
       existingFhirPathContext: get().fhirPathContext
@@ -347,7 +348,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         dynamicValueSets: updatedDynamicValueSets,
         fhirPathContext: updatedFhirPathContext
       }));
-      return 0;
+      return;
     }
 
     set(() => ({

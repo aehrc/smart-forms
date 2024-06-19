@@ -39,29 +39,26 @@ function BaseRenderer() {
   const readOnly = useQuestionnaireStore.use.readOnly();
 
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const validateQuestionnaire = useQuestionnaireResponseStore.use.validateQuestionnaire();
   const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
-  function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
+  async function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
     const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
     updateResponse(updatedResponse);
+    await updateExpressions(updatedResponse);
   }
 
-  function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
+  async function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
     const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
     updateResponse(updatedResponse);
+    await updateExpressions(updatedResponse);
   }
 
   const topLevelQItems = sourceQuestionnaire.item;

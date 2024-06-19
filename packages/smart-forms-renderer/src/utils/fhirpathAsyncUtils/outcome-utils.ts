@@ -66,7 +66,6 @@ export function logMessage(
   data?: any
 ) {
   if (enabled) {
-    console.log(message, data);
     // and append it into the outcome issues
     var issue: OperationOutcomeIssue = {
       severity: 'information',

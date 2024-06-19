@@ -65,8 +65,8 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
     valueInString: valueRadio ?? '',
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString);
+    onChangeByCalcExpressionString: (newValueString: string | null) => {
+      handleChange(newValueString ?? '');
     },
     onChangeByCalcExpressionNull: () => {
       onQrItemChange(createEmptyQrItem(qItem));

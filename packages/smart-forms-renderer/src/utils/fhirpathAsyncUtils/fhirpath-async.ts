@@ -166,7 +166,7 @@ export async function evaluateFhirpathAsync(
 
   let iterations = 0;
   do {
-    context = { ...context, resource: fhirData, rootResource: fhirData };
+    context = { ...context, resource: fhirData, rootResource: fhirData, terminologies: {} };
     iterations++;
     // Perform the async calls required (none first time in)
     if (asyncCallsRequired.size > 0) {
@@ -481,7 +481,6 @@ async function memberOfAsync(
 
     if (response) {
       const resultJson = await response.json();
-      console.log(resultJson);
       const params = resultJson as Parameters;
       if (params && params.parameter) {
         const param = params.parameter.find((p) => p.name === 'result');

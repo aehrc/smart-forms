@@ -63,9 +63,8 @@ export function evaluateDynamicValueSets(
 
         const evaluatedFhirPathEmbeddingsTuple = Object.entries(
           evaluatedFhirPathEmbeddingsMap
-        ).filter(([embedding, value]) => value != '');
+        ).filter(([, value]) => value != '');
 
-        // console.log(evaluatedFhirPathEmbeddingsTuple);
         for (const filter of include.filter) {
           evaluatedFhirPathEmbeddingsTuple.forEach(([embedding, value]) => {
             const filterValue = filter.value;
@@ -108,7 +107,6 @@ function evaluateFhirPathEmbeddings(
       const result = fhirpath.evaluate({}, `%${embedding}`, fhirPathContext, fhirpath_r4_model)[0];
 
       if (result !== undefined && result !== null) {
-        console.log(result);
         fhirPathEmbeddingsMap[embedding] = result;
       }
     } catch (e) {

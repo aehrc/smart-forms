@@ -62,8 +62,8 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
     valueInString: valueChoice ?? '',
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString);
+    onChangeByCalcExpressionString: (newValueString: string | null) => {
+      handleChange(newValueString ?? '');
     },
     onChangeByCalcExpressionNull: () => {
       onQrItemChange(createEmptyQrItem(qItem));

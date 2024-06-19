@@ -58,7 +58,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   }
 
   // Get codings/options from valueSet
-  const { codings, isLoading, terminologyError } = useValueSetCodings(qItem, () => {
+  const { codings, isLoading, terminologyError, setCodings } = useValueSetCodings(qItem, () => {
     onQrItemChange(createEmptyQrItem(qItem));
   });
 
@@ -83,19 +83,41 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     []
   );
 
-  const answerOptions = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
-
   // Process calculated expressions
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
     valueInString: valueCoding?.code ?? '',
-    onChangeByCalcExpressionString: (newValueString) => {
-      if (codings.length > 0) {
-        const qrAnswer = findInAnswerOptions(answerOptions, newValueString);
+    onChangeByCalcExpressionString: (newValueString, newCodings) => {
+      // no new calcexp value and no newCodings
+      if (newValueString === null && newCodings.length === 0) {
+        return;
+      }
+
+      // no new calcexp value only
+      if (newValueString === null) {
+        setCodings(newCodings);
+        createEmptyQrItem(qItem);
+        return;
+      }
+
+      // no newCodings
+      if (newCodings.length === 0) {
+        const qrAnswer = findInAnswerOptions(codings, newValueString);
         onQrItemChange(
           qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
         );
+        return;
       }
+
+      // both is updated
+      const qrAnswer = findInAnswerOptions(
+        convertCodingsToAnswerOptions(newCodings),
+        newValueString
+      );
+      setCodings(newCodings);
+      onQrItemChange(
+        qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
+      );
     },
     onChangeByCalcExpressionNull: () => {
       onQrItemChange(createEmptyQrItem(qItem));

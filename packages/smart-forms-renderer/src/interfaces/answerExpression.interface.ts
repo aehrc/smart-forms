@@ -19,5 +19,6 @@ import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 
 export interface AnswerExpression {
   expression: string;
-  value?: QuestionnaireItemAnswerOption;
+  version: number;
+  options?: QuestionnaireItemAnswerOption[];
 }

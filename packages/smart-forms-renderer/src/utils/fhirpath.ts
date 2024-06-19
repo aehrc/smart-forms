@@ -26,12 +26,16 @@ import { DynamicValueSet } from '../interfaces/valueSet.interface';
 import { evaluateDynamicValueSets } from './dynamicValueSet';
 import { evaluateFhirpathAsync } from './fhirpathAsyncUtils/fhirpath-async';
 import { DomainResource } from 'fhir/r4b';
+import { AnswerExpression } from '../interfaces/answerExpression.interface';
+import { evaluateAnswerExpressions } from './answerExpression';
+import cloneDeep from 'lodash.clonedeep';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
   updatedResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
+  answerExpressions: Record<string, AnswerExpression>;
   variablesFhirPath: Record<string, Expression[]>;
   dynamicValueSets: Record<string, DynamicValueSet>;
   existingFhirPathContext: Record<string, any>;
@@ -43,6 +47,7 @@ export async function evaluateUpdatedExpressions(
   isUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  updatedAnswerExpressions: Record<string, AnswerExpression>;
   updatedDynamicValueSets: Record<string, DynamicValueSet>;
   updatedFhirPathContext: Record<string, any>;
 }> {
@@ -51,6 +56,7 @@ export async function evaluateUpdatedExpressions(
     updatedResponseItemMap,
     enableWhenExpressions,
     calculatedExpressions,
+    answerExpressions,
     variablesFhirPath,
     dynamicValueSets,
     existingFhirPathContext
@@ -64,6 +70,7 @@ export async function evaluateUpdatedExpressions(
       isUpdated: false,
       updatedEnableWhenExpressions: enableWhenExpressions,
       updatedCalculatedExpressions: calculatedExpressions,
+      updatedAnswerExpressions: answerExpressions,
       updatedDynamicValueSets: dynamicValueSets,
       updatedFhirPathContext: existingFhirPathContext
     };
@@ -76,7 +83,7 @@ export async function evaluateUpdatedExpressions(
     existingFhirPathContext
   );
 
-  console.log(updatedFhirPathContext);
+  console.log(cloneDeep(updatedFhirPathContext));
 
   // Update enableWhenExpressions
   const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } = evaluateEnableWhenExpressions(
@@ -90,18 +97,29 @@ export async function evaluateUpdatedExpressions(
     calculatedExpressions
   );
 
+  // Update answerExpressions
+  const { answerExpsIsUpdated, updatedAnswerExpressions } = evaluateAnswerExpressions(
+    updatedFhirPathContext,
+    answerExpressions
+  );
+
   // Update dynamicValueSets
   const { dynamicValueSetsIsUpdated, updatedDynamicValueSets } = evaluateDynamicValueSets(
     updatedFhirPathContext,
     dynamicValueSets
   );
 
-  const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated || dynamicValueSetsIsUpdated;
+  const isUpdated =
+    enableWhenExpsIsUpdated ||
+    calculatedExpsIsUpdated ||
+    answerExpsIsUpdated ||
+    dynamicValueSetsIsUpdated;
 
   return {
     isUpdated,
     updatedEnableWhenExpressions,
     updatedCalculatedExpressions,
+    updatedAnswerExpressions,
     updatedDynamicValueSets,
     updatedFhirPathContext
   };
