@@ -1,27 +1,6 @@
 export const QRadiologyScenariosPoc = {
   resourceType: 'Questionnaire',
   id: 'RadiologyScenariosPoc',
-  contained: [
-    {
-      resourceType: 'ValueSet',
-      id: 'SubConceptsAssociatedSites3',
-      status: 'draft',
-      compose: {
-        include: [
-          {
-            system: 'http://snomed.info/sct',
-            filter: [
-              {
-                property: 'constraint',
-                op: '=',
-                value: '<{{%procedureCode3}}.<<363704007|Site|'
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ],
   url: 'https://smartforms.csiro.au/docs/radiology-scenarios',
   version: '0.1.0',
   name: 'RadiologyScenarios',
