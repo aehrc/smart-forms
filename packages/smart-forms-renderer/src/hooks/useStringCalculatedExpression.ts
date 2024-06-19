@@ -56,6 +56,9 @@ function useStringCalculatedExpression(
           typeof calcExpression.value === 'number' ||
           calcExpression.value === null)
       ) {
+        if (inputValue === '' && calcExpression.value === null) {
+          return;
+        }
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
         setTimeout(() => {

@@ -1,6 +1,6 @@
 {
   "resourceType": "Questionnaire",
-  "id": "RadiologyScenarios",
+  "id": "RadiologyScenariosPoc",
   "contained": [
     {
       "resourceType": "ValueSet",
@@ -39,6 +39,25 @@
           }
         ]
       }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "SubConceptsAssociatedSites4",
+      "status": "draft",
+      "compose": {
+        "include": [
+          {
+            "system": "http://snomed.info/sct",
+            "filter": [
+              {
+                "property": "constraint",
+                "op": "=",
+                "value": "<{{%procedureCode4}}.<<363704007|Site|"
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "url": "https://smartforms.csiro.au/docs/radiology-scenarios",
@@ -64,9 +83,22 @@
     },
     {
       "linkId": "scenario-1",
-      "text": "1. Request for X-Ray Left Hand as 'Single item'",
+      "text": "1. Request for Procedure + Site as 'Single item'",
       "type": "group",
       "item": [
+        {
+          "linkId": "Guidance1",
+          "text": "Example: X-ray of left hand",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\r\n    Example: <b>X-ray of right foot</b>\r\n    </div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
         {
           "extension": [
             {
@@ -116,9 +148,22 @@
         }
       ],
       "linkId": "scenario-2",
-      "text": "2. Request for X-Ray Right Foot as 'Procedure + Laterality'",
+      "text": "2. Request for Procedure - populate Site if present",
       "type": "group",
       "item": [
+        {
+          "linkId": "Guidance2",
+          "text": "Example with Site: X-ray of right foot, Example without site: X-ray",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\r\n    Example with site: <b>X-ray of right foot</b>\r\n<br/>Example without site: <b>X-ray</b>    </div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
         {
           "extension": [
             {
@@ -150,7 +195,7 @@
           ],
           "linkId": "scenario-2-associated-site",
           "text": "Associated site",
-          "type": "string",
+          "type": "text",
           "enableWhen": [
             {
               "question": "scenario-2-procedure",
@@ -197,7 +242,7 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
-            "name": "procedureHasSiteBoolean",
+            "name": "procedureHasSiteBoolean3",
             "language": "text/fhirpath",
             "expression": "iif(%procedureCode3.exists(), expand('http://snomed.info/sct?fhir_vs%3Decl%2F' + %procedureCode3 + '.%3C%3C363704007').expansion.contains.count() > 0, false )"
           }
@@ -207,7 +252,7 @@
           "valueExpression": {
             "name": "enableSiteSelection3",
             "language": "text/fhirpath",
-            "expression": "%procedureCode3.exists() and %procedureHasSiteBoolean = false"
+            "expression": "%procedureCode3.exists() and %procedureHasSiteBoolean3 = false"
           }
         },
         {
@@ -220,9 +265,22 @@
         }
       ],
       "linkId": "scenario-3",
-      "text": "3. Request for MRI of Brain 'Procedure + Site'",
+      "text": "3. Request for Procedure - allow further site refinement if site not present",
       "type": "group",
       "item": [
+        {
+          "linkId": "Guidance3",
+          "text": "Example with Site: Magnetic resonance imaging, Example without site: Magnetic resonance imaging of chest",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\r\n    Example with site: <b>Magnetic resonance imaging</b>\r\n<br/>Example without site: <b>Magnetic resonance imaging of chest</b>    </div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
         {
           "extension": [
             {
