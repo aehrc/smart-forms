@@ -4,25 +4,6 @@ export const QRadiologyScenariosPoc = {
   contained: [
     {
       resourceType: 'ValueSet',
-      id: 'AssociatedSite2',
-      status: 'draft',
-      compose: {
-        include: [
-          {
-            system: 'http://snomed.info/sct',
-            filter: [
-              {
-                property: 'constraint',
-                op: '=',
-                value: '{{%procedureCode2}}.<<363704007|Site|'
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      resourceType: 'ValueSet',
       id: 'SubConceptsAssociatedSites3',
       status: 'draft',
       compose: {
@@ -34,25 +15,6 @@ export const QRadiologyScenariosPoc = {
                 property: 'constraint',
                 op: '=',
                 value: '<{{%procedureCode3}}.<<363704007|Site|'
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      resourceType: 'ValueSet',
-      id: 'SubConceptsAssociatedSites4',
-      status: 'draft',
-      compose: {
-        include: [
-          {
-            system: 'http://snomed.info/sct',
-            filter: [
-              {
-                property: 'constraint',
-                op: '=',
-                value: '<{{%procedureCode4}}.<<363704007|Site|'
               }
             ]
           }
@@ -135,19 +97,19 @@ export const QRadiologyScenariosPoc = {
         {
           url: 'http://hl7.org/fhir/StructureDefinition/variable',
           valueExpression: {
-            name: 'associatedSite2',
+            name: 'associatedSiteOptions2',
             language: 'text/fhirpath',
             expression:
-              "iif(%procedureCode2.exists(), expand('http://snomed.info/sct?fhir_vs%3Decl%2F' + %procedureCode2 + '.%3C%3C363704007').expansion.contains[0], '' )"
+              "iif(%procedureCode2.exists(), %terminologies.expand('http://snomed.info/sct?fhir_vs%3Decl%2F' + %procedureCode2 + '.%3C%3C363704007').expansion.contains, '' )"
           }
         },
         {
           url: 'http://hl7.org/fhir/StructureDefinition/variable',
           valueExpression: {
-            name: 'enableLateralityComponents2',
+            name: 'associatedSitePrepop2',
             language: 'text/fhirpath',
             expression:
-              "%associatedSite2.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') and %procedureCode2.exists()"
+              "iif(%procedureCode2.exists(), %terminologies.expand('http://snomed.info/sct?fhir_vs%3Decl%2F' + %procedureCode2 + '.%3C%3C363704007').expansion.contains[0], '' )"
           }
         }
       ],
@@ -194,35 +156,27 @@ export const QRadiologyScenariosPoc = {
               url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
               valueExpression: {
                 language: 'text/fhirpath',
-                expression: '%associatedSite2.display'
+                expression: '%associatedSitePrepop2.code'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%associatedSiteOptions2'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%procedureCode2 and %associatedSiteOptions2.exists()'
               }
             }
           ],
           linkId: 'scenario-2-associated-site',
           text: 'Associated site',
-          type: 'text',
-          enableWhen: [
-            {
-              question: 'scenario-2-procedure',
-              operator: 'exists',
-              answerBoolean: true
-            }
-          ]
-        },
-        {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression',
-              valueExpression: {
-                language: 'text/fhirpath',
-                expression: '%enableLateralityComponents2'
-              }
-            }
-          ],
-          linkId: 'scenario-2-site-laterality',
-          text: 'Laterality',
-          type: 'choice',
-          answerValueSet: 'http://hl7.org/fhir/ValueSet/bodysite-laterality'
+          type: 'choice'
         }
       ]
     },
@@ -239,9 +193,10 @@ export const QRadiologyScenariosPoc = {
         {
           url: 'http://hl7.org/fhir/StructureDefinition/variable',
           valueExpression: {
-            name: 'associatedSite3',
+            name: 'associatedSiteOptions3',
             language: 'text/fhirpath',
-            expression: "item.where(linkId='scenario-3-associated-site').answer.value"
+            expression:
+              "iif(%procedureCode3.exists(), %terminologies.expand('http://snomed.info/sct?fhir_vs%3Decl%2F%3C' + %procedureCode3 + '.%3C%3C363704007').expansion.contains, '' )"
           }
         },
         {
@@ -258,32 +213,33 @@ export const QRadiologyScenariosPoc = {
           valueExpression: {
             name: 'enableSiteSelection3',
             language: 'text/fhirpath',
-            expression: '%procedureCode3.exists() and %procedureHasSiteBoolean3 = false'
+            expression:
+              '%procedureCode3.exists() and %associatedSiteOptions3.exists() and %procedureHasSiteBoolean3 = false'
           }
         },
         {
           url: 'http://hl7.org/fhir/StructureDefinition/variable',
           valueExpression: {
-            name: 'enableLateralityComponents3',
+            name: 'noSitesAvailable',
             language: 'text/fhirpath',
             expression:
-              "%associatedSite3.memberOf('http://snomed.info/sct?fhir_vs=refset/723264001') and %procedureCode3.exists()"
+              '%procedureCode3.exists() and %associatedSiteOptions3.exists() = false and %procedureHasSiteBoolean3 = false'
           }
         }
       ],
       linkId: 'scenario-3',
-      text: '3. Request for Procedure - allow further site refinement if site not present',
+      text: '3. Request for Procedure - allow further site refinement if site not specified in term',
       type: 'group',
       item: [
         {
           linkId: 'Guidance3',
-          text: 'Example with Site: Magnetic resonance imaging, Example without site: Magnetic resonance imaging of chest',
+          text: 'Example with specified Site: Magnetic resonance imaging of chest, Example without specified Site: Magnetic resonance imaging',
           _text: {
             extension: [
               {
                 url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                 valueString:
-                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    Example with site: <b>Magnetic resonance imaging</b>\r\n<br/>Example without site: <b>Magnetic resonance imaging of chest</b>    </div>'
+                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    Example with specified Site: <b>Magnetic resonance imaging</b>\r\n<br/>Example without specified Site: <b>Magnetic resonance imaging of chest</b>    </div>'
               }
             ]
           },
@@ -316,12 +272,18 @@ export const QRadiologyScenariosPoc = {
                 language: 'text/fhirpath',
                 expression: '%enableSiteSelection3'
               }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%associatedSiteOptions3'
+              }
             }
           ],
           linkId: 'scenario-3-associated-site',
           text: 'Associated site',
-          type: 'choice',
-          answerValueSet: '#SubConceptsAssociatedSites3'
+          type: 'choice'
         },
         {
           extension: [
@@ -329,14 +291,13 @@ export const QRadiologyScenariosPoc = {
               url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression',
               valueExpression: {
                 language: 'text/fhirpath',
-                expression: '%enableLateralityComponents3'
+                expression: '%noSitesAvailable'
               }
             }
           ],
-          linkId: 'scenario-3-site-laterality',
-          text: 'Laterality',
-          type: 'choice',
-          answerValueSet: 'http://hl7.org/fhir/ValueSet/bodysite-laterality'
+          linkId: 'scenario-3-no-sites-available',
+          text: 'No sites available to choose from',
+          type: 'display'
         }
       ]
     }

@@ -33,6 +33,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
+import _isEqual from 'lodash/isEqual';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -95,8 +96,10 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
 
       // no new calcexp value only
       if (newValueString === null) {
-        setCodings(newCodings);
-        createEmptyQrItem(qItem);
+        if (!_isEqual(newCodings, codings)) {
+          setCodings(newCodings);
+          onQrItemChange(createEmptyQrItem(qItem));
+        }
         return;
       }
 
