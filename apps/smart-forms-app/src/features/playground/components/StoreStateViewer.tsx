@@ -20,20 +20,24 @@ import SmartConfigStoreViewer from './StoreStateViewers/SmartConfigStoreViewer.t
 import QuestionnaireResponseStoreViewer from './StoreStateViewers/QuestionnaireResponseStoreViewer.tsx';
 import TerminologyServerStoreViewer from './StoreStateViewers/TerminologyServerStoreViewer.tsx';
 import { Typography } from '@mui/material';
+import ExtractedSectionViewer from './StoreStateViewers/ExtractedResourceViewer.tsx';
 
 export type StateStore =
   | 'questionnaireStore'
   | 'questionnaireResponseStore'
   | 'smartConfigStore'
   | 'terminologyServerStore'
+  | 'extractedResource'
   | null;
 
 interface StoreStateViewerProps {
   selectedStore: StateStore;
+  isExtracting: boolean;
+  extractedResource: any;
 }
 
 function StoreStateViewer(props: StoreStateViewerProps) {
-  const { selectedStore } = props;
+  const { selectedStore, isExtracting, extractedResource } = props;
 
   if (selectedStore === 'questionnaireStore') {
     return <QuestionnaireStoreViewer />;
@@ -49,6 +53,12 @@ function StoreStateViewer(props: StoreStateViewerProps) {
 
   if (selectedStore === 'terminologyServerStore') {
     return <TerminologyServerStoreViewer />;
+  }
+
+  if (selectedStore === 'extractedResource') {
+    return (
+      <ExtractedSectionViewer isExtracting={isExtracting} extractedResource={extractedResource} />
+    );
   }
 
   return <Typography variant="h5">No store selected</Typography>;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Box, List, Typography } from '@mui/material';
+import { Box, List } from '@mui/material';
 import { NavSectionHeading } from '../../../../components/Nav/Nav.styles.ts';
 import BackToQuestionnairesAction from '../RendererActions/BackToQuestionnairesAction.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
@@ -51,7 +51,7 @@ function RendererNavStandardActions(props: RendererNavStandardActionsProps) {
 
       <Box sx={{ pb: 4 }}>
         <Box sx={{ px: 2.5, pb: 0.75 }}>
-          <Typography variant="overline">Operations</Typography>
+          <NavSectionHeading>Operations</NavSectionHeading>
         </Box>
         <List disablePadding sx={{ px: 1 }}>
           <PreviewAction />

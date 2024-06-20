@@ -29,15 +29,17 @@ import PopulationProgressSpinner from '../../../components/Spinners/PopulationPr
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
-import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
+import { buildForm, destroyForm, useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
+import { HEADERS } from '../../../api/headers.ts';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
+const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
 
 function Playground() {
   const [fhirServerUrl, setFhirServerUrl] = useLocalStorage<string>(
@@ -48,6 +50,12 @@ function Playground() {
   const [user, setUser] = useLocalStorage<Practitioner | null>('playgroundLaunchUser', null);
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
+
+  // $extract-related states
+  const [isExtracting, setExtracting] = useState(false);
+  const [extractedResource, setExtractedResource] = useState<any>(null);
+
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -131,6 +139,30 @@ function Playground() {
     };
   }
 
+  // $extract
+  async function handleExtract() {
+    setExtracting(true);
+
+    const response = await fetch(defaultExtractEndpoint + '/QuestionnaireResponse/$extract', {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify(updatableResponse)
+    });
+    setExtracting(false);
+
+    if (!response.ok) {
+      enqueueSnackbar('Failed to extract resource', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+      setExtractedResource(null);
+    } else {
+      const extractedResource = response.json();
+      setExtractedResource(extractedResource);
+    }
+  }
+
   return (
     <>
       <PlaygroundHeader
@@ -151,7 +183,13 @@ function Playground() {
         <Allotment defaultSizes={[40, 60]}>
           <Box sx={{ height: '100%', overflow: 'auto' }}>
             {buildingState === 'built' ? (
-              <PlaygroundRenderer endpointUrl={fhirServerUrl} patient={patient} user={user} />
+              <PlaygroundRenderer
+                endpointUrl={fhirServerUrl}
+                patient={patient}
+                user={user}
+                isExtracting={isExtracting}
+                onExtract={handleExtract}
+              />
             ) : buildingState === 'building' ? (
               <PopulationProgressSpinner message={'Building form'} />
             ) : (
@@ -167,6 +205,8 @@ function Playground() {
             jsonString={jsonString}
             onJsonStringChange={(jsonString: string) => setJsonString(jsonString)}
             buildingState={buildingState}
+            isExtracting={isExtracting}
+            extractedResource={extractedResource}
             onBuildForm={handleBuildQuestionnaireFromString}
             onDestroyForm={handleDestroyForm}
           />

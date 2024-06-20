@@ -24,15 +24,18 @@ import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
+import ExtractButtonForPlayground from './ExtractButtonForPlayground.tsx';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
+  isExtracting: boolean;
+  onExtract: () => void;
 }
 
 function PlaygroundRenderer(props: PlaygroundRendererProps) {
-  const { endpointUrl, patient, user } = props;
+  const { endpointUrl, patient, user, isExtracting, onExtract } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
@@ -76,8 +79,9 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   return (
     <>
       {prePopEnabled ? (
-        <Box display="flex" alignItems="center" columnGap={2} mx={1}>
+        <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
           <PrePopButtonForPlayground isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+          <ExtractButtonForPlayground isExtracting={isExtracting} onExtract={onExtract} />
           <Box flexGrow={1} />
 
           {patientName ? (
