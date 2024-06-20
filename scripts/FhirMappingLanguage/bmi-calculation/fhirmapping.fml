@@ -13,21 +13,20 @@ group patientMap(source src : QuestionnaireResponse, target bundle : Bundle) {
   src -> bundle.entry as entry then {
     // Create entry.request
     src -> entry.request as request, request.method = 'POST', request.url = 'Observation';
-    
-    // Create entry.resource in SetObservationData()
-    src.item as item where linkId = 'bmi-calculation'-> entry then SetObservationData(item, entry);
-  };
-}
+    src -> entry.resource = create("Observation") as resource then {
+      // Create resource.status
+      src -> resource.status = "final";
 
-// Used to create a Observation resource
-group SetObservationData(source src, target entry){
-  // Create entry.resource as Observation resource
-  src.item as item where linkId = 'bmi-result' -> entry.resource = create("Observation") as resource then {
-    // Create resource.status and resource.code
-    item -> resource.status = "final";
-    item -> resource.code = cc("http://snomed.info/sct", "60621009", "Body mass index") as cc;
-    
-    // Create resource.valueQuantity
-    item -> resource.valueQuantity = create("Quantity") as q, q.value = (%item.answer.value), q.unit = "kg/m2", q.system = "http://unitsofmeasure.org", q.code = "kg/m2";
+      // Create resource.code via cc()
+      src -> resource.code = cc("http://snomed.info/sct", "60621009", "Body mass index") as cc;
+
+      // Create resource.subject with QR's subject
+      src.subject as sub -> resource.subject = create("Reference") as r, r.reference = (%sub.reference);
+
+      // Create resource.valueQuantity
+      src.item as bmiCalculation where linkId = 'bmi-calculation' -> resource then {
+        bmiCalculation.item as bmiResult where linkId = 'bmi-result' -> resource.valueQuantity = create("Quantity") as q, q.value = (%bmiResult.answer.value), q.unit = "kg/m2", q.system = "http://unitsofmeasure.org", q.code = "kg/m2";
+      };
+    };
   };
 }
