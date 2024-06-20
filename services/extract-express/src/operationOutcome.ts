@@ -95,3 +95,18 @@ export function createNoTargetStructureMapFoundOutcome(
     ]
   };
 }
+
+export function createOperationOutcome(errorMessage: string): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: {
+          text: errorMessage
+        }
+      }
+    ]
+  };
+}

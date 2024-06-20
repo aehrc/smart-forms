@@ -23,10 +23,12 @@ import {
   createInvalidQuestionnaireCanonicalOutcome,
   createNoQuestionnairesFoundOutcome,
   createNoTargetStructureMapCanonicalFoundOutcome,
-  createNoTargetStructureMapFoundOutcome
+  createNoTargetStructureMapFoundOutcome,
+  createOperationOutcome
 } from './operationOutcome';
 import { getQuestionnaire } from './questionnaire';
 import { getTargetStructureMap, getTargetStructureMapCanonical } from './structureMap';
+import { createTransformInputParameters, invokeTransform } from './transform';
 
 const app = express();
 const port = 3003;
@@ -46,7 +48,7 @@ app.get('/fhir/QuestionnaireResponse/\\$extract', (_, res) => {
 });
 
 // This $extract operation is hardcoded to use resources and $transform operations from fixed endpoints
-// const EHR_SERVER_URL = 'https://proxy.smartforms.io/fhir';
+const EHR_SERVER_URL = 'https://proxy.smartforms.io/fhir';
 const FORMS_SERVER_URL = 'https://smartforms.csiro.au/api/fhir';
 app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
   const body = req.body;
@@ -100,28 +102,29 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
     return;
   }
 
-  console.log('Extracting questionnaire response:', questionnaireResponse.id);
-  console.log('Extracting questionnaire:', questionnaire.id);
-  console.log('Extracting structure map:', targetStructureMap.id);
-  const outputParameters = {
-    resourceType: 'Parameters',
-    parameter: [
-      {
-        name: 'tsm',
-        resource: targetStructureMap
-      },
-      {
-        name: 'qr',
-        resource: questionnaireResponse
-      },
-      {
-        name: 'questionnaire',
-        resource: questionnaire
-      }
-    ]
-  };
+  //
+  const transformInputParameters = createTransformInputParameters(
+    targetStructureMap,
+    questionnaireResponse
+  );
 
-  res.json(outputParameters);
+  try {
+    const outputParameters = await invokeTransform(transformInputParameters, EHR_SERVER_URL);
+    res.json(outputParameters); // Forwarding the JSON response to the client
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as JSON response
+    } else {
+      res
+        .status(500)
+        .json(
+          createOperationOutcome(
+            'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
+          )
+        );
+    }
+  }
 });
 
 app.listen(port, () => {
