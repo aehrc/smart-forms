@@ -1,0 +1,47 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1|0.1.0",
+  "item": [
+    {
+      "linkId": "bmi-calculation",
+      "text": "BMI Calculation",
+      "item": [
+        {
+          "linkId": "patient-height",
+          "answer": [
+            {
+              "valueDecimal": 163
+            }
+          ],
+          "text": "Height"
+        },
+        {
+          "linkId": "patient-weight",
+          "answer": [
+            {
+              "valueDecimal": 77.3
+            }
+          ],
+          "text": "Weight"
+        },
+        {
+          "linkId": "bmi-result",
+          "text": "Value",
+          "answer": [
+            {
+              "valueDecimal": 29.1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "subject": {
+    "type": "Patient",
+    "reference": "Patient/pat-sf"
+  },
+  "meta": {
+    "source": "https://smartforms.csiro.au"
+  }
+}
