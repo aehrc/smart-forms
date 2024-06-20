@@ -158,6 +158,14 @@ function Playground() {
       });
       setExtractedResource(null);
     } else {
+      enqueueSnackbar(
+        'Extract successful. See advanced properties > extracted to view extracted resource.',
+        {
+          preventDuplicate: true,
+          action: <CloseSnackbar />,
+          autoHideDuration: 8000
+        }
+      );
       const extractedResource = await response.json();
       setExtractedResource(extractedResource);
     }
