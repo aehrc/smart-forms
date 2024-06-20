@@ -66,7 +66,6 @@ function RendererNavLaunchQuestionnaireActions(props: RendererNavLaunchQuestionn
               <SaveProgressAction refetchResponses={refetchResponses} />
               <SaveAsFinalAction />
               <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} />
-              <SaveAsFinalAction />
             </>
           ) : null}
         </List>

@@ -16,7 +16,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { LAUNCH_PARAM, PLAYWRIGHT_APP_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
+import { LAUNCH_PARAM_WITHOUT_Q, PLAYWRIGHT_APP_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
 
 const questionnaireTitle = 'Aboriginal and Torres Strait Islander Health Check';
 
@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
   const fetchQPromise = page.waitForResponse(
     `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
   );
-  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM}`;
+  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
   await page.goto(launchUrl);
   expect((await fetchQPromise).status()).toBe(200);
 
