@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { OperationOutcome } from 'fhir/r4b';
+import type { OperationOutcome } from 'fhir/r4b';
 
 export function createInvalidParametersOutcome(): OperationOutcome {
   return {

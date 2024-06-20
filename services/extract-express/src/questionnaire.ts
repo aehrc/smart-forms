@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Bundle, BundleEntry, Questionnaire } from 'fhir/r4b';
+import type { Bundle, BundleEntry, Questionnaire } from 'fhir/r4b';
 import { HEADERS } from './globals';
 
 export async function getQuestionnaire(

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Bundle, BundleEntry, Questionnaire, StructureMap } from 'fhir/r4b';
+import type { Bundle, BundleEntry, Questionnaire, StructureMap } from 'fhir/r4b';
 import { HEADERS } from './globals';
 
 export function getTargetStructureMapCanonical(questionnaire: Questionnaire): string | null {

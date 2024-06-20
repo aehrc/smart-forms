@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Parameters, ParametersParameter, QuestionnaireResponse } from 'fhir/r4b';
+import type { Parameters, ParametersParameter, QuestionnaireResponse } from 'fhir/r4b';
 
 export function getQuestionnaireResponse(body: any): QuestionnaireResponse | null {
   if (isQuestionnaireResponse(body)) {
