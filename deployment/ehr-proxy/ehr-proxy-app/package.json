@@ -24,6 +24,7 @@
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21",
     "ehr-proxy-hapi-endpoint": "^0.1.0",
-    "ehr-proxy-smart-proxy": "^0.1.0"
+    "ehr-proxy-smart-proxy": "^0.1.0",
+    "ehr-proxy-transform-endpoint": "^0.1.0"
   }
 }
