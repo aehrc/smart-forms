@@ -145,7 +145,7 @@ function Playground() {
 
     const response = await fetch(defaultExtractEndpoint + '/QuestionnaireResponse/$extract', {
       method: 'POST',
-      headers: HEADERS,
+      headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify(updatableResponse)
     });
     setExtracting(false);
@@ -158,7 +158,7 @@ function Playground() {
       });
       setExtractedResource(null);
     } else {
-      const extractedResource = response.json();
+      const extractedResource = await response.json();
       setExtractedResource(extractedResource);
     }
   }

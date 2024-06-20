@@ -43,7 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/fhir/QuestionnaireResponse/\\$extract', (_, res) => {
   res.send(
-    'This service is healthy!\nPerform a POST request to the same path for structureMap $transform.'
+    'This service is healthy!\nPerform a POST request to the same path for QuestionnaireResponse $extract.'
   );
 });
 
