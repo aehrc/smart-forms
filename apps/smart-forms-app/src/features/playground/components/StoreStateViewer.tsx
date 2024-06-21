@@ -32,12 +32,10 @@ export type StateStore =
 
 interface StoreStateViewerProps {
   selectedStore: StateStore;
-  isExtracting: boolean;
-  extractedResource: any;
 }
 
 function StoreStateViewer(props: StoreStateViewerProps) {
-  const { selectedStore, isExtracting, extractedResource } = props;
+  const { selectedStore } = props;
 
   if (selectedStore === 'questionnaireStore') {
     return <QuestionnaireStoreViewer />;
@@ -56,9 +54,7 @@ function StoreStateViewer(props: StoreStateViewerProps) {
   }
 
   if (selectedStore === 'extractedResource') {
-    return (
-      <ExtractedSectionViewer isExtracting={isExtracting} extractedResource={extractedResource} />
-    );
+    return <ExtractedSectionViewer />;
   }
 
   return <Typography variant="h5">No store selected</Typography>;

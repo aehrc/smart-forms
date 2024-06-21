@@ -1,21 +1,15 @@
 import { useState } from 'react';
 import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
 import GenericViewer from './GenericViewer.tsx';
+import { useExtractOperationStore } from '../../stores/smartConfigStore.ts';
 
 const extractedSectionPropertyNames: string[] = ['extracted'];
 
-interface ExtractedSectionViewerProps {
-  isExtracting: boolean;
-  extractedResource: any;
-}
-
-function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
-  const { isExtracting, extractedResource } = props;
-
+function ExtractedSectionViewer() {
   const [selectedProperty, setSelectedProperty] = useState('extracted');
   const [showJsonTree, setShowJsonTree] = useState(false);
 
-  const propertyObject = isExtracting ? 'Performing extraction...' : extractedResource;
+  const extractedResource = useExtractOperationStore.use.extractedResource();
 
   return (
     <>
@@ -26,7 +20,7 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
       />
       <GenericViewer
         propertyName={selectedProperty}
-        propertyObject={propertyObject}
+        propertyObject={extractedResource}
         showJsonTree={showJsonTree}
         onToggleShowJsonTree={setShowJsonTree}
       />

@@ -28,22 +28,12 @@ interface Props {
   jsonString: string;
   onJsonStringChange: (jsonString: string) => void;
   buildingState: 'idle' | 'building' | 'built';
-  isExtracting: boolean;
-  extractedResource: any;
   onBuildForm: (jsonString: string) => unknown;
   onDestroyForm: () => unknown;
 }
 
 function JsonEditor(props: Props) {
-  const {
-    jsonString,
-    onJsonStringChange,
-    buildingState,
-    isExtracting,
-    extractedResource,
-    onBuildForm,
-    onDestroyForm
-  } = props;
+  const { jsonString, onJsonStringChange, buildingState, onBuildForm, onDestroyForm } = props;
 
   const [view, setView] = useState<'editor' | 'storeState'>('editor');
   const [selectedStore, setSelectedStore] = useState<StateStore>('questionnaireResponseStore');
@@ -142,11 +132,7 @@ function JsonEditor(props: Props) {
         />
       ) : (
         <Box sx={{ height: '100%', overflow: 'auto' }}>
-          <StoreStateViewer
-            selectedStore={selectedStore}
-            isExtracting={isExtracting}
-            extractedResource={extractedResource}
-          />
+          <StoreStateViewer selectedStore={selectedStore} />
         </Box>
       )}
     </Box>

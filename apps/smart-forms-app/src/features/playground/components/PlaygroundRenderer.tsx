@@ -25,6 +25,7 @@ import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import ExtractButtonForPlayground from './ExtractButtonForPlayground.tsx';
+import { useExtractOperationStore } from '../stores/smartConfigStore.ts';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;
@@ -38,12 +39,14 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   const { endpointUrl, patient, user, isExtracting, onExtract } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
 
   const [isPopulating, setIsPopulating] = useState(false);
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
   const prePopEnabled = endpointUrl !== null && patient !== null;
+  const extractEnabled = targetStructureMap !== null;
 
   function handlePrepopulate() {
     if (!prePopEnabled) {
@@ -78,24 +81,30 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
   return (
     <>
-      {prePopEnabled ? (
-        <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
-          <PrePopButtonForPlayground isPopulating={isPopulating} onPopulate={handlePrepopulate} />
-          <ExtractButtonForPlayground isExtracting={isExtracting} onExtract={onExtract} />
-          <Box flexGrow={1} />
+      <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
+        <PrePopButtonForPlayground
+          prePopEnabled={prePopEnabled}
+          isPopulating={isPopulating}
+          onPopulate={handlePrepopulate}
+        />
+        <ExtractButtonForPlayground
+          extractEnabled={extractEnabled}
+          isExtracting={isExtracting}
+          onExtract={onExtract}
+        />
+        <Box flexGrow={1} />
 
-          {patientName ? (
-            <Typography variant="subtitle2" color="text.secondary">
-              Patient: {patientName}
-            </Typography>
-          ) : null}
-          {userName ? (
-            <Typography variant="subtitle2" color="text.secondary">
-              User: {userName}
-            </Typography>
-          ) : null}
-        </Box>
-      ) : null}
+        {patientName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            Patient: {patientName}
+          </Typography>
+        ) : null}
+        {userName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            User: {userName}
+          </Typography>
+        ) : null}
+      </Box>
       {isPopulating ? null : <BaseRenderer />}
     </>
   );

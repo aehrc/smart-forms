@@ -29,7 +29,13 @@ import PopulationProgressSpinner from '../../../components/Spinners/PopulationPr
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
-import { buildForm, destroyForm, useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import {
+  buildForm,
+  destroyForm,
+  removeEmptyAnswersFromResponse,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
 import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
@@ -37,6 +43,8 @@ import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
+import { fetchTargetStructureMap } from '../api/extract.ts';
+import { useExtractOperationStore } from '../stores/smartConfigStore.ts';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
@@ -53,24 +61,36 @@ function Playground() {
 
   // $extract-related states
   const [isExtracting, setExtracting] = useState(false);
-  const [extractedResource, setExtractedResource] = useState<any>(null);
 
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+
+  const resetExtractOperationStore = useExtractOperationStore.use.resetStore();
+  const setTargetStructureMap = useExtractOperationStore.use.setTargetStructureMap();
+  const setExtractedResource = useExtractOperationStore.use.setExtractedResource();
 
   const { enqueueSnackbar } = useSnackbar();
 
   function handleDestroyForm() {
     setBuildingState('idle');
+    resetExtractOperationStore();
     destroyForm();
   }
 
   async function handleBuildQuestionnaireFromString(jsonString: string) {
     setBuildingState('building');
+    resetExtractOperationStore();
+
     setJsonString(jsonString);
 
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
+        const targetStructureMap = await fetchTargetStructureMap(parsedQuestionnaire);
+        if (targetStructureMap) {
+          setTargetStructureMap(targetStructureMap);
+        }
+
         await buildForm(parsedQuestionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
         setBuildingState('built');
       } else {
@@ -94,13 +114,22 @@ function Playground() {
 
   async function handleBuildQuestionnaireFromResource(questionnaire: Questionnaire) {
     setBuildingState('building');
+    resetExtractOperationStore();
+
     setJsonString(JSON.stringify(questionnaire, null, 2));
+    const targetStructureMap = await fetchTargetStructureMap(questionnaire);
+    if (targetStructureMap) {
+      setTargetStructureMap(targetStructureMap);
+    }
+
     await buildForm(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
     setBuildingState('built');
   }
 
   function handleBuildQuestionnaireFromFile(jsonFile: File) {
     setBuildingState('building');
+    resetExtractOperationStore();
+
     if (!jsonFile.name.endsWith('.json')) {
       enqueueSnackbar('Attached file must be a JSON file', {
         variant: 'error',
@@ -118,7 +147,13 @@ function Playground() {
         const jsonString = event.target?.result;
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
-          await buildForm(JSON.parse(jsonString), undefined, undefined, TERMINOLOGY_SERVER_URL);
+          const questionnaire = JSON.parse(jsonString);
+          const targetStructureMap = await fetchTargetStructureMap(questionnaire);
+          if (targetStructureMap) {
+            setTargetStructureMap(targetStructureMap);
+          }
+
+          await buildForm(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {
@@ -146,7 +181,7 @@ function Playground() {
     const response = await fetch(defaultExtractEndpoint + '/QuestionnaireResponse/$extract', {
       method: 'POST',
       headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
-      body: JSON.stringify(updatableResponse)
+      body: JSON.stringify(removeEmptyAnswersFromResponse(sourceQuestionnaire, updatableResponse))
     });
     setExtracting(false);
 
@@ -159,7 +194,7 @@ function Playground() {
       setExtractedResource(null);
     } else {
       enqueueSnackbar(
-        'Extract successful. See advanced properties > extracted to view extracted resource.',
+        'Extract successful. See Advanced Properties > Extracted to view extracted resource.',
         {
           preventDuplicate: true,
           action: <CloseSnackbar />,
@@ -213,8 +248,6 @@ function Playground() {
             jsonString={jsonString}
             onJsonStringChange={(jsonString: string) => setJsonString(jsonString)}
             buildingState={buildingState}
-            isExtracting={isExtracting}
-            extractedResource={extractedResource}
             onBuildForm={handleBuildQuestionnaireFromString}
             onDestroyForm={handleDestroyForm}
           />

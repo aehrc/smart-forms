@@ -20,21 +20,27 @@ import React from 'react';
 import { CircularProgress, Fade, IconButton, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
+import { FORMS_SERVER_URL } from '../../../globals.ts';
 
 interface ExtractForPlaygroundProps {
+  extractEnabled: boolean;
   isExtracting: boolean;
   onExtract: () => void;
 }
 
 function ExtractButtonForPlayground(props: ExtractForPlaygroundProps) {
-  const { isExtracting, onExtract } = props;
+  const { extractEnabled, isExtracting, onExtract } = props;
+
+  const toolTipText = extractEnabled
+    ? 'Perform $extract'
+    : `The current questionnaire does not have a target StructureMap for $extract, or the target StructureMap cannot be found on ${FORMS_SERVER_URL}`;
 
   return (
     <>
-      <Tooltip title="Perform $extract" placement="bottom-end">
+      <Tooltip title={toolTipText} placement="bottom-end">
         <span>
           <IconButton
-            disabled={isExtracting}
+            disabled={isExtracting || !extractEnabled}
             onClick={onExtract}
             size="small"
             color="primary"
