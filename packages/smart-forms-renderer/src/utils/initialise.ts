@@ -58,16 +58,9 @@ export function initialiseQuestionnaireResponse(
   if (firstTopLevelItem && !questionnaireResponse.item) {
     const initialItems = readItemInitialValues(questionnaire);
 
-    questionnaireResponse.item =
-      initialItems && initialItems.length > 0
-        ? initialItems
-        : [
-            {
-              linkId: firstTopLevelItem.linkId,
-              text: firstTopLevelItem.text,
-              item: []
-            }
-          ];
+    if (initialItems && initialItems.length > 0) {
+      questionnaireResponse.item = initialItems;
+    }
   }
 
   if (!questionnaireResponse.questionnaire) {
