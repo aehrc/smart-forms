@@ -3,7 +3,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DebugResponseView from '../../../renderer/components/RendererDebugFooter/DebugResponseView.tsx';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface GenericViewerProps {
   propertyName: string;

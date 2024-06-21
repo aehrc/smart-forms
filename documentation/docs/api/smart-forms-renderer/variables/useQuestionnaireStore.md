@@ -149,6 +149,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `string`
 
+### use.initialExpressions()
+
+> **initialExpressions**: () => `Record`\<`string`, `InitialExpression`\>
+
+#### Returns
+
+`Record`\<`string`, `InitialExpression`\>
+
 ### use.itemTypes()
 
 > **itemTypes**: () => `Record`\<`string`, `string`\>

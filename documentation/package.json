@@ -15,7 +15,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@aehrc/smart-forms-renderer": "^0.35.5",
+    "@aehrc/smart-forms-renderer": "^0.35.8",
     "@docusaurus/core": "^3.4.0",
     "@docusaurus/preset-classic": "^3.4.0",
     "@docusaurus/theme-live-codeblock": "^3.4.0",
