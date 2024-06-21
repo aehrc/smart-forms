@@ -32,10 +32,11 @@ export type StateStore =
 
 interface StoreStateViewerProps {
   selectedStore: StateStore;
+  fhirServerUrl: string;
 }
 
 function StoreStateViewer(props: StoreStateViewerProps) {
-  const { selectedStore } = props;
+  const { selectedStore, fhirServerUrl } = props;
 
   if (selectedStore === 'questionnaireStore') {
     return <QuestionnaireStoreViewer />;
@@ -54,7 +55,7 @@ function StoreStateViewer(props: StoreStateViewerProps) {
   }
 
   if (selectedStore === 'extractedResource') {
-    return <ExtractedSectionViewer />;
+    return <ExtractedSectionViewer fhirServerUrl={fhirServerUrl} />;
   }
 
   return <Typography variant="h5">No store selected</Typography>;

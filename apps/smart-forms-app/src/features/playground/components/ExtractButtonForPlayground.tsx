@@ -19,7 +19,7 @@
 import React from 'react';
 import { CircularProgress, Fade, IconButton, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import Iconify from '../../../components/Iconify/Iconify.tsx';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 
 interface ExtractForPlaygroundProps {
@@ -48,7 +48,7 @@ function ExtractButtonForPlayground(props: ExtractForPlaygroundProps) {
             {isExtracting ? (
               <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
             ) : (
-              <Iconify icon="tabler:transform" />
+              <CloudUploadIcon />
             )}
           </IconButton>
         </span>

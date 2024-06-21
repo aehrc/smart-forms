@@ -248,6 +248,7 @@ function Playground() {
             jsonString={jsonString}
             onJsonStringChange={(jsonString: string) => setJsonString(jsonString)}
             buildingState={buildingState}
+            fhirServerUrl={fhirServerUrl}
             onBuildForm={handleBuildQuestionnaireFromString}
             onDestroyForm={handleDestroyForm}
           />

@@ -16,7 +16,7 @@
  */
 
 import { HEADERS } from '../../../api/headers.ts';
-import type { Questionnaire, StructureMap } from 'fhir/r4';
+import type { Bundle, Questionnaire, StructureMap } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 
@@ -55,4 +55,15 @@ export async function fetchTargetStructureMap(
   }
 
   return null;
+}
+
+export function extractedResourceIsBatchBundle(
+  extractedResource: any
+): extractedResource is Bundle {
+  return (
+    !!extractedResource &&
+    !!extractedResource.resourceType &&
+    extractedResource.resourceType === 'Bundle' &&
+    (extractedResource.type === 'transaction' || extractedResource.type === 'batch')
+  );
 }
