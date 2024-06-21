@@ -5,9 +5,9 @@
       "name": "source",
       "resource": {
         "resourceType": "StructureMap",
-        "id": "extract-patient",
-        "url": "https://smartforms.csiro.au/ig/StructureMap/extract-cvd",
-        "name": "extract-patient",
+        "id": "extract-bmi",
+        "url": "https://smartforms.csiro.au/docs/StructureMap/extract-bmi",
+        "name": "extract-bmi",
         "status": "draft",
         "structure": [
           {
@@ -38,7 +38,7 @@
             ],
             "rule": [
               {
-                "name": "e24cbbcd2119412ea5fd3fda3879aa15",
+                "name": "e344ebee86904beeb9eaa4d352a44d0e",
                 "source": [
                   {
                     "context": "src"
@@ -55,7 +55,7 @@
                 "documentation": "Create bundle id and type"
               },
               {
-                "name": "e74313f346cb4011bccf15353b06dde6",
+                "name": "009e4ea044d6413b82a2dfdea7241777",
                 "source": [
                   {
                     "context": "src"
@@ -76,7 +76,7 @@
                 ]
               },
               {
-                "name": "b6e3d9d69e5640b5811f79537a56f406",
+                "name": "966928a25a514e788cd35cf30beae8d8",
                 "source": [
                   {
                     "context": "src"
@@ -92,7 +92,7 @@
                 ],
                 "rule": [
                   {
-                    "name": "56baa530bbf949909d28580f4053781c",
+                    "name": "817bc3d51af2494aae4267b7954c530c",
                     "source": [
                       {
                         "context": "src"
@@ -131,7 +131,7 @@
                     "documentation": "Create entry.request"
                   },
                   {
-                    "name": "ee0fc38f536f4df3b69899d0828110fc",
+                    "name": "a6e4ee4234604057a521c0d55b44fcd8",
                     "source": [
                       {
                         "context": "src"
@@ -153,7 +153,7 @@
                     ],
                     "rule": [
                       {
-                        "name": "15e13ca4289a4eadbd8cbf6a1304216f",
+                        "name": "87b02f7f4e68470490a6a43c06603168",
                         "source": [
                           {
                             "context": "src"
@@ -175,7 +175,7 @@
                         "documentation": "Create resource.status"
                       },
                       {
-                        "name": "a8073cc67e844c459ab410df81e909e2",
+                        "name": "c8ed214a935441ac8322b0efec31665c",
                         "source": [
                           {
                             "context": "src"

@@ -1,4 +1,4 @@
-map "https://smartforms.csiro.au/ig/StructureMap/extract-cvd" = "extract-patient"
+map "https://smartforms.csiro.au/docs/StructureMap/extract-bmi" = "extract-bmi"
 
 uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" as source
 uses "http://hl7.org/fhir/StructureDefinition/Bundle" as target
