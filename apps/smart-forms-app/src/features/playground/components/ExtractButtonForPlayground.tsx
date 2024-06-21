@@ -18,44 +18,45 @@
 // @ts-ignore
 import React from 'react';
 import { CircularProgress, Fade, IconButton, Tooltip } from '@mui/material';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import Typography from '@mui/material/Typography';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { FORMS_SERVER_URL } from '../../../globals.ts';
 
-interface PrePopButtonForPlaygroundProps {
-  prePopEnabled: boolean;
-  isPopulating: boolean;
-  onPopulate: () => void;
+interface ExtractForPlaygroundProps {
+  extractEnabled: boolean;
+  isExtracting: boolean;
+  onExtract: () => void;
 }
 
-function PrePopButtonForPlayground(props: PrePopButtonForPlaygroundProps) {
-  const { prePopEnabled, isPopulating, onPopulate } = props;
+function ExtractButtonForPlayground(props: ExtractForPlaygroundProps) {
+  const { extractEnabled, isExtracting, onExtract } = props;
 
-  const toolTipText = prePopEnabled
-    ? 'Pre-populate form'
-    : 'Please select a patient in the Launch Context settings (located on the top right) to enable pre-population';
+  const toolTipText = extractEnabled
+    ? 'Perform $extract'
+    : `The current questionnaire does not have a target StructureMap for $extract, or the target StructureMap cannot be found on ${FORMS_SERVER_URL}`;
 
   return (
     <>
       <Tooltip title={toolTipText} placement="bottom-end">
         <span>
           <IconButton
-            disabled={isPopulating || !prePopEnabled}
-            onClick={onPopulate}
+            disabled={isExtracting || !extractEnabled}
+            onClick={onExtract}
             size="small"
             color="primary"
-            data-test="prepop-button-playground">
-            {isPopulating ? (
+            data-test="extract-button-playground">
+            {isExtracting ? (
               <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />
             ) : (
-              <CloudDownloadIcon />
+              <CloudUploadIcon />
             )}
           </IconButton>
         </span>
       </Tooltip>
-      {isPopulating ? (
+      {isExtracting ? (
         <Fade in={true} timeout={100}>
           <Typography variant="body2" color="text.secondary">
-            Pre-populating form...
+            Performing extraction...
           </Typography>
         </Fade>
       ) : null}
@@ -63,4 +64,4 @@ function PrePopButtonForPlayground(props: PrePopButtonForPlaygroundProps) {
   );
 }
 
-export default PrePopButtonForPlayground;
+export default ExtractButtonForPlayground;

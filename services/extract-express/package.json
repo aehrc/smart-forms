@@ -1,0 +1,25 @@
+{
+  "name": "extract-express",
+  "version": "0.2.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "compile": "tsc",
+    "start": "node lib/index.js",
+    "start:watch": "node --inspect --watch lib/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/fhir": "^0.0.38",
+    "@types/node": "^20.14.2",
+    "typescript": "^5.1.6"
+  }
+}

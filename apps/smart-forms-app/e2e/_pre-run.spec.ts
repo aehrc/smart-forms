@@ -16,7 +16,12 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { PLAYWRIGHT_APP_URL, PLAYWRIGHT_EHR_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
+import {
+  LAUNCH_PARAM_WITHOUT_Q,
+  PLAYWRIGHT_APP_URL,
+  PLAYWRIGHT_EHR_URL,
+  PLAYWRIGHT_FORMS_SERVER_URL
+} from './globals';
 
 test('launch without questionnaire context, select a questionnaire and create a new response', async ({
   page
@@ -25,7 +30,8 @@ test('launch without questionnaire context, select a questionnaire and create a 
   const fetchQPromise = page.waitForResponse(
     `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
   );
-  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=WzAsInBhdC1zZiIsInByaW1hcnktcGV0ZXIiLCJBVVRPIiwwLDAsMCwiZmhpclVzZXIgb25saW5lX2FjY2VzcyBvcGVuaWQgcHJvZmlsZSBwYXRpZW50L0NvbmRpdGlvbi5ycyBwYXRpZW50L09ic2VydmF0aW9uLnJzIGxhdW5jaCBwYXRpZW50L0VuY291bnRlci5ycyBwYXRpZW50L1F1ZXN0aW9ubmFpcmVSZXNwb25zZS5jcnVkcyBwYXRpZW50L1BhdGllbnQucnMiLCJodHRwOi8vbG9jYWxob3N0OjQxNzMvIiwiYTU3ZDkwZTMtNWY2OS00YjkyLWFhMmUtMjk5MjE4MDg2M2MxIiwiIiwiIiwiIiwiIiwwLDEsIiIsZmFsc2Vd`;
+
+  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
   await page.goto(launchUrl);
   expect((await fetchQPromise).status()).toBe(200);
 

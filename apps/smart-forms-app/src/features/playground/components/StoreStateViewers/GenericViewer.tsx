@@ -3,16 +3,18 @@ import NotesIcon from '@mui/icons-material/Notes';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DebugResponseView from '../../../renderer/components/RendererDebugFooter/DebugResponseView.tsx';
+import type { ReactNode } from 'react';
 
 interface GenericViewerProps {
   propertyName: string;
   propertyObject: any;
   showJsonTree: boolean;
   onToggleShowJsonTree: (toggleShowJsonTree: boolean) => void;
+  children?: ReactNode;
 }
 
 function GenericViewer(props: GenericViewerProps) {
-  const { propertyName, propertyObject, showJsonTree, onToggleShowJsonTree } = props;
+  const { propertyName, propertyObject, showJsonTree, onToggleShowJsonTree, children } = props;
 
   if (propertyName === null) {
     return <Typography variant="h5">No property selected</Typography>;
@@ -57,6 +59,7 @@ function GenericViewer(props: GenericViewerProps) {
             : 'Use text view for fast Ctrl+F debugging.'}
         </Typography>
         <DebugResponseView displayObject={propertyObject} showJsonTree={showJsonTree} />
+        {children}
       </Box>
     </Stack>
   );

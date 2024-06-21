@@ -12,17 +12,17 @@ The heading of the group to repopulate
 
 ***
 
-### newQRItem
+### newQRItem?
 
-> **newQRItem**: `QuestionnaireResponseItem`
+> `optional` **newQRItem**: `QuestionnaireResponseItem`
 
 The new QuestionnaireResponseItem to replace the old one
 
 ***
 
-### newQRItems
+### newQRItems?
 
-> **newQRItems**: `QuestionnaireResponseItem`[]
+> `optional` **newQRItems**: `QuestionnaireResponseItem`[]
 
 The new QuestionnaireResponseItems to replace the old ones
 
