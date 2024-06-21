@@ -17,7 +17,7 @@ interface ExtractedSectionViewerProps {
 
 function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
   const { fhirServerUrl } = props;
-  const [selectedProperty, setSelectedProperty] = useState('extracted');
+  const [selectedProperty, setSelectedProperty] = useState('extractedResource');
   const [showJsonTree, setShowJsonTree] = useState(false);
   const [writingBack, setWritingBack] = useState(false);
 
