@@ -75,7 +75,7 @@ function removeEmptyAnswersFromItemRecursive(
         const childQrItem = qrItems[qrItemIndex];
 
         // Save qrItem if linkIds of current qItem and qrItem are the same
-        if (childQItem && childQrItem && childQItem.linkId === childQrItem.linkId) {
+        if (childQItem && childQrItem && childQItem?.linkId === childQrItem?.linkId) {
           // if (!qItems[qrItemIndex]) {
           //   continue;
           // }
