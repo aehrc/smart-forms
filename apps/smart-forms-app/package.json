@@ -36,7 +36,7 @@
     "@iconify/react": "^4.1.1",
     "@microlink/react-json-view": "^1.23.0",
     "@monaco-editor/react": "^4.6.0",
-    "@mui/icons-material": "^5.15.13",
+    "@mui/icons-material": "^5.15.20",
     "@mui/lab": "^5.0.0-alpha.151",
     "@mui/material": "^5.15.20",
     "@mui/x-date-pickers": "^6.10.1",
