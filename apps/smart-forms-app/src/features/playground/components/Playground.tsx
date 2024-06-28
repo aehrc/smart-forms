@@ -44,7 +44,7 @@ import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
 import { fetchTargetStructureMap } from '../api/extract.ts';
-import { useExtractOperationStore } from '../stores/smartConfigStore.ts';
+import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';

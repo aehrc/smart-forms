@@ -25,7 +25,7 @@ import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import ExtractButtonForPlayground from './ExtractButtonForPlayground.tsx';
-import { useExtractOperationStore } from '../stores/smartConfigStore.ts';
+import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;

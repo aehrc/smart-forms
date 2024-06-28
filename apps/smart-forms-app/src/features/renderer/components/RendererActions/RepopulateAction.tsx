@@ -24,13 +24,12 @@ import type { SpeedDialActionProps } from '@mui/material';
 import { SpeedDialAction, Tooltip } from '@mui/material';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import { generateItemsToRepopulate, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import RepopulateDialog from '../../../repopulate/components/RepopulateDialog.tsx';
-import { useState } from 'react';
 import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 import { useMutation } from '@tanstack/react-query';
 import { readCommonLaunchContexts } from '../../../smartAppLaunch/utils/launch.ts';
+import { useRepopulationStore } from '../../../repopulate/stores/RepopulationStore.ts';
 
 interface RepopulateActionProps extends SpeedDialActionProps {
   spinner: RendererSpinner;
@@ -43,7 +42,7 @@ function RepopulateAction(props: RepopulateActionProps) {
 
   const { smartClient, patient, user } = useSmartClient();
 
-  const [itemsToRepopulate, setItemsToRepopulate] = useState<Record<string, ItemToRepopulate>>({});
+  const setItemsToRepopulate = useRepopulationStore.use.setItemsToRepopulate();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
@@ -175,7 +174,6 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       <RepopulateDialog
         repopulateFetchingEnded={repopulateFetchEnded}
-        itemsToRepopulate={itemsToRepopulate}
         onCloseDialog={() => onSpinnerChange({ isSpinning: false, status: null, message: '' })}
         onSpinnerChange={onSpinnerChange}
       />

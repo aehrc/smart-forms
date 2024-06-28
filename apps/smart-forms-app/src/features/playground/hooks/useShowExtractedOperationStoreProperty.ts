@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useExtractOperationStore } from '../stores/smartConfigStore.ts';
+import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 
 function useShowExtractedOperationStoreProperty(selectedProperty: string) {
   const extractedResource = useExtractOperationStore.use.extractedResource();
