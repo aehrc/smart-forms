@@ -17,7 +17,7 @@
 
 import { createStore } from 'zustand/vanilla';
 import type { StructureMap } from 'fhir/r4';
-import { createSelectors } from './selector';
+import { createSelectors } from '../../../stores/selector.ts';
 
 export interface ExtractOperationStoreType {
   targetStructureMap: StructureMap | null;

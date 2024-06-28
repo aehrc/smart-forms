@@ -15,20 +15,21 @@
  * limitations under the License.
  */
 
-import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import RepopulateEmptyDialog from './RepopulateEmptyDialog.tsx';
 import RepopulateSelectDialog from './RepopulateSelectDialog.tsx';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
+import { useRepopulationStore } from '../stores/RepopulationStore.ts';
 
 interface RepopulateDialogProps {
   repopulateFetchingEnded: boolean;
-  itemsToRepopulate: Record<string, ItemToRepopulate>;
   onCloseDialog: () => void;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RepopulateDialog(props: RepopulateDialogProps) {
-  const { repopulateFetchingEnded, itemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
+  const { repopulateFetchingEnded, onCloseDialog, onSpinnerChange } = props;
+
+  const itemsToRepopulate = useRepopulationStore.use.itemsToRepopulate();
 
   if (!repopulateFetchingEnded) {
     return null;
