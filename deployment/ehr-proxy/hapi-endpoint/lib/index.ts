@@ -29,8 +29,8 @@ export class HapiEndpoint extends Construct {
     // Create a task definition that contains both the application and cache containers.
     const taskDefinition = new TaskDefinition(this, 'EhrProxyHapiTaskDefinition', {
       compatibility: Compatibility.FARGATE,
-      cpu: '2048',
-      memoryMiB: '4096'
+      cpu: '1024',
+      memoryMiB: '2048'
     });
 
     // Create the cache container.

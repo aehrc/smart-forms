@@ -104,7 +104,7 @@ export class EhrProxyAppStack extends cdk.Stack {
       port: smartProxy.containerPort,
       protocol: ApplicationProtocol.HTTP,
       targets: [hapiTarget],
-      healthCheck: { path: '/fhir/metadata' }
+      healthCheck: { path: '/fhir/metadata', interval: cdk.Duration.seconds(180) }
     });
     listener.addAction('EhrProxyHapiAction', {
       action: ListenerAction.forward([hapiTargetGroup]),
