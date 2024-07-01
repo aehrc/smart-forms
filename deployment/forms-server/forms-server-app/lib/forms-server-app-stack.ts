@@ -70,7 +70,7 @@ export class FormsServerAppStack extends cdk.Stack {
       port: hapi.containerPort,
       protocol: ApplicationProtocol.HTTP,
       targets: [hapiTarget],
-      healthCheck: { path: '/fhir/metadata' }
+      healthCheck: { path: '/fhir/metadata', interval: cdk.Duration.seconds(180) }
     });
     listener.addAction('FormsServerDefaultAction', {
       action: ListenerAction.forward([hapiTargetGroup])
