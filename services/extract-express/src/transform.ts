@@ -45,12 +45,16 @@ export function createTransformInputParameters(
 
 export async function invokeTransform(
   transformInputParameters: TransformInputParameters,
-  ehrServerUrl: string
+  ehrServerUrl: string,
+  ehrServerAuthToken?: string
 ): Promise<any> {
   const requestUrl = `${ehrServerUrl}/StructureMap/$transform`;
+  const headers = ehrServerAuthToken
+    ? { ...HEADERS, Authorization: `Bearer ${ehrServerAuthToken}` }
+    : HEADERS;
   const response = await fetch(requestUrl, {
     method: 'POST',
-    headers: HEADERS,
+    headers: headers,
     body: JSON.stringify(transformInputParameters)
   });
 

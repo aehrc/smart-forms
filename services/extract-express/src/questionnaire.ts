@@ -20,12 +20,16 @@ import { HEADERS } from './globals';
 
 export async function getQuestionnaire(
   questionnaireCanonical: string,
-  formsServerUrl: string
+  formsServerUrl: string,
+  formsServerAuthToken?: string
 ): Promise<Questionnaire | null> {
   questionnaireCanonical = questionnaireCanonical.replace('|', '&version=');
 
   const requestUrl = `${formsServerUrl}/Questionnaire?url=${questionnaireCanonical}&_sort=_lastUpdated`;
-  const response = await fetch(requestUrl, { headers: HEADERS });
+  const headers = formsServerAuthToken
+    ? { ...HEADERS, Authorization: `Bearer ${formsServerAuthToken}` }
+    : HEADERS;
+  const response = await fetch(requestUrl, { headers });
 
   if (!response.ok) {
     return null;

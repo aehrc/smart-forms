@@ -17,6 +17,19 @@
 
 import type { OperationOutcome } from 'fhir/r4b';
 
+export function createNoEnvVariablesOutcome(): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: { text: 'EHR_SERVER_URL and FORMS_SERVER_URL environment variables must be set.' }
+      }
+    ]
+  };
+}
+
 export function createInvalidParametersOutcome(): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',

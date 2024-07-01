@@ -21,6 +21,7 @@ import { getQuestionnaireResponse } from './questionnaireResponse';
 import {
   createInvalidParametersOutcome,
   createInvalidQuestionnaireCanonicalOutcome,
+  createNoEnvVariablesOutcome,
   createNoQuestionnairesFoundOutcome,
   createNoTargetStructureMapCanonicalFoundOutcome,
   createNoTargetStructureMapFoundOutcome,
@@ -29,9 +30,18 @@ import {
 import { getQuestionnaire } from './questionnaire';
 import { getTargetStructureMap, getTargetStructureMapCanonical } from './structureMap';
 import { createTransformInputParameters, invokeTransform } from './transform';
+import dotenv from 'dotenv';
 
 const app = express();
 const port = 3003;
+
+// Configuring environment variables
+dotenv.config();
+const EHR_SERVER_URL = process.env['EHR_SERVER_URL'];
+const EHR_SERVER_AUTH_TOKEN = process.env['EHR_SERVER_AUTH_TOKEN'];
+
+const FORMS_SERVER_URL = process.env['FORMS_SERVER_URL'];
+const FORMS_SERVER_AUTH_TOKEN = process.env['FORMS_SERVER_AUTH_TOKEN'];
 
 app.use(
   cors({
@@ -47,12 +57,14 @@ app.get('/fhir/QuestionnaireResponse/\\$extract', (_, res) => {
   );
 });
 
-// This $extract operation is hardcoded to use resources and $transform operations from fixed endpoints
-const EHR_SERVER_URL = 'https://proxy.smartforms.io/fhir';
-const FORMS_SERVER_URL = 'https://smartforms.csiro.au/api/fhir';
 app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
-  const body = req.body;
+  if (!EHR_SERVER_URL || !FORMS_SERVER_URL) {
+    const outcome = createNoEnvVariablesOutcome();
+    res.status(400).json(outcome);
+    return;
+  }
 
+  const body = req.body;
   const questionnaireResponse = getQuestionnaireResponse(body);
 
   // Get QR resource from input parameters
@@ -71,7 +83,11 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
   }
 
   // Get Questionnaire resource from it's canonical URL
-  const questionnaire = await getQuestionnaire(questionnaireCanonical, FORMS_SERVER_URL);
+  const questionnaire = await getQuestionnaire(
+    questionnaireCanonical,
+    FORMS_SERVER_URL,
+    FORMS_SERVER_AUTH_TOKEN
+  );
   if (!questionnaire) {
     const outcome = createNoQuestionnairesFoundOutcome(questionnaireCanonical, FORMS_SERVER_URL);
     res.status(400).json(outcome);
@@ -91,7 +107,8 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
   // Get target StructureMap resource from it's canonical URL
   const targetStructureMap = await getTargetStructureMap(
     targetStructureMapCanonical,
-    FORMS_SERVER_URL
+    FORMS_SERVER_URL,
+    FORMS_SERVER_AUTH_TOKEN
   );
   if (!targetStructureMap) {
     const outcome = createNoTargetStructureMapFoundOutcome(
@@ -109,7 +126,11 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
   );
 
   try {
-    const outputParameters = await invokeTransform(transformInputParameters, EHR_SERVER_URL);
+    const outputParameters = await invokeTransform(
+      transformInputParameters,
+      EHR_SERVER_URL,
+      EHR_SERVER_AUTH_TOKEN
+    );
     res.json(outputParameters); // Forwarding the JSON response to the client
   } catch (error) {
     console.error(error);

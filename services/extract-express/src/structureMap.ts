@@ -31,12 +31,16 @@ export function getTargetStructureMapCanonical(questionnaire: Questionnaire): st
 
 export async function getTargetStructureMap(
   structureMapCanonical: string,
-  formsServerUrl: string
+  formsServerUrl: string,
+  formsServerAuthToken?: string
 ): Promise<StructureMap | null> {
   structureMapCanonical = structureMapCanonical.replace('|', '&version=');
 
   const requestUrl = `${formsServerUrl}/StructureMap?url=${structureMapCanonical}&_sort=_lastUpdated`;
-  const response = await fetch(requestUrl, { headers: HEADERS });
+  const headers = formsServerAuthToken
+    ? { ...HEADERS, Authorization: `Bearer ${formsServerAuthToken}` }
+    : HEADERS;
+  const response = await fetch(requestUrl, { headers });
 
   if (!response.ok) {
     return null;
