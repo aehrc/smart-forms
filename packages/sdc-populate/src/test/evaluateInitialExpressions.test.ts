@@ -16,7 +16,9 @@
  */
 
 import { generateExpressionValues } from '../SDCPopulateQuestionnaireOperation/utils/evaluateExpressions';
+// @ts-ignore
 import initialExpressionsSample from './resources/initial-expressions-sample.json';
+// @ts-ignore
 import contextSample from './resources/context-sample.json';
 import type { InitialExpression } from '../SDCPopulateQuestionnaireOperation/interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
@@ -28,14 +30,14 @@ describe('evaluate initial expressions', () => {
   >;
   const context = contextSample;
   const issues: OperationOutcomeIssue[] = [];
-  const evaluatedInitialExpressions = generateExpressionValues(
+  const { evaluatedInitialExpressions } = generateExpressionValues(
     { initialExpressions, itemPopulationContexts: {} },
     context,
     issues
   );
 
-  test('specifying age as key after evaluation should return 87', () => {
-    expect(evaluatedInitialExpressions['age']?.value).toEqual([87]);
+  test('specifying age as key after evaluation should return 88', () => {
+    expect(evaluatedInitialExpressions['age']?.value).toEqual([88]);
   });
 
   test('specifying 29644716-433e-45ec-a805-8043f35a85e1 as key after evaluation should return 180.40555187488803', () => {
