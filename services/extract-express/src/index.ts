@@ -21,7 +21,7 @@ import { getQuestionnaireResponse } from './questionnaireResponse';
 import {
   createInvalidParametersOutcome,
   createInvalidQuestionnaireCanonicalOutcome,
-  createNoEnvVariablesOutcome,
+  createNoFormsServerUrlSetOutcome,
   createNoQuestionnairesFoundOutcome,
   createNoTargetStructureMapCanonicalFoundOutcome,
   createNoTargetStructureMapFoundOutcome,
@@ -58,8 +58,18 @@ app.get('/fhir/QuestionnaireResponse/\\$extract', (_, res) => {
 });
 
 app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
-  if (!EHR_SERVER_URL || !FORMS_SERVER_URL) {
-    const outcome = createNoEnvVariablesOutcome();
+  let ehrServerUrl = req.protocol + '://' + req.get('host') + '/fhir';
+  let ehrServerAuthToken: string | null = null;
+
+  // Set EHR server URL and auth token if provided in env variables
+  if (EHR_SERVER_URL) {
+    ehrServerUrl = EHR_SERVER_URL;
+    ehrServerAuthToken = EHR_SERVER_AUTH_TOKEN ?? null;
+  }
+
+  // Ensure forms server URL is set
+  if (!FORMS_SERVER_URL) {
+    const outcome = createNoFormsServerUrlSetOutcome();
     res.status(400).json(outcome);
     return;
   }
@@ -128,8 +138,8 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
   try {
     const outputParameters = await invokeTransform(
       transformInputParameters,
-      EHR_SERVER_URL,
-      EHR_SERVER_AUTH_TOKEN
+      ehrServerUrl,
+      ehrServerAuthToken ?? undefined
     );
     res.json(outputParameters); // Forwarding the JSON response to the client
   } catch (error) {
