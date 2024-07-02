@@ -17,51 +17,79 @@
 
 import express from 'express';
 import { isInputParameters, populate } from '@aehrc/sdc-populate';
-import type { OperationOutcome } from 'fhir/r4';
 import { fetchResourceCallback } from './callback';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { createInvalidParametersOutcome, createOperationOutcome } from './operationOutcome';
 
 const app = express();
 const port = 3001;
 
-app.use(express.json());
+// Configuring environment variables
+dotenv.config();
+const EHR_SERVER_URL = process.env['EHR_SERVER_URL'];
+const EHR_SERVER_AUTH_TOKEN = process.env['EHR_SERVER_AUTH_TOKEN'];
+
+app.use(
+  cors({
+    origin: '*'
+  })
+);
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/api', (req, res) => {
-  const parameters = req.body;
-  const operationOutcome: OperationOutcome = { issue: [], resourceType: 'OperationOutcome' };
+app.get('/fhir/Questionnaire/\\$populate', (_, res) => {
+  res.send(
+    'This service is healthy!\nPerform a POST request to the same path for Questionnaire $populate.'
+  );
+});
 
-  if (isInputParameters(parameters)) {
-    try {
-      const outputPopParams = populate(parameters, fetchResourceCallback, requestConfig);
-      res.json(outputPopParams);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        operationOutcome.issue = [
-          {
-            severity: 'error',
-            code: 'exception',
-            details: {
-              text: err.message
-            }
-          }
-        ];
-      }
-      res.status(406).send(operationOutcome);
+app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
+  const requestConfig: {
+    ehrServerUrl: string;
+    ehrServerAuthToken: string | null;
+  } = {
+    ehrServerUrl: req.protocol + '://' + req.get('host') + '/fhir',
+    ehrServerAuthToken: null
+  };
+
+  // Set EHR server URL and auth token if provided in env variables
+  if (EHR_SERVER_URL) {
+    requestConfig.ehrServerUrl = EHR_SERVER_URL;
+    requestConfig.ehrServerAuthToken = EHR_SERVER_AUTH_TOKEN ?? null;
+  }
+
+  try {
+    const body = req.body;
+
+    // Check validity of input parameters
+    if (!isInputParameters(body)) {
+      const outcome = createInvalidParametersOutcome();
+      res.status(400).json(outcome);
+      return;
     }
-  } else {
-    operationOutcome.issue = [
-      {
-        severity: 'error',
-        code: 'invalid',
-        details: {
-          text: 'Parameters provided is in an invalid format.'
-        }
-      }
-    ];
-    res.status(406).send(operationOutcome);
+
+    // Invoke sdc-populate
+    const outputParameters = await populate(body, fetchResourceCallback, requestConfig);
+    res.json(outputParameters);
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as an OperationOutcome
+      return;
+    }
+
+    // If the error is not an instance of Error, send a generic error message
+    res
+      .status(500)
+      .json(
+        createOperationOutcome(
+          'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
+        )
+      );
   }
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Populate Express app listening on port ${port}`);
 });
