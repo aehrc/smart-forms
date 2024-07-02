@@ -29,5 +29,7 @@ Run `docker run -p 3003:3003 aehrc/smart-forms-extract` for local usage.
 
 You can use `docker run -p 3003:3003 -e EHR_SERVER_URL=https://proxy.smartforms.io/fhir aehrc/smart-forms-extract` to use the POC $transform operation. 
 
+Docker image: https://hub.docker.com/r/aehrc/smart-forms-extract
+
 ## Sample implementation
 A sample implementation of this service is available at https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract.
