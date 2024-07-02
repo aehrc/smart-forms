@@ -95,12 +95,22 @@ async function populateReferenceContextsIntoContextMap(
         return null;
       }
 
-      const response = settledPromise.value;
-      if (responseDataIsFhirResource(response?.data)) {
-        return response.data as FhirResource;
+      let resource: FhirResource | null = null;
+
+      // Get lookupResult from response (fhirClient and fetch scenario)
+      if (responseDataIsFhirResource(settledPromise.value)) {
+        resource = settledPromise.value;
+      }
+      // Fallback to get valueSet from response.data (axios scenario)
+      if (
+        !resource &&
+        settledPromise.value.data &&
+        responseDataIsFhirResource(settledPromise.value.data)
+      ) {
+        resource = settledPromise.value.data;
       }
 
-      return null;
+      return resource;
     });
 
     // Update referenceContextTuples with resolved resources

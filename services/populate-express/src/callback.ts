@@ -20,26 +20,24 @@ import { HEADERS } from 'extract-express/lib/globals';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-interface RequestConfig {
-  ehrServerUrl: string;
-  ehrServerAuthToken?: string;
+export interface RequestConfig {
+  url: string;
+  authToken?: string;
 }
 
 export const fetchResourceCallback: FetchResourceCallback = async (
   query: string,
   requestConfig: RequestConfig
 ) => {
-  const { ehrServerUrl, ehrServerAuthToken } = requestConfig;
+  const { url, authToken } = requestConfig;
 
-  let requestUrl = ehrServerUrl;
+  let requestUrl = url;
   if (!requestUrl.endsWith('/')) {
     requestUrl += '/';
   }
   requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : requestUrl + query;
 
-  const headers = ehrServerAuthToken
-    ? { ...HEADERS, Authorization: `Bearer ${ehrServerAuthToken}` }
-    : HEADERS;
+  const headers = authToken ? { ...HEADERS, Authorization: `Bearer ${authToken}` } : HEADERS;
 
   const response = await fetch(requestUrl, {
     headers: headers
