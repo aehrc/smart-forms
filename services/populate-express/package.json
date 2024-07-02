@@ -1,19 +1,19 @@
 {
   "name": "populate-express",
-  "version": "1.2.0",
+  "version": "2.2.5",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "compile": "tsc",
-    "start": "node lib/index.js",
+    "start": "node --inspect lib/index.js",
     "start:watch": "node --inspect --watch lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Sean Fong",
+  "license": "Apache-2.0",
   "dependencies": {
     "express": "^4.19.2",
-    "@aehrc/sdc-populate": "^1.2.0",
+    "@aehrc/sdc-populate": "^2.2.5",
     "dotenv": "^16.4.5"
   }
 }

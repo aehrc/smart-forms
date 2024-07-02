@@ -9,8 +9,8 @@
     "start:watch": "node --inspect --watch lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Sean Fong",
+  "license": "Apache-2.0",
   "dependencies": {
     "express": "^4.19.2",
     "@aehrc/sdc-assemble": "^1.2.0",

@@ -17,6 +17,7 @@
 
 import express from 'express';
 import { isInputParameters, populate } from '@aehrc/sdc-populate';
+import type { RequestConfig } from './callback';
 import { fetchResourceCallback } from './callback';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -29,6 +30,9 @@ const port = 3001;
 dotenv.config();
 const EHR_SERVER_URL = process.env['EHR_SERVER_URL'];
 const EHR_SERVER_AUTH_TOKEN = process.env['EHR_SERVER_AUTH_TOKEN'];
+
+const TERMINOLOGY_SERVER_URL = process.env['TERMINOLOGY_SERVER_URL'];
+const TERMINOLOGY_SERVER_AUTH_TOKEN = process.env['TERMINOLOGY_SERVER_AUTH_TOKEN'];
 
 app.use(
   cors({
@@ -45,18 +49,30 @@ app.get('/fhir/Questionnaire/\\$populate', (_, res) => {
 });
 
 app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
-  const requestConfig: {
-    ehrServerUrl: string;
-    ehrServerAuthToken: string | null;
+  const ehrServerRequestConfig: RequestConfig = {
+    url: req.protocol + '://' + req.get('host') + '/fhir'
+  };
+
+  const terminologyServerRequestConfig: {
+    url: string | undefined;
+    authToken: string | undefined;
   } = {
-    ehrServerUrl: req.protocol + '://' + req.get('host') + '/fhir',
-    ehrServerAuthToken: null
+    url: undefined,
+    authToken: undefined
   };
 
   // Set EHR server URL and auth token if provided in env variables
   if (EHR_SERVER_URL) {
-    requestConfig.ehrServerUrl = EHR_SERVER_URL;
-    requestConfig.ehrServerAuthToken = EHR_SERVER_AUTH_TOKEN ?? null;
+    ehrServerRequestConfig.url = EHR_SERVER_URL;
+    if (EHR_SERVER_AUTH_TOKEN) {
+      ehrServerRequestConfig.authToken = EHR_SERVER_AUTH_TOKEN;
+    }
+  }
+
+  // Set terminology server URL and auth token if provided in env variables
+  if (TERMINOLOGY_SERVER_URL) {
+    terminologyServerRequestConfig.url = TERMINOLOGY_SERVER_URL;
+    terminologyServerRequestConfig.authToken = TERMINOLOGY_SERVER_AUTH_TOKEN;
   }
 
   try {
@@ -69,8 +85,21 @@ app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
       return;
     }
 
-    // Invoke sdc-populate
-    const outputParameters = await populate(body, fetchResourceCallback, requestConfig);
+    // Terminology server defined, use terminology callback
+    if (terminologyServerRequestConfig.url) {
+      const outputParameters = await populate(
+        body,
+        fetchResourceCallback,
+        ehrServerRequestConfig,
+        fetchResourceCallback,
+        terminologyServerRequestConfig
+      );
+      res.json(outputParameters);
+      return;
+    }
+
+    // Terminology server not defined, use default terminology server provided in sdc-populate
+    const outputParameters = await populate(body, fetchResourceCallback, ehrServerRequestConfig);
     res.json(outputParameters);
   } catch (error) {
     console.error(error);
