@@ -67,75 +67,74 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
     ehrServerAuthToken = EHR_SERVER_AUTH_TOKEN ?? null;
   }
 
-  // Ensure forms server URL is set
-  if (!FORMS_SERVER_URL) {
-    const outcome = createNoFormsServerUrlSetOutcome();
-    res.status(400).json(outcome);
-    return;
-  }
-
-  const body = req.body;
-  const questionnaireResponse = getQuestionnaireResponse(body);
-
-  // Get QR resource from input parameters
-  if (!questionnaireResponse) {
-    const outcome = createInvalidParametersOutcome();
-    res.status(400).json(outcome);
-    return;
-  }
-
-  // Get Questionnaire canonical URL from QR resource
-  const questionnaireCanonical = questionnaireResponse.questionnaire;
-  if (!questionnaireCanonical) {
-    const outcome = createInvalidQuestionnaireCanonicalOutcome();
-    res.status(400).json(outcome);
-    return;
-  }
-
-  // Get Questionnaire resource from it's canonical URL
-  const questionnaire = await getQuestionnaire(
-    questionnaireCanonical,
-    FORMS_SERVER_URL,
-    FORMS_SERVER_AUTH_TOKEN
-  );
-  if (!questionnaire) {
-    const outcome = createNoQuestionnairesFoundOutcome(questionnaireCanonical, FORMS_SERVER_URL);
-    res.status(400).json(outcome);
-    return;
-  }
-
-  // Get target StructureMap canonical URL from Questionnaire resource
-  const targetStructureMapCanonical = getTargetStructureMapCanonical(questionnaire);
-  if (!targetStructureMapCanonical) {
-    const outcome = createNoTargetStructureMapCanonicalFoundOutcome(
-      questionnaire.id ?? questionnaireCanonical
-    );
-    res.status(400).json(outcome);
-    return;
-  }
-
-  // Get target StructureMap resource from it's canonical URL
-  const targetStructureMap = await getTargetStructureMap(
-    targetStructureMapCanonical,
-    FORMS_SERVER_URL,
-    FORMS_SERVER_AUTH_TOKEN
-  );
-  if (!targetStructureMap) {
-    const outcome = createNoTargetStructureMapFoundOutcome(
-      questionnaireCanonical,
-      FORMS_SERVER_URL
-    );
-    res.status(400).json(outcome);
-    return;
-  }
-
-  //
-  const transformInputParameters = createTransformInputParameters(
-    targetStructureMap,
-    questionnaireResponse
-  );
-
   try {
+    // Ensure forms server URL is set
+    if (!FORMS_SERVER_URL) {
+      const outcome = createNoFormsServerUrlSetOutcome();
+      res.status(400).json(outcome);
+      return;
+    }
+
+    const body = req.body;
+    const questionnaireResponse = getQuestionnaireResponse(body);
+
+    // Get QR resource from input parameters
+    if (!questionnaireResponse) {
+      const outcome = createInvalidParametersOutcome();
+      res.status(400).json(outcome);
+      return;
+    }
+
+    // Get Questionnaire canonical URL from QR resource
+    const questionnaireCanonical = questionnaireResponse.questionnaire;
+    if (!questionnaireCanonical) {
+      const outcome = createInvalidQuestionnaireCanonicalOutcome();
+      res.status(400).json(outcome);
+      return;
+    }
+
+    // Get Questionnaire resource from it's canonical URL
+    const questionnaire = await getQuestionnaire(
+      questionnaireCanonical,
+      FORMS_SERVER_URL,
+      FORMS_SERVER_AUTH_TOKEN
+    );
+    if (!questionnaire) {
+      const outcome = createNoQuestionnairesFoundOutcome(questionnaireCanonical, FORMS_SERVER_URL);
+      res.status(400).json(outcome);
+      return;
+    }
+
+    // Get target StructureMap canonical URL from Questionnaire resource
+    const targetStructureMapCanonical = getTargetStructureMapCanonical(questionnaire);
+    if (!targetStructureMapCanonical) {
+      const outcome = createNoTargetStructureMapCanonicalFoundOutcome(
+        questionnaire.id ?? questionnaireCanonical
+      );
+      res.status(400).json(outcome);
+      return;
+    }
+
+    // Get target StructureMap resource from it's canonical URL
+    const targetStructureMap = await getTargetStructureMap(
+      targetStructureMapCanonical,
+      FORMS_SERVER_URL,
+      FORMS_SERVER_AUTH_TOKEN
+    );
+    if (!targetStructureMap) {
+      const outcome = createNoTargetStructureMapFoundOutcome(
+        questionnaireCanonical,
+        FORMS_SERVER_URL
+      );
+      res.status(400).json(outcome);
+      return;
+    }
+
+    const transformInputParameters = createTransformInputParameters(
+      targetStructureMap,
+      questionnaireResponse
+    );
+
     const outputParameters = await invokeTransform(
       transformInputParameters,
       ehrServerUrl,
@@ -145,16 +144,18 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as JSON response
-    } else {
-      res
-        .status(500)
-        .json(
-          createOperationOutcome(
-            'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
-          )
-        );
+      res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as an OperationOutcome
+      return;
     }
+
+    // If the error is not an instance of Error, send a generic error message
+    res
+      .status(500)
+      .json(
+        createOperationOutcome(
+          'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
+        )
+      );
   }
 });
 
