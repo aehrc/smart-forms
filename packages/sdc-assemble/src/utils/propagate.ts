@@ -238,9 +238,7 @@ function checkDuplicatesInTopLevelItemVariables(topLevelItemExtensions: Extensio
     const variableName = extension.valueExpression?.name;
     if (isVariable && variableName) {
       if (extensionNames.has(variableName)) {
-        return createErrorOutcome(
-          `The variable ${variableName} is duplicated, which is prohibited.`
-        );
+        return createErrorOutcome(`The variable '${variableName}' is duplicated.`);
       }
 
       extensionNames.add(variableName);

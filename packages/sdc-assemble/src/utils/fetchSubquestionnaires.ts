@@ -24,23 +24,39 @@ import type { FetchQuestionnaireCallback } from '../interfaces';
  *
  * @param canonicals - An array of subquestionnaire canonical urls to be fetched
  * @param fetchQuestionnaireCallback - A callback function defined by the implementer to fetch Questionnaire resources by a canonical url
+ * @param fetchQuestionnaireRequestConfig - A request configuration object to be passed to the callback function
  * @returns A promise that resolves to an array of subquestionnaire resources or an OperationOutcome error
  *
  * @author Sean Fong
  */
 export async function fetchSubquestionnaires(
   canonicals: string[],
-  fetchQuestionnaireCallback: FetchQuestionnaireCallback
+  fetchQuestionnaireCallback: FetchQuestionnaireCallback,
+  fetchQuestionnaireRequestConfig: any
 ): Promise<Questionnaire[] | OperationOutcome> {
   // Gather all promises to be executed at once
   const promises = canonicals.map((canonical) =>
-    fetchQuestionnaireCallback(canonical.replace('|', '&version='))
+    fetchQuestionnaireCallback(canonical.replace('|', '&version='), fetchQuestionnaireRequestConfig)
   );
 
   let resources: (Bundle | OperationOutcome)[] = [];
   try {
-    const responses = await Promise.all(promises);
-    resources = responses.map((response) => response.data);
+    const settledPromises = await Promise.allSettled(promises);
+    for (const [i, settledPromise] of settledPromises.entries()) {
+      if (settledPromise.status === 'rejected') {
+        continue;
+      }
+
+      // Get lookupResult from response (fhirClient and fetch scenario)
+      if (responseIsBundle(settledPromise.value)) {
+        resources.push(settledPromise.value);
+        continue;
+      }
+      // Fallback to get valueSet from response.data (axios scenario)
+      if (settledPromise.value.data && responseIsBundle(settledPromise.value.data)) {
+        resources.push(settledPromise.value);
+      }
+    }
   } catch (e) {
     if (e instanceof Error) {
       return createErrorOutcome(e.message);
@@ -72,4 +88,8 @@ export async function fetchSubquestionnaires(
   }
 
   return subquestionnaires;
+}
+
+export function responseIsBundle(response: any): response is Bundle {
+  return response && response.resourceType === 'Bundle';
 }
