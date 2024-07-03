@@ -24,6 +24,7 @@
     "constructs": "^10.3.0",
     "source-map-support": "^0.5.21",
     "forms-server-assemble-endpoint": "^0.1.0",
-    "forms-server-hapi-endpoint": "^0.1.0"
+    "forms-server-hapi-endpoint": "^0.1.0",
+    "forms-server-populate-endpoint": "^0.1.0"
   }
 }

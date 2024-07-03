@@ -34,6 +34,6 @@ Docker image: https://hub.docker.com/r/aehrc/smart-forms-populate
 A sample implementation of this service is available at https://smartforms.csiro.au/fhir/Questionnaire/$populate.
 https://smartforms.csiro.au/fhir only stores Questionnaire definitions and does not contain any clinical data. Therefore when using this sample implementation, contextual information for pre-population should be provided as actual FHIR resources, not references.
 
-This service also allows you to specify a query parameter `debug=true` which returns a FHIRPath context object (useful for debugging!) as the `contextResult-custom` output parameter.
+This service also allows you to specify a query parameter `debug=true` which returns a base64-encoded FHIRPath context object (useful for debugging!) as the `contextResult-custom` output parameter.
 
 Note: The $populate service on https://smartforms.csiro.au/fhir only performs processing - it does not persist any data.
