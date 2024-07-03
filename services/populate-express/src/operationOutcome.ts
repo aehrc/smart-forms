@@ -16,6 +16,7 @@
  */
 
 import type { OperationOutcome } from 'fhir/r4b';
+import type { IssuesParameter } from '@aehrc/sdc-populate';
 
 export function createInvalidParametersOutcome(): OperationOutcome {
   return {
@@ -43,4 +44,19 @@ export function createOperationOutcome(errorMessage: string): OperationOutcome {
       }
     ]
   };
+}
+
+export function addEndpointToNotFoundIssues(
+  issuesParameter: IssuesParameter,
+  ehrServerUrl: string
+): IssuesParameter {
+  if (issuesParameter?.resource && issuesParameter.resource.issue.length > 0) {
+    issuesParameter.resource.issue.forEach((issue) => {
+      if (issue.code === 'not-found' && issue.details?.text) {
+        issue.details.text += ` at ${ehrServerUrl}. You might have to resolve it manually and pass the context as a resource instead of a reference.`;
+      }
+    });
+  }
+
+  return issuesParameter;
 }

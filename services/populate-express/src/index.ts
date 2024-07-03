@@ -17,11 +17,16 @@
 
 import express from 'express';
 import cors from 'cors';
+import type { IssuesParameter } from '@aehrc/sdc-populate';
 import { isInputParameters, populate } from '@aehrc/sdc-populate';
 import type { RequestConfig } from './callback';
 import { fetchResourceCallback } from './callback';
 import dotenv from 'dotenv';
-import { createInvalidParametersOutcome, createOperationOutcome } from './operationOutcome';
+import {
+  addEndpointToNotFoundIssues,
+  createInvalidParametersOutcome,
+  createOperationOutcome
+} from './operationOutcome';
 
 const app = express();
 const port = 3001;
@@ -86,20 +91,30 @@ app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
     }
 
     // Terminology server defined, use terminology callback
-    if (terminologyServerRequestConfig.url) {
-      const outputParameters = await populate(
-        body,
-        fetchResourceCallback,
-        ehrServerRequestConfig,
-        fetchResourceCallback,
-        terminologyServerRequestConfig
-      );
-      res.json(outputParameters);
+    // Otherwise, use default terminology server provided in sdc-populate
+    const outputParameters = terminologyServerRequestConfig.url
+      ? await populate(
+          body,
+          fetchResourceCallback,
+          ehrServerRequestConfig,
+          fetchResourceCallback,
+          terminologyServerRequestConfig
+        )
+      : await populate(body, fetchResourceCallback, ehrServerRequestConfig);
+
+    // Return OperationOutcome as 400
+    if (outputParameters.resourceType === 'OperationOutcome') {
+      res.status(400).json(outputParameters);
       return;
     }
 
-    // Terminology server not defined, use default terminology server provided in sdc-populate
-    const outputParameters = await populate(body, fetchResourceCallback, ehrServerRequestConfig);
+    // Return valid output params
+    const issuesParameter = outputParameters.parameter.find(
+      (param): param is IssuesParameter => param.name === 'issues'
+    ) as IssuesParameter | undefined;
+    if (issuesParameter) {
+      addEndpointToNotFoundIssues(issuesParameter, ehrServerRequestConfig.url);
+    }
     res.json(outputParameters);
   } catch (error) {
     console.error(error);

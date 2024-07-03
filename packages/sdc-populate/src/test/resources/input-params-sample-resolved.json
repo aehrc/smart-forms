@@ -17111,175 +17111,172 @@
         },
         {
           "name": "content",
-          "valueReference": {
-            "reference": "Observation?code=85354-9&_count=1&_sort=-date&patient=pat-sf",
-            "resource": {
-              "resourceType": "Bundle",
-              "id": "33e6e981-e1f7-41ec-b3a2-58d7b7ef79f4",
-              "meta": {
-                "lastUpdated": "2024-07-03T00:24:33.665+00:00"
+          "resource": {
+            "resourceType": "Bundle",
+            "id": "33e6e981-e1f7-41ec-b3a2-58d7b7ef79f4",
+            "meta": {
+              "lastUpdated": "2024-07-03T00:24:33.665+00:00"
+            },
+            "type": "searchset",
+            "total": 2,
+            "link": [
+              {
+                "relation": "self",
+                "url": "http://proxy.smartforms.io/fhir/Observation?_count=1&_sort=-date&code=85354-9&patient=pat-sf"
               },
-              "type": "searchset",
-              "total": 2,
-              "link": [
-                {
-                  "relation": "self",
-                  "url": "http://proxy.smartforms.io/fhir/Observation?_count=1&_sort=-date&code=85354-9&patient=pat-sf"
-                },
-                {
-                  "relation": "next",
-                  "url": "http://proxy.smartforms.io/fhir?_getpages=33e6e981-e1f7-41ec-b3a2-58d7b7ef79f4&_getpagesoffset=1&_count=1&_pretty=true&_bundletype=searchset"
-                }
-              ],
-              "entry": [
-                {
-                  "fullUrl": "http://proxy.smartforms.io/fhir/Observation/bloodpressure2-pat-sf",
-                  "resource": {
-                    "resourceType": "Observation",
-                    "id": "bloodpressure2-pat-sf",
-                    "meta": {
-                      "versionId": "1",
-                      "lastUpdated": "2024-07-01T02:33:35.138+00:00",
-                      "source": "#t4KbUyATfqMYSvqr",
-                      "profile": [
-                        "http://hl7.org.au/fhir/core/StructureDefinition/au-core-bloodpressure",
-                        "http://hl7.org.au/fhir/core/StructureDefinition/au-core-observation"
-                      ]
-                    },
-                    "text": {
-                      "status": "generated",
-                      "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Observation</b><a name=\"bloodpressure2-pat-sf\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Observation &quot;bloodpressure2-pat-sf&quot; </p><p style=\"margin-bottom: 0px\">Profiles: <a href=\"StructureDefinition-au-core-bloodpressure.html\">AU Core Blood Pressure</a>, <a href=\"StructureDefinition-au-core-observation.html\">AU Core Observation</a></p></div><p><b>status</b>: final</p><p><b>category</b>: Vital Signs <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"http://terminology.hl7.org/5.3.0/CodeSystem-observation-category.html\">Observation Category Codes</a>#vital-signs)</span></p><p><b>code</b>: Blood pressure systolic and diastolic <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://loinc.org/\">LOINC</a>#85354-9 &quot;Blood pressure panel with all children optional&quot;; <a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#75367002)</span></p><p><b>subject</b>: <a href=\"Patient-pat-sf.html\">Patient/pat-sf</a> &quot; FORM&quot;</p><p><b>effective</b>: 2023-09-13</p><p><b>performer</b>: <a href=\"PractitionerRole-gp-primary-peter.html\">PractitionerRole/gp-primary-peter</a></p><p><b>interpretation</b>: Significantly high <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"http://terminology.hl7.org/5.3.0/CodeSystem-v3-ObservationInterpretation.html\">ObservationInterpretation</a>#HU)</span></p><p><b>bodySite</b>: Right arm <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#368209003 &quot;Structure of right upper arm&quot;)</span></p><p><b>method</b>: Standing position <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#10904000 &quot;Orthostatic body position&quot;)</span></p><blockquote><p><b>component</b></p><p><b>code</b>: Systolic blood pressure <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://loinc.org/\">LOINC</a>#8480-6; <a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#271649006)</span></p><p><b>value</b>: 165 mmHg<span style=\"background: LightGoldenRodYellow\"> (Details: UCUM code mm[Hg] = 'mm[Hg]')</span></p><h3>ReferenceRanges</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Text</b></td></tr><tr><td style=\"display: none\">*</td><td>Less than 120 mmHg</td></tr></table></blockquote><blockquote><p><b>component</b></p><p><b>code</b>: Diastolic blood pressure <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://loinc.org/\">LOINC</a>#8462-4; <a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#271650006)</span></p><p><b>value</b>: 95 mmHg<span style=\"background: LightGoldenRodYellow\"> (Details: UCUM code mm[Hg] = 'mm[Hg]')</span></p><h3>ReferenceRanges</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Text</b></td></tr><tr><td style=\"display: none\">*</td><td>Less than 80 mmHg</td></tr></table></blockquote></div>"
-                    },
-                    "status": "final",
-                    "category": [
-                      {
-                        "coding": [
-                          {
-                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                            "code": "vital-signs",
-                            "display": "Vital Signs"
-                          }
-                        ],
-                        "text": "Vital Signs"
-                      }
-                    ],
-                    "code": {
-                      "coding": [
-                        {
-                          "system": "http://loinc.org",
-                          "code": "85354-9",
-                          "display": "Blood pressure panel with all children optional"
-                        },
-                        {
-                          "system": "http://snomed.info/sct",
-                          "code": "75367002"
-                        }
-                      ],
-                      "text": "Blood pressure systolic and diastolic"
-                    },
-                    "subject": {
-                      "reference": "Patient/pat-sf"
-                    },
-                    "effectiveDateTime": "2023-09-13",
-                    "performer": [
-                      {
-                        "reference": "PractitionerRole/gp-primary-peter"
-                      }
-                    ],
-                    "interpretation": [
-                      {
-                        "coding": [
-                          {
-                            "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                            "code": "HU",
-                            "display": "Significantly high"
-                          }
-                        ]
-                      }
-                    ],
-                    "bodySite": {
-                      "coding": [
-                        {
-                          "system": "http://snomed.info/sct",
-                          "code": "368209003",
-                          "display": "Structure of right upper arm"
-                        }
-                      ],
-                      "text": "Right arm"
-                    },
-                    "method": {
-                      "coding": [
-                        {
-                          "system": "http://snomed.info/sct",
-                          "code": "10904000",
-                          "display": "Orthostatic body position"
-                        }
-                      ],
-                      "text": "Standing position"
-                    },
-                    "component": [
-                      {
-                        "code": {
-                          "coding": [
-                            {
-                              "system": "http://loinc.org",
-                              "code": "8480-6",
-                              "display": "Systolic blood pressure"
-                            },
-                            {
-                              "system": "http://snomed.info/sct",
-                              "code": "271649006"
-                            }
-                          ],
-                          "text": "Systolic blood pressure"
-                        },
-                        "valueQuantity": {
-                          "value": 165,
-                          "unit": "mmHg",
-                          "system": "http://unitsofmeasure.org",
-                          "code": "mm[Hg]"
-                        },
-                        "referenceRange": [
-                          {
-                            "text": "Less than 120 mmHg"
-                          }
-                        ]
-                      },
-                      {
-                        "code": {
-                          "coding": [
-                            {
-                              "system": "http://loinc.org",
-                              "code": "8462-4",
-                              "display": "Diastolic blood pressure"
-                            },
-                            {
-                              "system": "http://snomed.info/sct",
-                              "code": "271650006"
-                            }
-                          ],
-                          "text": "Diastolic blood pressure"
-                        },
-                        "valueQuantity": {
-                          "value": 95,
-                          "unit": "mmHg",
-                          "system": "http://unitsofmeasure.org",
-                          "code": "mm[Hg]"
-                        },
-                        "referenceRange": [
-                          {
-                            "text": "Less than 80 mmHg"
-                          }
-                        ]
-                      }
+              {
+                "relation": "next",
+                "url": "http://proxy.smartforms.io/fhir?_getpages=33e6e981-e1f7-41ec-b3a2-58d7b7ef79f4&_getpagesoffset=1&_count=1&_pretty=true&_bundletype=searchset"
+              }
+            ],
+            "entry": [
+              {
+                "fullUrl": "http://proxy.smartforms.io/fhir/Observation/bloodpressure2-pat-sf",
+                "resource": {
+                  "resourceType": "Observation",
+                  "id": "bloodpressure2-pat-sf",
+                  "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2024-07-01T02:33:35.138+00:00",
+                    "source": "#t4KbUyATfqMYSvqr",
+                    "profile": [
+                      "http://hl7.org.au/fhir/core/StructureDefinition/au-core-bloodpressure",
+                      "http://hl7.org.au/fhir/core/StructureDefinition/au-core-observation"
                     ]
                   },
-                  "search": {
-                    "mode": "match"
-                  }
+                  "text": {
+                    "status": "generated",
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Observation</b><a name=\"bloodpressure2-pat-sf\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Observation &quot;bloodpressure2-pat-sf&quot; </p><p style=\"margin-bottom: 0px\">Profiles: <a href=\"StructureDefinition-au-core-bloodpressure.html\">AU Core Blood Pressure</a>, <a href=\"StructureDefinition-au-core-observation.html\">AU Core Observation</a></p></div><p><b>status</b>: final</p><p><b>category</b>: Vital Signs <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"http://terminology.hl7.org/5.3.0/CodeSystem-observation-category.html\">Observation Category Codes</a>#vital-signs)</span></p><p><b>code</b>: Blood pressure systolic and diastolic <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://loinc.org/\">LOINC</a>#85354-9 &quot;Blood pressure panel with all children optional&quot;; <a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#75367002)</span></p><p><b>subject</b>: <a href=\"Patient-pat-sf.html\">Patient/pat-sf</a> &quot; FORM&quot;</p><p><b>effective</b>: 2023-09-13</p><p><b>performer</b>: <a href=\"PractitionerRole-gp-primary-peter.html\">PractitionerRole/gp-primary-peter</a></p><p><b>interpretation</b>: Significantly high <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"http://terminology.hl7.org/5.3.0/CodeSystem-v3-ObservationInterpretation.html\">ObservationInterpretation</a>#HU)</span></p><p><b>bodySite</b>: Right arm <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#368209003 &quot;Structure of right upper arm&quot;)</span></p><p><b>method</b>: Standing position <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#10904000 &quot;Orthostatic body position&quot;)</span></p><blockquote><p><b>component</b></p><p><b>code</b>: Systolic blood pressure <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://loinc.org/\">LOINC</a>#8480-6; <a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#271649006)</span></p><p><b>value</b>: 165 mmHg<span style=\"background: LightGoldenRodYellow\"> (Details: UCUM code mm[Hg] = 'mm[Hg]')</span></p><h3>ReferenceRanges</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Text</b></td></tr><tr><td style=\"display: none\">*</td><td>Less than 120 mmHg</td></tr></table></blockquote><blockquote><p><b>component</b></p><p><b>code</b>: Diastolic blood pressure <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://loinc.org/\">LOINC</a>#8462-4; <a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#271650006)</span></p><p><b>value</b>: 95 mmHg<span style=\"background: LightGoldenRodYellow\"> (Details: UCUM code mm[Hg] = 'mm[Hg]')</span></p><h3>ReferenceRanges</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Text</b></td></tr><tr><td style=\"display: none\">*</td><td>Less than 80 mmHg</td></tr></table></blockquote></div>"
+                  },
+                  "status": "final",
+                  "category": [
+                    {
+                      "coding": [
+                        {
+                          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                          "code": "vital-signs",
+                          "display": "Vital Signs"
+                        }
+                      ],
+                      "text": "Vital Signs"
+                    }
+                  ],
+                  "code": {
+                    "coding": [
+                      {
+                        "system": "http://loinc.org",
+                        "code": "85354-9",
+                        "display": "Blood pressure panel with all children optional"
+                      },
+                      {
+                        "system": "http://snomed.info/sct",
+                        "code": "75367002"
+                      }
+                    ],
+                    "text": "Blood pressure systolic and diastolic"
+                  },
+                  "subject": {
+                    "reference": "Patient/pat-sf"
+                  },
+                  "effectiveDateTime": "2023-09-13",
+                  "performer": [
+                    {
+                      "reference": "PractitionerRole/gp-primary-peter"
+                    }
+                  ],
+                  "interpretation": [
+                    {
+                      "coding": [
+                        {
+                          "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                          "code": "HU",
+                          "display": "Significantly high"
+                        }
+                      ]
+                    }
+                  ],
+                  "bodySite": {
+                    "coding": [
+                      {
+                        "system": "http://snomed.info/sct",
+                        "code": "368209003",
+                        "display": "Structure of right upper arm"
+                      }
+                    ],
+                    "text": "Right arm"
+                  },
+                  "method": {
+                    "coding": [
+                      {
+                        "system": "http://snomed.info/sct",
+                        "code": "10904000",
+                        "display": "Orthostatic body position"
+                      }
+                    ],
+                    "text": "Standing position"
+                  },
+                  "component": [
+                    {
+                      "code": {
+                        "coding": [
+                          {
+                            "system": "http://loinc.org",
+                            "code": "8480-6",
+                            "display": "Systolic blood pressure"
+                          },
+                          {
+                            "system": "http://snomed.info/sct",
+                            "code": "271649006"
+                          }
+                        ],
+                        "text": "Systolic blood pressure"
+                      },
+                      "valueQuantity": {
+                        "value": 165,
+                        "unit": "mmHg",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "mm[Hg]"
+                      },
+                      "referenceRange": [
+                        {
+                          "text": "Less than 120 mmHg"
+                        }
+                      ]
+                    },
+                    {
+                      "code": {
+                        "coding": [
+                          {
+                            "system": "http://loinc.org",
+                            "code": "8462-4",
+                            "display": "Diastolic blood pressure"
+                          },
+                          {
+                            "system": "http://snomed.info/sct",
+                            "code": "271650006"
+                          }
+                        ],
+                        "text": "Diastolic blood pressure"
+                      },
+                      "valueQuantity": {
+                        "value": 95,
+                        "unit": "mmHg",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "mm[Hg]"
+                      },
+                      "referenceRange": [
+                        {
+                          "text": "Less than 80 mmHg"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "search": {
+                  "mode": "match"
                 }
-              ]
-            }
+              }
+            ]
           }
         }
       ]
@@ -17293,970 +17290,967 @@
         },
         {
           "name": "content",
-          "valueReference": {
-            "reference": "QuestionnaireResponse?status=completed&_count=1&_sort=-authored&patient=pat-sf",
-            "resource": {
-              "resourceType": "Bundle",
-              "id": "17f36858-b0bf-4c88-8851-a8aa6df9cb1d",
-              "meta": {
-                "lastUpdated": "2024-07-03T00:24:57.485+00:00"
+          "resource": {
+            "resourceType": "Bundle",
+            "id": "17f36858-b0bf-4c88-8851-a8aa6df9cb1d",
+            "meta": {
+              "lastUpdated": "2024-07-03T00:24:57.485+00:00"
+            },
+            "type": "searchset",
+            "total": 12,
+            "link": [
+              {
+                "relation": "self",
+                "url": "http://proxy.smartforms.io/fhir/QuestionnaireResponse?_count=1&_sort=-authored&patient=pat-sf&status=completed"
               },
-              "type": "searchset",
-              "total": 12,
-              "link": [
-                {
-                  "relation": "self",
-                  "url": "http://proxy.smartforms.io/fhir/QuestionnaireResponse?_count=1&_sort=-authored&patient=pat-sf&status=completed"
-                },
-                {
-                  "relation": "next",
-                  "url": "http://proxy.smartforms.io/fhir?_getpages=17f36858-b0bf-4c88-8851-a8aa6df9cb1d&_getpagesoffset=1&_count=1&_pretty=true&_bundletype=searchset"
-                }
-              ],
-              "entry": [
-                {
-                  "fullUrl": "http://proxy.smartforms.io/fhir/QuestionnaireResponse/445",
-                  "resource": {
-                    "resourceType": "QuestionnaireResponse",
-                    "id": "445",
-                    "meta": {
-                      "versionId": "2",
-                      "lastUpdated": "2024-07-02T23:29:03.469+00:00",
-                      "source": "https://smartforms.csiro.au#nZnNnvk4AnZYQxE1"
-                    },
-                    "text": {
-                      "status": "generated",
-                      "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div style=\"font-size:20px; font-weight: bold\">Aboriginal and Torres Strait Islander Health Check</div><hr/><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">About the health check</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Eligible for health check</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>No</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Health check already in progress?</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>False</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date of last completed health check</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2024</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date this health check commenced</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2024</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Consent</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2024</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Patient Details</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Name</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Form, Smart Mrs</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Preferred name</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Clever Form</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Preferred pronouns</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>She/her/her/hers/herself</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Gender identity</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Identifies as female gender</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Administrative gender</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Female</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Sex assigned at birth</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Female</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date of birth</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>11/10/1968</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Age</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>55</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Aboriginal and/or Torres Strait Islander status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Aboriginal but not Torres Strait Islander origin</div></div></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Home address</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Street address</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>4 Brisbane Street</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">City</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Brisbane</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">State</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Queensland</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Postcode</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>4112</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Home phone</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>0123456879</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Mobile phone</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>0491 572 665</div></div></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Emergency contact</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Name</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Ms Phone A Friend</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Phone</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>0987654321</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Medicare number</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Number</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>6951449677</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Reference number</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>1</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Expiry</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>2024-08</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Medical history and current problems</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Medical history and current problems list</div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Chronic kidney disease stage 3B (disorder)</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>01/12/2018</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Acute coronary syndrome</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Fever</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Resolved</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>11/02/2015</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Urinary tract infection</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>10/05/2020</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Type 2 diabetes mellitus</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Hypertension</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Substance use, including tobacco</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Smoking</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Smoking status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Current smoker</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Examination</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Height</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>163</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>10/02/2022</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Weight</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>77.3</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>10/02/2022</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Waist circumference</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>88</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>14/03/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Heart rate</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>80</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2016</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Blood pressure</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Systolic</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>165</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Diastolic</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>95</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Absolute cardiovascular disease risk calculation</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">CVD risk calculator variables</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Age</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>55</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Sex at birth</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Female</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Smoking status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Smoker</div></div></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Systolic Blood Pressure</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>165</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Total Cholesterol</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>5.9</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>17/01/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">HDL Cholesterol</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>1.5</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>17/01/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Postcode</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>4112</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Type 2 diabetes mellitus</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>True</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 20px 0 20px\"></div></div>"
-                    },
-                    "questionnaire": "http://www.health.gov.au/assessments/mbs/715|0.1.0-assembled",
-                    "_questionnaire": {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/display",
-                          "valueString": "Aboriginal and Torres Strait Islander Health Check"
-                        }
-                      ]
-                    },
-                    "status": "completed",
-                    "subject": {
-                      "reference": "Patient/pat-sf",
-                      "type": "Patient",
-                      "display": "Mrs. Smart Form"
-                    },
-                    "authored": "2024-07-02T23:29:02+00:00",
-                    "author": {
-                      "reference": "Practitioner/primary-peter",
-                      "type": "Practitioner",
-                      "display": "Dr Peter Primary"
-                    },
-                    "item": [
+              {
+                "relation": "next",
+                "url": "http://proxy.smartforms.io/fhir?_getpages=17f36858-b0bf-4c88-8851-a8aa6df9cb1d&_getpagesoffset=1&_count=1&_pretty=true&_bundletype=searchset"
+              }
+            ],
+            "entry": [
+              {
+                "fullUrl": "http://proxy.smartforms.io/fhir/QuestionnaireResponse/445",
+                "resource": {
+                  "resourceType": "QuestionnaireResponse",
+                  "id": "445",
+                  "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2024-07-02T23:29:03.469+00:00",
+                    "source": "https://smartforms.csiro.au#nZnNnvk4AnZYQxE1"
+                  },
+                  "text": {
+                    "status": "generated",
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div style=\"font-size:20px; font-weight: bold\">Aboriginal and Torres Strait Islander Health Check</div><hr/><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">About the health check</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Eligible for health check</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>No</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Health check already in progress?</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>False</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date of last completed health check</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2024</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date this health check commenced</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2024</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Consent</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2024</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Patient Details</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Name</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Form, Smart Mrs</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Preferred name</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Clever Form</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Preferred pronouns</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>She/her/her/hers/herself</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Gender identity</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Identifies as female gender</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Administrative gender</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Female</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Sex assigned at birth</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Female</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date of birth</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>11/10/1968</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Age</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>55</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Aboriginal and/or Torres Strait Islander status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Aboriginal but not Torres Strait Islander origin</div></div></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Home address</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Street address</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>4 Brisbane Street</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">City</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Brisbane</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">State</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Queensland</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Postcode</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>4112</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Home phone</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>0123456879</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Mobile phone</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>0491 572 665</div></div></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Emergency contact</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Name</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Ms Phone A Friend</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Phone</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>0987654321</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Medicare number</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Number</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>6951449677</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Reference number</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>1</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Expiry</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>2024-08</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Medical history and current problems</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Medical history and current problems list</div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Chronic kidney disease stage 3B (disorder)</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>01/12/2018</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Acute coronary syndrome</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Fever</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Resolved</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>11/02/2015</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Urinary tract infection</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>10/05/2020</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 15px\"/><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Type 2 diabetes mellitus</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>12/02/2015</div></div></div><div style=\"height: 1px; width: 100%; background-color: #E5EAF2;margin-top: 15px\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Condition</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Hypertension</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Clinical Status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Active</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Onset Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Recorded Date</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Substance use, including tobacco</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Smoking</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Smoking status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Current smoker</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Examination</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Height</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>163</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>10/02/2022</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Weight</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>77.3</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>10/02/2022</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Waist circumference</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>88</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>14/03/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Heart rate</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>80</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>02/07/2016</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Blood pressure</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Systolic</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>165</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Diastolic</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>95</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 55px 0 20px\"></div><div style=\"font-size: 18px; font-weight: bold; margin-top: 15px\">Absolute cardiovascular disease risk calculation</div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">CVD risk calculator variables</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Age</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>55</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Sex at birth</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Female</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Smoking status</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>Smoker</div></div></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Systolic Blood Pressure</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>165</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>13/09/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">Total Cholesterol</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>5.9</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>17/01/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"font-size: 15px; font-weight: bold; margin-top: 15px\">HDL Cholesterol</div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Value</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>1.5</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Date performed</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>17/01/2023</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Postcode</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>4112</div></div></div><div style=\"margin-top: 10px; display: flex; flex-wrap: wrap\"><div style=\"flex:40%\">Type 2 diabetes mellitus</div><div style=\"flex: 10%\"></div><div style=\"flex: 50%\"><div>True</div></div></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin-bottom: 30px;\"></div><div style=\"margin: 20px 0 20px\"></div></div>"
+                  },
+                  "questionnaire": "http://www.health.gov.au/assessments/mbs/715|0.1.0-assembled",
+                  "_questionnaire": {
+                    "extension": [
                       {
-                        "linkId": "fd5af92e-c248-497a-8007-ee0952ccd4d9",
-                        "item": [
-                          {
-                            "linkId": "2e82032a-dc28-45f2-916e-862303d39fe5",
-                            "text": "About the health check",
-                            "item": [
-                              {
-                                "linkId": "3da318f1-a5dd-4c8f-b258-99d83872a4f2",
-                                "text": "Eligible for health check",
-                                "answer": [
-                                  {
-                                    "valueCoding": {
-                                      "system": "http://terminology.hl7.org/CodeSystem/v2-0532",
-                                      "code": "N",
-                                      "display": "No"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "5960c096-d5f7-4745-bd74-44ff2775bde9",
-                                "text": "Health check already in progress?",
-                                "answer": [
-                                  {
-                                    "valueBoolean": false
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "01418489-1ec4-4c3b-b96a-7c14c3e21cfe",
-                                "text": "Date of last completed health check",
-                                "answer": [
-                                  {
-                                    "valueDate": "2024-07-02"
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "63fe14f3-2374-4382-bce7-180e2747c97f",
-                                "text": "Date this health check commenced",
-                                "answer": [
-                                  {
-                                    "valueDate": "2024-07-02"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "linkId": "1016f79d-9756-4daf-b6ee-29add134b34f",
-                            "text": "Consent",
-                            "item": [
-                              {
-                                "linkId": "84162f36-f4af-4509-b178-ef2a3849d0b6",
-                                "text": "Date",
-                                "answer": [
-                                  {
-                                    "valueDate": "2024-07-02"
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "linkId": "5b224753-9365-44e3-823b-9c17e7394005",
-                            "text": "Patient Details",
-                            "item": [
-                              {
-                                "linkId": "17596726-34cf-4133-9960-7081e1d63558",
-                                "text": "Name",
-                                "answer": [
-                                  {
-                                    "valueString": "Form, Smart Mrs"
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "57093a06-62f7-4b8b-8cb4-2c9f451ac851",
-                                "text": "Preferred name",
-                                "answer": [
-                                  {
-                                    "valueString": "Clever Form"
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "540b1034-7c9a-4aba-a9ef-afb77d445a58",
-                                "text": "Preferred pronouns",
-                                "answer": [
-                                  {
-                                    "valueCoding": {
-                                      "system": "http://loinc.org",
-                                      "code": "LA29519-8",
-                                      "display": "she/her/her/hers/herself"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "f669a4fe-4818-429a-8847-d20da88d2bb3",
-                                "text": "Gender identity",
-                                "answer": [
-                                  {
-                                    "valueCoding": {
-                                      "system": "http://snomed.info/sct",
-                                      "code": "446141000124107",
-                                      "display": "Identifies as female gender"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "418e4a02-de77-48a0-a92a-fe8fcc52b1aa",
-                                "text": "Administrative gender",
-                                "answer": [
-                                  {
-                                    "valueCoding": {
-                                      "system": "http://hl7.org/fhir/administrative-gender",
-                                      "code": "female",
-                                      "display": "Female"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "56ef44bb-3d1d-4972-aad1-834b69185d61",
-                                "text": "Sex assigned at birth",
-                                "answer": [
-                                  {
-                                    "valueCoding": {
-                                      "system": "http://snomed.info/sct",
-                                      "code": "248152002",
-                                      "display": "Female"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "90ad8f16-16e4-4438-a7aa-b3189f510da2",
-                                "text": "Date of birth",
-                                "answer": [
-                                  {
-                                    "valueDate": "1968-10-11"
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
-                                "text": "Age",
-                                "answer": [
-                                  {
-                                    "valueInteger": 55
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "8acde9f8-7a91-4f0c-9216-38531ec984ef",
-                                "text": "Aboriginal and/or Torres Strait Islander status",
-                                "answer": [
-                                  {
-                                    "valueCoding": {
-                                      "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
-                                      "code": "1",
-                                      "display": "Aboriginal but not Torres Strait Islander origin"
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "f1262ade-843c-4eba-a86d-51a9c97d134b",
-                                "text": "Home address",
-                                "item": [
-                                  {
-                                    "linkId": "4e0dc185-f83e-4027-b7a8-ecb543d42c6d",
-                                    "item": [
-                                      {
-                                        "linkId": "2fee2d51-7828-4178-b8c1-35edd32ba338",
-                                        "text": "Street address",
-                                        "answer": [
-                                          {
-                                            "valueString": "4 Brisbane Street"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "ddb65ed1-f4b2-4730-af2a-2f98bc73c76f",
-                                        "text": "City",
-                                        "answer": [
-                                          {
-                                            "valueString": "Brisbane"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "d9a1236c-8d6e-4f20-a12a-9d5de5a1d0f6",
-                                        "text": "State",
-                                        "answer": [
-                                          {
-                                            "valueCoding": {
-                                              "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
-                                              "code": "QLD",
-                                              "display": "Queensland"
-                                            }
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "3f61a1ea-1c74-4f52-8519-432ce861a74f",
-                                        "text": "Postcode",
-                                        "answer": [
-                                          {
-                                            "valueString": "4112"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "9541f0b0-f5ba-4fe7-a8e9-ad003cef897b",
-                                "text": "Home phone",
-                                "answer": [
-                                  {
-                                    "valueString": "0123456879"
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "4037a02b-4a85-40e0-9be6-5b17df1aac56",
-                                "text": "Mobile phone",
-                                "answer": [
-                                  {
-                                    "valueString": "0491 572 665"
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "c22390d3-1be6-4fd1-b775-6443b7239a6b",
-                                "text": "Emergency contact",
-                                "item": [
-                                  {
-                                    "linkId": "d7f2dd75-20c8-480f-8c22-71d604ebee8d",
-                                    "text": "Name",
-                                    "answer": [
-                                      {
-                                        "valueString": "Ms Phone A Friend"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "626e3723-6310-4b99-81c1-525676b027c8",
-                                    "text": "Phone",
-                                    "answer": [
-                                      {
-                                        "valueString": "0987654321"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "df1475ea-bf7e-4bf0-a69f-7f9608c3ed3c",
-                                "text": "Medicare number",
-                                "item": [
-                                  {
-                                    "linkId": "eb2a59ed-9632-4df1-b5b1-1e85c3b4b7cf",
-                                    "text": "Number",
-                                    "answer": [
-                                      {
-                                        "valueString": "6951449677"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "d6253253-a124-494e-a1d8-7ce02c69ec11",
-                                    "text": "Reference number",
-                                    "answer": [
-                                      {
-                                        "valueString": "1"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "c520e213-5313-42c3-860a-d30206620290",
-                                    "text": "Expiry",
-                                    "answer": [
-                                      {
-                                        "valueString": "2024-08"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "linkId": "28d5dbe4-1e65-487c-847a-847f544a6a91",
-                            "text": "Medical history and current problems",
-                            "item": [
-                              {
-                                "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
-                                "text": "Medical history and current problems list",
-                                "item": [
-                                  {
-                                    "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
-                                    "text": "Condition",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "700379002",
-                                          "display": "Chronic kidney disease stage 3B (disorder)"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
-                                    "text": "Clinical Status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                                          "code": "active",
-                                          "display": "Active"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
-                                    "text": "Recorded Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2018-12-01"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
-                                "text": "Medical history and current problems list",
-                                "item": [
-                                  {
-                                    "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
-                                    "text": "Condition",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "394659003",
-                                          "display": "Acute coronary syndrome"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
-                                    "text": "Clinical Status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                                          "code": "active",
-                                          "display": "Active"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
-                                    "text": "Onset Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2015-02-12"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
-                                    "text": "Recorded Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2015-02-12"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
-                                "text": "Medical history and current problems list",
-                                "item": [
-                                  {
-                                    "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
-                                    "text": "Condition",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "386661006",
-                                          "display": "Fever"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
-                                    "text": "Clinical Status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                                          "code": "resolved",
-                                          "display": "Resolved"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
-                                    "text": "Onset Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2015-02-11"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
-                                    "text": "Recorded Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2015-02-12"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
-                                "text": "Medical history and current problems list",
-                                "item": [
-                                  {
-                                    "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
-                                    "text": "Condition",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "68566005",
-                                          "display": "Urinary tract infection"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
-                                    "text": "Clinical Status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                                          "code": "active",
-                                          "display": "Active"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
-                                    "text": "Onset Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2020-05-10"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
-                                "text": "Medical history and current problems list",
-                                "item": [
-                                  {
-                                    "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
-                                    "text": "Condition",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "44054006",
-                                          "display": "Type 2 diabetes mellitus"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
-                                    "text": "Clinical Status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                                          "code": "active",
-                                          "display": "Active"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
-                                    "text": "Onset Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2015-02-12"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
-                                    "text": "Recorded Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2015-02-12"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
-                                "text": "Medical history and current problems list",
-                                "item": [
-                                  {
-                                    "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
-                                    "text": "Condition",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "38341003",
-                                          "display": "Hypertension"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
-                                    "text": "Clinical Status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                                          "code": "active",
-                                          "display": "Active"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
-                                    "text": "Onset Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2023-09-13"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
-                                    "text": "Recorded Date",
-                                    "answer": [
-                                      {
-                                        "valueDate": "2023-09-13"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "linkId": "14a9fb5f-5b0e-4862-b143-08a11cd3ebf0",
-                            "text": "Substance use, including tobacco",
-                            "item": [
-                              {
-                                "linkId": "515eda6e-973a-4b10-910a-0d4bf4f2efff",
-                                "text": "Smoking",
-                                "item": [
-                                  {
-                                    "linkId": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
-                                    "text": "Smoking status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "77176002",
-                                          "display": "Current smoker"
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "linkId": "c587e3b6-b91a-40dc-9a16-179342d001e9",
-                            "text": "Examination",
-                            "item": [
-                              {
-                                "linkId": "53d5d5a6-3198-4bec-92ac-03fe7d77fb68",
-                                "item": [
-                                  {
-                                    "linkId": "6226a5c5-b5c3-4ebb-a689-2b286322cfe0",
-                                    "text": "Height",
-                                    "item": [
-                                      {
-                                        "linkId": "7035c7e7-ada3-4c6b-9ea8-f39666f5d4ea",
-                                        "text": "Value",
-                                        "answer": [
-                                          {
-                                            "valueDecimal": 163
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "c666ac96-1e64-40e2-8e0b-7d0187bb3e50",
-                                        "text": "Date performed",
-                                        "answer": [
-                                          {
-                                            "valueDate": "2022-02-10"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "97ed4c86-8820-4e4d-9234-0e0e8b6ca44a",
-                                    "text": "Weight",
-                                    "item": [
-                                      {
-                                        "linkId": "443bd584-684a-449c-ab6e-9d07da4df9fa",
-                                        "text": "Value",
-                                        "answer": [
-                                          {
-                                            "valueDecimal": 77.3
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "92cdc1c7-eb6c-4f6d-9bd9-ae726a0e0d3d",
-                                        "text": "Date performed",
-                                        "answer": [
-                                          {
-                                            "valueDate": "2022-02-10"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "ec884b64-ed8d-485b-930f-e7ac18ad4cc9",
-                                    "text": "Waist circumference",
-                                    "item": [
-                                      {
-                                        "linkId": "8df0f5d8-821d-4f71-b3c1-d164616ea2f5",
-                                        "text": "Value",
-                                        "answer": [
-                                          {
-                                            "valueDecimal": 88
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "3eb3b929-e67a-4331-8949-b8447b66a4c7",
-                                        "text": "Date performed",
-                                        "answer": [
-                                          {
-                                            "valueDate": "2023-03-14"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "3d3e1079-d225-447b-959b-4caddc057f7d",
-                                    "text": "Heart rate",
-                                    "item": [
-                                      {
-                                        "linkId": "49029ef0-eaa8-44f8-b26a-177820c82dfd",
-                                        "text": "Value",
-                                        "answer": [
-                                          {
-                                            "valueInteger": 80
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "feeac08f-2ba6-4048-80a2-10b3f90cf5e3",
-                                        "text": "Date performed",
-                                        "answer": [
-                                          {
-                                            "valueDate": "2016-07-02"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              {
-                                "linkId": "3639c586-9576-48d3-a52b-e91fd2138581",
-                                "item": [
-                                  {
-                                    "linkId": "705f6d04-acab-4d14-baab-98f9bfc4808e",
-                                    "text": "Blood pressure",
-                                    "item": [
-                                      {
-                                        "linkId": "e68b660d-cfd2-4b89-957a-c96a4c73a5fd",
-                                        "text": "Systolic",
-                                        "answer": [
-                                          {
-                                            "valueInteger": 165
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "867b0022-f812-4f80-b287-79686c972b15",
-                                        "text": "Diastolic",
-                                        "answer": [
-                                          {
-                                            "valueInteger": 95
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "a005050c-ed79-46ed-ac14-2fc1496059a5",
-                                        "text": "Date performed",
-                                        "answer": [
-                                          {
-                                            "valueDate": "2023-09-13"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "linkId": "d95abe99-8ef2-4b97-bc88-a2901e2ebc9c",
-                            "text": "Absolute cardiovascular disease risk calculation",
-                            "item": [
-                              {
-                                "linkId": "8d02ef36-3f48-4912-b001-e9fec6aa7101",
-                                "text": "CVD risk calculator variables",
-                                "item": [
-                                  {
-                                    "linkId": "6909cb38-a6f4-44c9-abae-0e5d697a21f5",
-                                    "text": "Age",
-                                    "answer": [
-                                      {
-                                        "valueInteger": 55
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "3dbb0e63-3b28-4567-8ef3-bac242fd95f6",
-                                    "text": "Sex at birth",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "248152002",
-                                          "display": "Female"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "bac0f824-3784-400e-80f9-ad18d46bd8cb",
-                                    "text": "Smoking status",
-                                    "answer": [
-                                      {
-                                        "valueCoding": {
-                                          "system": "http://snomed.info/sct",
-                                          "code": "77176002",
-                                          "display": "Smoker"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "fe9feec6-593a-4106-8a7d-f9965a632ea2",
-                                    "item": [
-                                      {
-                                        "linkId": "fa4f73a3-7633-410c-9177-8aa43b117122",
-                                        "text": "Systolic Blood Pressure",
-                                        "item": [
-                                          {
-                                            "linkId": "818ce640-c8dd-457d-b607-3aaa8da38524",
-                                            "text": "Value",
-                                            "answer": [
-                                              {
-                                                "valueInteger": 165
-                                              }
-                                            ]
-                                          },
-                                          {
-                                            "linkId": "85d8faf7-ddb0-446c-b489-28d786d6de50",
-                                            "text": "Date performed",
-                                            "answer": [
-                                              {
-                                                "valueDate": "2023-09-13"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "e693c7d2-be69-4f1f-b72d-7ff2ea3cd536",
-                                        "text": "Total Cholesterol",
-                                        "item": [
-                                          {
-                                            "linkId": "99932a93-8135-47b2-933b-fd751b34b7af",
-                                            "text": "Value",
-                                            "answer": [
-                                              {
-                                                "valueDecimal": 5.9
-                                              }
-                                            ]
-                                          },
-                                          {
-                                            "linkId": "16cbe87b-5c8d-4385-b7d9-da3f07f63f8a",
-                                            "text": "Date performed",
-                                            "answer": [
-                                              {
-                                                "valueDate": "2023-01-17"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "linkId": "87eefaf6-010f-4b0d-9f51-2c33e46e6c69",
-                                        "text": "HDL Cholesterol",
-                                        "item": [
-                                          {
-                                            "linkId": "c14b4513-1e20-461d-97f4-4631711adc65",
-                                            "text": "Value",
-                                            "answer": [
-                                              {
-                                                "valueDecimal": 1.5
-                                              }
-                                            ]
-                                          },
-                                          {
-                                            "linkId": "6407e0a7-c416-4a75-933b-904c0dcf88ca",
-                                            "text": "Date performed",
-                                            "answer": [
-                                              {
-                                                "valueDate": "2023-01-17"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "fa8f03ca-9a5a-4ed1-a866-db26e567352a",
-                                    "text": "Postcode",
-                                    "answer": [
-                                      {
-                                        "valueString": "4112"
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "linkId": "1c1eea28-6c82-4b7b-aaa3-8655ce70f2fd",
-                                    "text": "Type 2 diabetes mellitus",
-                                    "answer": [
-                                      {
-                                        "valueBoolean": true
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
+                        "url": "http://hl7.org/fhir/StructureDefinition/display",
+                        "valueString": "Aboriginal and Torres Strait Islander Health Check"
                       }
                     ]
                   },
-                  "search": {
-                    "mode": "match"
-                  }
+                  "status": "completed",
+                  "subject": {
+                    "reference": "Patient/pat-sf",
+                    "type": "Patient",
+                    "display": "Mrs. Smart Form"
+                  },
+                  "authored": "2024-07-02T23:29:02+00:00",
+                  "author": {
+                    "reference": "Practitioner/primary-peter",
+                    "type": "Practitioner",
+                    "display": "Dr Peter Primary"
+                  },
+                  "item": [
+                    {
+                      "linkId": "fd5af92e-c248-497a-8007-ee0952ccd4d9",
+                      "item": [
+                        {
+                          "linkId": "2e82032a-dc28-45f2-916e-862303d39fe5",
+                          "text": "About the health check",
+                          "item": [
+                            {
+                              "linkId": "3da318f1-a5dd-4c8f-b258-99d83872a4f2",
+                              "text": "Eligible for health check",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0532",
+                                    "code": "N",
+                                    "display": "No"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "5960c096-d5f7-4745-bd74-44ff2775bde9",
+                              "text": "Health check already in progress?",
+                              "answer": [
+                                {
+                                  "valueBoolean": false
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "01418489-1ec4-4c3b-b96a-7c14c3e21cfe",
+                              "text": "Date of last completed health check",
+                              "answer": [
+                                {
+                                  "valueDate": "2024-07-02"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "63fe14f3-2374-4382-bce7-180e2747c97f",
+                              "text": "Date this health check commenced",
+                              "answer": [
+                                {
+                                  "valueDate": "2024-07-02"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "1016f79d-9756-4daf-b6ee-29add134b34f",
+                          "text": "Consent",
+                          "item": [
+                            {
+                              "linkId": "84162f36-f4af-4509-b178-ef2a3849d0b6",
+                              "text": "Date",
+                              "answer": [
+                                {
+                                  "valueDate": "2024-07-02"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "5b224753-9365-44e3-823b-9c17e7394005",
+                          "text": "Patient Details",
+                          "item": [
+                            {
+                              "linkId": "17596726-34cf-4133-9960-7081e1d63558",
+                              "text": "Name",
+                              "answer": [
+                                {
+                                  "valueString": "Form, Smart Mrs"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "57093a06-62f7-4b8b-8cb4-2c9f451ac851",
+                              "text": "Preferred name",
+                              "answer": [
+                                {
+                                  "valueString": "Clever Form"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "540b1034-7c9a-4aba-a9ef-afb77d445a58",
+                              "text": "Preferred pronouns",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "system": "http://loinc.org",
+                                    "code": "LA29519-8",
+                                    "display": "she/her/her/hers/herself"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "f669a4fe-4818-429a-8847-d20da88d2bb3",
+                              "text": "Gender identity",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "446141000124107",
+                                    "display": "Identifies as female gender"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "418e4a02-de77-48a0-a92a-fe8fcc52b1aa",
+                              "text": "Administrative gender",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "system": "http://hl7.org/fhir/administrative-gender",
+                                    "code": "female",
+                                    "display": "Female"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "56ef44bb-3d1d-4972-aad1-834b69185d61",
+                              "text": "Sex assigned at birth",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "248152002",
+                                    "display": "Female"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "90ad8f16-16e4-4438-a7aa-b3189f510da2",
+                              "text": "Date of birth",
+                              "answer": [
+                                {
+                                  "valueDate": "1968-10-11"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "e2a16e4d-2765-4b61-b286-82cfc6356b30",
+                              "text": "Age",
+                              "answer": [
+                                {
+                                  "valueInteger": 55
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "8acde9f8-7a91-4f0c-9216-38531ec984ef",
+                              "text": "Aboriginal and/or Torres Strait Islander status",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-indigenous-status-1",
+                                    "code": "1",
+                                    "display": "Aboriginal but not Torres Strait Islander origin"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "f1262ade-843c-4eba-a86d-51a9c97d134b",
+                              "text": "Home address",
+                              "item": [
+                                {
+                                  "linkId": "4e0dc185-f83e-4027-b7a8-ecb543d42c6d",
+                                  "item": [
+                                    {
+                                      "linkId": "2fee2d51-7828-4178-b8c1-35edd32ba338",
+                                      "text": "Street address",
+                                      "answer": [
+                                        {
+                                          "valueString": "4 Brisbane Street"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "ddb65ed1-f4b2-4730-af2a-2f98bc73c76f",
+                                      "text": "City",
+                                      "answer": [
+                                        {
+                                          "valueString": "Brisbane"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "d9a1236c-8d6e-4f20-a12a-9d5de5a1d0f6",
+                                      "text": "State",
+                                      "answer": [
+                                        {
+                                          "valueCoding": {
+                                            "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+                                            "code": "QLD",
+                                            "display": "Queensland"
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "3f61a1ea-1c74-4f52-8519-432ce861a74f",
+                                      "text": "Postcode",
+                                      "answer": [
+                                        {
+                                          "valueString": "4112"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "9541f0b0-f5ba-4fe7-a8e9-ad003cef897b",
+                              "text": "Home phone",
+                              "answer": [
+                                {
+                                  "valueString": "0123456879"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "4037a02b-4a85-40e0-9be6-5b17df1aac56",
+                              "text": "Mobile phone",
+                              "answer": [
+                                {
+                                  "valueString": "0491 572 665"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "c22390d3-1be6-4fd1-b775-6443b7239a6b",
+                              "text": "Emergency contact",
+                              "item": [
+                                {
+                                  "linkId": "d7f2dd75-20c8-480f-8c22-71d604ebee8d",
+                                  "text": "Name",
+                                  "answer": [
+                                    {
+                                      "valueString": "Ms Phone A Friend"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "626e3723-6310-4b99-81c1-525676b027c8",
+                                  "text": "Phone",
+                                  "answer": [
+                                    {
+                                      "valueString": "0987654321"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "df1475ea-bf7e-4bf0-a69f-7f9608c3ed3c",
+                              "text": "Medicare number",
+                              "item": [
+                                {
+                                  "linkId": "eb2a59ed-9632-4df1-b5b1-1e85c3b4b7cf",
+                                  "text": "Number",
+                                  "answer": [
+                                    {
+                                      "valueString": "6951449677"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "d6253253-a124-494e-a1d8-7ce02c69ec11",
+                                  "text": "Reference number",
+                                  "answer": [
+                                    {
+                                      "valueString": "1"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "c520e213-5313-42c3-860a-d30206620290",
+                                  "text": "Expiry",
+                                  "answer": [
+                                    {
+                                      "valueString": "2024-08"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "28d5dbe4-1e65-487c-847a-847f544a6a91",
+                          "text": "Medical history and current problems",
+                          "item": [
+                            {
+                              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+                              "text": "Medical history and current problems list",
+                              "item": [
+                                {
+                                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                                  "text": "Condition",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "700379002",
+                                        "display": "Chronic kidney disease stage 3B (disorder)"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                                  "text": "Clinical Status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                        "code": "active",
+                                        "display": "Active"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                                  "text": "Recorded Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2018-12-01"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+                              "text": "Medical history and current problems list",
+                              "item": [
+                                {
+                                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                                  "text": "Condition",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "394659003",
+                                        "display": "Acute coronary syndrome"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                                  "text": "Clinical Status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                        "code": "active",
+                                        "display": "Active"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                                  "text": "Onset Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2015-02-12"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                                  "text": "Recorded Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2015-02-12"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+                              "text": "Medical history and current problems list",
+                              "item": [
+                                {
+                                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                                  "text": "Condition",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "386661006",
+                                        "display": "Fever"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                                  "text": "Clinical Status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                        "code": "resolved",
+                                        "display": "Resolved"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                                  "text": "Onset Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2015-02-11"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                                  "text": "Recorded Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2015-02-12"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+                              "text": "Medical history and current problems list",
+                              "item": [
+                                {
+                                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                                  "text": "Condition",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "68566005",
+                                        "display": "Urinary tract infection"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                                  "text": "Clinical Status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                        "code": "active",
+                                        "display": "Active"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                                  "text": "Onset Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2020-05-10"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+                              "text": "Medical history and current problems list",
+                              "item": [
+                                {
+                                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                                  "text": "Condition",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "44054006",
+                                        "display": "Type 2 diabetes mellitus"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                                  "text": "Clinical Status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                        "code": "active",
+                                        "display": "Active"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                                  "text": "Onset Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2015-02-12"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                                  "text": "Recorded Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2015-02-12"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "92bd7d05-9b5e-4cf9-900b-703f361dad9d",
+                              "text": "Medical history and current problems list",
+                              "item": [
+                                {
+                                  "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
+                                  "text": "Condition",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "38341003",
+                                        "display": "Hypertension"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "88bcfad7-386b-4d87-b34b-2e50482e4d2c",
+                                  "text": "Clinical Status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                        "code": "active",
+                                        "display": "Active"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
+                                  "text": "Onset Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2023-09-13"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "18b9e159-2ed7-4047-82b7-deb2a171de4f",
+                                  "text": "Recorded Date",
+                                  "answer": [
+                                    {
+                                      "valueDate": "2023-09-13"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "14a9fb5f-5b0e-4862-b143-08a11cd3ebf0",
+                          "text": "Substance use, including tobacco",
+                          "item": [
+                            {
+                              "linkId": "515eda6e-973a-4b10-910a-0d4bf4f2efff",
+                              "text": "Smoking",
+                              "item": [
+                                {
+                                  "linkId": "b639a3a8-f476-4cc8-b5c7-f5d2abb23511",
+                                  "text": "Smoking status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "77176002",
+                                        "display": "Current smoker"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "c587e3b6-b91a-40dc-9a16-179342d001e9",
+                          "text": "Examination",
+                          "item": [
+                            {
+                              "linkId": "53d5d5a6-3198-4bec-92ac-03fe7d77fb68",
+                              "item": [
+                                {
+                                  "linkId": "6226a5c5-b5c3-4ebb-a689-2b286322cfe0",
+                                  "text": "Height",
+                                  "item": [
+                                    {
+                                      "linkId": "7035c7e7-ada3-4c6b-9ea8-f39666f5d4ea",
+                                      "text": "Value",
+                                      "answer": [
+                                        {
+                                          "valueDecimal": 163
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "c666ac96-1e64-40e2-8e0b-7d0187bb3e50",
+                                      "text": "Date performed",
+                                      "answer": [
+                                        {
+                                          "valueDate": "2022-02-10"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "97ed4c86-8820-4e4d-9234-0e0e8b6ca44a",
+                                  "text": "Weight",
+                                  "item": [
+                                    {
+                                      "linkId": "443bd584-684a-449c-ab6e-9d07da4df9fa",
+                                      "text": "Value",
+                                      "answer": [
+                                        {
+                                          "valueDecimal": 77.3
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "92cdc1c7-eb6c-4f6d-9bd9-ae726a0e0d3d",
+                                      "text": "Date performed",
+                                      "answer": [
+                                        {
+                                          "valueDate": "2022-02-10"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "ec884b64-ed8d-485b-930f-e7ac18ad4cc9",
+                                  "text": "Waist circumference",
+                                  "item": [
+                                    {
+                                      "linkId": "8df0f5d8-821d-4f71-b3c1-d164616ea2f5",
+                                      "text": "Value",
+                                      "answer": [
+                                        {
+                                          "valueDecimal": 88
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "3eb3b929-e67a-4331-8949-b8447b66a4c7",
+                                      "text": "Date performed",
+                                      "answer": [
+                                        {
+                                          "valueDate": "2023-03-14"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "3d3e1079-d225-447b-959b-4caddc057f7d",
+                                  "text": "Heart rate",
+                                  "item": [
+                                    {
+                                      "linkId": "49029ef0-eaa8-44f8-b26a-177820c82dfd",
+                                      "text": "Value",
+                                      "answer": [
+                                        {
+                                          "valueInteger": 80
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "feeac08f-2ba6-4048-80a2-10b3f90cf5e3",
+                                      "text": "Date performed",
+                                      "answer": [
+                                        {
+                                          "valueDate": "2016-07-02"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "3639c586-9576-48d3-a52b-e91fd2138581",
+                              "item": [
+                                {
+                                  "linkId": "705f6d04-acab-4d14-baab-98f9bfc4808e",
+                                  "text": "Blood pressure",
+                                  "item": [
+                                    {
+                                      "linkId": "e68b660d-cfd2-4b89-957a-c96a4c73a5fd",
+                                      "text": "Systolic",
+                                      "answer": [
+                                        {
+                                          "valueInteger": 165
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "867b0022-f812-4f80-b287-79686c972b15",
+                                      "text": "Diastolic",
+                                      "answer": [
+                                        {
+                                          "valueInteger": 95
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "a005050c-ed79-46ed-ac14-2fc1496059a5",
+                                      "text": "Date performed",
+                                      "answer": [
+                                        {
+                                          "valueDate": "2023-09-13"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "d95abe99-8ef2-4b97-bc88-a2901e2ebc9c",
+                          "text": "Absolute cardiovascular disease risk calculation",
+                          "item": [
+                            {
+                              "linkId": "8d02ef36-3f48-4912-b001-e9fec6aa7101",
+                              "text": "CVD risk calculator variables",
+                              "item": [
+                                {
+                                  "linkId": "6909cb38-a6f4-44c9-abae-0e5d697a21f5",
+                                  "text": "Age",
+                                  "answer": [
+                                    {
+                                      "valueInteger": 55
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "3dbb0e63-3b28-4567-8ef3-bac242fd95f6",
+                                  "text": "Sex at birth",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "248152002",
+                                        "display": "Female"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "bac0f824-3784-400e-80f9-ad18d46bd8cb",
+                                  "text": "Smoking status",
+                                  "answer": [
+                                    {
+                                      "valueCoding": {
+                                        "system": "http://snomed.info/sct",
+                                        "code": "77176002",
+                                        "display": "Smoker"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "fe9feec6-593a-4106-8a7d-f9965a632ea2",
+                                  "item": [
+                                    {
+                                      "linkId": "fa4f73a3-7633-410c-9177-8aa43b117122",
+                                      "text": "Systolic Blood Pressure",
+                                      "item": [
+                                        {
+                                          "linkId": "818ce640-c8dd-457d-b607-3aaa8da38524",
+                                          "text": "Value",
+                                          "answer": [
+                                            {
+                                              "valueInteger": 165
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "linkId": "85d8faf7-ddb0-446c-b489-28d786d6de50",
+                                          "text": "Date performed",
+                                          "answer": [
+                                            {
+                                              "valueDate": "2023-09-13"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "e693c7d2-be69-4f1f-b72d-7ff2ea3cd536",
+                                      "text": "Total Cholesterol",
+                                      "item": [
+                                        {
+                                          "linkId": "99932a93-8135-47b2-933b-fd751b34b7af",
+                                          "text": "Value",
+                                          "answer": [
+                                            {
+                                              "valueDecimal": 5.9
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "linkId": "16cbe87b-5c8d-4385-b7d9-da3f07f63f8a",
+                                          "text": "Date performed",
+                                          "answer": [
+                                            {
+                                              "valueDate": "2023-01-17"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "linkId": "87eefaf6-010f-4b0d-9f51-2c33e46e6c69",
+                                      "text": "HDL Cholesterol",
+                                      "item": [
+                                        {
+                                          "linkId": "c14b4513-1e20-461d-97f4-4631711adc65",
+                                          "text": "Value",
+                                          "answer": [
+                                            {
+                                              "valueDecimal": 1.5
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "linkId": "6407e0a7-c416-4a75-933b-904c0dcf88ca",
+                                          "text": "Date performed",
+                                          "answer": [
+                                            {
+                                              "valueDate": "2023-01-17"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "fa8f03ca-9a5a-4ed1-a866-db26e567352a",
+                                  "text": "Postcode",
+                                  "answer": [
+                                    {
+                                      "valueString": "4112"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "1c1eea28-6c82-4b7b-aaa3-8655ce70f2fd",
+                                  "text": "Type 2 diabetes mellitus",
+                                  "answer": [
+                                    {
+                                      "valueBoolean": true
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "search": {
+                  "mode": "match"
                 }
-              ]
-            }
+              }
+            ]
           }
         }
       ]

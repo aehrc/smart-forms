@@ -29,8 +29,8 @@ import type {
   OperationOutcomeIssue,
   Questionnaire
 } from 'fhir/r4';
-import { createWarningIssue } from './operationOutcome';
 import type { FetchResourceCallback } from '../interfaces';
+import { createInvalidWarningIssue, createNotFoundWarningIssue } from './operationOutcome';
 
 export async function createFhirPathContext(
   parameters: InputParameters,
@@ -120,7 +120,7 @@ async function populateReferenceContextsIntoContextMap(
     });
   } catch (e) {
     if (e instanceof Error) {
-      issues.push(createWarningIssue(e.message));
+      issues.push(createInvalidWarningIssue(e.message));
     }
   }
 
@@ -135,8 +135,8 @@ async function populateReferenceContextsIntoContextMap(
     const resource = referenceContextTuple[2];
     if (!resource) {
       issues.push(
-        createWarningIssue(
-          `The reference from context ${referenceContext.part[0]?.name} cannot be resolved.`
+        createNotFoundWarningIssue(
+          `The reference ${referenceContext.part[1]?.valueReference.reference} from context ${referenceContext.part[0]?.valueString} cannot be resolved`
         )
       );
       continue;
@@ -220,7 +220,7 @@ async function populateBatchContextsIntoContextMap(
         // If resource or entry is null, add a warning issue
         if (!resource || !entry) {
           issues.push(
-            createWarningIssue(
+            createNotFoundWarningIssue(
               `The resource for ${batchBundleName} entry ${i} could not be resolved.`
             )
           );
@@ -242,7 +242,7 @@ async function populateBatchContextsIntoContextMap(
     }
   } catch (e) {
     if (e instanceof Error) {
-      issues.push(createWarningIssue(e.message));
+      issues.push(createInvalidWarningIssue(e.message));
     }
   }
 }
@@ -262,7 +262,7 @@ function createReferenceContextTuple(
     return [
       referenceContext,
       Promise.resolve(
-        createWarningIssue(
+        createInvalidWarningIssue(
           `Reference Context ${
             referenceContext.part[0]?.valueString ?? ''
           } does not contain a reference`
@@ -288,7 +288,7 @@ function createResourceContextTuple(
     return [
       resourceContext,
       Promise.resolve(
-        createWarningIssue(
+        createInvalidWarningIssue(
           `${resourceContextName} bundle entry ${
             bundleEntry.fullUrl ?? ''
           } does not contain a request`
