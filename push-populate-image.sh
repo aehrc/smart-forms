@@ -19,8 +19,8 @@
 set -xe
 
 # Compile the Express app.
-cd services/assemble-express && npm run compile && cd -
+cd services/populate-express && npm run compile && cd -
 
 # Build the Docker image for multiple architectures, then push to Docker Hub.
-docker buildx build --file ./services/populate-express/Dockerfile --tag aehrc/smart-forms-populate:v2.2.5 \
+docker buildx build --file ./services/populate-express/Dockerfile --tag aehrc/smart-forms-populate:latest \
   --platform linux/amd64,linux/arm64/v8 --push --no-cache .

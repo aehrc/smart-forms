@@ -17,7 +17,7 @@
 
 import express from 'express';
 import cors from 'cors';
-import type { IssuesParameter } from '@aehrc/sdc-populate';
+import type { IssuesParameter, ResponseParameter } from '@aehrc/sdc-populate';
 import { isInputParameters, populate } from '@aehrc/sdc-populate';
 import type { RequestConfig } from './callback';
 import { fetchResourceCallback } from './callback';
@@ -54,6 +54,7 @@ app.get('/fhir/Questionnaire/\\$populate', (_, res) => {
 });
 
 app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
+  const debugMode = req.query['debug'] === 'true';
   const ehrServerRequestConfig: RequestConfig = {
     url: req.protocol + '://' + req.get('host') + '/fhir'
   };
@@ -106,6 +107,14 @@ app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
     if (outputParameters.resourceType === 'OperationOutcome') {
       res.status(400).json(outputParameters);
       return;
+    }
+
+    // Filter contextResult-custom based on debug=true query parameter
+    if (!debugMode) {
+      const filtered = outputParameters.parameter.filter(
+        (param) => param.name !== 'contextResult-custom'
+      ) as [ResponseParameter, IssuesParameter] | [ResponseParameter];
+      outputParameters.parameter = filtered;
     }
 
     // Return valid output params
