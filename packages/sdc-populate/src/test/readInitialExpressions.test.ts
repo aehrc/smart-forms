@@ -17,6 +17,7 @@
 
 import { readPopulationExpressions } from '../SDCPopulateQuestionnaireOperation/utils/readPopulationExpressions';
 import type { Questionnaire } from 'fhir/r4';
+// @ts-ignore
 import Q715XFhirQuery from './resources/715-v.json';
 
 describe('read initial expressions', () => {
