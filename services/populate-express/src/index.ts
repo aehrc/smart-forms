@@ -16,10 +16,10 @@
  */
 
 import express from 'express';
+import cors from 'cors';
 import { isInputParameters, populate } from '@aehrc/sdc-populate';
 import type { RequestConfig } from './callback';
 import { fetchResourceCallback } from './callback';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import { createInvalidParametersOutcome, createOperationOutcome } from './operationOutcome';
 

@@ -16,7 +16,7 @@
  */
 
 import type { FetchResourceCallback } from '@aehrc/sdc-populate';
-import { HEADERS } from 'extract-express/lib/globals';
+import { HEADERS } from './globals';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
