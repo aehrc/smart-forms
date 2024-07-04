@@ -10,7 +10,7 @@ FORMS_SERVER_URL=
 FORMS_SERVER_AUTH_TOKEN=
 ```
 
-If FORMS_SERVER_URL is left empty, the service will use the request endpoint as the forms server URL.
+If ```FORMS_SERVER_URL``` is left empty, the service will use the request endpoint as the forms server URL.
 i.e. Deploying this service on http://localhost:3001/fhir will result in calls to fetch subquestionnaires on the http://localhost:3001/fhir FHIR API during execution of the $assemble operation.
 
 ## Docker Usage
@@ -24,6 +24,6 @@ You can supply your `docker run` command environment variables. i.e.
 Docker image: https://hub.docker.com/r/aehrc/smart-forms-assemble
 
 ## Sample implementation
-A sample implementation of this service is available at https://smartforms.csiro.au/fhir/Questionnaire/$assemble.
+A sample implementation of this service is available at https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble.
 
-Note: The $assemble service on https://smartforms.csiro.au/fhir only performs processing - it does not persist any data.
+Note: The $assemble service on https://smartforms.csiro.au/api/fhir only performs processing - it does not persist any data.

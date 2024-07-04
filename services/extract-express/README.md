@@ -8,12 +8,12 @@ A proof-of-concept StructureMap $transform is defined on https://proxy.smartform
 ## Configuration
 Create a .env file (or copy from example.env) in the root of the project with the following:
 ```env
-EHR_SERVER_URL =
-EHR_SERVER_AUTH_TOKEN =
+EHR_SERVER_URL=
+EHR_SERVER_AUTH_TOKEN=
 
 # Change this to wherever your FHIR questionnaires are stored
-FORMS_SERVER_URL = https://smartforms.csiro.au/api/fhir
-FORMS_SERVER_AUTH_TOKEN =
+FORMS_SERVER_URL=https://smartforms.csiro.au/api/fhir
+FORMS_SERVER_AUTH_TOKEN=
 ```
 
 If you are planning to deploy this as a microservice on your EHR server, it is required for your EHR server to have a StructureMap $transform operation defined.
@@ -31,5 +31,9 @@ You can use `docker run -p 3003:3003 -e EHR_SERVER_URL=https://proxy.smartforms.
 
 Docker image: https://hub.docker.com/r/aehrc/smart-forms-extract
 
+**By default, ```FORMS_SERVER_URL``` is set to https://smartforms.csiro.au/api/fhir in the Docker image.**
+
 ## Sample implementation
 A sample implementation of this service is available at https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract.
+
+Note: The $extract service on https://smartforms.csiro.au/api/fhir only performs processing - it does not persist any data.
