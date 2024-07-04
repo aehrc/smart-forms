@@ -31,7 +31,7 @@ Refer to the [API Reference](/docs/api/smart-forms-renderer/interfaces/SmartConf
 
 The SmartConfigStore doesn't actually do much within the renderer at the moment. It is not tested thoroughly and is retained for backward compatibility purposes.
 
-Terminology endpoints are managed in [TerminologyServerStore](/docs/devUsage/storehooks/terminology-server-store).
+Terminology endpoints are managed in [TerminologyServerStore](/docs/dev/storehooks/terminology-server-store).
 If there is a need to expand on functionality of making FHIR calls within the renderer, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
 
 From a best practice perspective, it is recommended to perform FHIR calls outside of the renderer and pass the pre-populated QuestionnaireResponse into the renderer.
