@@ -64,7 +64,7 @@ export async function invokeTransform(
     );
   }
 
-  return await response.json();
+  return response.json();
 }
 
 export interface TransformInputParameters extends Parameters {
