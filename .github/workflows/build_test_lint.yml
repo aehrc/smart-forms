@@ -1,4 +1,4 @@
-name: Smart Forms Workflow
+name: Smart Forms Build-Test-Lint Workflow
 
 on:
   push:

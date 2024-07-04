@@ -38,7 +38,10 @@ export class AssembleEndpoint extends Construct {
       logging: AwsLogDriver.awsLogs({
         streamPrefix: 'forms-server-assemble',
         logRetention: RetentionDays.ONE_MONTH
-      })
+      }),
+      environment: {
+        FORMS_SERVER_URL: 'https://smartforms.csiro.au/api/fhir'
+      }
     });
 
     this.service = new FargateService(this, 'FormsServerAssembleService', {

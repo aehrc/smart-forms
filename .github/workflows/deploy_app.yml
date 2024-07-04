@@ -1,4 +1,4 @@
-name: Smart Forms App S3 Deployment Workflow
+name: Smart Forms App Deployment Workflow
 
 on:
   push:

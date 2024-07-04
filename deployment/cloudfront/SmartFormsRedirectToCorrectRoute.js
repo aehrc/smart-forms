@@ -48,11 +48,13 @@ function handler(event) {
       }
     }
 
+
     // Replace http://example.com/ig/* into http://example.com/ig/*/index.html
     // if (uri.match(/\/ig\/[a-z0-9]+\//i)) {
     //     request.uri += "index.html";
     //     return request;
     // }
+
 
     var uriChunks = uri.split('/');
     var lastUriChunk = uriChunks[uriChunks.length - 1];
@@ -60,11 +62,12 @@ function handler(event) {
       request.uri += '.html';
       return request;
     }
+
   }
 
   // Handle Storybook routes
   if (uri.includes('/storybook')) {
-    // Reroute to smartforms.csiro.au/ig/index.html
+    // Reroute to smartforms.csiro.au/storybook/index.html
     if (uri === '/storybook/') {
       request.uri += 'index.html';
       return request;
@@ -72,6 +75,28 @@ function handler(event) {
 
     if (uri === '/storybook') {
       request.uri = '/redirect.html';
+      return request;
+    }
+
+    return request;
+  }
+
+
+  // Handle Docz routes
+  if (uri.includes('/docz')) {
+    // Reroute to smartforms.csiro.au/docz/index.html
+    if (uri === '/docz/') {
+      request.uri += 'index.html';
+      return request;
+    }
+
+    if (uri === '/docz') {
+      request.uri = '/redirect.html';
+      return request;
+    }
+
+    if (!uri.includes('.')) {
+      request.uri += '/index.html';
       return request;
     }
 
