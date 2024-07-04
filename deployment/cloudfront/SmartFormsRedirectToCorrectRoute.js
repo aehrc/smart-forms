@@ -48,11 +48,13 @@ function handler(event) {
       }
     }
 
+
     // Replace http://example.com/ig/* into http://example.com/ig/*/index.html
     // if (uri.match(/\/ig\/[a-z0-9]+\//i)) {
     //     request.uri += "index.html";
     //     return request;
     // }
+
 
     var uriChunks = uri.split('/');
     var lastUriChunk = uriChunks[uriChunks.length - 1];
@@ -60,6 +62,7 @@ function handler(event) {
       request.uri += '.html';
       return request;
     }
+
   }
 
   // Handle Storybook routes
@@ -79,35 +82,25 @@ function handler(event) {
   }
 
 
-  // Handle Docz routes
-  if(uri.includes('/docz')) {
-    // Reroute to smartforms.csiro.au/docz/index.html
-    if(uri === '/docz/') {
+  // Handle Docs routes
+  if (uri.includes('/docs')) {
+    // Reroute to smartforms.csiro.au/docs/index.html
+    if (uri === '/docs/') {
       request.uri += 'index.html';
       return request;
     }
 
-    if(uri === '/docz') {
+    if (uri === '/docs') {
       request.uri = '/redirect.html';
       return request;
     }
 
+    if (!uri.includes('.')) {
+      request.uri += '/index.html';
+      return request;
+    }
+
     return request;
-  }
-
-  // Handle Docs assets and img routes
-  if(uri.includes('/docs')) {
-    // Re-route /docs/assets to /assets prefix
-    if (uri.startsWith('/docs/assets')) {
-      request.uri = uri.replace('/docs/assets', '/assets');
-      return request
-    }
-
-    // Re-route /docs/img to /img prefix
-    if (uri.startsWith('/docs/img')) {
-      request.uri = uri.replace('/docs/img', '/img');
-      return request
-    }
   }
 
   // Handle Forms Server API routes
