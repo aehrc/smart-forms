@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import * as FHIR from 'fhirclient';
 import type { ValueSetPromise } from '../interfaces/expressions.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { FetchResourceCallback } from '../interfaces';
@@ -48,8 +47,18 @@ export function getValueSetPromise(
   };
 }
 
-export function defaultTerminologyRequest(query: string) {
-  return FHIR.client({ serverUrl: TERMINOLOGY_SERVER_URL }).request({
-    url: query
-  });
+const headers = {
+  'Content-Type': 'application/fhir+json;charset=utf-8',
+  Accept: 'application/json;charset=utf-8'
+};
+
+export async function defaultTerminologyRequest(query: string) {
+  const requestUrl = TERMINOLOGY_SERVER_URL + '/' + query;
+  const response = await fetch(requestUrl, { headers });
+
+  if (!response.ok) {
+    throw `HTTP error when performing ${requestUrl}. Status: ${response.status}`;
+  }
+
+  return response.json();
 }

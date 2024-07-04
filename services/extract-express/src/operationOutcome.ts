@@ -17,6 +17,19 @@
 
 import type { OperationOutcome } from 'fhir/r4b';
 
+export function createNoFormsServerUrlSetOutcome(): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: { text: 'FORMS_SERVER_URL environment variable must be set.' }
+      }
+    ]
+  };
+}
+
 export function createInvalidParametersOutcome(): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',

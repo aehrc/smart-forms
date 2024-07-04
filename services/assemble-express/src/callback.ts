@@ -15,14 +15,35 @@
  * limitations under the License.
  */
 
-import axios from 'axios';
+import { HEADERS } from './globals';
 import type { FetchQuestionnaireCallback } from '@aehrc/sdc-assemble';
 
-const FORMS_SERVER_ENDPOINT = 'https://smartforms.csiro.au/api/fhir';
+export interface RequestConfig {
+  url: string;
+  authToken?: string;
+}
 
-export const fetchQuestionnaireCallback: FetchQuestionnaireCallback = (canonicalUrl: string) => {
-  return axios.get(`${FORMS_SERVER_ENDPOINT}/Questionnaire?url=${canonicalUrl}`, {
-    method: 'GET',
-    headers: { Accept: 'application/json;charset=utf-8' }
+export const fetchQuestionnaireCallback: FetchQuestionnaireCallback = async (
+  canonicalUrl: string,
+  requestConfig: RequestConfig
+) => {
+  const { url, authToken } = requestConfig;
+
+  let requestUrl = url;
+  if (!requestUrl.endsWith('/')) {
+    requestUrl += '/';
+  }
+  requestUrl += `Questionnaire?url=${canonicalUrl}`;
+
+  const headers = authToken ? { ...HEADERS, Authorization: `Bearer ${authToken}` } : HEADERS;
+
+  const response = await fetch(requestUrl, {
+    headers: headers
   });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+  }
+
+  return response.json();
 };

@@ -44,13 +44,15 @@ import { getCanonicalUrls } from './canonical';
  *
  * @param parameters - The input parameters for $assemble
  * @param fetchQuestionnaireCallback - A callback function defined by the implementer to fetch Questionnaire resources by a canonical url
+ * @param fetchQuestionnaireRequestConfig - A request configuration object to be passed to the callback function
  * @returns A fully assembled questionnaire, an operationOutcome error(if present) or both (if there are warnings)
  *
  * @author Sean Fong
  */
 export async function assemble(
   parameters: InputParameters,
-  fetchQuestionnaireCallback: FetchQuestionnaireCallback
+  fetchQuestionnaireCallback: FetchQuestionnaireCallback,
+  fetchQuestionnaireRequestConfig: any
 ): Promise<Questionnaire | OperationOutcome | OutputParameters> {
   // Get root questionnaire from input params
   const rootQuestionnaire = parameters.parameter[0].resource;
@@ -62,7 +64,8 @@ export async function assemble(
     rootQuestionnaire,
     totalCanonicals,
     issues,
-    fetchQuestionnaireCallback
+    fetchQuestionnaireCallback,
+    fetchQuestionnaireRequestConfig
   );
 
   // Return different outputs based on result of the operation
@@ -95,6 +98,7 @@ export async function assemble(
  * @param totalCanonicals - An array of all the recorded canonical urls within the root Questionnaire recursively
  * @param issues - A list of OperationOutcome warnings
  * @param fetchQuestionnaireCallback - A callback function defined by the implementer to fetch Questionnaire resources by canonical url
+ * @param fetchQuestionnaireRequestConfig - A request configuration object to be passed to the callback function
  * @returns An assembled Questionnaire resource or an OperationOutcome error
  *
  * @author Sean Fong
@@ -103,7 +107,8 @@ async function assembleQuestionnaire(
   rootQuestionnaire: Questionnaire,
   totalCanonicals: string[],
   issues: OperationOutcomeIssue[],
-  fetchQuestionnaireCallback: FetchQuestionnaireCallback
+  fetchQuestionnaireCallback: FetchQuestionnaireCallback,
+  fetchQuestionnaireRequestConfig: any
 ): Promise<Questionnaire | OperationOutcome> {
   const parentQuestionnaire = cloneDeep(rootQuestionnaire);
 
@@ -127,7 +132,9 @@ async function assembleQuestionnaire(
   // Fetch subquestionnaire resources from FHIR server
   const subquestionnaires: Questionnaire[] | OperationOutcome = await fetchSubquestionnaires(
     canonicals,
-    fetchQuestionnaireCallback
+    issues,
+    fetchQuestionnaireCallback,
+    fetchQuestionnaireRequestConfig
   );
   if (!Array.isArray(subquestionnaires)) {
     return subquestionnaires;
@@ -139,7 +146,8 @@ async function assembleQuestionnaire(
       subquestionnaire,
       totalCanonicals,
       issues,
-      fetchQuestionnaireCallback
+      fetchQuestionnaireCallback,
+      fetchQuestionnaireRequestConfig
     );
 
     // Prematurely end the operation if there is an error within further assembly operations

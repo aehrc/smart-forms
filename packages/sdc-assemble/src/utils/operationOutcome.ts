@@ -18,6 +18,28 @@
 import type { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
 
 /**
+ * Create an OperationOutcome of severity "error" and code "not-found" for failing to fetch a subquestionnaire
+ *
+ * @author Sean Fong
+ */
+export function createSubquestionnaireNotFoundErrorOutcome(
+  subquestionnaireCanonical: string
+): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'not-found',
+        details: {
+          text: `Unable to fetch questionnaire with canonical url '${subquestionnaireCanonical}'`
+        }
+      }
+    ]
+  };
+}
+
+/**
  * Create an OperationOutcome error with a supplied error message
  *
  * @author Sean Fong

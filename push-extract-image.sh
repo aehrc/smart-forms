@@ -22,5 +22,7 @@ set -xe
 cd services/extract-express && npm run compile && cd -
 
 # Build the Docker image for multiple architectures, then push to Docker Hub.
-docker buildx build --file ./services/extract-express/Dockerfile --tag aehrc/smart-forms-extract \
+docker buildx build --file ./services/extract-express/Dockerfile \
+  --tag aehrc/smart-forms-extract:latest \
+  --tag aehrc/smart-forms-extract:v0.3.0 \
   --platform linux/amd64,linux/arm64/v8 --push --no-cache .

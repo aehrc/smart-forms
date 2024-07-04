@@ -48,6 +48,7 @@ export async function populate(
 ): Promise<OutputParameters | OperationOutcome> {
   const issues: OperationOutcomeIssue[] = [];
 
+  // Fetch questionnaire resource to be populated
   const questionnaire = await fetchQuestionnaire(
     parameters,
     fetchResourceCallback,
