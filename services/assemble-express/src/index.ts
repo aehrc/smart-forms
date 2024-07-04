@@ -17,17 +17,17 @@
 
 import express from 'express';
 import cors from 'cors';
+import type { OutcomeParameter } from '@aehrc/sdc-assemble';
 import { assemble, isInputParameters } from '@aehrc/sdc-assemble';
+import type { RequestConfig } from './callback';
 import { fetchQuestionnaireCallback } from './callback';
 import dotenv from 'dotenv';
-import type { RequestConfig } from 'populate-express/lib/callback';
 import {
   addEndpointToNotFoundIssues,
   createInvalidParametersOutcome,
   createOperationOutcome
 } from './operationOutcome';
 import { createInputParameters, isQuestionnaire } from './questionnaire';
-import { OutcomeParameter } from '@aehrc/sdc-assemble/lib/interfaces/parameters.interface';
 
 const app = express();
 const port = 3002;
