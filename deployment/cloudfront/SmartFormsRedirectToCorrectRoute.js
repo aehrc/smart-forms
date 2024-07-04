@@ -82,15 +82,15 @@ function handler(event) {
   }
 
 
-  // Handle Docs routes
-  if (uri.includes('/docs')) {
-    // Reroute to smartforms.csiro.au/docs/index.html
-    if (uri === '/docs/') {
+  // Handle Docz routes
+  if (uri.includes('/docz')) {
+    // Reroute to smartforms.csiro.au/docz/index.html
+    if (uri === '/docz/') {
       request.uri += 'index.html';
       return request;
     }
 
-    if (uri === '/docs') {
+    if (uri === '/docz') {
       request.uri = '/redirect.html';
       return request;
     }
