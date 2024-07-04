@@ -33,7 +33,7 @@ jobs:
       - name: Build documentation website
         run: npm run build -w documentation
 
-      - name: Upload static Storybook site to S3
+      - name: Upload static Docusaurus site to S3
         run: aws s3 sync documentation/build s3://smart-forms-docs/docz
 
   deploy-storybook:
