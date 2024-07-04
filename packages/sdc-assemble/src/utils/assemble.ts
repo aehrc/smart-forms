@@ -132,6 +132,7 @@ async function assembleQuestionnaire(
   // Fetch subquestionnaire resources from FHIR server
   const subquestionnaires: Questionnaire[] | OperationOutcome = await fetchSubquestionnaires(
     canonicals,
+    issues,
     fetchQuestionnaireCallback,
     fetchQuestionnaireRequestConfig
   );

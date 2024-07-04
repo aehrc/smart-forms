@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Questionnaire } from 'fhir/r4';
-import { InputParameters } from '@aehrc/sdc-assemble';
+import type { Questionnaire } from 'fhir/r4';
+import type { InputParameters } from '@aehrc/sdc-assemble';
 
 export function createInputParameters(questionnaire: Questionnaire): InputParameters {
   return {

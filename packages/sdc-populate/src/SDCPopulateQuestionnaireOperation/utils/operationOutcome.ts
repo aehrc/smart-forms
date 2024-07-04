@@ -17,6 +17,11 @@
 
 import type { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
 
+/**
+ * Create an OperationOutcome error with a supplied error message
+ *
+ * @author Sean Fong
+ */
 export function createErrorOutcome(errorMessage: string): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',

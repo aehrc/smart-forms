@@ -47,7 +47,7 @@ interface ReturnParameter extends ParametersParameter {
   resource: Questionnaire;
 }
 
-interface OutcomeParameter extends ParametersParameter {
+export interface OutcomeParameter extends ParametersParameter {
   name: 'outcome';
   resource: OperationOutcome;
 }

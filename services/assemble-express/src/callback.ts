@@ -16,7 +16,7 @@
  */
 
 import { HEADERS } from './globals';
-import { FetchQuestionnaireCallback } from '@aehrc/sdc-assemble';
+import type { FetchQuestionnaireCallback } from '@aehrc/sdc-assemble';
 
 export interface RequestConfig {
   url: string;

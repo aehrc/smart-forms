@@ -21,8 +21,13 @@ import { assemble, isInputParameters } from '@aehrc/sdc-assemble';
 import { fetchQuestionnaireCallback } from './callback';
 import dotenv from 'dotenv';
 import type { RequestConfig } from 'populate-express/lib/callback';
-import { createInvalidParametersOutcome, createOperationOutcome } from './operationOutcome';
+import {
+  addEndpointToNotFoundIssues,
+  createInvalidParametersOutcome,
+  createOperationOutcome
+} from './operationOutcome';
 import { createInputParameters, isQuestionnaire } from './questionnaire';
+import { OutcomeParameter } from '@aehrc/sdc-assemble/lib/interfaces/parameters.interface';
 
 const app = express();
 const port = 3002;
@@ -81,10 +86,22 @@ app.post('/fhir/Questionnaire/\\$assemble', async (req, res) => {
 
     // Return OperationOutcome as 400
     if (outputParameters.resourceType === 'OperationOutcome') {
+      addEndpointToNotFoundIssues(outputParameters.issue, formsServerRequestConfig.url);
       res.status(400).json(outputParameters);
       return;
     }
 
+    // Output parameters is a Parameters resource, add endpoint to "not-found" issues
+    if (outputParameters.resourceType === 'Parameters') {
+      const outcomeParameter = outputParameters.parameter.find(
+        (param) => param.name === 'outcome'
+      ) as OutcomeParameter | undefined;
+      if (outcomeParameter && outcomeParameter?.resource?.issue) {
+        addEndpointToNotFoundIssues(outcomeParameter.resource.issue, formsServerRequestConfig.url);
+      }
+    }
+
+    // Return output parameters - could a Questionnaire or Parameters resource
     res.json(outputParameters);
   } catch (error) {
     console.error(error);

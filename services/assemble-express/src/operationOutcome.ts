@@ -16,6 +16,7 @@
  */
 
 import type { OperationOutcome } from 'fhir/r4b';
+import type { OperationOutcomeIssue } from 'fhir/r4';
 
 export function createInvalidParametersOutcome(): OperationOutcome {
   return {
@@ -43,4 +44,15 @@ export function createOperationOutcome(errorMessage: string): OperationOutcome {
       }
     ]
   };
+}
+
+export function addEndpointToNotFoundIssues(
+  issues: OperationOutcomeIssue[],
+  ehrServerUrl: string
+): void {
+  issues.forEach((issue) => {
+    if (issue.code === 'not-found' && issue.details?.text) {
+      issue.details.text += ` at ${ehrServerUrl}.`;
+    }
+  });
 }
