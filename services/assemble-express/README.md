@@ -6,11 +6,11 @@ It builds on [@aehrc/sdc-assemble](https://www.npmjs.com/package/@aehrc/sdc-asse
 ## Configuration
 Create a .env file (or copy from example.env) in the root of the project with the following:
 ```env
-FORMS_SERVER_URL=https://smartforms.csiro.au/api/fhir
+FORMS_SERVER_URL=
 FORMS_SERVER_AUTH_TOKEN=
 ```
 
-If FORMS_SERVER_URL is left empty, the service will use the request endpoint as the EHR server URL.
+If FORMS_SERVER_URL is left empty, the service will use the request endpoint as the forms server URL.
 i.e. Deploying this service on http://localhost:3001/fhir will result in calls to fetch subquestionnaires on the http://localhost:3001/fhir FHIR API during execution of the $assemble operation.
 
 ## Docker Usage
