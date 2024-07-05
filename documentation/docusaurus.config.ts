@@ -209,6 +209,27 @@ const config: Config = {
         enumMembersFormat: 'table',
         readme: 'none'
       }
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      // Options
+      {
+        id: 'sdc-assemble',
+        entryPoints: '../packages/sdc-assemble/src/index.ts',
+        tsconfig: '../packages/sdc-assemble/tsconfig.json',
+        out: 'docs/api/sdc-assemble',
+        excludeTags: ['@author'],
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true
+        },
+        plugin: ['typedoc-plugin-frontmatter'],
+        indexFormat: 'table',
+        disableSources: true,
+        parametersFormat: 'table',
+        enumMembersFormat: 'table',
+        readme: 'none'
+      }
     ]
   ]
 };
