@@ -1,4 +1,4 @@
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import {
   questionnaireResponseStore,
   questionnaireStore,
@@ -119,4 +119,13 @@ export function removeEmptyAnswersFromResponse(
     enableWhenItems,
     enableWhenExpressions
   });
+}
+
+/**
+ * Check if a QuestionnaireResponseItem has either an item or an answer property.
+ *
+ * @author Sean Fong
+ */
+export function qrItemHasItemsOrAnswer(qrItem: QuestionnaireResponseItem): boolean {
+  return (!!qrItem.item && qrItem.item.length > 0) || (!!qrItem.answer && qrItem.answer.length > 0);
 }

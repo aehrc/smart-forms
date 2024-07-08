@@ -37,25 +37,36 @@ export function removeEmptyAnswersFromResponse(
     return questionnaireResponse;
   }
 
+  const newQuestionnaireResponse: QuestionnaireResponse = { ...questionnaireResponse, item: [] };
   for (const [i, topLevelQRItem] of topLevelQRItems.entries()) {
     const qItem = topLevelQItems[i];
     if (!qItem) {
       continue;
     }
 
+    // If QR item don't have either item.item and item.answer, continue
+    if (!qrItemHasItemsOrAnswer(topLevelQRItem)) {
+      continue;
+    }
+
     const newTopLevelQRItem = removeEmptyAnswersFromItemRecursive(qItem, topLevelQRItem);
-    if (newTopLevelQRItem && questionnaireResponse.item) {
-      questionnaireResponse.item[i] = { ...newTopLevelQRItem };
+    if (newTopLevelQRItem && newQuestionnaireResponse.item) {
+      newQuestionnaireResponse.item.push(newTopLevelQRItem);
     }
   }
 
-  return questionnaireResponse;
+  return newQuestionnaireResponse;
 }
 
 function removeEmptyAnswersFromItemRecursive(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem
 ): QuestionnaireResponseItem | null {
+  // If QR item don't have either item.item and item.answer, return null
+  if (!qrItemHasItemsOrAnswer(qrItem)) {
+    return null;
+  }
+
   const qItems = qItem.item;
   const qrItems = qrItem.item;
 
@@ -119,4 +130,13 @@ function answerIsEmpty(qrItem: QuestionnaireResponseItem) {
   }
 
   return false;
+}
+
+/**
+ * Check if a QuestionnaireResponseItem has either an item or an answer property.
+ *
+ * @author Sean Fong
+ */
+function qrItemHasItemsOrAnswer(qrItem: QuestionnaireResponseItem): boolean {
+  return (!!qrItem.item && qrItem.item.length > 0) || (!!qrItem.answer && qrItem.answer.length > 0);
 }
