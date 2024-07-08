@@ -24,12 +24,29 @@
  * @returns A promise of the Questionnaire Bundle resource (or an error)!
  *
  * @example
- * const fetchQuestionnaireCallback: FetchQuestionnaireCallback = (canonicalUrl: string, requestConfig: any) => {
- *   const { endpoint, token } = requestConfig;
- *   return axios.get(`${endpoint}/Questionnaire?url=${canonicalUrl}`, {
- *     method: 'GET',
- *     headers: { Accept: 'application/json;charset=utf-8', Authorization: `Bearer ${token}`, }
+ * const fetchQuestionnaireCallback: FetchQuestionnaireCallback = async (
+ *   canonicalUrl: string,
+ *   requestConfig: {url: string, authToken?: string}
+ * ) => {
+ *   const { url, authToken } = requestConfig;
+ *
+ *   let requestUrl = url;
+ *   if (!requestUrl.endsWith('/')) {
+ *     requestUrl += '/';
+ *   }
+ *   requestUrl += `Questionnaire?url=${canonicalUrl}`;
+ *
+ *   const headers = authToken ? { ...HEADERS, Authorization: `Bearer ${authToken}` } : HEADERS;
+ *
+ *   const response = await fetch(requestUrl, {
+ *     headers: headers
  *   });
+ *
+ *   if (!response.ok) {
+ *     throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+ *   }
+ *
+ *   return response.json();
  * };
  *
  * @author Sean Fong

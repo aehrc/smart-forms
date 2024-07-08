@@ -80,9 +80,15 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
-          sidebarId: 'devUsageSidebar',
+          sidebarId: 'devSidebar',
           position: 'left',
           label: 'Developer Usage'
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'operationsSidebar',
+          position: 'left',
+          label: 'FHIR Operations'
         },
         {
           type: 'docSidebar',
@@ -197,6 +203,27 @@ const config: Config = {
         entryPoints: '../packages/sdc-populate/src/index.ts',
         tsconfig: '../packages/sdc-populate/tsconfig.json',
         out: 'docs/api/sdc-populate',
+        excludeTags: ['@author'],
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true
+        },
+        plugin: ['typedoc-plugin-frontmatter'],
+        indexFormat: 'table',
+        disableSources: true,
+        parametersFormat: 'table',
+        enumMembersFormat: 'table',
+        readme: 'none'
+      }
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      // Options
+      {
+        id: 'sdc-assemble',
+        entryPoints: '../packages/sdc-assemble/src/index.ts',
+        tsconfig: '../packages/sdc-assemble/tsconfig.json',
+        out: 'docs/api/sdc-assemble',
         excludeTags: ['@author'],
         sidebar: {
           autoConfiguration: true,

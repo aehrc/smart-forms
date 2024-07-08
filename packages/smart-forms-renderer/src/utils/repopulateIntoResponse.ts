@@ -8,6 +8,7 @@ import type { ItemToRepopulate } from './repopulateItems';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { isSpecificItemControl } from './itemControl';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
+import { qrItemHasItemsOrAnswer } from './manageForm';
 
 /**
  * Re-populate checked items in the re-population dialog into the current QuestionnaireResponse
@@ -67,7 +68,7 @@ export function repopulateItemsIntoResponse(
       continue;
     }
 
-    if (updatedTopLevelQRItem) {
+    if (updatedTopLevelQRItem && qrItemHasItemsOrAnswer(updatedTopLevelQRItem)) {
       topLevelQrItems.push(updatedTopLevelQRItem);
     }
   }
@@ -79,7 +80,7 @@ function repopulateItemRecursive(
   qItem: QuestionnaireItem,
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   checkedItemsToRepopulate: Record<string, ItemToRepopulate>
-): QuestionnaireResponseItem[] | QuestionnaireResponseItem | null {
+): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
   // For repeat groups
   const hasMultipleAnswers = Array.isArray(qrItemOrItems);
   if (hasMultipleAnswers) {
