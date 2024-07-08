@@ -34,7 +34,7 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
-import { qrItemHasItemsOrAnswer } from './manageForm';
+import { updateQuestionnaireResponse } from './updateQr';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -165,15 +165,6 @@ export function initialiseCalculatedExpressionValues(
   populatedResponse: QuestionnaireResponse,
   calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponse {
-  if (
-    !questionnaire.item ||
-    questionnaire.item.length === 0 ||
-    !populatedResponse.item ||
-    populatedResponse.item.length === 0
-  ) {
-    return populatedResponse;
-  }
-
   // Filter calculated expressions, only preserve key-value pairs with values
   const calculatedExpressionsWithValues: Record<string, CalculatedExpression[]> = {};
   for (const linkId in calculatedExpressions) {
@@ -186,41 +177,12 @@ export function initialiseCalculatedExpressionValues(
     }
   }
 
-  // Populate calculated expression values into QR
-  const qItemsIndexMap = mapQItemsIndex(questionnaire);
-  const topLevelQRItemsByIndex = getQrItemsIndex(
-    questionnaire.item,
-    populatedResponse.item,
-    qItemsIndexMap
+  return updateQuestionnaireResponse(
+    questionnaire,
+    populatedResponse,
+    initialiseItemCalculatedExpressionValueRecursive,
+    calculatedExpressionsWithValues
   );
-
-  const topLevelQrItems: QuestionnaireResponseItem[] = [];
-  for (const [index, topLevelQItem] of questionnaire.item.entries()) {
-    const topLevelQRItemOrItems = topLevelQRItemsByIndex[index] ?? {
-      linkId: topLevelQItem.linkId,
-      text: topLevelQItem.text,
-      item: []
-    };
-
-    const updatedTopLevelQRItem = initialiseItemCalculatedExpressionValueRecursive(
-      topLevelQItem,
-      topLevelQRItemOrItems,
-      calculatedExpressionsWithValues
-    );
-
-    if (Array.isArray(updatedTopLevelQRItem)) {
-      if (updatedTopLevelQRItem.length > 0) {
-        topLevelQrItems.push(...updatedTopLevelQRItem);
-      }
-      continue;
-    }
-
-    if (updatedTopLevelQRItem && qrItemHasItemsOrAnswer(updatedTopLevelQRItem)) {
-      topLevelQrItems.push(updatedTopLevelQRItem);
-    }
-  }
-
-  return { ...populatedResponse, item: topLevelQrItems };
 }
 
 function initialiseItemCalculatedExpressionValueRecursive(

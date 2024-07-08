@@ -1,14 +1,9 @@
-import type {
-  Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { ItemToRepopulate } from './repopulateItems';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { isSpecificItemControl } from './itemControl';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
-import { qrItemHasItemsOrAnswer } from './manageForm';
+import { updateQuestionnaireResponse } from './updateQr';
 
 /**
  * Re-populate checked items in the re-population dialog into the current QuestionnaireResponse
@@ -19,61 +14,12 @@ export function repopulateResponse(checkedItemsToRepopulate: Record<string, Item
   const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
   const updatableResponse = questionnaireResponseStore.getState().updatableResponse;
 
-  return repopulateItemsIntoResponse(
+  return updateQuestionnaireResponse(
     sourceQuestionnaire,
     updatableResponse,
+    repopulateItemRecursive,
     checkedItemsToRepopulate
   );
-}
-
-export function repopulateItemsIntoResponse(
-  questionnaire: Questionnaire,
-  updatableResponse: QuestionnaireResponse,
-  checkedItemsToRepopulate: Record<string, ItemToRepopulate>
-): QuestionnaireResponse {
-  if (
-    !questionnaire.item ||
-    questionnaire.item.length === 0 ||
-    !updatableResponse.item ||
-    updatableResponse.item.length === 0
-  ) {
-    return updatableResponse;
-  }
-
-  const qItemsIndexMap = mapQItemsIndex(questionnaire);
-  const topLevelQRItemsByIndex = getQrItemsIndex(
-    questionnaire.item,
-    updatableResponse.item,
-    qItemsIndexMap
-  );
-
-  const topLevelQrItems: QuestionnaireResponseItem[] = [];
-  for (const [index, topLevelQItem] of questionnaire.item.entries()) {
-    const topLevelQRItemOrItems = topLevelQRItemsByIndex[index] ?? {
-      linkId: topLevelQItem.linkId,
-      text: topLevelQItem.text,
-      item: []
-    };
-
-    const updatedTopLevelQRItem = repopulateItemRecursive(
-      topLevelQItem,
-      topLevelQRItemOrItems,
-      checkedItemsToRepopulate
-    );
-
-    if (Array.isArray(updatedTopLevelQRItem)) {
-      if (updatedTopLevelQRItem.length > 0) {
-        topLevelQrItems.push(...updatedTopLevelQRItem);
-      }
-      continue;
-    }
-
-    if (updatedTopLevelQRItem && qrItemHasItemsOrAnswer(updatedTopLevelQRItem)) {
-      topLevelQrItems.push(updatedTopLevelQRItem);
-    }
-  }
-
-  return { ...updatableResponse, item: topLevelQrItems };
 }
 
 function repopulateItemRecursive(
