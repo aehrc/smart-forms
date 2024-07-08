@@ -153,6 +153,28 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Commonwealth Scientific and Industrial Research
   - Organisation (CSIRO).`
     },
+    // Refer to https://docusaurus.io/docs/search#connecting-algolia
+    algolia: {
+      // The application ID provided by Algolia
+      appId: 'SL7YXI16RH',
+
+      // Public API key: it is safe to commit it
+      apiKey: 'a4c401a7bac65bc81b7dd7efe958b951',
+
+      indexName: 'smartforms-csiro',
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+
+      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+      insights: false
+    },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula
