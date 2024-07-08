@@ -86,6 +86,12 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
+          sidebarId: 'operationsSidebar',
+          position: 'left',
+          label: 'FHIR Operations'
+        },
+        {
+          type: 'docSidebar',
           sidebarId: 'apiSidebar',
           position: 'left',
           label: 'API'
