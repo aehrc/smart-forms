@@ -8,18 +8,19 @@ sidebar_label: Introduction
 Smart Forms provides reference implementations for `$populate` and `$assemble` operations as [ExpressJS](https://expressjs.com/) services to complement the FHIR Questionnaire renderer.
 These operations are available as Docker images and can be deployed as microservices.
 
-[//]: # '1. **`$populate`**'
-[//]: # '   Operation definition: [SDCPopulateQuestionnaire](http://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)'
-[//]: # '   Github repository:'
-[//]: #
-[//]: # '   A React-based library that contains the rendering engine. It acts as a reference implementation for the [SDC Form Filler](https://hl7.org/fhir/uv/sdc/CapabilityStatement-sdc-form-filler.html).'
-[//]: #
-[//]: # '2. **`$assemble`** ([@aehrc/sdc-populate](https://www.npmjs.com/package/@aehrc/sdc-populate))'
-[//]: #
-[//]: # '   A reference implementation of the [SDC Populate Questionnaire](https://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-populate.html) operation, also known as $populate.'
-[//]: # '   Currently, there are no written documentation available for this library. Please refer to the [API](/docs/api/sdc-populate) for more information.'
-[//]: #
-[//]: # '3. **SDC Assemble** ([@aehrc/sdc-assemble](https://www.npmjs.com/package/@aehrc/sdc-assemble))'
-[//]: #
-[//]: # '   A reference implementation of the [SDC Assemble Questionnaire](https://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-assemble.html) operation, also known as $assemble.'
-[//]: # '   Currently, there are no written documentation available for this library. Please refer to the [API](/docs/api/sdc-assemble) for more information.'
+1. **$populate** (https://smartforms.csiro.au/api/fhir/Questionnaire/$populate)
+
+   A reference implementation of the [SDC Populate Questionnaire](https://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-populate.html) operation, also known as $populate.
+   It builds on the [@aehrc/sdc-populate](https://www.npmjs.com/package/@aehrc/sdc-populate) library.
+
+2. **$assemble** (https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble)
+
+   A reference implementation of the [SDC Assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-assemble.html) operation, also known as $assemble.
+   It builds on the [@aehrc/sdc-assemble](https://www.npmjs.com/package/@aehrc/sdc-assemble) library.
+
+3. **$extract** (https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract)
+
+   A **proof-of-concept** reference implementation of the [SDC QuestionnaireResponse Extract](https://hl7.org/fhir/uv/sdc/OperationDefinition-QuestionnaireResponse-extract.html) operation, also known as $extract.
+
+   This $extract POC reference implementation is an abstraction on top of an existing StructureMap $transform operation.
+   We leveraged Brian Postlethwaite's [.NET FHIR Mapping Language engine](https://github.com/brianpos/fhir-net-mappinglanguage/tree/main/demo-map-server) to expose a StructureMap $transform operation on https://proxy.smartforms.io/fhir/StructureMap/$transform.
