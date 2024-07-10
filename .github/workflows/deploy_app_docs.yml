@@ -4,9 +4,6 @@ on:
   push:
     branches: ['main']
 
-permissions:
-  id-token: write
-
 jobs:
   build:
     name: Deploy Smart Forms app to S3
@@ -48,6 +45,10 @@ jobs:
   deploy-docusaurus-s3:
     name: Deploy Docusaurus to S3
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
