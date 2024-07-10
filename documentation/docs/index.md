@@ -14,6 +14,7 @@ This documentation is intended to provide a guide on how to use Smart Forms. It 
 - [Components](/docs/components): A showcase of supported Questionnaire form components.
 - [SDC](/docs/sdc): A section around the conformance and usage of functionalities defined in the SDC specification.
 - [Developer Usage](/docs/dev): A guide on how to use the form renderer in your own application.
+- [FHIR Operations](/docs/operations): A guide on using the $populate, $assemble and $extract operations.
 
 ### Referenced FHIR Specifications 
 
