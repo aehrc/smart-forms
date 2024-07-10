@@ -33,7 +33,7 @@ You can use `docker run -p 3003:3003 -e EHR_SERVER_URL=https://proxy.smartforms.
 
 Docker image: https://hub.docker.com/r/aehrc/smart-forms-extract
 
-**By default, ```FORMS_SERVER_URL``` is set to https://smartforms.csiro.au/api/fhir in the Docker image.**
+**By default, ```FORMS_SERVER_URL``` is set to https://smartforms.csiro.au/api/fhir in the Docker image.** This endpoint is used to resolve referenced FHIR Questionnaires and StructureMaps.
 
 ## Sample implementation
 A sample implementation of the `$extract` service is available at https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract.

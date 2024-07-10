@@ -1,0 +1,196 @@
+---
+sidebar_position: 4
+---
+
+# StructureMap $extract
+
+This $extract **proof-of-concept** reference implementation is an abstraction on top of an existing StructureMap $transform operation.
+We leveraged Brian Postlethwaite's [.NET FHIR Mapping Language engine](https://github.com/brianpos/fhir-net-mappinglanguage/tree/main/demo-map-server) to expose a StructureMap $transform operation on https://proxy.smartforms.io/fhir/StructureMap/$transform.
+
+:::note
+
+This reference implementation is a proof-of-concept. It is highly likely that the underlying implementation will change in the future.
+
+:::
+
+## Useful links
+
+#### Services links
+
+Deployed service: https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract
+
+Underlying $transform service: https://proxy.smartforms.io/fhir/StructureMap/$transform
+
+FHIR Mapping Language to StructureMap $convert service: https://proxy.smartforms.io/fhir/StructureMap/$convert
+
+#### Specification links
+
+FHIR $extract operation definition: http://hl7.org/fhir/uv/sdc/OperationDefinition/QuestionnaireResponse-extract
+
+FHIR $transform operation definition: https://hl7.org/fhir/r4/structuremap-operation-transform.html
+
+FHIR Mapping Language $convert workflow: https://confluence.hl7.org/pages/viewpage.action?pageId=76158820#UsingtheFHIRMappingLanguage-WebServices
+
+FHIR StructureMap-based extraction: https://hl7.org/fhir/uv/sdc/extraction.html#structuremap-based-extraction
+
+#### Source code links
+
+Github: https://github.com/aehrc/smart-forms/tree/main/services/extract-express
+
+Dockerhub: https://hub.docker.com/r/aehrc/smart-forms-extract
+
+## Usage
+
+Resource(s) can be extracted from a QuestionnaireResponse using a **POST** request to a URL such as:
+
+```http request
+https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract (type-level)
+```
+
+#### Parameters
+
+| Name                   | Cardinality | Type     | Documentation                                                                                           |
+| ---------------------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| questionnaire-response | 1..1        | Resource | The QuestionnaireResponse to extract data from. Used when the operation is invoked at the 'type' level. |
+
+#### Try it out
+
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman"/>](https://elements.getpostman.com/redirect?entityId=22885901-2af2cfbb-3a0a-49c6-8404-105ef0751415&entityType=collection)
+
+## How it works
+
+The $extract operation is an abstraction on top of an existing StructureMap $transform operation.
+
+#### The underlying $transform
+
+A [$transform](https://hl7.org/fhir/r4/structuremap-operation-transform.html) operation requires two input parameters:
+
+1. `source` - Contains the structure map defining the mapping rules
+2. `content` - Contains the data to be transformed (in terms of SDC, this is the QuestionnaireResponse)
+
+The output of $transform is the transformed data, a FHIR resource.
+
+Taking this logic, we can use a StructureMap `$transform` operation to perform the extraction of resources from a QuestionnaireResponse. Let's say we want to extract a bundle containing an Observation resource from a QuestionnaireResponse.
+We need a StructureMap that maps the data from the QuestionnaireResponse to the Observation resource. Normally we would write this mapping in [FHIR Mapping Language](https://www.hl7.org/fhir/mapping-language.html) and convert it to a StructureMap.
+
+For more information on using the FHIR Mapping Language, refer to https://confluence.hl7.org/display/FHIR/Using+the+FHIR+Mapping+Language. Brian has a really awesome tool that can help you write and test your mappings at https://fhirpath-lab.com/FhirMapper2.
+
+Once we have both the `source` StructureMap and the `content` QuestionnaireResponse, our $transform request body should look roughly like this:
+
+```json
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "source",
+      "resource": //<insert StructureMap here> -
+      }
+    },
+    {
+      "name": "content",
+      "resource": //<insert QuestionnaireResponse here> - a filled QR from
+    }
+  ]
+}
+```
+
+Relevant resources:
+
+`source`- https://smartforms.csiro.au/api/fhir/StructureMap/extract-bmi
+
+`content`- http://smartforms.csiro.au/fhir/Questionnaire/CalculatedExpressionBMICalculatorPrepop
+
+[//]: # 'turn it into a microservice'
+
+Running the $transform operation will return the transformed data, which in this case is a Bundle resource containing the Observation resource:
+
+```json
+{
+  "resourceType": "Bundle",
+  "id": "<uuid>",
+  "type": "transaction",
+  "entry": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      },
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "60621009",
+              "display": "Body mass index"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/pat-sf"
+        },
+        "valueQuantity": {
+          "value": 29.55,
+          "unit": "kg/m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg/m2"
+        }
+      }
+    }
+  ]
+}
+```
+
+#### The $extract operation
+
+Using the logic above, we can abstract the $transform operation into a $extract operation. The $extract operation requires only one input parameter (or you can just provide the QuestionnaireResponse in the request body):
+
+`questionnaire-response` - Contains the QuestionnaireResponse to extract data from
+
+The provided QuestionnaireResponse should fulfill two criteria:
+
+1. It needs to contain a canonical reference in its `questionnaire` property.
+
+```json
+{
+  ...
+  "questionnaire": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1|0.1.0",
+  ...
+}
+```
+
+2. The referenced Questionnaire should have a [questionnaire-targetStructureMap](http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap) extension. This extension needs to contain a canonical reference to a StructureMap that maps the data from the QuestionnaireResponse to the desired resource(s).
+
+```json
+{
+  ...
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap",
+      "valueCanonical": "https://smartforms.csiro.au/docs/StructureMap/extract-bmi"
+    }
+  ],
+  ...
+}
+```
+
+The $extract POC implementation defines a definitional repository to resolve Questionnaires and StructureMaps - https://smartforms.csiro.au/api/fhir. See https://hub.docker.com/r/aehrc/smart-forms-extract for more information.
+
+The $extract operation will resolve the referenced Questionnaire + StructureMap, and set the StructureMap as the `source` in the $transform operation. The `content` will be the provided QuestionnaireResponse.
+
+The underlying $transform operation will be executed, and the transformed data will be returned as the output of the $extract operation.
+
+## The $convert operation
+
+Brian's [.NET FHIR Mapping Language engine](https://github.com/brianpos/fhir-net-mappinglanguage/tree/main/demo-map-server) has a handy debug mode that can be activated by adding `debug=true` to the $transform query parameters.
+The debug payload contains useful details such as warnings/errors, trace output, the converted StructureMap, and the output resource.
+
+Conveniently, it also accepts both a FHIR Mapping Language map and a StructureMap resource as the `source` input.
+This means we can use it as a $convert operation to convert a FHIR Mapping Language map to a StructureMap resource.
+
+```
+https://proxy.smartforms.io/fhir/StructureMap/$convert
+```
+
+It expects the request headers for the `Content-Type` to be `text/plain`. The request body should contain the FHIR Mapping Language map, and the response will contain the converted StructureMap resource.
