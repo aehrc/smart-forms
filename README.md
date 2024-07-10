@@ -10,6 +10,7 @@ Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to e
 <h4><a href="https://smartforms.csiro.au">Show me the app ➡️</a></h4>
 
 <h4><a href="https://smartforms.csiro.au/docs">Check out the documentation 📚</a></h4>
+Update 11/07/2024: The documentation link isn't working. It is currently being fixed. 
 
 ---
 Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web application currently ongoing development by [CSIRO's Australian e-Health Research Centre](https://aehrc.csiro.au/) as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
