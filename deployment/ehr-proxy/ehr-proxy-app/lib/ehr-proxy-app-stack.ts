@@ -73,7 +73,12 @@ export class EhrProxyAppStack extends cdk.Stack {
     listener.addAction('EhrProxyExtractAction', {
       action: ListenerAction.forward([extractTargetGroup]),
       priority: 1,
-      conditions: [ListenerCondition.pathPatterns(['/fhir/QuestionnaireResponse/$extract'])]
+      conditions: [
+        ListenerCondition.pathPatterns([
+          '/fhir/QuestionnaireResponse/$extract',
+          '/fhir/StructureMap/$convert'
+        ])
+      ]
     });
 
     // Create a target for the transform service

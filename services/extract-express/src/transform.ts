@@ -24,7 +24,7 @@ import type {
 } from 'fhir/r4b';
 import { HEADERS } from './globals';
 
-export function createTransformInputParameters(
+export function createTransformInputParametersForExtract(
   targetStructureMap: StructureMap,
   questionnaireResponse: QuestionnaireResponse
 ): TransformInputParameters {
@@ -43,12 +43,41 @@ export function createTransformInputParameters(
   };
 }
 
+export function createTransformInputParametersForConvert(
+  fhirMappingLanguageMap: string
+): TransformInputParameters {
+  return {
+    resourceType: 'Parameters',
+    parameter: [
+      {
+        name: 'source',
+        valueString: fhirMappingLanguageMap
+      },
+      // Hardcoded content to be empty QuestionnaireResponse since it is not used in the conversion
+      {
+        name: 'content',
+        resource: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'in-progress'
+        }
+      }
+    ]
+  };
+}
+
 export async function invokeTransform(
   transformInputParameters: TransformInputParameters,
   ehrServerUrl: string,
-  ehrServerAuthToken?: string
+  ehrServerAuthToken?: string,
+  debugMode?: boolean
 ): Promise<any> {
-  const requestUrl = `${ehrServerUrl}/StructureMap/$transform`;
+  let requestUrl = `${ehrServerUrl}/StructureMap/$transform`;
+
+  // Brian's demo-map-server by default return xml when debug=true, explicitly set it to json
+  if (debugMode) {
+    requestUrl += '?debug=true&_format=json';
+  }
+
   const headers = ehrServerAuthToken
     ? { ...HEADERS, Authorization: `Bearer ${ehrServerAuthToken}` }
     : HEADERS;
@@ -59,8 +88,11 @@ export async function invokeTransform(
   });
 
   if (!response.ok) {
+    const debugModeMessage = debugMode
+      ? '\nNote: The input FML map might not be valid. If it is valid but you are still getting this error, please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
+      : '';
     throw new Error(
-      `HTTP error when performing ${ehrServerUrl}/StructureMap/$transform. Status: ${response.status}`
+      `HTTP error when performing ${ehrServerUrl}/StructureMap/$transform. Status: ${response.status}${debugModeMessage}`
     );
   }
 
@@ -68,12 +100,19 @@ export async function invokeTransform(
 }
 
 export interface TransformInputParameters extends Parameters {
-  parameter: [SourceParameter, ContentParameter];
+  parameter:
+    | [SourceResourceParameter, ContentParameter]
+    | [SourceValueStringParameter, ContentParameter];
 }
 
-interface SourceParameter extends ParametersParameter {
+interface SourceResourceParameter extends ParametersParameter {
   name: 'source';
   resource: StructureMap;
+}
+
+interface SourceValueStringParameter extends ParametersParameter {
+  name: 'source';
+  valueString: string;
 }
 
 interface ContentParameter extends ParametersParameter {

@@ -1,11 +1,11 @@
 {
   "name": "extract-express",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "compile": "tsc",
-    "start": "node lib/index.js",
+    "start": "node --inspect lib/index.js",
     "start:watch": "node --inspect --watch lib/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

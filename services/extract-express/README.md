@@ -5,6 +5,8 @@ It is an abstraction on top of an existing StructureMap [$transform](https://hl7
 
 A proof-of-concept StructureMap $transform is defined on https://proxy.smartforms.io/fhir/StructureMap/$transform, leveraging Brian's .NET mapping engine from https://github.com/brianpos/fhir-net-mappinglanguage/tree/main/demo-map-server.
 
+A `StructureMap/$convert` operation is also defined in the POC implementation to convert a FHIR Mapping Language map to a StructureMap resource, using the same .NET mapping engine.
+
 ## Configuration
 Create a .env file (or copy from example.env) in the root of the project with the following:
 ```env
@@ -31,9 +33,10 @@ You can use `docker run -p 3003:3003 -e EHR_SERVER_URL=https://proxy.smartforms.
 
 Docker image: https://hub.docker.com/r/aehrc/smart-forms-extract
 
-**By default, ```FORMS_SERVER_URL``` is set to https://smartforms.csiro.au/api/fhir in the Docker image.**
+**By default, ```FORMS_SERVER_URL``` is set to https://smartforms.csiro.au/api/fhir in the Docker image.** This endpoint is used to resolve referenced FHIR Questionnaires and StructureMaps.
 
 ## Sample implementation
-A sample implementation of this service is available at https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract.
+A sample implementation of the `$extract` service is available at https://proxy.smartforms.io/fhir/QuestionnaireResponse/$extract.
+`StructureMap/$convert` is available at https://proxy.smartforms.io/fhir/StructureMap/$convert.
 
-Note: The $extract service on https://smartforms.csiro.au/api/fhir only performs processing - it does not persist any data.
+Note: The $extract and $convert service on https://proxy.smartforms.io/fhir only performs processing - it does not persist any data.
