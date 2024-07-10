@@ -43,6 +43,19 @@ export function createInvalidParametersOutcome(): OperationOutcome {
   };
 }
 
+export function createInvalidFhirMappingLanguageMap(): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: { text: 'Input provided is not a valid FHIR Mapping Language map.' }
+      }
+    ]
+  };
+}
+
 export function createInvalidQuestionnaireCanonicalOutcome(): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',
@@ -103,6 +116,21 @@ export function createNoTargetStructureMapFoundOutcome(
         code: 'invalid',
         details: {
           text: `No structure maps found with the canonical url "${targetStructureMapCanonical}" at the FHIR server ${formsServerUrl}.`
+        }
+      }
+    ]
+  };
+}
+
+export function createFailStructureMapConversionOutcome(): OperationOutcome {
+  return {
+    resourceType: 'OperationOutcome',
+    issue: [
+      {
+        severity: 'error',
+        code: 'invalid',
+        details: {
+          text: `Failed to convert the provided FHIR Mapping Language map to a StructureMap.`
         }
       }
     ]

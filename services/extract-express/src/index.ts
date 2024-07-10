@@ -19,6 +19,8 @@ import express from 'express';
 import cors from 'cors';
 import { getQuestionnaireResponse } from './questionnaireResponse';
 import {
+  createFailStructureMapConversionOutcome,
+  createInvalidFhirMappingLanguageMap,
   createInvalidParametersOutcome,
   createInvalidQuestionnaireCanonicalOutcome,
   createNoFormsServerUrlSetOutcome,
@@ -29,8 +31,14 @@ import {
 } from './operationOutcome';
 import { getQuestionnaire } from './questionnaire';
 import { getTargetStructureMap, getTargetStructureMapCanonical } from './structureMap';
-import { createTransformInputParameters, invokeTransform } from './transform';
+import {
+  createTransformInputParametersForConvert,
+  createTransformInputParametersForExtract,
+  invokeTransform
+} from './transform';
 import dotenv from 'dotenv';
+import { getFhirMappingLanguageMap } from './fhirMappingLanguage';
+import { getStructureMapFromDebugOutputParameters } from './debug';
 
 const app = express();
 const port = 3003;
@@ -52,6 +60,7 @@ app.use(
 // Allows the app to accept JSON and URL encoded data up to 50MB
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.text());
 
 // Allows the app to work behind reverse proxies, forwarding the correct req.protocol to the /StructureMap/$transform call
 // Without this, doing a HTTPS $extract call will result in a HTTP $transform call
@@ -136,7 +145,7 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
       return;
     }
 
-    const transformInputParameters = createTransformInputParameters(
+    const transformInputParameters = createTransformInputParametersForExtract(
       targetStructureMap,
       questionnaireResponse
     );
@@ -147,6 +156,76 @@ app.post('/fhir/QuestionnaireResponse/\\$extract', async (req, res) => {
       ehrServerAuthToken ?? undefined
     );
     res.json(outputParameters); // Forwarding the JSON response to the client
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json(createOperationOutcome(error?.message)); // Sending the error message as an OperationOutcome
+      return;
+    }
+
+    // If the error is not an instance of Error, send a generic error message
+    res
+      .status(500)
+      .json(
+        createOperationOutcome(
+          'Something went wrong here. Please raise a GitHub issue at https://github.com/aehrc/smart-forms/issues/new'
+        )
+      );
+  }
+});
+
+app.get('/fhir/\\$convert', (_, res) => {
+  res.send(
+    'This service is healthy!\nHowever, this server only supports StructureMap/$convert.\nPerform a POST request to /fhir/StructureMap/$convert to convert a FHIR Mapping Language map to a StructureMap resource.'
+  );
+});
+
+app.get('/fhir/StructureMap/\\$convert', (_, res) => {
+  res.send(
+    'This service is healthy!\nPerform a POST request to the same path to convert a FHIR Mapping Language map to a StructureMap resource.'
+  );
+});
+
+app.post('/fhir/StructureMap/\\$convert', async (req, res) => {
+  let ehrServerUrl = req.protocol + '://' + req.get('host') + '/fhir';
+  let ehrServerAuthToken: string | null = null;
+
+  // Set EHR server URL and auth token if provided in env variables
+  if (EHR_SERVER_URL) {
+    ehrServerUrl = EHR_SERVER_URL;
+    ehrServerAuthToken = EHR_SERVER_AUTH_TOKEN ?? null;
+  }
+
+  try {
+    // Get FHIR Mapping Language map from the request body
+    const body = req.body;
+    const fhirMappingLanguageMap = getFhirMappingLanguageMap(body);
+
+    if (!fhirMappingLanguageMap) {
+      const outcome = createInvalidFhirMappingLanguageMap();
+      res.status(400).json(outcome);
+      return;
+    }
+
+    const transformInputParameters =
+      createTransformInputParametersForConvert(fhirMappingLanguageMap);
+
+    const outputParameters = await invokeTransform(
+      transformInputParameters,
+      ehrServerUrl,
+      ehrServerAuthToken ?? undefined,
+      true
+    );
+
+    // Get StructureMap resource from the output parameters
+    const structureMap = getStructureMapFromDebugOutputParameters(outputParameters);
+    if (!structureMap) {
+      const outcome = createFailStructureMapConversionOutcome();
+      res.status(400).json(outcome);
+      return;
+    }
+
+    res.json(structureMap);
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
