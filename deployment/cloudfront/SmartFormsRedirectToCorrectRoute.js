@@ -103,6 +103,28 @@ function handler(event) {
     return request;
   }
 
+
+  // Handle Docs routes
+  if (uri.includes('/docs')) {
+    // Reroute to smartforms.csiro.au/docs/index.html
+    if (uri === '/docs/') {
+      request.uri += 'index.html';
+      return request;
+    }
+
+    if (uri === '/docs') {
+      request.uri = '/redirect.html';
+      return request;
+    }
+
+    if (!uri.includes('.')) {
+      request.uri += '/index.html';
+      return request;
+    }
+
+    return request;
+  }
+
   // Handle Forms Server API routes
   if (uri.includes('/api')) {
     // Remove the /api prefix
