@@ -82,21 +82,28 @@ function handler(event) {
   }
 
 
-  // Handle Docz routes
-  if (uri.includes('/docz')) {
-    // Reroute to smartforms.csiro.au/docz/index.html
-    if (uri === '/docz/') {
+  // Handle Docs routes
+  if (uri.includes('/docs')) {
+    // Reroute to smartforms.csiro.au/docs/index.html
+    if (uri === '/docs/') {
       request.uri += 'index.html';
       return request;
     }
 
-    if (uri === '/docz') {
+    if (uri === '/docs') {
       request.uri = '/redirect.html';
       return request;
     }
 
     if (!uri.includes('.')) {
-      request.uri += '/index.html';
+      // For https://smartforms.csiro.au/docs/sdc/population/ cases
+      if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+      }
+      // For https://smartforms.csiro.au/docs/sdc/population cases
+      else {
+        request.uri += '/index.html';
+      }
       return request;
     }
 

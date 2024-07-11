@@ -12,7 +12,7 @@ const config: Config = {
   url: 'https://smartforms.csiro.au',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/docs',
+  baseUrl: '/docs/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -20,7 +20,7 @@ const config: Config = {
   projectName: '', // Usually your repo name.\
 
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenMarkdownLinks: 'throw',
 
   trailingSlash: false,
 
@@ -56,7 +56,6 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/logo-sf.svg',
     navbar: {
-      title: 'Smart Forms',
       logo: {
         alt: 'Smart Forms',
         src: 'img/logo-sf.svg',
