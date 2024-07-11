@@ -56,7 +56,6 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/logo-sf.svg',
     navbar: {
-      title: 'Smart Forms',
       logo: {
         alt: 'Smart Forms',
         src: 'img/logo-sf.svg',
