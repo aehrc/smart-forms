@@ -23,6 +23,8 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
+import { useExtractOperationStore } from '../../../playground/stores/extractOperationStore.ts';
+import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -39,6 +41,8 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
+  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+
   function handleOpenDialog() {
     if (onClose) {
       onClose();
@@ -52,28 +56,37 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const responseWasSaved = !!updatableResponse.authored && !!updatableResponse.author;
   const buttonIsDisabled = !responseWasSaved && formChangesHistory.length === 0;
 
+  const writeBackEnabled = !!targetStructureMap;
+
   return (
     <>
       {isSpeedDial ? (
         <SpeedDialAction
           icon={<TaskAltIcon />}
-          tooltipTitle="Save as Final"
+          tooltipTitle={`Save as Final ${writeBackEnabled ? '& Write Back' : ''}`}
           tooltipOpen
           onClick={handleOpenDialog}
           {...speedDialActionProps}
         />
       ) : (
         <RendererOperationItem
-          title="Save as Final"
+          title={`Save as Final ${writeBackEnabled ? '& Write Back' : ''}`}
           icon={<TaskAltIcon />}
           disabled={buttonIsDisabled}
           onClick={handleOpenDialog}
         />
       )}
-      <RendererSaveAsFinalDialog
-        open={saveAsFinalDialogOpen}
-        closeDialog={() => setSaveAsFinalDialogOpen(false)}
-      />
+      {writeBackEnabled ? (
+        <RendererSaveAsFinalWriteBackDialog
+          open={saveAsFinalDialogOpen}
+          closeDialog={() => setSaveAsFinalDialogOpen(false)}
+        />
+      ) : (
+        <RendererSaveAsFinalDialog
+          open={saveAsFinalDialogOpen}
+          closeDialog={() => setSaveAsFinalDialogOpen(false)}
+        />
+      )}
     </>
   );
 }
