@@ -3,6 +3,10 @@
 <h4>
 Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to easily integrate forms into your existing healthcare system.
 </h4>
+
+[![NPM](https://badge.fury.io/js/@aehrc%2Fsmart-forms-renderer.svg)](https://www.npmjs.com/package/@aehrc/smart-forms-renderer)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/aehrc/smart-forms?tab=Apache-2.0-1-ov-file#readme)
+
 <h4><a href="https://smartforms.csiro.au">Show me the app ➡️</a></h4>
 
 <h4><a href="https://smartforms.csiro.au/docs">Check out the documentation 📚</a></h4>

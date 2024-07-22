@@ -23,6 +23,8 @@ import type {
 } from 'fhir/r4';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
+import cloneDeep from 'lodash.clonedeep';
+import { qrItemHasItemsOrAnswer } from './manageForm';
 
 interface removeEmptyAnswersParams {
   questionnaire: Questionnaire;
@@ -54,24 +56,36 @@ export function removeEmptyAnswers(params: removeEmptyAnswersParams): Questionna
     !topLevelQRItems ||
     topLevelQRItems.length === 0
   ) {
-    return questionnaireResponse;
+    const updatedQuestionnaireResponse = cloneDeep(questionnaireResponse);
+    delete updatedQuestionnaireResponse.item;
+    return updatedQuestionnaireResponse;
   }
 
-  topLevelQRItems.forEach((qrItem, i) => {
+  const newQuestionnaireResponse: QuestionnaireResponse = { ...questionnaireResponse, item: [] };
+  for (const [i, topLevelQRItem] of topLevelQRItems.entries()) {
     const qItem = topLevelQItems[i];
+    if (!qItem) {
+      continue;
+    }
+
+    // If QR item don't have either item.item and item.answer, continue
+    if (!qrItemHasItemsOrAnswer(topLevelQRItem)) {
+      continue;
+    }
+
     const newTopLevelQRItem = removeEmptyAnswersFromItemRecursive({
       qItem,
-      qrItem,
+      qrItem: topLevelQRItem,
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions
     });
-    if (newTopLevelQRItem && questionnaireResponse.item) {
-      questionnaireResponse.item[i] = { ...newTopLevelQRItem };
+    if (newTopLevelQRItem && newQuestionnaireResponse.item) {
+      newQuestionnaireResponse.item.push(newTopLevelQRItem);
     }
-  });
+  }
 
-  return questionnaireResponse;
+  return newQuestionnaireResponse;
 }
 
 interface removeEmptyAnswersFromItemRecursiveParams {
@@ -86,6 +100,11 @@ function removeEmptyAnswersFromItemRecursive(
   params: removeEmptyAnswersFromItemRecursiveParams
 ): QuestionnaireResponseItem | null {
   const { qItem, qrItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
+
+  // If QR item don't have either item.item and item.answer, return null
+  if (!qrItemHasItemsOrAnswer(qrItem)) {
+    return null;
+  }
 
   const qItems = qItem.item;
   const qrItems = qrItem.item;

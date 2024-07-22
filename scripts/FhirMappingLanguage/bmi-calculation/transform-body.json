@@ -1,0 +1,396 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "source",
+      "resource": {
+        "resourceType": "StructureMap",
+        "id": "extract-bmi",
+        "url": "https://smartforms.csiro.au/docs/StructureMap/extract-bmi",
+        "name": "extract-bmi",
+        "status": "draft",
+        "structure": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse",
+            "mode": "source"
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/Bundle",
+            "mode": "target",
+            "documentation": "Used to create a Bundle."
+          }
+        ],
+        "group": [
+          {
+            "name": "patientMap",
+            "typeMode": "none",
+            "input": [
+              {
+                "name": "src",
+                "type": "QuestionnaireResponse",
+                "mode": "source"
+              },
+              {
+                "name": "bundle",
+                "type": "Bundle",
+                "mode": "target"
+              }
+            ],
+            "rule": [
+              {
+                "name": "e344ebee86904beeb9eaa4d352a44d0e",
+                "source": [
+                  {
+                    "context": "src"
+                  }
+                ],
+                "target": [
+                  {
+                    "context": "bundle",
+                    "contextType": "variable",
+                    "element": "id",
+                    "transform": "uuid"
+                  }
+                ],
+                "documentation": "Create bundle id and type"
+              },
+              {
+                "name": "009e4ea044d6413b82a2dfdea7241777",
+                "source": [
+                  {
+                    "context": "src"
+                  }
+                ],
+                "target": [
+                  {
+                    "context": "bundle",
+                    "contextType": "variable",
+                    "element": "type",
+                    "transform": "copy",
+                    "parameter": [
+                      {
+                        "valueString": "transaction"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "966928a25a514e788cd35cf30beae8d8",
+                "source": [
+                  {
+                    "context": "src"
+                  }
+                ],
+                "target": [
+                  {
+                    "context": "bundle",
+                    "contextType": "variable",
+                    "element": "entry",
+                    "variable": "entry"
+                  }
+                ],
+                "rule": [
+                  {
+                    "name": "817bc3d51af2494aae4267b7954c530c",
+                    "source": [
+                      {
+                        "context": "src"
+                      }
+                    ],
+                    "target": [
+                      {
+                        "context": "entry",
+                        "contextType": "variable",
+                        "element": "request",
+                        "variable": "request"
+                      },
+                      {
+                        "context": "request",
+                        "contextType": "variable",
+                        "element": "method",
+                        "transform": "copy",
+                        "parameter": [
+                          {
+                            "valueString": "POST"
+                          }
+                        ]
+                      },
+                      {
+                        "context": "request",
+                        "contextType": "variable",
+                        "element": "url",
+                        "transform": "copy",
+                        "parameter": [
+                          {
+                            "valueString": "Observation"
+                          }
+                        ]
+                      }
+                    ],
+                    "documentation": "Create entry.request"
+                  },
+                  {
+                    "name": "a6e4ee4234604057a521c0d55b44fcd8",
+                    "source": [
+                      {
+                        "context": "src"
+                      }
+                    ],
+                    "target": [
+                      {
+                        "context": "entry",
+                        "contextType": "variable",
+                        "element": "resource",
+                        "variable": "resource",
+                        "transform": "create",
+                        "parameter": [
+                          {
+                            "valueString": "Observation"
+                          }
+                        ]
+                      }
+                    ],
+                    "rule": [
+                      {
+                        "name": "87b02f7f4e68470490a6a43c06603168",
+                        "source": [
+                          {
+                            "context": "src"
+                          }
+                        ],
+                        "target": [
+                          {
+                            "context": "resource",
+                            "contextType": "variable",
+                            "element": "status",
+                            "transform": "copy",
+                            "parameter": [
+                              {
+                                "valueString": "final"
+                              }
+                            ]
+                          }
+                        ],
+                        "documentation": "Create resource.status"
+                      },
+                      {
+                        "name": "c8ed214a935441ac8322b0efec31665c",
+                        "source": [
+                          {
+                            "context": "src"
+                          }
+                        ],
+                        "target": [
+                          {
+                            "context": "resource",
+                            "contextType": "variable",
+                            "element": "code",
+                            "variable": "cc",
+                            "transform": "cc",
+                            "parameter": [
+                              {
+                                "valueString": "http://snomed.info/sct"
+                              },
+                              {
+                                "valueString": "60621009"
+                              },
+                              {
+                                "valueString": "Body mass index"
+                              }
+                            ]
+                          }
+                        ],
+                        "documentation": "Create resource.code via cc()"
+                      },
+                      {
+                        "name": "subject",
+                        "source": [
+                          {
+                            "context": "src",
+                            "element": "subject",
+                            "variable": "sub"
+                          }
+                        ],
+                        "target": [
+                          {
+                            "context": "resource",
+                            "contextType": "variable",
+                            "element": "subject",
+                            "variable": "r",
+                            "transform": "create",
+                            "parameter": [
+                              {
+                                "valueString": "Reference"
+                              }
+                            ]
+                          },
+                          {
+                            "context": "r",
+                            "contextType": "variable",
+                            "element": "reference",
+                            "transform": "evaluate",
+                            "parameter": [
+                              {
+                                "valueString": "%sub.reference"
+                              }
+                            ]
+                          }
+                        ],
+                        "documentation": "Create resource.subject with QR's subject"
+                      },
+                      {
+                        "name": "item",
+                        "source": [
+                          {
+                            "context": "src",
+                            "element": "item",
+                            "variable": "bmiCalculation",
+                            "condition": "linkId = 'bmi-calculation'"
+                          }
+                        ],
+                        "target": [
+                          {
+                            "transform": "copy",
+                            "parameter": [
+                              {
+                                "valueId": "resource"
+                              }
+                            ]
+                          }
+                        ],
+                        "rule": [
+                          {
+                            "name": "item",
+                            "source": [
+                              {
+                                "context": "bmiCalculation",
+                                "element": "item",
+                                "variable": "bmiResult",
+                                "condition": "linkId = 'bmi-result'"
+                              }
+                            ],
+                            "target": [
+                              {
+                                "context": "resource",
+                                "contextType": "variable",
+                                "element": "valueQuantity",
+                                "variable": "q",
+                                "transform": "create",
+                                "parameter": [
+                                  {
+                                    "valueString": "Quantity"
+                                  }
+                                ]
+                              },
+                              {
+                                "context": "q",
+                                "contextType": "variable",
+                                "element": "value",
+                                "transform": "evaluate",
+                                "parameter": [
+                                  {
+                                    "valueString": "%bmiResult.answer.value"
+                                  }
+                                ]
+                              },
+                              {
+                                "context": "q",
+                                "contextType": "variable",
+                                "element": "unit",
+                                "transform": "copy",
+                                "parameter": [
+                                  {
+                                    "valueString": "kg/m2"
+                                  }
+                                ]
+                              },
+                              {
+                                "context": "q",
+                                "contextType": "variable",
+                                "element": "system",
+                                "transform": "copy",
+                                "parameter": [
+                                  {
+                                    "valueString": "http://unitsofmeasure.org"
+                                  }
+                                ]
+                              },
+                              {
+                                "context": "q",
+                                "contextType": "variable",
+                                "element": "code",
+                                "transform": "copy",
+                                "parameter": [
+                                  {
+                                    "valueString": "kg/m2"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "documentation": "Create resource.valueQuantity"
+                      }
+                    ]
+                  }
+                ],
+                "documentation": "Create bundle entries"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "content",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "status": "in-progress",
+        "questionnaire": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1|0.1.0",
+        "item": [
+          {
+            "linkId": "bmi-calculation",
+            "text": "BMI Calculation",
+            "item": [
+              {
+                "linkId": "patient-height",
+                "answer": [
+                  {
+                    "valueDecimal": 163
+                  }
+                ],
+                "text": "Height"
+              },
+              {
+                "linkId": "patient-weight",
+                "answer": [
+                  {
+                    "valueDecimal": 77.3
+                  }
+                ],
+                "text": "Weight"
+              },
+              {
+                "linkId": "bmi-result",
+                "text": "Value",
+                "answer": [
+                  {
+                    "valueDecimal": 29.1
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "type": "Patient",
+          "reference": "Patient/pat-sf"
+        },
+        "meta": {
+          "source": "https://smartforms.csiro.au"
+        }
+      }
+    }
+  ]
+}

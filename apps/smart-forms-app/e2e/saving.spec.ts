@@ -16,7 +16,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { PLAYWRIGHT_APP_URL, PLAYWRIGHT_EHR_URL } from './globals';
+import { LAUNCH_PARAM_WITH_Q, PLAYWRIGHT_APP_URL, PLAYWRIGHT_EHR_URL } from './globals';
 
 const questionnaireTitle = 'Aboriginal and Torres Strait Islander Health Check';
 
@@ -25,7 +25,7 @@ test.beforeEach(async ({ page }) => {
   const populatePromise = page.waitForResponse(
     new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
   );
-  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=WzAsInBhdC1zZiIsInByaW1hcnktcGV0ZXIiLCJBVVRPIiwwLDAsMCwiZmhpclVzZXIgb25saW5lX2FjY2VzcyBvcGVuaWQgcHJvZmlsZSBwYXRpZW50L0NvbmRpdGlvbi5ycyBwYXRpZW50L09ic2VydmF0aW9uLnJzIGxhdW5jaCBwYXRpZW50L0VuY291bnRlci5ycyBwYXRpZW50L1F1ZXN0aW9ubmFpcmVSZXNwb25zZS5jcnVkcyBwYXRpZW50L1BhdGllbnQucnMiLCJodHRwOi8vbG9jYWxob3N0OjQxNzMvIiwiYTU3ZDkwZTMtNWY2OS00YjkyLWFhMmUtMjk5MjE4MDg2M2MxIiwiIiwiIiwiIiwiIiwwLDEsIntcInJvbGVcIjpcInF1ZXN0aW9ubmFpcmUtcmVuZGVyLW9uLWxhdW5jaFwiLFwiY2Fub25pY2FsXCI6XCJodHRwOi8vd3d3LmhlYWx0aC5nb3YuYXUvYXNzZXNzbWVudHMvbWJzLzcxNXwwLjEuMC1hc3NlbWJsZWRcIixcInR5cGVcIjpcIlF1ZXN0aW9ubmFpcmVcIn0iLGZhbHNlXQ`;
+  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITH_Q}`;
   await page.goto(launchUrl);
   const populateResponse = await populatePromise;
   expect(populateResponse.status()).toBe(200);

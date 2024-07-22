@@ -17,6 +17,11 @@
 
 import type { OperationOutcome, OperationOutcomeIssue } from 'fhir/r4';
 
+/**
+ * Create an OperationOutcome error with a supplied error message
+ *
+ * @author Sean Fong
+ */
 export function createErrorOutcome(errorMessage: string): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',
@@ -31,14 +36,27 @@ export function createErrorOutcome(errorMessage: string): OperationOutcome {
 }
 
 /**
- * Create an OperationOutcome issue of severity warning with a supplied warning message
+ * Create an OperationOutcome issue of severity "warning" and code "invalid" with a supplied warning message
  *
  * @author Sean Fong
  */
-export function createWarningIssue(warningMessage: string): OperationOutcomeIssue {
+export function createInvalidWarningIssue(warningMessage: string): OperationOutcomeIssue {
   return {
     severity: 'warning',
     code: 'invalid',
+    details: { text: warningMessage }
+  };
+}
+
+/**
+ * Create an OperationOutcome issue of severity "warning" and code "not-found" with a supplied warning message
+ *
+ * @author Sean Fong
+ */
+export function createNotFoundWarningIssue(warningMessage: string): OperationOutcomeIssue {
+  return {
+    severity: 'warning',
+    code: 'not-found',
     details: { text: warningMessage }
   };
 }

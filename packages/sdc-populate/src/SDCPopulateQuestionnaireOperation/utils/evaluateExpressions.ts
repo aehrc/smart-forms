@@ -22,7 +22,7 @@ import type {
   PopulationExpressions
 } from '../interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
-import { createWarningIssue } from './operationOutcome';
+import { createInvalidWarningIssue } from './operationOutcome';
 
 /**
  * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
@@ -50,7 +50,7 @@ export function generateExpressionValues(
           console.warn(
             'Error: fhirpath evaluation for InitialExpression failed. Details below:' + e
           );
-          issues.push(createWarningIssue(e.message));
+          issues.push(createInvalidWarningIssue(e.message));
         }
         continue;
       }
@@ -76,7 +76,7 @@ export function generateExpressionValues(
           console.warn(
             'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
           );
-          issues.push(createWarningIssue(e.message));
+          issues.push(createInvalidWarningIssue(e.message));
         }
         continue;
       }
@@ -117,7 +117,7 @@ export function evaluateItemPopulationContexts(
           console.warn(
             'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
           );
-          issues.push(createWarningIssue(e.message));
+          issues.push(createInvalidWarningIssue(e.message));
         }
         continue;
       }

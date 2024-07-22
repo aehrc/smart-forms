@@ -22,19 +22,24 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import Typography from '@mui/material/Typography';
 
 interface PrePopButtonForPlaygroundProps {
+  prePopEnabled: boolean;
   isPopulating: boolean;
   onPopulate: () => void;
 }
 
 function PrePopButtonForPlayground(props: PrePopButtonForPlaygroundProps) {
-  const { isPopulating, onPopulate } = props;
+  const { prePopEnabled, isPopulating, onPopulate } = props;
+
+  const toolTipText = prePopEnabled
+    ? 'Pre-populate form'
+    : 'Please select a patient in the Launch Context settings (located on the top right) to enable pre-population';
 
   return (
     <>
-      <Tooltip title="Pre-populate form" placement="right">
+      <Tooltip title={toolTipText} placement="bottom-end">
         <span>
           <IconButton
-            disabled={isPopulating}
+            disabled={isPopulating || !prePopEnabled}
             onClick={onPopulate}
             size="small"
             color="primary"

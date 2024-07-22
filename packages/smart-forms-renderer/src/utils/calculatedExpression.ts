@@ -34,6 +34,7 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
+import { updateQuestionnaireResponse } from './updateQr';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -164,15 +165,6 @@ export function initialiseCalculatedExpressionValues(
   populatedResponse: QuestionnaireResponse,
   calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponse {
-  if (
-    !questionnaire.item ||
-    questionnaire.item.length === 0 ||
-    !populatedResponse.item ||
-    populatedResponse.item.length === 0
-  ) {
-    return populatedResponse;
-  }
-
   // Filter calculated expressions, only preserve key-value pairs with values
   const calculatedExpressionsWithValues: Record<string, CalculatedExpression[]> = {};
   for (const linkId in calculatedExpressions) {
@@ -185,80 +177,54 @@ export function initialiseCalculatedExpressionValues(
     }
   }
 
-  // Populate calculated expression values into QR
-  const topLevelQrItems: QuestionnaireResponseItem[] = [];
-  for (const [index, topLevelQItem] of questionnaire.item.entries()) {
-    const populatedTopLevelQrItem = populatedResponse.item[index] ?? {
-      linkId: topLevelQItem.linkId,
-      text: topLevelQItem.text,
-      item: []
-    };
-
-    const updatedTopLevelQRItem = initialiseItemCalculatedExpressionValueRecursive(
-      topLevelQItem,
-      populatedTopLevelQrItem,
-      calculatedExpressionsWithValues
-    );
-
-    if (Array.isArray(updatedTopLevelQRItem)) {
-      if (updatedTopLevelQRItem.length > 0) {
-        topLevelQrItems.push(...updatedTopLevelQRItem);
-      }
-      continue;
-    }
-
-    if (updatedTopLevelQRItem) {
-      topLevelQrItems.push(updatedTopLevelQRItem);
-    }
-  }
-
-  return { ...populatedResponse, item: topLevelQrItems };
+  return updateQuestionnaireResponse(
+    questionnaire,
+    populatedResponse,
+    initialiseItemCalculatedExpressionValueRecursive,
+    calculatedExpressionsWithValues
+  );
 }
 
 function initialiseItemCalculatedExpressionValueRecursive(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem | undefined,
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   calculatedExpressions: Record<string, CalculatedExpression[]>
-): QuestionnaireResponseItem[] | QuestionnaireResponseItem | null {
+): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
+  // For repeat groups
+  const hasMultipleAnswers = Array.isArray(qrItemOrItems);
+  if (hasMultipleAnswers) {
+    return qrItemOrItems;
+  }
+
+  const qrItem = qrItemOrItems;
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
-    // iterate through items of item recursively
     const childQrItems = qrItem?.item ?? [];
-    // const updatedChildQrItems: QuestionnaireResponseItem[] = [];
-
-    // FIXME Not implemented for repeat groups
-    if (qItem.type === 'group' && qItem.repeats) {
-      return qrItem ?? null;
-    }
 
     const indexMap = mapQItemsIndex(qItem);
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
 
     // Otherwise loop through qItem as usual
     for (const [index, childQItem] of childQItems.entries()) {
-      const childQrItem = qrItemsByIndex[index];
+      const childQRItemOrItems = qrItemsByIndex[index];
 
-      // FIXME Not implemented for repeat groups
-      if (Array.isArray(childQrItem)) {
-        continue;
-      }
-
-      const newQrItem = initialiseItemCalculatedExpressionValueRecursive(
+      const updatedChildQRItemOrItems = initialiseItemCalculatedExpressionValueRecursive(
         childQItem,
-        childQrItem,
+        childQRItemOrItems ?? null,
         calculatedExpressions
       );
 
       // FIXME Not implemented for repeat groups
-      if (Array.isArray(newQrItem)) {
+      if (Array.isArray(updatedChildQRItemOrItems)) {
         continue;
       }
 
-      if (newQrItem) {
+      const updatedChildQRItem = updatedChildQRItemOrItems;
+      if (updatedChildQRItem) {
         updateQrItemsInGroup(
-          newQrItem,
+          updatedChildQRItem,
           null,
-          qrItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
+          updatedChildQRItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
           indexMap
         );
       }
@@ -287,7 +253,7 @@ function getCalculatedExpressionAnswer(
 
 function constructGroupItem(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem | undefined,
+  qrItem: QuestionnaireResponseItem | null,
   calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponseItem | null {
   const calculatedExpressionAnswer = getCalculatedExpressionAnswer(qItem, calculatedExpressions);
@@ -317,7 +283,7 @@ function constructGroupItem(
 
 function constructSingleItem(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem | undefined,
+  qrItem: QuestionnaireResponseItem | null,
   calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponseItem | null {
   const calculatedExpressionAnswer = getCalculatedExpressionAnswer(qItem, calculatedExpressions);

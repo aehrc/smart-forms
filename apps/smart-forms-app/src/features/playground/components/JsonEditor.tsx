@@ -28,12 +28,20 @@ interface Props {
   jsonString: string;
   onJsonStringChange: (jsonString: string) => void;
   buildingState: 'idle' | 'building' | 'built';
+  fhirServerUrl: string;
   onBuildForm: (jsonString: string) => unknown;
   onDestroyForm: () => unknown;
 }
 
 function JsonEditor(props: Props) {
-  const { jsonString, onJsonStringChange, buildingState, onBuildForm, onDestroyForm } = props;
+  const {
+    jsonString,
+    onJsonStringChange,
+    buildingState,
+    fhirServerUrl,
+    onBuildForm,
+    onDestroyForm
+  } = props;
 
   const [view, setView] = useState<'editor' | 'storeState'>('editor');
   const [selectedStore, setSelectedStore] = useState<StateStore>('questionnaireResponseStore');
@@ -78,7 +86,7 @@ function JsonEditor(props: Props) {
                 onClick={() => {
                   setView('storeState');
                 }}>
-                See store state
+                See advanced properties
               </Button>
             ) : (
               <Stack direction="row" alignItems="center" gap={0.55}>
@@ -99,6 +107,7 @@ function JsonEditor(props: Props) {
                   <ToggleButton value="questionnaireStore">Q</ToggleButton>
                   <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>
                   <ToggleButton value="terminologyServerStore">Terminology</ToggleButton>
+                  <ToggleButton value="extractedResource">Extracted</ToggleButton>
                 </ToggleButtonGroup>
               </Stack>
             )}
@@ -131,7 +140,7 @@ function JsonEditor(props: Props) {
         />
       ) : (
         <Box sx={{ height: '100%', overflow: 'auto' }}>
-          <StoreStateViewer selectedStore={selectedStore} />
+          <StoreStateViewer selectedStore={selectedStore} fhirServerUrl={fhirServerUrl} />
         </Box>
       )}
     </Box>

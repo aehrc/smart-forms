@@ -1,0 +1,32 @@
+map "https://smartforms.csiro.au/docs/StructureMap/extract-bmi" = "extract-bmi"
+
+uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" as target
+
+// Used to create a Bundle.
+group patientMap(source src : QuestionnaireResponse, target bundle : Bundle) {
+  // Create bundle id and type
+  src -> bundle.id = uuid();
+  src -> bundle.type = 'transaction';
+
+  // Create bundle entries
+  src -> bundle.entry as entry then {
+    // Create entry.request
+    src -> entry.request as request, request.method = 'POST', request.url = 'Observation';
+    src -> entry.resource = create("Observation") as resource then {
+      // Create resource.status
+      src -> resource.status = "final";
+
+      // Create resource.code via cc()
+      src -> resource.code = cc("http://snomed.info/sct", "60621009", "Body mass index") as cc;
+
+      // Create resource.subject with QR's subject
+      src.subject as sub -> resource.subject = create("Reference") as r, r.reference = (%sub.reference);
+
+      // Create resource.valueQuantity
+      src.item as bmiCalculation where linkId = 'bmi-calculation' -> resource then {
+        bmiCalculation.item as bmiResult where linkId = 'bmi-result' -> resource.valueQuantity = create("Quantity") as q, q.value = (%bmiResult.answer.value), q.unit = "kg/m2", q.system = "http://unitsofmeasure.org", q.code = "kg/m2";
+      };
+    };
+  };
+}

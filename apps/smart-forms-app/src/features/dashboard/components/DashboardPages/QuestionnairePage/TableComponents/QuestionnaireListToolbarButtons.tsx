@@ -20,8 +20,6 @@ import CreateNewResponseButton from '../Buttons/CreateNewResponseButton.tsx';
 import ViewExistingResponsesButton from '../Buttons/ViewExistingResponsesButton.tsx';
 import ClearIcon from '@mui/icons-material/Clear';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
-import useDebugMode from '../../../../../../hooks/useDebugMode.ts';
-import GoToSdcIdeButton from '../Buttons/GoToSdcIdeButton.tsx';
 
 interface QuestionnaireListToolbarButtonsProps {
   onClearSelection: () => void;
@@ -31,13 +29,9 @@ function QuestionnaireListToolbarButtons(props: QuestionnaireListToolbarButtonsP
   const { onClearSelection } = props;
 
   const { smartClient } = useSmartClient();
-  const { debugModeEnabled } = useDebugMode();
-
-  const isNotLaunched = !smartClient;
 
   return (
     <Box display="flex" alignItems="center" columnGap={2}>
-      {isNotLaunched && debugModeEnabled ? <GoToSdcIdeButton /> : null}
       <CreateNewResponseButton />
 
       {smartClient ? <ViewExistingResponsesButton /> : null}

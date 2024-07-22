@@ -51,7 +51,7 @@ function createCanonicalParam(canonicalUrl: string): ParametersParameter {
 }
 
 // setting local parameter as false as we are calling $populate with an NPM package, not a server
-// package doesn't contain any fhir resources to "know" the context from
+// the package doesn't contain any fhir resources to "know" the context from
 function createLocalParam(): ParametersParameter {
   return {
     name: 'local',

@@ -47,7 +47,13 @@ interface ReturnParameter extends ParametersParameter {
   resource: Questionnaire;
 }
 
-interface OutcomeParameter extends ParametersParameter {
+/**
+ * Output parameter from $assemble's 'outcome' parameter
+ * @see {@link http://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble}
+ *
+ * @author Sean Fong
+ */
+export interface OutcomeParameter extends ParametersParameter {
   name: 'outcome';
   resource: OperationOutcome;
 }

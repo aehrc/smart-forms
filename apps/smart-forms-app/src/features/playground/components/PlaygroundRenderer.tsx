@@ -24,23 +24,30 @@ import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
+import ExtractButtonForPlayground from './ExtractButtonForPlayground.tsx';
+import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
+  isExtracting: boolean;
+  onExtract: () => void;
 }
 
 function PlaygroundRenderer(props: PlaygroundRendererProps) {
-  const { endpointUrl, patient, user } = props;
+  const { endpointUrl, patient, user, isExtracting, onExtract } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const [isPopulating, setIsPopulating] = useState(false);
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
   const prePopEnabled = endpointUrl !== null && patient !== null;
+  const extractEnabled = targetStructureMap !== null;
 
   function handlePrepopulate() {
     if (!prePopEnabled) {
@@ -64,10 +71,13 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         return;
       }
 
-      const { populatedResponse } = populateResult;
+      const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
       await buildForm(sourceQuestionnaire, populatedResponse, undefined, TERMINOLOGY_SERVER_URL);
+      if (populatedContext) {
+        setPopulatedContext(populatedContext);
+      }
 
       setIsPopulating(false);
     });
@@ -75,23 +85,30 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
   return (
     <>
-      {prePopEnabled ? (
-        <Box display="flex" alignItems="center" columnGap={2} mx={1}>
-          <PrePopButtonForPlayground isPopulating={isPopulating} onPopulate={handlePrepopulate} />
-          <Box flexGrow={1} />
+      <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
+        <PrePopButtonForPlayground
+          prePopEnabled={prePopEnabled}
+          isPopulating={isPopulating}
+          onPopulate={handlePrepopulate}
+        />
+        <ExtractButtonForPlayground
+          extractEnabled={extractEnabled}
+          isExtracting={isExtracting}
+          onExtract={onExtract}
+        />
+        <Box flexGrow={1} />
 
-          {patientName ? (
-            <Typography variant="subtitle2" color="text.secondary">
-              Patient: {patientName}
-            </Typography>
-          ) : null}
-          {userName ? (
-            <Typography variant="subtitle2" color="text.secondary">
-              User: {userName}
-            </Typography>
-          ) : null}
-        </Box>
-      ) : null}
+        {patientName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            Patient: {patientName}
+          </Typography>
+        ) : null}
+        {userName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            User: {userName}
+          </Typography>
+        ) : null}
+      </Box>
       {isPopulating ? null : <BaseRenderer />}
     </>
   );

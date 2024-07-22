@@ -139,6 +139,12 @@ LinkId of the currently focused item
 
 ***
 
+### initialExpressions
+
+> **initialExpressions**: `Record`\<`string`, `InitialExpression`\>
+
+***
+
 ### itemTypes
 
 > **itemTypes**: `Record`\<`string`, `string`\>

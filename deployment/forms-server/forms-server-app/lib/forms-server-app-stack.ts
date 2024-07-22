@@ -12,6 +12,7 @@ import {
 import { AssembleEndpoint } from 'forms-server-assemble-endpoint';
 import { HapiEndpoint } from 'forms-server-hapi-endpoint';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { PopulateEndpoint } from 'forms-server-populate-endpoint';
 
 export class FormsServerAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -38,8 +39,28 @@ export class FormsServerAppStack extends cdk.Stack {
       protocol: ApplicationProtocol.HTTPS,
       certificates: [certificate]
     });
+    const populate = new PopulateEndpoint(this, 'FormsServerPopulate', { cluster });
     const assemble = new AssembleEndpoint(this, 'FormsServerAssemble', { cluster });
     const hapi = new HapiEndpoint(this, 'FormsServerHapi', { cluster });
+
+    // Create a target for the populate service, routed from the "api/fhir/$populate" path.
+    const populateTarget = populate.service.loadBalancerTarget({
+      containerName: populate.containerName,
+      containerPort: populate.containerPort
+    });
+
+    const populateTargetGroup = new ApplicationTargetGroup(this, 'FormsServerPopulateTargetGroup', {
+      vpc,
+      port: populate.containerPort,
+      protocol: ApplicationProtocol.HTTP,
+      targets: [populateTarget],
+      healthCheck: { path: '/fhir/Questionnaire/$populate' }
+    });
+    listener.addAction('FormsServerPopulateAction', {
+      action: ListenerAction.forward([populateTargetGroup]),
+      priority: 1,
+      conditions: [ListenerCondition.pathPatterns(['/fhir/Questionnaire/$populate'])]
+    });
 
     // Create a target for the assemble service, routed from the "api/fhir/$assemble" path.
     const assembleTarget = assemble.service.loadBalancerTarget({
@@ -56,7 +77,7 @@ export class FormsServerAppStack extends cdk.Stack {
     });
     listener.addAction('FormsServerAssembleAction', {
       action: ListenerAction.forward([assembleTargetGroup]),
-      priority: 1,
+      priority: 2,
       conditions: [ListenerCondition.pathPatterns(['/fhir/Questionnaire/$assemble'])]
     });
 
@@ -70,7 +91,7 @@ export class FormsServerAppStack extends cdk.Stack {
       port: hapi.containerPort,
       protocol: ApplicationProtocol.HTTP,
       targets: [hapiTarget],
-      healthCheck: { path: '/fhir/metadata' }
+      healthCheck: { path: '/fhir/metadata', interval: cdk.Duration.seconds(180) }
     });
     listener.addAction('FormsServerDefaultAction', {
       action: ListenerAction.forward([hapiTargetGroup])

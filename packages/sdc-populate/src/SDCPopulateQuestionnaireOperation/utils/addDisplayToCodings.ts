@@ -92,7 +92,7 @@ export async function resolveLookupPromises(
 
     let lookupResult: LookupResponse | null = null;
 
-    // Get lookupResult from response (fhirClient scenario)
+    // Get lookupResult from response (fhirClient and fetch scenario)
     if (lookupResponseIsValid(settledPromise.value)) {
       lookupResult = settledPromise.value;
     }

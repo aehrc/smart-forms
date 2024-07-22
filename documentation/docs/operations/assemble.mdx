@@ -1,0 +1,33 @@
+---
+sidebar_position: 3
+---
+
+# $assemble
+
+## Useful links
+
+**Deployed service: https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble**
+
+FHIR Operation definition: http://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble
+
+Github: https://github.com/aehrc/smart-forms/tree/main/services/assemble-express
+
+Dockerhub: https://hub.docker.com/r/aehrc/smart-forms-assemble
+
+## Usage
+
+A Questionnaire resource can be assembled using a **POST** request to a URL such as:
+
+```http request
+https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble (type-level)
+```
+
+#### Parameters
+
+| Name          | Cardinality | Type          | Documentation                                                                                                                           |
+| ------------- | ----------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| questionnaire | 1..1        | Questionnaire | The [Modular Questionnaire](https://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-modular.html) to assemble the content of. |
+
+#### Try it out
+
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman"/>](https://elements.getpostman.com/redirect?entityId=22885901-2af2cfbb-3a0a-49c6-8404-105ef0751415&entityType=collection)

@@ -15,37 +15,37 @@
  * limitations under the License.
  */
 
-import axios from 'axios';
 import type { FetchResourceCallback } from '@aehrc/sdc-populate';
-import type { RequestConfig } from 'smart-forms-app/src/features/prepopulate/utils/callback';
+import { HEADERS } from './globals';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-export const fetchResourceCallback: FetchResourceCallback = (
+export interface RequestConfig {
+  url: string;
+  authToken?: string;
+}
+
+export const fetchResourceCallback: FetchResourceCallback = async (
   query: string,
   requestConfig: RequestConfig
 ) => {
-  let { clientEndpoint } = requestConfig;
-  const { authToken } = requestConfig;
+  const { url, authToken } = requestConfig;
 
-  const headers = {
-    Accept: 'application/json+fhir; charset=utf-8',
-    Authorization: `Bearer ${authToken}`
-  };
+  let requestUrl = url;
+  if (!requestUrl.endsWith('/')) {
+    requestUrl += '/';
+  }
+  requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : requestUrl + query;
 
-  if (!clientEndpoint.endsWith('/')) {
-    clientEndpoint += '/';
+  const headers = authToken ? { ...HEADERS, Authorization: `Bearer ${authToken}` } : HEADERS;
+
+  const response = await fetch(requestUrl, {
+    headers: headers
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
   }
 
-  if (ABSOLUTE_URL_REGEX.test(query)) {
-    return axios.get(query, {
-      headers: headers
-    });
-  } else {
-    return axios.get(clientEndpoint + query, {
-      headers: headers
-    });
-  }
+  return response.json();
 };
-// how do i define the callback here?
-// start in the smart forms app then call the $populate function
