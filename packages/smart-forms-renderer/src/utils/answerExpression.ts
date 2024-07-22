@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { AnswerExpression } from '../interfaces/answerExpression.interface';
+import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import _isEqual from 'lodash/isEqual';

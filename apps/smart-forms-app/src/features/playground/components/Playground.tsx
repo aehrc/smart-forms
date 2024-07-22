@@ -36,7 +36,6 @@ import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
-import { QRadiologyScenariosPoc } from './QRadiologyScenariosPoc.ts';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 
@@ -47,10 +46,7 @@ function Playground() {
   );
   const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
   const [user, setUser] = useLocalStorage<Practitioner | null>('playgroundLaunchUser', null);
-  const [jsonString, setJsonString] = useLocalStorage(
-    'playgroundJsonString',
-    JSON.stringify(QRadiologyScenariosPoc, null, 2)
-  );
+  const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
   const { enqueueSnackbar } = useSnackbar();
