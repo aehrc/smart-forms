@@ -33,6 +33,8 @@ test.beforeEach(async ({ page }) => {
   const fetchQRPromise = page.waitForResponse(
     new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/QuestionnaireResponse\?.+$/)
   );
+  await page.getByTestId('dashboard-table-pagination').locator('div').getByRole('combobox').click();
+  await page.getByRole('option', { name: '50' }).click();
   await page.getByTestId('questionnaire-list-row').getByText(questionnaireTitle).first().click();
   const fetchQRResponse = await fetchQRPromise;
   expect(fetchQRResponse.status()).toBe(200);

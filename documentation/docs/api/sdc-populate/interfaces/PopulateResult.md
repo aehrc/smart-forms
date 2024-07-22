@@ -8,6 +8,12 @@
 
 ***
 
+### populatedContext?
+
+> `optional` **populatedContext**: `Record`\<`string`, `any`\>
+
+***
+
 ### populatedResponse
 
 > **populatedResponse**: `QuestionnaireResponse`

@@ -18,7 +18,7 @@
 import { useState } from 'react';
 import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { BaseRenderer, buildForm, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { BaseRenderer, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
@@ -26,6 +26,7 @@ import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import ExtractButtonForPlayground from './ExtractButtonForPlayground.tsx';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { buildFormWrapper } from '../../../utils/manageForm.ts';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;
@@ -74,7 +75,12 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
       const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildForm(sourceQuestionnaire, populatedResponse, undefined, TERMINOLOGY_SERVER_URL);
+      await buildFormWrapper(
+        sourceQuestionnaire,
+        populatedResponse,
+        undefined,
+        TERMINOLOGY_SERVER_URL
+      );
       if (populatedContext) {
         setPopulatedContext(populatedContext);
       }
