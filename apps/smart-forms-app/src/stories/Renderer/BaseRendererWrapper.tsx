@@ -18,8 +18,8 @@
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { buildForm } from '@aehrc/smart-forms-renderer';
 import { TERMINOLOGY_SERVER_URL } from '../../globals.ts';
+import { buildFormWrapper } from '../../utils/manageForm.ts';
 
 interface BaseRendererWrapperProps {
   children: ReactNode;
@@ -34,9 +34,12 @@ function BaseRendererWrapper(props: BaseRendererWrapperProps) {
 
   useEffect(() => {
     setLoading(true);
-    buildForm(questionnaire, questionnaireResponse, undefined, TERMINOLOGY_SERVER_URL).then(() => {
-      setLoading(false);
-    });
+
+    buildFormWrapper(questionnaire, questionnaireResponse, undefined, TERMINOLOGY_SERVER_URL).then(
+      () => {
+        setLoading(false);
+      }
+    );
   }, [questionnaire, questionnaireResponse]);
 
   if (loading) {

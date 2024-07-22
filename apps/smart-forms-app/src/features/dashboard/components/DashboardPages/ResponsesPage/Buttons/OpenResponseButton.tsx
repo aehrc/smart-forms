@@ -28,10 +28,10 @@ import { postQuestionnaireToSMARTHealthIT } from '../../../../../../api/saveQr.t
 import { assembleIfRequired } from '../../../../../../utils/assemble.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { buildForm } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
+import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
 
 interface Props {
   selectedResponse: QuestionnaireResponse | null;
@@ -113,7 +113,12 @@ function OpenResponseButton(props: Props) {
       postQuestionnaireToSMARTHealthIT(smartClient, referencedQuestionnaire);
     }
 
-    await buildForm(referencedQuestionnaire, selectedResponse, undefined, TERMINOLOGY_SERVER_URL);
+    await buildFormWrapper(
+      referencedQuestionnaire,
+      selectedResponse,
+      undefined,
+      TERMINOLOGY_SERVER_URL
+    );
 
     navigate('/viewer');
     setIsLoading(false);
