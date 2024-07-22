@@ -34,13 +34,13 @@ import type {
 
 export function createPopulateInputParameters(
   questionnaire: Questionnaire,
+  patient: Patient,
+  user: Practitioner | null,
+  encounter: Encounter | null,
   launchContexts: LaunchContext[],
   sourceQueries: SourceQuery[],
   questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[],
-  context: Record<string, any>,
-  patient: Patient,
-  user?: Practitioner,
-  encounter?: Encounter
+  context: Record<string, any>
 ): Parameters | null {
   const patientSubject = createPatientSubject(questionnaire, patient);
   if (!patientSubject) {
@@ -73,10 +73,10 @@ export function createPopulateInputParameters(
     for (const launchContext of launchContexts) {
       const launchContextParam = createLaunchContextParam(
         launchContext,
-        context,
         patient,
         user,
-        encounter
+        encounter,
+        context
       );
       if (launchContextParam) {
         contexts.push(launchContextParam);
@@ -147,10 +147,10 @@ function createLocalParam(): ParametersParameter {
 
 function createLaunchContextParam(
   launchContext: LaunchContext,
-  context: Record<string, any>,
   patient: Patient,
-  user?: Practitioner,
-  encounter?: Encounter
+  user: Practitioner | null,
+  encounter: Encounter | null,
+  fhirPathContext: Record<string, any>
 ): ParametersParameter | null {
   const name = launchContext.extension[0].valueId ?? launchContext.extension[0].valueCoding?.code;
   if (!name) {
@@ -174,7 +174,7 @@ function createLaunchContextParam(
   }
 
   // Update context with launchContext resources
-  context[name] = resource;
+  fhirPathContext[name] = resource;
 
   return {
     name: 'context',

@@ -40,6 +40,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const [isPopulating, setIsPopulating] = useState(false);
 
@@ -70,10 +71,13 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         return;
       }
 
-      const { populatedResponse } = populateResult;
+      const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
       await buildForm(sourceQuestionnaire, populatedResponse, undefined, TERMINOLOGY_SERVER_URL);
+      if (populatedContext) {
+        setPopulatedContext(populatedContext);
+      }
 
       setIsPopulating(false);
     });
