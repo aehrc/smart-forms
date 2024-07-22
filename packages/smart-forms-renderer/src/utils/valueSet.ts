@@ -52,8 +52,10 @@ export function getValueSetPromise(url: string, terminologyServerUrl: string): P
 
   if (url.includes('ValueSet/$expand?url=')) {
     const splitUrl = url.split('ValueSet/$expand?url=');
-    terminologyServerUrl = splitUrl[0];
-    valueSetUrl = splitUrl[1];
+    if (splitUrl[0] && splitUrl[1]) {
+      terminologyServerUrl = splitUrl[0];
+      valueSetUrl = splitUrl[1];
+    }
   }
 
   valueSetUrl = valueSetUrl.replace('|', '&version=');

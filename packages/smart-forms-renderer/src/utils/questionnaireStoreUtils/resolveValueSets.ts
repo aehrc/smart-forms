@@ -47,17 +47,21 @@ export async function resolveValueSets(
   const resolvedPromises = await resolveValueSetPromises(valueSetPromises);
 
   for (const valueSetUrl in resolvedPromises) {
-    const valueSet = resolvedPromises[valueSetUrl].valueSet;
+    const valueSet = resolvedPromises[valueSetUrl]?.valueSet;
 
     if (valueSet) {
       if (valueSetToXFhirQueryVariableNameMap[valueSetUrl]) {
         // valueSetUrl is in x-fhir-query variables, save to variable
         const variableName = valueSetToXFhirQueryVariableNameMap[valueSetUrl];
-        const variable = variables.xFhirQueryVariables[variableName];
-        variables.xFhirQueryVariables[variableName] = {
-          ...variable,
-          result: resolvedPromises[valueSetUrl].valueSet
-        };
+        if (variableName) {
+          const variable = variables.xFhirQueryVariables[variableName];
+          if (variable) {
+            variables.xFhirQueryVariables[variableName] = {
+              ...variable,
+              result: resolvedPromises[valueSetUrl]?.valueSet
+            };
+          }
+        }
       } else {
         // valueSetUrl is in x-fhir-query variables, save to preprocessedValueSetCodings
         processedValueSetCodings[valueSetUrl] = getValueSetCodings(valueSet);
