@@ -38,12 +38,14 @@ export function getFirstVisibleTab(
         return false;
       }
 
-      if (singleItems[tabLinkId]) {
-        return singleItems[tabLinkId].isEnabled;
+      const singleItem = singleItems[tabLinkId];
+      if (singleItem) {
+        return singleItem.isEnabled;
       }
 
-      if (singleExpressions[tabLinkId]) {
-        return singleExpressions[tabLinkId].isEnabled;
+      const singleExpression = singleExpressions[tabLinkId];
+      if (singleExpression) {
+        return singleExpression.isEnabled;
       }
 
       return true;
