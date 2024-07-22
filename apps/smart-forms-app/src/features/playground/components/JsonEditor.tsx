@@ -24,7 +24,7 @@ import StoreStateViewer from './StoreStateViewer.tsx';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 
-interface Props {
+interface JsonEditorProps {
   jsonString: string;
   onJsonStringChange: (jsonString: string) => void;
   buildingState: 'idle' | 'building' | 'built';
@@ -33,7 +33,7 @@ interface Props {
   onDestroyForm: () => unknown;
 }
 
-function JsonEditor(props: Props) {
+function JsonEditor(props: JsonEditorProps) {
   const {
     jsonString,
     onJsonStringChange,

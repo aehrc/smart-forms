@@ -30,6 +30,7 @@ export async function buildForm(
   terminologyServerUrl?: string,
   additionalVariables?: Record<string, object>
 ): Promise<void> {
+  // Reset terminology server
   if (terminologyServerUrl) {
     terminologyServerStore.getState().setUrl(terminologyServerUrl);
   } else {
