@@ -61,8 +61,6 @@ export function evaluateAnswerExpressions(
       console.warn(e.message, `LinkId: ${linkId}\nExpression: ${answerExpression.options}`);
     }
 
-    console.log(answerExpression);
-
     updatedAnswerExpressions[linkId] = answerExpression;
   }
 

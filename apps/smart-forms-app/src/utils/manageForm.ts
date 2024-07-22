@@ -13,7 +13,7 @@ export async function buildFormWrapper(
   extractOperationStore.getState().resetStore();
   const targetStructureMap = await fetchTargetStructureMap(questionnaire);
   if (targetStructureMap) {
-    extractOperationStore.getState().setExtractedResource(targetStructureMap);
+    extractOperationStore.getState().setTargetStructureMap(targetStructureMap);
   }
 
   return buildForm(

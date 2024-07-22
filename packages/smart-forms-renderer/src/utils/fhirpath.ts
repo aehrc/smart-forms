@@ -28,7 +28,6 @@ import { evaluateFhirpathAsync } from './fhirpathAsyncUtils/fhirpath-async';
 import { DomainResource } from 'fhir/r4b';
 import { AnswerExpression } from '../interfaces/answerExpression.interface';
 import { evaluateAnswerExpressions } from './answerExpression';
-import cloneDeep from 'lodash.clonedeep';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
@@ -82,8 +81,6 @@ export async function evaluateUpdatedExpressions(
     variablesFhirPath,
     existingFhirPathContext
   );
-
-  console.log(cloneDeep(updatedFhirPathContext));
 
   // Update enableWhenExpressions
   const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } = evaluateEnableWhenExpressions(
