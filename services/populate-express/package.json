@@ -13,7 +13,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "express": "^4.19.2",
-    "@aehrc/sdc-populate": "^2.2.7",
+    "@aehrc/sdc-populate": "^2.3.0",
     "dotenv": "^16.4.5",
     "cors": "^2.8.5"
   },
