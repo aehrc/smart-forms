@@ -224,7 +224,7 @@ function initialiseItemCalculatedExpressionValueRecursive(
         updateQrItemsInGroup(
           updatedChildQRItem,
           null,
-          updatedChildQRItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
+          qrItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
           indexMap
         );
       }
