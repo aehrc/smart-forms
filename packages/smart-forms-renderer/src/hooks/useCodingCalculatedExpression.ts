@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 
 interface UseCodingCalculatedExpression {
@@ -56,6 +56,7 @@ function useCodingCalculatedExpression(
         calcExpression.value !== valueInString &&
         (typeof calcExpression.value === 'string' ||
           typeof calcExpression.value === 'number' ||
+          typeof calcExpression.value === 'object' ||
           calcExpression.value === null)
       ) {
         // update ui to show calculated value changes
@@ -68,6 +69,14 @@ function useCodingCalculatedExpression(
         if (calcExpression.value === null) {
           onChangeByCalcExpressionNull();
           return;
+        }
+
+        // calculatedExpression value is object, check if it is a Coding object
+        if (typeof calcExpression.value === 'object' && objectIsCoding(calcExpression.value)) {
+          if (calcExpression.value.code) {
+            onChangeByCalcExpressionString(calcExpression.value.code);
+            return;
+          }
         }
 
         // calculatedExpression value is a string or number
@@ -85,6 +94,10 @@ function useCodingCalculatedExpression(
   );
 
   return { calcExpUpdated: calcExpUpdated };
+}
+
+function objectIsCoding(obj: any): obj is Coding {
+  return obj && obj.code && typeof obj.code === 'string';
 }
 
 export default useCodingCalculatedExpression;
