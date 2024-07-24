@@ -1,5 +1,38 @@
+import type { Pages } from '../interfaces/page.interface';
+import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { isSpecificItemControl } from './itemControl';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
+
+export function getFirstVisiblePage(
+  pages: Pages,
+  enableWhenItems: EnableWhenItems,
+  enableWhenExpressions: EnableWhenExpressions
+) {
+  // Only singleEnableWhenItems are relevant for page operations
+  const { singleItems } = enableWhenItems;
+  const { singleExpressions } = enableWhenExpressions;
+
+  return Object.entries(pages)
+    .sort(([, pageA], [, pageB]) => pageA.pageIndex - pageB.pageIndex)
+    .findIndex(([pageLinkId, page]) => {
+      if (page.isHidden) {
+        return false;
+      }
+
+      const singleItem = singleItems[pageLinkId];
+      if (singleItem) {
+        return singleItem.isEnabled;
+      }
+
+      const singleExpression = singleExpressions[pageLinkId];
+      if (singleExpression) {
+        return singleExpression.isEnabled;
+      }
+
+      return true;
+    });
+}
 
 /**
  * Checks if a top-level QItem is a page
@@ -53,4 +86,28 @@ export function isPage(item: QuestionnaireItem) {
     }
   }
   return false;
+}
+
+/**
+ * Create a `Record<linkId, Pages>` key-value pair for all page items in a qItem array
+ *
+ * @author Riza Nafis
+ */
+export function constructPagesWithProperties(
+  qItems: QuestionnaireItem[] | undefined,
+  hasPage: boolean
+): Pages {
+  if (!qItems) return {};
+
+  const qItemPages = hasPage ? qItems : qItems.filter(isPage);
+
+  const pages: Pages = {};
+  for (const [i, qItem] of qItemPages.entries()) {
+    pages[qItem.linkId] = {
+      pageIndex: i,
+      isComplete: false,
+      isHidden: structuredDataCapture.getHidden(qItem) ?? false
+    };
+  }
+  return pages;
 }

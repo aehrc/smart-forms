@@ -17,11 +17,13 @@
 
 import type { Questionnaire } from 'fhir/r4';
 import type { Tabs } from '../../interfaces/tab.interface';
+import type { Pages } from '../../interfaces/page.interface';
 import type { LaunchContext } from '../../interfaces/populate.interface';
 import type { QuestionnaireModel } from '../../interfaces/questionnaireStore.interface';
 import { extractLaunchContexts } from './extractLaunchContext';
 import { extractQuestionnaireLevelVariables } from './extractVariables';
 import { extractTabs } from './extractTabs';
+import { extractPages } from './extractPages';
 import { extractContainedValueSets } from './extractContainedValueSets';
 import { extractOtherExtensions } from './extractOtherExtensions';
 import type { Variables } from '../../interfaces/variables.interface';
@@ -41,6 +43,7 @@ export async function createQuestionnaireModel(
 
   const itemTypes: Record<string, string> = Object.fromEntries(getLinkIdTypeTuples(questionnaire));
   const tabs: Tabs = extractTabs(questionnaire);
+  const pages: Pages = extractPages(questionnaire);
 
   const launchContexts: Record<string, LaunchContext> = extractLaunchContexts(questionnaire);
 
@@ -98,6 +101,7 @@ export async function createQuestionnaireModel(
   return {
     itemTypes,
     tabs,
+    pages,
     variables,
     launchContexts,
     enableWhenItems,
@@ -116,6 +120,7 @@ function createEmptyModel(): QuestionnaireModel {
   return {
     itemTypes: {},
     tabs: {},
+    pages: {},
     variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
     launchContexts: {},
     calculatedExpressions: {},
