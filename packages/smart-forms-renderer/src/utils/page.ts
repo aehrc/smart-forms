@@ -7,7 +7,7 @@ import { isSpecificItemControl } from './itemControl';
  * @author Riza Nafis
  */
 export function isPageTopLevel(topLevelQItem: QuestionnaireItem): boolean {
-  return isSpecificItemControl(topLevelQItem, 'tab-container');
+  return isSpecificItemControl(topLevelQItem, 'page');
 }
 
 /**
@@ -21,8 +21,8 @@ export function containsPages(topLevelQItem: QuestionnaireItem): boolean {
     return false;
   }
 
-  const tabs = getPageItems(topLevelQItem.item);
-  return tabs.length > 0;
+  const pages = getPageItems(topLevelQItem.item);
+  return pages.length > 0;
 }
 
 /**
@@ -45,10 +45,10 @@ export function isPage(item: QuestionnaireItem) {
   );
 
   if (itemControl) {
-    const tabCoding = itemControl.valueCodeableConcept?.coding?.find(
+    const pageCoding = itemControl.valueCodeableConcept?.coding?.find(
       (c: Coding) => c.code === 'page'
     );
-    if (tabCoding) {
+    if (pageCoding) {
       return true;
     }
   }
