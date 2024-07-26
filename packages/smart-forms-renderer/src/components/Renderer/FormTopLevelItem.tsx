@@ -20,7 +20,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
 import FormBodyPage from './FormBodyPage';
 import { containsTabs, isTabContainer } from '../../utils/tabs';
-import { containsPages, isPageTopLevel } from '../../utils/page';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
 import type {
@@ -54,9 +53,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
-
-  const itemIsPageTopLevel = isPageTopLevel(topLevelQItem);
-  const itemContainsPage = containsPages(topLevelQItem);
 
   const isTablet = useResponsive('up', 'md');
 
@@ -102,19 +98,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
     return (
       <FormBodyCollapsible
-        key={topLevelQItem.linkId}
-        topLevelQItem={topLevelQItem}
-        topLevelQRItem={topLevelQRItem}
-        parentIsReadOnly={readOnly}
-        onQrItemChange={onQrItemChange}
-      />
-    );
-  }
-
-  // If form is page, it is rendered as a page form
-  if (itemContainsPage || itemIsPageTopLevel) {
-    return (
-      <FormBodyPage
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}

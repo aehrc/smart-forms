@@ -28,6 +28,7 @@ import type {
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';
+import type { Pages } from '../../../interfaces/page.interface';
 import GroupItemView from './GroupItemView';
 
 interface GroupItemProps
@@ -41,6 +42,9 @@ interface GroupItemProps
   tabIsMarkedAsComplete?: boolean;
   tabs?: Tabs;
   currentTabIndex?: number;
+  pageIsMarkedAsComplete?: boolean;
+  pages?: Pages;
+  currentPageIndex?: number;
 }
 
 function GroupItem(props: GroupItemProps) {
@@ -52,6 +56,9 @@ function GroupItem(props: GroupItemProps) {
     tabIsMarkedAsComplete,
     tabs,
     currentTabIndex,
+    pageIsMarkedAsComplete,
+    pages,
+    currentPageIndex,
     parentIsReadOnly,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
@@ -83,7 +90,7 @@ function GroupItem(props: GroupItemProps) {
   }
 
   if (!qItems || !qrItems) {
-    return <>Unable to load group, something has gone terribly wrong.</>;
+    return <>Group Item: Unable to load group, something has gone terribly wrong.</>;
   }
 
   // If an item has multiple answers, it is a repeat group
@@ -99,6 +106,9 @@ function GroupItem(props: GroupItemProps) {
       tabIsMarkedAsComplete={tabIsMarkedAsComplete}
       tabs={tabs}
       currentTabIndex={currentTabIndex}
+      pageIsMarkedAsComplete={pageIsMarkedAsComplete}
+      pages={pages}
+      currentPageIndex={currentPageIndex}
       parentIsReadOnly={parentIsReadOnly}
       parentIsRepeatGroup={parentIsRepeatGroup}
       parentRepeatGroupIndex={parentRepeatGroupIndex}
