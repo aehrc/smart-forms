@@ -1,7 +1,8 @@
 import type { Pages } from '../interfaces/page.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
-import type { Coding, QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { isSpecificItemControl } from './itemControl';
+import { isHiddenByEnableWhen } from './qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 export function getFirstVisiblePage(
@@ -35,36 +36,15 @@ export function getFirstVisiblePage(
 }
 
 /**
- * Checks if a top-level QItem is a page
- *
- * @author Riza Nafis
- */
-export function isPageTopLevel(topLevelQItem: QuestionnaireItem): boolean {
-  return isSpecificItemControl(topLevelQItem, 'page');
-}
-
-/**
  * Checks if any of the items in a qItem array is a page item
  * Returns true if there is at least one page item
  *
  * @author Riza Nafis
  */
-export function containsPages(topLevelQItem: QuestionnaireItem): boolean {
-  if (!topLevelQItem.item) {
-    return false;
-  }
+export function everyIsPages(topLevelQItem: QuestionnaireItem[] | undefined): boolean {
+  if (!topLevelQItem) return false;
 
-  const pages = getPageItems(topLevelQItem.item);
-  return pages.length > 0;
-}
-
-/**
- * Get page items from a qItem array
- *
- * @author Riza Nafis
- */
-export function getPageItems(items: QuestionnaireItem[]): QuestionnaireItem[] {
-  return items.filter((i: QuestionnaireItem) => isPage(i));
+  return topLevelQItem.every((i: QuestionnaireItem) => isPage(i));
 }
 
 /**
@@ -73,19 +53,7 @@ export function getPageItems(items: QuestionnaireItem[]): QuestionnaireItem[] {
  * @author Riza Nafis
  */
 export function isPage(item: QuestionnaireItem) {
-  const itemControl = item.extension?.find(
-    (e) => e.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
-  );
-
-  if (itemControl) {
-    const pageCoding = itemControl.valueCodeableConcept?.coding?.find(
-      (c: Coding) => c.code === 'page'
-    );
-    if (pageCoding) {
-      return true;
-    }
-  }
-  return false;
+  return isSpecificItemControl(item, 'page');
 }
 
 /**
@@ -93,13 +61,10 @@ export function isPage(item: QuestionnaireItem) {
  *
  * @author Riza Nafis
  */
-export function constructPagesWithProperties(
-  qItems: QuestionnaireItem[] | undefined,
-  hasPage: boolean
-): Pages {
+export function constructPagesWithProperties(qItems: QuestionnaireItem[] | undefined): Pages {
   if (!qItems) return {};
 
-  const qItemPages = hasPage ? qItems : qItems.filter(isPage);
+  const qItemPages = qItems.filter(isPage);
 
   const pages: Pages = {};
   for (const [i, qItem] of qItemPages.entries()) {
@@ -110,4 +75,31 @@ export function constructPagesWithProperties(
     };
   }
   return pages;
+}
+
+interface contructPagesWithVisibilityParams {
+  pages: Pages;
+  enableWhenIsActivated: boolean;
+  enableWhenItems: EnableWhenItems;
+  enableWhenExpressions: EnableWhenExpressions;
+}
+
+export function constructPagesWithVisibility(
+  params: contructPagesWithVisibilityParams
+): { linkId: string; isVisible: boolean }[] {
+  const { pages, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
+
+  return Object.entries(pages).map(([linkId]) => {
+    const isVisible = !isHiddenByEnableWhen({
+      linkId,
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    });
+
+    return {
+      linkId,
+      isVisible
+    };
+  });
 }

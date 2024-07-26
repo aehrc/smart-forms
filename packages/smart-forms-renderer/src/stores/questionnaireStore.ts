@@ -79,7 +79,9 @@ import type { InitialExpression } from '../interfaces/initialExpression.interfac
  * @property buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
  * @property destroySourceQuestionnaire - Used to destroy the source questionnaire and reset all properties
  * @property switchTab - Used to switch the current tab index
+ * @property switchPage - Used to switch the current page index
  * @property markTabAsComplete - Used to mark a tab index as complete
+ * @property markPageAsComplete - Used to mark a page index as complete
  * @property updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
  * @property mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
  * @property toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
@@ -124,7 +126,9 @@ export interface QuestionnaireStoreType {
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
+  switchPage: (newPageIndex: number) => void;
   markTabAsComplete: (tabLinkId: string) => void;
+  markPageAsComplete: (pageLinkId: string) => void;
   updateEnableWhenItem: (
     linkId: string,
     newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
