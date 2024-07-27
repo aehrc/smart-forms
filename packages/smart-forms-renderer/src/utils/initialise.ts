@@ -17,6 +17,7 @@
 
 import { evaluateInitialEnableWhenExpressions } from './enableWhenExpression';
 import { getFirstVisibleTab } from './tabs';
+import { getFirstVisiblePage } from './page';
 import type {
   Expression,
   Questionnaire,
@@ -28,6 +29,7 @@ import type {
 } from 'fhir/r4';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { Tabs } from '../interfaces/tab.interface';
+import type { Pages } from '../interfaces/page.interface';
 import { assignPopulatedAnswersToEnableWhen } from './enableWhen';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 import { evaluateInitialCalculatedExpressions } from './calculatedExpression';
@@ -320,6 +322,7 @@ export interface initialFormFromResponseParams {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   variablesFhirPath: Record<string, Expression[]>;
   tabs: Tabs;
+  pages: Pages;
   fhirPathContext: Record<string, any>;
 }
 
@@ -329,6 +332,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
   initialEnableWhenExpressions: EnableWhenExpressions;
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   firstVisibleTab: number;
+  firstVisiblePage: number;
   updatedFhirPathContext: Record<string, any>;
 } {
   const {
@@ -338,6 +342,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     calculatedExpressions,
     variablesFhirPath,
     tabs,
+    pages,
     fhirPathContext
   } = params;
   const initialResponseItemMap = createQuestionnaireResponseItemMap(questionnaireResponse);
@@ -373,12 +378,18 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
       ? getFirstVisibleTab(tabs, initialisedItems, initialEnableWhenExpressions)
       : 0;
 
+  const firstVisiblePage =
+    Object.keys(pages).length > 0
+      ? getFirstVisiblePage(pages, initialisedItems, initialEnableWhenExpressions)
+      : 0;
+
   return {
     initialEnableWhenItems: initialisedItems,
     initialEnableWhenLinkedQuestions: linkedQuestions,
     initialEnableWhenExpressions,
     initialCalculatedExpressions,
     firstVisibleTab,
+    firstVisiblePage,
     updatedFhirPathContext
   };
 }

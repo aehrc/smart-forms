@@ -18,6 +18,7 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
+import FormBodyPage from './FormBodyPage';
 import { containsTabs, isTabContainer } from '../../utils/tabs';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
