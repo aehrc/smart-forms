@@ -1,0 +1,195 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "HeartRateObservation",
+  "version": "0.1.0",
+  "name": "HeartRateObservation",
+  "title": "Heart Rate Observation",
+  "status": "draft",
+  "date": "2024-07-15",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObservationHeartRate",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=8867-4&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "observation",
+      "text": "AU Core Observation - Heart Rate",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "patient-details",
+          "text": "Patient Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.id"
+                  }
+                }
+              ],
+              "linkId": "patient-id",
+              "text": "Patient ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%patient.name.where(use='official').select((family | (given | prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "patient-name",
+              "text": "Patient Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "first-observation-note",
+          "text": "This questionnaire only uses the first Observation resource with LOINC code 8867-4 (Heart rate) of a referenced\npatient.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"padding-bottom:\n8px;\">\r\n <b>This questionnaire only uses the first Observation resource with  LOINC code 8867-4 (Heart rate) of a referenced\npatient.</b>\r\n</div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "linkId": "observation-status",
+          "text": "Observation Status",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-status",
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationHeartRate.entry[0].resource.status"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-category",
+          "text": "Observation Category",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-category",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationHeartRate.entry[0].resource.category.coding"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-category-vscat-boolean",
+          "text": "Observation Category is VSCat?",
+          "type": "boolean",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationHeartRate.entry[0].resource.category.coding.code = 'vital-signs'"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-code-loinc",
+          "text": "Observation Code (LOINC)",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-vitalsignresult",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationHeartRate.entry[0].resource.code.coding.where(system='http://loinc.org' and code='8867-4')"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "Observation.effectiveDateTime",
+          "text": "Effective Date Time",
+          "type": "dateTime",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationHeartRate.entry[0].resource.effectiveDateTime"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-value",
+          "text": "Observation Value",
+          "type": "decimal",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationHeartRate.entry[0].resource.valueQuantity.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "beats/min",
+                "display": "beats/min"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

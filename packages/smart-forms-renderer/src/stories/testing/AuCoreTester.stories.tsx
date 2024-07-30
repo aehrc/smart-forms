@@ -25,7 +25,18 @@ import {
   QAuCoreCondition,
   QAuCoreEncounter,
   QAuCoreImmunization,
-  QAuCoreMedicationRequest
+  QAuCoreMedicationRequest,
+  QAuCoreObservationBodyHeight,
+  QAuCoreObservationBodyWeight,
+  QAuCoreObservationBP,
+  QAuCoreObservationHeartRate,
+  QAuCoreObservationRespirationRate,
+  QAuCoreObservationSmokingStatus,
+  QAuCoreObservationWaistCircumference,
+  QAuCorePatient,
+  QAuCorePractitioner,
+  QAuCorePractitionerRole,
+  QAuCoreProcedure
 } from '../assets/questionnaires/QAuCoreTesting';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -80,6 +91,104 @@ export const AuCoreImmunization: Story = {
 export const AuCoreMedicationRequest: Story = {
   args: {
     questionnaire: QAuCoreMedicationRequest,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCorePatient: Story = {
+  args: {
+    questionnaire: QAuCorePatient,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCorePractitioner: Story = {
+  args: {
+    questionnaire: QAuCorePractitioner,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCorePractitionerRole: Story = {
+  args: {
+    questionnaire: QAuCorePractitionerRole,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCoreProcedure: Story = {
+  args: {
+    questionnaire: QAuCoreProcedure,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCoreObservationBP: Story = {
+  args: {
+    questionnaire: QAuCoreObservationBP,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCoreObservationBodyHeight: Story = {
+  args: {
+    questionnaire: QAuCoreObservationBodyHeight,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCoreObservationBodyWeight: Story = {
+  args: {
+    questionnaire: QAuCoreObservationBodyWeight,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCoreObservationHeartRate: Story = {
+  args: {
+    questionnaire: QAuCoreObservationHeartRate,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+export const AuCoreObservationRespirationRate: Story = {
+  args: {
+    questionnaire: QAuCoreObservationRespirationRate,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCoreObservationSmokingStatus: Story = {
+  args: {
+    questionnaire: QAuCoreObservationSmokingStatus,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
+  }
+};
+
+export const AuCoreObservationWaistCircumference: Story = {
+  args: {
+    questionnaire: QAuCoreObservationWaistCircumference,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
