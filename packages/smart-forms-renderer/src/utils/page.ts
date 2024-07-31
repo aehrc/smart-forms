@@ -36,8 +36,8 @@ export function getFirstVisiblePage(
 }
 
 /**
- * Checks if any of the items in a qItem array is a page item
- * Returns true if there is at least one page item
+ * Checks if all of the items in a qItem array is a page item
+ * Returns true if all items is page item
  *
  * @author Riza Nafis
  */

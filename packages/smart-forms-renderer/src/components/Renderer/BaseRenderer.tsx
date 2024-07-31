@@ -26,7 +26,7 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
 import { everyIsPages } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
-import FormBodyPage from './FormBodyPage';
+import FormTopLevelPage from './FormTopLevelPage';
 
 /**
  * Main component of the form-rendering engine.
@@ -82,7 +82,7 @@ function BaseRenderer() {
     return (
       <Fade in={true} timeout={500}>
         <Container maxWidth="xl">
-          <FormBodyPage
+          <FormTopLevelPage
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
             parentIsReadOnly={readOnly}
