@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import TabContext from '@mui/lab/TabContext';
@@ -9,26 +9,49 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../stores';
+import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 
 interface FormBodyPageProps
   extends PropsWithQrItemChangeHandler,
     PropsWithParentIsReadOnlyAttribute {
-  topLevelQItems: QuestionnaireItem[];
-  topLevelQRItems: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[];
+  topLevelQItem: QuestionnaireItem;
+  topLevelQRItem: QuestionnaireResponseItem | null;
 }
 
 function FormBodyPage(props: FormBodyPageProps) {
-  const { topLevelQItems, topLevelQRItems, parentIsReadOnly, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, parentIsReadOnly, onQrItemChange } = props;
 
   const pages = useQuestionnaireStore.use.pages();
   const currentPage = useQuestionnaireStore.use.currentPageIndex();
+
+  const indexMap: Record<string, number> = useMemo(
+    () => mapQItemsIndex(topLevelQItem),
+    [topLevelQItem]
+  );
+
+  const nonNullTopLevelQRItem = topLevelQRItem ?? createEmptyQrGroup(topLevelQItem);
+
+  const qItems = topLevelQItem.item;
+  const qrItems = nonNullTopLevelQRItem.item;
+
+  function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
+    updateQrItemsInGroup(qrItem, null, nonNullTopLevelQRItem, indexMap);
+    onQrItemChange(nonNullTopLevelQRItem);
+  }
+
+  if (!qItems || !qrItems) {
+    return <>Unable to load form</>;
+  }
+
+  const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
 
   return (
     <Grid container spacing={1.5}>
       <TabContext value={currentPage.toString()}>
         <Grid item xs={12} md={12} lg={12}>
-          {topLevelQItems.map((qItem, i) => {
-            const qrItem = topLevelQRItems[i];
+          {qItems.map((qItem, i) => {
+            const qrItem = qrItemsByIndex[i];
 
             const isNotRepeatGroup = !Array.isArray(qrItem);
             const isPage = !!pages[qItem.linkId];
@@ -56,7 +79,7 @@ function FormBodyPage(props: FormBodyPageProps) {
                   pages={pages}
                   currentPageIndex={currentPage}
                   parentIsReadOnly={parentIsReadOnly}
-                  onQrItemChange={onQrItemChange}
+                  onQrItemChange={handleQrGroupChange}
                 />
               </TabPanel>
             );

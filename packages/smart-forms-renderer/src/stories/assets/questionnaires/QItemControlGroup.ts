@@ -755,3 +755,108 @@ export const qItemControlGroupPage: Questionnaire = {
     }
   ]
 };
+
+export const qItemControlGroupPageContainer: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'ItemControlGroupPage',
+  name: 'ItemControlGroupPage',
+  title: 'Item Control Group Page',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-07-24',
+  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-page',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                version: '1.0.0',
+                code: 'page'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'page-container',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          linkId: 'page-about-health-check',
+          text: 'About the health check',
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              linkId: 'health-check-eligible',
+              text: 'Eligible for health check',
+              type: 'boolean',
+              repeats: false
+            },
+            {
+              linkId: 'health-check-in-progress',
+              text: 'Health check already in progress?',
+              type: 'boolean',
+              repeats: false
+            },
+            {
+              linkId: 'health-check-last-completed',
+              text: 'Date of last completed health check',
+              type: 'date',
+              repeats: false
+            },
+            {
+              linkId: 'health-check-this-commenced',
+              text: 'Date and time this health check commenced',
+              type: 'dateTime',
+              repeats: false
+            }
+          ]
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText',
+              valueString: 'Current priorities'
+            }
+          ],
+          linkId: 'page-current-priorities',
+          text: 'Current health/patient priorities',
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
+                  valueString: 'Enter details'
+                }
+              ],
+              linkId: 'current-priorities-important-things',
+              text: 'What are the important things for you in this health check today?',
+              type: 'text',
+              repeats: false
+            },
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
+                  valueString: 'Enter details'
+                }
+              ],
+              linkId: 'current-priorities-worried-things',
+              text: 'Is there anything you are worried about?',
+              type: 'text',
+              repeats: false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};

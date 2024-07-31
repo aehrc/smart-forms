@@ -77,7 +77,6 @@ function GroupItemView(props: GroupItemViewProps) {
     onQrItemChange,
     onQrRepeatGroupChange
   } = props;
-  console.log({ pages, currentPageIndex });
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
