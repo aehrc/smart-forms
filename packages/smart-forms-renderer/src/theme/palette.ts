@@ -31,11 +31,6 @@ declare module '@mui/material/styles' {
     customBackground: {
       neutral: string;
     };
-    customButton: {
-      background: string;
-      backgroundHover: string;
-      foreground: string;
-    };
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -48,11 +43,6 @@ declare module '@mui/material/styles' {
     };
     customBackground?: {
       neutral: string;
-    };
-    customButton?: {
-      background: string;
-      backgroundHover: string;
-      foreground: string;
     };
   }
 }
@@ -93,11 +83,6 @@ const palette: PaletteOptions = {
   },
   customBackground: {
     neutral: '#F4F6F8'
-  },
-  customButton: {
-    background: '#0ABDC3',
-    backgroundHover: '#08979C',
-    foreground: '#161C26'
   },
   action: {
     active: grey['600'],
