@@ -51,9 +51,11 @@ export function everyIsPages(topLevelQItem: QuestionnaireItem[] | undefined): bo
 }
 
 export function isPageContainer(topLevelQItem: QuestionnaireItem[] | undefined): boolean {
-  if (topLevelQItem && topLevelQItem.length === 1) return false;
+  const anyPage = topLevelQItem?.filter(isPage);
 
-  return true;
+  if (!anyPage) return false;
+
+  return anyPage.some((page) => page.item?.every((i) => i.type === 'group') || false);
 }
 
 /**

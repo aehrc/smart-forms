@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import type { Pages } from '../../../interfaces/page.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import NextPageButton from './NextPageButton';
@@ -57,20 +58,17 @@ const PageButtonsWrapper = memo(function PageButtonsWrapper(props: PageButtonsWr
   const pageButtonsDisabled = numOfVisiblePages <= 1;
 
   return (
-    <Box display="flex" mt={3}>
-      {previousPageButtonHidden ? null : (
-        <PreviousPageButton
-          isDisabled={pageButtonsDisabled}
-          onPreviousPageClick={handlePreviousPageButtonClick}
-        />
-      )}
+    <Box display="flex" mt={3} gap={2} alignItems="center">
       <Box flexGrow={1} />
-      {nextPageButtonHidden ? null : (
-        <NextPageButton
-          isDisabled={pageButtonsDisabled}
-          onNextPageClick={handleNextPageButtonClick}
-        />
-      )}
+      <Typography variant="subtitle1">{`${currentPageIndex + 1} / ${numOfVisiblePages}`}</Typography>
+      <PreviousPageButton
+        isDisabled={pageButtonsDisabled || previousPageButtonHidden}
+        onPreviousPageClick={handlePreviousPageButtonClick}
+      />
+      <NextPageButton
+        isDisabled={pageButtonsDisabled || nextPageButtonHidden}
+        onNextPageClick={handleNextPageButtonClick}
+      />
     </Box>
   );
 });
