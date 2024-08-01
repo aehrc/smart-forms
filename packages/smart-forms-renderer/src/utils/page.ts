@@ -52,6 +52,8 @@ export function everyIsPages(topLevelQItem: QuestionnaireItem[] | undefined): bo
 
 export function isPageContainer(topLevelQItem: QuestionnaireItem[] | undefined): boolean {
   if (topLevelQItem && topLevelQItem.length === 1) return false;
+
+  return true;
 }
 
 /**

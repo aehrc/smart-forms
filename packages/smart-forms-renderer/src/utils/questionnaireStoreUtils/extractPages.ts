@@ -19,5 +19,6 @@ export function extractPages(questionnaire: Questionnaire): Pages {
     const pages = constructPagesWithProperties(items, topLevelItemIsPageContainer);
     totalPages = { ...totalPages, ...pages };
   }
+
   return totalPages;
 }

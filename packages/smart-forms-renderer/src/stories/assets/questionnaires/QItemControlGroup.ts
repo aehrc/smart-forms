@@ -860,3 +860,447 @@ export const qItemControlGroupPageContainer: Questionnaire = {
     }
   ]
 };
+
+export const qItemControlGroupPageNonTopLevelPageContainer: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'bit-of-everything',
+  status: 'draft',
+  title: 'A bit of everything',
+  subjectType: ['Patient', 'Person', 'Practitioner'],
+  item: [
+    {
+      linkId: 'summary',
+      type: 'display',
+      text: 'This questionnaire is a bit of everything. It contains virtually every question type we might need in 80% of most surveys.'
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                version: '1.0.0',
+                code: 'page'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'page-container',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          linkId: 'group-basic1',
+          type: 'group',
+          text: 'A group of basic questions 1',
+          item: [
+            {
+              linkId: 'radio-choice1',
+              type: 'choice',
+              text: 'A question with radio button choices',
+              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'radio-button'
+                      }
+                    ]
+                  }
+                },
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
+                  valueCode: 'vertical'
+                }
+              ]
+            },
+            {
+              linkId: 'dropdown-choice1',
+              type: 'choice',
+              text: 'A question with dropdown choices',
+              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'drop-down'
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              linkId: 'checkbox-choice1',
+              type: 'choice',
+              text: 'A question with checkbox choices',
+              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
+              repeats: true,
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'check-box'
+                      }
+                    ]
+                  }
+                },
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
+                  valueCode: 'vertical'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          linkId: 'group-basic2',
+          type: 'group',
+          text: 'A group of basic questions 2',
+          item: [
+            {
+              linkId: 'radio-choice2',
+              type: 'choice',
+              text: 'A question with radio button choices',
+              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'radio-button'
+                      }
+                    ]
+                  }
+                },
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
+                  valueCode: 'vertical'
+                }
+              ]
+            },
+            {
+              linkId: 'dropdown-choice2',
+              type: 'choice',
+              text: 'A question with dropdown choices',
+              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'drop-down'
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              linkId: 'checkbox-choice2',
+              type: 'choice',
+              text: 'A question with checkbox choices',
+              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
+              repeats: true,
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'check-box'
+                      }
+                    ]
+                  }
+                },
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
+                  valueCode: 'vertical'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'group-conditional',
+      type: 'group',
+      text: 'A group of conditional logic workflow',
+      item: [
+        {
+          linkId: 'condition',
+          text: 'Try to insert a positive/negative number',
+          type: 'decimal',
+          initial: [
+            {
+              valueInteger: 0
+            }
+          ],
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/minValue',
+              valueInteger: -10
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/maxValue',
+              valueInteger: 10
+            }
+          ]
+        },
+        {
+          linkId: 'conditional-gt5',
+          type: 'display',
+          text: 'An item that appears when the slider entry > 0',
+          enableWhen: [
+            {
+              question: 'condition',
+              operator: '>',
+              answerDecimal: 0
+            }
+          ]
+        },
+        {
+          linkId: 'conditional-lt5',
+          type: 'display',
+          text: 'An item that appears when the slider entry < 0',
+          enableWhen: [
+            {
+              question: 'condition',
+              operator: '<',
+              answerDecimal: 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'autofill',
+      type: 'group',
+      text: 'A group of questions with autofill options',
+      item: [
+        {
+          linkId: 'diagnosis',
+          text: 'Diagnosis',
+          type: 'open-choice',
+          repeats: true,
+          answerValueSet: 'https://clinicaltables.nlm.nih.gov/fhir/R4/ValueSet/icd10cm',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/terminology-server',
+              valueUrl: 'https://clinicaltables.nlm.nih.gov/fhir/R4'
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'autocomplete'
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          linkId: 'medications_table',
+          text: 'Medications',
+          type: 'group',
+          repeats: true,
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/terminology-server',
+              valueUrl: 'https://clinicaltables.nlm.nih.gov/fhir/R4'
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'gtable'
+                  }
+                ]
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/variable',
+              valueExpression: {
+                name: 'strengthFormLookup',
+                language: 'application/x-fhir-query',
+                expression:
+                  "https://clinicaltables.nlm.nih.gov/fhir/R4/CodeSystem/$lookup?system=https://clinicaltables.nlm.nih.gov/fhir/CodeSystem/rxterms&code={{item.where(linkId='medication').answer.valueCoding.code}}&property=STRENGTHS_AND_FORMS"
+              }
+            }
+          ],
+          item: [
+            {
+              linkId: 'medication',
+              text: 'Medication Name',
+              type: 'choice',
+              answerValueSet: 'https://clinicaltables.nlm.nih.gov/fhir/R4/ValueSet/rxterms',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'autocomplete',
+                        display: 'Auto-complete'
+                      }
+                    ],
+                    text: 'Auto-complete'
+                  }
+                }
+              ]
+            },
+            {
+              linkId: 'strength',
+              text: 'Strength',
+              type: 'open-choice',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression',
+                  valueExpression: {
+                    language: 'text/fhirpath',
+                    expression:
+                      "%strengthFormLookup.parameter.where(name='property' and part.where(name='code' and value='STRENGTHS_AND_FORMS').exists()).part.where(name='value').value"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'scoring',
+      type: 'group',
+      text: 'A group of questions with automatic scoring',
+      item: [
+        {
+          linkId: 'question-table',
+          text: 'A table with questions in its rows and choices in its columns',
+          type: 'group',
+          item: [
+            {
+              linkId: 'question-1',
+              type: 'choice',
+              text: 'What is it?',
+              answerOption: [
+                {
+                  valueCoding: {
+                    code: '0',
+                    display: 'This'
+                  }
+                },
+                {
+                  valueCoding: {
+                    code: '1',
+                    display: 'That'
+                  }
+                }
+              ]
+            },
+            {
+              linkId: 'question-2',
+              type: 'choice',
+              text: 'What is it again?',
+              answerOption: [
+                {
+                  valueCoding: {
+                    code: '0',
+                    display: 'This'
+                  }
+                },
+                {
+                  valueCoding: {
+                    code: '1',
+                    display: 'That'
+                  }
+                }
+              ]
+            }
+          ],
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'table'
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          linkId: 'scored-items',
+          type: 'decimal',
+          text: 'Score',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/variable',
+              valueExpression: {
+                name: 'answer1',
+                language: 'text/fhirpath',
+                expression:
+                  "%resource.item.where(linkId='scoring').item.where(linkId='question-table').item.where(linkId='question-1').answer.valueCoding.code.toDecimal()"
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/variable',
+              valueExpression: {
+                name: 'answer2',
+                language: 'text/fhirpath',
+                expression:
+                  "%resource.item.where(linkId='scoring').item.where(linkId='question-table').item.where(linkId='question-2').answer.valueCoding.code.toDecimal()"
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%answer1 + %answer2'
+              }
+            }
+          ],
+          enableWhen: [
+            {
+              question: 'question-1',
+              operator: 'exists',
+              answerBoolean: true
+            },
+            {
+              question: 'question-2',
+              operator: 'exists',
+              answerBoolean: true
+            }
+          ],
+          enableBehavior: 'all'
+        }
+      ]
+    }
+  ]
+};
