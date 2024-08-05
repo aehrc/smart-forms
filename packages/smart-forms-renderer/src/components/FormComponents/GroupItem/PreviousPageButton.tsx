@@ -17,7 +17,7 @@
 
 import React from 'react';
 import Iconify from '../../Iconify/Iconify';
-import { StandardFab } from '../Button.styles';
+import { SecondaryFab } from '../Button.styles';
 
 interface PreviousPageButtonProps {
   isDisabled: boolean;
@@ -28,9 +28,13 @@ function PreviousPageButton(props: PreviousPageButtonProps) {
   const { isDisabled, onPreviousPageClick } = props;
 
   return (
-    <StandardFab size="small" aria-label="back" disabled={isDisabled} onClick={onPreviousPageClick}>
+    <SecondaryFab
+      size="small"
+      aria-label="back"
+      disabled={isDisabled}
+      onClick={onPreviousPageClick}>
       <Iconify icon="material-symbols:chevron-left-rounded" />
-    </StandardFab>
+    </SecondaryFab>
   );
 }
 
