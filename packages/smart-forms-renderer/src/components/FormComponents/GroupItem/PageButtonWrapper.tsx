@@ -60,7 +60,9 @@ const PageButtonsWrapper = memo(function PageButtonsWrapper(props: PageButtonsWr
   return (
     <Box display="flex" mt={3} gap={2} alignItems="center">
       <Box flexGrow={1} />
-      <Typography variant="subtitle1">{`${currentPageIndex + 1} / ${numOfVisiblePages}`}</Typography>
+      <Typography variant="subtitle2" color="text.secondary">
+        Page {`${currentPageIndex + 1} / ${numOfVisiblePages}`}
+      </Typography>
       <PreviousPageButton
         isDisabled={pageButtonsDisabled || previousPageButtonHidden}
         onPreviousPageClick={handlePreviousPageButtonClick}

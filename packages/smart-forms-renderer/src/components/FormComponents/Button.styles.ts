@@ -1,10 +1,10 @@
 import { styled } from '@mui/material/styles';
 import Fab from '@mui/material/Fab';
 
-export const StandardFab = styled(Fab)(() => ({
-  color: '#161C26',
-  background: '#0ABDC3',
+export const SecondaryFab = styled(Fab)(({ theme }) => ({
+  color: '#fff',
+  background: theme.palette.secondary.main,
   '&:hover': {
-    background: '#08979C'
+    background: theme.palette.secondary.dark
   }
 }));
