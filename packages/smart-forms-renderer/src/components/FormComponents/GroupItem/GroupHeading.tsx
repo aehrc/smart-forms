@@ -29,10 +29,11 @@ interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   tabIsMarkedAsComplete?: boolean;
+  pageIsMarkedAsComplete?: boolean;
 }
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
-  const { qItem, readOnly, tabIsMarkedAsComplete, isRepeated } = props;
+  const { qItem, readOnly, tabIsMarkedAsComplete, pageIsMarkedAsComplete, isRepeated } = props;
 
   const contextDisplayItems = getContextDisplays(qItem);
 
@@ -41,14 +42,15 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
   }
 
   const isTabHeading = tabIsMarkedAsComplete !== undefined;
+  const isPageHeading = pageIsMarkedAsComplete !== undefined;
 
   return (
     <>
       <Box display="flex" alignItems="center" width="100%">
         <Typography
           variant="h6"
-          fontSize={isTabHeading ? 16 : 15}
-          color={readOnly && !isTabHeading ? 'text.secondary' : 'text.primary'}>
+          fontSize={isTabHeading || isPageHeading ? 16 : 15}
+          color={readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'}>
           <ItemLabelText qItem={qItem} />
         </Typography>
         <Box flexGrow={1} />

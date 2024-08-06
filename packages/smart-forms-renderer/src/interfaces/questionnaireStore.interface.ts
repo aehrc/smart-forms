@@ -16,6 +16,7 @@
  */
 
 import type { Tabs } from './tab.interface';
+import type { Pages } from './page.interface';
 import type { Variables } from './variables.interface';
 import type { LaunchContext } from './populate.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from './enableWhen.interface';
@@ -27,6 +28,7 @@ import type { InitialExpression } from './initialExpression.interface';
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
   tabs: Tabs;
+  pages: Pages;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
   enableWhenItems: EnableWhenItems;

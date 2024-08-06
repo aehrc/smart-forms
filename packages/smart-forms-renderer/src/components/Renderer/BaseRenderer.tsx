@@ -24,7 +24,9 @@ import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stor
 import cloneDeep from 'lodash.clonedeep';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
+import { everyIsPages } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
+import FormTopLevelPage from './FormTopLevelPage';
 
 /**
  * Main component of the form-rendering engine.
@@ -73,6 +75,25 @@ function BaseRenderer() {
 
   // If an item has multiple answers, it is a repeat group
   const topLevelQRItemsByIndex = getQrItemsIndex(topLevelQItems, topLevelQRItems, qItemsIndexMap);
+
+  const everyItemIsPage = everyIsPages(topLevelQItems);
+
+  if (everyItemIsPage) {
+    return (
+      <Fade in={true} timeout={500}>
+        <Container maxWidth="xl">
+          <FormTopLevelPage
+            topLevelQItems={topLevelQItems}
+            topLevelQRItems={topLevelQRItemsByIndex}
+            parentIsReadOnly={readOnly}
+            onQrItemChange={(newTopLevelQRItem) =>
+              handleTopLevelQRItemSingleChange(newTopLevelQRItem)
+            }
+          />
+        </Container>
+      </Fade>
+    );
+  }
 
   return (
     <Fade in={true} timeout={500}>

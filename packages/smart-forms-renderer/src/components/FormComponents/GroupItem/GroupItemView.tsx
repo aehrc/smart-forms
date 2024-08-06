@@ -26,6 +26,7 @@ import type {
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { Tabs } from '../../../interfaces/tab.interface';
+import type { Pages } from '../../../interfaces/page.interface';
 import GroupHeading from './GroupHeading';
 import { GroupCard } from './GroupItem.styles';
 import TabButtonsWrapper from './TabButtonsWrapper';
@@ -37,6 +38,7 @@ import Divider from '@mui/material/Divider';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { GroupAccordion } from './GroupAccordion.styles';
+import PageButtonsWrapper from './PageButtonWrapper';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,
@@ -51,6 +53,9 @@ interface GroupItemViewProps
   tabIsMarkedAsComplete?: boolean;
   tabs?: Tabs;
   currentTabIndex?: number;
+  pageIsMarkedAsComplete?: boolean;
+  pages?: Pages;
+  currentPageIndex?: number;
 }
 
 function GroupItemView(props: GroupItemViewProps) {
@@ -63,6 +68,9 @@ function GroupItemView(props: GroupItemViewProps) {
     tabIsMarkedAsComplete,
     tabs,
     currentTabIndex,
+    pageIsMarkedAsComplete,
+    pages,
+    currentPageIndex,
     parentIsReadOnly,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
@@ -91,6 +99,7 @@ function GroupItemView(props: GroupItemViewProps) {
             qItem={qItem}
             readOnly={readOnly}
             tabIsMarkedAsComplete={tabIsMarkedAsComplete}
+            pageIsMarkedAsComplete={pageIsMarkedAsComplete}
             isRepeated={isRepeated}
           />
         </AccordionSummary>
@@ -117,6 +126,7 @@ function GroupItemView(props: GroupItemViewProps) {
 
             {/* Next tab button at the end of each tab group */}
             <TabButtonsWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
+            <PageButtonsWrapper currentPageIndex={currentPageIndex} pages={pages} />
           </>
         </AccordionDetails>
       </GroupAccordion>
@@ -133,6 +143,7 @@ function GroupItemView(props: GroupItemViewProps) {
           qItem={qItem}
           readOnly={readOnly}
           tabIsMarkedAsComplete={tabIsMarkedAsComplete}
+          pageIsMarkedAsComplete={pageIsMarkedAsComplete}
           isRepeated={isRepeated}
         />
         {childQItems.map((qItem: QuestionnaireItem, i) => {
@@ -155,6 +166,7 @@ function GroupItemView(props: GroupItemViewProps) {
 
         {/* Next tab button at the end of each tab group */}
         <TabButtonsWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
+        <PageButtonsWrapper currentPageIndex={currentPageIndex} pages={pages} />
       </GroupCard>
     </QGroupContainerBox>
   );
