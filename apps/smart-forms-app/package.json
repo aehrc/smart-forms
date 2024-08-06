@@ -34,7 +34,7 @@
     "@fontsource/material-icons": "^5.0.18",
     "@fontsource/roboto": "^5.0.12",
     "@iconify/react": "^4.1.1",
-    "@microlink/react-json-view": "^1.23.0",
+    "@microlink/react-json-view": "^1.23.1",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.15.20",
     "@mui/lab": "^5.0.0-alpha.151",
