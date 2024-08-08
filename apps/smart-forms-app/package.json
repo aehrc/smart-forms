@@ -73,7 +73,7 @@
     "react-to-print": "^2.14.15",
     "simplebar-react": "^3.2.4",
     "usehooks-ts": "^2.9.1",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
