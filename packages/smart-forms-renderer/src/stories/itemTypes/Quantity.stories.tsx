@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qQuantityBasic } from '../assets/questionnaires';
+import { qQuantityBasic, qQuantityUnitOption } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -35,5 +35,11 @@ type Story = StoryObj<typeof meta>;
 export const QuantityBasic: Story = {
   args: {
     questionnaire: qQuantityBasic
+  }
+};
+
+export const QuantityUnitOption: Story = {
+  args: {
+    questionnaire: qQuantityUnitOption
   }
 };

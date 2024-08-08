@@ -40,6 +40,7 @@ import SliderItem from '../SliderItem/SliderItem';
 import IntegerItem from '../IntegerItem/IntegerItem';
 import AttachmentItem from '../AttachmentItem/AttachmentItem';
 import CustomDateTimeItem from '../DateTimeItems/CustomDateTimeItem/CustomDateTimeItem';
+import QuantityItem from '../QuantityItem/QuantityItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -219,7 +220,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'quantity':
       // FIXME quantity item uses the same component as decimal item currently
       return (
-        <DecimalItem
+        <QuantityItem
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}

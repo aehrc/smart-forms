@@ -42,3 +42,79 @@ export const qQuantityBasic: Questionnaire = {
     }
   ]
 };
+
+export const qQuantityUnitOption: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'QuantityUnitOption',
+  name: 'QuantityUnitOption',
+  title: 'Quantity UnitOption',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-07-27',
+  item: [
+    {
+      linkId: 'duration',
+      text: 'Duration',
+      type: 'quantity',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'd',
+            display: 'Day(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'wk',
+            display: 'Week(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'mo',
+            display: 'Month(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'a',
+            display: 'Year(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 's',
+            display: 'Second(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'min',
+            display: 'Minute(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'hour',
+            display: 'Hour(s)'
+          }
+        }
+      ]
+    }
+  ]
+};
