@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -19,10 +19,7 @@ import debounce from 'lodash.debounce';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import {
-  parseDecimalStringToFloat,
-  parseDecimalStringWithPrecision
-} from '../../../utils/parseInputs';
+import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
 import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
@@ -31,7 +28,12 @@ import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
 import QuantityField from './QuantityField';
 import QuantityUnitField from './QuantityUnitField';
-import Grid from '@mui/material/Grid';
+import {
+  createQuantityItemAnswer,
+  quantityComparators,
+  stringIsComparator
+} from '../../../utils/quantity';
+import QuantityComparatorField from './QuantityComparatorField';
 
 interface QuantityItemProps
   extends PropsWithQrItemChangeHandler,
@@ -51,38 +53,63 @@ function QuantityItem(props: QuantityItemProps) {
   const precision = getDecimalPrecision(qItem);
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
-  // Init input value
+  // Get units options if present
+  const unitOptions = useMemo(
+    () =>
+      qItem.extension?.filter(
+        (f) => f.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption'
+      ) ?? [],
+    [qItem]
+  );
+
+  // Init inputs
   let valueQuantity: Quantity = {};
-  let initialInput = '';
+  let initialValueInput = '';
+  let initialComparatorInput: Quantity['comparator'] | null = null;
+  let initialUnitInput: QuestionnaireItemAnswerOption | null = (unitOptions?.at(0) ??
+    null) as Extension | null;
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueQuantity) {
       valueQuantity = qrItem.answer[0].valueQuantity;
     }
 
-    initialInput =
+    initialValueInput =
       (precision ? valueQuantity.value?.toFixed(precision) : valueQuantity.value?.toString()) || '';
-  }
-  const [input, setInput] = useStringInput(initialInput);
 
-  // Init unit input value
-  const answerOptions = qItem.extension?.filter(
-    (f) => f.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption'
+    if (valueQuantity.comparator && stringIsComparator(valueQuantity.comparator)) {
+      initialComparatorInput = valueQuantity.comparator;
+    }
+
+    if (valueQuantity.code && valueQuantity.system) {
+      initialUnitInput = {
+        valueCoding: {
+          code: valueQuantity.code,
+          system: valueQuantity.system,
+          display: valueQuantity.unit
+        }
+      };
+    }
+  }
+
+  // input states
+  const [valueInput, setValueInput] = useStringInput(initialValueInput);
+  const [comparatorInput, setComparatorInput] = useState<Quantity['comparator'] | null>(
+    initialComparatorInput
   );
-  const isShowAnswerOptions = answerOptions?.length || false;
   const [unitInput, setUnitInput] = useState<QuestionnaireItemAnswerOption | null>(
-    (answerOptions?.at(0) ?? null) as Extension | null
+    initialUnitInput
   );
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, input);
+  const feedback = useValidationFeedback(qItem, valueInput);
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
     qItem: qItem,
-    inputValue: input,
+    inputValue: valueInput,
     precision: precision,
     onChangeByCalcExpressionDecimal: (newValueDecimal: number) => {
-      setInput(
+      setValueInput(
         typeof precision === 'number'
           ? newValueDecimal.toFixed(precision)
           : newValueDecimal.toString()
@@ -93,6 +120,7 @@ function QuantityItem(props: QuantityItemProps) {
           {
             valueQuantity: {
               value: newValueDecimal,
+              unit: unitInput?.valueCoding?.display,
               system: unitInput?.valueCoding?.system,
               code: unitInput?.valueCoding?.code
             }
@@ -101,46 +129,39 @@ function QuantityItem(props: QuantityItemProps) {
       });
     },
     onChangeByCalcExpressionNull: () => {
-      setInput('');
+      setValueInput('');
       onQrItemChange(createEmptyQrItem(qItem));
     }
   });
 
   // Event handlers
-  function handleInputChange(newInput: string) {
-    const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
+  function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
+    setComparatorInput(newComparatorInput);
 
-    setInput(parsedNewInput);
-    updateQrItemWithDebounce(parsedNewInput);
-  }
-
-  function handleUnitInputChange(newInput: QuestionnaireItemAnswerOption | null) {
-    setUnitInput(newInput);
-
-    if (!input) return;
+    if (!valueInput) return;
 
     onQrItemChange({
       ...createEmptyQrItem(qItem),
-      answer: precision
-        ? [
-            {
-              valueQuantity: {
-                value: parseDecimalStringToFloat(input, precision),
-                system: newInput?.valueCoding?.system,
-                code: newInput?.valueCoding?.code
-              }
-            }
-          ]
-        : [
-            {
-              valueQuantity: {
-                value: parseFloat(input),
-                system: newInput?.valueCoding?.system,
-                code: newInput?.valueCoding?.code
-              }
-            }
-          ]
+      answer: createQuantityItemAnswer(precision, valueInput, newComparatorInput, unitInput)
     });
+  }
+
+  function handleUnitInputChange(newUnitInput: QuestionnaireItemAnswerOption | null) {
+    setUnitInput(newUnitInput);
+
+    if (!valueInput) return;
+
+    onQrItemChange({
+      ...createEmptyQrItem(qItem),
+      answer: createQuantityItemAnswer(precision, valueInput, comparatorInput, newUnitInput)
+    });
+  }
+
+  function handleValueInputChange(newInput: string) {
+    const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
+
+    setValueInput(parsedNewInput);
+    updateQrItemWithDebounce(parsedNewInput);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,37 +172,27 @@ function QuantityItem(props: QuantityItemProps) {
       } else {
         onQrItemChange({
           ...createEmptyQrItem(qItem),
-          answer: precision
-            ? [
-                {
-                  valueQuantity: {
-                    value: parseDecimalStringToFloat(parsedNewInput, precision),
-                    system: unitInput?.valueCoding?.system,
-                    code: unitInput?.valueCoding?.code
-                  }
-                }
-              ]
-            : [
-                {
-                  valueQuantity: {
-                    value: parseFloat(parsedNewInput),
-                    system: unitInput?.valueCoding?.system,
-                    code: unitInput?.valueCoding?.code
-                  }
-                }
-              ]
+          answer: createQuantityItemAnswer(precision, parsedNewInput, comparatorInput, unitInput)
         });
       }
     }, DEBOUNCE_DURATION),
-    [onQrItemChange, qItem, displayUnit, precision, unitInput]
+    [onQrItemChange, qItem, displayUnit, precision, comparatorInput, unitInput]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   if (isRepeated) {
     return (
       <Box data-test="q-item-quantity-box" display="flex" gap={1}>
+        <QuantityComparatorField
+          linkId={qItem.linkId}
+          options={quantityComparators}
+          valueSelect={comparatorInput}
+          readOnly={readOnly}
+          isTabled={isTabled}
+          onChange={handleComparatorInputChange}
+        />
         <QuantityField
           linkId={qItem.linkId}
-          input={input}
+          input={valueInput}
           feedback={feedback}
           displayPrompt={displayPrompt}
           displayUnit={displayUnit}
@@ -189,12 +200,12 @@ function QuantityItem(props: QuantityItemProps) {
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
-          onInputChange={handleInputChange}
+          onInputChange={handleValueInputChange}
         />
-        {answerOptions?.length ? (
+        {unitOptions.length > 0 ? (
           <QuantityUnitField
-            qItem={qItem}
-            options={answerOptions}
+            linkId={qItem.linkId}
+            options={unitOptions}
             valueSelect={unitInput}
             readOnly={readOnly}
             isTabled={isTabled}
@@ -212,9 +223,17 @@ function QuantityItem(props: QuantityItemProps) {
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <Box display="flex" gap={1}>
+          <QuantityComparatorField
+            linkId={qItem.linkId}
+            options={quantityComparators}
+            valueSelect={comparatorInput}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            onChange={handleComparatorInputChange}
+          />
           <QuantityField
             linkId={qItem.linkId}
-            input={input}
+            input={valueInput}
             feedback={feedback}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
@@ -222,12 +241,12 @@ function QuantityItem(props: QuantityItemProps) {
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
-            onInputChange={handleInputChange}
+            onInputChange={handleValueInputChange}
           />
-          {answerOptions?.length ? (
+          {unitOptions.length > 0 ? (
             <QuantityUnitField
-              qItem={qItem}
-              options={answerOptions}
+              linkId={qItem.linkId}
+              options={unitOptions}
               valueSelect={unitInput}
               readOnly={readOnly}
               isTabled={isTabled}

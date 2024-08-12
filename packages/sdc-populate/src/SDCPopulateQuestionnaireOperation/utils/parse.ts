@@ -102,7 +102,11 @@ export function parseValueToAnswer(
     }
   }
 
-  if (typeof value === 'object') {
+  if (typeof value === 'object' && value.unit) {
+    return { valueQuantity: value };
+  }
+
+  if (typeof value === 'object' && value.system && value.code) {
     return { valueCoding: value };
   }
 

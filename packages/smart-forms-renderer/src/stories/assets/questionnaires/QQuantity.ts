@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Questionnaire } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export const qQuantityBasic: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -39,8 +39,57 @@ export const qQuantityBasic: Questionnaire = {
       type: 'quantity',
       repeats: false,
       text: 'Body Weight'
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'kg', display: 'kg' }
+        }
+      ],
+      linkId: 'body-weight-comparator',
+      type: 'quantity',
+      repeats: false,
+      text: 'Body Weight (with comparator symbol)'
     }
   ]
+};
+
+export const qrQuantityBasicResponse: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  item: [
+    {
+      linkId: 'body-weight',
+      answer: [
+        {
+          valueQuantity: {
+            value: 80,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ],
+      text: 'Body Weight'
+    },
+    {
+      linkId: 'body-weight-comparator',
+      answer: [
+        {
+          valueQuantity: {
+            value: 90,
+            comparator: '<',
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ],
+      text: 'Body Weight (with comparator symbol)'
+    }
+  ],
+  questionnaire: 'https://smartforms.csiro.au/docs/components/quantity/basic'
 };
 
 export const qQuantityUnitOption: Questionnaire = {
@@ -52,6 +101,7 @@ export const qQuantityUnitOption: Questionnaire = {
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-07-27',
+  url: 'https://smartforms.csiro.au/docs/components/quantity/unit-option',
   item: [
     {
       linkId: 'duration',
@@ -115,6 +165,106 @@ export const qQuantityUnitOption: Questionnaire = {
           }
         }
       ]
+    },
+    {
+      linkId: 'duration-comparator',
+      text: 'Duration (with comparator symbol)',
+      type: 'quantity',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'd',
+            display: 'Day(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'wk',
+            display: 'Week(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'mo',
+            display: 'Month(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'a',
+            display: 'Year(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 's',
+            display: 'Second(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'min',
+            display: 'Minute(s)'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'hour',
+            display: 'Hour(s)'
+          }
+        }
+      ]
     }
   ]
+};
+
+export const qrQuantityUnitOptionResponse: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  item: [
+    {
+      linkId: 'duration',
+      answer: [
+        {
+          valueQuantity: {
+            value: 48,
+            unit: 'Hour(s)',
+            system: 'http://unitsofmeasure.org',
+            code: 'hour'
+          }
+        }
+      ],
+      text: 'Duration'
+    },
+    {
+      linkId: 'duration-comparator',
+      answer: [
+        {
+          valueQuantity: {
+            value: 48,
+            comparator: '>=',
+            unit: 'Hour(s)',
+            system: 'http://unitsofmeasure.org',
+            code: 'hour'
+          }
+        }
+      ],
+      text: 'Duration'
+    }
+  ],
+  questionnaire: 'https://smartforms.csiro.au/docs/components/quantity/unit-option'
 };

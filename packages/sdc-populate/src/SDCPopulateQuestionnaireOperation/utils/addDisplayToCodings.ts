@@ -125,5 +125,10 @@ export async function resolveLookupPromises(
 }
 
 function valueIsCoding(initialExpressionValue: any): initialExpressionValue is Coding {
-  return initialExpressionValue && initialExpressionValue.system && initialExpressionValue.code;
+  return (
+    initialExpressionValue &&
+    initialExpressionValue.system &&
+    initialExpressionValue.code &&
+    !initialExpressionValue.unit // To exclude valueQuantity objects
+  );
 }
