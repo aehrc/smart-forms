@@ -51,7 +51,7 @@ function useCodingCalculatedExpression(
       );
 
       let newCodings: Coding[] = [];
-      if (Array.isArray(answerExpression.options)) {
+      if (answerExpression && Array.isArray(answerExpression.options)) {
         newCodings = answerExpression.options as Coding[];
       }
 
@@ -87,7 +87,7 @@ function useCodingCalculatedExpression(
     },
     // Only trigger this effect if calculatedExpression of item changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [calculatedExpressions, answerExpression.version]
+    [calculatedExpressions, answerExpression?.version]
   );
 
   return { calcExpUpdated: calcExpUpdated };
