@@ -33,7 +33,6 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
-import _isEqual from 'lodash/isEqual';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -84,43 +83,19 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     []
   );
 
+  const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
+
   // Process calculated expressions
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
     valueInString: valueCoding?.code ?? '',
-    onChangeByCalcExpressionString: (newValueString, newCodings) => {
-      // no new calcexp value and no newCodings
-      if (newValueString === null && newCodings.length === 0) {
-        return;
-      }
-
-      // no new calcexp value only
-      if (newValueString === null) {
-        if (!_isEqual(newCodings, codings)) {
-          setCodings(newCodings);
-          onQrItemChange(createEmptyQrItem(qItem));
-        }
-        return;
-      }
-
-      // no newCodings
-      if (newCodings.length === 0) {
-        const qrAnswer = findInAnswerOptions(codings, newValueString);
+    onChangeByCalcExpressionString: (newValueString) => {
+      if (codings.length > 0) {
+        const qrAnswer = findInAnswerOptions(options, newValueString);
         onQrItemChange(
           qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
         );
-        return;
       }
-
-      // both is updated
-      const qrAnswer = findInAnswerOptions(
-        convertCodingsToAnswerOptions(newCodings),
-        newValueString
-      );
-      setCodings(newCodings);
-      onQrItemChange(
-        qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
-      );
     },
     onChangeByCalcExpressionNull: () => {
       onQrItemChange(createEmptyQrItem(qItem));

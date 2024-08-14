@@ -30,6 +30,8 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 import { DynamicValueSet } from '../interfaces/valueSet.interface';
+import { AnswerExpression } from '../interfaces/answerExpression.interface';
+import _isEqual from 'lodash/isEqual';
 
 export interface TerminologyError {
   error: Error | null;
@@ -53,6 +55,7 @@ function useValueSetCodings(
   const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const dynamicValueSets = useQuestionnaireStore.use.dynamicValueSets();
+  const answerExpressions = useQuestionnaireStore.use.answerExpressions();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
   const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
 
@@ -75,9 +78,9 @@ function useValueSetCodings(
     }
 
     return [];
-  }, [cachedValueSetCodings, processedValueSetCodings, valueSetUrl]);
+  }, [cachedValueSetCodings, cleanValueSetUrl, processedValueSetCodings]);
 
-  // Attempt to get codings from answer expression
+  // Attempt to get codings from answer expression - legacy code
   const qItemAnswerExpression = getAnswerExpression(qItem)?.expression;
   initialCodings = useMemo(() => {
     if (initialCodings.length === 0 && qItemAnswerExpression) {
@@ -192,6 +195,19 @@ function useValueSetCodings(
         });
     }
   }, [qItem, dynamicValueSet?.version]);
+
+  // Dynamic answerExpression
+  const answerExpression: AnswerExpression | null = answerExpressions[qItem.linkId] ?? null;
+  useEffect(() => {
+    let newCodings: Coding[] = [];
+    if (answerExpression && Array.isArray(answerExpression.options)) {
+      newCodings = answerExpression.options as Coding[];
+      if (!_isEqual(newCodings, codings)) {
+        setCodings(newCodings);
+        onDynamicValueSetCodingsChange();
+      }
+    }
+  }, [answerExpression, answerExpression?.version, codings]);
 
   // get options from answerValueSet on render
   useEffect(() => {

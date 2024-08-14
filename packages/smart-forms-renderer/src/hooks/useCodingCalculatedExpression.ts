@@ -18,7 +18,6 @@
 import { useEffect, useState } from 'react';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
-import { AnswerExpression } from '../interfaces/answerExpression.interface';
 
 interface UseCodingCalculatedExpression {
   calcExpUpdated: boolean;
@@ -27,7 +26,7 @@ interface UseCodingCalculatedExpression {
 interface UseCodingCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   valueInString: string;
-  onChangeByCalcExpressionString: (newValueInString: string | null, newCodings: Coding[]) => void;
+  onChangeByCalcExpressionString: (newValueInString: string) => void;
   onChangeByCalcExpressionNull: () => void;
 }
 
@@ -39,55 +38,46 @@ function useCodingCalculatedExpression(
     props;
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
-  const answerExpressions = useQuestionnaireStore.use.answerExpressions();
 
   const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 
-  const answerExpression: AnswerExpression | null = answerExpressions[qItem.linkId] ?? null;
   useEffect(
     () => {
       const calcExpression = calculatedExpressions[qItem.linkId]?.find(
         (exp) => exp.from === 'item'
       );
 
-
       if (!calcExpression) {
         return;
       }
 
-      let newCodings: Coding[] = [];
-      if (answerExpression && Array.isArray(answerExpression.options)) {
-        newCodings = answerExpression.options as Coding[];
-      }
+      // only update if calculated value is different from current value
+      if (
+        calcExpression.value !== valueInString &&
+        (typeof calcExpression.value === 'string' ||
+          typeof calcExpression.value === 'number' ||
+          typeof calcExpression.value === 'object' ||
+          calcExpression.value === null)
+      ) {
+        // update ui to show calculated value changes
+        setCalcExpUpdated(true);
+        setTimeout(() => {
+          setCalcExpUpdated(false);
+        }, 500);
 
-        // only update if calculated value is different from current value
-        if (
-          calcExpression.value !== valueInString &&
-          (typeof calcExpression.value === 'string' ||
-            typeof calcExpression.value === 'number' ||
-            typeof calcExpression.value === 'object' ||
-            calcExpression.value === null)
-        ) {
-          // update ui to show calculated value changes
-          setCalcExpUpdated(true);
-          setTimeout(() => {
-            setCalcExpUpdated(false);
-          }, 500);
+        // calculatedExpression value is null
+        if (calcExpression.value === null) {
+          onChangeByCalcExpressionNull();
+          return;
+        }
 
-          // calculatedExpression value is null
-          if (calcExpression.value === null) {
-            onChangeByCalcExpressionNull();
+        // calculatedExpression value is object, check if it is a Coding object
+        if (typeof calcExpression.value === 'object' && objectIsCoding(calcExpression.value)) {
+          if (calcExpression.value.code) {
+            onChangeByCalcExpressionString(calcExpression.value.code);
             return;
           }
-
-
-          // calculatedExpression value is object, check if it is a Coding object
-          if (typeof calcExpression.value === 'object' && objectIsCoding(calcExpression.value)) {
-            if (calcExpression.value.code) {
-              onChangeByCalcExpressionString(calcExpression.value.code);
-              return;
-            }
-          }
+        }
 
         // calculatedExpression value is a string or number
         const newValueString =
@@ -95,13 +85,12 @@ function useCodingCalculatedExpression(
             ? calcExpression.value
             : calcExpression.value.toString();
 
-        onChangeByCalcExpressionString(newValueString, newCodings);
-        }
-
+        onChangeByCalcExpressionString(newValueString);
+      }
     },
     // Only trigger this effect if calculatedExpression of item changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [calculatedExpressions, answerExpression?.version]
+    [calculatedExpressions]
   );
 
   return { calcExpUpdated: calcExpUpdated };

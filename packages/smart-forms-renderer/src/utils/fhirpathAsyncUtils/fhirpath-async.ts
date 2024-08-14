@@ -1,6 +1,7 @@
 import type {
   CodeableConcept,
   Coding,
+  ConceptMap,
   DomainResource,
   OperationOutcome,
   Parameters,
@@ -104,6 +105,49 @@ export async function evaluateFhirpathAsync(
           })
           .filter((v) => v !== undefined),
       arity: { 1: ['Any'], 2: ['Any', 'String'] }
+    },
+    translate: {
+      fn: (
+        inputs: any[],
+        conceptMap: string | ConceptMap | Resource[],
+        coded: string | Coding,
+        params?: string
+      ) =>
+        inputs
+          .map((value: any) => {
+            if (Array.isArray(conceptMap)) {
+              conceptMap = conceptMap[0] as ConceptMap;
+            }
+
+            if (Array.isArray(coded)) {
+              coded = coded[0] as string | Coding;
+            }
+
+            let key = createIndexKeyTranslate(conceptMap, coded, params);
+            if (key) {
+              key = 'Translate:' + key;
+              if (asyncCallsRequired.get(key)?.evaluationCompleted) {
+                logMessage(debugAsyncFhirpath, outcome, '  using cached result for: ', key);
+                return asyncCallsRequired.get(key)?.result;
+              }
+
+              const details: TranslateUserData = {
+                evaluationCompleted: false,
+                asyncFunction: translateAsync,
+                value: value,
+                conceptMap: conceptMap,
+                coded: coded,
+                params: params
+              };
+              asyncCallsRequired.set(key, details);
+              logMessage(debugAsyncFhirpath, outcome, '  requires async evaluation for: ', key);
+              requiresAsyncProcessing = true;
+
+              return undefined;
+            }
+          })
+          .filter((v) => v !== undefined),
+      arity: { 1: ['Any', 'Any'], 2: ['Any', 'Any', 'String'] }
     },
     resolve: {
       fn: (inputs: any[]) =>
@@ -221,18 +265,21 @@ interface ExpandUserData extends AsyncFunctionUserData {
  * @param params
  * @returns
  */
-function createIndexKeyExpand(valueSet: string | ValueSet, params?: string): string | undefined {
-  // input value is ignored since expand() is supposed to be called with a %terminologies fhirpath object
-  const vs = valueSet as ValueSet;
-  if (vs.resourceType === 'ValueSet') {
+function createIndexKeyExpand(
+  resource: string | ValueSet | ConceptMap,
+  params?: string
+): string | undefined {
+  // input value is ignored since expand() or translate() is supposed to be called with a %terminologies fhirpath object
+  const vs = resource as ValueSet | ConceptMap;
+  if (vs.resourceType === 'ValueSet' || vs.resourceType === 'ConceptMap') {
     const valueSetId = vs.id ?? vs.url ?? '';
     return params
       ? ' terminologies - ' + valueSetId + ' - ' + params
       : 'terminologies - ' + valueSetId;
   }
 
-  if (typeof valueSet === 'string') {
-    return params ? ' terminologies - ' + valueSet + ' - ' + params : 'terminologies - ' + valueSet;
+  if (typeof resource === 'string') {
+    return params ? ' terminologies - ' + resource + ' - ' + params : 'terminologies - ' + resource;
   }
 
   return undefined;
@@ -322,6 +369,140 @@ async function expandAsync(
 }
 
 // --------------------------------------------------------------------------
+// The following section is the custom function for translate()
+// --------------------------------------------------------------------------
+interface TranslateUserData extends AsyncFunctionUserData {
+  value: any;
+  conceptMap: string | ConceptMap;
+  coded: string | Coding;
+  params?: string;
+}
+
+/**
+ * Create an Index Key for the translate function
+ * @param conceptMap
+ * @param params
+ * @returns
+ */
+function createIndexKeyTranslate(
+  resource: string | ConceptMap,
+  coded: string | Coding,
+  params?: string
+): string | undefined {
+  const codedString = typeof coded === 'string' ? coded : coded.code + '|' + coded.system;
+  // input value is ignored since translate() is supposed to be called with a %terminologies fhirpath object
+  const cm = resource as ConceptMap;
+  if (cm.resourceType === 'ConceptMap') {
+    const conceptMapId = cm.id ?? cm.url ?? '';
+    return params
+      ? ' terminologies - ' + conceptMapId + ' - ' + codedString + ' - ' + params
+      : 'terminologies - ' + conceptMapId + ' - ' + codedString;
+  }
+
+  if (typeof resource === 'string') {
+    return params
+      ? ' terminologies - ' + resource + ' - ' + codedString + ' - ' + params
+      : 'terminologies - ' + resource + ' - ' + codedString;
+  }
+
+  return undefined;
+}
+
+/**
+ * Perform the actual async expand evaluation
+ * @param details parameters which is actually a ExpandUserData structure
+ */
+async function translateAsync(
+  outcome: OperationOutcome,
+  details: AsyncFunctionUserData
+): Promise<void> {
+  // perform the async call to check for the memberOf status
+  const typedData = details as TranslateUserData;
+
+  try {
+    const httpHeaders = {
+      Accept: 'application/fhir+json; charset=utf-8'
+    };
+    const httpPostHeaders = {
+      Accept: 'application/fhir+json; charset=utf-8',
+      'Content-Type': 'application/fhir+json; charset=utf-8'
+    };
+    let myHeaders = new Headers(httpHeaders);
+
+    const requestUrl = 'https://r4.ontoserver.csiro.au/fhir/ConceptMap/$translate';
+
+    // Convert coded string into a Coding
+    const coded = typeof typedData.coded === 'string' ? { code: typedData.coded } : typedData.coded;
+
+    let response;
+    const conceptMap = typedData.conceptMap as ConceptMap;
+    if (conceptMap.resourceType === 'ConceptMap') {
+      const parameters: Parameters = {
+        resourceType: 'Parameters',
+        parameter: [
+          {
+            name: 'conceptMap',
+            resource: conceptMap
+          },
+          {
+            name: 'coding',
+            valueCoding: coded
+          }
+        ]
+      };
+
+      // TODO turn typedData.params into a URLSearchParams object and into $translate params
+
+      myHeaders = new Headers(httpPostHeaders);
+      response = await fetch(requestUrl, {
+        method: 'POST',
+        headers: myHeaders,
+        body: JSON.stringify(parameters)
+      });
+    } else if (typeof typedData.conceptMap === 'string') {
+      const codedUrlParam = `system=${encodeURIComponent(coded.system ?? '')}&code=${coded.code}`;
+      const additionalParams = typedData.params ?? '';
+      response = await fetch(
+        `${requestUrl}?url=${typedData.conceptMap}&${codedUrlParam}&${additionalParams}`,
+        {
+          headers: myHeaders
+        }
+      );
+    }
+
+    if (response) {
+      const resultJson = await response.json();
+      const translateResponse = resultJson as Parameters;
+      if (translateResponse.resourceType === 'Parameters') {
+        details.evaluationCompleted = true;
+        details.result = translateResponse;
+      }
+
+      const outcomeResult = resultJson as OperationOutcome;
+      if (outcomeResult && outcomeResult.issue) {
+        details.evaluationCompleted = true;
+        throw outcomeResult; // should we be throwing here?
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.resourceType === 'OperationOutcome') {
+      throw err;
+    }
+
+    details.evaluationCompleted = true;
+    const key = createIndexKeyTranslate(typedData.conceptMap, typedData.coded, typedData.params);
+    throw CreateOperationOutcome(
+      'error',
+      'exception',
+      'Failed to check membership: ' + key,
+      undefined,
+      err.message
+    );
+  }
+}
+
+// --------------------------------------------------------------------------
 // The following section is the custom function for resolve()
 // --------------------------------------------------------------------------
 interface ResolveUserData extends AsyncFunctionUserData {
@@ -364,7 +545,6 @@ async function resolveAsync(
       const myHeaders = new Headers(httpHeaders);
       const response = await fetch(URL, { headers: myHeaders });
       const resultJson = await response.json();
-      console.log(resultJson);
       details.result = resultJson;
       details.evaluationCompleted = true;
     } catch (err) {
@@ -496,7 +676,7 @@ async function memberOfAsync(
       }
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     details.evaluationCompleted = true;
     const key = createIndexKeyMemberOf(typedData.value, typedData.valueSet);
     throw CreateOperationOutcome(
