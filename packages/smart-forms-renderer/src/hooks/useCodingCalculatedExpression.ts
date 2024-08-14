@@ -50,18 +50,22 @@ function useCodingCalculatedExpression(
         (exp) => exp.from === 'item'
       );
 
+
+      if (!calcExpression) {
+        return;
+      }
+
       let newCodings: Coding[] = [];
       if (answerExpression && Array.isArray(answerExpression.options)) {
         newCodings = answerExpression.options as Coding[];
       }
 
-      let newValueString: string | null = null;
-      if (calcExpression) {
         // only update if calculated value is different from current value
         if (
           calcExpression.value !== valueInString &&
           (typeof calcExpression.value === 'string' ||
             typeof calcExpression.value === 'number' ||
+            typeof calcExpression.value === 'object' ||
             calcExpression.value === null)
         ) {
           // update ui to show calculated value changes
@@ -76,14 +80,24 @@ function useCodingCalculatedExpression(
             return;
           }
 
-          // calculatedExpression value is a string or number
-          newValueString =
-            typeof calcExpression.value === 'string'
-              ? calcExpression.value
-              : calcExpression.value.toString();
+
+          // calculatedExpression value is object, check if it is a Coding object
+          if (typeof calcExpression.value === 'object' && objectIsCoding(calcExpression.value)) {
+            if (calcExpression.value.code) {
+              onChangeByCalcExpressionString(calcExpression.value.code);
+              return;
+            }
+          }
+
+        // calculatedExpression value is a string or number
+        const newValueString =
+          typeof calcExpression.value === 'string'
+            ? calcExpression.value
+            : calcExpression.value.toString();
+
+        onChangeByCalcExpressionString(newValueString, newCodings);
         }
-      }
-      onChangeByCalcExpressionString(newValueString, newCodings);
+
     },
     // Only trigger this effect if calculatedExpression of item changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,6 +105,10 @@ function useCodingCalculatedExpression(
   );
 
   return { calcExpUpdated: calcExpUpdated };
+}
+
+function objectIsCoding(obj: any): obj is Coding {
+  return obj && obj.code && typeof obj.code === 'string';
 }
 
 export default useCodingCalculatedExpression;

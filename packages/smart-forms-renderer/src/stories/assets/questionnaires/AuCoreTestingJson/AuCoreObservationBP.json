@@ -1,0 +1,359 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "BloodPressureObservation",
+  "version": "0.1.0",
+  "name": "BloodPressureObservation",
+  "title": "Blood Pressure Observation",
+  "status": "draft",
+  "date": "2024-07-15",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObservationBP",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=75367002&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "observation",
+      "text": "AU Core Observation - Blood Pressure",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "patient-details",
+          "text": "Patient Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.id"
+                  }
+                }
+              ],
+              "linkId": "patient-id",
+              "text": "Patient ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%patient.name.where(use='official').select((family | (given\n| prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "patient-name",
+              "text": "Patient Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "first-observation-note",
+          "text": "This questionnaire only uses the first Observation resource with LOINC code 85354-9 (Blood pressure) of a referenced\npatient.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"padding-bottom:\n8px;\">\r\n\n <b>This questionnaire only uses the first Observation resource with  LOINC code 85354-9 (Blood pressure) of a referenced\npatient.</b>\r\n</div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "linkId": "observation-status",
+          "text": "Observation Status",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-status",
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.status"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-category",
+          "text": "Observation Category",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-category",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.category.coding"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-category-vscat-boolean",
+          "text": "Observation Category is VSCat?",
+          "type": "boolean",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.category.coding.code = 'vital-signs'"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-code-loinc",
+          "text": "Observation Code (LOINC)",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-vitalsignresult",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.code.coding.where(system='http://loinc.org' and code='85354-9')"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-code-snomed",
+          "text": "Observation Code (SNOMED)",
+          "type": "choice",
+          "answerValueSet": "http://snomed.info/sct/32506021000036107",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.code.coding.where(system='http://snomed.info/sct' and code='75367002')"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "Observation.effectivedateTime",
+          "text": "Effective Date Time",
+          "type": "dateTime",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.effectiveDateTime"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "component-systolic-bp",
+          "text": "SystolicBP Component",
+          "type": "group",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext",
+              "valueExpression": {
+                "name": "ComponentSystolic",
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.component[0]"
+              }
+            }
+          ],
+          "item": [
+            {
+              "linkId": "component-systolic-bp-code-loinc",
+              "text": "Code (LOINC)",
+              "type": "choice",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-vitalsignresult",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ComponentSystolic.code.coding.where(system='http://loinc.org' and code='8480-6')"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "component-systolic-bp-code-snomed",
+              "text": "Code (SNOMED)",
+              "type": "choice",
+              "answerValueSet": "http://snomed.info/sct/32506021000036107",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ComponentSystolic.code.coding.where(system='http://snomed.info/sct' and code='271649006')"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "autocomplete"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "component-systolic-bp-value",
+              "text": "Value",
+              "type": "decimal",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ComponentSystolic.value.value"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "mm[Hg]",
+                    "display": "mmHg"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "component-diastolic-bp",
+          "text": "DiastolicBP Component",
+          "type": "group",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext",
+              "valueExpression": {
+                "name": "ComponentDiastolic",
+                "language": "text/fhirpath",
+                "expression": "%ObservationBP.entry[0].resource.component[1]"
+              }
+            }
+          ],
+          "item": [
+            {
+              "linkId": "component-diastolic-bp-code-loinc",
+              "text": "Code (LOINC)",
+              "type": "choice",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-vitalsignresult",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ComponentDiastolic.code.coding.where(system='http://loinc.org' and code='8462-4')"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "component-diastolic-bp-code-snomed",
+              "text": "Code (SNOMED)",
+              "type": "choice",
+              "answerValueSet": "http://snomed.info/sct/32506021000036107",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ComponentDiastolic.code.coding.where(system='http://snomed.info/sct' and code='271650006')"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "autocomplete"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "component-diastolic-bp-value",
+              "text": "Value",
+              "type": "decimal",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%ComponentDiastolic.value.value"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://unitsofmeasure.org",
+                    "code": "mm[Hg]",
+                    "display": "mmHg"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

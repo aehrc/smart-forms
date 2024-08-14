@@ -1,0 +1,209 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "AuCoreAllergyIntolerance",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "AllergyIntolerance",
+        "language": "application/x-fhir-query",
+        "expression": "AllergyIntolerance?patient={{%patient.id}}"
+      }
+    }
+  ],
+  "version": "0.5.0-ci-build",
+  "name": "AU Core AllergyIntolerance",
+  "title": "AU Core AllergyIntolerance",
+  "status": "draft",
+  "date": "2024-07-15",
+  "item": [
+    {
+      "linkId": "allergy-intolerance",
+      "text": "AU Core AllergyIntolerance",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "patient-details",
+          "text": "Patient Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.id"
+                  }
+                }
+              ],
+              "linkId": "patient-id",
+              "text": "Patient ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%patient.name.where(use='official').select((family | (given | prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "patient-name",
+              "text": "Patient Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "first-resource-note",
+          "text": "This questionnaire only uses the first AllergyTolerance resource of a reference patient.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"padding-bottom: 8px;\">\r\n  <b>This questionnaire only uses the first AllergyIntolerance resource of a reference patient.</b>\r\n</div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%AllergyIntolerance.entry[0].resource.clinicalStatus.coding"
+              }
+            }
+          ],
+          "linkId": "clinical-status",
+          "text": "Clinical Status",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/allergyintolerance-clinical"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%AllergyIntolerance.entry[0].resource.verificationStatus.coding"
+              }
+            }
+          ],
+          "linkId": "verification-status",
+          "text": "Verification Status",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/allergyintolerance-verification"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%AllergyIntolerance.entry[0].resource.code.coding"
+              }
+            }
+          ],
+          "linkId": "code",
+          "text": "Code",
+          "type": "open-choice",
+          "required": true,
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/indicator-hypersensitivity-intolerance-to-substance-2"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%AllergyIntolerance.entry[0].resource.onset"
+              }
+            }
+          ],
+          "linkId": "onset",
+          "text": "Onset[x]",
+          "type": "string"
+        },
+        {
+          "linkId": "reaction",
+          "text": "Reaction",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%AllergyIntolerance.entry[0].resource.reaction.manifestation[0].coding"
+                  }
+                }
+              ],
+              "linkId": "reaction-manifestation",
+              "text": "Reaction Manifestation",
+              "type": "choice",
+              "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/clinical-finding-1"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%AllergyIntolerance.entry[0].resource.reaction.severity"
+                  }
+                }
+              ],
+              "linkId": "reaction-severity",
+              "text": "Reaction Severity",
+              "type": "choice",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/reaction-event-severity"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

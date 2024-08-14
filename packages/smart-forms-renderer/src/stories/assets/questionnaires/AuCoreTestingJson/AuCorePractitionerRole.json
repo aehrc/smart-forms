@@ -1,0 +1,216 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "AuCorePractitionerRole",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "user"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Practitioner"
+        },
+        {
+          "url": "description",
+          "valueString": "The practitioner that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "PractitionerRole",
+        "language": "application/x-fhir-query",
+        "expression": "PractitionerRole?practitioner={{%user.id}}"
+      }
+    }
+  ],
+  "version": "0.1.0",
+  "name": "AU Core PractitionerRole",
+  "title": "AU Core PractitionerRole",
+  "status": "draft",
+  "date": "2024-07-24",
+  "item": [
+    {
+      "linkId": "practitionerRole",
+      "text": "AU Core PractitionerRole",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "practitioner-details",
+          "text": "Practitioner Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%user.id"
+                  }
+                }
+              ],
+              "linkId": "practitioner-id",
+              "text": "Practitioner ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%user.name.select((family | (given | prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "practitioner-name",
+              "text": "Practitioner Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "identifiers",
+          "text": "Identifiers",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "identifier-medicare-provider-number",
+              "text": "Medicare Provider Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%PractitionerRole.entry[0].resource.identifier.where(type.coding.exists(system='http://terminology.hl7.org.au/CodeSystem/v2-0203' and code='UPIN')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-national-provider-identifier",
+              "text": "National Provider Identifier at Organisation (NPIO)",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%PractitionerRole.entry[0].resource.identifier.where(type.coding.exists(system='http://terminology.hl7.org.au/CodeSystem/v2-0203' and code='NPIO')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-employee-number",
+              "text": "Employee Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%PractitionerRole.entry[0].resource.identifier.where(type.coding.exists(system='http://terminology.hl7.org/CodeSystem/v2-0203' and code='EI')).value"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "organization",
+          "text": "Organization",
+          "type": "reference",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%PractitionerRole.entry[0].resource.organization.reference"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "code",
+          "text": "Code",
+          "type": "choice",
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/practitioner-role-1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%PractitionerRole.entry[0].resource.code.coding"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "specialty",
+          "text": "Specialty",
+          "type": "choice",
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/clinical-specialty-1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%PractitionerRole.entry[0].resource.specialty.coding"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "telecom",
+          "text": "Telecom",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%PractitionerRole.entry[0].resource.telecom.where(system = 'phone' and use = 'work').value"
+                  }
+                }
+              ],
+              "linkId": "9541f0b0-f5ba-4fe7-a8e9-ad003cef897b",
+              "text": "Home phone",
+              "type": "string"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%PractitionerRole.entry[0].resource.telecom.where(system = 'email' and use = 'work').value"
+                  }
+                }
+              ],
+              "linkId": "4037a02b-4a85-40e0-9be6-5b17df1aac56",
+              "text": "Mobile phone",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

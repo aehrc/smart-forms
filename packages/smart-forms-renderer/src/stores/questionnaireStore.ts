@@ -28,6 +28,7 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import type { Tabs } from '../interfaces/tab.interface';
+import type { Pages } from '../interfaces/page.interface';
 import {
   mutateRepeatEnableWhenItemInstances,
   updateEnableWhenItemAnswer
@@ -59,6 +60,8 @@ import { DynamicValueSet } from '../interfaces/valueSet.interface';
  * @property itemTypes - Key-value pair of item types `Record<linkId, item.type>`
  * @property tabs - Key-value pair of tabs `Record<linkId, Tab>`
  * @property currentTabIndex - Index of the current tab
+ * @property pages - Key-value pair of pages `Record<linkId, Page>`
+ * @property currentPageIndex - Index of the current page
  * @property variables - Questionnaire variables object containing FHIRPath and x-fhir-query variables
  * @property launchContexts - Key-value pair of launch contexts `Record<launch context name, launch context properties>`
  * @property enableWhenItems - EnableWhenItems object containing enableWhen items and their linked questions
@@ -78,7 +81,9 @@ import { DynamicValueSet } from '../interfaces/valueSet.interface';
  * @property buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
  * @property destroySourceQuestionnaire - Used to destroy the source questionnaire and reset all properties
  * @property switchTab - Used to switch the current tab index
+ * @property switchPage - Used to switch the current page index
  * @property markTabAsComplete - Used to mark a tab index as complete
+ * @property markPageAsComplete - Used to mark a page index as complete
  * @property updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
  * @property mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
  * @property toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
@@ -96,6 +101,8 @@ export interface QuestionnaireStoreType {
   itemTypes: Record<string, string>;
   tabs: Tabs;
   currentTabIndex: number;
+  pages: Pages;
+  currentPageIndex: number;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
   enableWhenItems: EnableWhenItems;
@@ -122,7 +129,9 @@ export interface QuestionnaireStoreType {
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
+  switchPage: (newPageIndex: number) => void;
   markTabAsComplete: (tabLinkId: string) => void;
+  markPageAsComplete: (pageLinkId: string) => void;
   updateEnableWhenItem: (
     linkId: string,
     newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
@@ -158,6 +167,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   itemTypes: {},
   tabs: {},
   currentTabIndex: 0,
+  pages: {},
+  currentPageIndex: 0,
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
   launchContexts: {},
   calculatedExpressions: {},
@@ -201,6 +212,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenExpressions,
       initialCalculatedExpressions,
       firstVisibleTab,
+      firstVisiblePage,
       updatedFhirPathContext
     } = await initialiseFormFromResponse({
       questionnaireResponse,
@@ -209,6 +221,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       calculatedExpressions: questionnaireModel.calculatedExpressions,
       variablesFhirPath: questionnaireModel.variables.fhirPathVariables,
       tabs: questionnaireModel.tabs,
+      pages: questionnaireModel.pages,
       fhirPathContext: questionnaireModel.fhirPathContext
     });
 
@@ -217,6 +230,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       itemTypes: questionnaireModel.itemTypes,
       tabs: questionnaireModel.tabs,
       currentTabIndex: firstVisibleTab,
+      pages: questionnaireModel.pages,
+      currentPageIndex: firstVisiblePage,
       variables: questionnaireModel.variables,
       launchContexts: questionnaireModel.launchContexts,
       enableWhenItems: initialEnableWhenItems,
@@ -238,6 +253,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       itemTypes: {},
       tabs: {},
       currentTabIndex: 0,
+      pages: {},
+      currentPageIndex: 0,
       variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
       launchContexts: {},
       enableWhenItems: { singleItems: {}, repeatItems: {} },
@@ -251,12 +268,22 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       fhirPathContext: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
+  switchPage: (newPageIndex: number) => set(() => ({ currentPageIndex: newPageIndex })),
   markTabAsComplete: (tabLinkId: string) => {
     const tabs = get().tabs;
     set(() => ({
       tabs: {
         ...tabs,
         [tabLinkId]: { ...tabs[tabLinkId], isComplete: !tabs[tabLinkId].isComplete }
+      }
+    }));
+  },
+  markPageAsComplete: (pageLinkId: string) => {
+    const pages = get().pages;
+    set(() => ({
+      pages: {
+        ...pages,
+        [pageLinkId]: { ...pages[pageLinkId], isComplete: !pages[pageLinkId].isComplete }
       }
     }));
   },
@@ -365,7 +392,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   updatePopulatedProperties: async (
     populatedResponse: QuestionnaireResponse,
     populatedContext?: Record<string, any>,
-    persistTabIndex?: boolean
+    persistTabIndex?: boolean,
+    persistPageIndex?: boolean
   ) => {
     const initialResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
 
@@ -389,7 +417,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
-      firstVisibleTab
+      firstVisibleTab,
+      firstVisiblePage
     } = await initialiseFormFromResponse({
       questionnaireResponse: updatedResponse,
       enableWhenItems: get().enableWhenItems,
@@ -397,6 +426,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       calculatedExpressions: initialCalculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
       tabs: get().tabs,
+      pages: get().pages,
       fhirPathContext: updatedFhirPathContext
     });
     updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
@@ -407,6 +437,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
       currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab,
+      currentPageIndex: persistPageIndex ? get().currentPageIndex : firstVisiblePage,
       fhirPathContext: updatedFhirPathContext,
       populatedContext: populatedContext ?? get().populatedContext
     }));

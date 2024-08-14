@@ -1,0 +1,495 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "AuCorePatient",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    }
+  ],
+  "version": "0.1.0",
+  "name": "AU Core Patient",
+  "title": "AU Core Patient",
+  "status": "draft",
+  "date": "2024-07-24",
+  "item": [
+    {
+      "linkId": "patient",
+      "text": "AU Core Patient",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.id"
+              }
+            }
+          ],
+          "linkId": "patient-id",
+          "text": "Patient ID",
+          "type": "string"
+        },
+        {
+          "linkId": "extensions",
+          "text": "Extensions",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "extension-indigenous-status",
+              "text": "Indigenous Status",
+              "type": "choice",
+              "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/australian-indigenous-status-1",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url='http://hl7.org.au/fhir/StructureDefinition/indigenous-status').value"
+                  }
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(exists(url='http://hl7.org/fhir/StructureDefinition/individual-genderIdentity') and extension.where(url='period').value.end.empty()).extension.where(url='value').value.coding"
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "drop-down"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "f669a4fe-4818-429a-8847-d20da88d2bb3",
+              "text": "Gender identity",
+              "type": "choice",
+              "repeats": false,
+              "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/gender-identity-response-1"
+            },
+            {
+              "linkId": "extension-individual-pronouns",
+              "text": "Individual Pronouns",
+              "type": "choice",
+              "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/australian-pronouns-1",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(exists(url='http://hl7.org/fhir/StructureDefinition/individual-pronouns') and extension.where(url='period').value.end.empty()).extension.where(url='value').value.coding"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "identifiers",
+          "text": "Identifiers",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "identifier-ihi",
+              "text": "IHI",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org/CodeSystem/v2-0203' and code='NI')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-medicare-number",
+              "text": "Medicare Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org/CodeSystem/v2-0203' and code='MC')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-dva-number",
+              "text": "DVA Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org.au/CodeSystem/v2-0203' and code='DVAU')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-healthcare-card-number",
+              "text": "Healthcare Card Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org.au/CodeSystem/v2-0203' and code='HC')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-pensioner-consession-card-number",
+              "text": "Pensioner Concession Card Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org/CodeSystem/v2-0203' and code='PEN')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-senior-health-card-number",
+              "text": "Seniors Health Card Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org.au/CodeSystem/v2-0203' and code='SEN')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-medical-record-number",
+              "text": "Medical Record Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org/CodeSystem/v2-0203' and code='MR')).value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "identifier-au-insurance-member-number",
+              "text": " AU Insurance Member Number",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(type.coding.exists(system='http://terminology.hl7.org/CodeSystem/v2-0203' and code='MB')).value"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "name",
+          "text": "Name",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "name-use",
+              "text": "Name Use",
+              "type": "choice",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/name-use",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.use"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "name-text",
+              "text": "Name Text",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.text"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "name-family",
+              "text": "Family Name",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.family"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "name-given",
+              "text": "Given Name",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.given"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "telecom",
+          "text": "Telecom",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.telecom.where(system = 'phone' and use = 'home').value"
+                  }
+                }
+              ],
+              "linkId": "9541f0b0-f5ba-4fe7-a8e9-ad003cef897b",
+              "text": "Home phone",
+              "type": "string"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.telecom.where(system = 'phone' and use = 'mobile').value"
+                  }
+                }
+              ],
+              "linkId": "4037a02b-4a85-40e0-9be6-5b17df1aac56",
+              "text": "Mobile phone",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "gender",
+          "text": "Gender",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.gender"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "birth-date",
+          "text": "Birth Date",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%patient.birthDate"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "address",
+          "text": "Address",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "address-use",
+              "text": "Address Use",
+              "type": "choice",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/address-use",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.use"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "address-text",
+              "text": "Address Text",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.text"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "address-line",
+              "text": "Address Line",
+              "type": "string",
+              "repeats": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.line"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "address-city",
+              "text": "City",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.city"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "address-state",
+              "text": "State",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.state"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "address-postal-code",
+              "text": "Postal Code",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.postalCode"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "communication",
+          "text": "Communication",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "communication-language",
+              "text": "Communication Language",
+              "type": "choice",
+              "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/common-languages-australia-2",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.communication.language.coding"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "communication-preferred",
+              "text": "Communication Preferred",
+              "type": "boolean",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.communication.preferred"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

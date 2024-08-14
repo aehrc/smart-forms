@@ -135,11 +135,6 @@ export async function createFhirPathContext(
     rootResource: questionnaireResponse
   };
 
-  // Exit early if there are no QR items
-  if (!questionnaireResponse.item) {
-    return fhirPathContext;
-  }
-
   // Evaluate resource-level variables
   fhirPathContext = evaluateQuestionnaireLevelVariables(
     questionnaireResponse,
