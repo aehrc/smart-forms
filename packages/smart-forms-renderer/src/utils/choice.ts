@@ -43,6 +43,23 @@ export function convertCodingsToAnswerOptions(codings: Coding[]): QuestionnaireI
 }
 
 /**
+ * Convert Questionnaire answer options with valueCodings to codings
+ *
+ * @author Sean Fong
+ */
+export function convertAnswerOptionsToCodings(
+  answerOptions: QuestionnaireItemAnswerOption[]
+): Coding[] {
+  return answerOptions.map(
+    (answerOption): Coding => ({
+      system: answerOption.valueCoding?.system,
+      code: answerOption.valueCoding?.code,
+      display: answerOption.valueCoding?.display
+    })
+  );
+}
+
+/**
  * Find and return corresponding answerOption based on selected answer in form
  *
  * @author Sean Fong

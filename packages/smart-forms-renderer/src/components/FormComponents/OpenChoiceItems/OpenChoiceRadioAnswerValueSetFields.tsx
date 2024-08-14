@@ -27,10 +27,14 @@ import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
+import { Fade } from '@mui/material';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface OpenChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
+  optionsLoading: boolean;
   valueRadio: string | null;
   openLabelText: string | null;
   openLabelValue: string | null;
@@ -44,6 +48,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
   const {
     qItem,
     options,
+    optionsLoading,
     valueRadio,
     openLabelText,
     openLabelValue,
@@ -54,6 +59,17 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
   } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
+
+  if (optionsLoading) {
+    return (
+      <Fade in={optionsLoading} timeout={300}>
+        <Box display="flex" alignItems="center" columnGap={2}>
+          <CircularProgress size={24} />
+          <Typography>Loading options...</Typography>
+        </Box>
+      </Fade>
+    );
+  }
 
   if (options.length > 0) {
     return (

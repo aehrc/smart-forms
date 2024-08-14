@@ -16,22 +16,13 @@
  */
 
 import { useEffect, useMemo, useState } from 'react';
-import type { Coding, FhirResource, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import {
-  getResourceFromLaunchContext,
-  getTerminologyServerUrl,
-  getValueSetCodings,
-  getValueSetPostPromise,
-  getValueSetPromise
-} from '../utils/valueSet';
-import { getAnswerExpression } from '../utils/getExpressionsFromItem';
-import fhirpath from 'fhirpath';
-import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
+import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
+import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
-import { DynamicValueSet } from '../interfaces/valueSet.interface';
 import { AnswerExpression } from '../interfaces/answerExpression.interface';
 import _isEqual from 'lodash/isEqual';
+import { convertAnswerOptionsToCodings } from '../utils/choice';
 
 export interface TerminologyError {
   error: Error | null;
@@ -47,161 +38,30 @@ function useValueSetCodings(
   terminologyError: TerminologyError;
   setCodings: (codings: Coding[]) => void;
 } {
-  const patient = useSmartConfigStore.use.patient();
-  const user = useSmartConfigStore.use.user();
-  const encounter = useSmartConfigStore.use.encounter();
-
-  const launchContexts = useQuestionnaireStore.use.launchContexts();
   const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
-  const dynamicValueSets = useQuestionnaireStore.use.dynamicValueSets();
   const answerExpressions = useQuestionnaireStore.use.answerExpressions();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
-  const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   const valueSetUrl = qItem.answerValueSet;
   const cleanValueSetUrl = valueSetUrl?.startsWith('#') ? valueSetUrl.slice(1) : valueSetUrl;
-  let initialCodings = useMemo(() => {
-    // set options from cached answer options if present
-    if (cleanValueSetUrl) {
-      // attempt to get codings from value sets preprocessed when loading questionnaire
-      if (processedValueSetCodings[cleanValueSetUrl]) {
-        return processedValueSetCodings[cleanValueSetUrl];
-      }
-
-      // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[cleanValueSetUrl]) {
-        return cachedValueSetCodings[cleanValueSetUrl];
-      }
-    }
-
-    return [];
-  }, [cachedValueSetCodings, cleanValueSetUrl, processedValueSetCodings]);
-
-  // Attempt to get codings from answer expression - legacy code
-  const qItemAnswerExpression = getAnswerExpression(qItem)?.expression;
-  initialCodings = useMemo(() => {
-    if (initialCodings.length === 0 && qItemAnswerExpression) {
-      const variable = qItemAnswerExpression.substring(
-        qItemAnswerExpression.indexOf('%') + 1,
-        qItemAnswerExpression.indexOf('.')
-      );
-      const contextMap: Record<string, FhirResource> = {};
-
-      // get answer expression resource from launch contexts
-      if (launchContexts[variable]) {
-        const resourceType = launchContexts[variable].extension[1].valueCode;
-        const resource = getResourceFromLaunchContext(resourceType, patient, user, encounter);
-        if (resource) {
-          contextMap[variable] = resource;
-        }
-      } else if (xFhirQueryVariables[variable]) {
-        const resource = xFhirQueryVariables[variable].result;
-        if (resource) {
-          contextMap[variable] = resource;
-        }
-      }
-
-      if (contextMap[variable]) {
-        try {
-          const evaluated: any[] = fhirpath.evaluate(
-            {},
-            qItemAnswerExpression,
-            contextMap,
-            fhirpath_r4_model
-          );
-
-          if (evaluated[0].system || evaluated[0].code) {
-            // determine if the evaluated array is a coding array
-            return evaluated;
-          } else if (evaluated[0].coding) {
-            // determine and return if the evaluated array is a codeable concept
-            return evaluated[0].coding;
-          }
-        } catch (e) {
-          console.warn(e.message);
-        }
-      }
-    }
-
-    return initialCodings;
-  }, [
-    qItemAnswerExpression,
-    encounter,
-    initialCodings,
-    launchContexts,
-    patient,
-    user,
-    xFhirQueryVariables
-  ]);
+  const initialCodings = useMemo(
+    () => getInitialCodings(cleanValueSetUrl, processedValueSetCodings, cachedValueSetCodings),
+    [cachedValueSetCodings, cleanValueSetUrl, processedValueSetCodings]
+  );
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [loading, setLoading] = useState<boolean>(false);
   const [serverError, setServerError] = useState<Error | null>(null);
-
-  // Use dynamic valueSet via embeddings in contained ValueSet
-  let dynamicValueSet: DynamicValueSet | null = null;
-  if (cleanValueSetUrl) {
-    dynamicValueSet = dynamicValueSets[cleanValueSetUrl];
-  }
-  useEffect(() => {
-    if (!cleanValueSetUrl || !dynamicValueSet) {
-      return;
-    }
-
-    // dynamicValueSet is not complete
-    if (!dynamicValueSet.isComplete || !dynamicValueSet.completeResource) {
-      setCodings([]);
-      onDynamicValueSetCodingsChange();
-      return;
-    }
-
-    // Assume answerValueSet is an expandable URL
-    setLoading(true);
-    const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
-    const promise = getValueSetPostPromise(dynamicValueSet.completeResource, terminologyServerUrl);
-    // console.log('promise', promise, dynamicValueSet.version)
-    if (promise) {
-      promise
-        .then(async (valueSet: ValueSet) => {
-          const codings = getValueSetCodings(valueSet);
-
-          addDisplayToCodingArray(codings, terminologyServerUrl)
-            .then((codingsWithDisplay) => {
-              if (codingsWithDisplay.length > 0 && dynamicValueSet) {
-                addCodingToCache(
-                  `${valueSetUrl}-dynamic-v${dynamicValueSet.version}`,
-                  codingsWithDisplay
-                );
-              }
-              onDynamicValueSetCodingsChange();
-              setCodings(codingsWithDisplay);
-              setLoading(false);
-            })
-            .catch((error: Error) => {
-              setCodings(codings);
-              onDynamicValueSetCodingsChange();
-              setServerError(error);
-              setLoading(false);
-            });
-        })
-        .catch((error: Error) => {
-          setServerError(error);
-          setCodings([]);
-          onDynamicValueSetCodingsChange();
-          setLoading(false);
-        });
-    }
-  }, [qItem, dynamicValueSet?.version]);
 
   // Dynamic answerExpression
   const answerExpression: AnswerExpression | null = answerExpressions[qItem.linkId] ?? null;
   useEffect(() => {
     let newCodings: Coding[] = [];
     if (answerExpression && Array.isArray(answerExpression.options)) {
-      newCodings = answerExpression.options as Coding[];
+      newCodings = convertAnswerOptionsToCodings(answerExpression.options);
       if (!_isEqual(newCodings, codings)) {
         setCodings(newCodings);
         onDynamicValueSetCodingsChange();
@@ -245,5 +105,43 @@ function useValueSetCodings(
     terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' }
   };
 }
+
+function getInitialCodings(
+  cleanValueSetUrl: string | undefined,
+  processedValueSetCodings: Record<string, Coding[]>,
+  cachedValueSetCodings: Record<string, Coding[]>
+) {
+  // set options from cached answer options if present
+  if (cleanValueSetUrl) {
+    // attempt to get codings from value sets preprocessed when loading questionnaire
+    if (processedValueSetCodings[cleanValueSetUrl]) {
+      return processedValueSetCodings[cleanValueSetUrl];
+    }
+
+    // attempt to get codings from cached queried value sets
+    if (cachedValueSetCodings[cleanValueSetUrl]) {
+      return cachedValueSetCodings[cleanValueSetUrl];
+    }
+  }
+
+  return [];
+}
+//
+// function getCodingsVersion(
+//   linkId: string,
+//   initialCodings: Coding[],
+//   answerExpressions: Record<string, AnswerExpression>
+// ): number {
+//   if (initialCodings.length > 0) {
+//     return 1;
+//   }
+//
+//   const answerExpression = answerExpressions[linkId];
+//   if (answerExpression) {
+//     return answerExpression.version;
+//   }
+//
+//   return 0;
+// }
 
 export default useValueSetCodings;

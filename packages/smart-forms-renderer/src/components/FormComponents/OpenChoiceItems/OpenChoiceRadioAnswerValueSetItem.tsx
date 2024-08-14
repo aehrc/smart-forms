@@ -142,6 +142,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
         <OpenChoiceRadioAnswerValueSetFields
           qItem={qItem}
           options={options}
+          optionsLoading={isLoading}
           valueRadio={valueRadio}
           openLabelText={openLabelText}
           openLabelValue={openLabelValue}

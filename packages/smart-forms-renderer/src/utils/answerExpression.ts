@@ -19,6 +19,7 @@ import type { AnswerExpression } from '../interfaces/answerExpression.interface'
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import _isEqual from 'lodash/isEqual';
+import { type QuestionnaireItemAnswerOption } from 'fhir/r4';
 
 export function evaluateAnswerExpressions(
   fhirPathContext: Record<string, any>,
@@ -47,7 +48,7 @@ export function evaluateAnswerExpressions(
       // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
       if (result.length > 0 && !_isEqual(answerExpression.options, result)) {
         isUpdated = true;
-        answerExpression.options = result;
+        answerExpression.options = getAnswerOptionsFromResults(result);
         answerExpression.version = answerExpression.version + 1;
       }
 
@@ -68,4 +69,26 @@ export function evaluateAnswerExpressions(
     answerExpsIsUpdated: isUpdated,
     updatedAnswerExpressions: updatedAnswerExpressions
   };
+}
+
+function getAnswerOptionsFromResults(result: any): QuestionnaireItemAnswerOption[] {
+  if (!Array.isArray(result)) {
+    return [];
+  }
+
+  return result
+    .map((item) => {
+      if (item.system && item.code) {
+        return {
+          valueCoding: {
+            system: item.system,
+            code: item.code,
+            display: item.display ?? undefined
+          }
+        };
+      }
+
+      return item;
+    })
+    .filter((item) => typeof item === 'object');
 }
