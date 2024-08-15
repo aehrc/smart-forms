@@ -53,10 +53,13 @@ export function evaluateAnswerExpressions(
       }
 
       // Update calculatedExpression value to null if no result is returned
-      if (result.length === 0 && answerExpression.options !== null) {
-        isUpdated = true;
-        answerExpression.options = [];
-        answerExpression.version = answerExpression.version + 1;
+      if (result.length === 0 && !!answerExpression.options) {
+        // Only update if current options is not empty
+        if (answerExpression.options.length > 0) {
+          isUpdated = true;
+          answerExpression.options = [];
+          answerExpression.version = answerExpression.version + 1;
+        }
       }
     } catch (e) {
       console.warn(e.message, `LinkId: ${linkId}\nExpression: ${answerExpression.options}`);

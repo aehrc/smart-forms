@@ -5,6 +5,7 @@ import type {
   DomainResource,
   OperationOutcome,
   Parameters,
+  ParametersParameter,
   Reference,
   Resource,
   ValueSet
@@ -123,6 +124,8 @@ export async function evaluateFhirpathAsync(
               coded = coded[0] as string | Coding;
             }
 
+            console.log('conceptMap', conceptMap, 'coded', coded, 'params', params);
+
             let key = createIndexKeyTranslate(conceptMap, coded, params);
             if (key) {
               key = 'Translate:' + key;
@@ -147,7 +150,7 @@ export async function evaluateFhirpathAsync(
             }
           })
           .filter((v) => v !== undefined),
-      arity: { 1: ['Any', 'Any'], 2: ['Any', 'Any', 'String'] }
+      arity: { 1: ['Any', 'Any'], 2: ['Any', 'Any'], 3: ['Any', 'Any', 'String'] }
     },
     resolve: {
       fn: (inputs: any[]) =>
@@ -435,22 +438,42 @@ async function translateAsync(
     const coded = typeof typedData.coded === 'string' ? { code: typedData.coded } : typedData.coded;
 
     let response;
-    const conceptMap = typedData.conceptMap as ConceptMap;
-    if (conceptMap.resourceType === 'ConceptMap') {
+    // const conceptMap = typedData.conceptMap as ConceptMap;
+    // const conceptMapIsObject = typeof typedData.conceptMap === 'object';
+    if (typedData.params !== '') {
+      let conceptMapParam: ParametersParameter;
+      if (typeof typedData.conceptMap === 'string') {
+        conceptMapParam = {
+          name: 'url',
+          valueUri: typedData.conceptMap
+        };
+      } else {
+        const conceptMap = typedData.conceptMap as ConceptMap;
+        conceptMapParam = {
+          name: 'conceptMap',
+          resource: conceptMap
+        };
+      }
+
       const parameters: Parameters = {
         resourceType: 'Parameters',
         parameter: [
+          conceptMapParam,
           {
-            name: 'conceptMap',
-            resource: conceptMap
+            name: 'code',
+            valueCode: coded.code
           },
           {
-            name: 'coding',
-            valueCoding: coded
+            name: 'system',
+            valueUri: coded.system
           }
         ]
       };
 
+      if (typedData.params) {
+        const additionalParams = parseTranslateAdditionalParams(typedData.params ?? '');
+        parameters.parameter?.push(...additionalParams);
+      }
       // TODO turn typedData.params into a URLSearchParams object and into $translate params
 
       myHeaders = new Headers(httpPostHeaders);
@@ -500,6 +523,67 @@ async function translateAsync(
       err.message
     );
   }
+}
+
+// Only engineered to work with 'dependency' for now
+function parseTranslateAdditionalParams(urlEncodedString: string): ParametersParameter[] {
+  // Split the string by '&' to get each key-value pair
+  const pairs = urlEncodedString.split('&');
+
+  // Initialize an array to hold the resulting JSON objects
+  const additionalParams: ParametersParameter[] = [];
+
+  // Initialize temporary variables to store the current element and concept
+  const elements: string[] = [];
+  const system: string[] = [];
+  const code: string[] = [];
+
+  for (const pair of pairs) {
+    // Split each pair by '=' to get the key and value
+    const [key, value] = pair.split('=');
+    if (key === 'dependency.element') {
+      elements.push(value);
+      continue;
+    }
+
+    if (key === 'dependency.concept.coding.system') {
+      system.push(value);
+      continue;
+    }
+
+    if (key === 'dependency.concept.coding.code') {
+      code.push(value);
+    }
+  }
+
+  if (elements.length !== system.length || elements.length !== code.length) {
+    return [];
+  }
+
+  for (let i = 0; i < elements.length; i++) {
+    additionalParams.push({
+      name: 'dependency',
+      part: [
+        {
+          name: 'element',
+          valueUri: elements[i]
+        },
+        {
+          name: 'concept',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: system[i],
+                code: code[i]
+              }
+            ]
+          }
+        }
+      ]
+    });
+  }
+
+  return additionalParams;
 }
 
 // --------------------------------------------------------------------------
