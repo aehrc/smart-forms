@@ -728,7 +728,8 @@ async function memberOfAsync(
     } else if (typeof typedData.value === 'string') {
       const queryParams = new URLSearchParams({
         url: typedData.valueSet,
-        code: typedData.value
+        code: typedData.value,
+        system: 'http://snomed.info/sct' // FIXME hardcoded now
       });
       response = await fetch(`${requestUrl}?${queryParams.toString()}`, { headers: myHeaders });
     } else {
