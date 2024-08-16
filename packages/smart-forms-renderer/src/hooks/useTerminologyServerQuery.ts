@@ -17,7 +17,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import {
+  getTerminologyServerUrl,
+  getValueSetCodings,
+  getValueSetPromise,
+  postValueSetPromise
+} from '../utils/valueSet';
 
 import type { AlertColor } from '@mui/material/Alert';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
@@ -28,7 +33,7 @@ function useTerminologyServerQuery(
   input: string,
   searchTerm: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
-  const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   let fullUrl = '';
@@ -45,14 +50,22 @@ function useTerminologyServerQuery(
 
   // Restructure url to include filter and count parameters
   let answerValueSetUrl = qItem.answerValueSet;
+  let valueSetToPost: ValueSet | null = null;
+  let isGetRequest = true;
   if (answerValueSetUrl) {
     if (answerValueSetUrl.startsWith('#')) {
       answerValueSetUrl = answerValueSetUrl.slice(1);
     }
 
     // attempt to get url from contained value sets when loading questionnaire
-    if (processedValueSetUrls[answerValueSetUrl]) {
-      answerValueSetUrl = processedValueSetUrls[answerValueSetUrl];
+    const processedValueSet = processedValueSets[answerValueSetUrl];
+    if (processedValueSet) {
+      if (processedValueSet.url) {
+        answerValueSetUrl = processedValueSet.url;
+      } else {
+        valueSetToPost = processedValueSet;
+        isGetRequest = false;
+      }
     }
 
     const urlWithTrailingAmpersand =
@@ -64,7 +77,17 @@ function useTerminologyServerQuery(
   const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
   const { isFetching, error, data } = useQuery<ValueSet>(
     ['expandValueSet', fullUrl],
-    () => getValueSetPromise(fullUrl, terminologyServerUrl),
+    () => {
+      if (isGetRequest) {
+        return getValueSetPromise(fullUrl, terminologyServerUrl);
+      }
+
+      if (valueSetToPost) {
+        return postValueSetPromise(valueSetToPost, terminologyServerUrl);
+      }
+
+      return Promise.resolve({ resourceType: 'ValueSet', expansion: { total: 0 } } as ValueSet);
+    },
     {
       enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined
     }

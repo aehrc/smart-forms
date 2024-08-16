@@ -22,7 +22,7 @@ import type { LaunchContext } from './populate.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from './enableWhen.interface';
 import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
-import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { Coding, QuestionnaireItemAnswerOption, ValueSet } from 'fhir/r4';
 import type { InitialExpression } from './initialExpression.interface';
 import { DynamicValueSet } from './valueSet.interface';
 
@@ -39,7 +39,7 @@ export interface QuestionnaireModel {
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  processedValueSets: Record<string, ValueSet>;
   dynamicValueSets: Record<string, DynamicValueSet>;
   fhirPathContext: Record<string, any>;
 }

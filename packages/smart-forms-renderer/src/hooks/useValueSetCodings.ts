@@ -20,8 +20,8 @@ import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import {
   getTerminologyServerUrl,
   getValueSetCodings,
-  getValueSetPostPromise,
-  getValueSetPromise
+  getValueSetPromise,
+  postValueSetPromise
 } from '../utils/valueSet';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
@@ -46,6 +46,7 @@ function useValueSetCodings(
 } {
   const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const dynamicValueSets = useQuestionnaireStore.use.dynamicValueSets();
   const answerExpressions = useQuestionnaireStore.use.answerExpressions();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
@@ -85,7 +86,7 @@ function useValueSetCodings(
     // Assume answerValueSet is an expandable URL
     setLoading(true);
     const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
-    const promise = getValueSetPostPromise(dynamicValueSet.completeResource, terminologyServerUrl);
+    const promise = postValueSetPromise(dynamicValueSet.completeResource, terminologyServerUrl);
     if (promise) {
       promise
         .then(async (valueSet: ValueSet) => {
@@ -142,12 +143,22 @@ function useValueSetCodings(
 
   // get options from answerValueSet on render
   useEffect(() => {
-    const valueSetUrl = qItem.answerValueSet;
+    let valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl || codings.length > 0) return;
 
-    // Assume answerValueSet is an expandable URL
     const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
-    const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
+    let promise: Promise<ValueSet> | null = null;
+    if (valueSetUrl.startsWith('#')) {
+      valueSetUrl = valueSetUrl.slice(1);
+      const valueSet = processedValueSets[valueSetUrl];
+      if (valueSet) {
+        promise = postValueSetPromise(valueSet, terminologyServerUrl);
+      }
+    } else {
+      // Assume answerValueSet is an expandable URL
+      promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
+    }
+
     if (promise) {
       promise
         .then(async (valueSet: ValueSet) => {
@@ -155,7 +166,9 @@ function useValueSetCodings(
           addDisplayToCodingArray(codings, terminologyServerUrl)
             .then((codingsWithDisplay) => {
               if (codingsWithDisplay.length > 0) {
-                addCodingToCache(valueSetUrl, codingsWithDisplay);
+                if (valueSetUrl) {
+                  addCodingToCache(valueSetUrl, codingsWithDisplay);
+                }
                 setCodings(codingsWithDisplay);
               }
             })

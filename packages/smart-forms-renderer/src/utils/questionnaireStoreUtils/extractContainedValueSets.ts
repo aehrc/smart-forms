@@ -24,14 +24,14 @@ export function extractContainedValueSets(
   terminologyServerUrl: string
 ): {
   processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  processedValueSets: Record<string, ValueSet>;
   valueSetPromises: Record<string, ValueSetPromise>;
   dynamicValueSets: Record<string, DynamicValueSet>;
 } {
   if (!questionnaire.contained || questionnaire.contained.length === 0) {
     return {
       processedValueSetCodings: {},
-      processedValueSetUrls: {},
+      processedValueSets: {},
       valueSetPromises: {},
       dynamicValueSets: {}
     };
@@ -39,7 +39,7 @@ export function extractContainedValueSets(
 
   // Process contained ValueSets
   const processedValueSetCodings: Record<string, Coding[]> = {};
-  const processedValueSetUrls: Record<string, string> = {};
+  const processedValueSets: Record<string, ValueSet> = {};
   const valueSetPromises: Record<string, ValueSetPromise> = {};
   const dynamicValueSets: Record<string, DynamicValueSet> = {};
   for (const entry of questionnaire.contained) {
@@ -69,21 +69,18 @@ export function extractContainedValueSets(
       }
     }
 
+    processedValueSets[entry.id] = entry;
+
     // ValueSet is both unexpanded and not dynamic, add unexpanded contained ValueSets to valueSetPromiseMap
     const valueSetUrl = getValueSetUrlFromContained(entry);
     if (valueSetUrl) {
       valueSetPromises[entry.id] = {
         promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
       };
-      continue;
-    }
-
-    if (entry.url) {
-      processedValueSetUrls[entry.id] = entry.url;
     }
   }
 
-  return { processedValueSetCodings, processedValueSetUrls, valueSetPromises, dynamicValueSets };
+  return { processedValueSetCodings, processedValueSets, valueSetPromises, dynamicValueSets };
 }
 
 /**

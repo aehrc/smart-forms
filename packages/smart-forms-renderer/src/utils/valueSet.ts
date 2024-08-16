@@ -65,7 +65,7 @@ export function getValueSetPromise(url: string, terminologyServerUrl: string): P
   });
 }
 
-export function getValueSetPostPromise(
+export function postValueSetPromise(
   valueSet: ValueSet,
   terminologyServerUrl: string
 ): Promise<ValueSet> {

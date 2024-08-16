@@ -20,7 +20,8 @@ import type {
   Coding,
   Questionnaire,
   QuestionnaireResponse,
-  QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItemAnswer,
+  ValueSet
 } from 'fhir/r4';
 import type { Variables } from '../interfaces/variables.interface';
 import type { LaunchContext } from '../interfaces/populate.interface';
@@ -72,7 +73,7 @@ import { DynamicValueSet } from '../interfaces/valueSet.interface';
  * @property initialExpressions - Key-value pair of initial expressions `Record<linkId, initial expression properties>`
  * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
  * @property processedValueSetCodings - Key-value pair of processed value set codings `Record<valueSetUrl, codings>`
- * @property processedValueSetUrls - Key-value pair of contained value set urls `Record<valueSetName, valueSetUrl>`
+ * @property processedValueSets - Key-value pair of contained value sets `Record<valueSetName, valueSet>`
  * @property cachedValueSetCodings - Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
  * @property fhirPathContext - Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated value(s)>`
  * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
@@ -113,7 +114,7 @@ export interface QuestionnaireStoreType {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  processedValueSets: Record<string, ValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
   dynamicValueSets: Record<string, DynamicValueSet>;
   fhirPathContext: Record<string, any>;
@@ -179,7 +180,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   enableWhenLinkedQuestions: {},
   enableWhenIsActivated: true,
   processedValueSetCodings: {},
-  processedValueSetUrls: {},
+  processedValueSets: {},
   cachedValueSetCodings: {},
   dynamicValueSets: {},
   fhirPathContext: {},
@@ -241,7 +242,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialExpressions: questionnaireModel.initialExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
-      processedValueSetUrls: questionnaireModel.processedValueSetUrls,
+      processedValueSets: questionnaireModel.processedValueSets,
       dynamicValueSets: questionnaireModel.dynamicValueSets,
       fhirPathContext: updatedFhirPathContext,
       readOnly: readOnly
@@ -264,7 +265,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialExpressions: {},
       answerExpressions: {},
       processedValueSetCodings: {},
-      processedValueSetUrls: {},
+      processedValueSets: {},
       fhirPathContext: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),

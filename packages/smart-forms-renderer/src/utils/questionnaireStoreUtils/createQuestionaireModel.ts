@@ -57,7 +57,7 @@ export async function createQuestionnaireModel(
 
   let valueSetPromises = extractContainedValueSetsResult.valueSetPromises;
   let processedValueSetCodings = extractContainedValueSetsResult.processedValueSetCodings;
-  const processedValueSetUrls = extractContainedValueSetsResult.processedValueSetUrls;
+  const processedValueSets = extractContainedValueSetsResult.processedValueSets;
   const dynamicValueSets = extractContainedValueSetsResult.dynamicValueSets;
 
   const extractOtherExtensionsResult = extractOtherExtensions(
@@ -113,7 +113,7 @@ export async function createQuestionnaireModel(
     answerExpressions,
     answerOptions: completeAnswerOptions,
     processedValueSetCodings,
-    processedValueSetUrls,
+    processedValueSets,
     dynamicValueSets,
     fhirPathContext: {}
   };
@@ -133,7 +133,7 @@ function createEmptyModel(): QuestionnaireModel {
     answerOptions: {},
     enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSetCodings: {},
-    processedValueSetUrls: {},
+    processedValueSets: {},
     dynamicValueSets: {},
     fhirPathContext: {}
   };
