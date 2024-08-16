@@ -17,12 +17,18 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import {
+  getTerminologyServerUrl,
+  getValueSetCodings,
+  getValueSetPostPromise,
+  getValueSetPromise
+} from '../utils/valueSet';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 import { AnswerExpression } from '../interfaces/answerExpression.interface';
 import _isEqual from 'lodash/isEqual';
 import { convertAnswerOptionsToCodings } from '../utils/choice';
+import { DynamicValueSet } from '../interfaces/valueSet.interface';
 
 export interface TerminologyError {
   error: Error | null;
@@ -40,6 +46,7 @@ function useValueSetCodings(
 } {
   const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
+  const dynamicValueSets = useQuestionnaireStore.use.dynamicValueSets();
   const answerExpressions = useQuestionnaireStore.use.answerExpressions();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
 
@@ -55,6 +62,70 @@ function useValueSetCodings(
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [loading, setLoading] = useState<boolean>(false);
   const [serverError, setServerError] = useState<Error | null>(null);
+
+  // Use dynamic valueSet via embeddings in contained ValueSet
+  let dynamicValueSet: DynamicValueSet | null = null;
+  if (cleanValueSetUrl) {
+    dynamicValueSet = dynamicValueSets[cleanValueSetUrl];
+  }
+  useEffect(() => {
+    if (!cleanValueSetUrl || !dynamicValueSet) {
+      return;
+    }
+
+    // dynamicValueSet is not complete
+    if (!dynamicValueSet.isComplete || !dynamicValueSet.completeResource) {
+      if (!_isEqual([], codings)) {
+        setCodings([]);
+        onDynamicValueSetCodingsChange();
+      }
+      return;
+    }
+
+    // Assume answerValueSet is an expandable URL
+    setLoading(true);
+    const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
+    const promise = getValueSetPostPromise(dynamicValueSet.completeResource, terminologyServerUrl);
+    if (promise) {
+      promise
+        .then(async (valueSet: ValueSet) => {
+          const newCodings = getValueSetCodings(valueSet);
+
+          addDisplayToCodingArray(newCodings, terminologyServerUrl)
+            .then((codingsWithDisplay) => {
+              if (codingsWithDisplay.length > 0 && dynamicValueSet) {
+                addCodingToCache(
+                  `${valueSetUrl}-dynamic-v${dynamicValueSet.version}`,
+                  codingsWithDisplay
+                );
+              }
+
+              if (!_isEqual(codingsWithDisplay, codings)) {
+                setCodings(codingsWithDisplay);
+                onDynamicValueSetCodingsChange();
+              }
+              setLoading(false);
+            })
+            .catch((error: Error) => {
+              if (!_isEqual(newCodings, codings)) {
+                setCodings(newCodings);
+                onDynamicValueSetCodingsChange();
+              }
+              setServerError(error);
+              setLoading(false);
+            });
+        })
+        .catch((error: Error) => {
+          setServerError(error);
+
+          if (!_isEqual([], codings)) {
+            setCodings([]);
+            onDynamicValueSetCodingsChange();
+          }
+          setLoading(false);
+        });
+    }
+  }, [dynamicValueSet?.version, codings]);
 
   // Dynamic answerExpression
   const answerExpression: AnswerExpression | null = answerExpressions[qItem.linkId] ?? null;
