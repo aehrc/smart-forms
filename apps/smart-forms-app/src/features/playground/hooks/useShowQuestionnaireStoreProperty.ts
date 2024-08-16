@@ -31,7 +31,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
   const answerExpressions = useQuestionnaireStore.use.answerExpressions();
   const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
-  const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
   const populatedContext = useQuestionnaireStore.use.populatedContext();
@@ -53,7 +53,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
       calculatedExpressions,
       answerExpressions,
       processedValueSetCodings,
-      processedValueSetUrls,
+      processedValueSets,
       cachedValueSetCodings,
       fhirPathContext,
       populatedContext,

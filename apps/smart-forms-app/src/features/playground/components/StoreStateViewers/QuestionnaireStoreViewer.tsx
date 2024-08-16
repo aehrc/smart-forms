@@ -17,7 +17,7 @@ const questionnaireStoreStatePropertyNames: string[] = [
   'calculatedExpressions',
   'answerExpressions',
   'processedValueSetCodings',
-  'processedValueSetUrls',
+  'processedValueSets',
   'cachedValueSetCodings',
   'fhirPathContext',
   'populatedContext',
