@@ -34,7 +34,6 @@ jobs:
       - name: Build application
         run: cd apps/demo-renderer-app && npm run build
 
-
   jest-test:
     name: Jest Tests
     runs-on: ubuntu-latest

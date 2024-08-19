@@ -37,12 +37,6 @@ import type { RequestConfig } from './populateCallback';
 import { fetchResourceCallback } from './populateCallback';
 import { createPopulateInputParameters } from './populateInputParams';
 
-export const REQUEST_CONFIG: RequestConfig = {
-  clientEndpoint: 'https://gw.interop.community/AuConNov23/data',
-  authToken:
-    'eyJqa3UiOiJodHRwczpcL1wvaW9sMmF1dGguaW50ZXJvcC5jb21tdW5pdHlqd2siLCJraWQiOiJyc2ExIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJhdWQiOiJhN2RkNDJlZi05ZDdjLTRhOWItOTgyZi0xZjRmZjBlNDI5OGUiLCJpc3MiOiJodHRwczpcL1wvaW9sMmF1dGguaW50ZXJvcC5jb21tdW5pdHkiLCJleHAiOjE3MDA0NTAyNDcsImlhdCI6MTcwMDQ0NjY0NywianRpIjoiYTE0ZmM0MzktZGUzNC00MzQwLTlkNGYtYmIwZDY3Y2ZjM2NhIn0.PQ2T8GQCyQkwAI0UTXZ9AEJF1KcK8H0CGePLj7XLg-jqn381-9j8OyOR5cjEh2EpzhdfeDQX2KCjvq4wd3PkPmkQYfPXBj84odtNHSuubtHlA_TnDK2fyhoDOn_CwYOIPJrFNZ2frvDlkdFs5s--dlPGGoAQoy3Szbf09PzbiiThf3Y3YmRGcb1JR1n4RwhwW6d7lhMEhbaqEqzsfig75TFhFw2wmJGXqIZMz0L2TTel9iYT9zeEyBmmmZpdoCTwgD2raC2nPpxU-OjslA50r_OvjfDpVhIAC40E5-ol_xAL7QhFioudsUQaQXGXWgcDs2lTqrNA-HPoxxrj1ZD9GQ'
-};
-
 export interface PopulateResult {
   populated: QuestionnaireResponse;
   hasWarnings: boolean;
