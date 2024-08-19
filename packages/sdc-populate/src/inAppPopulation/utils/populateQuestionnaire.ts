@@ -45,7 +45,6 @@ import type {
   SourceQuery
 } from '../interfaces/inAppPopulation.interface';
 import { Base64 } from 'js-base64';
-import { isRecord } from '@aehrc/smart-forms-app/src/features/prepopulate/typePredicates/isRecord';
 
 export interface PopulateResult {
   populatedResponse: QuestionnaireResponse;
@@ -379,4 +378,12 @@ function getXFhirQueryVariablesRecursive(qItem: QuestionnaireItem) {
   }
 
   return xFhirQueryVariables;
+}
+
+function isRecord(obj: any): obj is Record<string, any> {
+  if (!obj) {
+    return false;
+  }
+
+  return Object.keys(obj).every((key) => typeof key === 'string');
 }
