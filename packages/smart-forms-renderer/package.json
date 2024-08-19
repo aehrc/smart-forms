@@ -45,7 +45,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-markdown": "^8.0.7",
     "style-to-object": "^1.0.6",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.4"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.3",

@@ -34,11 +34,11 @@
     "@fontsource/material-icons": "^5.0.18",
     "@fontsource/roboto": "^5.0.12",
     "@iconify/react": "^4.1.1",
-    "@microlink/react-json-view": "^1.23.0",
+    "@microlink/react-json-view": "^1.23.1",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.15.20",
     "@mui/lab": "^5.0.0-alpha.151",
-    "@mui/material": "^5.15.20",
+    "@mui/material": "^5.16.6",
     "@mui/x-date-pickers": "^6.10.1",
     "@sentry/react": "^7.73.0",
     "@sentry/tracing": "^7.101.0",
@@ -73,7 +73,7 @@
     "react-to-print": "^2.14.15",
     "simplebar-react": "^3.2.4",
     "usehooks-ts": "^2.9.1",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
@@ -106,7 +106,7 @@
     "@vitejs/plugin-react": "^4.0.4",
     "eslint": "^8.52.0",
     "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "eslint-plugin-storybook": "^0.8.0",
     "jest": "^29.7.0",
