@@ -268,3 +268,59 @@ export const qrQuantityUnitOptionResponse: QuestionnaireResponse = {
   ],
   questionnaire: 'https://smartforms.csiro.au/docs/components/quantity/unit-option'
 };
+
+export const qQuantityCalculation: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'QuantityCalculation',
+  name: 'QuantityCalculation',
+  title: 'Quantity Calculation',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/quantity/calculation',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'durationInDays',
+        language: 'text/fhirpath',
+        expression: "item.where(linkId='duration-in-days').answer.value"
+      }
+    }
+  ],
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'd', display: 'days' }
+        }
+      ],
+      linkId: 'duration-in-days',
+      type: 'quantity',
+      repeats: false,
+      text: 'Duration in Days'
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'h', display: 'hours' }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+          valueExpression: {
+            description: 'Duration In Hours',
+            language: 'text/fhirpath',
+            expression: '%durationInDays.value * 24'
+          }
+        }
+      ],
+      linkId: 'duration-in-hours',
+      type: 'quantity',
+      repeats: false,
+      text: 'Duration in Hours'
+    }
+  ]
+};

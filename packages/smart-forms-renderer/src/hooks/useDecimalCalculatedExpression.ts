@@ -23,7 +23,7 @@ interface UseDecimalCalculatedExpression {
   calcExpUpdated: boolean;
 }
 
-interface useDecimalCalculatedExpressionProps {
+interface UseDecimalCalculatedExpressionProps {
   qItem: QuestionnaireItem;
   inputValue: string;
   precision: number | null;
@@ -32,7 +32,7 @@ interface useDecimalCalculatedExpressionProps {
 }
 
 function useDecimalCalculatedExpression(
-  props: useDecimalCalculatedExpressionProps
+  props: UseDecimalCalculatedExpressionProps
 ): UseDecimalCalculatedExpression {
   const {
     qItem,

@@ -6,7 +6,6 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type {
-  Extension,
   Quantity,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -21,7 +20,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
 import { getDecimalPrecision } from '../../../utils/itemControl';
-import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
@@ -34,6 +32,7 @@ import {
   stringIsComparator
 } from '../../../utils/quantity';
 import QuantityComparatorField from './QuantityComparatorField';
+import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
 
 interface QuantityItemProps
   extends PropsWithQrItemChangeHandler,
@@ -51,7 +50,7 @@ function QuantityItem(props: QuantityItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat, quantityUnit } = useRenderingExtensions(qItem);
 
   // Get units options if present
   const unitOptions = useMemo(
@@ -66,8 +65,8 @@ function QuantityItem(props: QuantityItemProps) {
   let valueQuantity: Quantity = {};
   let initialValueInput = '';
   let initialComparatorInput: Quantity['comparator'] | null = null;
-  let initialUnitInput: QuestionnaireItemAnswerOption | null = (unitOptions?.at(0) ??
-    null) as Extension | null;
+  let initialUnitInput: QuestionnaireItemAnswerOption | null =
+    quantityUnit ?? unitOptions?.at(0) ?? null;
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueQuantity) {
       valueQuantity = qrItem.answer[0].valueQuantity;
@@ -104,7 +103,7 @@ function QuantityItem(props: QuantityItemProps) {
   const feedback = useValidationFeedback(qItem, valueInput);
 
   // Process calculated expressions
-  const { calcExpUpdated } = useDecimalCalculatedExpression({
+  const { calcExpUpdated } = useQuantityCalculatedExpression({
     qItem: qItem,
     inputValue: valueInput,
     precision: precision,
@@ -123,6 +122,31 @@ function QuantityItem(props: QuantityItemProps) {
               unit: unitInput?.valueCoding?.display,
               system: unitInput?.valueCoding?.system,
               code: unitInput?.valueCoding?.code
+            }
+          }
+        ]
+      });
+    },
+    onChangeByCalcExpressionQuantity: (
+      newValueDecimal: number,
+      newUnitSystem,
+      newUnitCode,
+      newUnitDisplay
+    ) => {
+      setValueInput(
+        typeof precision === 'number'
+          ? newValueDecimal.toFixed(precision)
+          : newValueDecimal.toString()
+      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: [
+          {
+            valueQuantity: {
+              value: newValueDecimal,
+              unit: newUnitDisplay,
+              system: newUnitSystem,
+              code: newUnitCode
             }
           }
         ]
