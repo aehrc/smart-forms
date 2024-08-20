@@ -2,17 +2,11 @@ import React from 'react';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import type {
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute
-} from '../../../interfaces/renderProps.interface';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 
-interface QuantityUnitFieldProps
-  extends PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
-  qItem: QuestionnaireItem;
+interface QuantityUnitFieldProps extends PropsWithIsTabledAttribute {
+  linkId: string;
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   readOnly: boolean;
@@ -20,39 +14,23 @@ interface QuantityUnitFieldProps
 }
 
 function QuantityUnitField(props: QuantityUnitFieldProps) {
-  const { qItem, options, valueSelect, readOnly, isTabled, onChange } = props;
-
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const { linkId, options, valueSelect, readOnly, isTabled, onChange } = props;
 
   return (
     <Autocomplete
-      id={qItem.linkId}
+      id={linkId + '-unit'}
       value={valueSelect ?? null}
+      isOptionEqualToValue={(option, value) =>
+        option.valueCoding?.code === value?.valueCoding?.code
+      }
       options={options}
       getOptionLabel={(option) => getAnswerOptionLabel(option)}
       onChange={(_, newValue) => onChange(newValue as QuestionnaireItemAnswerOption | null)}
-      freeSolo
       autoHighlight
       sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
       disabled={readOnly}
       size="small"
-      renderInput={(params) => (
-        <StandardTextField
-          isTabled={isTabled}
-          label={displayPrompt}
-          placeholder={entryFormat}
-          {...params}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {params.InputProps.endAdornment}
-                {displayUnit}
-              </>
-            )
-          }}
-        />
-      )}
+      renderInput={(params) => <StandardTextField isTabled={isTabled} {...params} />}
     />
   );
 }

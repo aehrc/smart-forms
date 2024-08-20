@@ -17,7 +17,13 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qQuantityBasic, qQuantityUnitOption } from '../assets/questionnaires';
+import {
+  qQuantityBasic,
+  qQuantityCalculation,
+  qQuantityUnitOption,
+  qrQuantityBasicResponse,
+  qrQuantityUnitOptionResponse
+} from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -38,8 +44,28 @@ export const QuantityBasic: Story = {
   }
 };
 
+export const QuantityBasicResponse: Story = {
+  args: {
+    questionnaire: qQuantityBasic,
+    questionnaireResponse: qrQuantityBasicResponse
+  }
+};
+
 export const QuantityUnitOption: Story = {
   args: {
     questionnaire: qQuantityUnitOption
+  }
+};
+
+export const QuantityUnitOptionResponse: Story = {
+  args: {
+    questionnaire: qQuantityUnitOption,
+    questionnaireResponse: qrQuantityUnitOptionResponse
+  }
+};
+
+export const QuantityCalculation: Story = {
+  args: {
+    questionnaire: qQuantityCalculation
   }
 };

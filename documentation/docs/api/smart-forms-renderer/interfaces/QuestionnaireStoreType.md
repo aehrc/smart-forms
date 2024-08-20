@@ -71,6 +71,14 @@ Key-value pair of calculated expressions `Record<linkId, array of calculated exp
 
 ***
 
+### currentPageIndex
+
+> **currentPageIndex**: `number`
+
+Index of the current page
+
+***
+
 ### currentTabIndex
 
 > **currentTabIndex**: `number`
@@ -161,6 +169,24 @@ Key-value pair of launch contexts `Record<launch context name, launch context pr
 
 ***
 
+### markPageAsComplete()
+
+> **markPageAsComplete**: (`pageLinkId`) => `void`
+
+Used to mark a page index as complete
+
+#### Parameters
+
+| Parameter | Type |
+| :------ | :------ |
+| `pageLinkId` | `string` |
+
+#### Returns
+
+`void`
+
+***
+
 ### markTabAsComplete()
 
 > **markTabAsComplete**: (`tabLinkId`) => `void`
@@ -214,6 +240,14 @@ Used to set the focused linkId
 #### Returns
 
 `void`
+
+***
+
+### pages
+
+> **pages**: `Pages`
+
+Key-value pair of pages `Record<linkId, Page>`
 
 ***
 
@@ -290,6 +324,24 @@ Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query v
 > **sourceQuestionnaire**: `Questionnaire`
 
 FHIR R4 Questionnaire to render
+
+***
+
+### switchPage()
+
+> **switchPage**: (`newPageIndex`) => `void`
+
+Used to switch the current page index
+
+#### Parameters
+
+| Parameter | Type |
+| :------ | :------ |
+| `newPageIndex` | `number` |
+
+#### Returns
+
+`void`
 
 ***
 
