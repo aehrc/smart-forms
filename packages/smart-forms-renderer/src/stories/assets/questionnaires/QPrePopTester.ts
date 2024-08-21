@@ -187,6 +187,14 @@ export const qSelectivePrePopTester: Questionnaire = {
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
       valueExpression: {
+        name: 'ObsBloodPressure',
+        language: 'application/x-fhir-query',
+        expression: 'Observation?code=75367002&_count=1&_sort=-date&patient={{%patient.id}}'
+      }
+    },
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
         name: 'ObsTobaccoSmokingStatus',
         language: 'application/x-fhir-query',
         expression: 'Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}'
@@ -421,6 +429,28 @@ export const qSelectivePrePopTester: Questionnaire = {
             },
             {
               valueString: 'Other tobacco use'
+            }
+          ]
+        },
+        {
+          linkId: 'blood-pressure-unit-fixed',
+          text: 'Blood Pressure',
+          type: 'quantity',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%ObsBloodPressure.entry[0].resource.component[0].value'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'mm[Hg]',
+                display: 'mmHg'
+              }
             }
           ]
         },

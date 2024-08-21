@@ -18,6 +18,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 
+// The purpose of this hook to sync the string state from external changes i.e. re-population changes etc.
 function useStringInput(valueFromProps: string): [string, Dispatch<SetStateAction<string>>] {
   const [input, setInput] = useState(valueFromProps);
 

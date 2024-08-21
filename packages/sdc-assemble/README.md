@@ -54,9 +54,13 @@ export default defineConfig({
         // other modules as required...
       ]
     }
-  }
+  },
+  resolve: { preserveSymlinks: true }
 });
 ```
+
+During development, please change the `module` element in `tsconfig.json` to `"ES6"` and comment out the above changes. Otherwise `tsc -w` will not work properly.
+
 
 ## Sample implementation
 We have used this module as a microservice in our forms server https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble. 
