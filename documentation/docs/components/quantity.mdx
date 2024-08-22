@@ -10,6 +10,8 @@ import IframeContainer from '../../src/react/IframeContainer';
 
 There is an extension "http://hl7.org/fhir/StructureDefinition/questionnaire-unit" that can be used to define what unit should be captured (or the unit that has a ucum conversion from the provided unit).
 
+You can use the [UnitOption](/docs/sdc/terminology#unitoption) extension to specify a list of options for the unit of a quantity item.
+
 :::warning
 
 This component is not thoroughly tested yet. Please use it with caution.
@@ -24,7 +26,7 @@ This component is not thoroughly tested yet. Please use it with caution.
   <iframe
     src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-quantity--quantity-basic"
     width="100%"
-    height="100"
+    height="270"
   />
 </IframeContainer>
 
@@ -34,7 +36,7 @@ This component is not thoroughly tested yet. Please use it with caution.
   <iframe
     src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-quantity--quantity-basic-response"
     width="100%"
-    height="100"
+    height="270"
   />
 </IframeContainer>
 
@@ -46,7 +48,7 @@ This component is not thoroughly tested yet. Please use it with caution.
   <iframe
     src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-quantity--quantity-unit-option-response"
     width="100%"
-    height="100"
+    height="270"
   />
 </IframeContainer>
 
@@ -56,7 +58,7 @@ This component is not thoroughly tested yet. Please use it with caution.
   <iframe
     src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-quantity--quantity-calculation"
     width="100%"
-    height="100"
+    height="270"
   />
 </IframeContainer>
 
@@ -83,3 +85,4 @@ This component is not thoroughly tested yet. Please use it with caution.
 | enableWhen           | item.enableWhen                                                                                                                                               |
 | enableBehavior       | item.enableBehavior                                                                                                                                           |
 | text                 | item.text                                                                                                                                                     |
+| unitOption           | http://hl7.org/fhir/R4/extension-questionnaire-unitoption.html                                                                                                |
