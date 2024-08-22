@@ -142,7 +142,7 @@ View the source here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [ ] minOccurs
 - [ ] maxOccurs
 - [ ] optionExclusive
-- [ ] unitOption
+- [x] unitOption
 - [ ] unitValueSet
 - [ ] unitOpen
 - [ ] unitSupplementalSystem
