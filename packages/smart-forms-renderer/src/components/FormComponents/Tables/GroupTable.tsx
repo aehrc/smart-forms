@@ -20,6 +20,7 @@ import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import type {
+  PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -34,6 +35,7 @@ import { flushSync } from 'react-dom';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
+    PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -52,6 +54,7 @@ function GroupTable(props: GroupTableProps) {
     qItem,
     qrItems,
     groupCardElevation,
+    isRepeated,
     showMinimalView,
     parentIsReadOnly,
     onQrRepeatGroupChange
@@ -166,6 +169,7 @@ function GroupTable(props: GroupTableProps) {
       qItem={qItem}
       qItemsIndexMap={qItemsIndexMap}
       groupCardElevation={groupCardElevation}
+      isRepeated={isRepeated}
       readOnly={readOnly}
       tableRows={tableRows}
       selectedIds={selectedIds}

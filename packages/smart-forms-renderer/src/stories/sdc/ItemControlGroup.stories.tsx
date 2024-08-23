@@ -21,7 +21,8 @@ import {
   qItemControlDisplayTabContainer,
   qItemControlGroupGridMultiRow,
   qItemControlGroupGridSingleRow,
-  qItemControlGroupGTable,
+  qItemControlGroupGTableRepeats,
+  qItemControlGroupGTableSingle,
   qItemControlGroupPage,
   qItemControlGroupPageContainer,
   qItemControlGroupPageNonTopLevelPageContainer
@@ -40,9 +41,15 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const Gtable: Story = {
+export const GTableRepeats: Story = {
   args: {
-    questionnaire: qItemControlGroupGTable
+    questionnaire: qItemControlGroupGTableRepeats
+  }
+};
+
+export const GTableSingle: Story = {
+  args: {
+    questionnaire: qItemControlGroupGTableSingle
   }
 };
 

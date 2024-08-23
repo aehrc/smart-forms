@@ -76,6 +76,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           qItem={qItem}
           qrItems={qrItems}
           groupCardElevation={groupCardElevation + 1}
+          isRepeated={true}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
         />
@@ -119,6 +120,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
             qItem={qItem}
             qrItems={[]}
             groupCardElevation={groupCardElevation + 1}
+            isRepeated={true}
             parentIsReadOnly={parentIsReadOnly}
             onQrRepeatGroupChange={onQrRepeatGroupChange}
           />
@@ -149,6 +151,20 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
 
   // if qItem is not a repeating question or is a checkbox
   if (qItem.type === 'group') {
+    // GroupTable "gtable" can be rendered with either repeats:true or false
+    if (isSpecificItemControl(qItem, 'gtable')) {
+      return (
+        <GroupTable
+          qItem={qItem}
+          qrItems={qrItem ? [qrItem] : []}
+          groupCardElevation={groupCardElevation + 1}
+          isRepeated={false}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrRepeatGroupChange={onQrRepeatGroupChange}
+        />
+      );
+    }
+
     return (
       <GroupItem
         qItem={qItem}

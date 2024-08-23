@@ -34,6 +34,8 @@ import useHidden from '../../hooks/useHidden';
 import GroupItemSwitcher from '../FormComponents/GroupItem/GroupItemSwitcher';
 import useReadOnly from '../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
+import { isSpecificItemControl } from '../../utils';
+import GroupTable from '../FormComponents/Tables/GroupTable';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
@@ -125,6 +127,21 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // If form is untabbed, it is rendered as a regular group
   if (itemIsGroup) {
+    // GroupTable "gtable" can be rendered with either repeats:true or false
+    if (isSpecificItemControl(topLevelQItem, 'gtable')) {
+      return (
+        <GroupTable
+          key={topLevelQItem.linkId}
+          qItem={topLevelQItem}
+          qrItems={topLevelQRItem ? [topLevelQRItem] : []}
+          groupCardElevation={1}
+          isRepeated={false}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrRepeatGroupChange={onQrRepeatGroupChange}
+        />
+      );
+    }
+
     return (
       <GroupItem
         key={topLevelQItem.linkId}
