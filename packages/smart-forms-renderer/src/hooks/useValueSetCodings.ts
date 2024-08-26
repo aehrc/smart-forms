@@ -25,10 +25,10 @@ import {
 } from '../utils/valueSet';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
-import { AnswerExpression } from '../interfaces/answerExpression.interface';
+import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import _isEqual from 'lodash/isEqual';
-import { convertAnswerOptionsToCodings } from '../utils/choice';
-import { DynamicValueSet } from '../interfaces/valueSet.interface';
+import { convertAnswerOptionsToCodings, removeDuplicateCodings } from '../utils/choice';
+import type { DynamicValueSet } from '../interfaces/valueSet.interface';
 
 export interface TerminologyError {
   error: Error | null;
@@ -160,6 +160,7 @@ function useValueSetCodings(
     }
 
     if (promise) {
+      setLoading(true);
       promise
         .then(async (valueSet: ValueSet) => {
           const codings = getValueSetCodings(valueSet);
@@ -170,20 +171,26 @@ function useValueSetCodings(
                   addCodingToCache(valueSetUrl, codingsWithDisplay);
                 }
                 setCodings(codingsWithDisplay);
+                setLoading(false);
               }
             })
             .catch((error: Error) => {
               setServerError(error);
+              setLoading(false);
             });
         })
         .catch((error: Error) => {
           setServerError(error);
+          setLoading(false);
         });
     }
   }, [qItem]);
 
+  // Remove duplicate codings
+  const distinctCodings = useMemo(() => removeDuplicateCodings(codings), [codings]);
+
   return {
-    codings,
+    codings: distinctCodings,
     setCodings,
     isLoading: loading,
     terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' }
@@ -210,22 +217,5 @@ function getInitialCodings(
 
   return [];
 }
-//
-// function getCodingsVersion(
-//   linkId: string,
-//   initialCodings: Coding[],
-//   answerExpressions: Record<string, AnswerExpression>
-// ): number {
-//   if (initialCodings.length > 0) {
-//     return 1;
-//   }
-//
-//   const answerExpression = answerExpressions[linkId];
-//   if (answerExpression) {
-//     return answerExpression.version;
-//   }
-//
-//   return 0;
-// }
 
 export default useValueSetCodings;

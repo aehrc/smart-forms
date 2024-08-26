@@ -26,6 +26,8 @@ import {
 
 import type { AlertColor } from '@mui/material/Alert';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
+import { useMemo } from 'react';
+import { removeDuplicateCodings } from '../utils/choice';
 
 function useTerminologyServerQuery(
   qItem: QuestionnaireItem,
@@ -112,6 +114,9 @@ function useTerminologyServerQuery(
     }
   }
 
-  return { options, loading: isFetching, feedback };
+  // Remove duplicate codings
+  const distinctOptions = useMemo(() => removeDuplicateCodings(options), [options]);
+
+  return { options: distinctOptions, loading: isFetching, feedback };
 }
 export default useTerminologyServerQuery;
