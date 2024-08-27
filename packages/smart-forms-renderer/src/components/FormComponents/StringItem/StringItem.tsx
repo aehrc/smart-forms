@@ -63,21 +63,22 @@ function StringItem(props: StringItemProps) {
   const feedback = useValidationFeedback(qItem, input);
 
   // Process calculated expressions
-  const { calcExpUpdated } = useStringCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      setInput(newValueString);
-      onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueString: newValueString }]
-      });
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem));
-    }
-  });
+  const { calculationStatus, calcExpUpdated, onChangeCalculationStatus } =
+    useStringCalculatedExpression({
+      qItem: qItem,
+      inputValue: input,
+      onChangeByCalcExpressionString: (newValueString: string) => {
+        setInput(newValueString);
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: [{ valueString: newValueString }]
+        });
+      },
+      onChangeByCalcExpressionNull: () => {
+        setInput('');
+        onQrItemChange(createEmptyQrItem(qItem));
+      }
+    });
 
   // Event handlers
   function handleChange(newInput: string) {
@@ -88,6 +89,9 @@ function StringItem(props: StringItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
+      if (calculationStatus === 'on') {
+        onChangeCalculationStatus('off');
+      }
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
         onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input.trim() }] });
@@ -108,8 +112,10 @@ function StringItem(props: StringItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        calculationStatus={calculationStatus}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
+        onResetCalculationStatus={() => onChangeCalculationStatus('on')}
         isTabled={isTabled}
       />
     );
@@ -128,8 +134,10 @@ function StringItem(props: StringItemProps) {
           displayUnit={displayUnit}
           entryFormat={entryFormat}
           readOnly={readOnly}
+          calculationStatus={calculationStatus}
           calcExpUpdated={calcExpUpdated}
           onInputChange={handleChange}
+          onResetCalculationStatus={() => onChangeCalculationStatus('on')}
           isTabled={isTabled}
         />
       </ItemFieldGrid>

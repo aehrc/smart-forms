@@ -20,7 +20,9 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 
 interface UseStringCalculatedExpression {
+  calculationStatus: 'on' | 'off' | null;
   calcExpUpdated: boolean;
+  onChangeCalculationStatus: (status: 'on' | 'off' | null) => void;
 }
 
 interface useStringCalculatedExpressionProps {
@@ -37,6 +39,7 @@ function useStringCalculatedExpression(
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
+  const [calculationStatus, setCalculationStatus] = useState<'on' | 'off' | null>(null);
   const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 
   useEffect(
@@ -45,8 +48,13 @@ function useStringCalculatedExpression(
         (exp) => exp.from === 'item'
       );
 
-      if (!calcExpression) {
+      if (!calcExpression || calculationStatus === 'off') {
         return;
+      }
+
+      // Calculation was never performed, set it to "on"
+      if (calculationStatus === null) {
+        setCalculationStatus('on');
       }
 
       // only update if calculated value is different from current value
@@ -59,7 +67,8 @@ function useStringCalculatedExpression(
         if (inputValue === '' && calcExpression.value === null) {
           return;
         }
-        // update ui to show calculated value changes
+
+        // Update ui to show calculated value changes
         setCalcExpUpdated(true);
         setTimeout(() => {
           setCalcExpUpdated(false);
@@ -82,10 +91,14 @@ function useStringCalculatedExpression(
     },
     // Only trigger this effect if calculatedExpression of item changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [calculatedExpressions]
+    [calculationStatus, calculatedExpressions]
   );
 
-  return { calcExpUpdated: calcExpUpdated };
+  return {
+    calculationStatus: calculationStatus,
+    calcExpUpdated: calcExpUpdated,
+    onChangeCalculationStatus: setCalculationStatus
+  };
 }
 
 export default useStringCalculatedExpression;

@@ -62,21 +62,22 @@ function TextItem(props: TextItemProps) {
   const feedback = useValidationFeedback(qItem, input);
 
   // Process calculated expressions
-  const { calcExpUpdated } = useStringCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      setInput(newValueString);
-      onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueString: newValueString }]
-      });
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem));
-    }
-  });
+  const { calculationStatus, calcExpUpdated, onChangeCalculationStatus } =
+    useStringCalculatedExpression({
+      qItem: qItem,
+      inputValue: input,
+      onChangeByCalcExpressionString: (newValueString: string) => {
+        setInput(newValueString);
+        onQrItemChange({
+          ...createEmptyQrItem(qItem),
+          answer: [{ valueString: newValueString }]
+        });
+      },
+      onChangeByCalcExpressionNull: () => {
+        setInput('');
+        onQrItemChange(createEmptyQrItem(qItem));
+      }
+    });
 
   // Event handlers
   function handleInputChange(newInput: string) {
@@ -87,6 +88,9 @@ function TextItem(props: TextItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
+      if (calculationStatus === 'on') {
+        onChangeCalculationStatus('off');
+      }
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
         onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input.trim() }] });
@@ -107,8 +111,10 @@ function TextItem(props: TextItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        calculationStatus={calculationStatus}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleInputChange}
+        onResetCalculationStatus={() => onChangeCalculationStatus('on')}
       />
     );
   }
@@ -126,8 +132,10 @@ function TextItem(props: TextItemProps) {
           displayUnit={displayUnit}
           entryFormat={entryFormat}
           readOnly={readOnly}
+          calculationStatus={calculationStatus}
           calcExpUpdated={calcExpUpdated}
           onInputChange={handleInputChange}
+          onResetCalculationStatus={() => onChangeCalculationStatus('on')}
         />
       </ItemFieldGrid>
     </FullWidthFormComponentBox>
