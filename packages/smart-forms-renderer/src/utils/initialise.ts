@@ -34,6 +34,8 @@ import { assignPopulatedAnswersToEnableWhen } from './enableWhen';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 import { evaluateInitialCalculatedExpressions } from './calculatedExpression';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
+import { evaluateInitialAnswerExpressions } from './answerExpression';
+import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 
 /**
  * Initialise a questionnaireResponse from a given questionnaire
@@ -320,6 +322,7 @@ export interface initialFormFromResponseParams {
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
+  answerExpressions: Record<string, AnswerExpression>;
   variablesFhirPath: Record<string, Expression[]>;
   tabs: Tabs;
   pages: Pages;
@@ -331,6 +334,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
   initialEnableWhenExpressions: EnableWhenExpressions;
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  initialAnswerExpressions: Record<string, AnswerExpression>;
   firstVisibleTab: number;
   firstVisiblePage: number;
   updatedFhirPathContext: Record<string, any>;
@@ -340,6 +344,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
+    answerExpressions,
     variablesFhirPath,
     tabs,
     pages,
@@ -363,12 +368,22 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
 
+  const evaluateInitialAnswerExpressionsResult = await evaluateInitialAnswerExpressions({
+    initialResponse: questionnaireResponse,
+    initialResponseItemMap: initialResponseItemMap,
+    answerExpressions: answerExpressions,
+    variablesFhirPath: variablesFhirPath,
+    existingFhirPathContext: updatedFhirPathContext
+  });
+  const { initialAnswerExpressions } = evaluateInitialAnswerExpressionsResult;
+  updatedFhirPathContext = evaluateInitialAnswerExpressionsResult.updatedFhirPathContext;
+
   const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     calculatedExpressions: calculatedExpressions,
     variablesFhirPath: variablesFhirPath,
-    existingFhirPathContext: fhirPathContext
+    existingFhirPathContext: updatedFhirPathContext
   });
   const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
@@ -388,6 +403,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     initialEnableWhenLinkedQuestions: linkedQuestions,
     initialEnableWhenExpressions,
     initialCalculatedExpressions,
+    initialAnswerExpressions,
     firstVisibleTab,
     firstVisiblePage,
     updatedFhirPathContext

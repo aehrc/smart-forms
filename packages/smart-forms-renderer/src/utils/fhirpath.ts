@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
@@ -132,15 +131,29 @@ export async function createFhirPathContext(
   let fhirPathContext: Record<string, any> = {
     ...existingFhirPathContext,
     resource: questionnaireResponse,
-    rootResource: questionnaireResponse
+    rootResource: questionnaireResponse,
+    terminologies: {}
   };
 
   // Evaluate resource-level variables
-  fhirPathContext = evaluateQuestionnaireLevelVariables(
+  fhirPathContext = await evaluateQuestionnaireLevelVariables(
     questionnaireResponse,
     variablesFhirPath,
     fhirPathContext
   );
+
+  // Initialise fhirPathContext by using empty array as variable values
+  for (const linkId in variablesFhirPath) {
+    fhirPathContext = addEmptyLinkIdVariables(linkId, variablesFhirPath, fhirPathContext);
+  }
+
+  for (const linkId in variablesFhirPath) {
+    fhirPathContext = await evaluateTerminologyLinkIdVariables(
+      linkId,
+      variablesFhirPath,
+      fhirPathContext
+    );
+  }
 
   // Add variables of items that exist in questionnaireResponseItemMap into fhirPathContext
   for (const linkId in questionnaireResponseItemMap) {
@@ -149,11 +162,6 @@ export async function createFhirPathContext(
     for (const qrItem of questionnaireResponseItemMap[linkId]) {
       fhirPathContext = await evaluateLinkIdVariables(qrItem, variablesFhirPath, fhirPathContext);
     }
-  }
-
-  // Items don't exist in questionnaireResponseItemMap, but we still have to add them into the fhirPathContext as empty arrays
-  for (const linkId in variablesFhirPath) {
-    fhirPathContext = addEmptyLinkIdVariables(linkId, variablesFhirPath, fhirPathContext);
   }
 
   return fhirPathContext;
@@ -200,6 +208,7 @@ export function addEmptyLinkIdVariables(
     return fhirPathContext;
   }
 
+  // Set empty arrays as values for variables that don't exist in fhirPathContext
   for (const variable of linkIdVariables) {
     if (variable.expression && variable.name) {
       if (fhirPathContext[`${variable.name}`] === undefined) {
@@ -211,7 +220,70 @@ export function addEmptyLinkIdVariables(
   return fhirPathContext;
 }
 
-export function evaluateQuestionnaireLevelVariables(
+export async function evaluateTerminologyLinkIdVariables(
+  linkId: string,
+  variablesFhirPath: Record<string, Expression[]>,
+  fhirPathContext: Record<string, any>
+) {
+  const linkIdVariables = variablesFhirPath[linkId];
+  if (!linkIdVariables || linkIdVariables.length === 0) {
+    return fhirPathContext;
+  }
+
+  // Resolve variables if they contain %terminologies keyword
+  for (const variable of linkIdVariables) {
+    if (variable.expression && variable.name && variable.expression.includes('%terminologies')) {
+      const initialResult = fhirPathContext[`${variable.name}`];
+      const terminologyPromises: Record<string, Promise<any[]>> = {};
+      if (Array.isArray(initialResult) && initialResult.length === 0) {
+        terminologyPromises[variable.name] = evaluateFhirpathAsync(
+          {} as unknown as DomainResource,
+          variable.expression,
+          fhirPathContext,
+          fhirpath_r4_model
+        );
+      }
+
+      const terminologyPromiseKeys = Object.keys(terminologyPromises);
+      const terminologyPromiseValues = Object.values(terminologyPromises);
+
+      const settledPromises = await Promise.allSettled(terminologyPromiseValues);
+      for (const [i, settledPromise] of settledPromises.entries()) {
+        if (settledPromise.status === 'rejected') {
+          console.warn(
+            settledPromise.reason.message,
+            `LinkId: ${linkId}\nExpression: ${variable.expression}`
+          );
+        }
+
+        const key = terminologyPromiseKeys[i];
+        if (key && settledPromise.status === 'fulfilled' && settledPromise?.value) {
+          fhirPathContext[key] = settledPromise.value;
+        }
+      }
+    }
+  }
+
+  // Evaluate variables again as they might depend on the resolved terminologies
+  for (const variable of linkIdVariables) {
+    if (variable.expression && variable.name) {
+      try {
+        fhirPathContext[`${variable.name}`] = await evaluateFhirpathAsync(
+          {} as unknown as DomainResource,
+          variable.expression,
+          fhirPathContext,
+          fhirpath_r4_model
+        );
+      } catch (e) {
+        console.warn(e.message, `LinkId: ${linkId}\nExpression: ${variable.expression}`);
+      }
+    }
+  }
+
+  return fhirPathContext;
+}
+
+export async function evaluateQuestionnaireLevelVariables(
   resource: QuestionnaireResponse,
   variablesFhirPath: Record<string, Expression[]>,
   fhirPathContext: Record<string, any>
@@ -224,8 +296,8 @@ export function evaluateQuestionnaireLevelVariables(
   for (const variable of questionnaireLevelVariables) {
     if (variable.expression) {
       try {
-        fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
-          resource,
+        fhirPathContext[`${variable.name}`] = evaluateFhirpathAsync(
+          resource as unknown as DomainResource,
           {
             base: 'QuestionnaireResponse',
             expression: variable.expression

@@ -212,6 +212,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
       initialCalculatedExpressions,
+      initialAnswerExpressions,
       firstVisibleTab,
       firstVisiblePage,
       updatedFhirPathContext
@@ -220,6 +221,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
+      answerExpressions: questionnaireModel.answerExpressions,
       variablesFhirPath: questionnaireModel.variables.fhirPathVariables,
       tabs: questionnaireModel.tabs,
       pages: questionnaireModel.pages,
@@ -239,7 +241,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
-      initialExpressions: questionnaireModel.initialExpressions,
+      initialExpressions: initialAnswerExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
       processedValueSets: questionnaireModel.processedValueSets,
@@ -418,6 +420,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
+      initialAnswerExpressions,
       firstVisibleTab,
       firstVisiblePage
     } = await initialiseFormFromResponse({
@@ -425,6 +428,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
+      answerExpressions: get().answerExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
       tabs: get().tabs,
       pages: get().pages,
@@ -437,6 +441,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
+      answerExpressions: initialAnswerExpressions,
       currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab,
       currentPageIndex: persistPageIndex ? get().currentPageIndex : firstVisiblePage,
       fhirPathContext: updatedFhirPathContext,

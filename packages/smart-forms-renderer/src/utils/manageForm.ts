@@ -47,7 +47,7 @@ export async function buildForm(
     questionnaireResponse
   );
   questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
-  questionnaireStore.getState().updatePopulatedProperties(initialisedQuestionnaireResponse);
+  await questionnaireStore.getState().updatePopulatedProperties(initialisedQuestionnaireResponse);
 
   if (readOnly) {
     questionnaireStore.getState().setFormAsReadOnly(readOnly);

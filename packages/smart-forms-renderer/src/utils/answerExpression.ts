@@ -19,7 +19,98 @@ import type { AnswerExpression } from '../interfaces/answerExpression.interface'
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import _isEqual from 'lodash/isEqual';
-import { type QuestionnaireItemAnswerOption } from 'fhir/r4';
+import {
+  type Expression,
+  type QuestionnaireItemAnswerOption,
+  type QuestionnaireResponse,
+  type QuestionnaireResponseItem
+} from 'fhir/r4';
+import cloneDeep from 'lodash.clonedeep';
+import { emptyResponse } from './emptyResource';
+import { createFhirPathContext } from './fhirpath';
+
+interface EvaluateInitialAnswerExpressionsParams {
+  initialResponse: QuestionnaireResponse;
+  initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
+  answerExpressions: Record<string, AnswerExpression>;
+  variablesFhirPath: Record<string, Expression[]>;
+  existingFhirPathContext: Record<string, any>;
+}
+
+export async function evaluateInitialAnswerExpressions(
+  params: EvaluateInitialAnswerExpressionsParams
+): Promise<{
+  initialAnswerExpressions: Record<string, AnswerExpression>;
+  updatedFhirPathContext: Record<string, any>;
+}> {
+  const {
+    initialResponse,
+    initialResponseItemMap,
+    answerExpressions,
+    variablesFhirPath,
+    existingFhirPathContext
+  } = params;
+
+  // Return early if initialResponse is empty or there are no answer expressions to evaluate
+  if (
+    _isEqual(initialResponse, cloneDeep(emptyResponse)) ||
+    Object.keys(answerExpressions).length === 0
+  ) {
+    return {
+      initialAnswerExpressions: answerExpressions,
+      updatedFhirPathContext: existingFhirPathContext
+    };
+  }
+
+  const initialAnswerExpressions: Record<string, AnswerExpression> = {
+    ...answerExpressions
+  };
+
+  const updatedFhirPathContext = await createFhirPathContext(
+    initialResponse,
+    initialResponseItemMap,
+    variablesFhirPath,
+    existingFhirPathContext
+  );
+
+  for (const linkId in initialAnswerExpressions) {
+    const answerExpression = initialAnswerExpressions[linkId];
+
+    try {
+      const result = fhirpath.evaluate(
+        {},
+        answerExpression.expression,
+        updatedFhirPathContext,
+        fhirpath_r4_model
+      );
+
+      // Update calculatedExpressions if length of result array > 0
+      // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
+      if (result.length > 0 && !_isEqual(answerExpression.options, result)) {
+        answerExpression.options = getAnswerOptionsFromResults(result);
+        answerExpression.version = answerExpression.version + 1;
+      }
+
+      // Update calculatedExpression value to null if no result is returned
+      if (result.length === 0 && !!answerExpression.options) {
+        // Only update if current options is not empty
+        if (answerExpression.options.length > 0) {
+          answerExpression.options = [];
+          answerExpression.version = answerExpression.version + 1;
+        }
+      }
+    } catch (e) {
+      console.warn(e.message, `LinkId: ${linkId}\nExpression: ${answerExpression.options}`);
+    }
+
+    initialAnswerExpressions[linkId] = answerExpression;
+  }
+
+  return {
+    initialAnswerExpressions,
+    updatedFhirPathContext
+  };
+}
 
 export function evaluateAnswerExpressions(
   fhirPathContext: Record<string, any>,
