@@ -98,6 +98,21 @@ export function findInAnswerOptions(
 }
 
 /**
+ * Remove duplicate codings based on coding.code
+ */
+export function removeDuplicateCodings(codings: Coding[]): Coding[] {
+  const seenCodes = new Set();
+  return codings.filter((coding) => {
+    if (seenCodes.has(coding.code)) {
+      return false;
+    } else {
+      seenCodes.add(coding.code);
+      return true;
+    }
+  });
+}
+
+/**
  * Compare answer option value with selected value via valueString, valueInteger, or valueCoding.code
  *
  * @author Sean Fong
