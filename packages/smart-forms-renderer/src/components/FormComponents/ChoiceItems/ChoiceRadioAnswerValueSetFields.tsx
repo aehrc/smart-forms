@@ -31,10 +31,13 @@ import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import Fade from '@mui/material/Fade';
+import CircularProgress from '@mui/material/CircularProgress';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
+  optionsLoading: boolean;
   valueRadio: string | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -47,6 +50,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
   const {
     qItem,
     options,
+    optionsLoading,
     valueRadio,
     readOnly,
     calcExpUpdated,
@@ -56,6 +60,17 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
   } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
+
+  if (optionsLoading) {
+    return (
+      <Fade in={optionsLoading} timeout={300}>
+        <Box display="flex" alignItems="center" columnGap={2}>
+          <CircularProgress size={24} />
+          <Typography>Loading options...</Typography>
+        </Box>
+      </Fade>
+    );
+  }
 
   if (options.length > 0) {
     return (
@@ -94,23 +109,25 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
 
   if (terminologyError.error) {
     return (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
-        </Typography>
-      </StyledAlert>
+      <Fade in={true} timeout={300}>
+        <StyledAlert color="error">
+          <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+          <Typography variant="subtitle2">
+            There was an error fetching options from the terminology server for{' '}
+            {terminologyError.answerValueSet}
+          </Typography>
+        </StyledAlert>
+      </Fade>
     );
   }
 
   return (
-    <StyledAlert color="error">
-      <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography variant="subtitle2">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
-    </StyledAlert>
+    <Fade in={true} timeout={300}>
+      <StyledAlert color="info" height={36}>
+        <InfoOutlinedIcon color="info" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">No options available</Typography>
+      </StyledAlert>
+    </Fade>
   );
 }
 

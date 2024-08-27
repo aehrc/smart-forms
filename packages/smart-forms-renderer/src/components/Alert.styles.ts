@@ -20,11 +20,12 @@ import Box from '@mui/material/Box';
 import ListItemIcon from '@mui/material/ListItemIcon';
 
 export const StyledAlert = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'color'
-})<{ color: 'info' | 'error' }>(({ theme, color }) => ({
+  shouldForwardProp: (prop) => prop !== 'color' && prop != 'height'
+})<{ color: 'info' | 'error'; height?: number }>(({ theme, color, height }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(1.25),
+  height: height ?? 'auto',
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
   backgroundColor: alpha(
     color === 'error' ? theme.palette.error.light : theme.palette.info.light,

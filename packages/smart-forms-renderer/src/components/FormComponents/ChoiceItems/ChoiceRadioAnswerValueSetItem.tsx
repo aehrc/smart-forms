@@ -91,6 +91,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
       <ChoiceRadioAnswerValueSetFields
         qItem={qItem}
         options={options}
+        optionsLoading={isLoading}
         valueRadio={valueRadio}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
@@ -110,6 +111,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         <ChoiceRadioAnswerValueSetFields
           qItem={qItem}
           options={options}
+          optionsLoading={isLoading}
           valueRadio={valueRadio}
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}

@@ -131,9 +131,8 @@ function useValueSetCodings(
   // Dynamic answerExpression
   const answerExpression: AnswerExpression | null = answerExpressions[qItem.linkId] ?? null;
   useEffect(() => {
-    let newCodings: Coding[] = [];
     if (answerExpression && Array.isArray(answerExpression.options)) {
-      newCodings = convertAnswerOptionsToCodings(answerExpression.options);
+      const newCodings = convertAnswerOptionsToCodings(answerExpression.options);
       if (!_isEqual(newCodings, codings)) {
         setCodings(newCodings);
         onDynamicValueSetCodingsChange();

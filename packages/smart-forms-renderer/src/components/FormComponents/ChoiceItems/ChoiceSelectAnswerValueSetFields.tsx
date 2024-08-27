@@ -29,6 +29,7 @@ import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Fade } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 interface ChoiceSelectAnswerValueSetFieldsProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
@@ -115,24 +116,27 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     );
   }
 
-  if (codings.length === 0) {
+  if (terminologyError.error) {
     return (
-      <StyledAlert color="info">
-        <Typography variant="subtitle2">
-          There are no options available for {terminologyError.answerValueSet}
-        </Typography>
-      </StyledAlert>
+      <Fade in={true} timeout={300}>
+        <StyledAlert color="error">
+          <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+          <Typography variant="subtitle2">
+            There was an error fetching options from the terminology server for{' '}
+            {terminologyError.answerValueSet}
+          </Typography>
+        </StyledAlert>
+      </Fade>
     );
   }
 
-  // Fallback when something went wrong
   return (
-    <StyledAlert color="error">
-      <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography variant="subtitle2">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
-    </StyledAlert>
+    <Fade in={true} timeout={300}>
+      <StyledAlert color="info" height={36}>
+        <InfoOutlinedIcon color="info" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">No options available</Typography>
+      </StyledAlert>
+    </Fade>
   );
 }
 

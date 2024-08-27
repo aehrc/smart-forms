@@ -26,6 +26,7 @@ import { getChoiceOrientation } from '../../../utils/choice';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Typography from '@mui/material/Typography';
 import { Fade } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -97,23 +98,25 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
 
   if (terminologyError.error) {
     return (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
-        </Typography>
-      </StyledAlert>
+      <Fade in={true} timeout={300}>
+        <StyledAlert color="error">
+          <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+          <Typography variant="subtitle2">
+            There was an error fetching options from the terminology server for{' '}
+            {terminologyError.answerValueSet}
+          </Typography>
+        </StyledAlert>
+      </Fade>
     );
   }
 
   return (
-    <StyledAlert color="error">
-      <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography variant="subtitle2">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
-    </StyledAlert>
+    <Fade in={true} timeout={300}>
+      <StyledAlert color="info" height={36}>
+        <InfoOutlinedIcon color="info" sx={{ pr: 0.75 }} />
+        <Typography variant="subtitle2">No options available</Typography>
+      </StyledAlert>
+    </Fade>
   );
 }
 
