@@ -142,19 +142,6 @@ export async function createFhirPathContext(
     fhirPathContext
   );
 
-  // Initialise fhirPathContext by using empty array as variable values
-  for (const linkId in variablesFhirPath) {
-    fhirPathContext = addEmptyLinkIdVariables(linkId, variablesFhirPath, fhirPathContext);
-  }
-
-  for (const linkId in variablesFhirPath) {
-    fhirPathContext = await evaluateTerminologyLinkIdVariables(
-      linkId,
-      variablesFhirPath,
-      fhirPathContext
-    );
-  }
-
   // Add variables of items that exist in questionnaireResponseItemMap into fhirPathContext
   for (const linkId in questionnaireResponseItemMap) {
     // For non-repeat groups, the same linkId will have only one item
@@ -162,6 +149,11 @@ export async function createFhirPathContext(
     for (const qrItem of questionnaireResponseItemMap[linkId]) {
       fhirPathContext = await evaluateLinkIdVariables(qrItem, variablesFhirPath, fhirPathContext);
     }
+  }
+
+  // Items don't exist in questionnaireResponseItemMap, but we still have to add them into the fhirPathContext as empty arrays
+  for (const linkId in variablesFhirPath) {
+    fhirPathContext = addEmptyLinkIdVariables(linkId, variablesFhirPath, fhirPathContext);
   }
 
   return fhirPathContext;
@@ -235,7 +227,7 @@ export async function evaluateTerminologyLinkIdVariables(
     if (variable.expression && variable.name && variable.expression.includes('%terminologies')) {
       const initialResult = fhirPathContext[`${variable.name}`];
       const terminologyPromises: Record<string, Promise<any[]>> = {};
-      if (Array.isArray(initialResult) && initialResult.length === 0) {
+      if (Array.isArray(initialResult)) {
         terminologyPromises[variable.name] = evaluateFhirpathAsync(
           {} as unknown as DomainResource,
           variable.expression,

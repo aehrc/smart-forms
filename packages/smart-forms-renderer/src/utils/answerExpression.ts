@@ -27,7 +27,7 @@ import {
 } from 'fhir/r4';
 import cloneDeep from 'lodash.clonedeep';
 import { emptyResponse } from './emptyResource';
-import { createFhirPathContext } from './fhirpath';
+import { createFhirPathContext, evaluateTerminologyLinkIdVariables } from './fhirpath';
 
 interface EvaluateInitialAnswerExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -66,12 +66,21 @@ export async function evaluateInitialAnswerExpressions(
     ...answerExpressions
   };
 
-  const updatedFhirPathContext = await createFhirPathContext(
+  let updatedFhirPathContext = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
     variablesFhirPath,
     existingFhirPathContext
   );
+
+  // Perform initial evaluation of terminology variables
+  for (const linkId in variablesFhirPath) {
+    updatedFhirPathContext = await evaluateTerminologyLinkIdVariables(
+      linkId,
+      variablesFhirPath,
+      updatedFhirPathContext
+    );
+  }
 
   for (const linkId in initialAnswerExpressions) {
     const answerExpression = initialAnswerExpressions[linkId];
