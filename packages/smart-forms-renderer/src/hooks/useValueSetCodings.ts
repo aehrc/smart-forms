@@ -188,6 +188,16 @@ function useValueSetCodings(
   // Remove duplicate codings
   const distinctCodings = useMemo(() => removeDuplicateCodings(codings), [codings]);
 
+  // Might need to wait for dynamic terminologies to resolve in fhirPath, so we artificially set isLoading to true
+  useEffect(() => {
+    if (codings.length === 0 && !loading) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  }, [codings.length]);
+
   return {
     codings: distinctCodings,
     setCodings,

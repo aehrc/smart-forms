@@ -60,8 +60,8 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   if (codingsLoading) {
     return (
       <Fade in={codingsLoading} timeout={300}>
-        <Box display="flex" alignItems="center" columnGap={2}>
-          <CircularProgress size={24} />
+        <Box display="flex" alignItems="center" columnGap={2} sx={{ my: 0.9 }}>
+          <CircularProgress size={20} />
           <Typography>Loading options...</Typography>
         </Box>
       </Fade>
@@ -118,7 +118,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   if (terminologyError.error) {
     return (
-      <Fade in={true} timeout={300}>
+      <Fade in={true}>
         <StyledAlert color="error">
           <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
           <Typography variant="subtitle2">
@@ -131,7 +131,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   }
 
   return (
-    <Fade in={true} timeout={300}>
+    <Fade in={true} timeout={500}>
       <StyledAlert color="info" height={36}>
         <InfoOutlinedIcon color="info" sx={{ pr: 0.75 }} />
         <Typography variant="subtitle2">No options available</Typography>

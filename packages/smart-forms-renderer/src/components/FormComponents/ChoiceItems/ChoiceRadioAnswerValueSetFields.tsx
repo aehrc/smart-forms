@@ -31,8 +31,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import Fade from '@mui/material/Fade';
-import CircularProgress from '@mui/material/CircularProgress';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -64,8 +64,8 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
   if (optionsLoading) {
     return (
       <Fade in={optionsLoading} timeout={300}>
-        <Box display="flex" alignItems="center" columnGap={2}>
-          <CircularProgress size={24} />
+        <Box display="flex" alignItems="center" columnGap={2} sx={{ my: 1.1 }}>
+          <CircularProgress size={20} />
           <Typography>Loading options...</Typography>
         </Box>
       </Fade>
@@ -109,7 +109,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
 
   if (terminologyError.error) {
     return (
-      <Fade in={true} timeout={300}>
+      <Fade in={true}>
         <StyledAlert color="error">
           <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
           <Typography variant="subtitle2">
@@ -122,7 +122,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
   }
 
   return (
-    <Fade in={true} timeout={300}>
+    <Fade in={true} timeout={500}>
       <StyledAlert color="info" height={36}>
         <InfoOutlinedIcon color="info" sx={{ pr: 0.75 }} />
         <Typography variant="subtitle2">No options available</Typography>
