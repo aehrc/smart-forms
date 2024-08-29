@@ -24,7 +24,7 @@ import type {
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { qrItemHasItemsOrAnswer } from './manageForm';
 
-export type RepopulateFunction<T> = (
+export type RecursiveUpdateFunction<T> = (
   qItem: QuestionnaireItem,
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   extraData: T
@@ -39,7 +39,7 @@ export type RepopulateFunction<T> = (
 export function updateQuestionnaireResponse<T>(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
-  recursiveUpdateFunction: RepopulateFunction<T>,
+  recursiveUpdateFunction: RecursiveUpdateFunction<T>,
   extraData: T
 ) {
   if (
@@ -85,4 +85,49 @@ export function updateQuestionnaireResponse<T>(
   }
 
   return { ...questionnaireResponse, item: topLevelQrItems };
+}
+
+export type RecursiveReadArrayFunction<T> = (
+  qItem: QuestionnaireItem,
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null
+) => T[] | null;
+
+/**
+ * A generic (and safe) way to read an array of element(s) i.e. QuestionnaireResponseItem[], extracted Observation[] from a QuestionnaireResponse given a recursive function.
+ * This function relies heavily on mapQItemsIndex() and getQrItemsIndex() to accurately pinpoint the locations of QR items based on their positions in the Q, taking into account repeating group answers, non-filled questions, etc
+ *
+ * @author Sean Fong
+ */
+export function readQuestionnaireResponse<T>(
+  questionnaire: Questionnaire,
+  questionnaireResponse: QuestionnaireResponse,
+  recursiveReadFunction: RecursiveReadArrayFunction<T>
+): T[] {
+  if (!questionnaire.item || questionnaire.item.length === 0) {
+    return [];
+  }
+
+  const qItemsIndexMap = mapQItemsIndex(questionnaire);
+  const topLevelQRItemsByIndex = getQrItemsIndex(
+    questionnaire.item,
+    questionnaireResponse.item ?? [],
+    qItemsIndexMap
+  );
+
+  const readValueArray = [];
+  for (const [index, topLevelQItem] of questionnaire.item.entries()) {
+    const topLevelQRItemOrItems = topLevelQRItemsByIndex[index] ?? {
+      linkId: topLevelQItem.linkId,
+      text: topLevelQItem.text,
+      item: []
+    };
+
+    const readValue = recursiveReadFunction(topLevelQItem, topLevelQRItemOrItems);
+
+    if (readValue) {
+      readValueArray.push(...readValue);
+    }
+  }
+
+  return readValueArray;
 }

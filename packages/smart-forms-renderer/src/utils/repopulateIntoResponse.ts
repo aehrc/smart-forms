@@ -3,7 +3,7 @@ import type { ItemToRepopulate } from './repopulateItems';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { isSpecificItemControl } from './itemControl';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
-import { updateQuestionnaireResponse } from './updateQr';
+import { updateQuestionnaireResponse } from './genericRecursive';
 
 /**
  * Re-populate checked items in the re-population dialog into the current QuestionnaireResponse
