@@ -34,7 +34,7 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
-import { updateQuestionnaireResponse } from './updateQr';
+import { updateQuestionnaireResponse } from './genericRecursive';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
