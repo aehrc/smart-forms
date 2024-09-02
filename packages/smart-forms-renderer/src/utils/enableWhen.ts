@@ -27,7 +27,7 @@ import type {
   EnableWhenRepeatItemProperties,
   EnableWhenSingleItemProperties
 } from '../interfaces/enableWhen.interface';
-import { produce } from 'immer';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items
@@ -257,7 +257,7 @@ export function setInitialAnswers(
   items: EnableWhenItems,
   linkedQuestionsMap: Record<string, string[]>
 ): EnableWhenItems {
-  let updatedItems = produce(items, (draft) => draft);
+  let updatedItems = cloneDeep(items);
 
   if (initialAnswers) {
     for (const linkId in initialAnswers) {

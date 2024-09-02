@@ -61,7 +61,6 @@ export function removeEmptyAnswers(params: removeEmptyAnswersParams): Questionna
     });
   }
 
-  // let newQuestionnaireResponse: QuestionnaireResponse = { ...questionnaireResponse, item: [] };
   const newQuestionnaireResponse = produce(questionnaireResponse, (draft) => {
     draft.item = [];
   });
