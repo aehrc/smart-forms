@@ -60,18 +60,19 @@ function useIntegerCalculatedExpression(
         if (calcExpressionValue !== parseInt(inputValue)) {
           // update ui to show calculated value changes
           setCalcExpUpdated(true);
-          setTimeout(() => {
+          const timeoutId = setTimeout(() => {
             setCalcExpUpdated(false);
           }, 500);
 
           // calculatedExpression value is null
           if (calcExpressionValue === null) {
             onChangeByCalcExpressionNull();
-            return;
+            return () => clearTimeout(timeoutId);
           }
 
           // calculatedExpression value is a number
           onChangeByCalcExpressionInteger(calcExpressionValue);
+          return () => clearTimeout(timeoutId);
         }
       }
     },

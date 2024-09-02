@@ -94,18 +94,19 @@ function useQuantityCalculatedExpression(
           if (calcExpressionValue !== parseFloat(inputValue)) {
             // update ui to show calculated value changes
             setCalcExpUpdated(true);
-            setTimeout(() => {
+            const timeoutId = setTimeout(() => {
               setCalcExpUpdated(false);
             }, 500);
 
             // calculatedExpression value is null
             if (calcExpressionValue === null) {
               onChangeByCalcExpressionNull();
-              return;
+              return () => clearTimeout(timeoutId);
             }
 
             // calculatedExpression value is a number
             onChangeByCalcExpressionDecimal(calcExpressionValue);
+            return () => clearTimeout(timeoutId);
           }
         }
 
@@ -147,15 +148,17 @@ function useQuantityCalculatedExpression(
                 ) {
                   // update ui to show calculated value changes
                   setCalcExpUpdated(true);
-                  setTimeout(() => {
+                  const timeoutId = setTimeout(() => {
                     setCalcExpUpdated(false);
                   }, 500);
+
                   onChangeByCalcExpressionQuantity(
                     parseFloat(value),
                     systemParameter.valueUri,
                     codeParameter.valueCode,
                     displayParameter.valueString
                   );
+                  return () => clearTimeout(timeoutId);
                 }
               }
             });

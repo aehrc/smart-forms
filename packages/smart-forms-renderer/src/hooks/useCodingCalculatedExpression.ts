@@ -61,21 +61,21 @@ function useCodingCalculatedExpression(
       ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setCalcExpUpdated(false);
         }, 500);
 
         // calculatedExpression value is null
         if (calcExpression.value === null) {
           onChangeByCalcExpressionNull();
-          return;
+          return () => clearTimeout(timeoutId);
         }
 
         // calculatedExpression value is object, check if it is a Coding object
         if (typeof calcExpression.value === 'object' && objectIsCoding(calcExpression.value)) {
           if (calcExpression.value.code) {
             onChangeByCalcExpressionString(calcExpression.value.code);
-            return;
+            return () => clearTimeout(timeoutId);
           }
         }
 
@@ -86,6 +86,7 @@ function useCodingCalculatedExpression(
             : calcExpression.value.toString();
 
         onChangeByCalcExpressionString(newValueString);
+        return () => clearTimeout(timeoutId);
       }
     },
     // Only trigger this effect if calculatedExpression of item changes
