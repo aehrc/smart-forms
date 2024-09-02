@@ -23,8 +23,8 @@ import type {
 } from 'fhir/r4';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
-import cloneDeep from 'lodash.clonedeep';
 import { qrItemHasItemsOrAnswer } from './manageForm';
+import { produce } from 'immer';
 
 interface removeEmptyAnswersParams {
   questionnaire: Questionnaire;
@@ -56,12 +56,15 @@ export function removeEmptyAnswers(params: removeEmptyAnswersParams): Questionna
     !topLevelQRItems ||
     topLevelQRItems.length === 0
   ) {
-    const updatedQuestionnaireResponse = cloneDeep(questionnaireResponse);
-    delete updatedQuestionnaireResponse.item;
-    return updatedQuestionnaireResponse;
+    return produce(questionnaireResponse, (draft) => {
+      delete draft.item;
+    });
   }
 
-  const newQuestionnaireResponse: QuestionnaireResponse = { ...questionnaireResponse, item: [] };
+  // let newQuestionnaireResponse: QuestionnaireResponse = { ...questionnaireResponse, item: [] };
+  const newQuestionnaireResponse = produce(questionnaireResponse, (draft) => {
+    draft.item = [];
+  });
   for (const [i, topLevelQRItem] of topLevelQRItems.entries()) {
     const qItem = topLevelQItems[i];
     if (!qItem) {
@@ -160,7 +163,10 @@ function removeEmptyAnswersFromItemRecursive(
           qrItemIndex++;
         }
       }
-      return { ...qrItem, item: newQrItems };
+
+      return produce(qrItem, (draft) => {
+        draft.item = newQrItems;
+      });
     }
 
     // Also perform checks if answer exists
@@ -178,7 +184,7 @@ function removeEmptyAnswersFromItemRecursive(
   // Process non-group items
   return answerIsEmpty(qItem, qrItem, enableWhenIsActivated, enableWhenItems, enableWhenExpressions)
     ? null
-    : { ...qrItem };
+    : qrItem;
 }
 
 function answerIsEmpty(

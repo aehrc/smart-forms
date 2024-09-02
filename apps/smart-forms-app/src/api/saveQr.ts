@@ -21,9 +21,9 @@ import { constructName } from '../features/smartAppLaunch/utils/launchContext.ts
 import dayjs from 'dayjs';
 import { qrToHTML } from '../features/preview/utils/preview.ts';
 import { fetchQuestionnaireById } from './client.ts';
-import cloneDeep from 'lodash.clonedeep';
 import { HEADERS } from './headers.ts';
 import { removeEmptyAnswersFromResponse } from '@aehrc/smart-forms-renderer';
+import { produce } from 'immer';
 
 /**
  * POST questionnaire to SMART Health IT when opening it to ensure response-saving can be performed
@@ -55,10 +55,7 @@ export async function saveProgress(
   questionnaireResponse: QuestionnaireResponse,
   saveStatus: 'in-progress' | 'completed'
 ) {
-  const responseToSave = removeEmptyAnswersFromResponse(
-    questionnaire,
-    cloneDeep(questionnaireResponse)
-  );
+  const responseToSave = removeEmptyAnswersFromResponse(questionnaire, questionnaireResponse);
 
   responseToSave.status = saveStatus;
 
@@ -88,54 +85,58 @@ export async function saveQuestionnaireResponse(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ) {
-  let requestUrl = 'QuestionnaireResponse';
-  let method = 'POST';
-  let questionnaireResponseToSave: QuestionnaireResponse = cloneDeep(questionnaireResponse);
-
-  questionnaireResponseToSave = {
-    ...questionnaireResponseToSave,
-    meta: {
-      ...questionnaireResponseToSave.meta,
+  const questionnaireResponseToSave = produce(questionnaireResponse, (draft) => {
+    draft.meta = {
+      ...draft.meta,
       source: 'https://smartforms.csiro.au'
-    },
-    text: {
+    };
+
+    draft.text = {
       status: 'generated',
-      div: qrToHTML(questionnaire, questionnaireResponseToSave)
-    },
-    subject: {
+      div: qrToHTML(questionnaire, draft)
+    };
+
+    draft.subject = {
       reference: `Patient/${patient.id}`,
       type: 'Patient',
       display: constructName(patient.name)
-    },
-    author: {
+    };
+
+    draft.author = {
       reference: `Practitioner/${user.id}`,
       type: 'Practitioner',
       display: constructName(user.name)
-    },
-    authored: dayjs().format()
-  };
+    };
+
+    draft.authored = dayjs().format();
+  });
 
   // TODO pre-pop should filter out all empty strings really
-  // Add additional attributes depending on whether questionnaire has been saved before
+
+  const saveHeaders = { ...HEADERS, prefer: 'return=representation' };
+
+  // QuestionnaireResponse has been saved before, do "PUT" request with the ID
   if (questionnaireResponseToSave.id) {
-    requestUrl += '/' + questionnaireResponseToSave.id;
-    method = 'PUT';
-  } else {
-    // Add questionnaire reference
-    questionnaireResponseToSave = addQuestionnaireReference(
-      questionnaire,
-      questionnaireResponseToSave,
-      client.state.serverUrl
-    );
+    return client.request({
+      url: `QuestionnaireResponse/${questionnaireResponseToSave.id}`,
+      method: 'PUT',
+      body: JSON.stringify(questionnaireResponseToSave),
+      headers: saveHeaders
+    });
   }
 
-  const modifiedHeaders = { ...HEADERS, prefer: 'return=representation' };
+  // QuestionnaireResponse has not been saved before, add questionnaire reference
+  const updatedQuestionnaireResponseToSave = addQuestionnaireReference(
+    questionnaire,
+    questionnaireResponseToSave,
+    client.state.serverUrl
+  );
 
   return client.request({
-    url: requestUrl,
-    method: method,
-    body: JSON.stringify(questionnaireResponseToSave),
-    headers: modifiedHeaders
+    url: 'QuestionnaireResponse',
+    method: 'POST',
+    body: JSON.stringify(updatedQuestionnaireResponseToSave),
+    headers: saveHeaders
   });
 }
 
@@ -144,26 +145,24 @@ function addQuestionnaireReference(
   questionnaireResponseToSave: QuestionnaireResponse,
   endpointUrl: string
 ): QuestionnaireResponse {
-  if (endpointUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
-    // Plugging questionnaire.id in because SMART Health IT requires QRs to have Questionnaire/{id} as reference
-    questionnaireResponseToSave.questionnaire = questionnaire.id
-      ? `Questionnaire/${questionnaire.id}`
-      : '';
-  }
+  return produce(questionnaireResponseToSave, (draft) => {
+    if (endpointUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
+      // Plugging questionnaire.id in because SMART Health IT requires QRs to have Questionnaire/{id} as reference
+      draft.questionnaire = questionnaire.id ? `Questionnaire/${questionnaire.id}` : '';
+    }
 
-  // Add questionnaire reference if it is not an empty string
-  if (questionnaireResponseToSave.questionnaire) {
-    questionnaireResponseToSave._questionnaire = {
-      extension: [
-        {
-          url: 'http://hl7.org/fhir/StructureDefinition/display',
-          valueString: getQuestionnaireName(questionnaire)
-        }
-      ]
-    };
-  }
-
-  return questionnaireResponseToSave;
+    // Add questionnaire reference if it is not an empty string
+    if (draft.questionnaire) {
+      draft._questionnaire = {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/display',
+            valueString: getQuestionnaireName(questionnaire)
+          }
+        ]
+      };
+    }
+  });
 }
 
 function getQuestionnaireName(questionnaire: Questionnaire): string {

@@ -25,10 +25,10 @@ import type {
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import { nanoid } from 'nanoid';
-import cloneDeep from 'lodash.clonedeep';
 import { useQuestionnaireStore } from '../../../stores';
 import useRepeatGroups from '../../../hooks/useRepeatGroups';
 import RepeatGroupView from './RepeatGroupView';
+import { produce } from 'immer';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -77,7 +77,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
+        singleGroup.qrItem ? [produce(singleGroup.qrItem, (draft) => draft)] : []
       )
     });
   }
@@ -93,7 +93,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
+        singleGroup.qrItem ? [produce(singleGroup.qrItem, (draft) => draft)] : []
       )
     });
   }

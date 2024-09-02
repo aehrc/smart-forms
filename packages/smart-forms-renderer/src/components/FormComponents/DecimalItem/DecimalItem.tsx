@@ -114,14 +114,15 @@ function DecimalItem(props: DecimalItemProps) {
     debounce((parsedNewInput: string) => {
       if (parsedNewInput === '') {
         onQrItemChange(createEmptyQrItem(qItem));
-      } else {
-        onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: precision
-            ? [{ valueDecimal: parseDecimalStringToFloat(parsedNewInput, precision) }]
-            : [{ valueDecimal: parseFloat(parsedNewInput) }]
-        });
+        return;
       }
+
+      onQrItemChange({
+        ...createEmptyQrItem(qItem),
+        answer: precision
+          ? [{ valueDecimal: parseDecimalStringToFloat(parsedNewInput, precision) }]
+          : [{ valueDecimal: parseFloat(parsedNewInput) }]
+      });
     }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem, displayUnit, precision]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies

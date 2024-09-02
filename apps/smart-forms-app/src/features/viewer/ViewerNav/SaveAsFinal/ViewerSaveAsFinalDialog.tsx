@@ -18,7 +18,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
 import {
   Button,
@@ -33,6 +32,7 @@ import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/sma
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import { produce } from 'immer';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -67,8 +67,9 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
 
     setIsSaving(true);
 
-    const responseToSave = cloneDeep(updatableResponse);
-    responseToSave.status = 'completed';
+    const responseToSave = produce(updatableResponse, (draft) => {
+      draft.status = 'completed';
+    });
 
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {

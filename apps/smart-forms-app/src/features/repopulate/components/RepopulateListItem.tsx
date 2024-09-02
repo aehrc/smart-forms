@@ -20,8 +20,8 @@ import { Checkbox, ListItemButton, ListItemIcon, Typography } from '@mui/materia
 import ListItemText from '@mui/material/ListItemText';
 import { useHidden } from '@aehrc/smart-forms-renderer';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import cloneDeep from 'lodash.clonedeep';
 import RepopulateItemSwitcher from './RepopulateItemSwitcher.tsx';
+import { produce } from 'immer';
 
 interface RepopulateListItemProps {
   checkedIds: string[];
@@ -41,7 +41,9 @@ function RepopulateListItem(props: RepopulateListItemProps) {
     return null;
   }
 
-  const qItemToRepopulate = cloneDeep({ ...qItem, readOnly: true });
+  const qItemToRepopulate = produce(qItem, (draft) => {
+    draft.readOnly = true;
+  });
   const linkId = qItemToRepopulate.linkId;
   const itemText = qItemToRepopulate.text ?? '';
 

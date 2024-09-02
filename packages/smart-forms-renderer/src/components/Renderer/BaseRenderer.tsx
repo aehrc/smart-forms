@@ -19,14 +19,14 @@ import React, { useMemo } from 'react';
 import Container from '@mui/material/Container';
 import Fade from '@mui/material/Fade';
 import FormTopLevelItem from './FormTopLevelItem';
-import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stores';
-import cloneDeep from 'lodash.clonedeep';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
 import { everyIsPages } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormTopLevelPage from './FormTopLevelPage';
+import { produce } from 'immer';
 
 /**
  * Main component of the form-rendering engine.
@@ -47,27 +47,27 @@ function BaseRenderer() {
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
   function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
-    const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
+    const responseToUpdate = produce(updatableResponse, (draft) => draft);
 
-    updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
+    updateQrItemsInGroup(newTopLevelQRItem, null, responseToUpdate, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
-    updateResponse(updatedResponse);
+    updateExpressions(responseToUpdate);
+    validateQuestionnaire(sourceQuestionnaire, responseToUpdate);
+    updateResponse(responseToUpdate);
   }
 
   function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
-    const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
+    const responseToUpdate = produce(updatableResponse, (draft) => draft);
 
-    updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
+    updateQrItemsInGroup(null, newTopLevelQRItems, responseToUpdate, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
-    updateResponse(updatedResponse);
+    updateExpressions(responseToUpdate);
+    validateQuestionnaire(sourceQuestionnaire, responseToUpdate);
+    updateResponse(responseToUpdate);
   }
 
   const topLevelQItems = sourceQuestionnaire.item;
-  const topLevelQRItems = cloneDeep(updatableResponse.item) ?? [];
+  const topLevelQRItems = produce(updatableResponse.item, (draft) => draft) ?? [];
 
   if (!topLevelQItems) {
     return <>Questionnaire does not have any items</>;

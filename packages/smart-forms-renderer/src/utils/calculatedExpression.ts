@@ -32,9 +32,9 @@ import { emptyResponse } from './emptyResource';
 import { createFhirPathContext } from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
-import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
+import { produce } from 'immer';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -60,7 +60,10 @@ export function evaluateInitialCalculatedExpressions(
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
   if (
-    _isEqual(initialResponse, cloneDeep(emptyResponse)) ||
+    _isEqual(
+      initialResponse,
+      produce(emptyResponse, (draft) => draft)
+    ) ||
     Object.keys(calculatedExpressions).length === 0
   ) {
     return {

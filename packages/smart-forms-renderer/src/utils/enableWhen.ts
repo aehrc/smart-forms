@@ -22,12 +22,12 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import cloneDeep from 'lodash.clonedeep';
 import type {
   EnableWhenItems,
   EnableWhenRepeatItemProperties,
   EnableWhenSingleItemProperties
 } from '../interfaces/enableWhen.interface';
+import { produce } from 'immer';
 
 /**
  * Create a linkedQuestionsMap that contains linked items of enableWhen items
@@ -257,7 +257,7 @@ export function setInitialAnswers(
   items: EnableWhenItems,
   linkedQuestionsMap: Record<string, string[]>
 ): EnableWhenItems {
-  let updatedItems = cloneDeep(items);
+  let updatedItems = produce(items, (draft) => draft);
 
   if (initialAnswers) {
     for (const linkId in initialAnswers) {

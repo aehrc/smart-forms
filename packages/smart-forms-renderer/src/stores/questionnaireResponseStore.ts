@@ -23,13 +23,13 @@ import type {
   QuestionnaireResponseItem
 } from 'fhir/r4';
 import { emptyResponse } from '../utils/emptyResource';
-import cloneDeep from 'lodash.clonedeep';
 import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
 import { validateQuestionnaire } from '../utils/validateQuestionnaire';
 import { questionnaireStore } from './questionnaireStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
+import { produce } from 'immer';
 
 /**
  * QuestionnaireResponseStore properties and methods
@@ -80,8 +80,8 @@ export interface QuestionnaireResponseStoreType {
  */
 export const questionnaireResponseStore = createStore<QuestionnaireResponseStoreType>()(
   (set, get) => ({
-    sourceResponse: cloneDeep(emptyResponse),
-    updatableResponse: cloneDeep(emptyResponse),
+    sourceResponse: produce(emptyResponse, (draft) => draft),
+    updatableResponse: produce(emptyResponse, (draft) => draft),
     updatableResponseItems: {},
     formChangesHistory: [],
     invalidItems: {},
@@ -178,9 +178,11 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     },
     destroySourceResponse: () =>
       set(() => ({
-        sourceResponse: cloneDeep(emptyResponse),
-        updatableResponse: cloneDeep(emptyResponse),
-        updatableResponseItems: createQuestionnaireResponseItemMap(cloneDeep(emptyResponse)),
+        sourceResponse: produce(emptyResponse, (draft) => draft),
+        updatableResponse: produce(emptyResponse, (draft) => draft),
+        updatableResponseItems: createQuestionnaireResponseItemMap(
+          produce(emptyResponse, (draft) => draft)
+        ),
         formChangesHistory: [],
         invalidItems: {},
         responseIsValid: true

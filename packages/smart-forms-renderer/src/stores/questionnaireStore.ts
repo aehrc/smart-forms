@@ -41,7 +41,6 @@ import {
 import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
 import { initialiseFormFromResponse } from '../utils/initialise';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
-import cloneDeep from 'lodash.clonedeep';
 import { terminologyServerStore } from './terminologyServerStore';
 import { createSelectors } from './selector';
 import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
@@ -49,6 +48,7 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
+import { produce } from 'immer';
 
 /**
  * QuestionnaireStore properties and methods
@@ -160,7 +160,7 @@ export interface QuestionnaireStoreType {
  * @author Sean Fong
  */
 export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
-  sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+  sourceQuestionnaire: produce(emptyQuestionnaire, (draft) => draft),
   itemTypes: {},
   tabs: {},
   currentTabIndex: 0,
@@ -184,7 +184,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   readOnly: false,
   buildSourceQuestionnaire: async (
     questionnaire,
-    questionnaireResponse = cloneDeep(emptyResponse),
+    questionnaireResponse = produce(emptyResponse, (draft) => draft),
     additionalVariables = {},
     terminologyServerUrl = terminologyServerStore.getState().url,
     readOnly = false
@@ -244,7 +244,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   },
   destroySourceQuestionnaire: () =>
     set({
-      sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+      sourceQuestionnaire: produce(emptyQuestionnaire, (draft) => draft),
       itemTypes: {},
       tabs: {},
       currentTabIndex: 0,

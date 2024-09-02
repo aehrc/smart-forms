@@ -18,7 +18,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import cloneDeep from 'lodash.clonedeep';
 import {
   Button,
   Dialog,
@@ -76,10 +75,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
     }
 
     setIsSaving(true);
-    const responseToSave = removeEmptyAnswersFromResponse(
-      sourceQuestionnaire,
-      cloneDeep(updatableResponse)
-    );
+    const responseToSave = removeEmptyAnswersFromResponse(sourceQuestionnaire, updatableResponse);
 
     responseToSave.status = 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
