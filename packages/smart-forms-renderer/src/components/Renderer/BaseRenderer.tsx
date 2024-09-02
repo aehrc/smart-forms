@@ -26,7 +26,7 @@ import { updateQrItemsInGroup } from '../../utils/qrItem';
 import { everyIsPages } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormTopLevelPage from './FormTopLevelPage';
-import { produce } from 'immer';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Main component of the form-rendering engine.
@@ -47,7 +47,7 @@ function BaseRenderer() {
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
   function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
-    const responseToUpdate = produce(updatableResponse, (draft) => draft);
+    const responseToUpdate = cloneDeep(updatableResponse);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, responseToUpdate, qItemsIndexMap);
 
@@ -57,7 +57,7 @@ function BaseRenderer() {
   }
 
   function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
-    const responseToUpdate = produce(updatableResponse, (draft) => draft);
+    const responseToUpdate = cloneDeep(updatableResponse);
 
     updateQrItemsInGroup(null, newTopLevelQRItems, responseToUpdate, qItemsIndexMap);
 
@@ -67,7 +67,7 @@ function BaseRenderer() {
   }
 
   const topLevelQItems = sourceQuestionnaire.item;
-  const topLevelQRItems = produce(updatableResponse.item, (draft) => draft) ?? [];
+  const topLevelQRItems = cloneDeep(updatableResponse.item) ?? [];
 
   if (!topLevelQItems) {
     return <>Questionnaire does not have any items</>;
