@@ -87,9 +87,10 @@ export function updateQuestionnaireResponse<T>(
   return { ...questionnaireResponse, item: topLevelQrItems };
 }
 
-export type RecursiveReadArrayFunction<T> = (
+export type RecursiveReadArrayFunction<T, U> = (
   qItem: QuestionnaireItem,
-  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
+  extraData?: U
 ) => T[] | null;
 
 /**
@@ -98,10 +99,11 @@ export type RecursiveReadArrayFunction<T> = (
  *
  * @author Sean Fong
  */
-export function readQuestionnaireResponse<T>(
+export function readQuestionnaireResponse<T, U>(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
-  recursiveReadFunction: RecursiveReadArrayFunction<T>
+  recursiveReadFunction: RecursiveReadArrayFunction<T, U>,
+  extraData?: U
 ): T[] {
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return [];
@@ -122,7 +124,7 @@ export function readQuestionnaireResponse<T>(
       item: []
     };
 
-    const readValue = recursiveReadFunction(topLevelQItem, topLevelQRItemOrItems);
+    const readValue = recursiveReadFunction(topLevelQItem, topLevelQRItemOrItems, extraData);
 
     if (readValue) {
       readValueArray.push(...readValue);
