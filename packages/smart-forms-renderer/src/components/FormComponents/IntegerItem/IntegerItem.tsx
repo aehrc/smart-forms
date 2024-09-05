@@ -55,6 +55,7 @@ function IntegerItem(props: IntegerItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let valueInteger = 0;
   let initialInput = '';
   if (qrItem?.answer) {
@@ -81,13 +82,13 @@ function IntegerItem(props: IntegerItemProps) {
     onChangeByCalcExpressionInteger: (newValueInteger: number) => {
       setInput(newValueInteger.toString());
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueInteger: newValueInteger }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueInteger: newValueInteger }]
       });
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
@@ -103,11 +104,11 @@ function IntegerItem(props: IntegerItemProps) {
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
       if (parsedNewInput === '') {
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
       } else {
         onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueInteger: parseInt(parsedNewInput) }]
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueInteger: parseInt(parsedNewInput) }]
         });
       }
     }, DEBOUNCE_DURATION),

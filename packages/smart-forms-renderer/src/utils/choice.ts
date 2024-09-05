@@ -166,7 +166,8 @@ export function updateChoiceCheckboxAnswers(
   answers: QuestionnaireResponseItemAnswer[],
   options: QuestionnaireItemAnswerOption[],
   oldQrItem: QuestionnaireResponseItem,
-  isMultiSelection: boolean
+  isMultiSelection: boolean,
+  answerKey: string | undefined
 ): QuestionnaireResponseItem | null {
   // search for answer item of changedValue from list of answer options
   const newAnswer = findInAnswerOptions(options, changedValue);
@@ -186,7 +187,9 @@ export function updateChoiceCheckboxAnswers(
       updatedAnswers.push(newAnswer);
     }
 
-    return { ...oldQrItem, answer: updatedAnswers };
+    const updatedAnswersWithKey = updatedAnswers.map((answer) => ({ ...answer, id: answerKey }));
+
+    return { ...oldQrItem, answer: updatedAnswersWithKey };
   }
 
   // Process single selection
@@ -194,7 +197,9 @@ export function updateChoiceCheckboxAnswers(
   const answerExists = answers.some(
     (answer) => JSON.stringify(answer) === JSON.stringify(newAnswer)
   );
-  return answerExists ? { ...oldQrItem, answer: [] } : { ...oldQrItem, answer: [newAnswer] };
+  return answerExists
+    ? { ...oldQrItem, answer: [] }
+    : { ...oldQrItem, answer: [{ ...newAnswer, id: answerKey }] };
 }
 
 /**

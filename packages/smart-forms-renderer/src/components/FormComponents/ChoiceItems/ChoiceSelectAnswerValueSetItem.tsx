@@ -51,7 +51,9 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Init input value
-  const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem);
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem, answerKey);
+
   let valueCoding: Coding | null = null;
   if (qrChoiceSelect.answer) {
     valueCoding = qrChoiceSelect.answer[0].valueCoding ?? null;
@@ -73,7 +75,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   useEffect(
     () => {
       if (qrChoiceSelect.answer && qrChoiceSelect.answer[0].valueString) {
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
     },
     // Only run effect once - on populate
@@ -91,12 +93,14 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
       if (codings.length > 0) {
         const qrAnswer = findInAnswerOptions(answerOptions, newValueString);
         onQrItemChange(
-          qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
+          qrAnswer
+            ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
+            : createEmptyQrItem(qItem, answerKey)
         );
       }
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
@@ -104,12 +108,12 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   function handleChange(newValue: Coding | null) {
     if (newValue) {
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueCoding: newValue }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueCoding: newValue }]
       });
       return;
     }
-    onQrItemChange(createEmptyQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   if (isRepeated) {

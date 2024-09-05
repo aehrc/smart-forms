@@ -55,9 +55,10 @@ function CustomDateItem(props: CustomDateItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
-  const qrDate = qrItem ?? createEmptyQrItem(qItem);
-
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrDate = qrItem ?? createEmptyQrItem(qItem, answerKey);
+
   let valueDate: string = '';
   if (qrDate.answer) {
     if (qrDate.answer[0].valueDate) {
@@ -78,8 +79,8 @@ function CustomDateItem(props: CustomDateItemProps) {
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: [{ valueDate: parseInputDateToFhirDate(selectedDate) }]
+      ...createEmptyQrItem(qItem, answerKey),
+      answer: [{ id: answerKey, valueDate: parseInputDateToFhirDate(selectedDate) }]
     });
   }
 
@@ -87,7 +88,7 @@ function CustomDateItem(props: CustomDateItemProps) {
     setInput(newInput);
 
     if (newInput === '') {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
 
     if (!validateDateInput(newInput)) {
@@ -95,8 +96,8 @@ function CustomDateItem(props: CustomDateItemProps) {
     }
 
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: [{ valueDate: parseInputDateToFhirDate(newInput) }]
+      ...createEmptyQrItem(qItem, answerKey),
+      answer: [{ id: answerKey, valueDate: parseInputDateToFhirDate(newInput) }]
     });
   }
 

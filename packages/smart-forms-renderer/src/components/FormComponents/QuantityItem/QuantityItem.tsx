@@ -62,6 +62,7 @@ function QuantityItem(props: QuantityItemProps) {
   );
 
   // Init inputs
+  const answerKey = qrItem?.answer?.[0].id;
   let valueQuantity: Quantity = {};
   let initialValueInput = '';
   let initialComparatorInput: Quantity['comparator'] | null = null;
@@ -114,9 +115,10 @@ function QuantityItem(props: QuantityItemProps) {
           : newValueDecimal.toString()
       );
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
+        ...createEmptyQrItem(qItem, answerKey),
         answer: [
           {
+            id: answerKey,
             valueQuantity: {
               value: newValueDecimal,
               unit: unitInput?.valueCoding?.display,
@@ -139,9 +141,10 @@ function QuantityItem(props: QuantityItemProps) {
           : newValueDecimal.toString()
       );
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
+        ...createEmptyQrItem(qItem, answerKey),
         answer: [
           {
+            id: answerKey,
             valueQuantity: {
               value: newValueDecimal,
               unit: newUnitDisplay,
@@ -154,7 +157,7 @@ function QuantityItem(props: QuantityItemProps) {
     },
     onChangeByCalcExpressionNull: () => {
       setValueInput('');
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
@@ -165,8 +168,14 @@ function QuantityItem(props: QuantityItemProps) {
     if (!valueInput) return;
 
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: createQuantityItemAnswer(precision, valueInput, newComparatorInput, unitInput)
+      ...createEmptyQrItem(qItem, answerKey),
+      answer: createQuantityItemAnswer(
+        precision,
+        valueInput,
+        newComparatorInput,
+        unitInput,
+        answerKey
+      )
     });
   }
 
@@ -176,8 +185,14 @@ function QuantityItem(props: QuantityItemProps) {
     if (!valueInput) return;
 
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: createQuantityItemAnswer(precision, valueInput, comparatorInput, newUnitInput)
+      ...createEmptyQrItem(qItem, answerKey),
+      answer: createQuantityItemAnswer(
+        precision,
+        valueInput,
+        comparatorInput,
+        newUnitInput,
+        answerKey
+      )
     });
   }
 
@@ -192,11 +207,17 @@ function QuantityItem(props: QuantityItemProps) {
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
       if (parsedNewInput === '') {
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
       } else {
         onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: createQuantityItemAnswer(precision, parsedNewInput, comparatorInput, unitInput)
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: createQuantityItemAnswer(
+            precision,
+            parsedNewInput,
+            comparatorInput,
+            unitInput,
+            answerKey
+          )
         });
       }
     }, DEBOUNCE_DURATION),

@@ -51,6 +51,7 @@ function TimeItem(props: TimeItemProps) {
   const { displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let timeString: string | null = null;
   if (qrItem?.answer && qrItem?.answer[0].valueTime) {
     timeString = qrItem.answer[0].valueTime;
@@ -59,9 +60,9 @@ function TimeItem(props: TimeItemProps) {
 
   // Event handlers
   function handleTimeChange(newValue: Dayjs | null) {
-    const emptyQrItem = createEmptyQrItem(qItem);
+    const emptyQrItem = createEmptyQrItem(qItem, answerKey);
     if (newValue) {
-      onQrItemChange({ ...emptyQrItem, answer: [{ valueTime: newValue.format() }] });
+      onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueTime: newValue.format() }] });
     } else {
       onQrItemChange(emptyQrItem);
     }
