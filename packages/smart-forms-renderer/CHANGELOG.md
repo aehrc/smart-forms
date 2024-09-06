@@ -5,6 +5,15 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [0.39.0] - 2024-09-06
+### Changed
+- Refactored `repeat` items so that it tracks item instances using the QuestionnaireResponse, instead of using React's `useState`.
+
+Note: This is a huge change for performance improvements, and was able to pass all the end-to-end and Chromatic tests - but please proceed carefully and test thoroughly before using this version in production. 
+
+### Fixed
+- Fixed an issue where `string` and `text` items were automatically removing inputted trailing whitespaces.
+
 ## [0.38.4] - 2024-08-29
 ### Fixed
 - Fixed support for item.initial and item.answerOption.initialSelected for repeating groups.
