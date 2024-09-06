@@ -43,12 +43,12 @@ export function CreateOperationOutcome(
   coding?: Coding,
   diagnostics?: string
 ): fhir4b.OperationOutcome {
-  var result: fhir4b.OperationOutcome = {
+  const result: fhir4b.OperationOutcome = {
     resourceType: 'OperationOutcome',
     issue: []
   };
 
-  var issue: OperationOutcomeIssue = {
+  const issue: OperationOutcomeIssue = {
     severity: severity,
     code: code,
     details: { text: message }
@@ -67,7 +67,7 @@ export function logMessage(
 ) {
   if (enabled) {
     // and append it into the outcome issues
-    var issue: OperationOutcomeIssue = {
+    const issue: OperationOutcomeIssue = {
       severity: 'information',
       code: 'informational',
       details: { text: message }

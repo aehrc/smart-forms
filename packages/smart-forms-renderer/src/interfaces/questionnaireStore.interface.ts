@@ -24,7 +24,7 @@ import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding, QuestionnaireItemAnswerOption, ValueSet } from 'fhir/r4';
 import type { InitialExpression } from './initialExpression.interface';
-import { DynamicValueSet } from './valueSet.interface';
+import type { DynamicValueSet } from './valueSet.interface';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;

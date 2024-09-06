@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { DynamicValueSet, ValueSetPromise } from '../../interfaces/valueSet.interface';
+import type { DynamicValueSet, ValueSetPromise } from '../../interfaces/valueSet.interface';
 import { getValueSetCodings, getValueSetPromise } from '../valueSet';
 import type { Coding, Questionnaire, ValueSet } from 'fhir/r4';
 
