@@ -22,7 +22,6 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { nanoid } from 'nanoid';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import AddItemButton from './AddItemButton';
@@ -33,6 +32,7 @@ import useInitialiseRepeatAnswers from '../../../hooks/useInitialiseRepeatAnswer
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
+import { generateExistingRepeatId, generateNewRepeatId } from '../../../utils/repeatId';
 
 interface RepeatItemProps
   extends PropsWithQrItemChangeHandler,
@@ -56,7 +56,7 @@ function RepeatItem(props: RepeatItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const repeatAnswers = useInitialiseRepeatAnswers(qrItem);
+  const repeatAnswers = useInitialiseRepeatAnswers(qItem.linkId, qrItem);
 
   // Event Handlers
   function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
@@ -81,7 +81,7 @@ function RepeatItem(props: RepeatItemProps) {
   }
 
   function handleAddItem() {
-    const updatedRepeatAnswers = [...repeatAnswers, { id: nanoid() }];
+    const updatedRepeatAnswers = [...repeatAnswers, { id: generateNewRepeatId(qItem.linkId) }];
 
     onQrItemChange({
       ...createEmptyQrItem(qItem, undefined),
@@ -100,7 +100,7 @@ function RepeatItem(props: RepeatItemProps) {
 
           return (
             <RepeatField
-              key={answer?.id ?? nanoid()}
+              key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
               qItem={qItem}
               qrItem={repeatAnswerQrItem}
               answer={answer}
@@ -131,7 +131,9 @@ function RepeatItem(props: RepeatItemProps) {
             }
 
             return (
-              <Collapse key={answer?.id ?? nanoid()} timeout={200}>
+              <Collapse
+                key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
+                timeout={200}>
                 <RepeatField
                   qItem={qItem}
                   qrItem={repeatAnswerQrItem}

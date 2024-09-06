@@ -15,24 +15,13 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { useMemo } from 'react';
-import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
+import { nanoid } from 'nanoid';
 
-function useInitialiseRepeatAnswers(
-  linkId: string,
-  qrItem: QuestionnaireResponseItem | null
-): (QuestionnaireResponseItemAnswer | null)[] {
-  return useMemo(() => {
-    if (!qrItem?.answer) {
-      return [{ id: generateNewRepeatId(linkId) }];
-    }
-
-    return qrItem.answer.map((answer, index) => ({
-      ...answer,
-      id: answer.id ?? generateExistingRepeatId(linkId, index)
-    }));
-  }, [linkId, qrItem]);
+export function generateNewRepeatId(linkId: string): string {
+  return `${linkId}-${nanoid()}`;
 }
 
-export default useInitialiseRepeatAnswers;
+export function generateExistingRepeatId(linkId: string, index: number): string {
+  const paddedIndex = index.toString().padStart(6, '0');
+  return `${linkId}-${paddedIndex}`;
+}

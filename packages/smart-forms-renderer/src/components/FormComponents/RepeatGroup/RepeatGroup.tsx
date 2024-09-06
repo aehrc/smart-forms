@@ -24,11 +24,11 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
-import { nanoid } from 'nanoid';
 import cloneDeep from 'lodash.clonedeep';
 import { useQuestionnaireStore } from '../../../stores';
 import useRepeatGroups from '../../../hooks/useRepeatGroups';
 import RepeatGroupView from './RepeatGroupView';
+import { generateNewRepeatId } from '../../../utils/repeatId';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -104,7 +104,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     setRepeatGroups([
       ...repeatGroups,
       {
-        nanoId: nanoid(),
+        nanoId: generateNewRepeatId(qItem.linkId),
         qrItem: null
       }
     ]);

@@ -16,21 +16,24 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { nanoid } from 'nanoid';
 import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
+import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
 
-function useInitialiseGroupTable(qrItems: QuestionnaireResponseItem[]): GroupTableRowModel[] {
+function useInitialiseGroupTable(
+  linkId: string,
+  qrItems: QuestionnaireResponseItem[]
+): GroupTableRowModel[] {
   let initialGroupTableRows: GroupTableRowModel[] = [
     {
-      nanoId: nanoid(),
+      nanoId: generateNewRepeatId(linkId),
       qrItem: null
     }
   ];
 
   if (qrItems.length > 0) {
-    initialGroupTableRows = qrItems.map((qrItem) => {
+    initialGroupTableRows = qrItems.map((qrItem, index) => {
       return {
-        nanoId: nanoid(),
+        nanoId: generateExistingRepeatId(linkId, index),
         qrItem
       };
     });

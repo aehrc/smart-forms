@@ -25,13 +25,13 @@ import type {
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
-import { nanoid } from 'nanoid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import GroupTableView from './GroupTableView';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import { getGroupTableItemsToUpdate } from '../../../utils/groupTable';
 import useGroupTableRows from '../../../hooks/useGroupTableRows';
 import { flushSync } from 'react-dom';
+import { generateNewRepeatId } from '../../../utils/repeatId';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -62,7 +62,10 @@ function GroupTable(props: GroupTableProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const { tableRows, selectedIds, setTableRows, setSelectedIds } = useGroupTableRows(qrItems);
+  const { tableRows, selectedIds, setTableRows, setSelectedIds } = useGroupTableRows(
+    qItem.linkId,
+    qrItems
+  );
 
   // Generate item labels as table headers
   const qItems = qItem.item;
@@ -114,7 +117,7 @@ function GroupTable(props: GroupTableProps) {
   }
 
   function handleAddRow() {
-    const newRowNanoId = nanoid();
+    const newRowNanoId = generateNewRepeatId(qItem.linkId);
     setTableRows([
       ...tableRows,
       {

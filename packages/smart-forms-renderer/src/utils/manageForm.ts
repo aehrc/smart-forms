@@ -9,6 +9,7 @@ import { initialiseQuestionnaireResponse } from './initialise';
 import { removeEmptyAnswers } from './removeEmptyAnswers';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import type Client from 'fhirclient/lib/Client';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse.
@@ -95,7 +96,7 @@ export async function initialiseFhirClient(fhirClient: Client): Promise<void> {
  * @author Sean Fong
  */
 export function getResponse(): QuestionnaireResponse {
-  return questionnaireResponseStore.getState().updatableResponse;
+  return cloneDeep(questionnaireResponseStore.getState().updatableResponse);
 }
 
 /**
