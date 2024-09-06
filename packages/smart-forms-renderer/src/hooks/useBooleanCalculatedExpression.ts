@@ -57,18 +57,19 @@ function useBooleanCalculatedExpression(
       ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setCalcExpUpdated(false);
         }, 500);
 
         // calculatedExpression value is null
         if (calcExpression.value === null) {
           onChangeByCalcExpressionNull();
-          return;
+          return () => clearTimeout(timeoutId);
         }
 
         // calculatedExpression value is boolean
         onChangeByCalcExpressionBoolean(calcExpression.value);
+        return () => clearTimeout(timeoutId);
       }
     },
     // Only trigger this effect if calculatedExpression of item changes

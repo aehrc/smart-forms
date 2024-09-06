@@ -53,7 +53,8 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Init input value
-  const qrChoice = qrItem ?? createEmptyQrItem(qItem);
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const valueChoice = getQrChoiceValue(qrChoice);
 
   const options = qItem.answerOption ?? [];
@@ -66,14 +67,14 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       handleChange(newValueString);
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
   function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
     // No options present or newValue is type null
     if (options.length === 0 || newValue === null) {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
@@ -81,14 +82,18 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     if (typeof newValue === 'string') {
       const qrAnswer = findInAnswerOptions(options, newValue);
       onQrItemChange(
-        qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
+        qrAnswer
+          ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
+          : createEmptyQrItem(qItem, answerKey)
       );
       return;
     }
 
     // newValue is type QuestionnaireItemAnswerOption
     onQrItemChange(
-      newValue ? { ...createEmptyQrItem(qItem), answer: [newValue] } : createEmptyQrItem(qItem)
+      newValue
+        ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...newValue, id: answerKey }] }
+        : createEmptyQrItem(qItem, answerKey)
     );
   }
 

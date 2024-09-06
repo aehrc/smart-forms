@@ -15,39 +15,27 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import type { RepeatAnswer } from '../interfaces/repeatItem.interface';
+import type { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 import { useMemo } from 'react';
 
 function useInitialiseRepeatAnswers(
-  qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem | null
-): RepeatAnswer[] {
-  return useMemo(
-    () => {
-      let initialRepeatAnswers: RepeatAnswer[] = [
-        {
-          nanoId: nanoid(),
-          answer: null
+): (QuestionnaireResponseItemAnswer | null)[] {
+  return useMemo(() => {
+    let initialRepeatAnswers: (QuestionnaireResponseItemAnswer | null)[] = [{ id: nanoid() }];
+
+    if (qrItem?.answer) {
+      initialRepeatAnswers = qrItem.answer.map((answer) => {
+        if (!answer.id) {
+          answer.id = nanoid();
         }
-      ];
+        return answer;
+      });
+    }
 
-      if (qrItem?.answer) {
-        initialRepeatAnswers = qrItem.answer.map((answer) => {
-          return {
-            nanoId: nanoid(),
-            answer
-          };
-        });
-      }
-
-      return initialRepeatAnswers;
-    },
-    // Requires checking of both qItem and qrItem
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qItem, qrItem]
-  );
+    return initialRepeatAnswers;
+  }, [qrItem]);
 }
 
 export default useInitialiseRepeatAnswers;

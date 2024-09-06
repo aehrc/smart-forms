@@ -61,6 +61,7 @@ function DecimalItem(props: DecimalItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let valueDecimal = 0.0;
   let initialInput = '';
   if (qrItem?.answer) {
@@ -74,6 +75,7 @@ function DecimalItem(props: DecimalItemProps) {
 
     initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
+
   const [input, setInput] = useStringInput(initialInput);
 
   // Perform validation checks
@@ -91,13 +93,13 @@ function DecimalItem(props: DecimalItemProps) {
           : newValueDecimal.toString()
       );
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueDecimal: newValueDecimal }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
       });
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
@@ -112,14 +114,20 @@ function DecimalItem(props: DecimalItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
+      const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       if (parsedNewInput === '') {
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(emptyQrItem);
       } else {
         onQrItemChange({
-          ...createEmptyQrItem(qItem),
+          ...emptyQrItem,
           answer: precision
-            ? [{ valueDecimal: parseDecimalStringToFloat(parsedNewInput, precision) }]
-            : [{ valueDecimal: parseFloat(parsedNewInput) }]
+            ? [
+                {
+                  id: answerKey,
+                  valueDecimal: parseDecimalStringToFloat(parsedNewInput, precision)
+                }
+              ]
+            : [{ id: answerKey, valueDecimal: parseFloat(parsedNewInput) }]
         });
       }
     }, DEBOUNCE_DURATION),

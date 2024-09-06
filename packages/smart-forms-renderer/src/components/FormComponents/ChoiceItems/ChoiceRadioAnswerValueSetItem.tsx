@@ -48,7 +48,8 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Init input value
-  const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   let valueRadio: string | null = null;
   if (qrChoiceRadio.answer) {
@@ -67,21 +68,22 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
       handleChange(newValueString);
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
   function handleChange(newValue: string) {
     if (codings.length > 0) {
       const qrAnswer = findInAnswerOptions(options, newValue);
+      const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       onQrItemChange(
-        qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
+        qrAnswer ? { ...emptyQrItem, answer: [{ ...qrAnswer, id: answerKey }] } : emptyQrItem
       );
     }
   }
 
   function handleClear() {
-    onQrItemChange(createEmptyQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   if (isRepeated) {

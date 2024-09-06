@@ -10,11 +10,11 @@ function useClickCounter(): UseClickCounter {
 
   useEffect(() => {
     if (counter === 3) {
-      const timeout = setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setCounter(0);
       }, 2500);
 
-      return () => clearTimeout(timeout);
+      return () => clearTimeout(timeoutId);
     }
   }, [counter]);
 

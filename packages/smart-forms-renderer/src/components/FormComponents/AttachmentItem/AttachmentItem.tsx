@@ -54,10 +54,12 @@ function AttachmentItem(props: AttachmentItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let valueString = '';
   if (qrItem?.answer && qrItem?.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;
   }
+
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [url, setUrl] = useStringInput(valueString);
   const [fileName, setFileName] = useStringInput(valueString);
@@ -69,11 +71,11 @@ function AttachmentItem(props: AttachmentItemProps) {
     const attachment = await createAttachmentAnswer(newUploadedFile, url, fileName);
     if (attachment) {
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueAttachment: attachment }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueAttachment: attachment }]
       });
     } else {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   }
 
@@ -94,11 +96,11 @@ function AttachmentItem(props: AttachmentItemProps) {
 
       if (attachment) {
         onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueAttachment: attachment }]
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueAttachment: attachment }]
         });
       } else {
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
     }, DEBOUNCE_DURATION),
     [onQrItemChange, qItem]

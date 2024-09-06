@@ -82,7 +82,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
           <TableBody ref={droppableProvided.innerRef} {...droppableProvided.droppableProps}>
             {tableRows.map(({ nanoId, qrItem: nullableQrItem }, index) => {
               const itemIsSelected = selectedIds.indexOf(nanoId) !== -1;
-              const answeredQrItem = createEmptyQrItem(tableQItem);
+              const answeredQrItem = createEmptyQrItem(tableQItem, undefined);
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
               }
