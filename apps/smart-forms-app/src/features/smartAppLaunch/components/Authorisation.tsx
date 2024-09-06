@@ -193,11 +193,11 @@ function Authorisation() {
                 preventDuplicate: true
               });
 
-              const timeout = setTimeout(() => {
+              const timeoutId = setTimeout(() => {
                 navigate('/dashboard/questionnaires');
               }, 300);
 
-              return () => clearTimeout(timeout);
+              return () => clearTimeout(timeoutId);
             }
           } else {
             console.error(error);

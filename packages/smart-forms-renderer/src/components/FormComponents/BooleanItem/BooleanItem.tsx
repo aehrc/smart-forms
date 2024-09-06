@@ -48,6 +48,8 @@ function BooleanItem(props: BooleanItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let valueBoolean: boolean | undefined = undefined;
   if (qrItem?.answer?.[0]?.valueBoolean !== undefined) {
     valueBoolean = qrItem.answer[0].valueBoolean;
@@ -59,12 +61,12 @@ function BooleanItem(props: BooleanItemProps) {
     booleanValue: valueBoolean,
     onChangeByCalcExpressionBoolean: (newValueBoolean: boolean) => {
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueBoolean: newValueBoolean }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
       });
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
@@ -73,24 +75,24 @@ function BooleanItem(props: BooleanItemProps) {
     switch (newValue) {
       case 'true':
         onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueBoolean: true }]
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueBoolean: true }]
         });
         break;
       case 'false':
         onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueBoolean: false }]
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueBoolean: false }]
         });
         break;
       default:
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
         break;
     }
   }
 
   function handleClear() {
-    onQrItemChange(createEmptyQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   if (isTabled) {

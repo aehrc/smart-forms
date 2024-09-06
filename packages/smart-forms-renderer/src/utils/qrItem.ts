@@ -67,15 +67,24 @@ export function createEmptyQrGroup(qItem: QuestionnaireItem): QuestionnaireRespo
 }
 
 /**
- * Create an empty qrItem from a given qItem
+ * Create an empty qrItem from a given qItem, optionally with an answer key
  *
  * @author Sean Fong
  */
-export function createEmptyQrItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
-  return {
+export function createEmptyQrItem(
+  qItem: QuestionnaireItem,
+  answerKey: string | undefined
+): QuestionnaireResponseItem {
+  const qrItem: QuestionnaireResponseItem = {
     linkId: qItem.linkId,
     text: qItem.text
   };
+
+  if (answerKey) {
+    qrItem.answer = [{ id: answerKey }];
+  }
+
+  return qrItem;
 }
 
 /**

@@ -36,7 +36,8 @@ export function updateOpenLabelAnswer(
   answers: QuestionnaireResponseItemAnswer[],
   options: QuestionnaireItemAnswerOption[],
   oldQrItem: QuestionnaireResponseItem,
-  isMultiSelection: boolean
+  isMultiSelection: boolean,
+  answerKey: string | undefined
 ) {
   // Open label is unchecked, search for open label value and remove it
   if (!openLabelChecked) {
@@ -59,9 +60,10 @@ export function updateOpenLabelAnswer(
       const lastMatchedIndex = matchedIndexes[matchedIndexes.length - 1];
       const newAnswers = answers.filter((answer, index) => index !== lastMatchedIndex);
 
+      const newAnswersWithKey = newAnswers.map((answer) => ({ ...answer, id: answerKey }));
       return {
         ...oldQrItem,
-        answer: newAnswers
+        answer: newAnswersWithKey
       };
     }
 
@@ -78,7 +80,7 @@ export function updateOpenLabelAnswer(
   if (!isMultiSelection) {
     return {
       ...oldQrItem,
-      answer: [newOpenLabelAnswer]
+      answer: [{ ...newOpenLabelAnswer, id: answerKey }]
     };
   }
 
@@ -89,9 +91,10 @@ export function updateOpenLabelAnswer(
 
   // No open label answer exists initially, add newOpenLabelAnswer to answers
   if (!oldOpenLabelAnswer) {
+    const answersWithKey = answers.map((answer) => ({ ...answer, id: answerKey }));
     return {
       ...oldQrItem,
-      answer: [...answers, newOpenLabelAnswer]
+      answer: [...answersWithKey, { ...newOpenLabelAnswer, id: answerKey }]
     };
   }
 

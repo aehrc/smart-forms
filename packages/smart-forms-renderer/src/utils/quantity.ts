@@ -32,11 +32,13 @@ export function createQuantityItemAnswer(
   precision: number | null,
   parsedNewInput: string,
   comparatorInput: Quantity['comparator'] | null,
-  unitInput: QuestionnaireItemAnswerOption | null
+  unitInput: QuestionnaireItemAnswerOption | null,
+  answerKey: string | undefined
 ): QuestionnaireResponseItemAnswer[] {
   if (precision) {
     return [
       {
+        id: answerKey,
         valueQuantity: {
           value: parseDecimalStringToFloat(parsedNewInput, precision),
           comparator: comparatorInput ?? undefined,
@@ -50,6 +52,7 @@ export function createQuantityItemAnswer(
 
   return [
     {
+      id: answerKey,
       valueQuantity: {
         value: parseFloat(parsedNewInput),
         comparator: comparatorInput ?? undefined,

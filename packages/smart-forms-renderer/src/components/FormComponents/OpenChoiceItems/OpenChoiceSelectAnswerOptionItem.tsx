@@ -51,10 +51,11 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
-  const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
+  const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   let valueSelect: QuestionnaireItemAnswerOption | null = null;
   if (qrOpenChoice.answer) {
     valueSelect = qrOpenChoice.answer[0] ?? null;
@@ -66,7 +67,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
       if (typeof newValue === 'string') {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ valueString: newValue }]
+          answer: [{ id: answerKey, valueString: newValue }]
         });
         return;
       }
@@ -75,22 +76,22 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
       if (option['valueCoding']) {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ valueCoding: option.valueCoding }]
+          answer: [{ id: answerKey, valueCoding: option.valueCoding }]
         });
       } else if (option['valueString']) {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ valueString: option.valueString }]
+          answer: [{ id: answerKey, valueString: option.valueString }]
         });
       } else if (option['valueInteger']) {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ valueInteger: option.valueInteger }]
+          answer: [{ id: answerKey, valueInteger: option.valueInteger }]
         });
       }
       return;
     }
-    onQrItemChange(createEmptyQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   if (isRepeated) {

@@ -60,7 +60,8 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem);
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrOpenChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -80,7 +81,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   // Processing is similar to a choice checkbox
   function handleOptionChange(changedOptionValue: string) {
     if (options.length === 0) {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
@@ -90,7 +91,8 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
       answers,
       options,
       qrOpenChoiceCheckbox,
-      isRepeated
+      isRepeated,
+      answerKey
     );
 
     if (updatedQrItem) {
@@ -110,7 +112,8 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
       answers,
       options,
       qrOpenChoiceCheckbox,
-      isRepeated
+      isRepeated,
+      answerKey
     );
 
     if (updatedQrItem) {

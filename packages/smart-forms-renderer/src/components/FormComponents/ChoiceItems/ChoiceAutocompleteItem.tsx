@@ -45,11 +45,13 @@ interface ChoiceAutocompleteItemProps
 
 function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
-  const qrChoice = qrItem ?? createEmptyQrItem(qItem);
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
+
   let valueCoding: Coding | undefined;
   if (qrChoice.answer) {
     valueCoding = qrChoice.answer[0].valueCoding;
@@ -77,13 +79,13 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   function handleValueChange(newValue: Coding | null) {
     if (newValue === null) {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: [{ valueCoding: newValue }]
+      ...createEmptyQrItem(qItem, answerKey),
+      answer: [{ id: answerKey, valueCoding: newValue }]
     });
   }
 

@@ -52,6 +52,7 @@ function SliderItem(props: SliderItemProps) {
   const isInteracted = !!qrItem?.answer;
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let valueInteger = 0;
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueInteger) {
@@ -65,8 +66,8 @@ function SliderItem(props: SliderItemProps) {
   // Event handlers
   function handleValueChange(newValue: number) {
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: [{ valueInteger: newValue }]
+      ...createEmptyQrItem(qItem, answerKey),
+      answer: [{ id: answerKey, valueInteger: newValue }]
     });
   }
 

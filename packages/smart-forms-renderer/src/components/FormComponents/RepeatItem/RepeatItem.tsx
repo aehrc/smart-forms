@@ -33,7 +33,6 @@ import useInitialiseRepeatAnswers from '../../../hooks/useInitialiseRepeatAnswer
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import useRepeatAnswers from '../../../hooks/useRepeatAnswers';
 
 interface RepeatItemProps
   extends PropsWithQrItemChangeHandler,
@@ -57,21 +56,16 @@ function RepeatItem(props: RepeatItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const initialRepeatAnswers = useInitialiseRepeatAnswers(qItem, qrItem);
-
-  const [repeatAnswers, setRepeatAnswers] = useRepeatAnswers(initialRepeatAnswers);
+  const repeatAnswers = useInitialiseRepeatAnswers(qrItem);
 
   // Event Handlers
   function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const updatedRepeatAnswers = [...repeatAnswers];
-    updatedRepeatAnswers[index].answer = newQrItem.answer ? newQrItem.answer[0] : null;
+    updatedRepeatAnswers[index] = newQrItem.answer ? newQrItem.answer[0] : null;
 
-    setRepeatAnswers(updatedRepeatAnswers);
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: updatedRepeatAnswers.flatMap((repeatAnswer) =>
-        repeatAnswer.answer ? [repeatAnswer.answer] : []
-      )
+      ...createEmptyQrItem(qItem, undefined),
+      answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
     });
   }
 
@@ -80,37 +74,33 @@ function RepeatItem(props: RepeatItemProps) {
 
     updatedRepeatAnswers.splice(index, 1);
 
-    setRepeatAnswers(updatedRepeatAnswers);
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: updatedRepeatAnswers.flatMap((repeatAnswer) =>
-        repeatAnswer.answer ? [repeatAnswer.answer] : []
-      )
+      ...createEmptyQrItem(qItem, undefined),
+      answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
     });
   }
 
   function handleAddItem() {
-    setRepeatAnswers([
-      ...repeatAnswers,
-      {
-        nanoId: nanoid(),
-        answer: null
-      }
-    ]);
+    const updatedRepeatAnswers = [...repeatAnswers, { id: nanoid() }];
+
+    onQrItemChange({
+      ...createEmptyQrItem(qItem, undefined),
+      answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
+    });
   }
 
   if (showMinimalView) {
     return (
       <>
-        {repeatAnswers.map(({ nanoId, answer }, index) => {
-          const repeatAnswerQrItem = createEmptyQrItem(qItem);
+        {repeatAnswers.map((answer, index) => {
+          const repeatAnswerQrItem = createEmptyQrItem(qItem, answer?.id);
           if (answer) {
             repeatAnswerQrItem.answer = [answer];
           }
 
           return (
             <RepeatField
-              key={nanoId}
+              key={answer?.id ?? nanoid()}
               qItem={qItem}
               qrItem={repeatAnswerQrItem}
               answer={answer}
@@ -134,14 +124,14 @@ function RepeatItem(props: RepeatItemProps) {
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
         <TransitionGroup>
-          {repeatAnswers.map(({ nanoId, answer }, index) => {
-            const repeatAnswerQrItem = createEmptyQrItem(qItem);
+          {repeatAnswers.map((answer, index) => {
+            const repeatAnswerQrItem = createEmptyQrItem(qItem, answer?.id);
             if (answer) {
               repeatAnswerQrItem.answer = [answer];
             }
 
             return (
-              <Collapse key={nanoId} timeout={200}>
+              <Collapse key={answer?.id ?? nanoid()} timeout={200}>
                 <RepeatField
                   qItem={qItem}
                   qrItem={repeatAnswerQrItem}

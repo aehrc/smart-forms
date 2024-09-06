@@ -19,10 +19,10 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import type { RepeatAnswer } from '../../../interfaces/repeatItem.interface';
+import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 interface AddItemButtonProps {
-  repeatAnswers: RepeatAnswer[];
+  repeatAnswers: (QuestionnaireResponseItemAnswer | null)[];
   readOnly: boolean;
   onAddItem: () => void;
 }
@@ -30,7 +30,11 @@ interface AddItemButtonProps {
 function AddItemButton(props: AddItemButtonProps) {
   const { repeatAnswers, readOnly, onAddItem } = props;
 
-  const isDisabled = repeatAnswers[repeatAnswers.length - 1]?.answer === null || readOnly;
+  // Check if the last answer is null or does not have a value[x]
+  // Also disables button if item is readOnly
+  const lastAnswer = repeatAnswers[repeatAnswers.length - 1];
+  const isDisabled =
+    lastAnswer === null || Object.keys(lastAnswer ?? {}).join() === 'id' || readOnly;
 
   return (
     <Box display="flex" flexDirection="row-reverse">
