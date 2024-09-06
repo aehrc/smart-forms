@@ -93,7 +93,7 @@ function TextItem(props: TextItemProps) {
       }
       const emptyQrItem = createEmptyQrItem(qItem);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input.trim() }] });
+        onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input }] });
       } else {
         onQrItemChange(emptyQrItem);
       }
