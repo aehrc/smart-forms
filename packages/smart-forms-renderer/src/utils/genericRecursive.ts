@@ -95,6 +95,7 @@ export type RecursiveReadArrayFunction<T, U> = (
 
 /**
  * A generic (and safe) way to read an array of element(s) i.e. QuestionnaireResponseItem[], extracted Observation[] from a QuestionnaireResponse given a recursive function.
+ * It also provides an optional extraData (generic U) parameter for additional data that the recursive function may need.
  * This function relies heavily on mapQItemsIndex() and getQrItemsIndex() to accurately pinpoint the locations of QR items based on their positions in the Q, taking into account repeating group answers, non-filled questions, etc
  *
  * @author Sean Fong
