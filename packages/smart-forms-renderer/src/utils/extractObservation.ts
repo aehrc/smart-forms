@@ -10,7 +10,8 @@ import type {
 import { readQuestionnaireResponse } from './genericRecursive';
 
 /**
- * Extract QuestionnaireResponse into Observation.
+ * Extract an array of Observations from a QuestionnaireResponse and its source Questionnaire.
+ * @see https://build.fhir.org/ig/HL7/sdc/extraction.html#observation-based-extraction
  *
  * @author Riza Nafis
  */

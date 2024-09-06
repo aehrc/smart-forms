@@ -24,23 +24,23 @@ import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
-import ExtractButtonForPlayground from './ExtractButtonForPlayground.tsx';
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 import { buildFormWrapper } from '../../../utils/manageForm.ts';
+import ExtractMenu from './ExtractMenu.tsx';
 
 interface PlaygroundRendererProps {
   endpointUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
   isExtracting: boolean;
-  onExtract: () => void;
+  onObservationExtract: () => void;
+  onStructureMapExtract: () => void;
 }
 
 function PlaygroundRenderer(props: PlaygroundRendererProps) {
-  const { endpointUrl, patient, user, isExtracting, onExtract } = props;
+  const { endpointUrl, patient, user, isExtracting, onObservationExtract, onStructureMapExtract } =
+    props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
   const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const [isPopulating, setIsPopulating] = useState(false);
@@ -48,7 +48,6 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
   const prePopEnabled = endpointUrl !== null && patient !== null;
-  const extractEnabled = targetStructureMap !== null;
 
   function handlePrepopulate() {
     if (!prePopEnabled) {
@@ -97,10 +96,10 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           isPopulating={isPopulating}
           onPopulate={handlePrepopulate}
         />
-        <ExtractButtonForPlayground
-          extractEnabled={extractEnabled}
+        <ExtractMenu
           isExtracting={isExtracting}
-          onExtract={onExtract}
+          onObservationExtract={onObservationExtract}
+          onStructureMapExtract={onStructureMapExtract}
         />
         <Box flexGrow={1} />
 

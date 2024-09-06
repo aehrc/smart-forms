@@ -30,33 +30,32 @@ describe('extractObservationBased', () => {
     expect(observations).toHaveLength(0);
   });
 
-  // TODO: bug readQuestionnaireResponse
-  // it('should return an empty array if no matching Questionnaire item is found for a QuestionnaireResponse item', () => {
-  //   const responseWithNoMatch: QuestionnaireResponse = {
-  //     resourceType: 'QuestionnaireResponse',
-  //     status: 'completed',
-  //     id: 'qr2',
-  //     item: [
-  //       {
-  //         linkId: '999', // No matching linkId in the questionnaire
-  //         answer: [
-  //           {
-  //             valueQuantity: {
-  //               value: 100,
-  //               unit: 'kg',
-  //               system: 'http://unitsofmeasure.org',
-  //               code: 'kg'
-  //             }
-  //           }
-  //         ]
-  //       }
-  //     ],
-  //     subject: {
-  //       reference: 'Patient/456'
-  //     }
-  //   };
-  //
-  //   const observations = extractObservationBased(qObservationSample, responseWithNoMatch);
-  //   expect(observations).toHaveLength(0);
-  // });
+  it('should return an empty array if no matching Questionnaire item is found for a QuestionnaireResponse item', () => {
+    const responseWithNoMatch: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr2',
+      item: [
+        {
+          linkId: '999', // No matching linkId in the questionnaire
+          answer: [
+            {
+              valueQuantity: {
+                value: 100,
+                unit: 'kg',
+                system: 'http://unitsofmeasure.org',
+                code: 'kg'
+              }
+            }
+          ]
+        }
+      ],
+      subject: {
+        reference: 'Patient/456'
+      }
+    };
+
+    const observations = extractObservationBased(qObservationSample, responseWithNoMatch);
+    expect(observations).toHaveLength(0);
+  });
 });

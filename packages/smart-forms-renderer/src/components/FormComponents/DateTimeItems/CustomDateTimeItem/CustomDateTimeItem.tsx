@@ -62,9 +62,10 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
-  const qrDateTime = qrItem ?? createEmptyQrItem(qItem);
-
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrDateTime = qrItem ?? createEmptyQrItem(qItem, answerKey);
+
   let valueDate: string = '';
   let dateTimeDayJs: Dayjs | null = null;
   if (qrDateTime.answer) {
@@ -111,7 +112,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     setDateInput(newDateInput);
 
     if (newDateInput === '') {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
@@ -162,8 +163,8 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     }
 
     onQrItemChange({
-      ...createEmptyQrItem(qItem),
-      answer: [{ valueDateTime: fhirDateTime }]
+      ...createEmptyQrItem(qItem, answerKey),
+      answer: [{ id: answerKey, valueDateTime: fhirDateTime }]
     });
   }
 

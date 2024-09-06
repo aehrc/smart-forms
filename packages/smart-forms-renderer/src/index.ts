@@ -46,7 +46,8 @@ export {
   isRepeatItemAndNotCheckbox,
   initialiseQuestionnaireResponse,
   generateItemsToRepopulate,
-  repopulateResponse
+  repopulateResponse,
+  extractObservationBased
 } from './utils';
 
 // theme provider exports

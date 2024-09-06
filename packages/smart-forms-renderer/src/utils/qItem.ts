@@ -74,6 +74,12 @@ export function isHiddenByEnableWhen(params: isHiddenByEnableWhensParams): boole
  * @author Sean Fong
  */
 export function isRepeatItemAndNotCheckbox(qItem: QuestionnaireItem): boolean {
+  // Prevents form from crashing due to mismatched Q and QR
+  // In reality this should never happen
+  if (!qItem) {
+    return false;
+  }
+
   const isCheckbox =
     getChoiceControlType(qItem) === ChoiceItemControl.Checkbox ||
     getOpenChoiceControlType(qItem) === OpenChoiceItemControl.Checkbox;

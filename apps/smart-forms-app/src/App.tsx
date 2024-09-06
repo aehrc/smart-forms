@@ -25,7 +25,7 @@ import DebugModeContextProvider from './contexts/DebugModeContext.tsx';
 function App() {
   return (
     <ThemeProvider>
-      <SnackbarProvider>
+      <SnackbarProvider maxSnack={1}>
         <SmartClientContextProvider>
           <DebugModeContextProvider>
             <CssBaseline />

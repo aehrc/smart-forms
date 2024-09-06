@@ -51,7 +51,8 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init answers
-  const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem);
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
   let valueRadio: string | null = getQrChoiceValue(qrOpenChoiceRadio, true);
   const answers = qrOpenChoiceRadio.answer ?? [];
 
@@ -89,7 +90,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
     changedOpenLabelValue: string | null
   ) {
     if (options.length === 0) {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
@@ -98,15 +99,18 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
 
       // If selected answer can be found in options, it is a non-open label selection
       if (qrAnswer) {
-        onQrItemChange({ ...createEmptyQrItem(qItem), answer: [qrAnswer] });
+        onQrItemChange({
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ ...qrAnswer, id: answerKey }]
+        });
         setOpenLabelSelected(false);
         return;
       }
 
       // Otherwise, it is an open-label selection
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueString: changedOptionValue }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: changedOptionValue }]
       });
       setOpenLabelValue(changedOptionValue);
       setOpenLabelSelected(true);
@@ -118,15 +122,15 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
 
       // If open label is unchecked, remove it from answers
       if (changedOpenLabelValue === '') {
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
         return;
       }
 
       // Otherwise, add open label to answers
       setOpenLabelValue(changedOpenLabelValue);
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueString: changedOpenLabelValue }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: changedOpenLabelValue }]
       });
     }
   }

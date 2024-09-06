@@ -47,7 +47,7 @@ export function shouldRenderNestedItems(qItem: QuestionnaireItem): boolean {
  * @author Sean Fong
  */
 export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode: string): boolean {
-  const itemControl = qItem.extension?.find(
+  const itemControl = qItem?.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
   );
