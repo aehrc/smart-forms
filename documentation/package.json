@@ -20,7 +20,7 @@
     "@docusaurus/preset-classic": "^3.4.0",
     "@docusaurus/theme-live-codeblock": "^3.4.0",
     "@emotion/react": "^11.13.0",
-    "@emotion/styled": "^11.11.5",
+    "@emotion/styled": "^11.13.0",
     "@iconify/react": "^4.1.1",
     "@mdx-js/react": "^3.0.0",
     "@mui/material": "^5.16.7",
