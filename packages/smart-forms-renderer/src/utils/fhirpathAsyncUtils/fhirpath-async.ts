@@ -704,7 +704,7 @@ async function memberOfAsync(
     const requestUrl = 'https://r4.ontoserver.csiro.au/fhir/ValueSet/$validate-code';
 
     let response;
-    let cc = typedData.value as CodeableConcept;
+    const cc = typedData.value as CodeableConcept;
     if (cc.coding) {
       const parameters: Parameters = {
         resourceType: 'Parameters',

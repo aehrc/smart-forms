@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { DynamicValueSet } from '../interfaces/valueSet.interface';
+import type { DynamicValueSet } from '../interfaces/valueSet.interface';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import cloneDeep from 'lodash.clonedeep';

@@ -50,7 +50,7 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
-import { DynamicValueSet } from '../interfaces/valueSet.interface';
+import type { DynamicValueSet } from '../interfaces/valueSet.interface';
 
 /**
  * QuestionnaireStore properties and methods

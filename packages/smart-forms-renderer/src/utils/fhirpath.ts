@@ -21,11 +21,11 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
 import type { EnableWhenExpressions } from '../interfaces/enableWhen.interface';
 import { evaluateEnableWhenExpressions } from './enableWhenExpression';
 import { evaluateCalculatedExpressions } from './calculatedExpression';
-import { DynamicValueSet } from '../interfaces/valueSet.interface';
+import type { DynamicValueSet } from '../interfaces/valueSet.interface';
 import { evaluateDynamicValueSets } from './dynamicValueSet';
 import { evaluateFhirpathAsync } from './fhirpathAsyncUtils/fhirpath-async';
-import { DomainResource } from 'fhir/r4b';
-import { AnswerExpression } from '../interfaces/answerExpression.interface';
+import type { DomainResource } from 'fhir/r4b';
+import type { AnswerExpression } from '../interfaces/answerExpression.interface';
 import { evaluateAnswerExpressions } from './answerExpression';
 
 interface EvaluateUpdatedExpressionsParams {
