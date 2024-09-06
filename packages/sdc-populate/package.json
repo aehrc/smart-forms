@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/sdc-populate",
-  "version": "2.2.7",
+  "version": "2.3.1",
   "description": "Performs the $populate operation from the HL7 FHIR SDC (Structured Data Capture) specification: http://hl7.org/fhir/uv/sdc",
   "main": "lib/index.js",
   "scripts": {

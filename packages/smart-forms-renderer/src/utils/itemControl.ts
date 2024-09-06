@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, Extension, QuestionnaireItem } from 'fhir/r4';
+import type { Coding, Extension, QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
@@ -232,6 +232,24 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
     }
   }
   return '';
+}
+
+/**
+ * Get Quantity unit for items with itemControlCode unit and has a unit childItem
+ *
+ * @author Sean Fong
+ */
+export function getQuantityUnit(qItem: QuestionnaireItem): QuestionnaireItemAnswerOption | null {
+  // Otherwise, check if the item has a unit extension
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit'
+  );
+  if (itemControl && itemControl.valueCoding) {
+    return itemControl;
+  }
+
+  return null;
 }
 
 /**

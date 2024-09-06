@@ -29,7 +29,7 @@ import type {
 import * as FHIR from 'fhirclient';
 import type { FhirResourceString } from '../interfaces/populate.interface';
 import type { VariableXFhirQuery } from '../interfaces/variables.interface';
-import type { ValueSetPromise } from '../interfaces/valueSet.interface';
+import type { ValidateCodeResponse, ValueSetPromise } from '../interfaces/valueSet.interface';
 
 const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;
@@ -52,8 +52,10 @@ export function getValueSetPromise(url: string, terminologyServerUrl: string): P
 
   if (url.includes('ValueSet/$expand?url=')) {
     const splitUrl = url.split('ValueSet/$expand?url=');
-    terminologyServerUrl = splitUrl[0];
-    valueSetUrl = splitUrl[1];
+    if (splitUrl[0] && splitUrl[1]) {
+      terminologyServerUrl = splitUrl[0];
+      valueSetUrl = splitUrl[1];
+    }
   }
 
   valueSetUrl = valueSetUrl.replace('|', '&version=');
@@ -61,6 +63,37 @@ export function getValueSetPromise(url: string, terminologyServerUrl: string): P
   return FHIR.client({ serverUrl: terminologyServerUrl }).request({
     url: 'ValueSet/$expand?url=' + valueSetUrl
   });
+}
+
+function validateCodeResponseIsValid(response: any): response is ValidateCodeResponse {
+  return (
+    response &&
+    response.resourceType === 'Parameters' &&
+    response.parameter &&
+    response.parameter.find((p: any) => p.name === 'code') &&
+    response.parameter.find((p: any) => p.name === 'code').valueCode &&
+    response.parameter.find((p: any) => p.name === 'system') &&
+    response.parameter.find((p: any) => p.name === 'system').valueUri &&
+    response.parameter.find((p: any) => p.name === 'display') &&
+    response.parameter.find((p: any) => p.name === 'display').valueString
+  );
+}
+
+export async function validateCodePromise(
+  url: string,
+  system: string,
+  code: string,
+  terminologyServerUrl: string
+): Promise<ValidateCodeResponse | null> {
+  const validateCodeResponse = await FHIR.client({ serverUrl: terminologyServerUrl }).request({
+    url: `ValueSet/$validate-code?url=${url}&system=${system}&code=${code}`
+  });
+
+  if (validateCodeResponse && validateCodeResponseIsValid(validateCodeResponse)) {
+    return validateCodeResponse;
+  }
+
+  return null;
 }
 
 async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {

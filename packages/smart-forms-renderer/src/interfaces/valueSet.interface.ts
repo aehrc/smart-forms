@@ -21,3 +21,22 @@ export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   valueSet?: ValueSet;
 }
+
+export interface ValidateCodeResponse extends Parameters<any> {
+  parameter: [SystemParameter, CodeParameter, DisplayParameter];
+}
+
+export interface SystemParameter {
+  name: 'system';
+  valueUri: string;
+}
+
+export interface CodeParameter {
+  name: 'code';
+  valueCode: string;
+}
+
+export interface DisplayParameter {
+  name: 'display';
+  valueString: string;
+}

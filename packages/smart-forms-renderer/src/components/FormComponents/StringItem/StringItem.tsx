@@ -53,10 +53,12 @@ function StringItem(props: StringItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let valueString = '';
   if (qrItem?.answer && qrItem?.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;
   }
+
   const [input, setInput] = useStringInput(valueString);
 
   // Perform validation checks
@@ -69,13 +71,13 @@ function StringItem(props: StringItemProps) {
     onChangeByCalcExpressionString: (newValueString: string) => {
       setInput(newValueString);
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueString: newValueString }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: newValueString }]
       });
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
@@ -88,9 +90,9 @@ function StringItem(props: StringItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
-      const emptyQrItem = createEmptyQrItem(qItem);
+      const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ valueString: input.trim() }] });
+        onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueString: input }] });
       } else {
         onQrItemChange(emptyQrItem);
       }

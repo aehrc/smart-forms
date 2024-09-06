@@ -15,30 +15,27 @@
  * limitations under the License.
  */
 
-import { Stack, Typography } from '@mui/material';
-import type { ReactNode } from 'react';
+import React from 'react';
+import Iconify from '../../Iconify/Iconify';
+import { SecondaryFab } from '../Button.styles';
 
-interface SdcIdeScreenProps {
-  screenTitle: string;
-  children: ReactNode;
+interface PreviousPageButtonProps {
+  isDisabled: boolean;
+  onPreviousPageClick: () => void;
 }
 
-function GenericScreen(props: SdcIdeScreenProps) {
-  const { screenTitle, children } = props;
-
-  // const [editorString, setEditorString] = useState('');
-  //
-  // function handleEditorChange(value: string | undefined) {
-  //   setEditorString(value ?? '');
-  // }
+function PreviousPageButton(props: PreviousPageButtonProps) {
+  const { isDisabled, onPreviousPageClick } = props;
 
   return (
-    <Stack height="100%" width="100%" sx={{ overflow: 'auto', p: 0.5 }}>
-      <Typography variant="subtitle1">{screenTitle}</Typography>
-      {children}
-      {/*<SdcIdeQuestionnairePicker />*/}
-    </Stack>
+    <SecondaryFab
+      size="small"
+      aria-label="back"
+      disabled={isDisabled}
+      onClick={onPreviousPageClick}>
+      <Iconify icon="material-symbols:chevron-left-rounded" />
+    </SecondaryFab>
   );
 }
 
-export default GenericScreen;
+export default PreviousPageButton;

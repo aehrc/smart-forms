@@ -16,12 +16,13 @@
  */
 
 import {
+  getQuantityUnit,
   getTextDisplayFlyover,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit
 } from '../utils/itemControl';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { useMemo } from 'react';
 
@@ -33,6 +34,7 @@ interface RenderingExtensions {
   readOnly: boolean;
   entryFormat: string;
   required: boolean;
+  quantityUnit: QuestionnaireItemAnswerOption | null;
 }
 
 function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
@@ -44,7 +46,8 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
       displayFlyover: getTextDisplayFlyover(qItem),
       readOnly: !!qItem.readOnly,
       entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
-      required: qItem.required ?? false
+      required: qItem.required ?? false,
+      quantityUnit: getQuantityUnit(qItem)
     }),
     [qItem]
   );

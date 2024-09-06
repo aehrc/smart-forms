@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-import { Outlet } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
-import { StyledRoot } from '../../components/Layout/Layout.styles.ts';
-import { SdcIdeMain } from './SdcIdeMain.ts';
+import React from 'react';
+import Iconify from '../../Iconify/Iconify';
+import { SecondaryFab } from '../Button.styles';
 
-function SdcIdeLayout() {
+interface NextPageButtonProps {
+  isDisabled: boolean;
+  onNextPageClick: () => void;
+}
+
+function NextPageButton(props: NextPageButtonProps) {
+  const { isDisabled, onNextPageClick } = props;
+
   return (
-    <StyledRoot>
-      <Helmet>
-        <title>SDC IDE</title>
-      </Helmet>
-
-      <SdcIdeMain>
-        <Outlet />
-      </SdcIdeMain>
-    </StyledRoot>
+    <SecondaryFab size="small" aria-label="next" disabled={isDisabled} onClick={onNextPageClick}>
+      <Iconify icon="material-symbols:chevron-right-rounded" />
+    </SecondaryFab>
   );
 }
 
-export default SdcIdeLayout;
+export default NextPageButton;

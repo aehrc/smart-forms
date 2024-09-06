@@ -14,18 +14,22 @@ The elements/extensions that fall under this category are:
 - [answerValueSet](http://hl7.org/fhir/uv/sdc/behavior.html#answerValueSet)
 - [answerExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerExpression)
 
+There is also another extension that can be used to define the unit of a quantity item:
+
+- [unitOption](https://hl7.org/fhir/uv/sdc/behavior.html#unitOption)
+
 :::note
 
-These three mechanisms are mutually exclusive. Only one should appear on the same item.
+The three mechanisms (answerOption, answerValueSet and answerExpression) are mutually exclusive. Only one should appear on the same item.
 
 :::
+Not all components support terminology binding. Only the following components support terminology binding:
 
-Not all components support terminology binding. The following components support Not all components support calculated expressions. The following components support calculated expressions::
-
-| Components  |
-| ----------- |
-| choice      |
-| open-choice |
+| Components                |
+| ------------------------- |
+| choice                    |
+| open-choice               |
+| quantity (via unitOption) |
 
 ### AnswerOption
 
@@ -153,5 +157,21 @@ Support for this extension is not thoroughly tested yet.
     src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-2-form-behavior-choice-restriction--answer-expression"
     width="100%"
     height="500"
+  />
+</IframeContainer>
+
+### UnitOption
+
+UnitOption is used to specify a list of possible units to a [Quantity](/docs/components/quantity) question.
+
+This can be used when the unit is not fixed, and allows the user to choose from a list of units.
+
+#### Basic usage
+
+<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-quantity--quantity-unit-option-response">
+  <iframe
+    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-quantity--quantity-unit-option-response"
+    width="100%"
+    height="270"
   />
 </IframeContainer>

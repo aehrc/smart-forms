@@ -1,0 +1,229 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "AuCoreMedicationRequest",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "MedicationRequest",
+        "language": "application/x-fhir-query",
+        "expression": "MedicationRequest?patient={{%patient.id}}"
+      }
+    }
+  ],
+  "version": "0.5.0-ci-build",
+  "name": "AU Core Medication Request",
+  "title": "AU Core Medication Request",
+  "status": "draft",
+  "date": "2024-07-24",
+  "item": [
+    {
+      "linkId": "medication-request",
+      "text": "AU Core Medication Request",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "patient-details",
+          "text": "Patient Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.id"
+                  }
+                }
+              ],
+              "linkId": "patient-id",
+              "text": "Patient ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%patient.name.where(use='official').select((family | (given\n| prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "patient-name",
+              "text": "Patient Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "first-medication-request-note",
+          "text": "This questionnaire only uses the first MedicationRequest resource of a referenced\npatient.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"padding-bottom:\n8px;\">\r\n\n <b>This questionnaire only uses the first MedicationRequest resource\nof a referenced\npatient.</b>\r\n</div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "linkId": "status",
+          "text": "Status",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/medicationrequest-status",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.status"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "intent",
+          "text": "Intent",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/medicationrequest-intent",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.intent"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.medicationCodeableConcept.coding"
+              }
+            }
+          ],
+          "linkId": "medication-codeableconcept",
+          "text": "Medication CodeableConcept",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/medication-codes"
+        },
+        {
+          "linkId": "encounter",
+          "text": "Encounter",
+          "type": "reference",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/encounter-reference",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.encounter.reference"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "authored-on",
+          "text": "Authored On",
+          "type": "dateTime",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.authoredOn"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "requester",
+          "text": "Requester",
+          "type": "reference",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.requester.reference"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "reason-code",
+          "text": "Reason Code",
+          "type": "choice",
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/reason-for-request-1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.reasonCode.coding"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "dosage-instruction",
+          "text": "Dosage Instruction",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%MedicationRequest.entry[0].resource.dosageInstruction.text"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

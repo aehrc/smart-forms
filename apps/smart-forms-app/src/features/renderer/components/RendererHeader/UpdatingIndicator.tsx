@@ -29,9 +29,11 @@ function UpdatingIndicator() {
 
   useEffect(() => {
     setIsUpdating(true);
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setIsUpdating(false);
     }, 500);
+
+    return () => clearTimeout(timeoutId);
   }, [updatableResponse]);
 
   return (

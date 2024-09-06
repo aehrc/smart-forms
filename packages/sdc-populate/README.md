@@ -24,9 +24,12 @@ export default defineConfig({
         // other modules as required...
       ]
     }
-  }
+  },
+  resolve: { preserveSymlinks: true }
 });
 ```
+
+During development, please change the `module` element in `tsconfig.json` to `"ES6"` and comment out the above changes. Otherwise `tsc -w` will not work properly.
 
 
 

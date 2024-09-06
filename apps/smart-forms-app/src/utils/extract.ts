@@ -1,6 +1,6 @@
 /*
  * Copyright 2024 Commonwealth Scientific and Industrial Research
- * Organisation (CSIRO) ABN 41 687 10.59 230.
+ * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,17 @@
  * limitations under the License.
  */
 
-import { Box } from '@mui/material';
-import { BaseRenderer } from '@aehrc/smart-forms-renderer';
+import type { Bundle, OperationOutcome } from 'fhir/r4';
 
-function SdcIdeRenderer() {
+export function extractedResourceIsBundle(extracted: any): extracted is Bundle {
   return (
-    <Box p={2}>
-      <BaseRenderer />
-    </Box>
+    extracted.resourceType &&
+    extracted.resourceType === 'Bundle' &&
+    extracted.type &&
+    (extracted.type === 'transaction' || extracted.type === 'batch')
   );
 }
 
-export default SdcIdeRenderer;
+export function responseIsOperationOutcome(response: any): response is OperationOutcome {
+  return response.resourceType && response.resourceType === 'OperationOutcome';
+}

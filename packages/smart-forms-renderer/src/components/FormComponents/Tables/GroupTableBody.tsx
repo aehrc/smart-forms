@@ -20,6 +20,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import type {
+  PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -30,7 +31,8 @@ import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
 
 interface GroupTableBodyProps
-  extends PropsWithParentIsReadOnlyAttribute,
+  extends PropsWithIsRepeatedAttribute,
+    PropsWithParentIsReadOnlyAttribute,
     PropsWithShowMinimalViewAttribute {
   tableQItem: QuestionnaireItem;
   readOnly: boolean;
@@ -50,6 +52,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
     tableRows,
     selectedIds,
     qItemsIndexMap,
+    isRepeated,
     showMinimalView,
     parentIsReadOnly,
     onRowChange,
@@ -79,7 +82,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
           <TableBody ref={droppableProvided.innerRef} {...droppableProvided.droppableProps}>
             {tableRows.map(({ nanoId, qrItem: nullableQrItem }, index) => {
               const itemIsSelected = selectedIds.indexOf(nanoId) !== -1;
-              const answeredQrItem = createEmptyQrItem(tableQItem);
+              const answeredQrItem = createEmptyQrItem(tableQItem, undefined);
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
               }
@@ -93,6 +96,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   readOnly={readOnly}
+                  isRepeated={isRepeated}
                   hoverDisabled={snapshot.isDraggingOver}
                   tableRows={tableRows}
                   itemIsSelected={itemIsSelected}

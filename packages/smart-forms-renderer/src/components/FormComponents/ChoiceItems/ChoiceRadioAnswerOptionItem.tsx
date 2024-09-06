@@ -52,7 +52,8 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const qrChoice = qrItem ?? createEmptyQrItem(qItem);
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const valueChoice = getQrChoiceValue(qrChoice);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -67,7 +68,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
       handleChange(newValueString);
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
 
@@ -75,7 +76,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
     // No options present or newValue is type null
     if (options.length === 0 || newValue === null) {
-      onQrItemChange(createEmptyQrItem(qItem));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
@@ -83,19 +84,23 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     if (typeof newValue === 'string') {
       const qrAnswer = findInAnswerOptions(options, newValue);
       onQrItemChange(
-        qrAnswer ? { ...createEmptyQrItem(qItem), answer: [qrAnswer] } : createEmptyQrItem(qItem)
+        qrAnswer
+          ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
+          : createEmptyQrItem(qItem, answerKey)
       );
       return;
     }
 
     // newValue is type QuestionnaireItemAnswerOption
     onQrItemChange(
-      newValue ? { ...createEmptyQrItem(qItem), answer: [newValue] } : createEmptyQrItem(qItem)
+      newValue
+        ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...newValue, id: answerKey }] }
+        : createEmptyQrItem(qItem, answerKey)
     );
   }
 
   function handleClear() {
-    onQrItemChange(createEmptyQrItem(qItem));
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   // TODO This is in preparation of refactoring all choice answerOption fields into one component

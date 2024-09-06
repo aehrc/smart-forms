@@ -81,6 +81,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `Record`\<`string`, `CalculatedExpression`[]\>
 
+### use.currentPageIndex()
+
+> **currentPageIndex**: () => `number`
+
+#### Returns
+
+`number`
+
 ### use.currentTabIndex()
 
 > **currentTabIndex**: () => `number`
@@ -173,6 +181,24 @@ This is the React version of the store which can be used as React hooks in React
 
 `Record`\<`string`, [`LaunchContext`](../interfaces/LaunchContext.md)\>
 
+### use.markPageAsComplete()
+
+> **markPageAsComplete**: () => (`pageLinkId`) => `void`
+
+#### Returns
+
+`Function`
+
+##### Parameters
+
+| Parameter | Type |
+| :------ | :------ |
+| `pageLinkId` | `string` |
+
+##### Returns
+
+`void`
+
 ### use.markTabAsComplete()
 
 > **markTabAsComplete**: () => (`tabLinkId`) => `void`
@@ -228,6 +254,14 @@ This is the React version of the store which can be used as React hooks in React
 ##### Returns
 
 `void`
+
+### use.pages()
+
+> **pages**: () => `Pages`
+
+#### Returns
+
+`Pages`
 
 ### use.populatedContext()
 
@@ -304,6 +338,24 @@ This is the React version of the store which can be used as React hooks in React
 #### Returns
 
 `Questionnaire`
+
+### use.switchPage()
+
+> **switchPage**: () => (`newPageIndex`) => `void`
+
+#### Returns
+
+`Function`
+
+##### Parameters
+
+| Parameter | Type |
+| :------ | :------ |
+| `newPageIndex` | `number` |
+
+##### Returns
+
+`void`
 
 ### use.switchTab()
 

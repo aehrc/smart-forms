@@ -1,0 +1,175 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "AuCoreImmunization",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "Immunization",
+        "language": "application/x-fhir-query",
+        "expression": "Immunization?patient={{%patient.id}}"
+      }
+    }
+  ],
+  "version": "0.5.0-ci-build",
+  "name": "AU Core Immunization",
+  "title": "AU Core Immunization",
+  "status": "draft",
+  "date": "2024-07-24",
+  "item": [
+    {
+      "linkId": "immunization",
+      "text": "AU Core Immunization",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "patient-details",
+          "text": "Patient Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.id"
+                  }
+                }
+              ],
+              "linkId": "patient-id",
+              "text": "Patient ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%patient.name.where(use='official').select((family | (given\n| prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "patient-name",
+              "text": "Patient Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "first-immunization-note",
+          "text": "This questionnaire only uses the first Immunization resource of a referenced\npatient.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"padding-bottom:\n8px;\">\r\n\n <b>This questionnaire only uses the first Immunization resource\nof a referenced\npatient.</b>\r\n</div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "linkId": "status",
+          "text": "Status",
+          "type": "choice",
+          "required": true,
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/immunization-status",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Immunization.entry[0].resource.status"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "vaccineCode",
+          "text": "Vaccine Code",
+          "type": "choice",
+          "required": true,
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/vaccine-code",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Immunization.entry[0].resource.vaccineCode.coding"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "occurrenceDateTime",
+          "text": "Occurrence DateTime",
+          "type": "dateTime",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Immunization.entry[0].resource.occurrenceDateTime"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "primarySource",
+          "text": "Primary Source",
+          "type": "boolean",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Immunization.entry[0].resource.primarySource"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "note",
+          "text": "Note",
+          "type": "text",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Immunization.entry[0].resource.note.text"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

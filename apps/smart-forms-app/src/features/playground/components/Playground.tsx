@@ -30,8 +30,6 @@ import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import {
-  buildForm,
-  destroyForm,
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
@@ -43,8 +41,8 @@ import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
-import { fetchTargetStructureMap } from '../api/extract.ts';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
@@ -65,33 +63,24 @@ function Playground() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
-  const resetExtractOperationStore = useExtractOperationStore.use.resetStore();
-  const setTargetStructureMap = useExtractOperationStore.use.setTargetStructureMap();
   const setExtractedResource = useExtractOperationStore.use.setExtractedResource();
 
   const { enqueueSnackbar } = useSnackbar();
 
   function handleDestroyForm() {
     setBuildingState('idle');
-    resetExtractOperationStore();
-    destroyForm();
+    destroyFormWrapper();
   }
 
   async function handleBuildQuestionnaireFromString(jsonString: string) {
     setBuildingState('building');
-    resetExtractOperationStore();
 
     setJsonString(jsonString);
 
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
-        const targetStructureMap = await fetchTargetStructureMap(parsedQuestionnaire);
-        if (targetStructureMap) {
-          setTargetStructureMap(targetStructureMap);
-        }
-
-        await buildForm(parsedQuestionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+        await buildFormWrapper(parsedQuestionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
         setBuildingState('built');
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
@@ -114,21 +103,15 @@ function Playground() {
 
   async function handleBuildQuestionnaireFromResource(questionnaire: Questionnaire) {
     setBuildingState('building');
-    resetExtractOperationStore();
 
     setJsonString(JSON.stringify(questionnaire, null, 2));
-    const targetStructureMap = await fetchTargetStructureMap(questionnaire);
-    if (targetStructureMap) {
-      setTargetStructureMap(targetStructureMap);
-    }
 
-    await buildForm(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+    await buildFormWrapper(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
     setBuildingState('built');
   }
 
   function handleBuildQuestionnaireFromFile(jsonFile: File) {
     setBuildingState('building');
-    resetExtractOperationStore();
 
     if (!jsonFile.name.endsWith('.json')) {
       enqueueSnackbar('Attached file must be a JSON file', {
@@ -148,12 +131,7 @@ function Playground() {
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
           const questionnaire = JSON.parse(jsonString);
-          const targetStructureMap = await fetchTargetStructureMap(questionnaire);
-          if (targetStructureMap) {
-            setTargetStructureMap(targetStructureMap);
-          }
-
-          await buildForm(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+          await buildFormWrapper(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {

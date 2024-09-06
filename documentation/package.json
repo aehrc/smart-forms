@@ -15,15 +15,15 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@aehrc/smart-forms-renderer": "^0.35.8",
+    "@aehrc/smart-forms-renderer": "^0.39.0",
     "@docusaurus/core": "^3.4.0",
     "@docusaurus/preset-classic": "^3.4.0",
     "@docusaurus/theme-live-codeblock": "^3.4.0",
-    "@emotion/react": "^11.11.4",
+    "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.11.5",
     "@iconify/react": "^4.1.1",
     "@mdx-js/react": "^3.0.0",
-    "@mui/material": "^5.15.20",
+    "@mui/material": "^5.16.7",
     "@tanstack/react-query": "^4.36.1",
     "clsx": "^2.0.0",
     "prism-react-renderer": "^2.3.0",

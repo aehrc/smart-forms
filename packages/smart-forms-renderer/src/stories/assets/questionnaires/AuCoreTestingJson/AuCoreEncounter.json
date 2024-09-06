@@ -1,0 +1,299 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "AuCoreEncounter",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "Encounter",
+        "language": "application/x-fhir-query",
+        "expression": "Encounter?patient={{%patient.id}}"
+      }
+    }
+  ],
+  "version": "0.5.0-ci-build",
+  "name": "AU Core Encounter",
+  "title": "AU Core Encounter",
+  "status": "draft",
+  "date": "2024-07-15",
+  "item": [
+    {
+      "linkId": "encounter",
+      "text": "AU Core Encounter",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "patient-details",
+          "text": "Patient Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.id"
+                  }
+                }
+              ],
+              "linkId": "patient-id",
+              "text": "Patient ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%patient.name.where(use='official').select((family | (given\n| prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "patient-name",
+              "text": "Patient Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "first-encounter-note",
+          "text": "This questionnaire only uses the first Encounter resource of a referenced\npatient.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"padding-bottom:\n8px;\">\r\n\n <b>This questionnaire only uses the first Encounter resource\nof a referenced\npatient.</b>\r\n</div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "linkId": "status",
+          "text": "Status",
+          "type": "choice",
+          "required": "true",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/encounter-status",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Encounter.entry[0].resource.status"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "class",
+          "text": "Class",
+          "type": "choice",
+          "required": "true",
+          "answerValueSet": "http://terminology.hl7.org.au/ValueSet/v3-ActEncounterCode-extended",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Encounter.entry[0].resource.class"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "service-type",
+          "text": "Service Type",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/service-type",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Encounter.entry[0].resource.serviceType.coding"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "participant",
+          "text": "Participant",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "participant-type",
+              "text": "Participant Type",
+              "type": "choice",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/encounter-participant-type",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%Encounter.entry[0].resource.participant.type.coding"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "participant-individual",
+              "text": "Participant Individual",
+              "type": "reference",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/participant-individual",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%Encounter.entry[0].resource.participant.individual.reference"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "period",
+          "text": "Period",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "period-start",
+              "text": "Period Start",
+              "type": "dateTime",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%Encounter.entry[0].resource.period.start"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "period-end",
+              "text": "Period End",
+              "type": "dateTime",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%Encounter.entry[0].resource.period.end"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+
+        {
+          "linkId": "reason-code",
+          "text": "Reason Code",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/encounter-reason",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Encounter.entry[0].resource.reasonCode.coding"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "autocomplete"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "reason-reference",
+          "text": "Reason Reference",
+          "type": "reference",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/reason-reference",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Encounter.entry[0].resource.reasonReference.reference"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "location",
+          "text": "Location",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "location-location",
+              "text": "Location",
+              "type": "reference",
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/location",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%Encounter.entry[0].resource.location.location.reference"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "service-provider",
+          "text": "Service Provider",
+          "type": "reference",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/service-provider",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%Encounter.entry[0].resource.serviceProvider.reference"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

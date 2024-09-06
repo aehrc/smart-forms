@@ -51,7 +51,8 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem);
+  const answerKey = qrItem?.answer?.[0].id;
+  const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   // Init input value
   let valueAutocomplete: Coding | string | undefined;
@@ -90,16 +91,16 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     if (typeof newValue === 'string') {
       if (newValue !== '') {
         onQrItemChange({
-          ...createEmptyQrItem(qItem),
-          answer: [{ valueString: newValue }]
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: newValue }]
         });
       } else {
-        onQrItemChange(createEmptyQrItem(qItem));
+        onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
     } else {
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueCoding: newValue }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueCoding: newValue }]
       });
     }
   }
@@ -108,8 +109,8 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     // set answer to current input when text field is unfocused
     if (!valueAutocomplete && input !== '') {
       onQrItemChange({
-        ...createEmptyQrItem(qItem),
-        answer: [{ valueString: input }]
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: input }]
       });
     }
   }

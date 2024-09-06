@@ -22,9 +22,11 @@ import type {
   Patient,
   Practitioner,
   Questionnaire,
+  QuestionnaireItem,
   QuestionnaireResponse
 } from 'fhir/r4';
 import type {
+  CustomContextResultParameter,
   FetchResourceCallback,
   InputParameters,
   IssuesParameter,
@@ -42,10 +44,12 @@ import type {
   QuestionnaireLevelXFhirQueryVariable,
   SourceQuery
 } from '../interfaces/inAppPopulation.interface';
+import { Base64 } from 'js-base64';
 
 export interface PopulateResult {
   populatedResponse: QuestionnaireResponse;
   issues?: OperationOutcome;
+  populatedContext?: Record<string, any>;
 }
 
 /**
@@ -103,7 +107,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   // Get launch contexts, source queries and questionnaire-level variables
   const launchContexts = getLaunchContexts(questionnaire);
   const sourceQueries = getSourceQueries(questionnaire);
-  const questionnaireLevelVariables = getQuestionnaireLevelXFhirQueryVariables(questionnaire);
+  const questionnaireLevelVariables = getXFhirQueryVariables(questionnaire);
 
   if (
     launchContexts.length === 0 &&
@@ -119,13 +123,13 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   // Define population input parameters from launch contexts, source queries and questionnaire-level variables
   const inputParameters = createPopulateInputParameters(
     questionnaire,
+    patient,
+    user ?? null,
+    encounter ?? null,
     launchContexts,
     sourceQueries,
     questionnaireLevelVariables,
-    context,
-    patient,
-    user,
-    encounter
+    context
   );
 
   if (!inputParameters) {
@@ -164,22 +168,30 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   const issuesParameter = outputParameters.parameter.find((param) => param.name === 'issues') as
     | IssuesParameter
     | undefined;
+  const contextResultParameter = outputParameters.parameter.find(
+    (param) => param.name === 'contextResult-custom'
+  ) as CustomContextResultParameter | undefined;
+
+  const populateResult: PopulateResult = {
+    populatedResponse: responseParameter.resource
+  };
+
+  // Add populated context to populateResult if it exists
+  if (contextResultParameter?.valueAttachment.data) {
+    const contextResult = JSON.parse(Base64.decode(contextResultParameter.valueAttachment.data));
+
+    if (isRecord(contextResult)) {
+      populateResult.populatedContext = contextResult;
+    }
+  }
 
   if (issuesParameter) {
-    return {
-      populateSuccess: true,
-      populateResult: {
-        populatedResponse: responseParameter.resource,
-        issues: issuesParameter.resource
-      }
-    };
+    populateResult.issues = issuesParameter.resource;
   }
 
   return {
     populateSuccess: true,
-    populateResult: {
-      populatedResponse: responseParameter.resource
-    }
+    populateResult: populateResult
   };
 }
 
@@ -327,14 +339,51 @@ function isXFhirQueryVariable(
   );
 }
 
-function getQuestionnaireLevelXFhirQueryVariables(
+function getXFhirQueryVariables(
   questionnaire: Questionnaire
 ): QuestionnaireLevelXFhirQueryVariable[] {
+  const xFhirQueryVariables: QuestionnaireLevelXFhirQueryVariable[] = [];
   if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isXFhirQueryVariable(extension)
-    ) as QuestionnaireLevelXFhirQueryVariable[];
+    xFhirQueryVariables.push(
+      ...(questionnaire.extension.filter((extension) =>
+        isXFhirQueryVariable(extension)
+      ) as QuestionnaireLevelXFhirQueryVariable[])
+    );
   }
 
-  return [];
+  if (questionnaire.item && questionnaire.item.length > 0) {
+    for (const qItem of questionnaire.item) {
+      xFhirQueryVariables.push(
+        ...(getXFhirQueryVariablesRecursive(qItem) as QuestionnaireLevelXFhirQueryVariable[])
+      );
+    }
+  }
+
+  return xFhirQueryVariables;
+}
+
+function getXFhirQueryVariablesRecursive(qItem: QuestionnaireItem) {
+  let xFhirQueryVariables: Extension[] = [];
+
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      xFhirQueryVariables = xFhirQueryVariables.concat(getXFhirQueryVariablesRecursive(childItem));
+    }
+  }
+
+  if (qItem.extension) {
+    xFhirQueryVariables.push(
+      ...qItem.extension.filter((extension) => isXFhirQueryVariable(extension))
+    );
+  }
+
+  return xFhirQueryVariables;
+}
+
+function isRecord(obj: any): obj is Record<string, any> {
+  if (!obj) {
+    return false;
+  }
+
+  return Object.keys(obj).every((key) => typeof key === 'string');
 }

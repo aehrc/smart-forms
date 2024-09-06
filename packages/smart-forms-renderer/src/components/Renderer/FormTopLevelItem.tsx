@@ -18,7 +18,9 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
+import FormBodyPage from './FormBodyPage';
 import { containsTabs, isTabContainer } from '../../utils/tabs';
+import { containsPages, isPage } from '../../utils/page';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
 import type {
@@ -32,6 +34,8 @@ import useHidden from '../../hooks/useHidden';
 import GroupItemSwitcher from '../FormComponents/GroupItem/GroupItemSwitcher';
 import useReadOnly from '../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
+import { isSpecificItemControl } from '../../utils';
+import GroupTable from '../FormComponents/Tables/GroupTable';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
@@ -52,6 +56,9 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
+
+  const itemIsPageContainer = isPage(topLevelQItem);
+  const itemContainsPages = containsPages(topLevelQItem);
 
   const isTablet = useResponsive('up', 'md');
 
@@ -106,8 +113,35 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
     );
   }
 
+  if (itemContainsPages || itemIsPageContainer) {
+    return (
+      <FormBodyPage
+        key={topLevelQItem.linkId}
+        topLevelQItem={topLevelQItem}
+        topLevelQRItem={topLevelQRItem}
+        parentIsReadOnly={readOnly}
+        onQrItemChange={onQrItemChange}
+      />
+    );
+  }
+
   // If form is untabbed, it is rendered as a regular group
   if (itemIsGroup) {
+    // GroupTable "gtable" can be rendered with either repeats:true or false
+    if (isSpecificItemControl(topLevelQItem, 'gtable')) {
+      return (
+        <GroupTable
+          key={topLevelQItem.linkId}
+          qItem={topLevelQItem}
+          qrItems={topLevelQRItem ? [topLevelQRItem] : []}
+          groupCardElevation={1}
+          isRepeated={false}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrRepeatGroupChange={onQrRepeatGroupChange}
+        />
+      );
+    }
+
     return (
       <GroupItem
         key={topLevelQItem.linkId}

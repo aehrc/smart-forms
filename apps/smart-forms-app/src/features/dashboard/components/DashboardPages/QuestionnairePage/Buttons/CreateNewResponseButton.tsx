@@ -20,10 +20,10 @@ import { useNavigate } from 'react-router-dom';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../../../api/saveQr.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import { buildForm } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
+import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
 
 function CreateNewResponseButton() {
   const { smartClient, launchQuestionnaire } = useSmartClient();
@@ -46,7 +46,7 @@ function CreateNewResponseButton() {
       postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
 
-    await buildForm(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+    await buildFormWrapper(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
 
     navigate('/renderer');
     setIsLoading(false);

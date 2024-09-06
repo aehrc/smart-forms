@@ -77,7 +77,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
       <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
         <Card elevation={groupCardElevation} sx={{ p: 2 }}>
           {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-            const answeredQrItem = createEmptyQrItem(qItem);
+            const answeredQrItem = createEmptyQrItem(qItem, undefined);
             if (nullableQrItem) {
               answeredQrItem.item = nullableQrItem.item;
             }
@@ -128,7 +128,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
           {qItem.text ? <Divider sx={{ mb: 1.5 }} light /> : null}
           <TransitionGroup>
             {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-              const answeredQrItem = createEmptyQrItem(qItem);
+              const answeredQrItem = createEmptyQrItem(qItem, undefined);
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
               }
@@ -170,7 +170,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         ) : null}
         <TransitionGroup>
           {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-            const answeredQrItem = createEmptyQrItem(qItem);
+            const answeredQrItem = createEmptyQrItem(qItem, undefined);
             if (nullableQrItem) {
               answeredQrItem.item = nullableQrItem.item;
             }

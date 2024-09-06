@@ -1,0 +1,174 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "SmokingStatusObservation",
+  "version": "0.1.0",
+  "name": "SmokingStatusObservation",
+  "title": "Smoking Status Observation",
+  "status": "draft",
+  "date": "2024-07-15",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "code": "patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient that is to be used to pre-populate the form"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/variable",
+      "valueExpression": {
+        "name": "ObservationSmokingStatus",
+        "language": "application/x-fhir-query",
+        "expression": "Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}"
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "observation",
+      "text": "AU Core Observation - Smoking Status",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "patient-details",
+          "text": "Patient Details",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.id"
+                  }
+                }
+              ],
+              "linkId": "patient-id",
+              "text": "Patient ID",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "(%patient.name.where(use='official').select((family | (given | prefix).join(' ')).join(', ').where($this != '') | text)).first()"
+                  }
+                }
+              ],
+              "linkId": "patient-name",
+              "text": "Patient Name",
+              "type": "string",
+              "required": true,
+              "readOnly": true
+            }
+          ]
+        },
+        {
+          "linkId": "first-observation-note",
+          "text": "This questionnaire only uses the first Observation resource with LOINC code 72166-2 (Smoking status) of a referenced\npatient.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-xhtml",
+                "valueString": "<div xmlns=\"http://www.w3.org/1999/xhtml\" style=\"padding-bottom:\n8px;\">\r\n <b>This questionnaire only uses the first Observation resource with LOINC code 72166-2 (Smoking status) of a referenced\npatient.</b>\r\n</div>"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "linkId": "observation-status",
+          "text": "Observation Status",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-status",
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationSmokingStatus.entry[0].resource.status"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-category",
+          "text": "Observation Category",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-category",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationSmokingStatus.entry[0].resource.category.coding"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-code-loinc",
+          "text": "Observation Code (LOINC)",
+          "type": "choice",
+          "answerValueSet": "http://hl7.org/fhir/ValueSet/observation-vitalsignresult",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationSmokingStatus.entry[0].resource.code.coding.where(system='http://loinc.org' and code='72166-2')"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-effective-datetime",
+          "text": "Effective Date Time",
+          "type": "dateTime",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationSmokingStatus.entry[0].resource.effectiveDateTime"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "observation-value",
+          "text": "Observation Value",
+          "type": "choice",
+          "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/smoking-status-1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%ObservationSmokingStatus.entry[0].resource.valueCodeableConcept.coding"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

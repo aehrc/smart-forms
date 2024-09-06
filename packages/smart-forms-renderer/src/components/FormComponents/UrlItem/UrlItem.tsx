@@ -52,10 +52,12 @@ function UrlItem(props: UrlItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
 
   // Init input value
+  const answerKey = qrItem?.answer?.[0].id;
   let valueUri = '';
   if (qrItem?.answer && qrItem?.answer[0].valueUri) {
     valueUri = qrItem.answer[0].valueUri;
   }
+
   const [input, setInput] = useStringInput(valueUri);
 
   // Perform validation checks
@@ -70,9 +72,9 @@ function UrlItem(props: UrlItemProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
-      const emptyQrItem = createEmptyQrItem(qItem);
+      const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ valueUri: input }] });
+        onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueUri: input }] });
       } else {
         onQrItemChange(emptyQrItem);
       }

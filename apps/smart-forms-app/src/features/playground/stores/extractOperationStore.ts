@@ -27,7 +27,7 @@ export interface ExtractOperationStoreType {
   resetStore: () => void;
 }
 
-export const ExtractOperationStore = createStore<ExtractOperationStoreType>()((set) => ({
+export const extractOperationStore = createStore<ExtractOperationStoreType>()((set) => ({
   targetStructureMap: null,
   extractedResource: null,
   setTargetStructureMap: (structureMap: StructureMap | null) =>
@@ -41,4 +41,4 @@ export const ExtractOperationStore = createStore<ExtractOperationStoreType>()((s
     }))
 }));
 
-export const useExtractOperationStore = createSelectors(ExtractOperationStore);
+export const useExtractOperationStore = createSelectors(extractOperationStore);

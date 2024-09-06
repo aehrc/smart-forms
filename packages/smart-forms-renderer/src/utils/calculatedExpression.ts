@@ -34,7 +34,7 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
-import { updateQuestionnaireResponse } from './updateQr';
+import { updateQuestionnaireResponse } from './genericRecursive';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -224,7 +224,7 @@ function initialiseItemCalculatedExpressionValueRecursive(
         updateQrItemsInGroup(
           updatedChildQRItem,
           null,
-          updatedChildQRItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
+          qrItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
           indexMap
         );
       }
@@ -323,7 +323,11 @@ function parseValueToAnswer(qItem: QuestionnaireItem, value: any): Questionnaire
     }
   }
 
-  if (typeof value === 'object') {
+  if (typeof value === 'object' && value.unit) {
+    return { valueQuantity: value };
+  }
+
+  if (typeof value === 'object' && value.system && value.code) {
     return { valueCoding: value };
   }
 

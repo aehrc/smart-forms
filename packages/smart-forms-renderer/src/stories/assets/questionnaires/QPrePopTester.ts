@@ -183,111 +183,103 @@ export const qSelectivePrePopTester: Questionnaire = {
           valueString: 'The patient that is to be used to pre-populate the form'
         }
       ]
+    },
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'ObsBloodPressure',
+        language: 'application/x-fhir-query',
+        expression: 'Observation?code=75367002&_count=1&_sort=-date&patient={{%patient.id}}'
+      }
+    },
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'ObsTobaccoSmokingStatus',
+        language: 'application/x-fhir-query',
+        expression: 'Observation?code=72166-2&_count=1&_sort=-date&patient={{%patient.id}}'
+      }
     }
   ],
   item: [
     {
-      linkId: 'display-description',
+      linkId: 'container',
       extension: [
         {
-          url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
-          valueString:
-            '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div style="font-size:0.875em"> This questionnaire is used by Playwright to do regression testing of the <pre style="display: inline">@aehrc/sdc-populate</pre> library\'s pre-population logic. Items will be incrementally added as needed.</div><br/></div>'
-        }
-      ],
-      text: "This questionnaire is used by Playwright to do regression testing of the @aehrc/sdc-populate library's pre-population logic. Items will be incrementally added as needed.",
-      type: 'display',
-      repeats: false
-    },
-    {
-      extension: [
-        {
-          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
           valueExpression: {
+            name: 'sex',
             language: 'text/fhirpath',
-            expression: '%patient.gender'
-          }
-        }
-      ],
-      linkId: 'gender-avs-url',
-      text: 'Administrative gender (answerValueSet url)',
-      type: 'choice',
-      repeats: false,
-      answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
-    },
-    {
-      extension: [
-        {
-          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
-          valueExpression: {
-            language: 'text/fhirpath',
-            expression: '%patient.gender'
-          }
-        }
-      ],
-      linkId: 'gender-avs-contained',
-      text: 'Administrative gender (answerValueSet contained)',
-      type: 'choice',
-      repeats: false,
-      answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
-    },
-    {
-      extension: [
-        {
-          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-          valueCodeableConcept: {
-            coding: [
-              {
-                system: 'http://hl7.org/fhir/questionnaire-item-control',
-                code: 'gtable'
-              }
-            ]
+            expression: "item.where(linkId='sex-at-birth-initial-expression').answer.value"
           }
         },
         {
-          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext',
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
           valueExpression: {
-            name: 'ConditionRepeat',
+            name: 'smoker',
             language: 'text/fhirpath',
-            expression:
-              "%Condition.entry.resource.where(category.coding.exists(code='problem-list-item'))"
+            expression: "item.where(linkId='smoking-status-initial-expression').answer.value"
           }
         }
       ],
-      linkId: 'medical-history',
-      text: 'Medical history and current problems list',
+      text: '',
       type: 'group',
-      repeats: true,
       item: [
+        {
+          linkId: 'display-description',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+              valueString:
+                '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div style="font-size:0.875em"> This questionnaire is used by Playwright to do regression testing of the <pre style="display: inline">@aehrc/sdc-populate</pre> library\'s pre-population logic. Items will be incrementally added as needed.</div><br/></div>'
+            }
+          ],
+          text: "This questionnaire is used by Playwright to do regression testing of the @aehrc/sdc-populate library's pre-population logic. Items will be incrementally added as needed.",
+          type: 'display',
+          repeats: false
+        },
         {
           extension: [
             {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-              valueCodeableConcept: {
-                coding: [
-                  {
-                    system: 'http://hl7.org/fhir/questionnaire-item-control',
-                    code: 'autocomplete'
-                  }
-                ]
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%patient.gender'
               }
-            },
+            }
+          ],
+          linkId: 'gender-avs-url',
+          text: 'Administrative gender (answerValueSet url)',
+          type: 'choice',
+          repeats: false,
+          answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%patient.gender'
+              }
+            }
+          ],
+          linkId: 'gender-avs-contained',
+          text: 'Administrative gender (answerValueSet contained)',
+          type: 'choice',
+          repeats: false,
+          answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
+        },
+        {
+          extension: [
             {
               url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
               valueExpression: {
                 language: 'text/fhirpath',
                 expression:
-                  "%ConditionRepeat.code.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
+                  "%patient.extension.where(exists(url='http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender' and extension.where(exists(url='type' and value.coding.code='1515311000168102')) and extension.where(url='effectivePeriod').value.end.empty())).extension.where(url='value').value.coding"
               }
-            }
-          ],
-          linkId: 'medical-history-condition',
-          text: 'Condition',
-          type: 'open-choice',
-          answerValueSet: '#MedicalHistory'
-        },
-        {
-          extension: [
+            },
             {
               url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
               valueCodeableConcept: {
@@ -298,19 +290,252 @@ export const qSelectivePrePopTester: Questionnaire = {
                   }
                 ]
               }
-            },
+            }
+          ],
+          linkId: 'sex-at-birth-initial-expression',
+          text: 'Sex assigned at birth (initialExpression)',
+          type: 'choice',
+          repeats: false,
+          answerValueSet: 'https://healthterminologies.gov.au/fhir/ValueSet/biological-sex-1'
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                description: 'Calculated Sex At Birth',
+                language: 'text/fhirpath',
+                expression: '%sex'
+              }
+            }
+          ],
+          linkId: 'sex-at-birth-calculated',
+          text: 'Sex assigned at birth (calculatedExpression)',
+          type: 'choice',
+          repeats: false,
+          readOnly: true,
+          answerValueSet: 'https://healthterminologies.gov.au/fhir/ValueSet/biological-sex-1'
+        },
+        {
+          extension: [
             {
               url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
               valueExpression: {
                 language: 'text/fhirpath',
-                expression: '%ConditionRepeat.clinicalStatus.coding'
+                expression:
+                  "%ObsTobaccoSmokingStatus.entry.resource.value.coding.where(system='http://snomed.info/sct')"
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'radio-button'
+                  }
+                ]
               }
             }
           ],
-          linkId: 'medical-history-status',
-          text: 'Clinical Status',
+          linkId: 'smoking-status-initial-expression',
+          text: 'Smoking status (initialExpression)',
           type: 'choice',
-          answerValueSet: 'http://hl7.org/fhir/ValueSet/condition-clinical'
+          repeats: false,
+          answerOption: [
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '266919005',
+                display: 'Never smoked'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '77176002',
+                display: 'Smoker'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '8517006',
+                display: 'Ex-smoker'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '16090371000119103',
+                display: 'Exposure to second hand tobacco smoke'
+              }
+            },
+            {
+              valueString: 'Wants to quit'
+            },
+            {
+              valueString: 'Other tobacco use'
+            }
+          ]
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                description: 'Calculated Smoking Status',
+                language: 'text/fhirpath',
+                expression: '%smoker'
+              }
+            }
+          ],
+          linkId: 'smoking-status-calculated',
+          text: 'Smoking status (calculatedExpression)',
+          type: 'choice',
+          repeats: false,
+          readOnly: true,
+          answerOption: [
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '266919005',
+                display: 'Never smoked'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '77176002',
+                display: 'Smoker'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '8517006',
+                display: 'Ex-smoker'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '16090371000119103',
+                display: 'Exposure to second hand tobacco smoke'
+              }
+            },
+            {
+              valueString: 'Wants to quit'
+            },
+            {
+              valueString: 'Other tobacco use'
+            }
+          ]
+        },
+        {
+          linkId: 'blood-pressure-unit-fixed',
+          text: 'Blood Pressure',
+          type: 'quantity',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%ObsBloodPressure.entry[0].resource.component[0].value'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                system: 'http://unitsofmeasure.org',
+                code: 'mm[Hg]',
+                display: 'mmHg'
+              }
+            }
+          ]
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'gtable'
+                  }
+                ]
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext',
+              valueExpression: {
+                name: 'ConditionRepeat',
+                language: 'text/fhirpath',
+                expression:
+                  "%Condition.entry.resource.where(category.coding.exists(code='problem-list-item'))"
+              }
+            }
+          ],
+          linkId: 'medical-history',
+          text: 'Medical history and current problems list',
+          type: 'group',
+          repeats: true,
+          item: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'autocomplete'
+                      }
+                    ]
+                  }
+                },
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+                  valueExpression: {
+                    language: 'text/fhirpath',
+                    expression:
+                      "%ConditionRepeat.code.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text ).first())"
+                  }
+                }
+              ],
+              linkId: 'medical-history-condition',
+              text: 'Condition',
+              type: 'open-choice',
+              answerValueSet: '#MedicalHistory'
+            },
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'drop-down'
+                      }
+                    ]
+                  }
+                },
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+                  valueExpression: {
+                    language: 'text/fhirpath',
+                    expression: '%ConditionRepeat.clinicalStatus.coding'
+                  }
+                }
+              ],
+              linkId: 'medical-history-status',
+              text: 'Clinical Status',
+              type: 'choice',
+              answerValueSet: 'http://hl7.org/fhir/ValueSet/condition-clinical'
+            }
+          ]
         }
       ]
     }

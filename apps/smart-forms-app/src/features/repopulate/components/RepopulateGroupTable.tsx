@@ -38,6 +38,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
           qItem={qItem}
           qrItems={oldQRItems ?? []}
           groupCardElevation={1}
+          isRepeated={true}
           showMinimalView={true}
           parentIsReadOnly={true}
           onQrRepeatGroupChange={() => void 0}
@@ -51,6 +52,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
           qItem={qItem}
           qrItems={newQRItems ?? []}
           groupCardElevation={1}
+          isRepeated={true}
           showMinimalView={true}
           parentIsReadOnly={true}
           onQrRepeatGroupChange={() => void 0}

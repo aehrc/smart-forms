@@ -28,7 +28,7 @@ function DashboardTablePagination<T>(props: DashboardTablePaginationProps<T>) {
   const { table, children } = props;
 
   const { pageSize, pageIndex } = table.getState().pagination;
-  const totalNumberOfItems = table.getRowModel().rows.length;
+  const totalNumberOfItems = table.getRowCount();
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -39,9 +39,10 @@ function DashboardTablePagination<T>(props: DashboardTablePaginationProps<T>) {
         count={table.getFilteredRowModel().rows.length}
         rowsPerPage={pageSize}
         page={pageIndex}
+        data-test="dashboard-table-pagination"
         onPageChange={(_, page) => table.setPageIndex(page)}
         onRowsPerPageChange={(event) => {
-          const size = event.target.value ? Number(event.target.value) : 10;
+          const size = parseInt(event.target.value, 10);
           table.setPageSize(size);
         }}
       />

@@ -31,6 +31,7 @@ import Divider from '@mui/material/Divider';
 import AddRowButton from './AddRowButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -40,7 +41,8 @@ import Checkbox from '@mui/material/Checkbox';
 import { useQuestionnaireStore } from '../../../stores';
 
 interface GroupTableViewProps
-  extends PropsWithShowMinimalViewAttribute,
+  extends PropsWithIsRepeatedAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qItemsIndexMap: Record<string, number>;
@@ -62,6 +64,7 @@ function GroupTableView(props: GroupTableViewProps) {
     qItem,
     qItemsIndexMap,
     groupCardElevation,
+    isRepeated,
     readOnly,
     tableRows,
     selectedIds,
@@ -100,6 +103,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                isRepeated={isRepeated}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
                 onRowChange={onRowChange}
@@ -121,39 +125,38 @@ function GroupTableView(props: GroupTableViewProps) {
       py={3}
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      {groupCardElevation !== 1 ? (
-        <>
-          <Typography
-            fontSize={13}
-            variant="h6"
-            color={readOnly ? 'text.secondary' : 'text.primary'}>
-            <LabelWrapper qItem={qItem} readOnly={readOnly} />
-          </Typography>
-          <Divider sx={{ my: 1 }} light />
-        </>
-      ) : null}
+      <>
+        <Typography fontSize={13} variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
+          <LabelWrapper qItem={qItem} readOnly={readOnly} />
+        </Typography>
+        <Divider sx={{ my: 1 }} light />
+      </>
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
-          <caption>
-            <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
-          </caption>
+          {isRepeated ? (
+            <caption>
+              <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
+            </caption>
+          ) : null}
           <TableHead>
             <TableRow>
               <HeaderTableCell padding="none" />
-              <HeaderTableCell padding="none">
-                <Checkbox
-                  color="primary"
-                  size="small"
-                  indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
-                  checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
-                  disabled={readOnly}
-                  onChange={onSelectAll}
-                />
-              </HeaderTableCell>
+              {isRepeated ? (
+                <HeaderTableCell padding="none">
+                  <Checkbox
+                    color="primary"
+                    size="small"
+                    indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
+                    checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                    disabled={readOnly}
+                    onChange={onSelectAll}
+                  />
+                </HeaderTableCell>
+              ) : null}
               {itemLabels.map((itemLabel) => (
                 <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
               ))}
-              <TableCell />
+              <TableCell padding="checkbox" />
             </TableRow>
           </TableHead>
           <GroupTableBody
@@ -162,6 +165,7 @@ function GroupTableView(props: GroupTableViewProps) {
             tableRows={tableRows}
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
+            isRepeated={isRepeated}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onRowChange={onRowChange}

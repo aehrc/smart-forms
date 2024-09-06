@@ -22,9 +22,9 @@ import { Main, StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Outlet, useNavigate } from 'react-router-dom';
 import SelectedQuestionnaireContextProvider from '../contexts/SelectedQuestionnaireContext.tsx';
 import DashboardDebugFooter from '../components/DashboardDebugFooter/DashboardDebugFooter.tsx';
-import { destroyForm } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import useDebugMode from '../../../hooks/useDebugMode.ts';
+import { destroyFormWrapper } from '../../../utils/manageForm.ts';
 
 function DashboardLayout() {
   const [open, setOpen] = useState(false);
@@ -37,7 +37,7 @@ function DashboardLayout() {
   const isNotLaunched = !smartClient;
 
   useEffect(() => {
-    destroyForm();
+    destroyFormWrapper();
   }, []);
 
   useEffect(() => {
