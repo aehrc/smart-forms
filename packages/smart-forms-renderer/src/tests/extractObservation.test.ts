@@ -15,22 +15,29 @@ describe('extractObservationBased', () => {
       qObservationSampleWithExtractExtension,
       qrObservationSample
     );
-    expect(observations).toHaveLength(2);
+    expect(observations).toHaveLength(4);
     expect(observations[0]).toEqual(observationResults[0]);
   });
 
   it('should return an Observations array only if there are observation-extract extensions', () => {
-    const singleExtractExtension: Questionnaire = {
-      ...qObservationSampleWithExtractExtension
-    };
+    const singleExtractExtension: Questionnaire = JSON.parse(
+      JSON.stringify(qObservationSampleWithExtractExtension)
+    );
     singleExtractExtension.item!.at(0)!.extension!.at(0)!.valueBoolean = false;
 
-    const observations = extractObservationBased(
-      qObservationSampleWithExtractExtension,
-      qrObservationSample
+    const observations = extractObservationBased(singleExtractExtension, qrObservationSample);
+    expect(observations).toHaveLength(2);
+    expect(observations[0].id).toContain('phq2-4');
+  });
+
+  it('should return all Observations expect for observation-extract extensions false', () => {
+    const topLevelExtract: Questionnaire = JSON.parse(
+      JSON.stringify(qObservationSampleWithExtractExtension)
     );
-    expect(observations).toHaveLength(1);
-    expect(observations[0]).toEqual(observationResults[1]);
+    topLevelExtract.extension!.at(0)!.valueBoolean = true;
+
+    const observations = extractObservationBased(topLevelExtract, qrObservationSample);
+    expect(observations).toHaveLength(6);
   });
 
   it('should return an empty array if there are no observation-extract extensions', () => {
@@ -96,6 +103,25 @@ describe('mapQItemsExtractable', () => {
       'phq2-5': true,
       'phq2-6': false,
       'phq2-7': false,
+      'phq2-8': true
+    });
+  });
+
+  it('should correctly return extractionMap even with topLevel observation-extract extensions true', () => {
+    const topLevelExtract: Questionnaire = JSON.parse(JSON.stringify(qExtractSample));
+    topLevelExtract.extension!.at(0)!.valueBoolean = true;
+
+    const extractionMap = mapQItemsExtractable(topLevelExtract);
+
+    expect(extractionMap).toEqual({
+      'phq-2-questionnaire': true,
+      'phq2-1': true,
+      'phq2-2': false,
+      'phq2-3': true,
+      'phq2-4': true,
+      'phq2-5': true,
+      'phq2-6': false,
+      'phq2-7': true,
       'phq2-8': true
     });
   });

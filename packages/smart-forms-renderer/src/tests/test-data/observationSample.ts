@@ -106,6 +106,12 @@ export const qObservationSampleWithExtractExtension: Questionnaire = {
   publisher: 'Konsulin',
   description: 'Patient Health Questionnaire-2 (PHQ-2) for depression screening.',
   subjectType: ['Patient'],
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+      valueBoolean: false
+    }
+  ],
   item: [
     {
       linkId: 'phq2-1',
@@ -149,6 +155,46 @@ export const qObservationSampleWithExtractExtension: Questionnaire = {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
           valueBoolean: true
         }
+      ],
+      item: [
+        {
+          linkId: 'phq2-8',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          type: 'choice',
+          code: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '28669007',
+              display: 'Anhedonia'
+            }
+          ],
+          answerOption: [
+            {
+              valueCoding: {
+                code: '0',
+                display: 'Not at all'
+              }
+            },
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '2',
+                display: 'More than half the days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '3',
+                display: 'Nearly every day'
+              }
+            }
+          ]
+        }
       ]
     },
     {
@@ -191,7 +237,219 @@ export const qObservationSampleWithExtractExtension: Questionnaire = {
       extension: [
         {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
-          valueBoolean: true
+          valueBoolean: false
+        }
+      ],
+      item: [
+        {
+          linkId: 'phq2-4',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          type: 'choice',
+          code: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '28669007',
+              display: 'Anhedonia'
+            }
+          ],
+          answerOption: [
+            {
+              valueCoding: {
+                code: '0',
+                display: 'Not at all'
+              }
+            },
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '2',
+                display: 'More than half the days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '3',
+                display: 'Nearly every day'
+              }
+            }
+          ],
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+              valueBoolean: true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'phq2-3',
+      text: 'Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?',
+      type: 'choice',
+      code: [
+        {
+          system: 'http://snomed.info/sct',
+          code: '307077003',
+          display: 'Feeling hopeless'
+        }
+      ],
+      answerOption: [
+        {
+          valueCoding: {
+            code: '0',
+            display: 'Not at all'
+          }
+        },
+        {
+          valueCoding: {
+            code: '1',
+            display: 'Several days'
+          }
+        },
+        {
+          valueCoding: {
+            code: '2',
+            display: 'More than half the days'
+          }
+        },
+        {
+          valueCoding: {
+            code: '3',
+            display: 'Nearly every day'
+          }
+        }
+      ],
+      item: [
+        {
+          linkId: 'phq2-5',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          type: 'choice',
+          code: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '28669007',
+              display: 'Anhedonia'
+            }
+          ],
+          answerOption: [
+            {
+              valueCoding: {
+                code: '0',
+                display: 'Not at all'
+              }
+            },
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '2',
+                display: 'More than half the days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '3',
+                display: 'Nearly every day'
+              }
+            }
+          ],
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+              valueBoolean: true
+            }
+          ]
+        },
+        {
+          linkId: 'phq2-6',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          type: 'choice',
+          code: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '28669007',
+              display: 'Anhedonia'
+            }
+          ],
+          answerOption: [
+            {
+              valueCoding: {
+                code: '0',
+                display: 'Not at all'
+              }
+            },
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '2',
+                display: 'More than half the days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '3',
+                display: 'Nearly every day'
+              }
+            }
+          ],
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+              valueBoolean: false
+            }
+          ]
+        },
+        {
+          linkId: 'phq2-7',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          type: 'choice',
+          code: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '28669007',
+              display: 'Anhedonia'
+            }
+          ],
+          answerOption: [
+            {
+              valueCoding: {
+                code: '0',
+                display: 'Not at all'
+              }
+            },
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '2',
+                display: 'More than half the days'
+              }
+            },
+            {
+              valueCoding: {
+                code: '3',
+                display: 'Nearly every day'
+              }
+            }
+          ]
         }
       ]
     }
@@ -218,6 +476,20 @@ export const qrObservationSample: QuestionnaireResponse = {
             display: 'More than half the days'
           }
         }
+      ],
+      item: [
+        {
+          linkId: 'phq2-8',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          answer: [
+            {
+              valueCoding: {
+                code: '2',
+                display: 'More than half the days'
+              }
+            }
+          ]
+        }
       ]
     },
     {
@@ -229,6 +501,70 @@ export const qrObservationSample: QuestionnaireResponse = {
             code: '1',
             display: 'Several days'
           }
+        }
+      ],
+      item: [
+        {
+          linkId: 'phq2-4',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          answer: [
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'phq2-3',
+      text: 'Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?',
+      answer: [
+        {
+          valueCoding: {
+            code: '1',
+            display: 'Several days'
+          }
+        }
+      ],
+      item: [
+        {
+          linkId: 'phq2-5',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          answer: [
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            }
+          ]
+        },
+        {
+          linkId: 'phq2-6',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          answer: [
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            }
+          ]
+        },
+        {
+          linkId: 'phq2-7',
+          text: 'Over the last 2 weeks, how often have you been bothered by little interest or pleasure in doing things?',
+          answer: [
+            {
+              valueCoding: {
+                code: '1',
+                display: 'Several days'
+              }
+            }
+          ]
         }
       ]
     }
@@ -306,6 +642,12 @@ export const qExtractSample: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'phq-2-questionnaire',
   status: 'draft',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+      valueBoolean: false
+    }
+  ],
   item: [
     {
       linkId: 'phq2-1',
@@ -345,7 +687,6 @@ export const qExtractSample: Questionnaire = {
         }
       ]
     },
-
     {
       linkId: 'phq2-3',
       type: 'choice',

@@ -8,6 +8,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { readQuestionnaireResponse, transverseQuestionnaire } from './genericRecursive';
+import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 
 /**
  * Extract an array of Observations from a QuestionnaireResponse and its source Questionnaire.
@@ -62,8 +63,6 @@ function extractObservationBasedRecursive(
 
   if (!extraData?.qr || !extraData?.qItemMap) return observations;
 
-  if (!extraData.qItemMap[qItem.linkId]) return observations;
-
   // Map qrItemOrItems into an array of qrItems
   let qrItems: QuestionnaireResponseItem[] = [];
   if (qrItemOrItems) {
@@ -84,7 +83,11 @@ function extractObservationBasedRecursive(
         (e) => e.url === FHIR_OBSERVATION_EXTRACT_CATEGORY_EXTENSION
       );
 
-      exts.forEach((e) => e.valueCodeableConcept && categories.push(e.valueCodeableConcept));
+      for (const ext of exts) {
+        if (ext.valueCodeableConcept) {
+          categories.push(ext.valueCodeableConcept);
+        }
+      }
     }
   }
 
@@ -92,10 +95,42 @@ function extractObservationBasedRecursive(
     // Check if the response item has any values or nested items
     if (responseItem.answer && responseItem.answer.length > 0) {
       for (const answer of responseItem.answer) {
-        const observation = createObservation(qItem, extraData.qr, answer, categories);
+        if (extraData.qItemMap[qItem.linkId]) {
+          const observation = createObservation(qItem, extraData.qr, answer, categories);
 
-        observations.push(observation);
+          observations.push(observation);
+        }
       }
+    }
+  }
+
+  const childQItems = qItem.item;
+  if (!childQItems || childQItems.length === 0) return observations;
+
+  // Map qrItemOrItems into an array of qrItems
+  let childQrItems: QuestionnaireResponseItem[] = [];
+  if (qrItemOrItems) {
+    if (Array.isArray(qrItemOrItems)) {
+      childQrItems = qrItemOrItems;
+    } else {
+      childQrItems = qrItemOrItems.item ?? [];
+    }
+  }
+
+  const indexMap = mapQItemsIndex(qItem);
+  const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
+
+  for (const [index, childQItem] of childQItems.entries()) {
+    const childQRItemOrItems = qrItemsByIndex[index];
+
+    const childObservations = extractObservationBasedRecursive(
+      childQItem,
+      childQRItemOrItems ?? null,
+      extraData
+    );
+
+    if (childObservations) {
+      observations.push(...childObservations);
     }
   }
 
@@ -130,8 +165,8 @@ function mapQItemsExtractableRecursive(
 
   const extension = qItem.extension?.find((e) => e.url === FHIR_OBSERVATION_EXTRACT_EXTENSION);
 
-  if (extension?.valueBoolean) {
-    qItemExtrableMap[qItem.linkId] = true;
+  if (extension?.valueBoolean || extension?.valueBoolean === false) {
+    qItemExtrableMap[qItem.linkId] = extension?.valueBoolean ?? false;
   } else if (parent && qItemExtrableMap[parent.linkId]) {
     qItemExtrableMap[qItem.linkId] = qItemExtrableMap[parent.linkId];
   } else if (root && qItemExtrableMap[root.id ?? 'root']) {
